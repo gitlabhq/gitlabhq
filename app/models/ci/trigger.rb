@@ -5,6 +5,7 @@ module Ci
     include Presentable
     include Limitable
     include Expirable
+    include Gitlab::EncryptedAttribute
 
     TRIGGER_TOKEN_PREFIX = 'glptt-'
 
@@ -26,7 +27,7 @@ module Ci
       attribute: :encrypted_token,
       mode: :per_attribute_iv,
       algorithm: 'aes-256-gcm',
-      key: Settings.attr_encrypted_db_key_base_32,
+      key: :db_key_base_32,
       encode: false
 
     before_validation :set_default_values

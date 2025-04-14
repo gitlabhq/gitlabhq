@@ -24,7 +24,7 @@ module ResourceEvents
     end
 
     def execute(notes = [])
-      (notes + synthetic_notes).sort_by(&:created_at)
+      notes.to_a.concat(synthetic_notes).sort_by!(&:created_at)
     end
 
     private

@@ -1,0 +1,10 @@
+---
+view_name: project_snippets_routes_view
+classes: []
+feature_categories:
+  - backup_restore
+description: Project snippet references and its repository metadata
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179452
+milestone: '17.11'
+gitlab_schema: gitlab_main
+table_size: small

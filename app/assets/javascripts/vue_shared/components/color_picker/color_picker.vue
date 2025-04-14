@@ -14,7 +14,7 @@
  */
 import { GlFormGroup, GlFormInput, GlFormInputGroup, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 const PREVIEW_COLOR_DEFAULT_CLASSES =
   'gl-relative gl-w-7 gl-bg-subtle gl-rounded-tl-base gl-rounded-bl-base';
@@ -65,8 +65,8 @@ export default {
   computed: {
     description() {
       return this.hasSuggestedColors
-        ? this.$options.i18n.fullDescription
-        : this.$options.i18n.shortDescription;
+        ? s__('ColorPicker|Enter any hex color or choose one of the suggested colors below.')
+        : s__('ColorPicker|Enter any hex color.');
     },
     previewColor() {
       if (this.state) {
@@ -90,10 +90,6 @@ export default {
       this.$emit('input', color.trim());
     },
   },
-  i18n: {
-    fullDescription: __('Enter any color or choose one of the suggested colors below.'),
-    shortDescription: __('Enter any color.'),
-  },
 };
 </script>
 
@@ -107,15 +103,20 @@ export default {
       :state="state"
       :class="{ '!gl-mb-3': hasSuggestedColors }"
     >
+      <!-- eslint-disable @gitlab/vue-require-i18n-attribute-strings -->
       <gl-form-input-group
+        :label="label"
         max-length="7"
         type="text"
         class="gl-align-center gl-max-w-26 gl-rounded-none gl-rounded-br-base gl-rounded-tr-base"
         :value="value"
+        placeholder="#RRGGBB"
         :state="state"
         :aria-labelledby="label"
+        aria-describedby="color-picker-hint"
         @input="handleColorChange"
       >
+        <!-- eslint-enable @gitlab/vue-require-i18n-attribute-strings -->
         <template #prepend>
           <div :class="previewColorClasses" :style="previewColor" data-testid="color-preview">
             <gl-form-input
@@ -137,10 +138,13 @@ export default {
         :key="hex"
         v-gl-tooltip
         :title="name"
+        :aria-label="name"
         :style="{ backgroundColor: hex }"
         class="gl-mb-3 gl-mr-3 gl-inline-block gl-h-7 gl-w-7 gl-rounded-base gl-no-underline"
         @click.prevent="handleColorChange(hex)"
       />
     </div>
+
+    <span id="color-picker-hint" class="gl-sr-only">{{ description }}</span>
   </div>
 </template>

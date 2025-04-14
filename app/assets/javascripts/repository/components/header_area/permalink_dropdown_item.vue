@@ -1,6 +1,6 @@
 <script>
 import Vue from 'vue';
-import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem, GlToast } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlToast } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { keysFor, PROJECT_FILES_GO_TO_PERMALINK } from '~/behaviors/shortcuts/keybindings';
 import { Mousetrap } from '~/lib/mousetrap';
@@ -13,7 +13,6 @@ Vue.use(GlToast);
 
 export default {
   components: {
-    GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
   },
   props: {
@@ -59,23 +58,21 @@ export default {
 </script>
 
 <template>
-  <gl-disclosure-dropdown-group>
-    <gl-disclosure-dropdown-item
-      ref="copyPermalinkButton"
-      :aria-keyshortcuts="permalinkShortcutKey"
-      data-testid="permalink"
-      :data-clipboard-text="absolutePermalinkPath"
-      data-clipboard-handle-tooltip="false"
-      @action="onCopyPermalink"
-    >
-      <template #list-item>
-        <span class="gl-flex gl-items-center gl-justify-between">
-          <span>{{ __('Copy permalink') }}</span>
-          <kbd v-if="permalinkShortcutKey && !shortcutsDisabled" class="flat">{{
-            permalinkShortcutKey
-          }}</kbd>
-        </span>
-      </template>
-    </gl-disclosure-dropdown-item>
-  </gl-disclosure-dropdown-group>
+  <gl-disclosure-dropdown-item
+    ref="copyPermalinkButton"
+    :aria-keyshortcuts="permalinkShortcutKey"
+    data-testid="permalink"
+    :data-clipboard-text="absolutePermalinkPath"
+    data-clipboard-handle-tooltip="false"
+    @action="onCopyPermalink"
+  >
+    <template #list-item>
+      <span class="gl-flex gl-items-center gl-justify-between">
+        <span>{{ __('Copy permalink') }}</span>
+        <kbd v-if="permalinkShortcutKey && !shortcutsDisabled" class="flat">{{
+          permalinkShortcutKey
+        }}</kbd>
+      </span>
+    </template>
+  </gl-disclosure-dropdown-item>
 </template>

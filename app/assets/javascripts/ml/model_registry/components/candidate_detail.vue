@@ -34,10 +34,10 @@ export default {
   },
   computed: {
     info() {
-      return Object.freeze(this.candidate.info);
+      return this.candidate.info;
     },
     ciJob() {
-      return Object.freeze(this.info.ciJob);
+      return this.info.ciJob;
     },
     hasMetadata() {
       return !isEmpty(this.candidate.metadata);

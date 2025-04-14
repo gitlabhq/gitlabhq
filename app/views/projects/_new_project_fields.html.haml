@@ -38,7 +38,7 @@
       = f.label :path, class: 'label-bold' do
         %span= _("Project slug")
       = f.text_field :path, placeholder: "my-awesome-project", class: "form-control gl-form-input", required: true, aria: { required: true }, data: { testid: 'project-path', username: current_user.username }
-    .js-group-namespace-error.gl-my-3.gl-text-red-500.gl-hidden.col-12
+    .js-group-namespace-error.gl-my-3.gl-text-danger.gl-hidden.col-12
       = s_('ProjectsNew|Pick a group or namespace where you want to create this project.')
     .js-user-readme-repo.gl-my-3.gl-hidden.col-12
       = render Pajamas::AlertComponent.new(dismissible: false,

@@ -4,22 +4,19 @@ require 'spec_helper'
 
 RSpec.describe VirtualRegistries::Packages::Cache::DestroyOrphanEntriesWorker, type: :worker, feature_category: :virtual_registry do
   let(:worker) { described_class.new }
-  let(:model) { ::VirtualRegistries::Packages::Maven::Cache::Entry }
 
   describe '#perform_work', unless: Gitlab.ee? do
-    subject(:perform_work) { worker.perform_work(model.name) }
+    subject(:perform_work) { worker.perform_work('') }
 
-    let_it_be(:cache_entry) { create(:virtual_registries_packages_maven_cache_entry) }
-    let_it_be(:orphan_cache_entry) do
-      create(:virtual_registries_packages_maven_cache_entry, :pending_destruction)
+    it 'does not trigger any sql query' do
+      control = ActiveRecord::QueryRecorder.new { perform_work }
+      expect(control.count).to be_zero
     end
-
-    it { expect { perform_work }.to not_change { model.count } }
   end
 
   describe '#remaining_work_count', unless: Gitlab.ee? do
-    subject { worker.remaining_work_count(model.name) }
+    subject { worker.remaining_work_count('') }
 
-    it { is_expected.to eq(0) }
+    it { is_expected.to be_zero }
   end
 end

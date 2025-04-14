@@ -4,16 +4,22 @@ class SystemHook < WebHook
   extend ::Gitlab::Utils::Override
   include TriggerableHooks
 
-  self.allow_legacy_sti_class = true
-
-  has_many :web_hook_logs, foreign_key: 'web_hook_id', inverse_of: :web_hook
-
-  triggerable_hooks [
+  AVAILABLE_HOOKS = [
     :repository_update_hooks,
     :push_hooks,
     :tag_push_hooks,
     :merge_request_hooks
-  ]
+  ].freeze
+
+  self.allow_legacy_sti_class = true
+
+  has_many :web_hook_logs, foreign_key: 'web_hook_id', inverse_of: :web_hook
+
+  def self.available_hooks
+    AVAILABLE_HOOKS
+  end
+
+  triggerable_hooks available_hooks
 
   attribute :push_events, default: false
   attribute :repository_update_events, default: true
@@ -39,3 +45,5 @@ class SystemHook < WebHook
     false
   end
 end
+
+SystemHook.prepend_mod_with('SystemHook')

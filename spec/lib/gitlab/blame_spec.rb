@@ -108,7 +108,7 @@ RSpec.describe Gitlab::Blame, feature_category: :source_code_management do
       let(:commit) { project.commit('blame-on-renamed') }
 
       it 'adds previous path' do
-        expect(subject[0][:previous_path]).to be nil
+        expect(subject[0][:previous_path]).to be_nil
         expect(subject[0][:lines]).to match_array(['Initial commit', 'Initial commit'])
 
         expect(subject[1][:previous_path]).to eq('files/plain_text/initial-commit')

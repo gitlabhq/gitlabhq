@@ -13,12 +13,15 @@ title: GitLab Git Large File Storage (LFS) Administration
 
 {{< /details >}}
 
-This page contains information about configuring Git LFS on GitLab Self-Managed.
+With Git Large File Storage (LFS), you can store large files in a Git repository without
+increasing its size or impacting performance. You can enable or disable LFS, configure local
+or remote storage for LFS objects, and migrate objects between storage types.
+
 For user documentation about Git LFS, see [Git Large File Storage](../../topics/git/lfs/_index.md).
 
 Prerequisites:
 
-- Users need to install [Git LFS client](https://git-lfs.com/) version 1.0.1 or later.
+- Users must install [Git LFS client](https://git-lfs.com/) version 1.0.1 or later.
 
 ## Enable or disable LFS
 

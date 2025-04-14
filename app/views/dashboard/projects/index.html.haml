@@ -2,6 +2,7 @@
   = auto_discovery_link_tag(:atom, dashboard_projects_url(rss_url_options), title: "All activity")
 
 = render_dashboard_ultimate_trial(current_user)
+= render_product_usage_data_collection_changes(current_user)
 
 - page_title _("Projects")
 - add_page_specific_style 'page_bundles/dashboard_projects'

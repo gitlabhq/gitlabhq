@@ -128,14 +128,18 @@
   - if @appearance.persisted? || @appearance.updated_at
     .settings-section
       - if @appearance.persisted?
-        = s_('AppearanceSettings|Preview last save:')
-        = link_to _('Sign-in page'), preview_sign_in_admin_application_settings_appearances_path, class: 'btn', target: '_blank', rel: 'noopener noreferrer'
-        = link_to _('New project page'), new_project_path, class: 'btn', target: '_blank', rel: 'noopener noreferrer'
-
-      - if @appearance.updated_at
-        %span.gl-float-right.gl-text-subtle
-          = s_('AppearanceSettings|Last edit')
-          #{time_ago_with_tooltip(@appearance.updated_at)}
+        .gl-mb-4
+          = s_('AppearanceSettings|Preview active settings:')
+        .gl-mb-4
+          = render(Pajamas::ButtonComponent.new(category: :secondary, href: preview_sign_in_admin_application_settings_appearances_path, target: '_blank', button_options: { rel: 'noopener noreferrer' })) do
+            = _('Sign-in page')
+          = render(Pajamas::ButtonComponent.new(category: :secondary, href: new_project_path, target: '_blank', button_options: { rel: 'noopener noreferrer' })) do
+            = _('New project page')
+        %p.gl-text-subtle
+          = s_('AppearanceSettings|Changes must be saved to appear.')
+          - if @appearance.updated_at
+            = s_('AppearanceSettings|Last edit')
+            #{time_ago_with_tooltip(@appearance.updated_at)}
 
   .settings-sticky-footer
     = f.submit _('Update appearance settings'), pajamas_button: true

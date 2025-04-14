@@ -1,7 +1,7 @@
 query searchNamespacesWhereUserCanImportProjects($search: String) {
   currentUser {
     id
-    groups(permissionScope: IMPORT_PROJECTS, search: $search) {
+    groups(permissionScope: IMPORT_PROJECTS, search: $search, sort: SIMILARITY) {
       nodes {
         id
         fullPath

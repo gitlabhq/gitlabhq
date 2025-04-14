@@ -22,9 +22,13 @@ module Types
         field :discussions, ::Types::Notes::DiscussionType.connection_type,
           null: true,
           skip_type_authorization: [:read_note, :read_emoji],
-          description: "Notes on this work item.",
+          description: "Discussions on this work item.",
           resolver: Resolvers::WorkItems::WorkItemDiscussionsResolver,
           connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension
+        field :notes, ::Types::Notes::NoteType.connection_type,
+          null: false,
+          description: "Notes on this work item.",
+          resolver: Resolvers::Noteable::NotesResolver
       end
       # rubocop:enable Graphql/AuthorizeTypes
     end

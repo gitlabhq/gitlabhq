@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import React from 'react';
-import { addons, types } from '@storybook/addons';
+import { addons, types } from '@storybook/manager-api';
 import { useAddonState } from '@storybook/api';
 import { AddonPanel, Form } from '@storybook/components';
 import { ADDON_ID, STATE_ID, PANEL_ID, GITLAB_API_ACCESS_UPDATE_EVENT } from './constants';
@@ -71,6 +71,6 @@ addons.register(ADDON_ID, () => {
   addons.add(PANEL_ID, {
     type: types.PANEL,
     title: 'GitLab API Access',
-    render: ({ active, key }) => h(AddonPanel, { active, key }, h(GitLabAPIParametersPanel)),
+    render: ({ active }) => h(AddonPanel, { active }, h(GitLabAPIParametersPanel)),
   });
 });

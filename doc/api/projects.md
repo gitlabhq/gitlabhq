@@ -12,7 +12,9 @@ title: Projects API
 
 {{< /details >}}
 
-The Projects API provides programmatic access to manage GitLab projects and configure their key settings. A project is a central hub for collaboration where you store code, track issues, and organize team activities.
+Use this API to manage GitLab projects and their associated settings. A project is a central hub for
+collaboration where you store code, track issues, and organize team activities.
+For more information, see [create a project](../user/project/_index.md).
 
 The Projects API contains endpoints that:
 
@@ -23,8 +25,6 @@ The Projects API contains endpoints that:
 - Archive and unarchive projects
 - Transfer projects between namespaces
 - Manage deployment and container registry settings
-
-This page explains how to use the Projects REST API endpoints to interact with [GitLab projects](../user/project/_index.md).
 
 ## Permissions
 
@@ -78,7 +78,7 @@ Supported attributes:
 
 The responses include attributes related to container registry storage size:
 
-- `container_registry_size`: Total storage size in bytes used by all container repositories in the project. Updated whenever container images are pushed or deleted. For self-managed instances, requires the [container registry metadata database](../administration/packages/container_registry_metadata_database.md) to be enabled.
+- `container_registry_size`: Total storage size in bytes used by all container repositories in the project. Updated whenever container images are pushed or deleted. For GitLab Self-Managed instances, requires the [container registry metadata database](../administration/packages/container_registry_metadata_database.md) to be enabled.
 
 Example response:
 
@@ -1693,7 +1693,7 @@ Supported general project attributes:
 | `ci_id_token_sub_claim_components`                 | array             | No       | Fields included in the `sub` claim of the [ID Token](../ci/secrets/id_token_authentication.md). Accepts an array starting with `project_path`. The array might also include `ref_type` and `ref`. Defaults to `["project_path", "ref_type", "ref"]`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477260) in GitLab 17.10. |
 | `ci_separated_caches`                              | boolean           | No       | Set whether or not caches should be [separated](../ci/caching/_index.md#cache-key-names) by branch protection status. |
 | `ci_restrict_pipeline_cancellation_role`           | string            | No       | Set the [role required to cancel a pipeline or job](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs). One of `developer`, `maintainer`, or `no_one`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429921) in GitLab 16.8. Premium and Ultimate only. |
-| `ci_pipeline_variables_minimum_override_role`      | string            | No       | When `restrict_user_defined_variables` is enabled, you can specify which role can override variables. One of `owner`, `maintainer`, `developer` or `no_one_allowed`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1. |
+| `ci_pipeline_variables_minimum_override_role`      | string            | No       | You can specify which role can override variables. One of `owner`, `maintainer`, `developer` or `no_one_allowed`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1. In GitLab 17.1 to 17.7, `restrict_user_defined_variables` must be enabled. |
 | `ci_push_repository_for_job_token_allowed`         | boolean           | No       | Enable or disable the ability to push to the project repository using job token. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389060) in GitLab 17.2. |
 | `container_expiration_policy_attributes`           | hash              | No       | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
 | `container_registry_enabled`                       | boolean           | No       | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
@@ -1729,7 +1729,7 @@ Supported general project attributes:
 | `only_mirror_protected_branches`                   | boolean           | No       | Only mirror protected branches. Premium and Ultimate only. |
 | `packages_enabled`                                 | boolean           | No       | Enable or disable packages repository feature. |
 | `path`                                             | string            | No       | Custom repository name for the project. By default generated based on name. |
-| `prevent_merge_without_jira_issue`                 | boolean           | No       | Set whether merge requests require an associated issue from Jira. Premium and Ultimate only. |
+| `prevent_merge_without_jira_issue`                 | boolean           | No       | Set whether merge requests require an associated issue from Jira. Ultimate only. |
 | `printing_merge_request_link_enabled`              | boolean           | No       | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                    | boolean           | No       | _(Deprecated)_ If `true`, jobs can be viewed by non-project members. Use `public_jobs` instead. |
 | `public_jobs`                                      | boolean           | No       | If `true`, jobs can be viewed by non-project members. |
@@ -1737,7 +1737,7 @@ Supported general project attributes:
 | `repository_storage`                               | string            | No       | Which storage shard the repository is on. _(administrators only)_ |
 | `request_access_enabled`                           | boolean           | No       | Allow users to request member access. |
 | `resolve_outdated_diff_discussions`                | boolean           | No       | Automatically resolve merge request diffs discussions on lines changed with a push. |
-| `restrict_user_defined_variables`                  | boolean           | No       | Allow only users with the Maintainer role to pass user-defined variables when triggering a pipeline. For example when the pipeline is triggered in the UI, with the API, or by a trigger token. |
+| `restrict_user_defined_variables`                  | boolean           | No       | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154510) in GitLab 17.7 in favour of `ci_pipeline_variables_minimum_override_role`)_ Allow only users with the Maintainer role to pass user-defined variables when triggering a pipeline. For example when the pipeline is triggered in the UI, with the API, or by a trigger token. |
 | `service_desk_enabled`                             | boolean           | No       | Enable or disable Service Desk feature. |
 | `shared_runners_enabled`                           | boolean           | No       | Enable instance runners for this project. |
 | `show_default_award_emojis`                        | boolean           | No       | Show default emoji reactions. |

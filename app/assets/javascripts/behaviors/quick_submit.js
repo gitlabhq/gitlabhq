@@ -58,7 +58,9 @@ const displayQuickSubmitTooltip = (event) => {
 export const initQuickSubmit = () => {
   const forms = Array.from(document.querySelectorAll('.js-quick-submit'));
   const buttons = Array.from(
-    document.querySelectorAll('.js-quick-submit :is(input[type=submit], button[type=submit])'),
+    document.querySelectorAll(
+      '.js-quick-submit input[type=submit], .js-quick-submit button[type=submit]',
+    ),
   );
 
   forms.forEach((form) => form.addEventListener('keydown', quickSubmit));

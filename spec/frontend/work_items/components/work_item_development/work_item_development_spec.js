@@ -15,7 +15,7 @@ import {
   workItemDevelopmentFragmentResponse,
   workItemDevelopmentMRNodes,
   workItemDevelopmentResponse,
-} from 'jest/work_items/mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 import WorkItemDevelopment from '~/work_items/components/work_item_development/work_item_development.vue';
 import WorkItemDevelopmentRelationshipList from '~/work_items/components/work_item_development/work_item_development_relationship_list.vue';

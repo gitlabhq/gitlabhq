@@ -17,18 +17,12 @@
   .pipeline-tags .label-container {
     white-space: normal;
   }
-
-  .dark-mode-override {
-    // stylelint-disable-next-line gitlab/no-gl-class
-    .gl-dark & {
-      background-color: $white;
-    }
-  }
 }
 
 // Pipeline mini graph
 .pipeline-mini-graph-stage-container {
-  // Temoorarily sets a max height for the dropdown
+  position: relative;
+  // Temporarily sets a max height for the dropdown
   // until GlDisclosureDropdown supports adding
   // a max-height value
   // see https://gitlab.com/gitlab-org/gitlab-ui/-/issues/3010
@@ -51,4 +45,9 @@
       width: 4px;
     }
   }
+}
+
+// Pipeline failed status
+.ci-job-component.ci-job-item-failed:not(:hover):not(:focus) > a {
+  @include ci-job-item-failed-status-bg;
 }

@@ -1,31 +1,23 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapMutations } from 'vuex';
 import { mapState } from 'pinia';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
-import * as types from '~/diffs/store/mutation_types';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
+import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 
 export default {
   name: 'FileBrowser',
   components: {
     DiffsFileTree,
   },
-  data() {
-    return {
-      visible: true,
-    };
-  },
   computed: {
+    ...mapState(useDiffsView, ['totalFilesCount']),
     ...mapState(useDiffsList, ['loadedFiles']),
+    ...mapState(useFileBrowser, ['fileBrowserVisible']),
   },
   methods: {
-    ...mapMutations('diffs', {
-      setCurrentDiffFile: types.SET_CURRENT_DIFF_FILE,
-    }),
     clickFile(file) {
       this.$emit('clickFile', file);
-      this.setCurrentDiffFile(file.fileHash);
     },
   },
 };
@@ -33,9 +25,10 @@ export default {
 
 <template>
   <diffs-file-tree
-    :visible="visible"
+    v-if="fileBrowserVisible"
+    floating-resize
     :loaded-files="loadedFiles"
-    @toggled="visible = !visible"
+    :total-files-count="totalFilesCount"
     @clickFile="clickFile"
   />
 </template>

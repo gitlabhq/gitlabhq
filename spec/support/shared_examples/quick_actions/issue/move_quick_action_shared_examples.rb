@@ -16,7 +16,7 @@ RSpec.shared_examples 'move quick action' do
       it 'moves the issue' do
         add_note("/move #{target_project.full_path}")
 
-        expect(page).to have_content "Moved this issue to #{target_project.full_path}."
+        expect(page).to have_content "Moved this item to #{target_project.full_path}."
         expect(issue.reload).to be_closed
 
         visit project_issue_path(target_project, issue)
@@ -31,7 +31,7 @@ RSpec.shared_examples 'move quick action' do
       it 'does not move the issue' do
         add_note("/move #{project_unauthorized.full_path}")
 
-        expect(page).to have_content "Moved this issue to #{project_unauthorized.full_path}."
+        expect(page).to have_content "Unable to move. Insufficient permissions"
         expect(issue.reload).to be_open
       end
     end
@@ -40,7 +40,7 @@ RSpec.shared_examples 'move quick action' do
       it 'does not move the issue' do
         add_note("/move not/valid")
 
-        expect(page).to have_content "Failed to move this issue because target project doesn't exist."
+        expect(page).to have_content "Unable to move. Target project or group doesn't exist or doesn't support this item type."
         expect(issue.reload).to be_open
       end
     end
@@ -58,7 +58,7 @@ RSpec.shared_examples 'move quick action' do
 
       shared_examples 'applies the commands to issues in both projects, target and source' do
         it "applies quick actions" do
-          expect(page).to have_content "Moved this issue to #{target_project.full_path}."
+          expect(page).to have_content "Moved this item to #{target_project.full_path}."
           expect(issue.reload).to be_closed
 
           visit project_issue_path(target_project, issue)

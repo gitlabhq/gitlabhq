@@ -75,7 +75,7 @@ module QA
         # Attachment option should be an absolute path
         def comment(text, attachment: nil, filter: :all_activities)
           method("select_#{filter}_filter").call
-          fill_editor_element 'comment-field', "#{text}\n"
+          fill_editor_element('comment-field', "#{text}\n")
 
           unless attachment.nil?
             QA::Page::Component::Dropzone.new(self, '.new-note')
@@ -83,7 +83,7 @@ module QA
           end
 
           has_active_element?('comment-button', wait: 0.5)
-          click_element 'comment-button'
+          click_element('comment-button')
         end
 
         def edit_comment(text)
@@ -165,14 +165,14 @@ module QA
         end
 
         def start_review_with_comment(text)
-          fill_editor_element 'comment-field', text
-          click_element 'start-review-button'
+          fill_editor_element('comment-field', text)
+          click_element('start-review-button')
           has_comment?(text)
         end
 
         def add_comment_to_review(text)
-          fill_editor_element 'comment-field', text
-          click_element 'add-to-review-button'
+          fill_editor_element('comment-field', text)
+          click_element('add-to-review-button')
           has_comment?(text)
         end
 
@@ -190,7 +190,7 @@ module QA
         def select_filter_with_text(text)
           retry_on_exception do
             click_element('issue-title')
-            click_element 'discussion-preferences-dropdown'
+            click_element('discussion-preferences-dropdown')
             find_element('filter-menu-item', text: text).click
 
             wait_for_requests

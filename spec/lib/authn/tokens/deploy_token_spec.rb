@@ -62,6 +62,32 @@ RSpec.describe Authn::Tokens::DeployToken, feature_category: :system_access do
           .to raise_error(::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Unsupported deploy token type')
       end
     end
+
+    context 'with custom instance prefix' do
+      let_it_be(:instance_prefix) { 'instance-prefix-' }
+      let(:valid_revocable) { create(:deploy_token) }
+      let(:plaintext) { valid_revocable.token }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_prefix)
+      end
+
+      it 'starts with the instance prefix' do
+        expect(plaintext).to start_with(instance_prefix)
+      end
+
+      it_behaves_like 'finding the valid revocable'
+
+      context 'with feature flag custom_prefix_for_all_token_types disabled' do
+        before do
+          stub_feature_flags(custom_prefix_for_all_token_types: false)
+        end
+
+        it 'starts with the default prefix' do
+          expect(plaintext).to start_with(DeployToken::DEPLOY_TOKEN_PREFIX)
+        end
+      end
+    end
   end
 
   it_behaves_like 'token handling with unsupported token type'

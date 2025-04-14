@@ -119,6 +119,7 @@ attribute. As a prerequisite, you must use an LDAP server that:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328074) in GitLab 16.9.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/514025) `reverse_issuer_and_subject` and `reverse_issuer_and_serial_number` formats in GitLab 17.11.
 
 {{< /history >}}
 
@@ -134,11 +135,16 @@ Use the following attributes to customize the field GitLab checks and the format
 | -------------------------- | ------------------------------------------------------------ |
 | `principal_name`           | `X509:<PN>alice@example.com`                                 |
 | `rfc822_name`              | `X509:<RFC822>bob@example.com`                               |
-| `issuer_and_subject`       | `X509:<I>DC=com,DC=example,CN=EXAMPLE-DC-CA<S>DC=com,DC=example,OU=UserAccounts,CN=cynthia` |
 | `subject`                  | `X509:<S>DC=com,DC=example,OU=UserAccounts,CN=dennis`        |
 | `issuer_and_serial_number` | `X509:<I>DC=com,DC=example,CN=CONTOSO-DC-CA<SR>1181914561`   |
+| `issuer_and_subject`       | `X509:<I>DC=com,DC=example,CN=EXAMPLE-DC-CA<S>DC=com,DC=example,OU=UserAccounts,CN=cynthia` |
+| `reverse_issuer_and_serial_number` | `X509:<I>CN=CONTOSO-DC-CA,DC=example,DC=com<SR>1181914561`   |
+| `reverse_issuer_and_subject`   | `X509:<I>CN=EXAMPLE-DC-CA,DC=example,DC=com<S>DC=com,DC=example,OU=UserAccounts,CN=cynthia` |
 
 For `issuer_and_serial_number`, the `<SR>` portion is in reverse-byte-order, with the least-significant byte first. For more information, see [how to map a user to a certificate using the altSecurityIdentities attribute](https://learn.microsoft.com/en-us/archive/blogs/spatdsg/howto-map-a-user-to-a-certificate-via-all-the-methods-available-in-the-altsecurityidentities-attribute).
+
+The reverse issuer formats sort the issuer string from the smallest unit to the largest. Some 
+Active Directory servers store certificates in this format.
 
 {{< alert type="note" >}}
 

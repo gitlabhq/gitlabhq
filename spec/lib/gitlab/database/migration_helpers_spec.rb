@@ -1856,10 +1856,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
           .with(:vulnerability_occurrences,
             %w[tmp_undo_cleanup_column_8cbf300838],
             {
-             unique: true,
-             name: 'idx_copy_191a1af1a0',
-             length: [],
-             order: []
+              unique: true,
+              name: 'idx_copy_191a1af1a0',
+              length: [],
+              order: []
             })
 
         model.copy_indexes(:vulnerability_occurrences, :uuid, :tmp_undo_cleanup_column_8cbf300838)
@@ -1885,10 +1885,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
           .with(:issues,
             %w[gl_project_id],
             {
-             unique: false,
-             name: 'index_on_issues_gl_project_id',
-             length: [],
-             order: []
+              unique: false,
+              name: 'index_on_issues_gl_project_id',
+              length: [],
+              order: []
             })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
@@ -1914,10 +1914,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
           .with(:issues,
             %w[gl_project_id foobar],
             {
-             unique: false,
-             name: 'index_on_issues_gl_project_id_foobar',
-             length: [],
-             order: []
+              unique: false,
+              name: 'index_on_issues_gl_project_id_foobar',
+              length: [],
+              order: []
             })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
@@ -1943,11 +1943,11 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
           .with(:issues,
             %w[gl_project_id],
             {
-             unique: false,
-             name: 'index_on_issues_gl_project_id',
-             length: [],
-             order: [],
-             where: 'foo'
+              unique: false,
+              name: 'index_on_issues_gl_project_id',
+              length: [],
+              order: [],
+              where: 'foo'
             })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
@@ -1973,11 +1973,11 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
           .with(:issues,
             %w[gl_project_id],
             {
-             unique: false,
-             name: 'index_on_issues_gl_project_id',
-             length: [],
-             order: [],
-             using: 'foo'
+              unique: false,
+              name: 'index_on_issues_gl_project_id',
+              length: [],
+              order: [],
+              using: 'foo'
             })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
@@ -2003,11 +2003,11 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
           .with(:issues,
             %w[gl_project_id],
             {
-             unique: false,
-             name: 'index_on_issues_gl_project_id',
-             length: [],
-             order: [],
-             opclass: { 'gl_project_id' => 'bar' }
+              unique: false,
+              name: 'index_on_issues_gl_project_id',
+              length: [],
+              order: [],
+              opclass: { 'gl_project_id' => 'bar' }
             })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
@@ -2035,12 +2035,12 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
           .with(:issues,
             %w[gl_project_id foobar],
             {
-             unique: false,
-             name: 'index_on_issues_gl_project_id_foobar',
-             length: [],
-             order: [],
-             opclass: { 'gl_project_id' => 'bar', 'foobar' => :gin_trgm_ops },
-             using: :gin
+              unique: false,
+              name: 'index_on_issues_gl_project_id_foobar',
+              length: [],
+              order: [],
+              opclass: { 'gl_project_id' => 'bar', 'foobar' => :gin_trgm_ops },
+              using: :gin
             })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
@@ -2068,12 +2068,12 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
           .with(:issues,
             %w[gl_project_id foobar],
             {
-             unique: false,
-             name: 'index_on_issues_gl_project_id_foobar',
-             length: [],
-             order: [],
-             opclass: { 'foobar' => :gin_trgm_ops },
-             using: :gin
+              unique: false,
+              name: 'index_on_issues_gl_project_id_foobar',
+              length: [],
+              order: [],
+              opclass: { 'foobar' => :gin_trgm_ops },
+              using: :gin
             })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Clusters
   class KnativeServicesFinder
     include ReactiveCaching

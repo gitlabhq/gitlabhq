@@ -22,6 +22,10 @@ module QA
               element 'add-issue-field'
             end
 
+            base.view 'app/assets/javascripts/vue_shared/components/markdown/markdown_editor.vue' do
+              element 'markdown-editor-form-field'
+            end
+
             base.view 'app/assets/javascripts/vue_shared/issuable/show/components/issuable_header.vue' do
               element 'issue-author'
             end

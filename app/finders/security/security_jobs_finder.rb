@@ -13,18 +13,7 @@
 module Security
   class SecurityJobsFinder < JobsFinder
     def self.allowed_job_types
-      [
-        :sast,
-        :sast_advanced,
-        :sast_iac,
-        :dast,
-        :dependency_scanning,
-        :container_scanning,
-        :secret_detection,
-        :coverage_fuzzing,
-        :api_fuzzing,
-        :cluster_image_scanning
-      ]
+      Enums::Security.analyzer_types.keys
     end
   end
 end

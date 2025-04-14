@@ -138,6 +138,8 @@ module Gitlab
           transaction = Gitlab::Metrics::BackgroundTransaction.new
           transaction.run { yield }
           @job_succeeded = true
+        rescue Gitlab::SidekiqMiddleware::RetryError => e
+          raise
         ensure
           monotonic_time_end = Gitlab::Metrics::System.monotonic_time
           job_thread_cputime_end = get_thread_cputime
@@ -170,7 +172,7 @@ module Gitlab
           end
 
           @sli_labels = labels.slice(*SIDEKIQ_SLI_LABELS)
-          record_execution_sli
+          record_execution_sli unless e.is_a?(Gitlab::SidekiqMiddleware::RetryError)
           record_queueing_sli
           record_db_txn_sli if Feature.enabled?(:emit_db_transaction_sli_metrics, type: :ops)
         end

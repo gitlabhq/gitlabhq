@@ -17,8 +17,8 @@
 
     To migrate:
 
-    1. Check your S3 storage backend configuration in the GitLab container registry settings.
-    1. Remove the `v4auth: false` option if it's set.
+    1. Check your [S3 storage backend configuration in the GitLab container registry settings](https://docs.gitlab.com/administration/packages/container_registry/#use-object-storage).
+    1. If `v4auth` is set to `false`, remove the option.
     1. Verify your existing credentials work with v4 authentication.
 
     If you encounter any issues after making these changes, try regenerating your AWS credentials.

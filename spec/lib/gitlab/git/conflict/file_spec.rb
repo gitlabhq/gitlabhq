@@ -18,12 +18,12 @@ RSpec.describe Gitlab::Git::Conflict::File do
     context 'when the content can be converted to UTF-8' do
       it 'sets lines to the lines' do
         expect(valid_content.lines).to eq([{
-                                             full_line: 'España',
-                                             type: nil,
-                                             line_obj_index: 0,
-                                             line_old: 1,
-                                             line_new: 1
-                                           }])
+          full_line: 'España',
+          type: nil,
+          line_obj_index: 0,
+          line_old: 1,
+          line_new: 1
+        }])
       end
 
       it 'sets the type to text' do

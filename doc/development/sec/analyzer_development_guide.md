@@ -77,6 +77,36 @@ go build -o analyzer
 ./analyzer convert test/fixtures/app/spotbugsXml.Xml > ./gl-sast-report.json
 ```
 
+### Secure stage CI/CD Templates and components
+
+The secure stage is responsible for maintaining the following CI/CD Templates and Components:
+
+- [Composition Analysis](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/composition-analysis)
+  - CI/CD Templates
+    - [`Dependency-Scanning.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml)
+    - [`Dependency-Scanning.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.latest.gitlab-ci.yml)
+    - [`Container-Scanning.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.gitlab-ci.yml)
+    - [`Container-Scanning.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.latest.gitlab-ci.yml)
+  - CI/CD Components
+    - [Dependency Scanning](https://gitlab.com/components/dependency-scanning/-/blob/main/templates/main/template.yml)
+    - [Container Scanning](https://gitlab.com/components/container-scanning/-/blob/main/templates/container-scanning.yml)
+- [Static Analysis (SAST)](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/static-analysis)
+  - CI/CD Templates
+    - [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
+    - [`SAST.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml)
+    - [`SAST-IaC.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.gitlab-ci.yml)
+    - [`SAST-IaC.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.latest.gitlab-ci.yml#L1-1)
+  - CI/CD Components
+    - [SAST](https://gitlab.com/components/sast/-/blob/main/templates/sast.yml)
+- [Secret Detection](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/secret-detection)
+  - CI/CD Templates
+    - [`Secret-Detection.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml)
+    - [`Secret-Detection.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.latest.gitlab-ci.yml)
+  - CI/CD Components
+    - [Secret Detection](https://gitlab.com/components/secret-detection/-/blob/main/templates/secret-detection.yml)
+
+Changes must always be made to both the CI/CD template _and_ component for your group, and you must also determine if the changes need to be applied to the _latest_ CI/CD template.
+
 ### Execution criteria
 
 [Enabling SAST](../../user/application_security/sast/_index.md#configure-sast-in-your-cicd-yaml) requires including a pre-defined [template](https://gitlab.com/gitlab-org/gitlab/-/blob/ee4d473eb9a39f2f84b719aa0ca13d2b8e11dc7e/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) to your GitLab CI/CD configuration.
@@ -128,6 +158,28 @@ To use Docker with `replace` in the `go.mod` file:
 1. Add a copy statement in the analyzer's `Dockerfile`: `COPY command /command`.
 1. Update the `replace` statement to make sure it matches the destination of the `COPY` statement in the step above:
    `replace gitlab.com/gitlab-org/security-products/analyzers/command/v3 => /command`
+
+### Testing container orchestration compatibility
+
+Users may use tools other than Docker to orchestrate their containers and run their analyzers,
+such as [containerd](https://containerd.io/), [Podman](https://podman.io/), or [skopeo](https://github.com/containers/skopeo).
+To ensure compatibility with these tools, we [periodicically test](https://gitlab.com/gitlab-org/security-products/tests/analyzer-containerization-support/-/blob/main/.gitlab-ci.yml?ref_type=heads)
+all analyzers using a scheduled pipeline. A Slack alert is raised if a test fails.
+
+To avoid compatibility issues when building analyzer Docker images, use the [OCI media types](https://docs.docker.com/build/exporters/#oci-media-types) instead of the default proprietary Docker media types.
+
+In addition to the periodic test, we ensure compatibility for users of the [`ci-templates` repo](https://gitlab.com/gitlab-org/security-products/ci-templates):
+
+1. Analyzers using the [`ci-templates` `docker-test.yml` template](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/master/includes-dev/docker-test.yml)
+include [`tests`](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/08319f7586fd9cc66f58ca894525ab54a2b7d831/includes-dev/docker-test.yml#L155-179) to ensure our Docker images function correctly with supported Docker tools.
+
+   These tests are executed in Merge Request pipelines and scheduled pipelines, and prevent images from being released if they break the supported Docker tools.
+1. The [`ci-templates` `docker.yml` template](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/master/includes-dev/docker.yml)
+specifies [`oci-mediatypes=true`](https://docs.docker.com/build/exporters/#oci-media-types) for the `docker buildx` command when building analyzer images.
+This builds images using [OCI](https://opencontainers.org/) media types rather than Docker proprietary media types.
+
+When creating a new analyzer, or changing the location of existing analyzer images,
+add it to the periodic test, or consider using the shared [`ci-templates`](https://gitlab.com/gitlab-org/security-products/ci-templates/) which includes an automated test.
 
 ## Analyzer scripts
 
@@ -295,6 +347,111 @@ To backport a critical fix or patch to an earlier version, follow the steps belo
 1. If not, you have to follow the [manual release process](#manual-release-process) to release a new version.
 1. NOTE: the release pipeline will override the latest `edge` tag so the most recent release pipeline's `tag edge` job may need to be re-ran to avoid a regression for that tag.
 
+### Preparing analyzers for a major version release
+
+This process applies to the following groups:
+
+- [Composition Analysis](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/composition-analysis)
+- [Static Analysis (SAST)](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/static-analysis)
+- [Secret Detection](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/secret-detection)
+
+Other groups are reponsible for documenting their own major version release process.
+
+Choose one of the following scenarios based on whether the major version release contains breaking changes:
+
+1. [Major version release without breaking changes](#major-version-release-without-breaking-changes)
+1. [Major version release with breaking changes](#major-version-release-with-breaking-changes)
+
+#### Major version release without breaking changes
+
+Assuming the current analyzer release is `v{N}`:
+
+1. [Configure protected tags and branches](#configure-protected-tags-and-branches).
+1. When the milestone of the major release is almost complete, and there are no more changes to be merged into the `default` branch:
+   1. Create a `v{N}` branch from the `default` branch.
+   1. Create and merge a new Merge Request in the `default` branch containing only the following change to the `CHANGELOG.md` file:
+
+      ```markdown
+      ## v{N+1}.0.0
+      - Major version release (!<MR-ID>)
+      ```
+
+   1. [Configure scheduled pipelines](#configure-scheduled-pipelines).
+   1. [Bump major analyzer versions in the CI/CD templates and components](#bump-major-analyzer-versions-in-the-cicd-templates-and-components)
+
+#### Major version release with breaking changes
+
+Assuming the current analyzer release is `v{N}`:
+
+1. [Configure protected tags and branches](#configure-protected-tags-and-branches).
+1. Create a new branch `v{N+1}` to "stage" breaking changes.
+1. In the milestones leading up to the major release milestone:
+   - Merge non-breaking changes to the `default` branch (aka `master` or `main`)
+   - Merge breaking changes to the `v{N+1}` branch, and create a separate `release candidate` entry in the `CHANGELOG.md` file for each change:
+
+      ```markdown
+      ## v{N+1}.0.0-rc.0
+      - some breaking change (!123)
+      ```
+
+      Using `release candidates` allows us to release **all breaking changes in a single major version bump**, which follows the [semver guidance](https://semver.org) of only making breaking changes in a major version update.
+
+1. When the milestone of the major release is almost complete, and there are no more changes to be merged into the `default` or `v{N+1}` branches:
+   1. Create a `v{N}` branch from the `default` branch.
+   1. Create a Merge Request in the `v{N+1}` branch to squash all the `release candidate` changelog entries into a single entry for `v{N+1}`.
+
+      For example, if the `CHANGELOG.md` contains the following 3 `release candidate` entries for version `v{N+1}`:
+
+      ```markdown
+      ## v{N+1}.0.0-rc.2
+      - yet another breaking change (!125)
+
+      ## v{N+1}.0.0-rc.1
+      - another breaking change (!124)
+
+      ## v{N+1}.0.0-rc.0
+      - some breaking change (!123)
+      ```
+
+      Then the new Merge Request should update the `CHANGELOG.md` to have a single major release for `v{N+1}`, by combining all the `release candidate` entries into a single entry:
+
+      ```markdown
+      ## v{N+1}.0.0
+      - yet another breaking change (!125)
+      - another breaking change (!124)
+      - some breaking change (!123)
+      ```
+
+   1. Create a Merge Request to merge all the breaking changes from the `v{N+1}` branch into the `default` branch.
+   1. Delete the `v{N+1}` branch, since it's no longer needed, as the `default` branch now contains all the changes from the `v{N+1}` branch.
+   1. [Configure scheduled pipelines](#configure-scheduled-pipelines).
+   1. [Bump major analyzer versions in the CI/CD templates and components](#bump-major-analyzer-versions-in-the-cicd-templates-and-components).
+
+##### Configure protected tags and branches
+
+1. Ensure the wildcard `v*` is set as both a [Protected Tag](../../user/project/protected_tags.md) and [Protected Branch](../../user/project/repository/branches/protected.md) for the project.
+1. Verify the [gl-service-dev-secure-analyzers-automation](https://gitlab.com/gl-service-dev-secure-analyzers-automation) service account is `Allowed to create` protected tags.
+
+   See step `3.1` of the [Officially supported images](#officially-supported-images) section for more details.
+
+##### Configure scheduled pipelines
+
+1. Ensure three scheduled pipelines exist, creating them if necessary, and set `PUBLISH_IMAGES: true` for all of them:
+   - `Republish images v{N}` (against the `v{N}` branch)
+
+      This scheduled pipeline needs to be created
+   - `Daily build` (against the `default` branch)
+
+      This scheduled pipeline should already exist
+   - `Republish images v{N-1}` (against the `v{N-1}` branch)
+
+      This scheduled pipeline should already exist
+1. Delete the scheduled pipeline for the `v{N-2}` branch (if it exists), since we only support [two previous major versions](https://about.gitlab.com/support/statement-of-support/#version-support).
+
+##### Bump major analyzer versions in the CI/CD templates and components
+
+When images for all the `v{N+1}` analyzers are available under `registry.gitlab.com/security-products/<ANALYZER-NAME>:<TAG>`, create a new merge request to bump the major version for each analyzer in the [Secure stage CI/CD templates and components](#secure-stage-cicd-templates-and-components) belonging to your group.
+
 ## Development of new analyzers
 
 We occasionally need to build out new analyzer projects to support new frameworks and tools.
@@ -313,10 +470,17 @@ Verify whether the underlying tool has:
 - Bundle-able dependencies to be packaged as a Docker image, to be executed using GitLab Runner's [Linux or Windows Docker executor](https://docs.gitlab.com/runner/executors/docker.html).
 - Compatible projects that can be detected based on filenames or extensions.
 - Offline execution (no internet access) or can be configured to use custom proxies and/or CA certificates.
+- The image is compatible with other container orchestration tools (see [testing container orchestration compatibility](#testing-container-orchestration-compatibility)).
 
 #### Dockerfile
 
-The `Dockerfile` should use an unprivileged user with the name `GitLab`. The reason this is necessary is to provide compatibility with Red Hat OpenShift instances, which don't allow containers to run as an admin (root) user. There are certain limitations to keep in mind when running a container as an unprivileged user, such as the fact that any files that need to be written on the Docker filesystem will require the appropriate permissions for the `GitLab` user. Please see the following merge request for more details: [Use GitLab user instead of root in Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/merge_requests/130).
+The `Dockerfile` should use an unprivileged user with the name `GitLab`.
+This is necessary to provide compatibility with Red Hat OpenShift instances,
+which don't allow containers to run as an admin (root) user.
+There are certain limitations to keep in mind when running a container as an unprivileged user,
+such as the fact that any files that need to be written on the Docker filesystem will require the appropriate permissions for the `GitLab` user.
+Please see the following merge request for more details:
+[Use GitLab user instead of root in Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/merge_requests/130).
 
 #### Minimal vulnerability data
 
@@ -435,23 +599,31 @@ In order to push images to this location:
          - `Analytics`, `Requirements`, `Security and compliance`, `Wiki`, `Snippets`, `Package registry`, `Model experiments`, `Model registry`, `Pages`, `Monitor`, `Environments`, `Feature flags`, `Infrastructure`, `Releases`, `GitLab Duo`
             - `Disabled`
 
-1. Configure the following [`CI/CD` environment variables](../../ci/variables/_index.md) for the _analyzer project_, located at `https://gitlab.com/gitlab-org/security-products/analyzers/<ANALYZER_NAME>`:
+1. Configure the following options for the _analyzer project_, located at `https://gitlab.com/gitlab-org/security-products/analyzers/<ANALYZER_NAME>`:
 
-   {{< alert type="note" >}}
+   1. Add the wildcard `v*` as a [Protected Tag](../../user/project/protected_tags.md).
 
-   It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the `SEC_REGISTRY_PASSWORD` variable.
+      Ensure the [gl-service-dev-secure-analyzers-automation](https://gitlab.com/gl-service-dev-secure-analyzers-automation) service account has been explicitly added to the list of accounts `Allowed to create` protected tags. This is required to allow the [`upsert git tag`](https://gitlab.com/gitlab-org/security-products/ci-templates/blob/2a3519d/includes-dev/upsert-git-tag.yml#L35-44) job to create new releases for the analyzer project.
 
-   {{< /alert >}}
+   1. Add the wildcard `v*` as a [Protected Branch](../../user/project/repository/branches/protected.md).
 
-   | Key                     | Value                                                                       |
-   |-------------------------|-----------------------------------------------------------------------------|
-   | `SEC_REGISTRY_IMAGE`    | `registry.gitlab.com/security-products/$CI_PROJECT_NAME`                    |
-   | `SEC_REGISTRY_USER`     | `gl-service-dev-secure-analyzers-automation`                                |
-   | `SEC_REGISTRY_PASSWORD` | Personal Access Token for `gl-service-dev-secure-analyzers-automation` user. Request an [administrator](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/29538#admin-users) to configure this token value. |
+   1. [`CI/CD` environment variables](../../ci/variables/_index.md)
 
-   The above variables are used by the [tag_image.sh](https://gitlab.com/gitlab-org/security-products/ci-templates/blob/a784f5d/scripts/tag_image.sh#L21-26) script in the `ci-templates` project to push the container image to `registry.gitlab.com/security-products/<ANALYZER-NAME>:<TAG>`.
+      {{< alert type="note" >}}
 
-   See the [semgrep CI/CD Variables](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/settings/ci_cd#js-cicd-variables-settings) for an example.
+      It's crucial to [mask and hide](../../ci/variables/_index.md#hide-a-cicd-variable) the `SEC_REGISTRY_PASSWORD` variable.
+
+      {{< /alert >}}
+
+      | Key                     | Value                                                                       |
+      |-------------------------|-----------------------------------------------------------------------------|
+      | `SEC_REGISTRY_IMAGE`    | `registry.gitlab.com/security-products/$CI_PROJECT_NAME`                    |
+      | `SEC_REGISTRY_USER`     | `gl-service-dev-secure-analyzers-automation`                                |
+      | `SEC_REGISTRY_PASSWORD` | Personal Access Token for `gl-service-dev-secure-analyzers-automation` user. Request an [administrator](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/29538#admin-users) to configure this token value. |
+
+      The above variables are used by the [tag_image.sh](https://gitlab.com/gitlab-org/security-products/ci-templates/blob/a784f5d/scripts/tag_image.sh#L21-26) script in the `ci-templates` project to push the container image to `registry.gitlab.com/security-products/<ANALYZER-NAME>:<TAG>`.
+
+      See the [semgrep CI/CD Variables](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/settings/ci_cd#js-cicd-variables-settings) for an example.
 
 #### Temporary development images
 
@@ -493,7 +665,7 @@ This process only applies to the images used in versions of GitLab matching the 
 - the `MAJOR` image tag (e.g.: `4`)
 - the `latest` image tag
 
-The implementation of the rebuild process may vary [depending on the project](../../user/application_security/_index.md#vulnerability-scanner-maintenance), though a shared CI configuration is available in our [development ci-templates project](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/master/includes-dev/docker.yml) to help achieving this.
+The implementation of the rebuild process may vary [depending on the project](../../user/application_security/detect/vulnerability_scanner_maintenance.md), though a shared CI configuration is available in our [development ci-templates project](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/master/includes-dev/docker.yml) to help achieving this.
 
 ## Adding new language support to GitLab Advanced SAST (GLAS)
 
@@ -619,7 +791,7 @@ To create a new Git tag to rebuild the analyzer, follow these steps:
 
 This should be done on the **18th of each month**. Though, this is a soft deadline and there is no harm in doing it within a few days after.
 
-First, create an new issue for a release with a script from this repo: `./scripts/release_issue.rb MAJOR.MINOR`.
+First, create a new issue for a release with a script from this repo: `./scripts/release_issue.rb MAJOR.MINOR`.
 This issue will guide you through the whole release process. In general, you have to perform the following tasks:
 
 - Check the list of supported technologies in GitLab documentation.

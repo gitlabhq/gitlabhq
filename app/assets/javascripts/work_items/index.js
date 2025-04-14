@@ -8,6 +8,7 @@ import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
+import { ISSUE_WIT_FEEDBACK_BADGE } from '~/work_items/constants';
 import App from './components/app.vue';
 import WorkItemBreadcrumb from './components/work_item_breadcrumb.vue';
 import activeDiscussionQuery from './components/design_management/graphql/client/active_design_discussion.query.graphql';
@@ -58,6 +59,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     canCreateProjects,
     newProjectPath,
     hasIssueDateFilterFeature,
+    timeTrackingLimitToHours,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
@@ -86,10 +88,23 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     },
   });
 
-  if (workItemType === 'issue' && gon.features.workItemsViewPreference && !isGroup) {
+  let feedback = {};
+
+  if (gon.features.workItemViewForIssues) {
+    feedback = {
+      ...ISSUE_WIT_FEEDBACK_BADGE,
+    };
+  }
+
+  if (
+    workItemType === 'issue' &&
+    gon.features.workItemsViewPreference &&
+    !isGroup &&
+    !gon.features.useWiViewForIssues
+  ) {
     import(/* webpackChunkName: 'work_items_feedback' */ '~/work_items_feedback')
       .then(({ initWorkItemsFeedback }) => {
-        initWorkItemsFeedback();
+        initWorkItemsFeedback(feedback);
       })
       .catch({});
   }
@@ -133,6 +148,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       newIssuePath: '',
       newProjectPath,
       hasIssueDateFilterFeature: parseBoolean(hasIssueDateFilterFeature),
+      timeTrackingLimitToHours: parseBoolean(timeTrackingLimitToHours),
     },
     mounted() {
       performanceMarkAndMeasure({

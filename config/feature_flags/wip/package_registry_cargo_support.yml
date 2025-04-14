@@ -1,0 +1,9 @@
+---
+name: package_registry_cargo_support
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/33060
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181281
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/525330
+milestone: '17.11'
+group: group::package registry
+type: wip
+default_enabled: false

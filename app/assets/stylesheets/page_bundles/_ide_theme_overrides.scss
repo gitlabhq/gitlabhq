@@ -60,17 +60,17 @@
       &,
       .badge.badge-pill {
         color: var(--ide-text-color, $black);
-        border-color: var(--ide-input-border, $gray-200);
+        border-color: var(--ide-input-border, var(--gl-border-color-strong));
       }
     }
   }
 
   .drag-handle:hover {
-    background-color: var(--ide-dropdown-hover-background, $gray-50);
+    background-color: var(--ide-dropdown-hover-background, var(--gl-background-color-strong));
   }
 
   .card-header {
-    background-color: var(--ide-background, $white);
+    background-color: var(--ide-background, var(--gl-background-color-default));
 
     .badge.badge-pill {
       background-color: var(--ide-dropdown-hover-background, $badge-bg);
@@ -97,12 +97,12 @@
   }
 
   code {
-    background-color: var(--ide-background, $gray-100);
+    background-color: var(--ide-background, var(--gl-background-color-strong));
   }
 
   .ide-pipeline .top-bar,
   .ide-terminal .top-bar {
-    background-color: var(--ide-background, $gray-10);
+    background-color: var(--ide-background, var(--gl-background-color-subtle));
   }
 
   .common-note-form .md-area {
@@ -110,13 +110,13 @@
   }
 
   .md table:not(.code) tr th {
-    background-color: var(--ide-highlight-background, $gray-100);
+    background-color: var(--ide-highlight-background, var(--gl-background-color-strong));
   }
 
   &,
   .card,
   .common-note-form .md-area {
-    background-color: var(--ide-highlight-background, $white);
+    background-color: var(--ide-highlight-background, var(--gl-background-color-default));
   }
 
   .card,
@@ -142,7 +142,7 @@
   }
 
   pre {
-    border-color: var(--ide-border-color-alt, $gray-100);
+    border-color: var(--ide-border-color-alt, var(--gl-border-color-default));
 
     code {
       background-color: var(--ide-empty-state-background, inherit);
@@ -179,7 +179,7 @@
       &,
       .avatar {
         color: var(--ide-text-color, var(--gl-text-color-default));
-        background-color: var(--ide-highlight-background, $white);
+        background-color: var(--ide-highlight-background, var(--gl-background-color-default));
         border-color: var(--ide-highlight-background, var(--gl-avatar-border-color-default));
       }
     }
@@ -189,7 +189,7 @@
   input[type='search'],
   .filtered-search-box {
     border-color: var(--ide-input-border, var(--gl-border-color-default));
-    background: var(--ide-input-background, $white) !important;
+    background: var(--ide-input-background, var(--gl-background-color-default)) !important;
   }
 
   input[type='text']:not([disabled]):not([readonly]):focus,
@@ -212,11 +212,11 @@
 
   .filtered-search-token .value-container,
   .filtered-search-term .value-container {
-    background-color: var(--ide-dropdown-hover-background, $gray-50);
+    background-color: var(--ide-dropdown-hover-background, var(--gl-background-color-strong));
     color: var(--ide-text-color, var(--gl-text-color-default));
 
     &:hover {
-      background-color: var(--ide-input-border, $gray-100);
+      background-color: var(--ide-input-border, var(--gl-border-color-default));
     }
   }
 
@@ -245,25 +245,25 @@
   }
 
   .dropdown-menu-toggle {
-    border-color: var(--ide-btn-default-border, $gray-200);
+    border-color: var(--ide-btn-default-border, var(--gl-border-color-strong));
     background-color: var(--ide-input-background, transparent);
 
     &:hover,
     &:focus {
-      background-color: var(--ide-dropdown-btn-hover-background, $gray-50) !important;
-      border-color: var(--ide-dropdown-btn-hover-border, $gray-200) !important;
+      background-color: var(--ide-dropdown-btn-hover-background, var(--gl-background-color-strong)) !important;
+      border-color: var(--ide-dropdown-btn-hover-border, var(--gl-border-color-strong)) !important;
     }
   }
 
   // todo: remove this block after all default buttons have been migrated to gl-button
   .btn-default:not(.gl-button) {
-    background-color: var(--ide-btn-default-background, $white) !important;
+    background-color: var(--ide-btn-default-background, var(--gl-background-color-default)) !important;
     border-color: var(--ide-btn-default-border, var(--gl-border-color-default));
 
     &:hover,
     &:focus {
       border-color: var(--ide-btn-default-hover-border, var(--gl-border-color-default)) !important;
-      background-color: var(--ide-btn-default-background, $gray-50) !important;
+      background-color: var(--ide-btn-default-background, var(--gl-background-color-strong)) !important;
     }
 
     &:active,
@@ -276,21 +276,21 @@
   .dropdown-menu {
     color: var(--ide-text-color, var(--gl-text-color-default));
     border-color: var(--ide-background, var(--gl-border-color-default));
-    background-color: var(--ide-dropdown-background, $white);
+    background-color: var(--ide-dropdown-background, var(--gl-background-color-default));
 
     .nav-links {
-      background-color: var(--ide-dropdown-hover-background, $white);
+      background-color: var(--ide-dropdown-hover-background, var(--gl-background-color-default));
       border-color: var(--ide-dropdown-hover-background, var(--gl-border-color-default));
     }
 
     .gl-tabs-nav {
-      background-color: var(--ide-dropdown-hover-background, $white);
+      background-color: var(--ide-dropdown-hover-background, var(--gl-background-color-default));
       box-shadow: inset 0 -2px 0 0 var(--ide-dropdown-hover-background, var(--gl-border-color-default));
     }
 
     .divider {
-      background-color: var(--ide-dropdown-hover-background, $gray-100);
-      border-color: var(--ide-dropdown-hover-background, $gray-100);
+      background-color: var(--ide-dropdown-hover-background, var(--gl-border-color-default));
+      border-color: var(--ide-dropdown-hover-background, var(--gl-border-color-default));
     }
 
     li > a:not(.disable-hover):hover,
@@ -298,37 +298,37 @@
     li button:not(.disable-hover):hover,
     li button:not(.disable-hover):focus,
     li button.is-focused {
-      background-color: var(--ide-dropdown-hover-background, $gray-50);
+      background-color: var(--ide-dropdown-hover-background, var(--gl-background-color-strong));
       color: var(--ide-text-color, var(--gl-text-color-default));
     }
   }
 
   .dropdown-title,
   .dropdown-input {
-    border-color: var(--ide-dropdown-hover-background, $gray-100) !important;
+    border-color: var(--ide-dropdown-hover-background, var(--gl-border-color-default)) !important;
   }
 
   // todo: remove this block after all disabled buttons have been migrated to gl-button
   .btn[disabled]:not(.gl-button) {
-    background-color: var(--ide-btn-default-background, $gray-10) !important;
-    border: 1px solid var(--ide-btn-disabled-border, $gray-100) !important;
+    background-color: var(--ide-btn-default-background, var(--gl-background-color-subtle)) !important;
+    border: 1px solid var(--ide-btn-disabled-border, var(--gl-border-color-default)) !important;
     color: var(--ide-btn-disabled-color, var(--gl-text-color-disabled)) !important;
   }
 
   .md table:not(.code) tbody {
-    background-color: var(--ide-empty-state-background, $white);
+    background-color: var(--ide-empty-state-background, var(--gl-background-color-default));
   }
 
   .animation-container {
     [class^='skeleton-line-'] {
-      background-color: var(--ide-animation-gradient-1, $gray-100);
+      background-color: var(--ide-animation-gradient-1, var(--gl-border-color-default));
 
       &::after {
         background-image: linear-gradient(to right,
-        var(--ide-animation-gradient-1, $gray-100) 0%,
-        var(--ide-animation-gradient-2, $gray-10) 20%,
-        var(--ide-animation-gradient-1, $gray-100) 40%,
-        var(--ide-animation-gradient-1, $gray-100) 100%);
+        var(--ide-animation-gradient-1, var(--gl-border-color-default)) 0%,
+        var(--ide-animation-gradient-2, var(--gl-background-color-subtle)) 20%,
+        var(--ide-animation-gradient-1, var(--gl-border-color-default)) 40%,
+        var(--ide-animation-gradient-1, var(--gl-border-color-default)) 100%);
       }
     }
   }

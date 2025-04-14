@@ -166,6 +166,7 @@ module API
       end
       optional :restricted_visibility_levels, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Selected levels cannot be used by non-admin users for groups, projects or snippets. If the public level is restricted, user profiles are only visible to logged in users.'
       optional :session_expire_delay, type: Integer, desc: 'Session duration in minutes. GitLab restart is required to apply changes.'
+      optional :session_expire_from_init, type: Boolean, desc: 'Expires sessions based off the creation date rather than last activity'
       optional :shared_runners_enabled, type: Boolean, desc: 'Enable shared runners for new projects'
       given shared_runners_enabled: ->(val) { val } do
         requires :shared_runners_text, type: String, desc: 'Shared runners text '
@@ -226,6 +227,7 @@ module API
       optional :concurrent_bitbucket_server_import_jobs_limit, type: Integer, desc: 'Bitbucket Server Importer maximum number of simultaneous import jobs'
       optional :allow_runner_registration_token, type: Boolean, desc: 'Allow registering runners using a registration token'
       optional :ci_max_includes, type: Integer, desc: 'Maximum number of includes per pipeline'
+      optional :ci_job_live_trace_enabled, type: Boolean, desc: 'Turn on incremental logging for job logs.'
       optional :security_policy_global_group_approvers_enabled, type: Boolean, desc: 'Query scan result policy approval groups globally'
       optional :slack_app_enabled, type: Grape::API::Boolean, desc: 'Enable the GitLab for Slack app'
       given slack_app_enabled: ->(val) { val } do

@@ -253,6 +253,7 @@ export default {
     :work-item-iid="workItemIid"
     :is-resolving="isResolving"
     :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
+    :is-group-work-item="isGroupWorkItem"
     @startEditing="$emit('startEditing')"
     @resolve="resolveDiscussion"
     @startReplying="showReplyForm"
@@ -267,7 +268,7 @@ export default {
         <div class="discussion-body">
           <div class="discussion-wrapper">
             <div class="discussion-notes">
-              <ul class="notes">
+              <ul class="notes" data-testid="note-container">
                 <work-item-note
                   is-first-note
                   :note="note"
@@ -288,6 +289,7 @@ export default {
                   :is-discussion-resolvable="isDiscussionResolvable"
                   :is-resolving="isResolving"
                   :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
+                  :is-group-work-item="isGroupWorkItem"
                   @startReplying="showReplyForm"
                   @startEditing="$emit('startEditing')"
                   @deleteNote="$emit('deleteNote', note)"
@@ -323,6 +325,7 @@ export default {
                         :is-discussion-resolvable="isDiscussionResolvable"
                         :is-resolving="isResolving"
                         :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
+                        :is-group-work-item="isGroupWorkItem"
                         @startReplying="showReplyForm"
                         @deleteNote="$emit('deleteNote', reply)"
                         @reportAbuse="$emit('reportAbuse', reply)"

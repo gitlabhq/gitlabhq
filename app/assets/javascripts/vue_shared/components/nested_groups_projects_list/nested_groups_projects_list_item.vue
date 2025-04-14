@@ -7,13 +7,11 @@ import {
 } from '~/vue_shared/components/resource_lists/constants';
 import ProjectsListItem from '../projects_list/projects_list_item.vue';
 import GroupsListItem from '../groups_list/groups_list_item.vue';
-import NestedGroupsProjectsList from './nested_groups_projects_list.vue';
 import { LIST_ITEM_TYPE_PROJECT } from './constants';
 
 export default {
   components: {
     GlButton,
-    NestedGroupsProjectsList,
   },
   props: {
     item: {
@@ -100,6 +98,7 @@ export default {
       <gl-button v-bind="expandButtonProps" @click="onNestedItemsToggleClick" />
     </template>
     <template v-if="item.hasChildren" #children>
+      <!-- eslint-disable-next-line vue/no-undef-components -->
       <nested-groups-projects-list
         :id="nestedItemsContainerId"
         :items="nestedGroupsProjectsListItems"

@@ -1304,6 +1304,18 @@ RSpec.describe Gitlab::Diff::File, feature_category: :shared do
     end
   end
 
+  describe '#whitespace_only?' do
+    subject(:whitespace_only?) { diff_file.whitespace_only? }
+
+    it 'returns true for non-collapsed empty diffs' do
+      allow(diff_file).to receive(:collapsed?).and_return(false)
+      allow(diff_file).to receive(:diff_lines_for_serializer).and_return(nil)
+      allow(diff_file).to receive(:added_lines).and_return(2)
+      allow(diff_file).to receive(:removed_lines).and_return(2)
+      expect(whitespace_only?).to eq(true)
+    end
+  end
+
   describe '#modified_file?' do
     subject(:modified_file?) { diff_file.modified_file? }
 

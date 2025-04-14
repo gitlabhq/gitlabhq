@@ -107,6 +107,20 @@ RSpec.describe Projects::ImportExport::ExportService, feature_category: :importe
         service.execute
       end
 
+      it 'tracks the start_project_export internal event' do
+        allow(Gitlab::ImportExport::Saver).to receive(:save).and_return(true)
+
+        expect { service.execute }
+          .to trigger_internal_events('start_project_export')
+          .with(
+            user: user,
+            project: project,
+            namespace: project.namespace
+          )
+
+        service.execute
+      end
+
       it 'saves the project in the file system' do
         expect(Gitlab::ImportExport::Saver).to receive(:save).with(exportable: project, shared: shared, user: user).and_return(true)
 

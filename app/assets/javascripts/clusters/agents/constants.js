@@ -54,7 +54,7 @@ export const INTEGRATION_STATUS_VALID_TOKEN = {
 };
 export const INTEGRATION_STATUS_NO_TOKEN = {
   icon: 'status-alert',
-  iconClass: 'gl-text-red-500',
+  iconClass: 'gl-text-danger',
   text: s__('ClusterAgents|No agent access token'),
 };
 

@@ -51,6 +51,14 @@ GET /audit_events
 | `entity_type` | string | no | Return audit events for the given entity type. Valid values are: `User`, `Group`, `Project`, or `Gitlab::Audit::InstanceScope`. |
 | `entity_id` | integer | no | Return audit events for the given entity ID. Requires `entity_type` attribute to be present.                    |
 
+{{< alert type="warning" >}}
+
+Offset-based pagination was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186194) in GitLab 17.8
+and is planned for removal in 19.0. Use [keyset-based](rest/_index.md#keyset-based-pagination) pagination instead.
+This change is a breaking change.
+
+{{< /alert >}}
+
 This endpoint supports both offset-based and [keyset-based](rest/_index.md#keyset-based-pagination) pagination. You should use keyset-based
 pagination when requesting consecutive pages of results.
 
@@ -195,6 +203,14 @@ A user with:
 - The Owner role can retrieve group audit events of all users.
 - The Developer or Maintainer role is limited to group audit events based on their individual actions.
 
+{{< alert type="warning" >}}
+
+Offset-based pagination was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186194) in GitLab 17.8
+and is planned for removal in 19.0. Use [keyset-based](rest/_index.md#keyset-based-pagination) pagination instead.
+This change is a breaking change.
+
+{{< /alert >}}
+
 This endpoint supports both offset-based and [keyset-based](rest/_index.md#keyset-based-pagination) pagination. Keyset-based
 pagination is recommended when requesting consecutive pages of results.
 
@@ -329,6 +345,14 @@ GET /projects/:id/audit_events
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `created_after` | string | no | Return project audit events created on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`)  |
 | `created_before` | string | no | Return project audit events created on or before the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
+
+{{< alert type="warning" >}}
+
+Offset-based pagination was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186194) in GitLab 17.8
+and is planned for removal in 19.0. Use [keyset-based](rest/_index.md#keyset-based-pagination) pagination instead.
+This change is a breaking change.
+
+{{< /alert >}}
 
 By default, `GET` requests return 20 results at a time because the API results are paginated.
 When requesting consecutive pages of results, you should use [keyset pagination](rest/_index.md#keyset-based-pagination).

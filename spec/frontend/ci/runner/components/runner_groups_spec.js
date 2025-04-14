@@ -2,6 +2,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import RunnerGroups from '~/ci/runner/components/runner_groups.vue';
 import RunnerAssignedItem from '~/ci/runner/components/runner_assigned_item.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 
 import { runnerData, runnerWithGroupData } from '../mock_data';
 
@@ -12,13 +13,16 @@ const mockGroup = mockGroupRunner.groups.nodes[0];
 describe('RunnerGroups', () => {
   let wrapper;
 
-  const findHeading = () => wrapper.find('h3');
+  const findHeading = () => wrapper.findByTestId('crud-title');
   const findRunnerAssignedItems = () => wrapper.findAllComponents(RunnerAssignedItem);
 
   const createComponent = ({ runner = mockGroupRunner, mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(RunnerGroups, {
       propsData: {
         runner,
+      },
+      stubs: {
+        CrudComponent,
       },
     });
   };
@@ -40,6 +44,8 @@ describe('RunnerGroups', () => {
       const item = findRunnerAssignedItems().at(0);
       const { webUrl, name, fullName, avatarUrl } = mockGroup;
 
+      expect(wrapper.findByTestId('runner-groups').exists()).toBe(true);
+
       expect(item.props()).toMatchObject({
         href: webUrl,
         name,
@@ -56,8 +62,8 @@ describe('RunnerGroups', () => {
       });
     });
 
-    it('Shows a "None" label', () => {
-      expect(wrapper.findByText('None').exists()).toBe(true);
+    it('Hides component', () => {
+      expect(wrapper.findByTestId('runner-groups').exists()).toBe(false);
     });
   });
 });

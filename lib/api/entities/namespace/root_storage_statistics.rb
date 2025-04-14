@@ -5,11 +5,11 @@ module API
     class Namespace
       class RootStorageStatistics < Grape::Entity
         expose  :build_artifacts_size, documentation: { type: 'integer', desc: 'CI artifacts size in bytes.' }
-        expose  :container_registry_size, documentation: { type: 'integer', desc: 'Container Registry size in bytes.' }
+        expose  :container_registry_size, documentation: { type: 'integer', desc: 'container registry size in bytes.' }
         expose  :registry_size_estimated,
           as: :container_registry_size_is_estimated,
           documentation: { type: 'boolean',
-                           desc: 'Indicates whether the deduplicated Container Registry size for ' \
+                           desc: 'Indicates whether the deduplicated container registry size for ' \
                              'the namespace is an estimated value or not.' }
         expose  :dependency_proxy_size, documentation: { type: 'integer', desc: 'Dependency Proxy sizes in bytes.' }
         expose  :lfs_objects_size, documentation: { type: 'integer', desc: 'LFS objects size in bytes.' }

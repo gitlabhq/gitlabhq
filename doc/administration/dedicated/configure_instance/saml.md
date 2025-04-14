@@ -13,24 +13,13 @@ title: SAML single sign-on for GitLab Dedicated
 
 {{< /details >}}
 
-You can [configure SAML single sign-on (SSO)](../../../integration/saml.md#configure-saml-support-in-gitlab) for your GitLab Dedicated instance. Optionally, you can configure more than one SAML identity provider (IdP).
+You can configure SAML single sign-on (SSO) for your GitLab Dedicated instance for up to ten identity providers (IdPs).
 
 The following SAML SSO options are available:
 
-- [Request signing](../../../integration/saml.md#sign-saml-authentication-requests-optional)
-- [SAML SSO for groups](../../../integration/saml.md#configure-users-based-on-saml-group-membership)
-- [Group sync](../../../user/group/saml_sso/group_sync.md#configure-saml-group-sync)
-
-Prerequisites:
-
-- You must [set up the identity provider](../../../integration/saml.md#set-up-identity-providers) before you can configure SAML for GitLab Dedicated.
-- To configure GitLab to sign SAML authentication requests, you must create a private key and public certificate pair for your GitLab Dedicated instance.
-
-{{< alert type="note" >}}
-
-You can only configure one SAML IdP with Switchboard. If you configured a SAML IdP on your GitLab Dedicated instance before the introduction of support for multiple IdPs, you can manage that provider through Switchboard. To configure additional SAML IdPs, [submit a support request](#activate-saml-with-a-support-request).
-
-{{< /alert >}}
+- [Request signing](#request-signing)
+- [SAML SSO for groups](#saml-groups)
+- [Group sync](#group-sync)
 
 {{< alert type="note" >}}
 
@@ -38,39 +27,56 @@ These instructions apply only to SSO for your GitLab Dedicated instance. For Swi
 
 {{< /alert >}}
 
-## Activate SAML with Switchboard
+## Prerequisites
 
-To activate SAML for your GitLab Dedicated instance:
+- You must [set up the identity provider](../../../integration/saml.md#set-up-identity-providers) before you can configure SAML for GitLab Dedicated.
+- To configure GitLab to sign SAML authentication requests, you must create a private key and public certificate pair for your GitLab Dedicated instance.
+
+## Add a SAML provider with Switchboard
+
+To add a SAML provider for your GitLab Dedicated instance:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.
-1. Expand **SAML Config**.
-1. Turn on the **Enable** toggle.
-1. Complete the required fields:
-   - SAML label
-   - IdP cert fingerprint
-   - IdP SSO target URL
-   - Name identifier format
-1. To configure users based on [SAML group membership](#saml-groups) or use [group sync](#group-sync), complete the following fields:
-   - SAML group attribute
-   - Admin groups
-   - Auditor groups
-   - External groups
-   - Required groups
-1. To configure [SAML request signing](#request-signing), complete the following fields:
-   - Issuer
-   - Attribute statements
-   - Security
+1. Expand **SAML providers**.
+1. Select **Add SAML provider**.
+1. In the **SAML label** text box, enter a name to identify this provider in Switchboard.
+1. Optional. To configure users based on SAML group membership or use group sync, complete these fields:
+   - **SAML group attribute**
+   - **Admin groups**
+   - **Auditor groups**
+   - **External groups**
+   - **Required groups**
+1. In the **IdP cert fingerprint** text box, enter your IdP certificate fingerprint. This value is a SHA1 checksum of your IdP's `X.509` certificate fingerprint.
+1. In the **IdP SSO target URL** text box, enter the URL endpoint on your IdP where GitLab Dedicated redirects users to authenticate with this provider.
+1. From the **Name identifier format** dropdown list, select the format of the NameID that this provider sends to GitLab.
+1. Optional. To configure request signing, complete these fields:
+   - **Issuer**
+   - **Attribute statements**
+   - **Security**
+1. To start using this provider, select the **Enable this provider** checkbox.
 1. Select **Save**.
-1. Scroll up to the top of the page and select whether to apply the changes immediately or during the next maintenance window.
-1. To use group sync, [configure the SAML group links](../../../user/group/saml_sso/group_sync.md#configure-saml-group-links).
-1. To verify the SAML configuration is successful:
-   - Check that the SSO button description is displayed on your instance's sign-in page.
-   - Go to the metadata URL of your instance (`https://INSTANCE-URL/users/auth/saml/metadata`). This page can be used to simplify much of the configuration of the identity provider, and manually validate the settings.
+1. To add another SAML provider, select **Add SAML provider** again and follow the steps above. You can add up to ten providers.
+1. Scroll up to the top of the page. The **Initiated changes** banner explains that your SAML configuration changes are applied during the next maintenance window. To apply the changes immediately, select **Apply changes now**.
 
-## Activate SAML with a Support Request
+After the changes are applied, you can sign in to your GitLab Dedicated instance using this SAML provider. To use group sync, [configure the SAML group links](../../../user/group/saml_sso/group_sync.md#configure-saml-group-links).
 
-If you are unable to use Switchboard to activate or update SAML for your GitLab Dedicated instance, or if you need to configure more than one SAML IdP, then you can open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650):
+## Verify your SAML configuration
+
+To verify that your SAML configuration is successful:
+
+1. Sign out and go to your GitLab Dedicated instance's sign-in page.
+1. Check that the SSO button for your SAML provider appears on the sign-in page.
+1. Go to the metadata URL of your instance (`https://INSTANCE-URL/users/auth/saml/metadata`).
+   The metadata URL shows information that can simplify configuration of your identity provider
+   and helps validate your SAML settings.
+1. Try signing in through the SAML provider to ensure the authentication flow works correctly.
+
+If troubleshooting information, see [troubleshooting SAML](../../../user/group/saml_sso/troubleshooting.md).
+
+## Add a SAML provider with a Support Request
+
+If you are unable to use Switchboard to add or update SAML for your GitLab Dedicated instance, then you can open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650):
 
 1. To make the necessary changes, include the desired [SAML configuration block](../../../integration/saml.md#configure-saml-support-in-gitlab) for your GitLab application in your support ticket. At a minimum, GitLab needs the following information to enable SAML for your instance:
    - IDP SSO Target URL
@@ -126,7 +132,7 @@ To enable SAML request signing:
 
 1. Open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) and indicate that you want request signing enabled.
 1. GitLab will work with you on sending the Certificate Signing Request (CSR) for you to sign. Alternatively, the CSR can be signed with a public CA.
-1. After the certificate is signed, you can then use the certificate and its associated private key to complete the `security` section of the [SAML configuration](#activate-saml-with-switchboard) in Switchboard.
+1. After the certificate is signed, you can then use the certificate and its associated private key to complete the `security` section of the [SAML configuration](#add-a-saml-provider-with-switchboard) in Switchboard.
 
 Authentication requests from GitLab to your identity provider can now be signed.
 
@@ -134,7 +140,7 @@ Authentication requests from GitLab to your identity provider can now be signed.
 
 With SAML groups you can configure GitLab users based on SAML group membership.
 
-To enable SAML groups, add the [required elements](../../../integration/saml.md#configure-users-based-on-saml-group-membership) to your SAML configuration in [Switchboard](#activate-saml-with-switchboard) or to the SAML block you provide in a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+To enable SAML groups, add the [required elements](../../../integration/saml.md#configure-users-based-on-saml-group-membership) to your SAML configuration in [Switchboard](#add-a-saml-provider-with-switchboard) or to the SAML block you provide in a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 
 ## Group sync
 
@@ -142,5 +148,5 @@ With [group sync](../../../user/group/saml_sso/group_sync.md), you can sync user
 
 To enable group sync:
 
-1. Add the [required elements](../../../user/group/saml_sso/group_sync.md#configure-saml-group-sync) to your SAML configuration in [Switchboard](#activate-saml-with-switchboard) or to the SAML configuration block you provide in a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+1. Add the [required elements](../../../user/group/saml_sso/group_sync.md#configure-saml-group-sync) to your SAML configuration in [Switchboard](#add-a-saml-provider-with-switchboard) or to the SAML configuration block you provide in a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 1. Configure the [Group Links](../../../user/group/saml_sso/group_sync.md#configure-saml-group-links).

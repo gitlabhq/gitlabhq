@@ -8,6 +8,8 @@ RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :
     "A fork of this project has been created that you can make changes in, so you can submit a merge request."
   end
 
+  let(:commit_message) { 'New commit message' }
+
   let_it_be(:protected_branch) { 'protected-branch' }
 
   let_it_be(:project) { create(:project, :repository, name: 'Shop') }
@@ -18,6 +20,10 @@ RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :
 
   let_it_be(:project_tree_path_root_ref) { project_tree_path(project, project.repository.root_ref) }
   let_it_be(:project2_tree_path_root_ref) { project_tree_path(project2, project2.repository.root_ref) }
+  let_it_be(:project2_non_default_branch_tree_path) do
+    project_tree_path(project2, 'non-default-branch')
+  end
+
   let_it_be(:project3_protected_branch_tree_path_root_ref) do
     project_tree_path(project3, 'protected-branch', project3.repository.root_ref)
   end
@@ -25,7 +31,6 @@ RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :
   let_it_be(:user) { create(:user) }
 
   before do
-    stub_feature_flags(blob_overflow_menu: false)
     sign_in(user)
   end
 
@@ -44,30 +49,30 @@ RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :
 
       expect(page).to have_content('.gitignore')
 
+      click_button 'File actions'
       click_on('Delete')
-      fill_in(:commit_message, with: 'New commit message', visible: true)
+      fill_in(:commit_message, with: commit_message, visible: true)
       click_button('Commit changes')
 
       expect(page).to have_current_path(project_tree_path(project, 'master/'), ignore_query: true)
       expect(page).not_to have_content('.gitignore')
+      expect(page).to have_content(commit_message)
     end
   end
 
-  context 'when an user does not have write access', :js do
+  context 'when a user does not have write access', :js do
     before_all do
       project2.add_reporter(user)
     end
 
-    before do
+    it 'deletes the file in a forked project', :js, :sidekiq_might_not_need_inline do
       visit(project2_tree_path_root_ref)
       wait_for_requests
-    end
-
-    it 'deletes the file in a forked project', :js, :sidekiq_might_not_need_inline do
       click_link('.gitignore')
 
       expect(page).to have_content('.gitignore')
 
+      click_button 'File actions'
       click_on('Delete')
 
       expect(page).to have_link('Fork')
@@ -77,14 +82,15 @@ RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :
 
       expect(page).to have_content(fork_message)
 
+      click_button 'File actions'
       click_on('Delete')
-      fill_in(:commit_message, with: 'New commit message', visible: true)
+      fill_in(:commit_message, with: commit_message, visible: true)
       click_button('Commit changes')
 
       fork = user.fork_of(project2.reload)
 
       expect(page).to have_current_path(project_new_merge_request_path(fork), ignore_query: true)
-      expect(page).to have_content('New commit message')
+      expect(page).to have_content(commit_message)
     end
   end
 
@@ -103,17 +109,18 @@ RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :
 
       expect(page).to have_content('.gitignore')
 
+      click_button 'File actions'
       click_on('Delete')
 
       epoch = Time.zone.now.strftime('%s%L').last(5)
       expect(page).to have_checked_field _('Create a merge request for this change')
       expect(find_field('branch_name').value).to eq "#{user.username}-protected-branch-patch-#{epoch}"
 
-      fill_in(:commit_message, with: 'New commit message', visible: true)
+      fill_in(:commit_message, with: commit_message, visible: true)
       click_button('Commit changes')
 
       expect(page).to have_current_path(project_new_merge_request_path(project3), ignore_query: true)
-      expect(page).to have_content('New commit message')
+      expect(page).to have_content(commit_message)
     end
   end
 end

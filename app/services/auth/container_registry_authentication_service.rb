@@ -125,7 +125,8 @@ module Auth
         project_path: project&.full_path&.downcase,
         project_id: project&.id,
         root_namespace_id: project&.root_ancestor&.id,
-        tag_deny_access_patterns: tag_deny_access_patterns(project, user, actions)
+        tag_deny_access_patterns: tag_deny_access_patterns(project, user, actions),
+        tag_immutable_patterns: tag_immutable_patterns(project, user, actions)
       }.compact
     end
 
@@ -133,8 +134,9 @@ module Auth
 
     def self.tag_deny_access_patterns(project, user, actions)
       return if project.nil? || user.nil?
-      return unless Feature.enabled?(:container_registry_protected_tags, project)
-      return unless project.container_registry_protection_tag_rules.any?
+
+      rules = project.container_registry_protection_tag_rules
+      return unless rules.mutable.any?
 
       # Expand the special `*` action into individual actions (pull + push + delete), which is what it represents. The
       # `pull` action is not part of the protected tags feature, so we can ignore it right here. Additionally, although
@@ -144,12 +146,13 @@ module Auth
       actions_to_check.delete('pull')
 
       patterns = actions_to_check.index_with { [] }
-      # Admins get unrestricted access, but the registry expects to always see an array for each granted actions, so we
+
+      # Admins get unrestricted access with protected tags, but the registry expects to always see an array for each granted actions, so we
       # can return early here, but not any earlier.
       return patterns if user.can_admin_all_resources?
 
-      user_access_level = user.max_member_access_for_project(project.id)
-      applicable_rules = project.container_registry_protection_tag_rules.for_actions_and_access(actions_to_check, user_access_level)
+      user_access_level = project.team.max_member_access(user.id)
+      applicable_rules = rules.for_actions_and_access(actions_to_check, user_access_level, include_immutable: false)
 
       applicable_rules.each do |rule|
         if actions_to_check.include?('push') && rule.push_restricted?(user_access_level)
@@ -162,6 +165,14 @@ module Auth
       end
 
       patterns
+    end
+
+    def self.tag_immutable_patterns(project, user, actions)
+      return if project.nil? || user.nil?
+      return unless Feature.enabled?(:container_registry_immutable_tags, project)
+      return unless (actions & %w[push delete *]).any?
+
+      project.container_registry_protection_tag_rules.immutable.pluck_tag_name_patterns.presence
     end
 
     def authorized_token(*accesses)
@@ -374,10 +385,9 @@ module Auth
         next unless push_scope_container_registry_path.valid?
 
         repository_project = push_scope_container_registry_path.repository_project
-        current_user_project_authorization_access_level = current_user&.max_member_access_for_project(repository_project.id)
 
         repository_project.container_registry_protection_rules.for_push_exists?(
-          access_level: current_user_project_authorization_access_level,
+          access_level: repository_project.team.max_member_access(current_user&.id),
           repository_path: push_scope_container_registry_path.to_s
         )
       end

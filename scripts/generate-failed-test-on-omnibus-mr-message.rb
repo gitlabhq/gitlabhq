@@ -51,10 +51,12 @@ class GenerateFailedTestOnOmnibusMrMessage
     - `e2e:test-on-omnibus-ee` pipeline: #{failed_package_and_test_pipeline['web_url']}
 
     `e2e:test-on-omnibus-ee` pipeline is allowed to fail due its [flakiness](#{package_and_test_link}). Failures should be
-    investigated to guarantee this backport complies with the Quality standards.
+    investigated to guarantee this backport complies with GitLab's quality standards.
 
-    Ask for assistance from a Software Engineer in Test (SET) on the `#s_developer_experience` Slack channel to confirm
-    the failures are unrelated to the merge request.
+    If you're unsure whether this failure is legitimate, please reach out to the `#s_developer_experience` Slack channel
+    to verify that the failures are not related to the merge request.
+
+    ([_improve this message_](https://gitlab.com/gitlab-org/gitlab/-/edit/master/scripts/generate-failed-test-on-omnibus-mr-message.rb))
     MARKDOWN
   end
 

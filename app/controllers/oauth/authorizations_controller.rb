@@ -78,7 +78,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     # Cannot be achieved with a before_action hook, due to the execution order.
     downgrade_scopes! if action_name == 'new'
 
-    params[:organization_id] = ::Current.organization_id
+    params[:organization_id] = ::Current.organization&.id
 
     super
   end

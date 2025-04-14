@@ -107,6 +107,28 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
         end
       end
 
+      context 'path sorting' do
+        let(:project_paths) { subject.map { |project| project['path'] } }
+
+        let(:args) { default_args.merge(sort: :path_asc) }
+
+        it 'returns projects sorted by path' do
+          expect(project_paths.first).to eq('project')
+          expect(project_paths.second).to eq('test')
+          expect(project_paths.third).to eq('test-project')
+        end
+
+        context 'when sorting by path in descending order' do
+          let(:args) { default_args.merge(sort: :path_desc) }
+
+          it 'returns projects sorted by path in descending order' do
+            expect(project_paths.first).to eq('test-project')
+            expect(project_paths.second).to eq('test')
+            expect(project_paths.third).to eq('project')
+          end
+        end
+      end
+
       context 'ids filtering' do
         let(:args) { default_args.merge(include_subgroups: false) }
 

@@ -50,7 +50,7 @@ describe('Daterange component', () => {
         factory({ show: true, startDate, endDate, minDate }, mountExtended);
         const input = findDaterangePicker().find('input');
 
-        input.setValue('2019-01-01');
+        input.element.value = '2019-01-01';
         await input.trigger('change');
 
         expect(wrapper.emitted().change).toEqual([[{ startDate: minDate, endDate }]]);

@@ -31,7 +31,7 @@ module Sidebars
 
         def dev_ops_reports_menu_item
           ::Sidebars::MenuItem.new(
-            title: _('DevOps Reports'),
+            title: _('DevOps adoption'),
             link: admin_dev_ops_reports_path,
             active_routes: { controller: 'dev_ops_report' },
             item_id: :dev_ops_reports,

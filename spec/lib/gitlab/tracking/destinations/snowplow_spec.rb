@@ -4,43 +4,34 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_by_default do
   let(:emitter) { SnowplowTracker::Emitter.new(endpoint: 'localhost', options: { buffer_size: 1 }) }
+  let(:event_eligibility_checker) { instance_double(Gitlab::Tracking::EventEligibilityChecker) }
+  let(:event_eligible) { true }
   let(:tracker) do
     SnowplowTracker::Tracker.new(emitters: [emitter], subject: SnowplowTracker::Subject.new, namespace: 'namespace',
       app_id: 'app_id')
   end
 
   before do
-    stub_application_setting(snowplow_collector_hostname: 'gitfoo.com')
-    stub_application_setting(snowplow_app_id: '_abc123_')
+    stub_application_setting(
+      snowplow_collector_hostname: 'gitfoo.com',
+      snowplow_app_id: '_abc123_'
+    )
+
+    allow(Kernel).to receive(:at_exit)
+    allow(Gitlab::Tracking::EventEligibilityChecker).to receive(:new).and_return(event_eligibility_checker)
+    allow(event_eligibility_checker).to receive(:eligible?).and_return(event_eligible)
   end
 
   around do |example|
     freeze_time { example.run }
   end
 
-  context 'when snowplow is enabled and POST and buffer are enabled' do
+  context 'when in production environment' do
     before do
-      stub_application_setting(snowplow_enabled: true)
-      stub_feature_flags(snowplow_tracking_post_method: true, snowplow_buffer_events: true)
-
-      allow(Kernel).to receive(:at_exit)
-      expect(SnowplowTracker::AsyncEmitter)
-        .to receive(:new)
-        .with(endpoint: 'gitfoo.com',
-          options: { protocol: 'https',
-                     method: 'post',
-                     buffer_size: 10,
-                     on_success: subject.method(:increment_successful_events_emissions),
-                     on_failure: subject.method(:failure_callback) })
-        .and_return(emitter)
-
-      expect(SnowplowTracker::Tracker)
-        .to receive(:new)
-              .with(emitters: [emitter],
-                subject: an_instance_of(SnowplowTracker::Subject),
-                namespace: described_class::SNOWPLOW_NAMESPACE,
-                app_id: '_abc123_')
-              .and_return(tracker)
+      allow(Rails.env).to receive_messages(
+        development?: false,
+        test?: false
+      )
     end
 
     it "adds Kernel.at_exit hook" do
@@ -49,37 +40,72 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     end
 
     describe '#event' do
-      it 'sends event to tracker' do
-        allow(tracker).to receive(:track_struct_event).and_call_original
+      context 'when event is eligible' do
+        before do
+          expect(SnowplowTracker::AsyncEmitter)
+            .to receive(:new)
+                  .with(endpoint: 'gitfoo.com',
+                    options: { protocol: 'https',
+                               method: 'post',
+                               buffer_size: 10,
+                               on_success: subject.method(:increment_successful_events_emissions),
+                               on_failure: subject.method(:failure_callback) })
+                  .and_return(emitter)
 
-        subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+          expect(SnowplowTracker::Tracker)
+            .to receive(:new)
+                  .with(emitters: [emitter],
+                    subject: an_instance_of(SnowplowTracker::Subject),
+                    namespace: described_class::SNOWPLOW_NAMESPACE,
+                    app_id: '_abc123_')
+                  .and_return(tracker)
 
-        expect(tracker)
-          .to have_received(:track_struct_event)
-          .with(category: 'category', action: 'action', label: 'label', property: 'property', value: 1.5, context: nil,
-            tstamp: (Time.now.to_f * 1000).to_i)
+          allow(tracker).to receive(:track_struct_event).and_call_original
+        end
+
+        it 'sends event to tracker' do
+          subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+
+          expect(tracker)
+            .to have_received(:track_struct_event)
+                  .with(category: 'category', action: 'action', label: 'label', property: 'property', value: 1.5,
+                    context: nil, tstamp: (Time.now.to_f * 1000).to_i)
+        end
+
+        it 'increase total snowplow events counter' do
+          counter = double
+
+          expect(counter).to receive(:increment)
+          expect(Gitlab::Metrics).to receive(:counter)
+                                       .with(:gitlab_snowplow_events_total,
+                                         'Number of Snowplow events')
+                                       .and_return(counter)
+
+          subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+        end
       end
 
-      it 'increase total snowplow events counter' do
-        counter = double
+      context 'when event is ineligible' do
+        let(:event_eligible) { false }
 
-        expect(counter).to receive(:increment)
-        expect(Gitlab::Metrics).to receive(:counter)
-                                     .with(:gitlab_snowplow_events_total,
-                                       'Number of Snowplow events')
-                                     .and_return(counter)
+        it 'does not sends event to tracker' do
+          allow(tracker).to receive(:track_struct_event).and_call_original
 
-        subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+          subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+
+          expect(tracker).not_to have_received(:track_struct_event)
+        end
+
+        it 'does not increase total snowplow events counter' do
+          expect(Gitlab::Metrics).not_to receive(:counter)
+
+          subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+        end
       end
     end
   end
 
-  context "when snowplow POST is enabled and buffer is disabled" do
-    before do
-      stub_application_setting(snowplow_enabled: true)
-      stub_feature_flags(snowplow_tracking_post_method: true, snowplow_buffer_events: false)
-    end
-
+  context "when in development or test environment" do
     it "initializes POST emitter with buffer_size 1" do
       allow(SnowplowTracker::Tracker).to receive(:new).and_return(tracker)
       allow(tracker).to receive(:track_struct_event).and_call_original
@@ -101,72 +127,6 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
       expect(Kernel).not_to receive(:at_exit)
 
       subject
-    end
-  end
-
-  context "when snowplow POST is disabled and buffer is enabled" do
-    before do
-      stub_application_setting(snowplow_enabled: true)
-      stub_feature_flags(snowplow_tracking_post_method: false, snowplow_buffer_events: true)
-    end
-
-    it "initializes emitter without specifying the buffer_size" do
-      allow(SnowplowTracker::Tracker).to receive(:new).and_return(tracker)
-      allow(tracker).to receive(:track_struct_event).and_call_original
-
-      expect(SnowplowTracker::AsyncEmitter)
-        .to receive(:new)
-        .with(endpoint: 'gitfoo.com',
-          options: { protocol: 'https',
-                     on_success: subject.method(:increment_successful_events_emissions),
-                     on_failure: subject.method(:failure_callback) })
-        .and_return(emitter)
-
-      subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
-    end
-
-    it "doesn't add Kernel.at_exit hook" do
-      expect(Kernel).not_to receive(:at_exit)
-
-      subject
-    end
-  end
-
-  context "when snowplow POST and buffer are disabled" do
-    before do
-      stub_application_setting(snowplow_enabled: true)
-      stub_feature_flags(snowplow_tracking_post_method: false, snowplow_buffer_events: false)
-    end
-
-    it "initializes emitter without specifying the buffer_size" do
-      allow(SnowplowTracker::Tracker).to receive(:new).and_return(tracker)
-      allow(tracker).to receive(:track_struct_event).and_call_original
-
-      expect(SnowplowTracker::AsyncEmitter)
-        .to receive(:new)
-        .with(endpoint: 'gitfoo.com',
-          options: { protocol: 'https',
-                     on_success: subject.method(:increment_successful_events_emissions),
-                     on_failure: subject.method(:failure_callback) })
-        .and_return(emitter)
-
-      subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
-    end
-
-    it "doesn't add Kernel.at_exit hook" do
-      expect(Kernel).not_to receive(:at_exit)
-
-      subject
-    end
-  end
-
-  context 'when snowplow is disabled' do
-    describe '#event' do
-      it 'does not send event to tracker' do
-        expect_any_instance_of(SnowplowTracker::Tracker).not_to receive(:track_struct_event)
-
-        subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
-      end
     end
   end
 

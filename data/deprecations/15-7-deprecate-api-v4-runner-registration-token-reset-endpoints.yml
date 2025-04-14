@@ -1,7 +1,6 @@
 - title: "Support for REST API endpoints that reset runner registration tokens"  # (required) The name of the feature to be deprecated
   announcement_milestone: "15.7"  # (required) The milestone when this feature was first announced as deprecated.
-  removal_milestone: "18.0"  # (required) The milestone when this feature is planned to be removed
-  removal_date: "2025-04-22"
+  removal_milestone: "20.0"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   reporter: pedropombeiro  # (required) GitLab username of the person reporting the deprecation
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
@@ -13,7 +12,7 @@
   window: "1"
   body: |  # (required) Do not modify this line, instead modify the lines below.
     The support for runner registration tokens is deprecated. As a consequence, the REST API endpoints to reset a registration token are also deprecated and will
-    return the HTTP `410 Gone` status code in GitLab 18.0.
+    return the HTTP `410 Gone` status code in a future GitLab release.
     The deprecated endpoints are:
 
     - `POST /runners/reset_registration_token`
@@ -25,7 +24,7 @@
     The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
     This new architecture introduces a new method for registering runners and will eliminate the legacy
     [runner registration token](https://docs.gitlab.com/security/tokens/#runner-registration-tokens-deprecated).
-    From GitLab 18.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
+    In a future GitLab release, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
   end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   documentation_url: https://docs.gitlab.com/api/runners/#create-a-runner  # (optional) This is a link to the current documentation page

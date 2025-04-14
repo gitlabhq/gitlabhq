@@ -23,15 +23,9 @@ describe('Action card', () => {
   const findCardIcon = () => wrapper.findByTestId('action-card-icon');
   const findArrowIcon = () => wrapper.findByTestId('action-card-arrow-icon');
 
-  const baseCardClass = 'action-card';
-
   describe('default', () => {
     beforeEach(() => {
       createComponent();
-    });
-
-    it('applies default variant styles', () => {
-      expect(wrapper.classes()).toContain(baseCardClass, 'action-card-default');
     });
 
     it('renders title', () => {
@@ -70,24 +64,6 @@ describe('Action card', () => {
 
     it('renders arrow icon', () => {
       expect(findArrowIcon().exists()).toBe(true);
-    });
-  });
-
-  describe.each`
-    variant      | expectedVariantClass     | expectedCardIcon
-    ${'success'} | ${'action-card-success'} | ${'check'}
-    ${'promo'}   | ${'action-card-promo'}   | ${'project'}
-  `('when variant is $variant', ({ variant, expectedVariantClass, expectedCardIcon }) => {
-    beforeEach(() => {
-      createComponent({ propsData: { variant } });
-    });
-
-    it('applies correct variant styles', () => {
-      expect(wrapper.classes()).toContain(baseCardClass, expectedVariantClass);
-    });
-
-    it('renders correct card icon', () => {
-      expect(findCardIcon().props('name')).toBe(expectedCardIcon);
     });
   });
 });

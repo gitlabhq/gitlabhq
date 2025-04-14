@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Git do
+RSpec.describe Gitlab::Git, feature_category: :source_code_management do
   let(:committer_email) { 'user@example.org' }
   let(:committer_name) { 'John Doe' }
 
@@ -74,12 +74,14 @@ RSpec.describe Gitlab::Git do
       too_short_sha = sha[0, Gitlab::Git::Commit::MIN_SHA_LENGTH - 1]
 
       [
-        [sha, sha,           true],
-        [sha, short_sha,     true],
-        [sha, sha.reverse,   false],
-        [sha, too_short_sha, false],
-        [sha, nil,           false],
-        [nil, nil,           true]
+        [sha, sha,               true],
+        [sha, short_sha,         true],
+        [sha, sha.upcase,        true],
+        [sha, short_sha.upcase,  true],
+        [sha, sha.reverse,       false],
+        [sha, too_short_sha,     false],
+        [sha, nil,               false],
+        [nil, nil,               true]
       ]
     end
 

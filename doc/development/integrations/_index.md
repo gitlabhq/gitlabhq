@@ -2,7 +2,7 @@
 stage: Foundations
 group: Import and Integrate
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-description: GitLab's development guidelines for Integrations
+description: Development guidelines for Integrations
 title: Integration development guidelines
 ---
 
@@ -184,6 +184,27 @@ attribute :wiki_page_events, default: false
 
 If an event attribute for an existing integration changes to `true`,
 this requires a data migration to back-fill the attribute value for old records.
+
+### Define metrics
+
+Every new integration should have five [metrics](../internal_analytics/metrics/_index.md):
+
+- Count of active projects with the given integration
+- Count of active projects inheriting the given integration
+- Count of active groups with the given integration
+- Count of active groups inheriting the given integration
+- Count of active instance-level integrations for the given integration
+
+Metrics require the model class of the integration to work. You can add metrics only together with or after the model.
+
+To create metric definitions:
+
+1. Copy the metrics created for an existing active integration.
+1. Replace all occurrences of the previous integration's name with the new integration's name.
+1. Replace `milestone` with the current milestone and `introduced_by_url` with the merge request link.
+1. Verify all other attributes have correct values by checking the [metrics guide](../internal_analytics/metrics/metrics_dictionary.md#metrics-definition-and-validation).
+
+For example, to create metric definitions for the Slack integration, you copy the metrics [1](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180122_projects_slack_active.yml), [2](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180124_groups_slack_active.yml), [3](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180127_instances_slack_active.yml), [4](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180127_instances_slack_active.yml), and [5](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180129_projects_inheriting_slack_active.yml)), then replace `Slack` with the name of the new integration.
 
 ### Security requirements
 
@@ -466,7 +487,7 @@ You can also refer to our general [documentation guidelines](../documentation/_i
 
 You can provide help text in the integration form, including links to off-site documentation,
 as described above in [Customize the frontend form](#customize-the-frontend-form). Refer to
-our [usability guidelines](https://design.gitlab.com/usability/contextual-help) for help text.
+our [usability guidelines](https://design.gitlab.com/patterns/contextual-help) for help text.
 
 ## Testing
 
@@ -513,7 +534,7 @@ In the major milestone of intended removal (M.0), disable the integration and de
 - Remove the integration from `Integration::INTEGRATION_NAMES`.
 - Delete the integration model's `#execute` and `#test` methods (if defined), but keep the model.
 - Add a post-migration to delete the integration records from PostgreSQL (see [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114721)).
-- [Mark the integration documentation as removed](../../development/documentation/styleguide/deprecations_and_removals.md#remove-a-page).
+- [Mark the integration documentation as removed](../documentation/styleguide/deprecations_and_removals.md#remove-a-page).
 - Update the [project](../../api/integrations.md) and [group](../../api/group_integrations.md) integrations API pages.
 
 In the next minor release (M.1):

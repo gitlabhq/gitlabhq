@@ -111,18 +111,27 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
           end
         end
 
-        describe 'Cancel all builds' do
-          it 'cancels commit', :js, :sidekiq_might_not_need_inline do
-            visit pipeline_path(pipeline)
-            click_on 'Cancel pipeline'
-            expect(page).to have_content 'Canceled'
+        describe 'Cancel jobs' do
+          let!(:pipeline) do
+            create(
+              :ci_pipeline,
+              project: project,
+              user: creator,
+              ref: project.default_branch,
+              sha: project.commit.sha,
+              status: :running,
+              created_at: 5.months.ago
+            )
           end
-        end
 
-        describe 'Cancel build' do
-          it 'cancels build', :js, :sidekiq_might_not_need_inline do
+          before do
             visit pipeline_path(pipeline)
-            find_by_testid('cancel-pipeline').click
+            wait_for_requests
+            click_on 'Cancel pipeline'
+            wait_for_requests
+          end
+
+          it 'cancels pipeline and jobs', :js, :sidekiq_might_not_need_inline do
             expect(page).to have_content 'Canceled'
           end
         end
@@ -148,8 +157,9 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
         end
       end
 
-      context 'when accessing internal project with disallowed access', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/299575' do
+      context 'when accessing internal project with disallowed access', :js do
         before do
+          project.add_reporter(user)
           project.update!(
             visibility_level: Gitlab::VisibilityLevel::INTERNAL,
             public_builds: false)
@@ -159,7 +169,6 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
 
         it do
           expect(page).to have_content pipeline.sha[0..7]
-          expect(page).to have_content pipeline.git_commit_message.gsub!(/\s+/, ' ')
           expect(page).to have_content pipeline.user.name
 
           expect(page).not_to have_link('Cancel pipeline')

@@ -1,8 +1,9 @@
-- if @preload
-  - helpers.add_page_startup_api_call @metadata_endpoint
+- if !@lazy
+  - helpers.add_page_startup_api_call @diffs_stats_endpoint
+  - helpers.add_page_startup_api_call @diff_files_endpoint
   - if @stream_url
     - helpers.content_for :startup_js do
-      = javascript_tag nonce: content_security_policy_nonce do
+      - javascript_tag nonce: content_security_policy_nonce do
         :plain
           var controller = new AbortController();
           window.gl.rapidDiffsPreload = {
@@ -10,24 +11,30 @@
             streamRequest: fetch('#{Gitlab::UrlSanitizer.sanitize(@stream_url)}', { signal: controller.signal })
           }
 
-.rd-app{ data: { rapid_diffs: true, reload_stream_url: @reload_stream_url, metadata_endpoint: @metadata_endpoint } }
+.rd-app{ data: { rapid_diffs: true, reload_stream_url: @reload_stream_url, diffs_stats_endpoint: @diffs_stats_endpoint, diff_files_endpoint: @diff_files_endpoint } }
   .rd-app-header
+    .rd-app-file-browser-toggle
+      %div{ data: { file_browser_toggle: true } }
     .rd-app-settings
       %div{ data: { view_settings: true, show_whitespace: @show_whitespace.to_json, diff_view_type: @diff_view, update_user_endpoint: @update_user_endpoint } }
   .rd-app-body
-    .rd-app-sidebar{ data: { file_browser: true }, style: ("width: #{initial_sidebar_width}px" if initial_sidebar_width) }
+    .rd-app-sidebar{ data: { file_browser: true }, style: sidebar_style }
       .rd-app-sidebar-loading
         = helpers.gl_loading_icon(size: 'sm')
-    .rd-app-content{ data: { sidebar_visible: true } }
+    .rd-app-content
       .rd-app-content-header{ data: { hidden_files_warning: true } }
+
+      - if empty_diff? && !@lazy
+        = render RapidDiffs::EmptyStateComponent.new
+
       .code{ class: helpers.user_color_scheme }
-        %div{ data: { diffs_list: true } }
+        .rd-app-diffs-list{ data: { diffs_list: true } }
           = javascript_tag nonce: content_security_policy_nonce do
             :plain
               requestAnimationFrame(() => { window.performance.mark('rapid-diffs-first-diff-file-shown') })
           - if diffs_list?
             = diffs_list
-          - else
+          - elsif !empty_diff?
             = render RapidDiffs::DiffFileComponent.with_collection(@diffs_slice, parallel_view: @diff_view == :parallel)
           - if @stream_url
             #js-stream-container{ data: { diffs_stream_url: @stream_url } }

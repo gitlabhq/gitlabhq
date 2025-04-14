@@ -56,8 +56,7 @@ module QA
               show.delete_account(user.password)
             end
 
-            expect { user.exists? }.to eventually_be_falsey.within(max_duration: 120, sleep_interval: 3),
-              "Expected user to be deleted, but it still exists"
+            expect(page).to have_text("Account scheduled for removal.")
           end
 
           it "allows to recreate deleted user with same credeintials",

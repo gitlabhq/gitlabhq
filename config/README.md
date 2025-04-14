@@ -1,11 +1,11 @@
 # Configuration files Documentation
 
 Note that most configuration files (`config/*.*`) committed into
-[gitlab-foss](https://gitlab.com/gitlab-org/gitlab-foss) **will not be used** for
-[omnibus-gitlab](https://gitlab.com/gitlab-org/omnibus-gitlab). Configuration
-files committed into gitlab-foss are only used for development.
+[GitLab-foss](https://gitlab.com/gitlab-org/gitlab-foss) **will not be used** for
+[omnibus-GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab). Configuration
+files committed into GitLab-foss are only used for development.
 
-## gitlab.yml
+## GitLab.yml
 
 You can find most of the GitLab configuration settings here.
 
@@ -32,6 +32,7 @@ persistence policies, and other Redis customization) for connections
 to Redis single instances, Redis sentinel, and Redis clusters.
 
 If desired, the routing URL provided by these settings can be used with:
+
 1. Unix Socket
     1. named socket for each Redis instance desired.
     2. `database number` for each Redis instance desired.
@@ -41,16 +42,17 @@ If desired, the routing URL provided by these settings can be used with:
     3. `database number` for each Redis instance desired
 
 ### Example URL attribute formats for GitLab Redis `.yml` configuration files
-* Unix Socket, default Redis database (0)
-    * `url: unix:/path/to/redis.sock`
-    * `url: unix:/path/to/redis.sock?db=`
-* Unix Socket, Redis database 44
-    * `url: unix:/path/to/redis.sock?db=44`
-    * `url: unix:/path/to/redis.sock?extra=foo&db=44`
-* TCP Socket for Redis on localhost, port 6379, database 33
-    * `url: redis://:mynewpassword@localhost:6379/33`
-* TCP Socket for Redis on remote host `myserver`, port 6379, database 33
-    * `url: redis://:mynewpassword@myserver:6379/33`
+
+- Unix Socket, default Redis database (0)
+  - `url: unix:/path/to/redis.sock`
+  - `url: unix:/path/to/redis.sock?db=`
+- Unix Socket, Redis database 44
+  - `url: unix:/path/to/redis.sock?db=44`
+  - `url: unix:/path/to/redis.sock?extra=foo&db=44`
+- TCP Socket for Redis on localhost, port 6379, database 33
+  - `url: redis://:mynewpassword@localhost:6379/33`
+- TCP Socket for Redis on remote host `myserver`, port 6379, database 33
+  - `url: redis://:mynewpassword@myserver:6379/33`
 
 ## Available configuration files
 
@@ -72,7 +74,7 @@ An example configuration file for Redis is in this directory under the name
 | `cache`             |                   | Volatile non-persistent data                                                                                 |
 | `queues`            |                   | Background job processing queues                                                                             |
 | `shared_state`      |                   | Persistent application state                                                                                 |
-| `trace_chunks`      | `shared_state`    | [CI trace chunks](https://docs.gitlab.com/administration/cicd/job_logs/#incremental-logging-architecture)    |
+| `trace_chunks`      | `shared_state`    | [CI trace chunks](https://docs.gitlab.com/administration/cicd/job_logs/#incremental-logging)    |
 | `rate_limiting`     | `cache`           | [Rate limiting](https://docs.gitlab.com/ee/administration/settings/user_and_ip_rate_limits.html) state      |
 | `sessions`          | `shared_state`    | [Sessions](https://docs.gitlab.com/ee/development/session.html#redis)                                        |
 | `repository_cache`  | `cache`           | Repository related information                                                                               |

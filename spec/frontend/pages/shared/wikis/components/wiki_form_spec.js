@@ -92,7 +92,6 @@ describe('WikiForm', () => {
     mountFn = shallowMount,
     persisted = false,
     pageInfo,
-    glFeatures = { wikiSwitchBetweenContentEditorRawMarkdown: false },
     provide = {},
     templates = [],
   } = {}) {
@@ -102,7 +101,6 @@ describe('WikiForm', () => {
           isEditingPath: true,
           templates,
           formatOptions,
-          glFeatures,
           pageInfo: {
             ...(persisted ? pageInfoPersisted : pageInfoNew),
             ...pageInfo,

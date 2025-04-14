@@ -1,43 +1,42 @@
 # frozen_string_literal: true
 
-# This cop enforces the enum value conventions from the enum style guide:
-# https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#enums
-#
-# @example
-#
-#   # bad
-#   class BadEnum < BaseEnum
-#     graphql_name 'Bad'
-#
-#     value 'foo'
-#   end
-#
-#   class UngoodEnum < BaseEnum
-#     graphql_name 'Ungood'
-#
-#     ['bar'].each do |val|
-#       value val
-#      end
-#   end
-#
-#   # good
-#   class GoodEnum < BaseEnum
-#     graphql_name 'Good'
-#
-#     value 'FOO'
-#   end
-#
-#   class GreatEnum < BaseEnum
-#     graphql_name 'Great'
-#
-#     ['bar'].each do |val|
-#       value val.upcase
-#      end
-#   end
-
 module RuboCop
   module Cop
     module Graphql
+      # This cop enforces the enum value conventions from the enum style guide:
+      # https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#enums
+      #
+      # @example
+      #
+      #   # bad
+      #   class BadEnum < BaseEnum
+      #     graphql_name 'Bad'
+      #
+      #     value 'foo'
+      #   end
+      #
+      #   class UngoodEnum < BaseEnum
+      #     graphql_name 'Ungood'
+      #
+      #     ['bar'].each do |val|
+      #       value val
+      #      end
+      #   end
+      #
+      #   # good
+      #   class GoodEnum < BaseEnum
+      #     graphql_name 'Good'
+      #
+      #     value 'FOO'
+      #   end
+      #
+      #   class GreatEnum < BaseEnum
+      #     graphql_name 'Great'
+      #
+      #     ['bar'].each do |val|
+      #       value val.upcase
+      #      end
+      #   end
       class EnumValues < RuboCop::Cop::Base
         MSG = "Enum values must either be an uppercase string literal or uppercased with the `upcase` method. " \
               "See https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#enums"

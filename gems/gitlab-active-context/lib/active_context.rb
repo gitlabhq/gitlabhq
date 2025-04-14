@@ -29,4 +29,8 @@ module ActiveContext
   def self.track!(*objects, collection: nil, queue: nil)
     ActiveContext::Tracker.track!(*objects, collection: collection, queue: queue)
   end
+
+  def self.execute_all_queues!
+    raw_queues.each { |q| BulkProcessQueue.process!(q.class, q.shard) }
+  end
 end

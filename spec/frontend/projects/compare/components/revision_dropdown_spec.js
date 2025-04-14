@@ -1,29 +1,40 @@
-import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
-import AxiosMockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import { GlCollapsibleListbox } from '@gitlab/ui';
+import AxiosMockAdapter from 'axios-mock-adapter';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import RevisionDropdown from '~/projects/compare/components/revision_dropdown.vue';
-import { revisionDropdownDefaultProps as defaultProps } from './mock_data';
+import { logError } from '~/lib/logger';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import {
+  expectedBranchesItems,
+  expectedItems,
+  expectedTagsItems,
+  revisionDropdownDefaultProps as defaultProps,
+} from './mock_data';
 
 jest.mock('~/alert');
+jest.mock('~/lib/logger');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('RevisionDropdown component', () => {
   let wrapper;
   let axiosMock;
 
+  const Branches = ['branch-1', 'branch-2'];
+  const Tags = ['tag-1', 'tag-2', 'tag-3'];
+
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(RevisionDropdown, {
+    wrapper = shallowMountExtended(RevisionDropdown, {
       propsData: {
         ...defaultProps,
         ...props,
       },
       stubs: {
-        GlDropdown,
-        GlSearchBoxByType,
+        GlCollapsibleListbox,
       },
     });
   };
@@ -36,55 +47,57 @@ describe('RevisionDropdown component', () => {
     axiosMock.restore();
   });
 
-  const findGlDropdown = () => wrapper.findComponent(GlDropdown);
-  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
-  const findBranchesDropdownItem = () =>
-    wrapper.findAllComponents('[data-testid="branches-dropdown-item"]');
-  const findTagsDropdownItem = () =>
-    wrapper.findAllComponents('[data-testid="tags-dropdown-item"]');
+  const findGlListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findGlListboxSearchInput = () => wrapper.findByTestId('listbox-search-input').find('input');
 
-  it('sets hidden input', () => {
-    createComponent();
-    expect(wrapper.find('input[type="hidden"]').attributes('value')).toBe(
-      defaultProps.paramsBranch,
-    );
-  });
-
-  it('update the branches on success', async () => {
-    const Branches = ['branch-1', 'branch-2'];
-    const Tags = ['tag-1', 'tag-2', 'tag-3'];
-
+  beforeEach(() => {
     axiosMock.onGet(defaultProps.refsProjectPath).replyOnce(HTTP_STATUS_OK, {
       Branches,
       Tags,
     });
 
     createComponent();
+  });
 
-    expect(findBranchesDropdownItem()).toHaveLength(0);
-    expect(findTagsDropdownItem()).toHaveLength(0);
+  it('sets hidden input', () => {
+    expect(wrapper.find('input[type="hidden"]').attributes('value')).toBe(
+      defaultProps.paramsBranch,
+    );
+  });
 
-    await waitForPromises();
+  describe('updates the branches and tags on success', () => {
+    it.each`
+      description                            | responseData          | expectedResult
+      ${'includes both if both exists'}      | ${{ Branches, Tags }} | ${expectedItems}
+      ${'does not include tags if none'}     | ${{ Branches }}       | ${expectedBranchesItems}
+      ${'does not include branches if none'} | ${{ Tags }}           | ${expectedTagsItems}
+    `('$description', async ({ responseData, expectedResult }) => {
+      axiosMock.onGet(defaultProps.refsProjectPath).replyOnce(HTTP_STATUS_OK, responseData);
 
-    expect(findBranchesDropdownItem()).toHaveLength(Branches.length);
-    expect(findTagsDropdownItem()).toHaveLength(Tags.length);
+      createComponent();
 
-    Branches.forEach((branch, index) => {
-      expect(findBranchesDropdownItem().at(index).text()).toBe(branch);
-    });
+      expect(findGlListbox().props('items')).toHaveLength(0);
 
-    Tags.forEach((tag, index) => {
-      expect(findTagsDropdownItem().at(index).text()).toBe(tag);
+      await waitForPromises();
+
+      expect(findGlListbox().props('items')).toStrictEqual(expectedResult);
     });
   });
 
   it('shows an alert on error', async () => {
-    axiosMock.onGet('some/invalid/path').replyOnce(HTTP_STATUS_NOT_FOUND);
+    const mockError = new Error('Request failed with status code 404');
+    mockError.response = { status: HTTP_STATUS_NOT_FOUND };
+    axiosMock.onGet(defaultProps.refsProjectPath).replyOnce(HTTP_STATUS_NOT_FOUND);
 
     createComponent();
     await waitForPromises();
 
     expect(createAlert).toHaveBeenCalled();
+    expect(logError).toHaveBeenCalledWith(
+      `There was an error while loading the branch/tag list. Please try again.`,
+      mockError,
+    );
+    expect(Sentry.captureException).toHaveBeenCalledWith(mockError);
   });
 
   it('makes a new request when refsProjectPath is changed', async () => {
@@ -104,15 +117,6 @@ describe('RevisionDropdown component', () => {
   });
 
   describe('search', () => {
-    it('shows alert on error', async () => {
-      axiosMock.onGet('some/invalid/path').replyOnce(HTTP_STATUS_NOT_FOUND);
-
-      createComponent();
-      await waitForPromises();
-
-      expect(createAlert).toHaveBeenCalled();
-    });
-
     it('makes request with search param', async () => {
       jest.spyOn(axios, 'get').mockResolvedValue({
         data: {
@@ -123,7 +127,8 @@ describe('RevisionDropdown component', () => {
 
       const mockSearchTerm = 'foobar';
       createComponent();
-      findSearchBox().vm.$emit('input', mockSearchTerm);
+
+      findGlListbox().vm.$emit('search', mockSearchTerm);
       await waitForPromises();
 
       expect(axios.get).toHaveBeenCalledWith(
@@ -135,39 +140,54 @@ describe('RevisionDropdown component', () => {
         }),
       );
     });
+
+    it('should handle enter key', async () => {
+      const mockCommitHash = '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9';
+      wrapper = mountExtended(RevisionDropdown, {
+        propsData: {
+          ...defaultProps,
+        },
+      });
+
+      const mockClose = jest.spyOn(
+        wrapper.vm.$refs.collapsibleDropdown.$refs.baseDropdown,
+        'close',
+      );
+
+      findGlListbox().vm.$emit('shown');
+      findGlListboxSearchInput().element.value = mockCommitHash;
+      await findGlListboxSearchInput().trigger('keydown', { code: 'Enter' });
+      await nextTick();
+
+      expect(mockClose).toHaveBeenCalled();
+      expect(findGlListbox().props('toggleText')).toBe(mockCommitHash);
+    });
   });
 
-  describe('GlDropdown component', () => {
-    it('renders props', () => {
-      createComponent();
-      expect(wrapper.props()).toEqual(expect.objectContaining(defaultProps));
-    });
-
-    it('display default text', () => {
+  describe('GlCollapsibleListbox component', () => {
+    it('renders with correct props', () => {
       createComponent({
         paramsBranch: null,
       });
-      expect(findGlDropdown().props('text')).toBe('Select branch/tag');
+      expect(findGlListbox().props()).toMatchObject({
+        block: true,
+        headerText: 'Select Git revision',
+        items: [],
+        searchPlaceholder: 'Filter by Git revision',
+        searchable: true,
+        searching: false,
+        toggleClass: 'form-control compare-dropdown-toggle gl-min-w-0',
+        toggleText: 'Select branch/tag',
+      });
     });
 
     it('display params branch text', () => {
-      createComponent();
-      expect(findGlDropdown().props('text')).toBe(defaultProps.paramsBranch);
+      expect(findGlListbox().props('toggleText')).toBe(defaultProps.paramsBranch);
     });
   });
 
-  it('emits `selectRevision` event when another revision is selected', async () => {
-    jest.spyOn(axios, 'get').mockResolvedValue({
-      data: {
-        Branches: ['some-branch'],
-        Tags: [],
-      },
-    });
-
-    createComponent();
-    await nextTick();
-
-    findGlDropdown().findAllComponents(GlDropdownItem).at(0).vm.$emit('click');
+  it('emits `select` event when another revision is selected', () => {
+    findGlListbox().vm.$emit('select', 'some-branch');
 
     expect(wrapper.emitted('selectRevision')[0][0]).toEqual({
       direction: 'to',

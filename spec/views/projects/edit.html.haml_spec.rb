@@ -129,4 +129,58 @@ RSpec.describe 'projects/edit' do
       end
     end
   end
+
+  describe 'restoring a project', feature_category: :groups_and_projects do
+    let_it_be(:organization) { build_stubbed(:organization) }
+
+    shared_examples_for 'renders restore project settings' do
+      it 'renders restore project card and action' do
+        render
+
+        expect(rendered).to render_template('shared/groups_projects/settings/_restore')
+        expect(rendered).to have_link('Restore project')
+      end
+    end
+
+    shared_examples_for 'does not render restore project settings' do
+      it 'does not render restore project card and action' do
+        render
+
+        expect(rendered).to render_template('shared/groups_projects/settings/_restore')
+        expect(rendered).not_to have_link('Restore project')
+      end
+    end
+
+    context 'when downtier_delayed_deletion feature flag is enabled' do
+      context 'when project is pending deletion' do
+        let_it_be(:project) do
+          build_stubbed(:project, marked_for_deletion_at: Date.current, organization: organization)
+        end
+
+        it_behaves_like 'renders restore project settings'
+      end
+
+      context 'when project is not pending deletion' do
+        it_behaves_like 'does not render restore project settings'
+      end
+    end
+
+    context 'when downtier_delayed_deletion feature flag is disabled' do
+      before do
+        stub_feature_flags(downtier_delayed_deletion: false)
+      end
+
+      context 'when project is pending deletion' do
+        let_it_be(:project) do
+          build_stubbed(:project, marked_for_deletion_at: Date.current, organization: organization)
+        end
+
+        it_behaves_like 'does not render restore project settings'
+      end
+
+      context 'when project is not pending deletion' do
+        it_behaves_like 'does not render restore project settings'
+      end
+    end
+  end
 end

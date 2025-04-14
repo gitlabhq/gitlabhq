@@ -194,6 +194,8 @@ export default {
       }
       this.registerAgent();
     },
+    // This method is triggered from outside of the component
+    // eslint-disable-next-line vue/no-unused-properties
     showModalForAgent(name) {
       this.agentName = name;
       this.$refs.modal?.show();

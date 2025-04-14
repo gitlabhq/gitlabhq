@@ -49,6 +49,35 @@ RSpec.describe DeployTokensHelper, feature_category: :continuous_delivery do
     end
   end
 
+  describe '#dependency_proxy_enabled?' do
+    let_it_be(:project) { build(:project) }
+    let_it_be(:user) { build(:user) }
+
+    where(:dependency_proxy_enabled, :can_read_dependency_proxy, :can_manage_deploy_tokens, :result) do
+      true  | true  | true  | true
+      true  | true  | false | true
+      true  | false | true  | true
+      true  | false | false | false
+      false | true  | true  | false
+    end
+
+    with_them do
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(Gitlab.config.dependency_proxy).to receive(:enabled).and_return(dependency_proxy_enabled)
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?).with(user, :read_dependency_proxy, project)
+          .and_return(can_read_dependency_proxy)
+        allow(Ability).to receive(:allowed?).with(user, :manage_deploy_tokens, project)
+          .and_return(can_manage_deploy_tokens)
+      end
+
+      it 'returns expected value' do
+        expect(helper.dependency_proxy_enabled?(project)).to eq(result)
+      end
+    end
+  end
+
   describe '#packages_registry_enabled?' do
     let_it_be(:project) { build(:project) }
     let_it_be(:user) { build(:user) }

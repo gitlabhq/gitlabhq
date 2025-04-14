@@ -1,0 +1,12 @@
+---
+table_name: user_permission_export_upload_uploads
+classes:
+- Upload
+- UserPermissionExportUpload
+feature_categories:
+- system_access
+description: Stores uploads fro UserPermissionExportUpload model
+introduced_by_url:
+milestone: '17.11'
+table_size: small
+gitlab_schema: gitlab_main_clusterwide

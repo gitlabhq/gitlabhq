@@ -129,10 +129,7 @@
               = _('access:')
             %strong
               = visibility_level_content(@project, css_class: visibility_level_color(@project.visibility_level))
-              - if @project.created_and_owned_by_banned_user? && Feature.enabled?(:hide_projects_of_banned_users)
-                = _('This project is hidden because its creator has been banned')
-              - else
-                = visibility_level_label(@project.visibility_level)
+              = visibility_level_label(@project.visibility_level)
 
     = render 'shared/custom_attributes', custom_attributes: @project.custom_attributes
 

@@ -49,6 +49,7 @@ class Project < ApplicationRecord
   include Importable
   include SafelyChangeColumnDefault
   include Todoable
+  include Namespaces::AdjournedDeletable
 
   columns_changing_default :organization_id
 
@@ -183,7 +184,12 @@ class Project < ApplicationRecord
 
   alias_attribute :title, :name
 
+  ## marked_for_deletion_at is deprecated in our v5 REST API in favor of marked_for_deletion_on
+  ## https://docs.gitlab.com/ee/api/projects.html#removals-in-api-v5
+  alias_attribute :marked_for_deletion_on, :marked_for_deletion_at
+
   # Relations
+  belongs_to :deleting_user, foreign_key: 'marked_for_deletion_by_user_id', class_name: 'User'
   belongs_to :pool_repository
   belongs_to :creator, class_name: 'User'
   belongs_to :organization, class_name: 'Organizations::Organization'
@@ -271,9 +277,7 @@ class Project < ApplicationRecord
   has_one :forked_from_project, through: :fork_network_member
 
   # Projects with a very large number of notes may time out destroying them
-  # through the foreign key. Additionally, the deprecated attachment uploader
-  # for notes requires us to use dependent: :destroy to avoid orphaning uploaded
-  # files.
+  # through the foreign key.
   #
   # https://gitlab.com/gitlab-org/gitlab/-/issues/207222
   # Order of this association is important for project deletion.
@@ -404,7 +408,12 @@ class Project < ApplicationRecord
   has_many :lfs_objects, -> { distinct }, through: :lfs_objects_projects
   has_many :lfs_file_locks
   has_many :project_group_links
-  has_many :invited_groups, through: :project_group_links, source: :group
+  has_many :invited_groups, through: :project_group_links, source: :group do
+    def with_developer_access
+      where(project_group_links: { group_access: [Gitlab::Access::DEVELOPER..Gitlab::Access::OWNER] })
+    end
+  end
+
   has_many :todos
   has_many :notification_settings, as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
@@ -427,6 +436,7 @@ class Project < ApplicationRecord
 
   has_many :container_registry_protection_rules, class_name: 'ContainerRegistry::Protection::Rule', inverse_of: :project
   has_many :container_registry_protection_tag_rules, class_name: 'ContainerRegistry::Protection::TagRule', inverse_of: :project
+
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
   # here.
@@ -650,6 +660,11 @@ class Project < ApplicationRecord
   scope :not_in_groups, ->(groups) { where.not(group: groups) }
   scope :by_not_in_root_id, ->(root_id) { joins(:project_namespace).where('namespaces.traversal_ids[1] NOT IN (?)', root_id) }
   scope :not_aimed_for_deletion, -> { where(marked_for_deletion_at: nil).without_deleted }
+  scope :aimed_for_deletion, ->(date) { where('marked_for_deletion_at <= ?', date).without_deleted }
+  scope :with_deleting_user, -> { includes(:deleting_user) }
+  scope :by_marked_for_deletion_on, ->(marked_for_deletion_on) do
+    where(marked_for_deletion_at: marked_for_deletion_on)
+  end
 
   scope :with_storage_feature, ->(feature) do
     where(arel_table[:storage_version].gteq(HASHED_STORAGE_FEATURES[feature]))
@@ -676,10 +691,56 @@ class Project < ApplicationRecord
   scope :sorted_by_storage_size_asc, -> { order_by_storage_size(:asc) }
   scope :sorted_by_storage_size_desc, -> { order_by_storage_size(:desc) }
   scope :order_by_storage_size, ->(direction) do
+    order_by_project_statistics('project_statistics_storage_size', :storage_size, direction)
+  end
+
+  scope :sorted_by_repository_size_asc, -> { order_by_repository_size(:asc) }
+  scope :sorted_by_repository_size_desc, -> { order_by_repository_size(:desc) }
+  scope :order_by_repository_size, ->(direction) do
+    order_by_project_statistics('project_statistics_repository_size', :repository_size, direction)
+  end
+
+  scope :sorted_by_snippets_size_asc, -> { order_by_snippet_size(:asc) }
+  scope :sorted_by_snippets_size_desc, -> { order_by_snippet_size(:desc) }
+  scope :order_by_snippet_size, ->(direction) do
+    order_by_project_statistics('project_statistics_snippets_size', :snippets_size, direction)
+  end
+
+  scope :sorted_by_build_artifacts_size_asc, -> { order_by_build_artifacts_size(:asc) }
+  scope :sorted_by_build_artifacts_size_desc, -> { order_by_build_artifacts_size(:desc) }
+  scope :order_by_build_artifacts_size, ->(direction) do
+    order_by_project_statistics('project_statistics_build_artifacts_size', :build_artifacts_size, direction)
+  end
+
+  scope :sorted_by_lfs_objects_size_asc, -> { order_by_lfs_objects_size(:asc) }
+  scope :sorted_by_lfs_objects_size_desc, -> { order_by_lfs_objects_size(:desc) }
+  scope :order_by_lfs_objects_size, ->(direction) do
+    order_by_project_statistics('project_statistics_lfs_objects_size', :lfs_objects_size, direction)
+  end
+
+  scope :sorted_by_packages_size_asc, -> { order_by_packages_size(:asc) }
+  scope :sorted_by_packages_size_desc, -> { order_by_packages_size(:desc) }
+  scope :order_by_packages_size, ->(direction) do
+    order_by_project_statistics('project_statistics_packages_size', :packages_size, direction)
+  end
+
+  scope :sorted_by_wiki_size_asc, -> { order_by_wiki_size(:asc) }
+  scope :sorted_by_wiki_size_desc, -> { order_by_wiki_size(:desc) }
+  scope :order_by_wiki_size, ->(direction) do
+    order_by_project_statistics('project_statistics_wiki_size', :wiki_size, direction)
+  end
+
+  scope :sorted_by_container_registry_size_asc, -> { order_by_container_registry_size(:asc) }
+  scope :sorted_by_container_registry_size_desc, -> { order_by_container_registry_size(:desc) }
+  scope :order_by_container_registry_size, ->(direction) do
+    order_by_project_statistics('project_statistics_container_registry_size', :container_registry_size, direction)
+  end
+
+  scope :order_by_project_statistics, ->(attribute_name, attribute_column, direction) do
     build_keyset_order_on_joined_column(
       scope: joins(:statistics),
-      attribute_name: 'project_statistics_storage_size',
-      column: ::ProjectStatistics.arel_table[:storage_size],
+      attribute_name: attribute_name,
+      column: ::ProjectStatistics.arel_table[attribute_column],
       direction: direction,
       nullable: :nulls_first
     )
@@ -842,8 +903,8 @@ class Project < ApplicationRecord
 
   scope :with_topic, ->(topic) { where(id: topic.project_topics.select(:project_id)) }
 
-  scope :with_topic_by_name, ->(topic_name) do
-    topic = Projects::Topic.find_by_name(topic_name)
+  scope :with_topic_by_name_and_organization_id, ->(topic_name, organization_ids) do
+    topic = Projects::Topic.find_by_name_and_organization_id(topic_name, organization_ids)
 
     topic ? with_topic(topic) : none
   end
@@ -1009,35 +1070,6 @@ class Project < ApplicationRecord
   scope :for_group_and_its_ancestor_groups, ->(group) { where(namespace_id: group.self_and_ancestors.select(:id)) }
   scope :is_importing, -> { with_import_state.where(import_state: { status: %w[started scheduled] }) }
 
-  scope :without_created_and_owned_by_banned_user, -> do
-    where_not_exists(
-      Users::BannedUser.joins(
-        'INNER JOIN project_authorizations ON project_authorizations.user_id = banned_users.user_id'
-      ).where('projects.creator_id = banned_users.user_id')
-        .where('project_authorizations.project_id = projects.id')
-        .where(project_authorizations: { access_level: Gitlab::Access::OWNER })
-    )
-  end
-
-  scope :with_created_and_owned_by_banned_user, -> do
-    where_exists(
-      Users::BannedUser.joins(
-        'INNER JOIN project_authorizations ON project_authorizations.user_id = banned_users.user_id'
-      ).where('projects.creator_id = banned_users.user_id')
-        .where('project_authorizations.project_id = projects.id')
-        .where(project_authorizations: { access_level: Gitlab::Access::OWNER })
-    )
-  end
-
-  scope :with_active_owners, -> do
-    where_exists(
-      User.active.human.joins(
-        'INNER JOIN project_authorizations ON project_authorizations.user_id = users.id'
-      ).where('project_authorizations.project_id = projects.id')
-        .where(project_authorizations: { access_level: Gitlab::Access::OWNER })
-    )
-  end
-
   class << self
     # Searches for a list of projects based on the query given in `query`.
     #
@@ -1063,28 +1095,36 @@ class Project < ApplicationRecord
       Gitlab::VisibilityLevel.options
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity -- stick to existing implementation for sort params:
     def sort_by_attribute(method)
       case method.to_s
-      when 'storage_size_asc'
-        sorted_by_storage_size_asc
-      when 'storage_size_desc'
-        sorted_by_storage_size_desc
-      when 'latest_activity_desc'
-        sorted_by_updated_desc
-      when 'latest_activity_asc'
-        sorted_by_updated_asc
-      when 'path_asc'
-        sorted_by_path_asc
-      when 'path_desc'
-        sorted_by_path_desc
-      when 'stars_desc'
-        sorted_by_stars_desc
-      when 'stars_asc'
-        sorted_by_stars_asc
+      when 'storage_size_desc' then sorted_by_storage_size_desc
+      when 'storage_size_asc' then sorted_by_storage_size_asc
+      when 'repository_size_desc' then sorted_by_repository_size_desc
+      when 'repository_size_asc' then sorted_by_repository_size_asc
+      when 'snippets_size_desc'then sorted_by_snippets_size_desc
+      when 'snippets_size_asc'then sorted_by_snippets_size_asc
+      when 'build_artifacts_size_desc' then sorted_by_build_artifacts_size_desc
+      when 'build_artifacts_size_asc'then sorted_by_build_artifacts_size_asc
+      when 'lfs_objects_size_desc'then sorted_by_lfs_objects_size_desc
+      when 'lfs_objects_size_asc' then sorted_by_lfs_objects_size_asc
+      when 'packages_size_desc' then sorted_by_packages_size_desc
+      when 'packages_size_asc' then sorted_by_packages_size_asc
+      when 'wiki_size_desc' then sorted_by_wiki_size_desc
+      when 'wiki_size_asc'then sorted_by_wiki_size_asc
+      when 'container_registry_size_desc' then sorted_by_container_registry_size_desc
+      when 'container_registry_size_asc' then sorted_by_container_registry_size_asc
+      when 'latest_activity_desc' then sorted_by_updated_desc
+      when 'latest_activity_asc' then sorted_by_updated_asc
+      when 'path_desc'then sorted_by_path_desc
+      when 'path_asc' then sorted_by_path_asc
+      when 'stars_desc' then sorted_by_stars_desc
+      when 'stars_asc' then sorted_by_stars_asc
       else
         order_by(method)
       end
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     def reference_pattern
       %r{
@@ -1338,6 +1378,7 @@ class Project < ApplicationRecord
   def ancestors(hierarchy_order: nil)
     group&.self_and_ancestors(hierarchy_order: hierarchy_order) || Group.none
   end
+  alias_method :group_and_ancestors, :ancestors
 
   def ancestors_upto_ids(...)
     ancestors_upto(...).pluck(:id)
@@ -2065,6 +2106,10 @@ class Project < ApplicationRecord
     forked_from_project || fork_network&.root_project
   end
 
+  def valid_lfs_oids(oids_to_check)
+    lfs_objects.where(oid: oids_to_check).pluck(:oid)
+  end
+
   def lfs_objects_for_repository_types(*types)
     LfsObject
       .joins(:lfs_objects_projects)
@@ -2289,11 +2334,20 @@ class Project < ApplicationRecord
   end
 
   def public_pages?
-    !!project_feature&.public_pages?
+    !private_pages?
   end
 
   def private_pages?
-    !!project_feature&.private_pages?
+    return false unless Gitlab.config.pages.access_control
+
+    pages_access_control_forced_by_ancestor? ||
+      !!project_feature&.private_pages?
+  end
+
+  def pages_access_control_forced_by_ancestor?
+    return true if ::Gitlab::Pages.access_control_is_forced?
+
+    namespace.pages_access_control_forced_by_self_or_ancestor?
   end
 
   def operations_enabled?
@@ -2956,7 +3010,6 @@ class Project < ApplicationRecord
     return {} unless !forked? && git_objects_poolable?
 
     {
-      repository_storage: repository_storage,
       pool_repository: pool_repository || create_new_pool_repository
     }
   end
@@ -3297,10 +3350,8 @@ class Project < ApplicationRecord
     pending_delete? || hidden?
   end
 
-  def created_and_owned_by_banned_user?
-    return false unless creator
-
-    creator.banned? && team.max_member_access(creator.id) == Gitlab::Access::OWNER
+  def work_item_move_and_clone_flag_enabled?
+    Feature.enabled?(:work_item_move_and_clone, self, type: :beta) || group&.work_item_move_and_clone_flag_enabled?
   end
 
   def work_items_feature_flag_enabled?
@@ -3470,7 +3521,7 @@ class Project < ApplicationRecord
   end
 
   def uploads_sharding_key
-    { namespace_id: namespace_id }
+    { project_id: id }
   end
 
   def pages_url_builder(options = nil)
@@ -3478,6 +3529,17 @@ class Project < ApplicationRecord
       Gitlab::Pages::UrlBuilder.new(self, options)
     end
   end
+
+  def has_container_registry_protected_tag_rules?(action:, access_level:)
+    strong_memoize_with(:has_container_registry_protected_tag_rules, action, access_level) do
+      container_registry_protection_tag_rules.for_actions_and_access([action], access_level).exists?
+    end
+  end
+
+  def job_token_policies_enabled?
+    namespace.root_ancestor.namespace_settings&.job_token_policies_enabled?
+  end
+  strong_memoize_attr :job_token_policies_enabled?
 
   private
 
@@ -3717,7 +3779,7 @@ class Project < ApplicationRecord
   end
 
   def sync_project_namespace?
-    (changes.keys & %w[name path namespace_id namespace visibility_level shared_runners_enabled]).any? && project_namespace.present?
+    (changes.keys & Namespaces::ProjectNamespace::SYNCED_ATTRIBUTES).any? && project_namespace.present?
   end
 
   def reload_project_namespace_details

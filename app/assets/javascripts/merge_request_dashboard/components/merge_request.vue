@@ -49,6 +49,11 @@ export default {
       type: Boolean,
       required: false,
     },
+    newMergeRequestIds: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -83,6 +88,9 @@ export default {
           this.mergeRequest.conflicts)
       );
     },
+    isNewlyAdded() {
+      return this.newMergeRequestIds.includes(this.mergeRequest.id);
+    },
   },
   methods: {
     isScopedLabel,
@@ -91,7 +99,7 @@ export default {
 </script>
 
 <template>
-  <tr :class="{ 'gl-border-b': !isLast }">
+  <tr :class="{ 'gl-border-b': !isLast, 'gl-bg-green-50': isNewlyAdded }">
     <td class="gl-py-4 gl-pl-5 gl-pr-3 gl-align-top">
       <status-badge :merge-request="mergeRequest" :list-id="listId" />
     </td>

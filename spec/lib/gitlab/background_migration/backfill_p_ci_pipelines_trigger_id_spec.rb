@@ -37,10 +37,10 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPCiPipelinesTriggerId,
 
   context 'when ci_trigger_requests belongs to only one pipeline' do
     before do
-      ci_trigger_request.create!(commit_id: pipeline1.id, trigger_id: trigger1.id)
-      ci_trigger_request.create!(commit_id: pipeline2.id, trigger_id: trigger2.id)
-      ci_trigger_request.create!(commit_id: pipeline3.id, trigger_id: trigger3.id)
-      ci_trigger_request.create!(commit_id: nil, trigger_id: trigger4.id)
+      ci_trigger_request.create!(commit_id: pipeline1.id, trigger_id: trigger1.id, project_id: 1)
+      ci_trigger_request.create!(commit_id: pipeline2.id, trigger_id: trigger2.id, project_id: 1)
+      ci_trigger_request.create!(commit_id: pipeline3.id, trigger_id: trigger3.id, project_id: 1)
+      ci_trigger_request.create!(commit_id: nil, trigger_id: trigger4.id, project_id: 1)
     end
 
     it 'updates p_ci_pipelines.trigger_id' do
@@ -65,12 +65,12 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPCiPipelinesTriggerId,
 
   context 'when ci_trigger_requests belongs to multiple pipelines' do
     before do
-      ci_trigger_request.create!(commit_id: pipeline1.id, trigger_id: trigger1.id)
-      ci_trigger_request.create!(commit_id: pipeline1.id, trigger_id: trigger1.id)
-      ci_trigger_request.create!(commit_id: pipeline1.id, trigger_id: trigger1.id)
-      ci_trigger_request.create!(commit_id: pipeline2.id, trigger_id: trigger2.id)
-      ci_trigger_request.create!(commit_id: pipeline3.id, trigger_id: trigger3.id)
-      ci_trigger_request.create!(commit_id: nil, trigger_id: trigger4.id)
+      ci_trigger_request.create!(commit_id: pipeline1.id, trigger_id: trigger1.id, project_id: 1)
+      ci_trigger_request.create!(commit_id: pipeline1.id, trigger_id: trigger1.id, project_id: 1)
+      ci_trigger_request.create!(commit_id: pipeline1.id, trigger_id: trigger1.id, project_id: 1)
+      ci_trigger_request.create!(commit_id: pipeline2.id, trigger_id: trigger2.id, project_id: 1)
+      ci_trigger_request.create!(commit_id: pipeline3.id, trigger_id: trigger3.id, project_id: 1)
+      ci_trigger_request.create!(commit_id: nil, trigger_id: trigger4.id, project_id: 1)
     end
 
     it 'updates p_ci_pipelines.trigger_id' do

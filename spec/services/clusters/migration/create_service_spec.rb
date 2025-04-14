@@ -111,6 +111,15 @@ RSpec.describe Clusters::Migration::CreateService, feature_category: :deployment
       expect(token.name).to eq(agent_name)
       expect(token.created_by_user).to eq(user)
     end
+
+    it 'schedules a worker to install the agent into the cluster' do
+      allow(Clusters::Migration::InstallAgentWorker).to receive(:perform_async).and_call_original
+
+      expect(response).to be_success
+
+      migration = Clusters::AgentMigration.last
+      expect(Clusters::Migration::InstallAgentWorker).to have_received(:perform_async).with(migration.id).once
+    end
   end
 
   context 'with a project cluster' do

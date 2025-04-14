@@ -9,6 +9,7 @@ module ContainerRegistry
     attr_accessor :media_type
 
     delegate :registry, :client, to: :repository
+    delegate :project, to: :repository, private: true
 
     def initialize(repository, name, from_api: false)
       @repository = repository
@@ -153,12 +154,17 @@ module ContainerRegistry
     end
 
     def protection_rule
-      result = ::ContainerRegistry::Protection::TagRule.new
-      return result if Feature.disabled?(:container_registry_protected_tags, repository.project)
-
-      repository.project.container_registry_protection_tag_rules.each do |rule|
+      result = nil
+      project.container_registry_protection_tag_rules.each do |rule|
         next unless Gitlab::UntrustedRegexp.new(rule.tag_name_pattern).match?(name)
 
+        if rule.immutable?
+          return rule if Feature.enabled?(:container_registry_immutable_tags, project)
+
+          next
+        end
+
+        result ||= ::ContainerRegistry::Protection::TagRule.new
         set_highest_protection_rule_access_level(result, rule)
       end
 
@@ -167,11 +173,12 @@ module ContainerRegistry
     strong_memoize_attr :protection_rule
 
     def protected_for_delete?(user)
-      return false if Feature.disabled?(:container_registry_protected_tags, repository.project)
+      return true if user.nil?
+      return false if protection_rule.nil?
+      return true if protection_rule.immutable?
       return false if user.can_admin_all_resources?
-      return false unless protection_rule.minimum_access_level_for_delete
 
-      max_access = user.max_member_access_for_project(repository.project_id)
+      max_access = repository.project.team.max_member_access(user.id)
       protection_rule.delete_restricted?(max_access)
     end
 

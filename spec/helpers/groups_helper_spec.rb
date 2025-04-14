@@ -735,22 +735,22 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
   describe('#group_confirm_modal_data') do
     using RSpec::Parameterized::TableSyntax
-
     let_it_be(:group) { create(:group, path: "foo") }
 
     fake_form_id = "fake_form_id"
-    where(:prevent_delete_response, :is_button_disabled, :form_value_id, :permanently_remove, :button_text, :has_security_policy_project) do
-      true      | "true"      | nil           |  false  | "Delete" | true
-      true      | "true"      | fake_form_id  |  true   | nil | false
-      false     | "true" | nil | false | "Delete group" | true
-      false     | "false" | fake_form_id | true | nil | false
+    where(:prevent_delete_response, :adjourned_deletion, :is_button_disabled, :form_value_id, :permanently_remove, :button_text, :has_security_policy_project) do
+      true  | false | "true"  | nil           | false | "Delete"       | true
+      true  | true  | "true"  | fake_form_id  | true  | nil            | false
+      false | false | "true"  | nil           | false | "Delete group" | true
+      false | true  | "false" | fake_form_id  | true  | nil            | false
     end
 
     with_them do
       it "returns expected parameters" do
         allow(group).to receive(:linked_to_subscription?).and_return(prevent_delete_response)
+        allow(group).to receive(:adjourned_deletion?).and_return(adjourned_deletion)
 
-        expected = helper.group_confirm_modal_data(group: group, remove_form_id: form_value_id, button_text: button_text, has_security_policy_project: has_security_policy_project)
+        expected = helper.group_confirm_modal_data(group: group, remove_form_id: form_value_id, button_text: button_text, has_security_policy_project: has_security_policy_project, permanently_remove: permanently_remove)
         expect(expected).to eq({
           button_text: button_text.nil? ? "Delete group" : button_text,
           confirm_danger_message: remove_group_message(group, permanently_remove),
@@ -761,6 +761,81 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
           html_confirmation_message: 'true'
         })
       end
+    end
+  end
+
+  describe '#remove_group_message' do
+    let_it_be(:group) { create(:group) }
+    let(:delayed_deletion_message) { "The contents of this group, its subgroups and projects will be permanently deleted after" }
+    let(:permanent_deletion_message) { ["You are about to delete the group #{group.name}", "After you delete a group, you <strong>cannot</strong> restore it or its components."] }
+
+    subject { helper.remove_group_message(group, false) }
+
+    shared_examples 'permanent deletion message' do
+      it 'returns the message related to permanent deletion' do
+        expect(subject).to include(*permanent_deletion_message)
+      end
+    end
+
+    shared_examples 'delayed deletion message' do
+      it 'returns the message related to delayed deletion' do
+        expect(subject).to include(delayed_deletion_message)
+      end
+    end
+
+    context 'delayed deletion feature is available' do
+      before do
+        allow(group).to receive(:adjourned_deletion?).and_return(true)
+      end
+
+      it_behaves_like 'delayed deletion message'
+
+      context 'group is already marked for deletion' do
+        before do
+          create(:group_deletion_schedule, group: group, marked_for_deletion_on: Date.current)
+          allow(group).to receive(:marked_for_deletion?).and_return(true)
+        end
+
+        it_behaves_like 'permanent deletion message'
+      end
+
+      context 'when group delay deletion is enabled' do
+        before do
+          stub_application_setting(delayed_group_deletion: true)
+        end
+
+        it_behaves_like 'delayed deletion message'
+      end
+
+      context 'when group delay deletion is disabled' do
+        before do
+          stub_application_setting(delayed_group_deletion: false)
+        end
+
+        it_behaves_like 'delayed deletion message'
+      end
+
+      context "group has not been marked for deletion" do
+        let(:group) { build(:group) }
+
+        context "'permanently_remove' argument is set to 'true'" do
+          it "displays permanent deletion message" do
+            allow(group).to receive(:marked_for_deletion?).and_return(false)
+            allow(group).to receive(:adjourned_deletion?).and_return(true)
+
+            expect(subject).to include(delayed_deletion_message)
+            expect(helper.remove_group_message(group, true)).to include(*permanent_deletion_message)
+          end
+        end
+      end
+    end
+
+    context 'delayed deletion feature is not available' do
+      before do
+        stub_feature_flags(downtier_delayed_deletion: false)
+      end
+
+      it_behaves_like 'permanent deletion message'
     end
   end
 

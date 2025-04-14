@@ -50,6 +50,11 @@ class Ldap::OmniauthCallbacksController < OmniauthCallbacksController
       server['provider_name']
     end
   end
+
+  override :log_audit_event
+  def log_audit_event(user, options = {})
+    super(user, options, 'authenticated_with_ldap')
+  end
 end
 
 Ldap::OmniauthCallbacksController.prepend_mod_with('Ldap::OmniauthCallbacksController')

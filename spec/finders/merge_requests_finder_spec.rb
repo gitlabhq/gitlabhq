@@ -57,6 +57,40 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           end
         end
 
+        context 'filters by author or assignee' do
+          let_it_be(:merge_request6) do
+            create(
+              :merge_request, :simple, :unique_branches, assignees: [user], reviewers: [create(:user)],
+              source_project: project1, target_project: project1
+            )
+          end
+
+          let_it_be(:merge_request7) do
+            create(
+              :merge_request, :simple, :unique_branches, assignees: [user], reviewers: [create(:user)],
+              source_project: project1, target_project: project1
+            )
+          end
+
+          let(:params) { { author_id: user.id, include_assigned: true } }
+
+          it 'returns merge requests the user is an author or an assignee of' do
+            expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request3, merge_request4, merge_request5, merge_request6, merge_request7)
+          end
+
+          context 'with review_state' do
+            let(:params) { { author_id: user.id, include_assigned: true, review_state: 'requested_changes' } }
+
+            before_all do
+              merge_request7.merge_request_reviewers.update_all(state: :requested_changes)
+            end
+
+            it 'returns merge requests the user is an author or an assignee of and reviewers with requested_changes' do
+              expect(merge_requests).to contain_exactly(merge_request7)
+            end
+          end
+        end
+
         context 'with nonexistent author ID and MR term using CTE for search' do
           let(:params) { { author_id: 'does-not-exist', search: 'git', attempt_group_search_optimizations: true } }
 
@@ -621,6 +655,28 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           let(:params) { { not: { reviewer_id: 99999 } } }
 
           it { is_expected.to be_empty }
+        end
+
+        context 'by no review requested OR only reviewer' do
+          let(:params) { { or: { reviewer_wildcard: 'none', only_reviewer_username: user2.username } } }
+          let(:expected_mr) { [merge_request1, merge_request2, merge_request4, merge_request5] }
+
+          it { is_expected.to contain_exactly(*expected_mr) }
+        end
+
+        context 'by more than a single reviewer with username' do
+          let_it_be(:merge_request6) do
+            create(
+              :merge_request, assignees: [user], author: user, reviewers: [user2, create(:user)],
+              source_project: project1, target_project: project1,
+              target_branch: 'merged-target'
+            )
+          end
+
+          let(:params) { { not: { only_reviewer: true, reviewer_username: user2.username } } }
+          let(:expected_mr) { [merge_request3, merge_request6] }
+
+          it { is_expected.to contain_exactly(*expected_mr) }
         end
       end
 

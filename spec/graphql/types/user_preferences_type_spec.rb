@@ -15,6 +15,7 @@ RSpec.describe Types::UserPreferencesType, feature_category: :user_profile do
       organization_groups_projects_sort
       organization_groups_projects_display
       timezone
+      merge_request_dashboard_list_type
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

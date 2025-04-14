@@ -571,16 +571,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
 
   context 'with development widget' do
     context 'for closing merge requests field' do
-      before do
-        [item1, item2].each do |item|
-          create(
-            :merge_requests_closing_issues,
-            issue: item,
-            merge_request: create(:merge_request, source_project: project, target_branch: "feature#{item.id}")
-          )
-        end
-      end
-
+      let(:work_items) { [item1, item2] }
       let(:fields) do
         <<~GRAPHQL
           nodes {
@@ -589,6 +580,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
               type
               ... on WorkItemWidgetDevelopment {
                 closingMergeRequests {
+                  count
                   nodes {
                     id
                     fromMrDescription
@@ -599,6 +591,16 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
             }
           }
         GRAPHQL
+      end
+
+      before do
+        work_items.each do |item|
+          create(
+            :merge_requests_closing_issues,
+            issue: item,
+            merge_request: create(:merge_request, source_project: project, target_branch: "feature#{item.id}")
+          )
+        end
       end
 
       it 'avoids N+1 queries' do
@@ -1048,6 +1050,28 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
 
         it 'returns items without the reaction emoji' do
           expect(item_ids).to contain_exactly(item2.to_global_id.to_s, confidential_item.to_global_id.to_s)
+        end
+      end
+    end
+
+    context 'when filtering by types' do
+      let(:item_filter_params) { { types: [:TASK] } }
+
+      let_it_be(:task) { create(:work_item, :task, project: project) }
+
+      before do
+        post_graphql(query, current_user: current_user)
+      end
+
+      it 'returns items with selected types' do
+        expect(item_ids).to contain_exactly(task.to_global_id.to_s)
+      end
+
+      context 'when using NOT' do
+        let(:item_filter_params) { { not: { types: [:ISSUE] } } }
+
+        it 'returns items without selected types' do
+          expect(item_ids).to contain_exactly(task.to_global_id.to_s)
         end
       end
     end

@@ -195,7 +195,7 @@ Gitaly and GitLab use two shared secrets for authentication:
      gitlab_shell['secret_token'] = 'shellsecret'
      ```
 
-    On all nodes running Gitaly, edit `/etc/gitlab/gitlab.rb`:
+     On all nodes running Gitaly, edit `/etc/gitlab/gitlab.rb`:
 
      ```ruby
      gitaly['gitlab_secret'] = 'shellsecret'
@@ -635,17 +635,17 @@ This secret can be generated with `openssl rand -base64 24` to generate a random
 For example, to change the Gitaly listening interface to `0.0.0.0:8075`:
 
 ```ruby
-# in /etc/gitlab/gitlab.rb
-gitlab_rails['gitaly_token'] = 'enter-secret-token-here'
+# /etc/gitlab/gitlab.rb
+# Add a shared token for Gitaly authentication
+gitlab_shell['secret_token'] = 'your_secure_token_here'
+gitlab_rails['gitaly_token'] = 'your_secure_token_here'
 
-gitlab_rails['repositories_storages'] = {
-  'default'  => { 'gitaly_address' => 'tcp://gitlab.example.com:8075' },
-}
-
+# Gitaly configuration
+gitaly['gitlab_secret'] = 'your_secure_token_here'
 gitaly['configuration'] = {
   listen_addr: '0.0.0.0:8075',
   auth: {
-    token: 'enter-secret-token-here',
+    token: 'your_secure_token_here',
   },
   storage: [
     {
@@ -654,6 +654,14 @@ gitaly['configuration'] = {
     },
   ]
 }
+
+# Tell Rails where to find Gitaly
+gitlab_rails['repositories_storages'] = {
+  'default' => { 'gitaly_address' => 'tcp://ip_address_here:8075' },
+}
+
+# Internal API URL (important for multi-server setups)
+gitlab_rails['internal_api_url'] = 'http://ip_address_here'
 ```
 
 ## Control groups
@@ -1146,7 +1154,7 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
    ssh-keygen -t ed25519 -f signing_key.ssh
    ```
 
-1. On the Gitaly nodes, copy the key into `/etc/gitlab/gitaly/`.
+1. On the Gitaly nodes, copy the key into `/etc/gitlab/gitaly/` and ensure the `git` user has permissions to read the file.
 1. Edit `/etc/gitlab/gitlab.rb` and configure `gitaly['git']['signing_key']`:
 
    ```ruby

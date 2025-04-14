@@ -19,7 +19,10 @@ module Packages
         reason: :conflict
       ).freeze
 
+      UNAUTHORIZED_ERROR = ServiceResponse.error(message: 'Unauthorized', reason: :unauthorized).freeze
+
       def execute
+        return UNAUTHORIZED_ERROR unless can?(current_user, :create_package, project)
         return DUPLICATE_ERROR unless ::Namespace::PackageSetting.duplicates_allowed?(existing_package)
 
         package = try_obtain_lease { process_package }

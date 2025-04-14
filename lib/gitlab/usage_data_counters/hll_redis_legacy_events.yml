@@ -267,7 +267,6 @@
 - i_quickactions_rebase
 - i_quickactions_relabel
 - i_quickactions_relate
-- i_quickactions_remind_me
 - i_quickactions_remove_child_epic
 - i_quickactions_remove_contacts
 - i_quickactions_remove_due_date

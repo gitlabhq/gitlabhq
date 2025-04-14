@@ -68,7 +68,7 @@ Both of these instances are connected to Sentry so make sure you check the proje
 there for any exceptions while testing your feature after enabling the feature flag.
 
 For these pre-production environments, it's strongly encouraged to run the command in
-`#staging`, `#production`, or `#chatops-ops-test`, for improved visibility.
+`#staging`, `#production`, or `#chat-ops-test`, for improved visibility.
 
 #### Enabling the feature flag for a given percentage of actors
 
@@ -515,7 +515,7 @@ You can use the following ChatOps command to see a feature flag's current state:
 
 Since this is a read-only command, you can avoid cluttering the production channels by either:
 
-- Running it in the `#chatops-ops-test` Slack channel
+- Running it in the `#chat-ops-test` Slack channel
 - Sending it as a direct message to the ChatOps bot
 
 The result of this command will display:

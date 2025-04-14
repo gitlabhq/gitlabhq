@@ -18,6 +18,19 @@ module RapidDiffsResource
     }
   end
 
+  def diffs_stats
+    return render_404 unless rapid_diffs_enabled?
+    return render_404 unless diffs_resource.present?
+
+    render json: RapidDiffs::DiffsStatsEntity.represent(
+      diffs_resource,
+      {
+        email_path: email_format_path,
+        diff_path: complete_diff_path
+      }
+    )
+  end
+
   private
 
   def rapid_diffs_enabled?
@@ -30,5 +43,15 @@ module RapidDiffsResource
 
   def diffs_stream_resource_url(resource, offset, diff_view)
     raise NotImplementedError
+  end
+
+  # When overridden this mthod should return a path to view diffs in an email-friendly format.
+  def email_format_path
+    nil
+  end
+
+  # When overridden this method should return a path to view the complete diffs in the UI.
+  def complete_diff_path
+    nil
   end
 end

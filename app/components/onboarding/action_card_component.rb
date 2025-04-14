@@ -8,7 +8,6 @@ module Onboarding
     # @param [String] description
     # @param [String] icon
     # @param [String] href
-    # @param [Symbol] variant
     # @param [Hash] html_options
     # @param [Hash] link_options
 
@@ -17,7 +16,6 @@ module Onboarding
       description: nil,
       icon: nil,
       href: nil,
-      variant: :default,
       link_options: {},
       **html_options
     )
@@ -25,7 +23,6 @@ module Onboarding
       @description = description
       @icon = icon.to_s
       @href = href
-      @variant = filter_attribute(variant.to_sym, VARIANT_OPTIONS, default: :default)
       @html_options = html_options
       @link_options = link_options
     end
@@ -36,11 +33,11 @@ module Onboarding
     renders_one :this_is_text
 
     def card_classes
-      ["action-card", "action-card-#{@variant}"]
+      ["action-card"]
     end
 
     def card_icon
-      @variant == :success ? 'check' : @icon
+      @icon
     end
 
     def link?

@@ -81,7 +81,8 @@ module JiraImport
       Gitlab::JiraImport.validate_project_settings!(project, user: user)
 
       return build_error_response(_('Unable to find Jira project to import data from.')) if jira_project_key.blank?
-      return build_error_response(_('Jira import is already running.')) if import_in_progress?
+
+      build_error_response(_('Jira import is already running.')) if import_in_progress?
     rescue Projects::ImportService::Error => e
       build_error_response(e.message)
     end

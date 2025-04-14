@@ -66,4 +66,4 @@ Before submitting a merge request for a new feature:
 
 ## Related links
 
-- [Large tables limitations](../development/database/large_tables_limitations.md)
+- [Large tables limitations](database/large_tables_limitations.md)

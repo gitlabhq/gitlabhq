@@ -5,7 +5,7 @@
  * @param {Object} object containing rawMarkdown, sourcepos, checkboxChecked properties
  * @returns String with toggled checkboxes
  */
-export const toggleMarkCheckboxes = ({ rawMarkdown, sourcepos, checkboxChecked }) => {
+export const toggleCheckbox = ({ rawMarkdown, sourcepos, checkboxChecked }) => {
   // Extract the description text
   const [startRange] = sourcepos.split('-');
   let [startRow] = startRange.split(':');

@@ -19,6 +19,35 @@ class ApplicationMailer < ActionMailer::Base
 
   private
 
+  # Formats arguments into a String suitable for use as an email subject
+  #
+  # extra - Extra Strings to be inserted into the subject
+  #
+  # Examples
+  #
+  #   >> subject('Lorem ipsum')
+  #   => "Lorem ipsum"
+  #
+  #   # Automatically inserts Project name when @project is set
+  #   >> @project = Project.last
+  #   => #<Project id: 1, name: "Ruby on Rails", path: "ruby_on_rails", ...>
+  #   >> subject('Lorem ipsum')
+  #   => "Ruby on Rails | Lorem ipsum "
+  #
+  #   # Accepts multiple arguments
+  #   >> subject('Lorem ipsum', 'Dolor sit amet')
+  #   => "Lorem ipsum | Dolor sit amet"
+  def subject(*extra)
+    subject = []
+
+    subject << @project.name if @project
+    subject << @group.name if @group
+    subject << @namespace.name if @namespace && !@project
+    subject.concat(extra) if extra.present?
+
+    EmailsHelper.subject_with_suffix(subject)
+  end
+
   def render_with_default_locale(&block)
     Gitlab::I18n.with_default_locale(&block)
   end

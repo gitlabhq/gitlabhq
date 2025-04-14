@@ -88,7 +88,6 @@ $gl-font-size-16: 16px;
 /*
  * Lists
  */
-$list-border: rgba(0, 0, 0, 0.05);
 $list-text-height: 42px;
 
 /*
@@ -179,8 +178,6 @@ $gl-btn-active-background: rgba(0, 0, 0, 0.16);
 /*
  * Commit Diff Colors
  */
-$added: #63c363;
-$deleted: #f77;
 $line-added: #ecfdf0;
 $line-added-dark: #c7f0d2 !default;
 $line-removed: #fbe9eb;
@@ -204,7 +201,6 @@ $line-removed-transparent: rgba(235, 145, 155, 0.2);
 $line-removed-dark-transparent: rgba(246, 53, 85, 0.2);
 $line-number-old: #f9d7dc;
 $line-number-new: #ddfbe6;
-$line-target-blue: $blue-50;
 $dark-diff-match-bg: rgba($white, 0.3);
 $dark-diff-match-color: rgba($white, 0.1);
 $diff-jagged-border-gradient-color: $gray-200;

@@ -13,8 +13,6 @@ module Import
     deduplicate :until_executed
     sidekiq_options retry: 5, dead: false
     sidekiq_options max_retries_after_interruption: 20
-
-    # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/504995
     concurrency_limit -> { 4 }
 
     sidekiq_retries_exhausted do |msg, exception|

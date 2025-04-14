@@ -11,16 +11,15 @@ REST API resources are documented in Markdown under
 resource has its own Markdown file, which is linked from
 [`api_resources.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/api/api_resources.md).
 
-When modifying the Markdown, also update the corresponding
-[OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/api/openapi)
-if one exists for the resource. If not, consider creating one. Match the latest
-[OpenAPI 3.0.x specification](https://swagger.io/specification/). (For more
-information, see the discussion in this
-[issue](https://gitlab.com/gitlab-org/gitlab/-/issues/16023#note_370901810).)
+When modifying the Markdown or API code, also update the corresponding
+[OpenAPI definition](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/api/openapi), by running `bin/rake gitlab:openapi:generate`.
+To check if the OpenAPI definition needs to be updated, you can run `bin/rake gitlab:openapi:check_docs`.
+This is also checked by the `openapi-doc-check` CI/CD job that runs for commits that modify API code or documentation.
 
-In the Markdown doc for a resource (AKA endpoint):
+In the Markdown doc for a resource (the API endpoint):
 
-- Every method must have the REST API request. For example:
+- Every method must have the REST API request. The request should include the HTTP method
+(like GET, PUT, DELETE) followed by the request path. The path should always start with a `/`. For example:
 
   ```plaintext
   GET /api/v4/projects/:id/repository/branches
@@ -104,7 +103,7 @@ Example response:
 
 ## History
 
-Add [history](../documentation/styleguide/availability_details.md#history)
+Add [history](styleguide/availability_details.md#history)
 to describe new or updated API calls.
 
 To add history for an individual attribute, include it in the history
@@ -126,7 +125,7 @@ If the API or attribute is deployed behind a feature flag,
 ## Deprecations
 
 To document the deprecation of an API endpoint, follow the steps to
-[deprecate a page or topic](../documentation/styleguide/deprecations_and_removals.md).
+[deprecate a page or topic](styleguide/deprecations_and_removals.md).
 
 To deprecate an attribute:
 

@@ -8,6 +8,6 @@ description: Store allocated assignees for merge requests
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26496
 milestone: '11.10'
 gitlab_schema: gitlab_main_cell
-table_size: small
+table_size: medium
 sharding_key:
   project_id: projects

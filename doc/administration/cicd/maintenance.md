@@ -90,9 +90,12 @@ ps = Ci::CreatePipelineService.new(schedule.project, user, ref: schedule.ref).ex
 
 {{< alert type="warning" >}}
 
-The ability to pass a runner registration token, and support for certain configuration arguments, was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal
-in GitLab 18.0. Runner authentication tokens should be used instead. For more information, see
+The option to pass runner registration tokens and support for certain configuration arguments are
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal in GitLab 20.0.
+Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+to generate an authentication token to register runners. This process provides full
+traceability of runner ownership and enhances your runner fleet's security.
+For more information, see
 [Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
 
 {{< /alert >}}
@@ -109,9 +112,12 @@ Gitlab::CurrentSettings.current_application_settings.runners_registration_token
 
 {{< alert type="warning" >}}
 
-The ability to pass a runner registration token, and support for certain configuration arguments, was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal
-in GitLab 18.0. Runner authentication tokens should be used instead. For more information, see
+The option to pass runner registration tokens and support for certain configuration arguments are
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal in GitLab 20.0.
+Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+to generate an authentication token to register runners. This process provides full
+traceability of runner ownership and enhances your runner fleet's security.
+For more information, see
 [Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
 
 {{< /alert >}}

@@ -218,11 +218,10 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
     end
 
     context 'for N+1 queries with isCatalogResource' do
-      let_it_be(:project1) { create(:project, group: group) }
-      let_it_be(:project2) { create(:project, group: group) }
+      let_it_be(:project1) { create(:project, group: group, owners: current_user) }
+      let_it_be(:project2) { create(:project, group: group, owners: current_user) }
 
-      it 'avoids N+1 database queries' do
-        pending('See: https://gitlab.com/gitlab-org/gitlab/-/issues/403634')
+      it 'avoids N+1 database queries', :request_store do
         ctx = { current_user: current_user }
 
         baseline_query = graphql_query_for(:project, { full_path: project1.full_path }, 'isCatalogResource')

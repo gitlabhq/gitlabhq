@@ -65,10 +65,17 @@ start-as-if-foss:
     - prepare-as-if-foss-branch
     - prepare-as-if-foss-env
   inherit:
-    variables: false  # Otherwise variables will be messed up
+    # runner variable defaults are defined under global `variables:` key
+    # make sure default values are inherited, otherwise these will be interpreted literally in the downstream pipeline
+    variables:
+      - GITLAB_LARGE_RUNNER_OPTIONAL
+      - GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
   variables:
     START_AS_IF_FOSS: $START_AS_IF_FOSS
     RUBY_VERSION: $RUBY_VERSION
+    # Use same runner tags as in the parent project
+    GITLAB_LARGE_RUNNER_OPTIONAL: $GITLAB_LARGE_RUNNER_OPTIONAL
+    GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL: $GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
     # Variables for `detect-tests` to work in FOSS
     FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH: $FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH
     FIND_CHANGES_MERGE_REQUEST_IID: $FIND_CHANGES_MERGE_REQUEST_IID
@@ -116,7 +123,7 @@ delete-as-if-foss-branch:
     - .as-if-foss:rules:start-as-if-foss:allow-failure:manual
     - .as-if-foss-variables
   image:
-    name: alpine/git
+    name: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine/git
     entrypoint: [""]
   stage: prepare
   timeout: 10m
@@ -139,7 +146,7 @@ delete-as-if-foss-branch:
 delete-as-if-foss-environment:
   extends:
     - .as-if-foss:rules:start-as-if-foss:allow-failure
-  image: alpine:latest
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:latest
   stage: prepare
   needs:
     - delete-as-if-foss-branch

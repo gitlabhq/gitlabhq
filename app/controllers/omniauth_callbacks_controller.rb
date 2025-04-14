@@ -163,6 +163,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       set_session_active_since(oauth['provider']) if ::AuthHelper.saml_providers.include?(oauth['provider'].to_sym)
       track_event(current_user, oauth['provider'], 'succeeded')
 
+      handle_step_up_auth
+
       if Gitlab::CurrentSettings.admin_mode
         return admin_mode_flow(auth_module::User) if current_user_mode.admin_mode_requested?
       end
@@ -227,7 +229,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   # Overridden in EE
   def build_auth_user_params
-    { organization_id: Current.organization_id }
+    { organization_id: Current.organization&.id }
   end
 
   # Overridden in EE
@@ -365,9 +367,23 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     redirect_to new_user_session_path
   end
 
-  def log_audit_event(user, options = {})
-    AuditEventService.new(user, user, options)
-      .for_authentication.security_event
+  def log_audit_event(user, options = {}, name = 'authenticated_with_oauth')
+    return if options[:with].blank?
+
+    provider = options[:with]
+    audit_context = {
+      name: name,
+      author: user,
+      scope: user,
+      target: user,
+      message: "Signed in with #{provider.upcase} authentication",
+      authentication_event: true,
+      authentication_provider: provider,
+      additional_details: {
+        with: provider
+      }
+    }
+    ::Gitlab::Audit::Auditor.audit(audit_context)
   end
 
   def set_remember_me(user, auth_user)
@@ -392,6 +408,18 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       uri.fragment = verify_redirect_fragment(redirect_fragment)
       store_location_for(:user, uri.to_s)
     end
+  end
+
+  def handle_step_up_auth
+    return if Feature.disabled?(:omniauth_step_up_auth_for_admin_mode, current_user)
+
+    step_up_auth_flow =
+      ::Gitlab::Auth::Oidc::StepUpAuthentication.build_flow(session: session, provider: oauth.provider)
+
+    return unless step_up_auth_flow.enabled_by_config?
+    return unless step_up_auth_flow.requested?
+
+    step_up_auth_flow.evaluate!(oauth.extra.raw_info)
   end
 
   def admin_mode_flow(auth_user_class)

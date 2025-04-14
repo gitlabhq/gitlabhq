@@ -15,7 +15,7 @@ import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/consta
 import { stubComponent } from 'helpers/stub_component';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { todosGroupsResponse } from '../../mock_data';
-
+//
 Vue.use(VueApollo);
 
 jest.mock('~/alert');
@@ -169,14 +169,10 @@ describe('GroupToken', () => {
         }),
       },
     });
-    const suggestionTexts = wrapper
-      .text()
-      .split('\n')
-      .map((text) => text.trim())
-      .filter(Boolean);
+    const suggestionTexts = wrapper.text();
 
-    todosGroupsResponse.data.currentUser.groups.nodes.forEach((group, i) => {
-      expect(suggestionTexts[i]).toBe(group.fullName);
+    todosGroupsResponse.data.currentUser.groups.nodes.forEach((group) => {
+      expect(suggestionTexts).toContain(group.fullName);
     });
   });
 

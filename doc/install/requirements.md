@@ -13,7 +13,7 @@ title: GitLab installation requirements
 
 {{< /details >}}
 
-This page contains information about the system requirements to install GitLab.
+GitLab has specific installation requirements.
 
 ## Storage
 

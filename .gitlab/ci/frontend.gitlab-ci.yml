@@ -6,12 +6,15 @@
   needs:
     - "graphql-schema-dump"
 
+.with-ci-node-image:
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}-node-${NODE_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-yarn-${YARN_VERSION}-graphicsmagick-${GRAPHICSMAGICK_VERSION}
+
 .compile-assets-base:
   extends:
     - .default-retry
     - .default-before_script
     - .assets-compile-cache
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-rust-${RUST_VERSION}-node-${NODE_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-yarn-${YARN_VERSION}-graphicsmagick-${GRAPHICSMAGICK_VERSION}
+    - .with-ci-node-image
   variables:
     SETUP_DB: "false"
     WEBPACK_VENDOR_DLL: "true"
@@ -22,41 +25,28 @@
   stage: prepare
   needs: []
   script:
-    - |
-      function compile_assets() {
-        yarn_install_script
-        export GITLAB_ASSETS_HASH=$(bin/rake gitlab:assets:hash_sum)
-        echo "CACHE_ASSETS_AS_PACKAGE: ${CACHE_ASSETS_AS_PACKAGE}"
-
-        # The new strategy to cache assets as generic packages is experimental and
-        # can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable
-        if [[ "${CACHE_ASSETS_AS_PACKAGE}" == "true" ]]; then
-          source scripts/gitlab_component_helpers.sh
-
-          if ! gitlab_assets_archive_doesnt_exist; then
-            # We remove all assets from the native cache as they could pollute the fresh assets from the package
-            rm -rf public/assets/ app/assets/javascripts/locale/**/app.js
-            run_timed_command "retry download_and_extract_gitlab_assets"
-          fi
-        fi
-
-        assets_compile_script
-        echo -n "${GITLAB_ASSETS_HASH}" > "cached-assets-hash.txt"
-      }
-
-      run_with_custom_exit_code compile_assets
+    - run_with_custom_exit_code scripts/compile_assets
+    - run_with_custom_exit_code scripts/build_assets_image
 
 .update-cache-base:
   after_script:
     - yarn patch-package --reverse  # To avoid caching patched modules
 
 compile-production-assets:
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}-node-${NODE_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-yarn-${YARN_VERSION}-graphicsmagick-${GRAPHICSMAGICK_VERSION}-docker-${DOCKER_VERSION}
   extends:
+    - .use-buildx
     - .compile-assets-base
     - .production
     - .frontend:rules:compile-production-assets
   tags:
-    - $GITLAB_LARGE_RUNNER_OPTIONAL
+    - $GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
+  variables:
+    GLCI_BUILD_ASSETS_IMAGE: "true"
+    ARCH: linux/amd64,linux/arm64
+  before_script:
+    - !reference [.compile-assets-base, before_script]
+    - !reference [.buildx-setup, before_script]
   artifacts:
     name: webpack-report
     expire_in: 31d
@@ -136,7 +126,7 @@ retrieve-frontend-fixtures:
         export_fixtures_sha_for_download
 
         if check_fixtures_download; then
-          run_timed_command "download_and_extract_fixtures"
+          download_and_extract_fixtures
         fi
       }
 
@@ -219,8 +209,8 @@ upload-frontend-fixtures:
     - |
       function upload_frontend_fixtures() {
         fixtures_archive_doesnt_exist || { echoinfo "INFO: Exiting early as package exists."; exit 0; }
-        run_timed_command "create_fixtures_package"
-        run_timed_command "upload_fixtures_package"
+        create_fixtures_package
+        upload_fixtures_package
       }
 
       run_with_custom_exit_code upload_frontend_fixtures
@@ -263,6 +253,7 @@ upload-graphql-schema-dump:
   extends:
     - .default-retry
     - .yarn-cache
+    - .with-ci-node-image
   variables:
     # Disable warnings in browserslist which can break on backports
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
@@ -286,7 +277,7 @@ jest-build-cache:
     paths:
       - tmp/cache/jest/
   script:
-    - run_timed_command "scripts/frontend/warm_jest_cache.mjs"
+    - scripts/frontend/warm_jest_cache.mjs
   variables:
     # Propagate exit code correctly. See https://gitlab.com/groups/gitlab-org/-/epics/6074.
     FF_USE_NEW_BASH_EVAL_STRATEGY: 'true'
@@ -334,7 +325,7 @@ jest:
       junit: junit_jest.xml
   parallel: 11
   script:
-    - run_with_custom_exit_code run_timed_command scripts/frontend/jest_ci.js
+    - run_with_custom_exit_code scripts/frontend/jest_ci.js
 
 jest-with-fixtures:
   extends:
@@ -348,7 +339,7 @@ jest-with-fixtures:
     - !reference [.with-fixtures-needs, needs]
   parallel: 2
   script:
-    - run_with_custom_exit_code run_timed_command "scripts/frontend/jest_ci.js --fixtures"
+    - run_with_custom_exit_code scripts/frontend/jest_ci.js --fixtures
 
 jest vue3:
   extends:
@@ -358,7 +349,7 @@ jest vue3:
   needs:
     - !reference [.with-jest-build-cache-vue3-ensure-compilable-sfcs-needs, needs]
   script:
-    - run_timed_command "scripts/frontend/jest_ci.js --vue3 --include-vue3-quarantined"
+    - scripts/frontend/jest_ci.js --vue3 --include-vue3-quarantined
 
 jest-with-fixtures vue3:
   extends:
@@ -371,7 +362,7 @@ jest-with-fixtures vue3:
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
   script:
-    - run_timed_command "scripts/frontend/jest_ci.js --vue3 --fixtures --include-vue3-quarantined"
+    - scripts/frontend/jest_ci.js --vue3 --fixtures --include-vue3-quarantined
 
 jest vue3 mr:
   extends:
@@ -388,7 +379,7 @@ jest vue3 mr:
       - junit_jest.xml
   parallel: 6
   script:
-    - run_with_custom_exit_code run_timed_command "scripts/frontend/jest_ci.js --vue3"
+    - run_with_custom_exit_code scripts/frontend/jest_ci.js --vue3
   allow_failure: false
 
 jest-with-fixtures vue3 mr:
@@ -408,7 +399,7 @@ jest-with-fixtures vue3 mr:
       - junit_jest.xml
   parallel: 1
   script:
-    - run_with_custom_exit_code run_timed_command "scripts/frontend/jest_ci.js --vue3 --fixtures"
+    - run_with_custom_exit_code scripts/frontend/jest_ci.js --vue3 --fixtures
 
 jest predictive:
   extends:
@@ -421,7 +412,7 @@ jest predictive:
     - |
       function jest_predictive() {
         if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
-          run_timed_command "scripts/frontend/jest_ci.js --predictive"
+          scripts/frontend/jest_ci.js --predictive
         fi
       }
 
@@ -440,7 +431,7 @@ jest-with-fixtures predictive:
     - |
       function jest_with_fixtures_predictive() {
         if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
-          run_timed_command "scripts/frontend/jest_ci.js --predictive --fixtures"
+          scripts/frontend/jest_ci.js --predictive --fixtures
         fi
       }
 
@@ -457,7 +448,7 @@ jest vue3 predictive:
     - |
       function jest_vue3_predictive() {
         if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
-          run_timed_command "scripts/frontend/jest_ci.js --vue3 --predictive"
+          scripts/frontend/jest_ci.js --vue3 --predictive
         fi
       }
 
@@ -474,7 +465,7 @@ jest-with-fixtures vue3 predictive:
     - |
       function jest_with_fixtures_vue3_predictive() {
         if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
-          run_timed_command "scripts/frontend/jest_ci.js --vue3 --predictive --fixtures";
+          scripts/frontend/jest_ci.js --vue3 --predictive --fixtures;
         fi
       }
 
@@ -492,7 +483,7 @@ jest vue3 check quarantined predictive:
     - |
       function jest_vue_check_quarantined_predictive() {
         if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
-          run_timed_command "./scripts/frontend/check_jest_vue3_quarantine.js"
+          ./scripts/frontend/check_jest_vue3_quarantine.js
         fi
       }
 
@@ -522,7 +513,7 @@ jest vue3 check quarantined:
     - |
       function jest_vue3_check_quarantined() {
         if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
-          run_timed_command "./scripts/frontend/check_jest_vue3_quarantine.js --all"
+          ./scripts/frontend/check_jest_vue3_quarantine.js --all
         fi
       }
 
@@ -541,7 +532,7 @@ jest-integration:
     - .repo-from-artifacts
     - .frontend:rules:jest-integration
   script:
-    - run_with_custom_exit_code run_timed_command "yarn jest:integration --ci"
+    - run_with_custom_exit_code yarn jest:integration --ci
   needs:
     # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
     - !reference [.repo-from-artifacts, needs]
@@ -593,7 +584,7 @@ jest-linters:
     - .frontend:rules:jest-linters
   needs: []
   script:
-    - run_with_custom_exit_code run_timed_command "yarn jest:eslint --ci"
+    - run_with_custom_exit_code yarn jest:eslint --ci
 
 coverage-frontend:
   extends:
@@ -613,7 +604,7 @@ coverage-frontend:
   stage: post-test
   script:
     - yarn_install_script
-    - run_timed_command "yarn node scripts/frontend/merge_coverage_frontend.js"
+    - yarn node scripts/frontend/merge_coverage_frontend.js
     # Removing the individual coverage results, as we just merged them.
     - if ls coverage-frontend/jest-* > /dev/null 2>&1; then
         rm -r coverage-frontend/jest-*;
@@ -642,8 +633,8 @@ webpack-dev-server:
     WEBPACK_VENDOR_DLL: "true"
   script:
     - yarn_install_script
-    - run_timed_command "retry yarn webpack-vendor"
-    - run_timed_command "node --expose-gc node_modules/.bin/webpack-dev-server --config config/webpack.config.js"
+    - retry yarn webpack-vendor
+    - node --expose-gc node_modules/.bin/webpack-dev-server --config config/webpack.config.js
   artifacts:
     name: webpack-dev-server
     expire_in: 31d
@@ -670,4 +661,4 @@ compile-storybook:
       - storybook/public
   script:
     - yarn_install_script_storybook
-    - run_timed_command "yarn run storybook:build"
+    - yarn run storybook:build

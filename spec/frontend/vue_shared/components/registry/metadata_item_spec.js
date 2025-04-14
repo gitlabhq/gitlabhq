@@ -1,5 +1,5 @@
 import { GlIcon, GlLink } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import component from '~/vue_shared/components/registry/metadata_item.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
@@ -11,7 +11,7 @@ describe('Metadata Item', () => {
   };
 
   const mountComponent = (propsData = defaultProps) => {
-    wrapper = shallowMount(component, {
+    wrapper = shallowMountExtended(component, {
       propsData,
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -21,9 +21,9 @@ describe('Metadata Item', () => {
 
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findLink = (w = wrapper) => w.findComponent(GlLink);
-  const findText = () => wrapper.find('[data-testid="metadata-item-text"]');
+  const findText = () => wrapper.findByTestId('metadata-item-text');
   const findTooltipOnTruncate = (w = wrapper) => w.findComponent(TooltipOnTruncate);
-  const findTextTooltip = () => wrapper.find('[data-testid="text-tooltip-container"]');
+  const findTextTooltip = () => wrapper.findByTestId('text-tooltip-container');
 
   const SIZE_TO_TAILWIND_UTILITY_MAPPING = {
     s: 'gl-max-w-20',

@@ -146,7 +146,7 @@ This setting applies only to repositories
 [imported from a GitLab export file](../../user/project/settings/import_export.md#import-a-project-and-its-data).
 
 If you choose a size larger than the configured value for the web server,
-you may receive errors. See the [troubleshooting section](../settings/account_and_limit_settings.md#troubleshooting) for more
+you may receive errors. See the [troubleshooting section](account_and_limit_settings.md#troubleshooting) for more
 details.
 
 For GitLab.com repository size limits, read [accounts and limit settings](../../user/gitlab_com/_index.md#account-and-limit-settings).

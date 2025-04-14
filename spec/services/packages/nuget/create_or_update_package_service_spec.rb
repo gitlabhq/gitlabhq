@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Nuget::CreateOrUpdatePackageService, feature_category: :package_registry do
-  let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
+  let_it_be(:user) { project.owner }
   let_it_be(:pipeline) { create(:ci_pipeline, user: user) }
 
   let(:package_name) { 'MyPackage' }
@@ -93,18 +93,20 @@ RSpec.describe Packages::Nuget::CreateOrUpdatePackageService, feature_category: 
     end
 
     context 'when updating an existing package' do
-      let!(:existing_package) { create(:nuget_package, project: project, name: package_name, version: package_version) }
+      let!(:existing_package) do
+        create(:nuget_package, project: project, name: package_name, version: package_version)
+      end
 
       context 'when duplicates are allowed' do
         before do
           allow(Namespace::PackageSetting).to receive(:duplicates_allowed?).and_return(true)
         end
 
+        it_behaves_like 'returning a success service response'
+
         it 'does not create a new package' do
           expect { execute_service }
             .not_to change { ::Packages::Nuget::Package.count }
-
-          expect(execute_service).to be_success
         end
 
         it 'creates a new package file, tags, and build info' do
@@ -120,12 +122,10 @@ RSpec.describe Packages::Nuget::CreateOrUpdatePackageService, feature_category: 
           allow(::Namespace::PackageSetting).to receive(:duplicates_allowed?).and_return(false)
         end
 
-        it 'returns an error response' do
-          is_expected.to be_error.and have_attributes(
-            message: 'A package with the same name and version already exists',
-            reason: :conflict
-          )
-        end
+        it_behaves_like 'returning an error service response',
+          message: 'A package with the same name and version already exists'
+
+        it { is_expected.to have_attributes(reason: :conflict) }
       end
     end
 
@@ -136,7 +136,9 @@ RSpec.describe Packages::Nuget::CreateOrUpdatePackageService, feature_category: 
         end
       end
 
-      it { is_expected.to be_error.and have_attributes(message: 'Validation failed', reason: :bad_request) }
+      it_behaves_like 'returning an error service response', message: 'Validation failed'
+
+      it { is_expected.to have_attributes(reason: :bad_request) }
     end
 
     context 'with exclusive lease guard' do
@@ -153,13 +155,16 @@ RSpec.describe Packages::Nuget::CreateOrUpdatePackageService, feature_category: 
           stub_exclusive_lease_taken(lease_key)
         end
 
-        it 'returns an error response' do
-          is_expected.to be_error.and have_attributes(
-            message: 'Failed to obtain a lock. Please try again.',
-            reason: :conflict
-          )
-        end
+        it_behaves_like 'returning an error service response', message: 'Failed to obtain a lock. Please try again.'
+        it { is_expected.to have_attributes(reason: :conflict) }
       end
+    end
+
+    context 'with unauthorized user' do
+      let(:user) { create(:user) }
+
+      it_behaves_like 'returning an error service response', message: 'Unauthorized'
+      it { is_expected.to have_attributes(reason: :unauthorized) }
     end
   end
 end

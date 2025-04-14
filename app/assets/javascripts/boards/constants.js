@@ -216,4 +216,18 @@ export const BOARD_CARD_MOVE_TO_POSITIONS_OPTIONS = [
   },
 ];
 
+export const WIP_ITEMS = 'issue_count';
+export const WIP_WEIGHT = 'issue_weights';
+
+export const WIP_CATEGORY_LIST = [
+  {
+    value: WIP_ITEMS,
+    text: s__('Boards|Items'),
+  },
+  {
+    value: WIP_WEIGHT,
+    text: s__('Boards|Weight'),
+  },
+];
+
 export const GroupByParamType = {};

@@ -55,6 +55,48 @@
   ul.wiki-pages ul {
     padding-left: 20px;
   }
+
+  .wiki-sidebar-custom-content { 
+    h1 {
+      @apply gl-heading-3;
+    }
+
+    h2 {
+      @apply gl-heading-4;
+    }
+  
+    h3 {
+      @apply gl-heading-5;
+    }
+  
+    h1, h2, h3 {
+      @apply gl-mb-4;
+    }
+
+    h4, h5, h6 {
+      @apply gl-text-base gl-mt-0 gl-mb-2;
+    }
+
+    h5 {
+      @apply gl-font-semibold;
+    }
+
+    h6 {
+      @apply gl-font-normal;
+    }
+
+    ul, ol {
+      @apply gl-p-0 gl-mb-5;
+
+      ul, ol {
+        @apply gl-mb-0;
+      }
+
+      li {
+        @apply gl-ml-6 gl-leading-20;
+      }
+    }
+  }
 }
 
 ul.wiki-pages-list.content-list {

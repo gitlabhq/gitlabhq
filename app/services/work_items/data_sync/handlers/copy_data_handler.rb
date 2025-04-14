@@ -4,7 +4,8 @@ module WorkItems
   module DataSync
     module Handlers
       class CopyDataHandler
-        attr_reader :work_item, :target_namespace, :target_work_item_type, :current_user, :params, :create_params
+        attr_reader :work_item, :target_namespace, :target_work_item_type, :current_user, :params, :create_params,
+          :operation
 
         # rubocop:disable Layout/LineLength -- Keyword arguments are making the line a bit longer
         def initialize(work_item:, target_namespace:, target_work_item_type:, current_user: nil, params: {}, overwritten_params: {})
@@ -13,6 +14,7 @@ module WorkItems
           @target_work_item_type = target_work_item_type
           @current_user = current_user
           @params = params
+          @operation = params.delete(:operation)
 
           @create_params = {
             id: nil,
@@ -47,14 +49,18 @@ module WorkItems
           # create the new work item
           ::WorkItems::DataSync::BaseCreateService.new(
             original_work_item: work_item,
-            operation: params.delete(:operation),
+            operation: operation,
             container: target_namespace,
             current_user: current_user,
             params: create_params.merge(params)
-          ).execute(skip_system_notes: true)
+          ).execute(skip_system_notes: skip_system_notes?)
         end
 
         private
+
+        def skip_system_notes?
+          (operation == :clone && !!params[:clone_with_notes]) || operation == :move
+        end
 
         def relative_position
           return if work_item.namespace.root_ancestor.id != target_namespace.root_ancestor.id

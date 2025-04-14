@@ -407,10 +407,10 @@ class User < ApplicationRecord
   after_update_commit :update_default_organization_user, if: -> { saved_change_to_admin }
 
   # User's Layout preference
-  enum layout: { fixed: 0, fluid: 1 }
+  enum :layout, { fixed: 0, fluid: 1 }
 
   # User's Dashboard preference
-  enum dashboard: {
+  enum :dashboard, {
     projects: 0,
     stars: 1,
     member_projects: 11,
@@ -426,10 +426,10 @@ class User < ApplicationRecord
   }
 
   # User's Project preference
-  enum project_view: { readme: 0, activity: 1, files: 2, wiki: 3 }
+  enum :project_view, { readme: 0, activity: 1, files: 2, wiki: 3 }
 
   # User's role
-  enum role: { software_developer: 0, development_team_lead: 1, devops_engineer: 2, systems_administrator: 3, security_analyst: 4, data_analyst: 5, product_manager: 6, product_designer: 7, other: 8 }, _suffix: true
+  enum :role, { software_developer: 0, development_team_lead: 1, devops_engineer: 2, systems_administrator: 3, security_analyst: 4, data_analyst: 5, product_manager: 6, product_designer: 7, other: 8 }, suffix: true
 
   delegate :notes_filter_for,
     :set_notes_filter,
@@ -444,9 +444,9 @@ class User < ApplicationRecord
     :sourcegraph_enabled, :sourcegraph_enabled=,
     :gitpod_enabled, :gitpod_enabled=,
     :extensions_marketplace_opt_in_status, :extensions_marketplace_opt_in_status=,
+    :extensions_marketplace_opt_in_url, :extensions_marketplace_opt_in_url=,
     :organization_groups_projects_sort, :organization_groups_projects_sort=,
     :organization_groups_projects_display, :organization_groups_projects_display=,
-    :extensions_marketplace_enabled, :extensions_marketplace_enabled=,
     :setup_for_company, :setup_for_company=,
     :project_shortcut_buttons, :project_shortcut_buttons=,
     :keyboard_shortcuts_enabled, :keyboard_shortcuts_enabled=,
@@ -464,6 +464,7 @@ class User < ApplicationRecord
     :use_work_items_view, :use_work_items_view=,
     :text_editor, :text_editor=,
     :default_text_editor_enabled, :default_text_editor_enabled=,
+    :merge_request_dashboard_list_type, :merge_request_dashboard_list_type=,
     to: :user_preference
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
@@ -874,14 +875,11 @@ class User < ApplicationRecord
 
     def filter_items(filter_name)
       case filter_name
+      when 'blocked', 'blocked_pending_approval', 'banned',
+           'deactivated', 'active'
+        filter_by_state(filter_name)
       when 'admins'
         admins
-      when 'blocked'
-        blocked
-      when 'blocked_pending_approval'
-        blocked_pending_approval
-      when 'banned'
-        banned
       when 'two_factor_disabled'
         without_two_factor
       when 'two_factor_enabled'
@@ -890,14 +888,29 @@ class User < ApplicationRecord
         without_projects
       when 'external'
         external
-      when 'deactivated'
-        deactivated
       when "trusted"
         trusted
-      when "active"
-        active_without_ghosts
+      when "placeholder"
+        placeholder
+      when "without_placeholders"
+        without_placeholders
       else
         all_without_ghosts
+      end
+    end
+
+    def filter_by_state(filter_name)
+      case filter_name
+      when 'blocked'
+        blocked
+      when 'blocked_pending_approval'
+        blocked_pending_approval
+      when 'banned'
+        banned
+      when 'deactivated'
+        deactivated
+      when 'active'
+        active_without_ghosts
       end
     end
 
@@ -2814,7 +2827,7 @@ class User < ApplicationRecord
   end
 
   def email_allowed_by_restrictions
-    return if placeholder? || import_user?
+    return if placeholder? || import_user? || security_policy_bot?
 
     error = validate_admin_signup_restrictions(email)
 

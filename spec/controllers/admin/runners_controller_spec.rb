@@ -35,6 +35,10 @@ RSpec.describe Admin::RunnersController, feature_category: :fleet_visibility do
   end
 
   describe '#new' do
+    before do
+      stub_feature_flags(runner_create_wizard_admin: false)
+    end
+
     it 'renders a :new template' do
       get :new
 

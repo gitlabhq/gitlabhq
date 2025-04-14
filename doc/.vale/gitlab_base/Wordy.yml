@@ -1,9 +1,7 @@
 ---
-# Suggestion: gitlab_base.Wordy
-#
-# Suggests shorter versions of wordy phrases.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.Wordy
+description: |
+  Suggests shorter versions of wordy phrases.
 extends: substitution
 message: "%s"
 link: https://docs.gitlab.com/development/documentation/styleguide/word_list/

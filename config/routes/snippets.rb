@@ -11,11 +11,7 @@ resources :snippets, except: [:create, :update, :destroy], concerns: :awardable,
   end
 
   scope module: :snippets do
-    resources :notes, only: [:index, :create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ } do
-      member do
-        delete :delete_attachment
-      end
-    end
+    resources :notes, only: [:index, :create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ }
   end
 end
 

@@ -767,6 +767,7 @@ project:
 - error_tracking_setting
 - gitlab_slack_application_integration
 - github_integration
+- amazon_q_integration
 - git_guardian_integration
 - protected_environments
 - mirror_user
@@ -1028,6 +1029,8 @@ lists:
 - board
 - label
 - list_user_preferences
+- group
+- project
 milestone_releases:
 - milestone
 - release
@@ -1154,6 +1157,7 @@ resource_iteration_events:
   - work_item
   - merge_request
   - iteration
+  - triggered_by_work_item
 iterations_cadence:
   - group
   - iterations
@@ -1238,6 +1242,7 @@ vulnerability_finding:
   - feedbacks
   - finding_evidence
   - security_findings
+  - finding_token_status
 scanner:
   - findings
   - security_findings

@@ -49,6 +49,15 @@ RSpec.describe Gitlab::Ci::Trace, :clean_gitlab_redis_shared_state, factory_defa
     end
 
     it_behaves_like 'trace with enabled live trace feature'
+
+    context "when feature flag is disabled and application setting is enabled" do
+      before do
+        stub_feature_flags(ci_enable_live_trace: false)
+        stub_application_setting(ci_job_live_trace_enabled: true)
+      end
+
+      it_behaves_like 'trace with enabled live trace feature'
+    end
   end
 
   describe '#update_interval' do

@@ -2502,8 +2502,9 @@ Supported attributes:
 |--------------------------------|----------------|----------|-------------|
 | `id`                           | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `merge_request_iid`            | integer        | Yes      | The internal ID of the merge request. |
+| `auto_merge`                   | boolean        | No       | If `true`, the merge request merges when the pipeline succeeds. |
 | `merge_commit_message`         | string         | No       | Custom merge commit message. |
-| `merge_when_pipeline_succeeds` | boolean        | No       | If `true`, the merge request merges when the pipeline succeeds. |
+| `merge_when_pipeline_succeeds` | boolean        | No       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/521291) in GitLab 17.11. Use `auto_merge` instead. |
 | `sha`                          | string         | No       | If present, then this SHA must match the HEAD of the source branch, otherwise the merge fails. |
 | `should_remove_source_branch`  | boolean        | No       | If `true`, removes the source branch. |
 | `squash_commit_message`        | string         | No       | Custom squash commit message. |

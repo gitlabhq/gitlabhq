@@ -1,6 +1,7 @@
 import { nextTick } from 'vue';
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import GlqlActions from '~/glql/components/common/actions.vue';
 import ThResizable from '~/glql/components/common/th_resizable.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import StatePresenter from '~/glql/components/presenters/state.vue';
@@ -17,6 +18,7 @@ describe('TablePresenter', () => {
     wrapper = mountFn(TablePresenter, {
       provide: {
         presenter: new Presenter().init({ data, config }),
+        queryKey: 'glql_key',
       },
       propsData: { data, config, ...moreProps },
     });
@@ -42,6 +44,14 @@ describe('TablePresenter', () => {
 
     // 5 rows of 4 columns each
     expect(wrapper.findAllComponents(GlSkeletonLoader)).toHaveLength(20);
+  });
+
+  it('renders actions', () => {
+    createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } }, mountExtended);
+    expect(wrapper.findComponent(GlqlActions).props()).toEqual({
+      modalTitle: 'GLQL table',
+      showCopyContents: true,
+    });
   });
 
   it('renders a footer text', () => {

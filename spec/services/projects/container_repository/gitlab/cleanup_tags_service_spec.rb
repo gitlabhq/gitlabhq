@@ -111,15 +111,6 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService, featur
           delete_expectations: [%w[A], %w[Ba Bb], %w[C D], %w[17-8-stable]]
       end
 
-      context 'with the container_registry_protected_tags disabled' do
-        before do
-          stub_feature_flags(container_registry_protected_tags: false)
-        end
-
-        it_behaves_like 'with protected rule having pattern ^\d{1,2}-\d{1,2}-stable$',
-          delete_expectations: [%w[A], %w[Ba Bb], %w[C D], %w[17-8-stable]]
-      end
-
       context 'with a timeout' do
         let(:params) do
           { 'name_regex_delete' => '.*' }
@@ -201,15 +192,6 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService, featur
       context 'with the skip_protected_tags param' do
         let(:params) do
           { 'skip_protected_tags' => true }
-        end
-
-        it_behaves_like 'with protected rule having pattern ^\d{1,2}-\d{1,2}-stable$',
-          delete_expectations: [%w[A Ba Bb C D 17-8-stable]]
-      end
-
-      context 'with the container_registry_protected_tags disabled' do
-        before do
-          stub_feature_flags(container_registry_protected_tags: false)
         end
 
         it_behaves_like 'with protected rule having pattern ^\d{1,2}-\d{1,2}-stable$',

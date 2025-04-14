@@ -10,7 +10,7 @@ import {
   RELATED_ITEM_ID_URL_QUERY_PARAM,
   WORK_ITEM_TYPE_NAME_LOWERCASE_MAP,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
-  WORK_ITEM_TYPE_VALUE_MAP,
+  NAME_TO_ENUM_MAP,
 } from '../constants';
 import CreateWorkItem from './create_work_item.vue';
 import CreateWorkItemCancelConfirmationModal from './create_work_item_cancel_confirmation_modal.vue';
@@ -73,7 +73,7 @@ export default {
       required: false,
       default: false,
     },
-    workItemTypeName: {
+    preselectedWorkItemType: {
       type: String,
       required: false,
       default: null,
@@ -89,12 +89,17 @@ export default {
       validator: (i) => i.id && i.type && i.reference && i.webUrl,
       default: null,
     },
+    namespaceFullName: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
       isCreateModalVisible: false,
       isConfirmationModalVisible: false,
-      selectedWorkItemTypeName: this.workItemTypeName,
+      selectedWorkItemTypeName: convertTypeEnumToName(this.preselectedWorkItemType),
       shouldDiscardDraft: false,
     };
   },
@@ -113,7 +118,7 @@ export default {
       if (this.selectedWorkItemTypeName && this.useVueRouter) {
         query += previousQueryParam ? '&' : '?';
         // eslint-disable-next-line @gitlab/require-i18n-strings
-        query += `type=${this.selectedWorkItemTypeName}`;
+        query += `type=${NAME_TO_ENUM_MAP[this.selectedWorkItemTypeName]}`;
         previousQueryParam = true;
       }
       if (this.relatedItem) {
@@ -126,17 +131,15 @@ export default {
       return newWorkItemPath({
         fullPath: this.fullPath,
         isGroup: this.isGroup,
-        workItemTypeName: this.workItemTypeName,
+        workItemTypeName: NAME_TO_ENUM_MAP[this.selectedWorkItemTypeName],
         query: this.newWorkItemPathQuery,
       });
     },
     selectedWorkItemTypeLowercase() {
-      return WORK_ITEM_TYPE_NAME_LOWERCASE_MAP[
-        convertTypeEnumToName(this.selectedWorkItemTypeName)
-      ];
+      return WORK_ITEM_TYPE_NAME_LOWERCASE_MAP[this.selectedWorkItemTypeName];
     },
     newWorkItemButtonText() {
-      return this.alwaysShowWorkItemTypeSelect && this.workItemTypeName
+      return this.alwaysShowWorkItemTypeSelect && this.selectedWorkItemTypeName
         ? sprintfWorkItem(s__('WorkItem|New %{workItemType}'), '')
         : this.newWorkItemText;
     },
@@ -165,7 +168,10 @@ export default {
     hideCreateModal() {
       this.$emit('hideModal');
       this.isCreateModalVisible = false;
-      this.selectedWorkItemTypeName = this.workItemTypeName;
+      this.resetSelectedWorkItemType();
+    },
+    resetSelectedWorkItemType() {
+      this.selectedWorkItemTypeName = convertTypeEnumToName(this.preselectedWorkItemType);
     },
     showCreateModal(event) {
       if (Boolean(event) && isMetaClick(event)) {
@@ -198,7 +204,7 @@ export default {
       this.hideConfirmationModal();
     },
     handleDiscardDraft(modal) {
-      this.selectedWorkItemTypeName = this.workItemTypeName;
+      this.resetSelectedWorkItemType();
 
       if (modal === 'createModal') {
         // This is triggered on the create modal when the user didn't update the form,
@@ -225,8 +231,7 @@ export default {
             // Take incidents to the legacy detail view with a full page load
             if (
               this.useVueRouter &&
-              WORK_ITEM_TYPE_VALUE_MAP[workItem?.workItemType?.name] !==
-                WORK_ITEM_TYPE_ENUM_INCIDENT &&
+              NAME_TO_ENUM_MAP[workItem?.workItemType?.name] !== WORK_ITEM_TYPE_ENUM_INCIDENT &&
               this.$router.getRoutes().some((route) => route.name === 'workItem')
             ) {
               this.$router.push({ name: 'workItem', params: { iid: workItem.iid } });
@@ -247,7 +252,7 @@ export default {
           name: ROUTES.new,
           query: {
             [RELATED_ITEM_ID_URL_QUERY_PARAM]: this.relatedItem?.id,
-            type: this.selectedWorkItemTypeName,
+            type: NAME_TO_ENUM_MAP[this.selectedWorkItemTypeName],
           },
         });
       } else {
@@ -318,9 +323,11 @@ export default {
         :parent-id="parentId"
         :show-project-selector="showProjectSelector"
         :title="title"
-        :work-item-type-name="workItemTypeName"
+        :preselected-work-item-type="selectedWorkItemTypeName"
         :related-item="relatedItem"
         :should-discard-draft="shouldDiscardDraft"
+        :namespace-full-name="namespaceFullName"
+        :is-modal="true"
         @changeType="selectedWorkItemTypeName = $event"
         @confirmCancel="handleConfirmCancellation"
         @discardDraft="handleDiscardDraft('createModal')"
@@ -329,7 +336,7 @@ export default {
     </gl-modal>
     <create-work-item-cancel-confirmation-modal
       :is-visible="isConfirmationModalVisible"
-      :work-item-type-name="selectedWorkItemTypeLowercase"
+      :work-item-type="selectedWorkItemTypeName"
       @continueEditing="handleContinueEditing"
       @discardDraft="handleDiscardDraft('confirmModal')"
     />

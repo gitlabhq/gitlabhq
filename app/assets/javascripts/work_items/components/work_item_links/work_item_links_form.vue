@@ -12,7 +12,7 @@ import {
   FORM_TYPES,
   WORK_ITEMS_TYPE_MAP,
   WORK_ITEM_TYPE_ENUM_TASK,
-  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_NAME_EPIC,
   MAX_WORK_ITEMS,
   sprintfWorkItem,
   WIDGET_TYPE_MILESTONE,
@@ -126,7 +126,7 @@ export default {
   },
   computed: {
     workItemChildIsEpic() {
-      return this.childrenTypeValue === WORK_ITEM_TYPE_VALUE_EPIC;
+      return this.childrenTypeValue === WORK_ITEM_TYPE_NAME_EPIC;
     },
     workItemInput() {
       let workItemInput = {
@@ -511,7 +511,7 @@ export default {
       </div>
       <div
         v-if="!areWorkItemsToAddWithinLimit"
-        class="gl-mb-2 gl-text-red-500"
+        class="gl-mb-2 gl-text-danger"
         data-testid="work-items-limit-error"
       >
         {{ s__('WorkItem|Only 10 items can be added at a time.') }}

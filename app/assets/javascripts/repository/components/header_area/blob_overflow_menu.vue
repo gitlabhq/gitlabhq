@@ -7,10 +7,11 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import projectInfoQuery from 'ee_else_ce/repository/queries/project_info.query.graphql';
 import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
 import { DEFAULT_BLOB_INFO } from '~/repository/constants';
+import BlobButtonGroup from 'ee_else_ce/repository/components/header_area/blob_button_group.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BlobDefaultActionsGroup from './blob_default_actions_group.vue';
-import BlobButtonGroup from './blob_button_group.vue';
 import BlobDeleteFileGroup from './blob_delete_file_group.vue';
-import PermalinkDropdownItem from './permalink_dropdown_item.vue';
+import BlobRepositoryActionsGroup from './blob_repository_actions_group.vue';
 
 export const i18n = {
   dropdownLabel: __('File actions'),
@@ -19,9 +20,10 @@ export const i18n = {
 };
 
 export default {
+  name: 'CEBlobOverflowMenu',
   i18n,
   components: {
-    PermalinkDropdownItem,
+    BlobRepositoryActionsGroup,
     GlDisclosureDropdown,
     BlobDefaultActionsGroup,
     BlobButtonGroup,
@@ -30,6 +32,7 @@ export default {
   directives: {
     GlTooltipDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: ['blobInfo', 'currentRef'],
   provide() {
     return {
@@ -37,10 +40,6 @@ export default {
     };
   },
   props: {
-    userPermissions: {
-      type: Object,
-      required: true,
-    },
     projectPath: {
       type: String,
       required: true,
@@ -65,6 +64,21 @@ export default {
       required: false,
       default: false,
     },
+    eeCanModifyFile: {
+      type: Boolean,
+      required: false,
+      default: undefined,
+    },
+    eeCanLock: {
+      type: Boolean,
+      required: false,
+      default: undefined,
+    },
+    eeIsLocked: {
+      type: Boolean,
+      required: false,
+      default: undefined,
+    },
   },
   apollo: {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
@@ -76,7 +90,7 @@ export default {
         };
       },
       update({ project }) {
-        this.pathLocks = project?.pathLocks || DEFAULT_BLOB_INFO.pathLocks;
+        this.userPermissions = project?.userPermissions;
       },
       error() {
         createAlert({ message: this.$options.i18n.fetchError });
@@ -85,7 +99,7 @@ export default {
   },
   data() {
     return {
-      pathLocks: DEFAULT_BLOB_INFO.pathLocks,
+      userPermissions: DEFAULT_BLOB_INFO.userPermissions,
       isLoggedIn: isLoggedIn(),
     };
   },
@@ -110,12 +124,24 @@ export default {
     hasRenderError() {
       return Boolean(this.viewer.renderError);
     },
+    canModifyFile() {
+      return this.eeCanModifyFile !== undefined ? this.eeCanModifyFile : true;
+    },
+    canLock() {
+      return this.eeCanLock !== undefined ? this.eeCanLock : false;
+    },
+    isLocked() {
+      return this.eeIsLocked !== undefined ? this.eeIsLocked : false;
+    },
   },
   methods: {
     onCopy() {
       if (this.overrideCopy) {
         this.$emit('copy');
       }
+    },
+    onShowForkSuggestion() {
+      this.$emit('showForkSuggestion');
     },
   },
 };
@@ -125,13 +151,13 @@ export default {
     v-gl-tooltip-directive.hover="$options.i18n.dropdownTooltip"
     no-caret
     icon="ellipsis_v"
-    data-testid="default-actions-container"
+    data-testid="blob-overflow-menu"
     :toggle-text="$options.i18n.dropdownLabel"
     text-sr-only
     class="gl-mr-0"
     category="tertiary"
   >
-    <permalink-dropdown-item :permalink-path="blobInfo.permalinkPath" />
+    <blob-repository-actions-group :permalink-path="blobInfo.permalinkPath" />
     <blob-button-group
       v-if="isLoggedIn && !blobInfo.archived"
       :current-ref="currentRef"
@@ -139,7 +165,10 @@ export default {
       :is-using-lfs="isUsingLfs"
       :user-permissions="userPermissions"
       :is-loading="isLoading"
-      :path-locks="pathLocks"
+      :can-lock="canLock"
+      :is-replace-disabled="!canModifyFile && isLocked"
+      :is-locked="isLocked"
+      @showForkSuggestion="onShowForkSuggestion"
     />
     <blob-default-actions-group
       :active-viewer-type="activeViewerType"
@@ -155,6 +184,8 @@ export default {
       :is-empty-repository="isEmptyRepository"
       :is-using-lfs="isUsingLfs"
       :user-permissions="userPermissions"
+      :disabled="!canModifyFile && isLocked"
+      @showForkSuggestion="onShowForkSuggestion"
     />
   </gl-disclosure-dropdown>
 </template>

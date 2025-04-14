@@ -15,6 +15,7 @@ export const createPipelineHeaderApp = (elSelector, apolloProvider, graphqlResou
   const {
     fullPath,
     pipelineIid,
+    pipelineId,
     pipelinesPath,
     identityVerificationPath,
     identityVerificationRequired,
@@ -35,6 +36,7 @@ export const createPipelineHeaderApp = (elSelector, apolloProvider, graphqlResou
         pipelinesPath,
       },
       pipelineIid,
+      pipelineId,
       identityVerificationPath,
       identityVerificationRequired: parseBoolean(identityVerificationRequired),
       mergeTrainsAvailable: parseBoolean(mergeTrainsAvailable),

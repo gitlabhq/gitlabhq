@@ -106,8 +106,8 @@ describe('Blob Header Default Actions', () => {
             showPipelineEditorButton: Boolean(pipelineEditorPath),
             pipelineEditorUrl: pipelineEditorPath,
             gitpodUrl: gitpodBlobUrl,
-            showGitpodButton: applicationInfoMock.gitpodEnabled,
-            gitpodEnabled: userInfoMock.currentUser.gitpodEnabled,
+            isGitpodEnabledForInstance: applicationInfoMock.gitpodEnabled,
+            isGitpodEnabledForUser: userInfoMock.currentUser.gitpodEnabled,
           });
         });
 

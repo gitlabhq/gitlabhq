@@ -71,9 +71,9 @@ To help with debugging:
 - Cluster events log and all pod logs are saved in E2E test job artifacts.
 - `orchestrator` automatically outputs all cluster events with errors in the case of failed deployment.
 
-## `e2e:test-on-omnibus`
+## `e2e:test-on-omnibus-ee`
 
-The `e2e:test-on-omnibus` child pipeline runs tests against an [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab) installation. This pipeline type is not executed
+The `e2e:test-on-omnibus-ee` child pipeline runs tests against an [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab) installation. This pipeline type is not executed
 in merge request pipelines by default and can be triggered manually by triggering the `e2e:test-on-omnibus-ee` job.
 
 This pipeline type is allowed to fail and even in the case of a manual trigger inside of a merge request pipeline, failing tests will not block the ability to merge.
@@ -110,7 +110,7 @@ This stage is responsible for [allure test report](_index.md#allure-report) gene
 ## `e2e:test-on-gdk`
 
 The `e2e:test-on-gdk` child pipeline supports development of the GitLab platform by providing feedback to engineers on
-end-to-end test execution faster than via `e2e:test-on-omnibus`.
+end-to-end test execution faster than via `e2e:test-on-omnibus-ee`.
 
 This is achieved by running tests against the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) (GDK),
 which can be built and installed in less time than when testing against [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab).

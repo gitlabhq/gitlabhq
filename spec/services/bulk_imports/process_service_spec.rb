@@ -3,6 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::ProcessService, feature_category: :importers do
+  let(:source_internal_user_finder) { instance_double(BulkImports::SourceInternalUserFinder) }
+
+  before do
+    allow(BulkImports::SourceInternalUserFinder).to receive(:new)
+      .and_return(source_internal_user_finder)
+    allow(source_internal_user_finder).to receive(:set_ghost_user_id)
+  end
+
   describe '#execute' do
     let_it_be_with_reload(:bulk_import) { create(:bulk_import) }
 
@@ -181,6 +189,13 @@ RSpec.describe BulkImports::ProcessService, feature_category: :importers do
 
         expect(entity_1.trackers).not_to be_empty
         expect(entity_2.trackers).not_to be_empty
+      end
+
+      it 'cached source ghost user id' do
+        create(:bulk_import_entity, :created, bulk_import: bulk_import)
+        expect(source_internal_user_finder).to receive(:set_ghost_user_id).once
+
+        subject.execute
       end
 
       context 'when there are created entities to process' do

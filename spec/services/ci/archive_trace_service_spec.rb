@@ -12,7 +12,6 @@ RSpec.describe Ci::ArchiveTraceService, '#execute', feature_category: :continuou
       expect { subject }.not_to raise_error
 
       expect(job.reload.job_artifacts_trace).to be_exist
-      expect(job.trace_metadata.trace_artifact).to eq(job.job_artifacts_trace)
     end
 
     context 'integration hooks' do

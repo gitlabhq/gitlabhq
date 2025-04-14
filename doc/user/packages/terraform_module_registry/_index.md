@@ -319,7 +319,7 @@ The package is permanently deleted.
 
 The Terraform Module Registry is automatically enabled.
 
-For self-managed instances, a GitLab administrator can
+For GitLab Self-Managed instances, a GitLab administrator can
 [disable](../../../administration/packages/_index.md) **Packages and registries**,
 which removes this menu item from the sidebar.
 

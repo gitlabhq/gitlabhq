@@ -55,6 +55,14 @@ class DeployToken < ApplicationRecord
     active.find_by(name: GITLAB_DEPLOY_TOKEN_NAME)
   end
 
+  def self.prefix_for_deploy_token
+    return DEPLOY_TOKEN_PREFIX unless Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
+
+    # Manually remove gl - we'll add this from the configuration.
+    # Once the feature flag has been removed, we can change DEPLOY_TOKEN_PREFIX to `ft-`
+    ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(DEPLOY_TOKEN_PREFIX.delete_prefix('gl'))
+  end
+
   def valid_for_dependency_proxy?
     group_type? &&
       active? &&
@@ -143,7 +151,7 @@ class DeployToken < ApplicationRecord
   end
 
   def prefix_for_deploy_token
-    DEPLOY_TOKEN_PREFIX
+    self.class.prefix_for_deploy_token
   end
 
   private

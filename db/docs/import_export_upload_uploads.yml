@@ -1,0 +1,15 @@
+---
+table_name: import_export_upload_uploads
+classes:
+- ImportExportUpload
+- Upload
+feature_categories:
+- importers
+description: Stores uploads for ImportExportUpload model
+introduced_by_url:
+milestone: '17.11'
+table_size: small
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects
+  namespace_id: namespaces

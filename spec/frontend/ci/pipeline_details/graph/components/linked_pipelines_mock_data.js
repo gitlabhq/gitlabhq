@@ -16,6 +16,7 @@ export default {
   },
   sourceJob: {
     __typename: 'CiJob',
+    id: '1',
     name: 'test_c',
   },
   project: {

@@ -125,7 +125,7 @@ export const ABUSE_CATEGORIES = {
   },
   other: {
     backgroundColor: '#dcdcde',
-    textColor: 'gl-text-gray-700',
+    textColor: 'gl-text-subtle',
     title: s__('AbuseReport|Other'),
   },
 };

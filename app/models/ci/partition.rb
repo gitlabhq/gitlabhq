@@ -3,6 +3,7 @@
 module Ci
   class Partition < Ci::ApplicationRecord
     MAX_PARTITION_SIZE = 100.gigabytes
+    GSTG_PARTITION_SIZE = 4.gigabytes
 
     INITIAL_PARTITION_VALUE = 100
     LATEST_PARTITION_VALUE = 102

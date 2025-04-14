@@ -24,10 +24,8 @@ module Projects
         def execute
           return success(deleted: []) if tag_names.empty?
 
-          if Feature.enabled?(:container_registry_protected_tags, project)
-            filter_out_protected!
-            return error(PROTECTED_TAGS_ERROR_MESSAGE, pass_back: { deleted: [] }) if tag_names.empty?
-          end
+          filter_out_protected!
+          return error(PROTECTED_TAGS_ERROR_MESSAGE, pass_back: { deleted: [] }) if tag_names.empty?
 
           delete_tags
         rescue TimeoutError, ::Faraday::Error => e
@@ -59,7 +57,7 @@ module Projects
           if current_user
             return if current_user.can_admin_all_resources?
 
-            user_access_level = current_user.max_member_access_for_project(project.id)
+            user_access_level = project.team.max_member_access(current_user.id)
             tag_rules = tag_rules.for_delete_and_access(user_access_level)
           end
 

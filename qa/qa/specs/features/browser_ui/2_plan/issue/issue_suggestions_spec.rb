@@ -13,7 +13,11 @@ module QA
 
       it 'shows issue suggestions when creating a new issue', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347995' do
         Page::Project::Menu.perform(&:go_to_new_issue)
-        Page::Project::Issue::New.perform do |new_page|
+
+        work_item_enabled = Page::Project::Issue::Index.perform(&:work_item_enabled?)
+        page_type = work_item_enabled ? Page::Project::WorkItem::New : Page::Project::Issue::New
+
+        page_type.perform do |new_page|
           new_page.fill_title("issue")
           expect(new_page).to have_content(issue_title)
 

@@ -4,7 +4,7 @@ classes:
 - WebHookLog
 - WebHookLog::Partitioned
 feature_categories:
-- integrations
+- webhooks
 description: Webhooks logs data partitioned by day.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175379
 milestone: '17.8'

@@ -41,8 +41,6 @@ RSpec.describe 'View on environment', :js, feature_category: :groups_and_project
         file_path: file_path,
         file_content: '# Noop'
       ).execute
-
-      stub_feature_flags(blob_overflow_menu: false)
     end
 
     context 'and an active deployment' do
@@ -88,6 +86,7 @@ RSpec.describe 'View on environment', :js, feature_category: :groups_and_project
         end
 
         it 'has a "View on env" button' do
+          click_button 'File actions'
           expect(page).to have_link('View on feature.review.example.com', href: 'http://feature.review.example.com/ruby/feature')
         end
       end
@@ -102,6 +101,7 @@ RSpec.describe 'View on environment', :js, feature_category: :groups_and_project
         end
 
         it 'has a "View on env" button' do
+          click_button 'File actions'
           expect(page).to have_link('View on feature.review.example.com', href: 'http://feature.review.example.com/ruby/feature')
         end
       end

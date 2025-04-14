@@ -99,7 +99,7 @@ when you view that file in your project's Git repository:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Repository**.
-1. Go to the file changed by the commit. In the upper-right corner, select **History**.
+1. Go to the file changed by the commit. In the last commit block, select **History**.
 1. Select the [title](https://git-scm.com/docs/git-commit#_discussion)
    of the commit you want to cherry-pick.
 1. In the upper-right corner, select **Options > Cherry-pick**.

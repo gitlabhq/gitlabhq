@@ -116,7 +116,6 @@ function resolveCompilationTargets(filter) {
         ignore: [
           SCSS_PARTIAL_GLOB,
           '**/bootstrap_migration*', // TODO: Prefix file name with _ (and/or move to framework)
-          '**/utilities.scss', // TODO: Prefix file name with _
         ],
       },
     ],

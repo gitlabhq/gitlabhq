@@ -46,7 +46,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_API_GRAPHQL_URL`                            | Pre-pipeline | The GitLab API GraphQL root URL. Introduced in GitLab 15.11. |
 | `CI_BUILDS_DIR`                                 | Job-only     | The top-level directory where builds are executed. |
 | `CI_COMMIT_AUTHOR`                              | Pre-pipeline | The author of the commit in `Name <email>` format. |
-| `CI_COMMIT_BEFORE_SHA`                          | Pre-pipeline | The previous latest commit present on a branch or tag. Is always `0000000000000000000000000000000000000000` for merge request pipelines, the first commit in pipelines for branches or tags, or when manually running a pipeline. |
+| `CI_COMMIT_BEFORE_SHA`                          | Pre-pipeline | The previous latest commit present on a branch or tag. Is always `0000000000000000000000000000000000000000` for merge request pipelines, scheduled pipelines, the first commit in pipelines for branches or tags, or when manually running a pipeline. |
 | `CI_COMMIT_BRANCH`                              | Pre-pipeline | The commit branch name. Available in branch pipelines, including pipelines for the default branch. Not available in merge request pipelines or tag pipelines. |
 | `CI_COMMIT_DESCRIPTION`                         | Pre-pipeline | The description of the commit. If the title is shorter than 100 characters, the message without the first line. |
 | `CI_COMMIT_MESSAGE`                             | Pre-pipeline | The full commit message. |
@@ -162,14 +162,14 @@ Predefined variables become available at three different phases of pipeline exec
 | `GITLAB_USER_ID`                                | Pipeline     | The numeric ID of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the ID of the user who started the job. |
 | `GITLAB_USER_LOGIN`                             | Pipeline     | The unique username of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the username of the user who started the job. |
 | `GITLAB_USER_NAME`                              | Pipeline     | The display name (user-defined **Full name** in the profile settings) of the user who started the pipeline, unless the job is a manual job. In manual jobs, the value is the name of the user who started the job. |
-| `KUBECONFIG`                                    | Pipeline     | The path to the `kubeconfig` file with contexts for every shared agent connection. Only available when a [GitLab agent is authorized to access the project](../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent). |
+| `KUBECONFIG`                                    | Pipeline     | The path to the `kubeconfig` file with contexts for every shared agent connection. Only available when a [GitLab agent is authorized to access the project](../../user/clusters/agent/ci_cd_workflow.md#authorize-agent-access). |
 | `TRIGGER_PAYLOAD`                               | Pipeline     | The webhook payload. Only available when a pipeline is [triggered with a webhook](../triggers/_index.md#access-webhook-payload). |
 
 ## Predefined variables for merge request pipelines
 
 These variables are available before GitLab creates the pipeline
 (Pre-pipeline). These variables can be used with
-[`include:rules`](../../ci/yaml/includes.md#use-rules-with-include)
+[`include:rules`](../yaml/includes.md#use-rules-with-include)
 and as environment variables in jobs.
 
 The pipeline must be a [merge request pipeline](../pipelines/merge_request_pipelines.md),

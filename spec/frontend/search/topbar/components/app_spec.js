@@ -8,7 +8,7 @@ import { stubComponent } from 'helpers/stub_component';
 import GlobalSearchTopbar from '~/search/topbar/components/app.vue';
 import MarkdownDrawer from '~/vue_shared/components/markdown_drawer/markdown_drawer.vue';
 import SearchTypeIndicator from '~/search/topbar/components/search_type_indicator.vue';
-import GlSearchBoxByType from '~/search/topbar/components/search_box_by_type.vue';
+import GlobalSearchInput from '~/search/topbar/components/global_search_input.vue';
 import { ENTER_KEY } from '~/lib/utils/keys';
 import {
   SYNTAX_OPTIONS_ADVANCED_DOCUMENT,
@@ -54,7 +54,7 @@ describe('GlobalSearchTopbar', () => {
     });
   };
 
-  const findGlSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
+  const findGlSearchBox = () => wrapper.findComponent(GlobalSearchInput);
   const findSyntaxOptionButton = () => wrapper.findComponent(GlButton);
   const findSyntaxOptionDrawer = () => wrapper.findComponent(MarkdownDrawer);
   const findSearchTypeIndicator = () => wrapper.findComponent(SearchTypeIndicator);
@@ -208,7 +208,7 @@ describe('GlobalSearchTopbar', () => {
       beforeEach(() => {
         createComponent({
           initialState: { query: { search }, searchType: 'zoekt' },
-          stubs: { GlSearchBoxByType },
+          stubs: { GlobalSearchInput },
         });
       });
 

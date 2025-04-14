@@ -14,6 +14,7 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
 
   describe 'associations' do
     it { is_expected.to belong_to(:user).required }
+    it { is_expected.to belong_to(:organization) }
     it { is_expected.to have_one(:configuration) }
     it { is_expected.to have_many(:entities) }
   end
@@ -194,20 +195,22 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
   end
 
   describe '#destination_group_roots' do
-    subject(:import) do
-      create(:bulk_import, :started, entities: [
-        root_project_entity,
-        root_group_entity,
-        create(:bulk_import_entity, parent: root_group_entity)
-      ])
-    end
+    let_it_be(:import) { create(:bulk_import, :started) }
 
     let_it_be(:project_namespace) { create(:group) }
     let_it_be(:project) { create(:project, namespace: project_namespace) }
-    let_it_be(:root_project_entity) { create(:bulk_import_entity, :project_entity, project: project) }
+    let_it_be(:root_project_entity) do
+      create(:bulk_import_entity, :project_entity, project: project, bulk_import: import)
+    end
 
     let_it_be(:top_level_group) { create(:group) }
-    let_it_be(:root_group_entity) { create(:bulk_import_entity, :group_entity, group: top_level_group) }
+    let_it_be(:root_group_entity) do
+      create(:bulk_import_entity, :group_entity, group: top_level_group, bulk_import: import)
+    end
+
+    let_it_be(:child_group_entity) do
+      create(:bulk_import_entity, parent: root_group_entity, bulk_import: import)
+    end
 
     it 'returns the topmost group nodes of the import entity tree' do
       expect(import.destination_group_roots).to match_array([project_namespace, top_level_group])
@@ -278,6 +281,78 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
       end
 
       it { expect(finished_bulk_import.namespaces_with_unassigned_placeholders).to include(group) }
+    end
+  end
+
+  describe '#schedule_configuration_purge' do
+    subject(:schedule_purge) { bulk_import.schedule_configuration_purge }
+
+    context 'when configuration exists' do
+      let_it_be(:bulk_import) { create(:bulk_import, :with_configuration) }
+      let(:configuration_id) { bulk_import.configuration.id }
+      let(:delay) { 24.hours }
+
+      before do
+        allow(bulk_import).to receive(:run_after_commit).and_yield
+        stub_const('BulkImport::PURGE_CONFIGURATION_DELAY', delay)
+      end
+
+      it 'schedules purge worker with default delay' do
+        expect(Import::BulkImports::ConfigurationPurgeWorker).to receive(:perform_in).with(delay, configuration_id)
+
+        schedule_purge
+      end
+    end
+
+    context 'when configuration does not exist' do
+      let_it_be(:bulk_import) { create(:bulk_import) }
+
+      it 'does not schedule any job' do
+        expect(Import::BulkImports::ConfigurationPurgeWorker).not_to receive(:perform_in)
+
+        schedule_purge
+      end
+    end
+  end
+
+  describe 'state-machine transitions for configuration purging' do
+    RSpec::Matchers.define :schedule_configuration_purge do
+      def supports_block_expectations?
+        true
+      end
+
+      match(notify_expectation_failures: true) do |proc|
+        expect_next_instance_of(described_class) do |instance|
+          expect(instance).to receive(:schedule_configuration_purge).and_call_original
+        end
+
+        proc.call
+        true
+      end
+
+      match_when_negated(notify_expectation_failures: true) do |proc|
+        expect_next_instance_of(described_class) do |instance|
+          expect(instance).not_to receive(:schedule_configuration_purge)
+        end
+
+        proc.call
+        true
+      end
+    end
+
+    context "when bulk import transitions to a completed state" do
+      subject(:import) { create(:bulk_import, :started, :with_configuration) }
+
+      it { expect { import.finish! }.to schedule_configuration_purge }
+      it { expect { import.fail_op! }.to schedule_configuration_purge }
+      it { expect { import.cleanup_stale! }.to schedule_configuration_purge }
+      it { expect { import.cancel }.to schedule_configuration_purge }
+    end
+
+    context "when bulk import transitions to a non-completed state" do
+      subject(:import) { create(:bulk_import, :created, :with_configuration) }
+
+      it { expect { import.start }.not_to schedule_configuration_purge }
     end
   end
 end

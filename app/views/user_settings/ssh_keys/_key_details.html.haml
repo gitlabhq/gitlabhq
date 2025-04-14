@@ -24,7 +24,7 @@
               = @key.last_used_at&.to_fs(:medium) || _('Never')
             %td{ data: { label: s_('Profiles|Expires'), testid: 'expires' } }
               - if @key.expired?
-                %span.gl-text-red-500
+                %span.gl-text-danger
                   = s_('Profiles|Expired')
                   = @key.expires_at&.to_fs(:medium)
               - elsif @key.expires_at

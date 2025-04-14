@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import { provideWebIdeLink } from 'ee_else_ce/pages/projects/shared/web_ide_link/provide_web_ide_link';
 import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import apolloProvider from './graphql';
 import projectShortPathQuery from './queries/project_short_path.query.graphql';
@@ -37,6 +36,7 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
       ref,
       escapedRef,
       refType,
+      rootRef,
       projectId,
       breadcrumbsCanCollaborate,
       breadcrumbsCanEditTree,
@@ -63,7 +63,7 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
       downloadArtifacts,
       projectShortPath,
       isBinary,
-      ...options
+      newWorkspacePath,
     } = headerEl.dataset;
 
     const {
@@ -109,11 +109,11 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
         isReadmeView,
         isFork: parseBoolean(isFork),
         needsToFork: parseBoolean(needsToFork),
-        gitpodEnabled: parseBoolean(gitpodEnabled),
+        isGitpodEnabledForUser: parseBoolean(gitpodEnabled),
         isBlob: parseBoolean(isBlob),
         showEditButton: parseBoolean(showEditButton),
         showWebIdeButton: parseBoolean(showWebIdeButton),
-        showGitpodButton: parseBoolean(showGitpodButton),
+        isGitpodEnabledForInstance: parseBoolean(showGitpodButton),
         showPipelineEditorUrl: parseBoolean(showPipelineEditorUrl),
         webIdeUrl,
         editUrl,
@@ -125,11 +125,12 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
         xcodeUrl,
         sshUrl,
         kerberosUrl,
+        newWorkspacePath,
         downloadLinks: downloadLinks ? JSON.parse(downloadLinks) : null,
         downloadArtifacts: downloadArtifacts ? JSON.parse(downloadArtifacts) : [],
         isBlobView,
         isBinary: parseBoolean(isBinary),
-        ...provideWebIdeLink(options),
+        rootRef,
       },
       apolloProvider,
       router: router || createRouter(projectPath, escapedRef),

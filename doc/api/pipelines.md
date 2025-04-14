@@ -54,6 +54,8 @@ GET /projects/:id/pipelines
 | `status`         | string         | No       | The status of pipelines, one of: `created`, `waiting_for_resource`, `preparing`, `pending`, `running`, `success`, `failed`, `canceled`, `skipped`, `manual`, `scheduled` |
 | `updated_after`  | datetime       | No       | Return pipelines updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_before` | datetime       | No       | Return pipelines updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `created_after`  | datetime       | No       | Return pipelines created after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| `created_before` | datetime       | No       | Return pipelines created before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `username`       | string         | No       | The username of the user who triggered pipelines |
 | `yaml_errors`    | boolean        | No       | Returns pipelines with invalid configurations |
 
@@ -386,7 +388,7 @@ Sample response:
 {{< history >}}
 
 - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
-- `inputs` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519958) in GitLab 17.10 [with a flag](../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Disabled by default.
+- `inputs` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519958) in GitLab 17.10 [with a flag](../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Enabled by default.
 
 {{< /history >}}
 
@@ -407,7 +409,7 @@ Basic example:
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=main"
 ```
 
-Example request with [inputs](../ci/yaml/inputs.md):
+Example request with [inputs](../ci/inputs/_index.md):
 
 ```shell
 curl --request POST \

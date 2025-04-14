@@ -25,7 +25,7 @@ export default {
 </script>
 
 <template>
-  <div class="deploy-keys-panel table-holder gl-rounded-lg gl-bg-white">
+  <div class="deploy-keys-panel table-holder gl-rounded-lg gl-bg-default">
     <template v-if="keys.length > 0">
       <div
         role="row"

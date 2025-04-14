@@ -4,7 +4,6 @@ import { groupBy } from 'lodash';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import { __, sprintf } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { glEmojiTag } from '~/emoji';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 
@@ -24,7 +23,6 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     awards: {
       type: Array,
@@ -70,9 +68,6 @@ export default {
         ...(thumbsdown ? [this.createAwardList(EMOJI_THUMBS_DOWN, thumbsdown)] : []),
         ...Object.entries(rest).map(([name, list]) => this.createAwardList(name, list)),
       ];
-    },
-    isAuthoredByMe() {
-      return this.noteAuthorId === this.currentUserId;
     },
   },
   mounted() {

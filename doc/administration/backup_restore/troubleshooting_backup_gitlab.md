@@ -9,7 +9,7 @@ When you back up GitLab, you might encounter the following issues.
 
 ## When the secrets file is lost
 
-If you didn't [back up the secrets file](../backup_restore/backup_gitlab.md#storing-configuration-files), you
+If you didn't [back up the secrets file](backup_gitlab.md#storing-configuration-files), you
 must complete several steps to get GitLab working properly again.
 
 The secrets file is responsible for storing the encryption key for the columns
@@ -266,7 +266,7 @@ Backup failed
 If this happens, examine the following:
 
 - Confirm there is sufficient disk space for the Gzip operation. It's not uncommon for backups that
-  use the [default strategy](../backup_restore/backup_gitlab.md#backup-strategy-option) to require half the instance size
+  use the [default strategy](backup_gitlab.md#backup-strategy-option) to require half the instance size
   in free disk space during backup creation.
 - If NFS is being used, check if the mount option `timeout` is set. The
   default is `600`, and changing this to smaller values results in this error.

@@ -103,13 +103,9 @@ export default {
       selectedAgentId: this.environment.clusterAgentId,
       agentSearchTerm: '',
       selectedNamespace: this.environment.kubernetesNamespace,
-      kubernetesError: '',
     };
   },
   computed: {
-    loadingNamespacesList() {
-      return this.$apollo.queries.k8sNamespaces.loading;
-    },
     isNameDisabled() {
       return Boolean(this.environment.id);
     },

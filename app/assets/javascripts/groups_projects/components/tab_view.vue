@@ -1,15 +1,11 @@
 <script>
 import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import { get } from 'lodash';
-import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
-import ProjectsListEmptyState from '~/vue_shared/components/projects_list/projects_list_empty_state.vue';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { TIMESTAMP_TYPES } from '~/vue_shared/components/resource_lists/constants';
-import { FILTERED_SEARCH_TERM_KEY } from '~/projects/filtered_search_and_sort/constants';
 import { ACCESS_LEVELS_INTEGER_TO_STRING } from '~/access_level/constants';
-import { formatProjects } from '~/projects/your_work/utils';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
@@ -26,10 +22,7 @@ export default {
   components: {
     GlLoadingIcon,
     GlKeysetPagination,
-    ProjectsList,
-    ProjectsListEmptyState,
   },
-  inject: ['programmingLanguages'],
   props: {
     tab: {
       required: true,
@@ -53,21 +46,30 @@ export default {
       type: Object,
       required: true,
     },
-    timestampType: {
+    filteredSearchTermKey: {
       type: String,
       required: true,
+    },
+    timestampType: {
+      type: String,
+      required: false,
+      default: undefined,
       validator(value) {
         return TIMESTAMP_TYPES.includes(value);
       },
     },
+    programmingLanguages: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
-      projects: {},
+      items: {},
     };
   },
   apollo: {
-    projects() {
+    items() {
       return {
         query: this.tab.query,
         variables() {
@@ -91,7 +93,7 @@ export default {
           const { nodes, pageInfo } = get(response, this.tab.queryPath);
 
           return {
-            nodes: formatProjects(nodes),
+            nodes: this.tab.formatter(nodes),
             pageInfo,
           };
         },
@@ -103,10 +105,10 @@ export default {
   },
   computed: {
     nodes() {
-      return this.projects.nodes || [];
+      return this.items.nodes || [];
     },
     pageInfo() {
-      return this.projects.pageInfo || {};
+      return this.items.pageInfo || {};
     },
     pagination() {
       if (!this.startCursor && !this.endCursor) {
@@ -126,10 +128,10 @@ export default {
       };
     },
     isLoading() {
-      return this.$apollo.queries.projects.loading;
+      return this.$apollo.queries.items.loading;
     },
     search() {
-      return this.filters[FILTERED_SEARCH_TERM_KEY];
+      return this.filters[this.filteredSearchTermKey];
     },
     minAccessLevel() {
       const { [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: minAccessLevelInteger } = this.filters;
@@ -147,14 +149,24 @@ export default {
     apolloClient() {
       return this.$apollo.provider.defaultClient;
     },
-    emptyState() {
-      return this.tab.emptyState || {};
+    emptyStateComponentProps() {
+      return {
+        search: this.search,
+        ...this.tab.emptyStateComponentProps,
+      };
+    },
+    listComponentProps() {
+      return {
+        items: this.nodes,
+        timestampType: this.timestampType,
+        ...this.tab.listComponentProps,
+      };
     },
   },
   methods: {
     onRefetch() {
       this.apolloClient.resetStore();
-      this.$apollo.queries.projects.refetch();
+      this.$apollo.queries.items.refetch();
     },
     onNext(endCursor) {
       this.$emit('page-change', {
@@ -175,21 +187,10 @@ export default {
 <template>
   <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="md" />
   <div v-else-if="nodes.length">
-    <projects-list
-      :projects="nodes"
-      show-project-icon
-      list-item-class="gl-px-5"
-      :timestamp-type="timestampType"
-      @refetch="onRefetch"
-    />
+    <component :is="tab.listComponent" v-bind="listComponentProps" @refetch="onRefetch" />
     <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-mt-5 gl-text-center">
       <gl-keyset-pagination v-bind="pageInfo" @prev="onPrev" @next="onNext" />
     </div>
   </div>
-  <projects-list-empty-state
-    v-else
-    :title="emptyState.title"
-    :description="emptyState.description"
-    :search="search"
-  />
+  <component :is="tab.emptyStateComponent" v-else v-bind="emptyStateComponentProps" />
 </template>

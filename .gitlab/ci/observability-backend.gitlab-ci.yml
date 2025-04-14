@@ -3,7 +3,7 @@
 # of opstrace being brought in through an acquisition.
 .e2e-observability-backend-base:
   stage: test
-  image: alpine:latest
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:latest
   needs: []
   before_script:
     - apk add jq curl

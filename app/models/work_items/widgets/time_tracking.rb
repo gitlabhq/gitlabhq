@@ -3,7 +3,8 @@
 module WorkItems
   module Widgets
     class TimeTracking < Base
-      delegate :time_estimate, :total_time_spent, :timelogs, to: :work_item
+      delegate :time_estimate, :total_time_spent, :timelogs, :human_time_estimate, :human_total_time_spent,
+        to: :work_item
 
       def self.quick_action_commands
         [

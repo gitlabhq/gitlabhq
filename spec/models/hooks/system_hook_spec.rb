@@ -123,7 +123,10 @@ RSpec.describe SystemHook, feature_category: :webhooks do
     end
 
     it "project member update hook" do
+      project.save!
       project.add_guest(user)
+
+      project.add_maintainer(user)
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /user_update_for_team/,

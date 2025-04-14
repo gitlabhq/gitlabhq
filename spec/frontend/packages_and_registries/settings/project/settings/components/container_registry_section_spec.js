@@ -18,9 +18,6 @@ describe('Container registry project settings section', () => {
   const findContainerProtectionTagRules = () => wrapper.findComponent(ContainerProtectionTagRules);
 
   const defaultProvide = {
-    glFeatures: {
-      containerRegistryProtectedTags: true,
-    },
     isContainerRegistryMetadataDatabaseEnabled: true,
   };
 
@@ -49,7 +46,7 @@ describe('Container registry project settings section', () => {
 
     it('renders with description', () => {
       expect(findSettingsBlock().text()).toBe(
-        'The GitLab Container Registry is a secure and private registry for container images. It’s built on open source software and completely integrated within GitLab. Use GitLab CI/CD to create and publish images. Use the GitLab API to manage the registry across groups and projects.',
+        'The GitLab container registry is a secure and private registry for container images. It’s built on open source software and completely integrated within GitLab. Use GitLab CI/CD to create and publish images. Use the GitLab API to manage the registry across groups and projects.',
       );
     });
 
@@ -74,21 +71,6 @@ describe('Container registry project settings section', () => {
 
     it('sets settings block `defaultExpanded` prop to true', () => {
       expect(findSettingsBlock().props('defaultExpanded')).toBe(true);
-    });
-  });
-
-  describe('when feature flag "containerRegistryProtectedTags" is disabled', () => {
-    it('container protection tag rules settings is hidden', () => {
-      mountComponent({
-        provide: {
-          ...defaultProvide,
-          glFeatures: { containerRegistryProtectedTags: false },
-        },
-      });
-
-      expect(findContainerExpirationPolicy().exists()).toBe(true);
-      expect(findContainerProtectionRepositoryRules().exists()).toBe(true);
-      expect(findContainerProtectionTagRules().exists()).toBe(false);
     });
   });
 

@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlFormTextarea } from '@gitlab/ui';
 import { memoize, cloneDeep, isNumber, uniqueId } from 'lodash';
 import { s__ } from '~/locale';
 import RelatedIssuesRoot from '~/related_issues/components/related_issues_root.vue';
@@ -23,6 +23,7 @@ export default {
     GlButton,
     Strategy,
     RelatedIssuesRoot,
+    GlFormTextarea,
   },
   mixins: [featureFlagsMixin()],
   inject: {
@@ -159,24 +160,30 @@ export default {
     <fieldset>
       <div class="-gl-mx-5 gl-flex gl-flex-wrap">
         <div class="gl-mb-5 gl-w-full gl-px-5 md:gl-basis-1/3">
-          <label for="feature-flag-name" class="gl-font-bold"
-            >{{ s__('FeatureFlags|Name') }} *</label
-          >
-          <input id="feature-flag-name" v-model="formName" class="form-control" />
+          <label for="feature-flag-name" class="gl-font-bold">
+            {{ s__('FeatureFlags|Name') }}
+          </label>
+          <input
+            id="feature-flag-name"
+            v-model="formName"
+            class="form-control"
+            required
+            aria-required="true"
+          />
         </div>
       </div>
-
       <div class="-gl-mx-5 gl-flex gl-flex-wrap">
         <div class="gl-mb-5 gl-w-full gl-px-5 md:gl-basis-1/3">
           <label for="feature-flag-description" class="gl-font-bold">
-            {{ s__('FeatureFlags|Description') }}
+            {{ s__('FeatureFlags|Description (optional)') }}
           </label>
-          <textarea
+          <gl-form-textarea
             id="feature-flag-description"
             v-model="formDescription"
             class="form-control"
             rows="4"
-          ></textarea>
+            aria-required="false"
+          />
         </div>
       </div>
 
@@ -186,7 +193,6 @@ export default {
         :can-admin="true"
         :show-categorized-issues="false"
       />
-
       <div class="-gl-mx-5 gl-flex gl-flex-wrap">
         <div class="gl-mb-5 gl-w-full gl-px-5">
           <h4>{{ s__('FeatureFlags|Strategies') }}</h4>

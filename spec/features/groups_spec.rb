@@ -7,6 +7,7 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
 
   before do
     sign_in(user)
+    stub_feature_flags(downtier_delayed_deletion: false)
   end
 
   matcher :have_namespace_error_message do

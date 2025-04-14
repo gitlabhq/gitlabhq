@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import InputsAnnouncementBanner from '~/ci/common/pipeline_inputs/inputs_announcement_banner.vue';
 import CiConfigMergedPreview from '~/ci/pipeline_editor/components/editor/ci_config_merged_preview.vue';
 import CiValidate from '~/ci/pipeline_editor/components/validate/ci_validate.vue';
 import WalkthroughPopover from '~/ci/pipeline_editor/components/popovers/walkthrough_popover.vue';
@@ -109,6 +110,7 @@ describe('Pipeline editor tabs component', () => {
   const findBadge = () => wrapper.findComponent(GlBadge);
   const findCiValidate = () => wrapper.findComponent(CiValidate);
   const findGlTabs = () => wrapper.findComponent(GlTabs);
+  const findInputsAnnouncementBanner = () => wrapper.findComponent(InputsAnnouncementBanner);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findPipelineGraph = () => wrapper.findComponent(PipelineGraph);
   const findTextEditor = () => wrapper.findComponent(MockTextEditor);
@@ -135,6 +137,16 @@ describe('Pipeline editor tabs component', () => {
 
       expect(findTextEditor().exists()).toBe(true);
       expect(findEditorTab().exists()).toBe(true);
+    });
+
+    it('displays the inputs announcement banner when ciInputsForPipelines is enabled', () => {
+      createComponent({ provide: { glFeatures: { ciInputsForPipelines: true } } });
+      expect(findInputsAnnouncementBanner().exists()).toBe(true);
+    });
+
+    it('does not display the inputs announcement banner when ciInputsForPipelines is disabled', () => {
+      createComponent();
+      expect(findInputsAnnouncementBanner().exists()).toBe(false);
     });
   });
 

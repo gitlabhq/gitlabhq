@@ -858,6 +858,15 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#traversal_ids_as_sql' do
+    let!(:parent_namespace) { create(:group) }
+    let!(:namespace) { create(:group, parent: parent_namespace) }
+
+    it 'returns concatenated list of traversal IDs' do
+      expect(namespace.traversal_ids_as_sql).to eq("#{parent_namespace.id},#{namespace.id}")
+    end
+  end
+
   context 'traversal scopes' do
     it_behaves_like 'namespace traversal scopes'
 
@@ -2617,10 +2626,71 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
   describe '#uploads_sharding_key' do
     it 'returns organization_id' do
-      organization = build_stubbed(:organization)
-      namespace = build_stubbed(:namespace, organization: organization)
+      namespace = build_stubbed(:namespace)
 
-      expect(namespace.uploads_sharding_key).to eq(organization_id: organization.id)
+      expect(namespace.uploads_sharding_key).to eq(namespace_id: namespace.id)
+    end
+  end
+
+  describe '#pages_access_control_trie' do
+    let(:namespace_setting) { create(:namespace_settings, force_pages_access_control: true) }
+    let!(:namespace) { create(:group, namespace_settings: namespace_setting) }
+    let!(:child_namespace) { create(:group, parent: namespace) }
+    let!(:unrelated_namespace) { create(:group) }
+
+    it 'returns a TrieNode containing the descendants' do
+      expect(namespace.pages_access_control_trie.covered?(child_namespace.traversal_ids)).to be(true)
+      expect(namespace.pages_access_control_trie.covered?(unrelated_namespace.traversal_ids)).to be(false)
+    end
+  end
+
+  describe '#pages_access_control_forced_by_self_or_ancestor?' do
+    let(:namespace_setting) { create(:namespace_settings, force_pages_access_control: true) }
+    let!(:parent_namespace) { create(:group, namespace_settings: namespace_setting) }
+    let!(:namespace) { create(:group, parent: parent_namespace) }
+
+    subject { namespace.pages_access_control_forced_by_self_or_ancestor? }
+
+    context 'when the parent forces access control' do
+      it { is_expected.to be(true) }
+    end
+
+    context 'when itself forces access control' do
+      let!(:parent_namespace) { create(:group) }
+      let!(:namespace) { create(:group, parent: parent_namespace, namespace_settings: namespace_setting) }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when access control is not enforced' do
+      let(:namespace_setting) { create(:namespace_settings, force_pages_access_control: false) }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
+  describe '#pages_access_control_forced_by_ancestor?' do
+    let(:namespace_setting) { create(:namespace_settings, force_pages_access_control: true) }
+    let!(:parent_namespace) { create(:group, namespace_settings: namespace_setting) }
+    let!(:namespace) { create(:group, parent: parent_namespace) }
+
+    subject { namespace.pages_access_control_forced_by_ancestor? }
+
+    context 'when the parent forces access control' do
+      it { is_expected.to be(true) }
+    end
+
+    context 'when itself forces access control' do
+      let!(:parent_namespace) { create(:group) }
+      let!(:namespace) { create(:group, parent: parent_namespace, namespace_settings: namespace_setting) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when access control is not enforced' do
+      let(:namespace_setting) { create(:namespace_settings, force_pages_access_control: false) }
+
+      it { is_expected.to be(false) }
     end
   end
 end

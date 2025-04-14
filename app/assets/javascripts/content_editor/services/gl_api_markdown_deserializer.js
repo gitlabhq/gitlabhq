@@ -7,6 +7,12 @@ const markdownToAst = (markdown) => {
   return unified().use(remarkParse).parse(markdown);
 };
 
+export const transformQuickActions = (markdown) => {
+  // ensure 3 newlines after all quick actions so that
+  // any reference style links after it get correctly parsed
+  return markdown.replace(/^\/(.+?)\n/gm, '/$1\n\n\n');
+};
+
 /**
  * Extracts link reference definitions from a markdown string.
  * This is useful for preserving reference definitions when
@@ -44,21 +50,22 @@ export default ({ render }) => {
      * @returns {{ document: ProseMirror.Node }}
      */
     deserialize: async ({ schema, markdown }) => {
-      const html = markdown ? (await render(markdown)).body : '<p></p>';
+      const transformedMarkdown = transformQuickActions(markdown);
+      const html = markdown ? (await render(transformedMarkdown)).body : '<p></p>';
       const parser = new DOMParser();
       const { body } = parser.parseFromString(`<body>${html}</body>`, 'text/html');
 
       replaceCommentsWith(body, 'comment');
 
       // append original source as a comment that nodes can access
-      body.append(document.createComment(markdown));
+      body.append(document.createComment(transformedMarkdown));
 
       const doc = ProseMirror.DOMParser.fromSchema(schema).parse(body);
 
       if (preserveMarkdown())
         doc.attrs = {
-          source: markdown,
-          referenceDefinitions: extractReferenceDefinitions(markdown),
+          source: transformedMarkdown,
+          referenceDefinitions: extractReferenceDefinitions(transformedMarkdown),
         };
 
       return { document: doc };

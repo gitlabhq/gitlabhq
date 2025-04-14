@@ -100,6 +100,10 @@ module QA
           def has_no_issue?(issue)
             has_no_element? 'issuable-container', issuable_title: issue.title
           end
+
+          def work_item_enabled?
+            has_element?('work-item-overview')
+          end
         end
       end
     end

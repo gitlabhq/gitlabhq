@@ -122,6 +122,8 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
   describe '#execute', :aggregate_failures do
     before do
       allow(service).to receive_messages(db_health_check!: nil, db_table_unavailable?: false)
+      # Decrease the sleep in this test, so the test suite runs faster.
+      stub_const("#{described_class}::RELATION_BATCH_SLEEP", 0.01)
     end
 
     shared_examples 'a successful reassignment' do
@@ -158,19 +160,10 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
     context 'when a user can be reassigned without error' do
       it_behaves_like 'a successful reassignment'
 
-      context 'when reassignment throttling is disabled' do
-        before do
-          stub_feature_flags(reassignment_throttling: false)
-          # Decrease the sleep in this test, so the test suite runs faster.
-          # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/493977
-          stub_const("#{described_class}::RELATION_BATCH_SLEEP", 0.01)
-        end
+      it 'sleeps between processing each model relation batch' do
+        expect(Kernel).to receive(:sleep).with(0.01).exactly(8).times
 
-        it 'sleeps between processing each model relation batch' do
-          expect(Kernel).to receive(:sleep).with(0.01).exactly(8).times
-
-          service.execute
-        end
+        service.execute
       end
 
       it 'updates actual records from the source user\'s placeholder reference records' do
@@ -682,8 +675,21 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
         stub_feature_flags(reassignment_throttling: false)
       end
 
-      it 'does not check database health' do
+      it 'does not check database or table health' do
         expect(service).not_to receive(:db_health_check!)
+        expect(service).not_to receive(:db_table_unavailable?)
+
+        service.execute
+      end
+    end
+
+    context 'when reassignment throttling table check is disabled' do
+      before do
+        stub_feature_flags(reassignment_throttling_table_check: false)
+      end
+
+      it 'checks the database health, but not the table health' do
+        expect(service).to receive(:db_health_check!)
         expect(service).not_to receive(:db_table_unavailable?)
 
         service.execute

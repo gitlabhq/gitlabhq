@@ -179,14 +179,14 @@ This format is a version of the [CodeClimate report format](https://github.com/c
 The file you provide as [Code Quality report artifact](../yaml/artifacts_reports.md#artifactsreportscodequality) must contain a single JSON array.
 Each object in that array must have at least the following properties:
 
-| Name                                                      | Description                                                                                            | Type                                                                         |
-|-----------------------------------------------------------|--------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
-| `description`                                             | A human-readable description of the code quality violation.                                            | String                                                                       |
-| `check_name`                                              | A unique name representing the check, or rule, associated with this violation.                         | String                                                                       |
-| `fingerprint`                                             | A unique fingerprint to identify this specific code quality violation, such as a hash of its contents. | String                                                                       |
-| `severity`                                                | The severity of the violation.                                                                         | String. Valid values are `info`, `minor`, `major`, `critical`, or `blocker`. |
-| `location.path`                                           | The file containing the code quality violation, expressed as a relative path in the repository.        | String                                                                       |
-| `location.lines.begin` or `location.positions.begin.line` | The line on which the code quality violation occurred.                                                 | Integer                                                                      |
+| Name                                                      | Description                                                                                                              | Type                                                                         |
+|-----------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| `description`                                             | A human-readable description of the code quality violation.                                                              | String                                                                       |
+| `check_name`                                              | A unique name representing the check, or rule, associated with this violation.                                           | String                                                                       |
+| `fingerprint`                                             | A unique fingerprint to identify this specific code quality violation, such as a hash of its contents.                   | String                                                                       |
+| `severity`                                                | The severity of the violation.                                                                                           | String. Valid values are `info`, `minor`, `major`, `critical`, or `blocker`. |
+| `location.path`                                           | The file containing the code quality violation, expressed as a relative path in the repository. Do not prefix with `./`. | String                                                                       |
+| `location.lines.begin` or `location.positions.begin.line` | The line on which the code quality violation occurred.                                                                   | Integer                                                                      |
 
 The format is different from the [CodeClimate report format](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types) in the following ways:
 

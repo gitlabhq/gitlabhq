@@ -260,6 +260,10 @@ you need the following information:
   [Microsoft Quickstart Register an Application](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app) documentation
   to obtain the tenant ID, client ID, and client secret for your app.
 
+When you register a Microsoft Azure application, you must grant API permissions to allow GitLab to 
+retrieve required details. You must provide at least the `openid`, `profile`, and `email` permissions.
+For more information, see the [Microsoft documentation for configuring app permissions for a web API](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-configure-app-access-web-apis#add-permissions-to-access-microsoft-graph).
+
 {{< alert type="note" >}}
 
 All accounts provisioned by Azure must have an email address defined. If an email address is not defined, Azure assigns a randomly generated address. If you've configured [domain sign-up restrictions](../settings/sign_up_restrictions.md#allow-or-deny-sign-ups-using-specific-email-domains), this random address might prevent the account from being created.
@@ -1417,6 +1421,146 @@ To configure a custom duration for your ID tokens:
 
 {{< /tabs >}}
 
+## Step-up authentication for Admin Mode
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/474650) in GitLab 17.11 [with a flag](../feature_flags.md) named `omniauth_step_up_auth_for_admin_mode`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+In some cases, default authentication methods don't sufficiently protect critical resources or
+high-risk actions. Step-up authentication adds an extra authentication layer for privileged actions
+or sensitive operations, such as accessing the Admin area.
+
+With step-up authentication, users must provide additional credentials before they can access
+certain features or perform specific actions. These additional methods can include methods such
+as two-factor authentication (2FA), biometric authentication, or one-time passwords (OTP).
+
+The OIDC standard includes authentication context class references (`ACR`). The `ACR` concept
+helps configure and implement step-up authentication for different scenarios, such as Admin Mode.
+
+This feature is an [experiment](../../policy/development_stages_support.md) and subject to change without notice. This feature is not ready for production use. If you want to use this feature, you should test outside of production first.
+
+### Enable step-up authentication for Admin Mode
+
+To enable step-up authentication for Admin Mode:
+
+1. Edit your GitLab configuration file (`gitlab.yml` or `/etc/gitlab/gitlab.rb`) to enable
+   step-up authentication for an specific OmniAuth provider.
+
+   ```yaml
+   production: &base
+     omniauth:
+       providers:
+       - { name: 'openid_connect',
+           label: 'Provider name',
+           args: {
+             name: 'openid_connect',
+             # ...
+             allow_authorize_params: ["claims"], # Match this to the parameters defined in `step_up_auth => admin_mode => params`
+           },
+           step_up_auth: {
+             admin_mode: {
+               id_token: {
+                 # The `required` field declares which claims are required in the ID token with exact match.
+                 # In this example, the 'acr' (Authentication Context Class Reference) claim
+                 # must have the value 'gold' to pass the step-up authentication challenge.
+                 # This ensures a specific level of authentication assurance.
+                 required: {
+                   acr: 'gold'
+                 }
+               },
+               # The `params` field defines any additional parameters that are sent during the authentication process.
+               # In this example, the `claims` parameter is added to the authorization request and instructs the
+               # identity provider to include an 'acr' claim with the value 'gold' in the ID token.
+               # The 'essential: true' indicates that this claim is required for successful authentication.
+               params: {
+                 claims: {
+                   id_token: {
+                     acr: {
+                       essential: true,
+                       values: ['gold']
+                     }
+                   }
+                 }
+               }
+             },
+           }
+         }
+   ```
+
+1. Save the configuration file and restart GitLab for the changes to take effect.
+
+{{< alert type="note" >}}
+
+Although OIDC is standardized, different Identity Providers (IdPs) might have unique requirements.
+The `params` setting allows a flexible hash to define necessary parameters for step-up authentication.
+These values can vary based on the requirements for each IdP.
+
+{{< /alert >}}
+
+#### Enable step-up authentication for Admin Mode using Keycloak
+
+Keycloak supports step-up authentication by defining levels of authentication and custom browser login flows.
+
+To configure step-up authentication for Admin Mode in GitLab using Keycloak:
+
+1. [Configure Keycloak](#configure-keycloak) in GitLab.
+
+1. Follow the steps in the Keycloak documentation to [create a browser login flow with step-up authentication in Keycloak](https://www.keycloak.org/docs/latest/server_admin/#_step-up-flow).
+
+1. Edit your GitLab configuration file (`gitlab.yml` or `/etc/gitlab/gitlab.rb`) to enable
+   step-up authentication in the Keycloak OIDC provider configuration.
+
+   Keycloak defines two different authentication levels: `silver` and `gold`. The following example
+   uses `gold` to represent the increased security level.
+
+   ```yaml
+   production: &base
+     omniauth:
+       providers:
+       - { name: 'openid_connect',
+           label: 'Keycloak',
+           args: {
+             name: 'openid_connect',
+             # ...
+             allow_authorize_params: ["claims"] # Match this to the parameters defined in `step_up_auth => admin_mode => params`
+           },
+           step_up_auth: {
+             admin_mode: {
+               id_token: {
+                 # In this example, the 'acr' claim must have the value 'gold' that is also defined in the Keycloak documentation.
+                 required: {
+                   acr: 'gold'
+                 }
+               },
+               params: {
+                 claims: { id_token: { acr: { essential: true, values: ['gold'] } } }
+               }
+             },
+           }
+         }
+   ```
+
+1. Save the configuration file and restart GitLab for the changes to take effect.
+
 ## Troubleshooting
 
 1. Ensure `discovery` is set to `true`. If you set it to `false`, you must
@@ -1435,3 +1579,8 @@ To configure a custom duration for your ID tokens:
    your OpenID web server configuration. For example, for
    [`oauth2-server-php`](https://github.com/bshaffer/oauth2-server-php), you may have to
    [add a configuration parameter to Apache](https://github.com/bshaffer/oauth2-server-php/issues/926#issuecomment-387502778).
+
+1. **Step-up authentication only**: Ensure that any parameters defined in
+   `step_up_auth => admin_mode => params` are also defined in `args => allow_authorize_params`.
+   This includes the parameters in the request query parameters used to
+   redirect to the IdP authorization endpoint.

@@ -1,8 +1,10 @@
 <script>
-import { Mousetrap } from '~/lib/mousetrap';
-import { keysFor, MR_TOGGLE_FILE_BROWSER } from '~/behaviors/shortcuts/keybindings';
+import { debounce } from 'lodash';
+import { mapActions } from 'pinia';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
+import * as types from '~/diffs/store/mutation_types';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import {
   INITIAL_TREE_WIDTH,
   MIN_TREE_WIDTH,
@@ -17,14 +19,20 @@ export default {
   minTreeWidth: MIN_TREE_WIDTH,
   maxTreeWidth: window.innerWidth / 2,
   props: {
-    visible: {
-      type: Boolean,
-      required: true,
-    },
     loadedFiles: {
       type: Object,
       required: false,
       default: null,
+    },
+    floatingResize: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    totalFilesCount: {
+      type: [Number, String],
+      default: undefined,
+      required: false,
     },
   },
   data() {
@@ -36,44 +44,103 @@ export default {
 
     return {
       treeWidth,
+      newWidth: null,
+      cachedHeight: null,
+      cachedTop: null,
+      floating: false,
     };
   },
   computed: {
     hideFileStats() {
       return this.treeWidth <= TREE_HIDE_STATS_WIDTH;
     },
+    applyNewWidthDebounced() {
+      return debounce(this.applyNewWidth, 250);
+    },
+    rootStyle() {
+      return {
+        width: `${this.treeWidth}px`,
+        height: this.cachedHeight ? `${this.cachedHeight}px` : undefined,
+      };
+    },
   },
-  mounted() {
-    Mousetrap.bind(keysFor(MR_TOGGLE_FILE_BROWSER), this.toggle);
-  },
-  beforeDestroy() {
-    Mousetrap.unbind(keysFor(MR_TOGGLE_FILE_BROWSER), this.toggle);
+  watch: {
+    newWidth() {
+      this.applyNewWidthDebounced();
+    },
   },
   methods: {
-    toggle() {
-      this.$emit('toggled');
+    ...mapActions(useLegacyDiffs, {
+      setCurrentDiffFile: types.SET_CURRENT_DIFF_FILE,
+    }),
+    onFileClick(file) {
+      this.setCurrentDiffFile(file.fileHash);
+      this.$emit('clickFile', file);
     },
-    cacheTreeListWidth(size) {
+    onResizeStart() {
+      if (!this.floatingResize) return;
+      this.floating = true;
+      this.newWidth = this.treeWidth;
+      const { height, top } = this.$el.getBoundingClientRect();
+      this.cachedHeight = height;
+      this.cachedTop = top;
+    },
+    onResizeEnd(size) {
       setCookie(TREE_LIST_WIDTH_STORAGE_KEY, size);
+      if (!this.floatingResize) return;
+      this.floating = false;
+      this.cachedHeight = null;
+      this.newWidth = null;
+      this.cachedTop = null;
+      this.treeWidth = size;
+    },
+    onSizeUpdate(value) {
+      if (this.floating) {
+        this.newWidth = value;
+      } else {
+        this.treeWidth = value;
+      }
+    },
+    applyNewWidth() {
+      if (this.newWidth) {
+        this.treeWidth = this.newWidth;
+      }
     },
   },
 };
 </script>
 
 <template>
-  <div v-if="visible" :style="{ width: `${treeWidth}px` }" class="diff-tree-list gl-px-5">
-    <panel-resizer
-      :size.sync="treeWidth"
-      :start-size="treeWidth"
-      :min-size="$options.minTreeWidth"
-      :max-size="$options.maxTreeWidth"
-      side="right"
-      @resize-end="cacheTreeListWidth"
-    />
-    <tree-list
-      :hide-file-stats="hideFileStats"
-      :loaded-files="loadedFiles"
-      @clickFile="$emit('clickFile', $event)"
-    />
+  <div
+    data-testid="file-browser-tree"
+    :style="rootStyle"
+    class="rd-app-sidebar diff-tree-list"
+    :class="{ 'diff-tree-list-floating': floating }"
+  >
+    <div
+      data-testid="file-browser-floating-wrapper"
+      class="diff-tree-list-floating-wrapper"
+      :style="{
+        width: newWidth ? `${newWidth}px` : undefined,
+        top: cachedTop ? `${cachedTop}px` : undefined,
+      }"
+    >
+      <panel-resizer
+        class="diff-tree-list-resizer"
+        :start-size="treeWidth"
+        :min-size="$options.minTreeWidth"
+        :max-size="$options.maxTreeWidth"
+        side="right"
+        @update:size="onSizeUpdate"
+        @resize-start="onResizeStart"
+        @resize-end="onResizeEnd"
+      />
+      <tree-list
+        :hide-file-stats="hideFileStats"
+        :loaded-files="loadedFiles"
+        :total-files-count="totalFilesCount"
+        @clickFile="onFileClick"
+      />
+    </div>
   </div>
 </template>

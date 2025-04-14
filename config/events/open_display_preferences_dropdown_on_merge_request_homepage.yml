@@ -1,0 +1,15 @@
+---
+description: Merge request homepage display preferences dropdown was opened
+internal_events: true
+action: open_display_preferences_dropdown_on_merge_request_homepage
+identifiers:
+- user
+product_group: code_review
+product_categories:
+- code_review_workflow
+milestone: '17.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186954
+tiers:
+- free
+- premium
+- ultimate

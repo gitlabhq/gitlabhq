@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::IssuesController, '(JavaScript fixtures)', :with_license, type: :controller do
+RSpec.describe Projects::IssuesController, '(JavaScript fixtures)', :with_license, type: :controller, feature_category: :team_planning do
   include JavaScriptFixturesHelpers
 
   let(:user) { create(:user, feed_token: 'feedtoken:coldfeed') }
@@ -41,7 +41,7 @@ RSpec.describe Projects::IssuesController, '(JavaScript fixtures)', :with_licens
   end
 end
 
-RSpec.describe API::Issues, '(JavaScript fixtures)', type: :request do
+RSpec.describe API::Issues, '(JavaScript fixtures)', type: :request, feature_category: :team_planning do
   include ApiHelpers
   include JavaScriptFixturesHelpers
 
@@ -102,7 +102,7 @@ RSpec.describe API::Issues, '(JavaScript fixtures)', type: :request do
   end
 end
 
-RSpec.describe GraphQL::Query, type: :request do
+RSpec.describe GraphQL::Query, type: :request, feature_category: :team_planning do
   include ApiHelpers
   include GraphqlHelpers
   include JavaScriptFixturesHelpers
@@ -125,6 +125,7 @@ RSpec.describe GraphQL::Query, type: :request do
       confidential: true,
       created_at: Time.parse('2020-07-01T04:08:01Z'),
       due_date: Date.new(2020, 7, 5),
+      start_date: Date.new(2020, 7, 3),
       milestone: create(
         :milestone,
         project: project,
@@ -134,7 +135,7 @@ RSpec.describe GraphQL::Query, type: :request do
       )
     )
 
-    post_graphql(query, current_user: user, variables: { projectPath: project.full_path, iid: issue.iid.to_s })
+    post_graphql(query, current_user: user, variables: { fullPath: project.full_path, iid: issue.iid.to_s })
 
     expect_graphql_errors_to_be_empty
   end

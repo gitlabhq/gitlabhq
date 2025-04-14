@@ -8,6 +8,7 @@ title: GitLab Duo with Amazon Q
 {{< details >}}
 
 - Tier: Ultimate
+- Add-on: GitLab Duo with Amazon Q
 - Offering: GitLab Self-Managed
 - Status: Preview/Beta
 
@@ -22,7 +23,7 @@ title: GitLab Duo with Amazon Q
 
 {{< alert type="note" >}}
 
-If you have a Duo Pro or Duo Enterprise add-on, this feature is not available.
+If you have a GitLab Duo Pro or Duo Enterprise add-on, this feature is not available.
 
 {{< /alert >}}
 
@@ -71,6 +72,7 @@ Amazon Q can analyze Java 8 or 11 code and determine the necessary Java changes 
 Prerequisites:
 
 - You must [have a runner and a CI/CD pipeline configured for your project](../../ci/_index.md).
+- Your `pom.xml` file must have a [source and target](https://maven.apache.org/plugins/maven-compiler-plugin/examples/set-compiler-source-and-target.html).
 
 To upgrade Java:
 
@@ -113,18 +115,6 @@ Amazon Q can make code changes based on reviewer feedback.
 
 Amazon Q proposes changes to the merge request based on the reviewer's comments and feedback.
 
-### View suggested fixes
-
-After Amazon Q has reviewed your code and added comments that explain potential issues,
-Amazon Q can reply to these comments with suggested fixes.
-
-1. Open a merge request that has feedback from Amazon Q.
-1. On the **Overview** tab, go to the comment you want to address.
-1. Type `/q fix`.
-1. Select **Add comment now**.
-
-Amazon Q proposes fixes for the issue in the comment.
-
 ### Generate unit tests
 
 Generate new unit tests while you're having your merge request reviewed.
@@ -151,6 +141,23 @@ To create test coverage for selected lines:
 
 - If the merge request includes a test file, it is updated with the suggested tests.
 - If the merge request does not include a test file, Amazon Q populates a comment with the suggested tests.
+
+## Additional supported features
+
+In addition, these features are available on GitLab Duo with Amazon Q.
+
+| Feature                                                                                                                                | GitLab version |
+|----------------------------------------------------------------------------------------------------------------------------------------|----------------|
+| [GitLab Duo Chat](../gitlab_duo_chat/_index.md)                                                                                | GitLab 17.11 and later |
+| [Code Suggestions](../project/repository/code_suggestions/_index.md)                                                           | GitLab 17.11 and later |
+| [Code Explanation](../project/repository/code_explain.md)                                                                      | GitLab 17.11 and later |
+| [Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                                       | GitLab 17.11 and later |
+| [Refactor Code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                                       | GitLab 17.11 and later |
+| [Fix Code](../gitlab_duo_chat/examples.md#fix-code-in-the-ide)                                                                 | GitLab 17.11 and later |
+| [Root Cause Analysis](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)                   | GitLab 17.11 and later |
+| [Discussion Summary](../discussions/_index.md#summarize-issue-discussions-with-duo-chat)                                       | GitLab 17.11 and later |
+| [Vulnerability Explanation](../application_security/vulnerabilities/_index.md#explaining-a-vulnerability)                      | GitLab 17.11 and later |
+| [Vulnerability Resolution](../application_security/vulnerabilities/_index.md#vulnerability-resolution)                         | GitLab 17.11 and later |
 
 ## Related topics
 

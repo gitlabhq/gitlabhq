@@ -11,6 +11,6 @@ module WorkItems
     validates :target_type, presence: true
     validates :target_type, uniqueness: { scope: [:source_type_id, :link_type] }
 
-    enum link_type: Enums::IssuableLink.link_types
+    enum :link_type, Enums::IssuableLink.link_types
   end
 end

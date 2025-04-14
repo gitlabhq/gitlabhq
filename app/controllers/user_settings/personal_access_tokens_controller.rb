@@ -53,7 +53,7 @@ module UserSettings
       result = ::PersonalAccessTokens::CreateService.new(
         current_user: current_user,
         target_user: current_user,
-        organization_id: Current.organization_id,
+        organization_id: Current.organization&.id,
         params: personal_access_token_params,
         concatenate_errors: false
       ).execute

@@ -1992,18 +1992,6 @@ RSpec.describe Note, feature_category: :team_planning do
     end
   end
 
-  describe '#attachment' do
-    it 'is cleaned up correctly when project is destroyed' do
-      note = create(:note_on_issue, :with_attachment)
-
-      attachment = note.attachment
-
-      note.project.destroy!
-
-      expect(attachment).not_to be_exist
-    end
-  end
-
   describe '#post_processed_cache_key' do
     let(:note) { build(:note) }
 
@@ -2108,15 +2096,6 @@ RSpec.describe Note, feature_category: :team_planning do
 
         it { is_expected.to be_truthy }
       end
-    end
-  end
-
-  describe '#uploads_sharding_key' do
-    it 'returns namespace_id' do
-      namespace = build_stubbed(:namespace)
-      note = build_stubbed(:note, namespace: namespace)
-
-      expect(note.uploads_sharding_key).to eq(namespace_id: namespace.id)
     end
   end
 end

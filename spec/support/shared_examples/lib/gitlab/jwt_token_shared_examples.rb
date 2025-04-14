@@ -1,18 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'a gitlab jwt token' do
-  let_it_be(:base_secret) { SecureRandom.base64(64) }
-
   let(:jwt_secret) do
     OpenSSL::HMAC.hexdigest(
       'SHA256',
-      base_secret,
+      ::Gitlab::Encryption::KeyProvider[:db_key_base].encryption_key.secret,
       described_class::HMAC_KEY
     )
-  end
-
-  before do
-    allow(Settings).to receive(:attr_encrypted_db_key_base).and_return(base_secret)
   end
 
   describe '#secret' do

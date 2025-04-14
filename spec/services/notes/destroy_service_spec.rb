@@ -106,5 +106,18 @@ RSpec.describe Notes::DestroyService, feature_category: :team_planning do
 
       described_class.new(project, user).execute(note)
     end
+
+    context 'wiki page note' do
+      let(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
+      let(:note) { create(:note, project: project, noteable: wiki_page_meta, author: user, note: "Old note") }
+
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'delete_wiki_page_note' }
+        let(:category) { described_class.name }
+        let(:namespace) { nil }
+
+        subject(:track_event) { described_class.new(project, user).execute(note) }
+      end
+    end
   end
 end

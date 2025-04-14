@@ -182,12 +182,15 @@ these parameters:
 - `disable_personal_access_tokens`
 - `security_policy_global_group_approvers_enabled`
 - `security_approval_policies_limit`
+- `scan_execution_policies_action_limit`
+- `scan_execution_policies_schedule_limit`
 - `delete_unconfirmed_users`
 - `unconfirmed_users_delete_after_days`
 - `duo_features_enabled`
 - `lock_duo_features_enabled`
 - `use_clickhouse_for_analytics`
 - `secret_push_protection_available`
+- `virtual_registries_endpoints_api_limit`
 
 ```json
 {
@@ -202,7 +205,8 @@ these parameters:
   "duo_features_enabled": true,
   "lock_duo_features_enabled": false,
   "allow_all_integrations": true,
-  "allowed_integrations": []
+  "allowed_integrations": [],
+  "virtual_registries_endpoints_api_limit": 1000,
   ...
 }
 ```
@@ -349,6 +353,8 @@ Example response:
   "silent_mode_enabled": false,
   "security_policy_global_group_approvers_enabled": true,
   "security_approval_policies_limit": 5,
+  "scan_execution_policies_action_limit": 10,
+  "scan_execution_policies_schedule_limit": 0,
   "package_registry_allow_anyone_to_pull_option": true,
   "bulk_import_max_download_file_size": 5120,
   "project_jobs_api_rate_limit": 600,
@@ -377,11 +383,14 @@ these parameters:
 - `disable_personal_access_tokens`
 - `security_policy_global_group_approvers_enabled`
 - `security_approval_policies_limit`
+- `scan_execution_policies_action_limit`
+- `scan_execution_policies_schedule_limit`
 - `delete_unconfirmed_users`
 - `unconfirmed_users_delete_after_days`
 - `duo_features_enabled`
 - `lock_duo_features_enabled`
 - `use_clickhouse_for_analytics`
+- `virtual_registries_endpoints_api_limit`
 
 Example responses:
 
@@ -391,7 +400,8 @@ Example responses:
   "duo_features_enabled": true,
   "lock_duo_features_enabled": false,
   "allow_all_integrations": true,
-  "allowed_integrations": []
+  "allowed_integrations": [],
+  "virtual_registries_endpoints_api_limit": 1000
 ```
 
 ## Available settings
@@ -454,6 +464,7 @@ to configure other related settings. These requirements are
 | `bulk_import_max_download_file_size`     | integer          | no                                   | Maximum download file size when importing from source GitLab instances by direct transfer. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3. |
 | `can_create_group`                       | boolean          | no                                   | Indicates whether users can create top-level groups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367754) in GitLab 15.5. Defaults to `true`. |
 | `check_namespace_plan`                   | boolean          | no                                   | Enabling this makes only licensed EE features available to projects if the project namespace's plan includes the feature or if the project is public. Premium and Ultimate only. |
+| `ci_job_live_trace_enabled`             | boolean          | no                                   | Turns on incremental logging for job logs. When turned on, archived job logs are incrementally uploaded to object storage. Object storage must be configured. You can also configure this setting in the [**Admin** area](../administration/settings/continuous_integration.md#incremental-logging). |
 | `ci_max_total_yaml_size_bytes`           | integer          | no                                   | The maximum amount of memory, in bytes, that can be allocated for the pipeline configuration, with all included YAML configuration files. |
 | `ci_max_includes`                        | integer          | no                                   | The [maximum number of includes](../administration/settings/continuous_integration.md#maximum-includes) per pipeline. Default is `150`. |
 | `concurrent_github_import_jobs_limit`    | integer          | no                                   | Maximum number of simultaneous import jobs for the GitHub importer. Default is 1000. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11. |
@@ -651,6 +662,7 @@ to configure other related settings. These requirements are
 | `users_api_limit_key`       | integer |    no    | Max number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.  |
 | `users_api_limit_gpg_keys`  | integer |    no    | Max number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.  |
 | `users_api_limit_gpg_key`   | integer |    no    | Max number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.  |
+| `virtual_registries_endpoints_api_limit`          | integer          | no                                   | Max number of requests on virtual registries endpoints, per IP address, per 15 seconds. Default: 1000. Set to `0` to disabled limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521692) in GitLab 17.11 |
 | `prometheus_metrics_enabled`             | boolean          | no                                   | Enable Prometheus metrics. |
 | `protected_ci_variables`                 | boolean          | no                                   | CI/CD variables are protected by default. |
 | `disable_overriding_approvers_per_merge_request` | boolean  | no                                   | Prevent editing approval rules in projects and merge requests |
@@ -679,8 +691,11 @@ to configure other related settings. These requirements are
 | `restricted_visibility_levels`           | array of strings | no                                   | Selected levels cannot be used by non-Administrator users for groups, projects or snippets. Can take `private`, `internal` and `public` as a parameter. Default is `null` which means there is no restriction.[Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203) in GitLab 16.4: cannot select levels that are set as `default_project_visibility` and `default_group_visibility`. |
 | `rsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded RSA key. Default is `0` (no restriction). `-1` disables RSA keys. |
 | `session_expire_delay`                   | integer          | no                                   | Session duration in minutes. GitLab restart is required to apply changes. |
+| `session_expire_from_init`               | boolean          | no                                   | If `true`, sessions expire a number of minutes after the session was created rather than after the last activity. This lifetime of a session is defined by `session_expire_delay`. |
 | `security_policy_global_group_approvers_enabled` | boolean  | no                                   | Whether to look up merge request approval policy approval groups globally or within project hierarchies. |
 | `security_approval_policies_limit`       | integer          | no                                   | Maximum number of active merge request approval policies per security policy project. Default: 5. Maximum: 20 |
+| `scan_execution_policies_action_limit`   | integer          | no                                   | Maximum number of `actions` per scan execution policy. Default: 10 from GitLab 18.0. Maximum: 20 |
+| `scan_execution_policies_schedule_limit` | integer          | no                                   | Maximum number of `type: schedule` rules per scan execution policy. Default: 0. Maximum: 20 |
 | `security_txt_content`                    | string          | no                                   | [Public security contact information](../administration/settings/security_contact_information.md). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433210) in GitLab 16.7. |
 | `service_access_tokens_expiration_enforced` | boolean       | no                                   | Flag to indicate if token expiry date can be optional for service account users |
 | `shared_runners_enabled`                 | boolean          | no                                   | (**If enabled, requires:** `shared_runners_text` and `shared_runners_minutes`) Enable instance runners for new projects. |

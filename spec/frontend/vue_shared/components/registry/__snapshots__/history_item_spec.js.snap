@@ -2,7 +2,7 @@
 
 exports[`History Item renders the correct markup 1`] = `
 <li
-  class="note-wrapper system-note timeline-entry"
+  class="note-container-query-wrapper note-wrapper system-note timeline-entry"
 >
   <div
     class="timeline-entry-inner"

@@ -30,7 +30,8 @@ module Types
         experiment: { milestone: '17.9' },
         method: :protection_rule,
         description: 'Minimum GitLab access level required to push and delete container image tags. ' \
-          'If multiple protection rules match an image tag, the highest access levels are applied'
+          'If the value is `nil`, no minimum access level is enforced. ' \
+          'Users with the Developer role or higher can push tags by default.'
     end
   end
 end

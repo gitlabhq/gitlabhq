@@ -188,6 +188,7 @@ module Ci
     validates :yaml_errors, bytesize: { maximum: -> { YAML_ERRORS_MAX_LENGTH } }, if: :yaml_errors_changed?
 
     after_create :keep_around_commits, unless: :importing?
+    after_commit :trigger_pipeline_status_change_subscription, if: :saved_change_to_status?
     after_commit :track_ci_pipeline_created_event, on: :create, if: :internal_pipeline?
     after_find :observe_age_in_minutes, unless: :importing?
 
@@ -314,8 +315,6 @@ module Ci
       end
 
       after_transition do |pipeline, transition|
-        GraphqlTriggers.ci_pipeline_status_updated(pipeline)
-
         next if transition.loopback?
 
         pipeline.run_after_commit do
@@ -389,13 +388,7 @@ module Ci
       # This needs to be kept in sync with `Ci::PipelineRef#should_delete?`
       after_transition any => ::Ci::Pipeline.stopped_statuses do |pipeline|
         pipeline.run_after_commit do
-          if Feature.enabled?(:pipeline_delete_gitaly_refs_in_batches, pipeline.project)
-            pipeline.persistent_ref.async_delete
-          elsif Feature.enabled?(:pipeline_cleanup_ref_worker_async, pipeline.project)
-            ::Ci::PipelineCleanupRefWorker.perform_async(pipeline.id)
-          else
-            pipeline.persistent_ref.delete
-          end
+          Ci::Pipelines::ClearPersistentRefService.new(pipeline).execute # rubocop: disable CodeReuse/ServiceClass
         end
       end
 
@@ -617,6 +610,10 @@ module Ci
 
     def self.internal_id_scope_usage
       :ci_pipelines
+    end
+
+    def trigger_pipeline_status_change_subscription
+      GraphqlTriggers.ci_pipeline_status_updated(self)
     end
 
     def uses_needs?
@@ -1400,9 +1397,7 @@ module Ci
     end
 
     def ensure_persistent_ref
-      return if persistent_ref.exist?
-
-      persistent_ref.create
+      Pipelines::CreatePersistentRefService.new(self).execute # rubocop: disable CodeReuse/ServiceClass
     end
 
     # For dependent bridge jobs we reset the upstream bridge recursively

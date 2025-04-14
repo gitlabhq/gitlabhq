@@ -27,3 +27,13 @@ RSpec.describe 'user routing', :clean_gitlab_redis_sessions, feature_category: :
     end
   end
 end
+
+RSpec.describe "Users", "routing", feature_category: :user_management do
+  let!(:user) { create(:user) }
+
+  describe 'GET /-/u/:id' do
+    it 'routes to users/redirect#redirect_from_id' do
+      expect(get('/-/u/1')).to route_to('users/redirect#redirect_from_id', id: '1')
+    end
+  end
+end

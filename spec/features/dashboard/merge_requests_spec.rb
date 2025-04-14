@@ -13,11 +13,14 @@ RSpec.describe 'Dashboard Merge Requests', :js, feature_category: :code_review_w
 
   let(:public_project) { create(:project, :public, :repository) }
   let(:forked_project) { fork_project(public_project, current_user, repository: true) }
+  let(:page_path) { merge_requests_dashboard_path(assignee_username: [user.username]) }
 
   before do
     project.add_maintainer(current_user)
     sign_in(current_user)
   end
+
+  it_behaves_like 'page with product usage data collection banner'
 
   describe 'sidebar' do
     it 'has nav items for assigned MRs and review requests' do

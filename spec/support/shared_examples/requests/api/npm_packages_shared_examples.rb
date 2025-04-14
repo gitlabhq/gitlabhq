@@ -270,9 +270,9 @@ RSpec.shared_examples 'handling audit request' do |path:, scope: :project|
   let(:params) do
     ActiveSupport::Gzip.compress(
       Gitlab::Json.dump({
-                          '@gitlab-org/npm-test': ['1.0.6'],
-                          'call-bind': ['1.0.2']
-                        })
+        '@gitlab-org/npm-test': ['1.0.6'],
+        'call-bind': ['1.0.2']
+      })
     )
   end
 

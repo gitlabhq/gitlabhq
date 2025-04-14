@@ -8,9 +8,12 @@ title: Code Suggestions
 
 {{< details >}}
 
-- Tier: Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- LLMs: For code completion, Fireworks AI-hosted [`Qwen2.5 7B`](https://fireworks.ai/models/fireworks/qwen2p5-coder-7b) and Vertex AI Codey [`code-gecko`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/code-gecko). For code generation, Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet).
+- LLMs: For code completion, Vertex AI-hosted [`Codestral`](https://console.cloud.google.com/vertex-ai/publishers/mistralai/model-garden/codestral-2501) and Fireworks AI-hosted [`Codestral`](https://mistral.ai/news/codestral-2501). For code generation, Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet).
+- To opt out of Fireworks for a group, the feature flag `code_completion_opt_out_fireworks` is available.
+- LLM for Amazon Q: Amazon Q Developer
 
 {{< /details >}}
 
@@ -20,9 +23,11 @@ title: Code Suggestions
 - [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/epics/10752) in GitLab 16.2.
 - [Introduced support for Code Generation](https://gitlab.com/gitlab-org/gitlab/-/issues/415583) in GitLab 16.3.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.7.
-- Subscription changed to require GitLab Duo Pro on February 15, 2024.
-- Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- [Changed](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031) to require the GitLab Duo Pro add-on on February 15, 2024. Previously, this feature was included with Premium and Ultimate subscriptions.
+- [Changed](https://gitlab.com/gitlab-org/fulfillment/meta/-/issues/2031) to require the GitLab Duo Pro or GitLab Duo Enterprise add-on for all supported GitLab versions starting October 17, 2024.
 - [Introduced support for Fireworks AI-hosted Qwen2.5 code completion model](https://gitlab.com/groups/gitlab-org/-/epics/15850) in GitLab 17.6, with a flag named `fireworks_qwen_code_completion`.
+- Removed support for Qwen2.5 code completion model
+- Enabled Fireworks hosted `Codestral` by default via the feature flag `use_fireworks_codestral_code_completion` in GitLab 17.11
 
 {{< /history >}}
 
@@ -41,9 +46,16 @@ you want to use to manage Code Suggestions requests:
 [View a click-through demo](https://gitlab.navattic.com/code-suggestions).
 <!-- Video published on 2023-12-09 --> <!-- Demo published on 2024-02-01 -->
 
+## Prerequisites
+
+To use Code Suggestions, you need:
+
+- A Premium or Ultimate subscription with the GitLab Duo Pro or Enterprise add-on.
+- An assigned seat in your GitLab Duo subscription.
+
 {{< alert type="note" >}}
 
-GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded. You should [upgrade to the latest version of GitLab](../../../../update/_index.md#upgrade-gitlab) for the best experience.
+GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however, the experience may be degraded. You should [upgrade to the latest version of GitLab](../../../../update/_index.md#upgrade-gitlab) for the best experience.
 
 {{< /alert >}}
 
@@ -145,30 +157,28 @@ For use cases and best practices, follow the [GitLab Duo examples documentation]
 
 ## The context Code Suggestions is aware of
 
-Code Suggestions is aware of and uses:
+Code Suggestions is aware of the context you're working in.
 
-- The file open in your IDE.
-- The content before and after the cursor in that file.
-- The filename and extension.
+| Context | Description | Default status |
+|---------|-------------|----------------|
+| Current file content <sup>1</sup> | The file open in your IDE, including the content before and after the cursor in that file. | Always included. |
+| Filename and extension | The name and extension of the current file. | Always included. |
+| [Open tab files](#using-open-files-as-context) | Files open in tabs in your IDE. These files give GitLab Duo more information about the standards and practices in your code project. | Optional, but on by default. |
+| [Imported files](#using-imported-files-as-context) | Files imported in the current opened file. These imported files give GitLab Duo more information about the classes and methods used in the current file. | Optional and off by default. |
 
-Code Suggestions also uses files from your repository as context to make suggestions and
-generate code:
+**Footnotes:**
 
-- Code completion can use files in your repository that are written in the [languages enabled for Code Suggestions in your IDE](supported_extensions.md#supported-languages).
-- Code generation can use files in your repository that are written in the following
-languages:
-  - Go
-  - Java
-  - JavaScript
-  - Kotlin
-  - Python
-  - Ruby
-  - Rust
-  - TypeScript (`.ts` and `.tsx` files)
-  - Vue
-  - YAML
+1. Code completion is aware of all [supported languages](supported_extensions.md#supported-languages-by-ide).
+   Code generation is aware of files in these languages only:
+   Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, TypeScript (`.ts` and `.tsx` files), Vue, and YAML.
 
 For more information, see [epic 57](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/57).
+
+### Enhanced suggestions
+
+For the following languages, Code Suggestions uses [files open in tabs as context](_index.md#use-files-open-in-tabs-as-context)
+and [Repository X-Ray](repository_xray.md) to deliver more accurate, context-aware suggestions:
+C, C#, C++, Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, PHP, and TypeScript.
 
 ### Using open files as context
 
@@ -191,17 +201,14 @@ For more information, see the history.
 
 {{< /alert >}}
 
-{{< alert type="note" >}}
+Prerequisites:
 
-GitLab recently refactored the Open Tabs internal logic for Duo Code Suggestions. Users who want to use Open Tabs must update their Editor Extensions version to 7.17.1 or later to restore functionality.
+- JetBrains extension version 3.6.5 or later.
+- Neovim extension version 1.1.0 or later.
+- Visual Studio extension version 0.51.0 or later.
+- VS Code extension version 6.2.2 or later.
 
-{{< /alert >}}
-
-As well as using files from your repository, Code Suggestions can use the files
-open in tabs in your IDE as context.
-
-These files give GitLab Duo more information about the standards and practices
-in your code project.
+If tab as context is on, Code Suggestions uses the files open in tabs in your IDE as context. These files give GitLab Duo more information about the standards and practices in your code project.
 
 #### Turn on open files as context
 
@@ -263,6 +270,7 @@ that explain what you want to build:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514124) in GitLab 17.9 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_include_context_imports`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/514124) in GitLab 17.11.
 
 {{< /history >}}
 
@@ -367,7 +375,7 @@ Prerequisites:
 1. Expand **GitLab Duo features**.
 1. Under **Connection method**, choose an option:
    - To minimize latency for code completion requests, select **Direct connections**.
-   - To disable direct connections for all users, select **Indirect connections through the GitLab self-managed instance**.
+   - To disable direct connections for all users, select **Indirect connections through the GitLab Self-Managed instance**.
 1. Select **Save changes**.
 
 {{< /tab >}}

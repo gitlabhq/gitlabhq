@@ -37,7 +37,6 @@ export default {
   },
   data() {
     return {
-      showDropdownContentsCreateView: false,
       localSelectedColor: this.selectedColor,
       isDirty: false,
     };

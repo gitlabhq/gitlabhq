@@ -8,7 +8,7 @@ import * as getters from './getters';
 export const useNotes = defineStore('legacyNotes', {
   syncWith: {
     store: mrNotes,
-    namespace: 'notes',
+    name: 'notes',
   },
   state() {
     return {

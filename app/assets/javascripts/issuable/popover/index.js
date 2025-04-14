@@ -7,6 +7,7 @@ import MilestonePopover from './components/milestone_popover.vue';
 import CommentPopover from './components/comment_popover.vue';
 
 export const componentsByReferenceTypeMap = {
+  epic: IssuePopover,
   issue: IssuePopover,
   work_item: IssuePopover,
   merge_request: MRPopover,

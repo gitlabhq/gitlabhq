@@ -103,7 +103,7 @@ For more information about our plans for language support in SAST, see the [cate
 | C#                                      | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
 | Elixir (Phoenix)                        | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)                                                                                  |
 | Go                                      | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
-| Groovy                                  | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin<sup>1</sup>                                      |
+| Groovy                                  | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin<sup><b><a href="#spotbugs-footnote">1</a></b></sup>                               |
 | Java                                    | {{< icon name="check-circle" >}} Yes, including Java Server Pages (JSP)                                           | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) (including Android) |
 | JavaScript, including Node.js and React | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
 | Kotlin                                  | {{< icon name="dotted-circle" >}} No; tracked in [epic 15173](https://gitlab.com/groups/gitlab-org/-/epics/15173) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) (including Android) |
@@ -114,12 +114,18 @@ For more information about our plans for language support in SAST, see the [cate
 | Scala                                   | {{< icon name="dotted-circle" >}} No; tracked in [epic 15174](https://gitlab.com/groups/gitlab-org/-/epics/15174) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
 | Swift (iOS)                             | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
 | TypeScript                              | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
-| YAML                                    | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
+| YAML<sup><b><a href="#yaml-footnote">2</a></b></sup>                        | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
 | Java Properties                         | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
 
 **Footnotes:**
 
-1. The SpotBugs-based analyzer supports [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/). It can also be used with variants like the [Gradle wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html), [Grails](https://grails.org/), and the [Maven wrapper](https://github.com/takari/maven-wrapper). However, SpotBugs has [limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/350801) when used against [Ant](https://ant.apache.org/)-based projects. You should use the GitLab Advanced SAST or Semgrep-based analyzer for Ant-based Java or Scala projects.
+1. <a id="spotbugs-footnote"></a>The SpotBugs-based analyzer supports [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/). It can also be used with variants like the [Gradle wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html), [Grails](https://grails.org/), and the [Maven wrapper](https://github.com/takari/maven-wrapper). However, SpotBugs has [limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/350801) when used against [Ant](https://ant.apache.org/)-based projects. You should use the GitLab Advanced SAST or Semgrep-based analyzer for Ant-based Java or Scala projects.
+1. <a id="yaml-footnote"></a>`YAML` support is restricted to the following file patterns:
+
+   - `application*.yml`
+   - `application*.yaml`
+   - `bootstrap*.yml`
+   - `bootstrap*.yaml`
 
 The SAST CI/CD template also includes an analyzer job that can scan Kubernetes manifests and Helm charts; this job is off by default.
 See [Enabling Kubesec analyzer](#enabling-kubesec-analyzer) or consider [IaC Scanning](../iac_scanning/_index.md), which supports additional platforms, instead.
@@ -507,33 +513,63 @@ For example, to scan a Rust application, you must:
            # include any other file extensions you need to scan from the semgrep-sast template: Jobs/SAST.gitlab-ci.yml
    ```
 
-### Pre-compilation
+### Using pre-compilation with SpotBugs analyzer
 
-Most GitLab SAST analyzers directly scan your source code without compiling it first.
-However, for technical reasons, the SpotBugs-based analyzer scans compiled bytecode.
-
-By default, the SpotBugs-based analyzer automatically attempts to fetch dependencies and compile your code so it can be scanned.
+The SpotBugs-based analyzer scans compiled bytecode for `Groovy` projects. By default, it automatically attempts to fetch dependencies and compile your code so it can be scanned.
 Automatic compilation can fail if:
 
-- your project requires custom build configurations.
-- you use language versions that aren't built into the analyzer.
+- your project requires custom build configurations
+- you use language versions that aren't built into the analyzer
 
 To resolve these issues, you should skip the analyzer's compilation step and directly provide artifacts from an earlier stage in your pipeline instead.
 This strategy is called _pre-compilation_.
 
-To use pre-compilation:
+#### Sharing pre-compiled artifacts
 
-1. Output your project's dependencies to a directory in the project's working directory, then save that directory as an artifact by [setting the `artifacts: paths` configuration](../../../ci/yaml/_index.md#artifactspaths).
-1. Provide the `COMPILE: "false"` CI/CD variable to the analyzer job to disable automatic compilation.
-1. Add your compilation stage as a dependency for the analyzer job.
+1. Use a compilation job (typically named `build`) to compile your project and store the compiled output as a `job artifact` using [`artifacts: paths`](../../../ci/yaml/_index.md#artifactspaths).
 
-To allow the analyzer to recognize the compiled artifacts, you must explicitly specify the path to
-the vendored directory.
-This configuration can vary depending on how the project is set up.
-For Maven projects, you can use `MAVEN_REPO_PATH`.
-See [Analyzer settings](#analyzer-settings) for the complete list of available options.
+   - For `Maven` projects, the output folder is usually the `target` directory
+   - For `Gradle` projects, it's typically the `build` directory
+   - If your project uses a custom output location, set the artifacts path accordingly
 
-The following example pre-compiles a Maven project and provides it to the SpotBugs-based SAST analyzer:
+1. Disable automatic compilation by setting the `COMPILE: "false"` CI/CD variable in the `spotbugs-sast` job.
+
+1. Ensure the `spotbugs-sast` job depends on the compilation job by setting the `dependencies` keyword. This allows the `spotbugs-sast` job to download and use the artifacts created in the compilation job.
+
+The following example pre-compiles a Gradle project and provides the compiled bytecode to the analyzer:
+
+```yaml
+stages:
+  - build
+  - test
+
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
+
+build:
+  image: gradle:7.6-jdk8
+  stage: build
+  script:
+    - gradle build
+  artifacts:
+    paths:
+      - build/
+
+spotbugs-sast:
+  dependencies:
+    - build
+  variables:
+    COMPILE: "false"
+    SECURE_LOG_LEVEL: debug
+```
+
+#### Specifying dependencies (Maven only)
+
+If your project requires external dependencies to be recognized by the analyzer and you're using Maven, you can specify the location of the local repository by using the `MAVEN_REPO_PATH` variable.
+
+Specifying dependencies is only supported for Maven-based projects. Other build tools (for example, Gradle) do not have an equivalent mechanism for specifying dependencies. In that case, ensure that your compiled artifacts include all necessary dependencies.
+
+The following example pre-compiles a Maven project and provides the compiled bytecode along with the dependencies to the analyzer:
 
 ```yaml
 stages:
@@ -559,9 +595,7 @@ spotbugs-sast:
   variables:
     MAVEN_REPO_PATH: $CI_PROJECT_DIR/.m2/repository
     COMPILE: "false"
-  artifacts:
-    reports:
-      sast: gl-sast-report.json
+    SECURE_LOG_LEVEL: debug
 ```
 
 ### Running jobs in merge request pipelines
@@ -790,7 +824,7 @@ Some analyzers can be customized with CI/CD variables.
 | `FAIL_NEVER`                | SpotBugs   | Set to `1` to ignore compilation failure.                                                                                                                                                                                          |
 | `SAST_SEMGREP_METRICS` | Semgrep | Set to `"false"` to disable sending anonymized scan metrics to [r2c](https://semgrep.dev). Default: `true`. |
 | `SAST_SCANNER_ALLOWED_CLI_OPTS`        | Semgrep | CLI options (arguments with value, or flags) that are passed to the underlying security scanner when running scan operation. Only a limited set of [options](#security-scanner-configuration) are accepted. Separate a CLI option and its value using either a blank space or equals (`=`) character. For example: `name1 value1` or `name1=value1`. Multiple options must be separated by blank spaces. For example: `name1 value1 name2 value2`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368565) in GitLab 15.3. |
-| `SAST_RULESET_GIT_REFERENCE` | All     | Defines a path to a custom ruleset configuration. If a project has a `.gitlab/sast-ruleset.toml` file committed, that local configuration takes precedence and the file from `SAST_RULESET_GIT_REFERENCE` isn’t used. This variable is available for the Ultimate tier only.|
+| `SAST_RULESET_GIT_REFERENCE` | All     | Defines a path to a custom ruleset configuration. If a project has a `.gitlab/sast-ruleset.toml` file committed, that local configuration takes precedence and the file from `SAST_RULESET_GIT_REFERENCE` isn't used. This variable is available for the Ultimate tier only.|
 | `SECURE_ENABLE_LOCAL_CONFIGURATION` | All     | Enables the option to use custom ruleset configuration. If `SECURE_ENABLE_LOCAL_CONFIGURATION` is set to `false`, the project's custom ruleset configuration file at `.gitlab/sast-ruleset.toml` is ignored and the file from `SAST_RULESET_GIT_REFERENCE` or the default configuration takes precedence. |
 
 #### Security scanner configuration
@@ -814,9 +848,17 @@ flags are added to the scanner's CLI options.
   </thead>
   <tbody>
     <tr>
-      <td rowspan="1">
+      <td rowspan="2">
         GitLab Advanced SAST
       </td>
+      <td>
+        <code>--include-propagator-files</code>
+      </td>
+      <td>
+        WARNING: This flag may cause significant performance degradation. <br> This option enables the scanning of intermediary files that connect source and sink files without containing either sources or sinks themselves. While useful for comprehensive analysis in smaller repositories, enabling this feature for large repositories will substantially impact performance. 
+      </td>
+    </tr>
+    <tr>
       <td>
         <code>--multi-core</code>
       </td>
@@ -960,7 +1002,7 @@ registry.gitlab.com/security-products/spotbugs:5
 
 The process for importing Docker images into a local offline Docker registry depends on
 **your network security policy**. Consult your IT staff to find an accepted and approved
-process by which external resources can be imported or temporarily accessed. These scanners are [periodically updated](../_index.md#vulnerability-scanner-maintenance)
+process by which external resources can be imported or temporarily accessed. These scanners are [periodically updated](../detect/vulnerability_scanner_maintenance.md)
 with new definitions, and you may be able to make occasional updates on your own.
 
 For details on saving and transporting Docker images as a file, see the Docker documentation on

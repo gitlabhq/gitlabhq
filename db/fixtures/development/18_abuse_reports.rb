@@ -5,9 +5,10 @@ module Db
         def self.seed
           Gitlab::Seeder.quiet do
             (::AbuseReport.default_per_page + 3).times do |i|
+              username = "#{::Gitlab::Seeder::REPORTED_USER_START}#{FFaker::Internet.unique.user_name}"
               reported_user =
                 ::User.create!(
-                  username: "reported_user_#{i}",
+                  username: username,
                   name: FFaker::Name.name,
                   email: FFaker::Internet.email,
                   confirmed_at: DateTime.now,
@@ -16,7 +17,7 @@ module Db
                   user.assign_personal_namespace(Organizations::Organization.default_organization)
                 end
 
-              label_title = "abuse_report_label_#{i}"
+              label_title = "abuse_report_label_#{FactoryBot.generate(:label_title)}"
               ::AntiAbuse::Reports::Label.create(
                 title: label_title,
                 description: FFaker::Lorem.sentence,

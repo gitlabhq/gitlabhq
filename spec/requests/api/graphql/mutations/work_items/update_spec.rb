@@ -1695,6 +1695,10 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           expect(mutation_response['workItem']['widgets']).to include(
             'timeEstimate' => expected_result[:time_estimate],
             'totalTimeSpent' => expected_result[:time_spent],
+            'humanReadableAttributes' => {
+              'timeEstimate' => Gitlab::TimeTrackingFormatter.output(mutation_work_item.time_estimate),
+              'totalTimeSpent' => Gitlab::TimeTrackingFormatter.output(mutation_work_item.total_time_spent)
+            },
             'timelogs' => {
               'nodes' => [
                 {
@@ -1723,6 +1727,10 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
                 type
                 timeEstimate
                 totalTimeSpent
+                humanReadableAttributes {
+                  timeEstimate
+                  totalTimeSpent
+                }
                 timelogs {
                   nodes {
                     timeSpent

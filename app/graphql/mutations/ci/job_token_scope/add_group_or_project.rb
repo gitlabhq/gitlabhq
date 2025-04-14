@@ -30,7 +30,7 @@ module Mutations
           default_value: [],
           experiment: { milestone: '17.5' },
           description: 'List of policies added to the CI job token scope. Is ignored if ' \
-            '`add_policies_to_ci_job_token` feature flag is disabled.'
+            'job token policies are disabled.'
 
         field :ci_job_token_scope_allowlist_entry,
           Types::Ci::JobTokenScope::AllowlistEntryType,
@@ -46,7 +46,7 @@ module Mutations
         def resolve(project_path:, target_path:, default_permissions:, job_token_policies:)
           project = authorized_find!(project_path)
           target = find_target_path(target_path)
-          policies_enabled = Feature.enabled?(:add_policies_to_ci_job_token, project)
+          policies_enabled = project.job_token_policies_enabled?
           # Use default permissions if policies feature isn't enabled.
           default = policies_enabled ? default_permissions : true
 

@@ -9,19 +9,19 @@ module RuboCop
       #
       # @example
       #
-      # # bad
-      # class BadWorker
-      #   def perform
+      #   # bad
+      #   class BadWorker
+      #     def perform
+      #     end
       #   end
-      # end
       #
-      # # good
-      # class GoodWorker
-      #   data_consistency :delayed
+      #   # good
+      #   class GoodWorker
+      #     data_consistency :delayed
       #
-      #   def perform
+      #     def perform
+      #     end
       #   end
-      # end
       #
       class WorkerDataConsistency < RuboCop::Cop::Base
         include CodeReuseHelpers

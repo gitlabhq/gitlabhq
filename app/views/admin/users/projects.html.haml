@@ -16,10 +16,10 @@
         %h2.gl-text-base.gl-text-default.gl-leading-reset.gl-my-0.gl-font-normal
           = _('Groups')
       - c.with_body do
-        %ul.hover-list
+        %ul.gl-list-none.gl-p-0.gl-m-0
           - @user.group_members.includes(:source).find_each do |group_member|
             - group = group_member.group
-            %li.group_member.gl-flex.gl-items-baseline
+            %li.group_member.gl-flex.gl-px-5.gl-py-3.gl-break-words.gl-items-baseline.gl-border-b-1.gl-border-b-solid.gl-border-b-section.last:gl-border-b-0
               %strong= link_to group.name, admin_group_path(group)
               &ndash; access to
               #{pluralize(group.projects.count, 'project')}
@@ -37,13 +37,12 @@
           %h2.gl-text-base.gl-text-default.gl-leading-reset.gl-my-0.gl-font-normal
             = _('Joined projects (%{projects_count})') % { projects_count: @joined_projects.count }
         - c.with_body do
-          %ul.hover-list
+          %ul.gl-list-none.gl-p-0.gl-m-0
             - @joined_projects.sort_by(&:full_name).each do |project|
               - member = project.team.find_member(@user.id)
-              %li.project_member.gl-flex.gl-items-baseline
-                .list-item-name
-                  = link_to admin_project_path(project), class: dom_class(project) do
-                    = project.full_name
+              %li.project_member.gl-flex.gl-px-5.gl-py-3.gl-break-words.gl-items-baseline.gl-border-b-1.gl-border-b-solid.gl-border-b-section.last:gl-border-b-0
+                = link_to admin_project_path(project), class: dom_class(project) do
+                  = project.full_name
 
                 - if member
                   %span.light.gl-ml-auto= member.human_access

@@ -1,8 +1,0 @@
-%ul.content-list.mr-list.issuable-list
-  - if @merge_requests.present?
-    = render @merge_requests
-  - else
-    = render 'shared/empty_states/merge_requests', button_path: new_merge_request_path
-
-- if @merge_requests.present?
-  = paginate_collection @merge_requests, total_pages: @total_pages

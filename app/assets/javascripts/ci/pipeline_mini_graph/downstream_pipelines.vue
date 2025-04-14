@@ -1,6 +1,6 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
-import { sprintf, s__ } from '~/locale';
+import { sprintf, n__ } from '~/locale';
 import DownstreamPipelineDropdown from './downstream_pipeline_dropdown.vue';
 
 /**
@@ -47,9 +47,16 @@ export default {
       return `+${this.pipelines.length - this.maxRenderedPipelines}`;
     },
     counterTooltipText() {
-      return sprintf(s__('Pipelines|%{counterLabel} more downstream pipelines'), {
-        counterLabel: this.counterLabel,
-      });
+      return sprintf(
+        n__(
+          'Pipelines|%{counterLabel} more downstream pipeline',
+          'Pipelines|%{counterLabel} more downstream pipelines',
+          this.counterLabel,
+        ),
+        {
+          counterLabel: this.counterLabel,
+        },
+      );
     },
   },
 };

@@ -46,6 +46,7 @@ module ApplicationSettingImplementation
         authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
         autocomplete_users_limit: 300,
         autocomplete_users_unauthenticated_limit: 100,
+        ci_job_live_trace_enabled: false,
         ci_max_total_yaml_size_bytes: 314572800, # max_yaml_size_bytes * ci_max_includes = 2.megabyte * 150
         commit_email_hostname: default_commit_email_hostname,
         container_expiration_policies_enable_historic_entries: false,
@@ -102,6 +103,7 @@ module ApplicationSettingImplementation
         gitaly_timeout_default: 55,
         gitaly_timeout_fast: 10,
         gitaly_timeout_medium: 30,
+        gitlab_product_usage_data_enabled: Settings.gitlab['initial_gitlab_product_usage_data'],
         gitpod_enabled: false,
         gitpod_url: 'https://gitpod.io/',
         gravatar_enabled: Settings.gravatar['enabled'],
@@ -147,6 +149,7 @@ module ApplicationSettingImplementation
         members_delete_limit: 60,
         notify_on_unknown_sign_in: true,
         outbound_local_requests_whitelist: [],
+        organization_cluster_agent_authorization_enabled: false,
         password_authentication_enabled_for_git: true,
         password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
         performance_bar_allowed_group_id: nil,
@@ -179,6 +182,7 @@ module ApplicationSettingImplementation
         restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
         rsa_key_restriction: default_min_key_size(:rsa),
         session_expire_delay: Settings.gitlab['session_expire_delay'],
+        session_expire_from_init: false,
         shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
         shared_runners_text: nil,
         sidekiq_job_limiter_mode: Gitlab::SidekiqMiddleware::SizeLimiter::Validator::COMPRESS_MODE,
@@ -316,10 +320,13 @@ module ApplicationSettingImplementation
         require_personal_access_token_expiry: true,
         pages_extra_deployments_default_expiry_seconds: 86400,
         scan_execution_policies_action_limit: 10,
+        scan_execution_policies_schedule_limit: 0,
         seat_control: 0,
         show_migrate_from_jenkins_banner: true,
         ropc_without_client_credentials: true,
-        vscode_extension_marketplace_enabled: false
+        vscode_extension_marketplace_enabled: false,
+        reindexing_minimum_index_size: 1.gigabyte,
+        reindexing_minimum_relative_bloat_size: 0.2
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end
@@ -585,10 +592,6 @@ module ApplicationSettingImplementation
 
   def allow_signup?
     signup_enabled? && password_authentication_enabled_for_web?
-  end
-
-  def product_usage_data_enabled?
-    true
   end
 
   def password_authentication_enabled?

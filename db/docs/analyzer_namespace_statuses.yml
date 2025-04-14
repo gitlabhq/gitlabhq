@@ -1,0 +1,14 @@
+---
+table_name: analyzer_namespace_statuses
+classes:
+- Security::AnalyzerNamespaceStatus
+feature_categories:
+- security_asset_inventories
+description: |
+  Stores analyzer status counts per namespace.
+  This includes all descendants of this namespace, not only direct descendants.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185595
+milestone: '17.11'
+gitlab_schema: gitlab_sec
+sharding_key:
+  namespace_id: namespaces

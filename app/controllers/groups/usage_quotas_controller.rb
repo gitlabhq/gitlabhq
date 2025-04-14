@@ -12,9 +12,10 @@ module Groups
     feature_category :consumables_cost_management
     urgency :low
 
-    def index
+    def root
       # To be used in ee/app/controllers/ee/groups/usage_quotas_controller.rb
       @seat_count_data = seat_count_data
+      render :root
     end
 
     private

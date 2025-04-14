@@ -176,7 +176,7 @@ export default {
             </template>
           </gl-sprintf>
         </div>
-        <div class="gl-ml-auto">
+        <div class="gl-ml-auto gl-flex gl-gap-3">
           <gl-button data-testid="clear-selection" variant="default" @click="onClearChecked">{{
             s__('Runners|Clear selection')
           }}</gl-button>

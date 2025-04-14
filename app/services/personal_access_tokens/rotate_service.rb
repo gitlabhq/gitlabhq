@@ -2,6 +2,8 @@
 
 module PersonalAccessTokens
   class RotateService
+    include Gitlab::InternalEventsTracking
+
     EXPIRATION_PERIOD = 1.week
 
     def initialize(current_user, token, resource = nil, params = {})
@@ -26,6 +28,8 @@ module PersonalAccessTokens
         response = create_access_token
 
         raise ActiveRecord::Rollback unless response.success?
+
+        track_rotation_event
       end
 
       response
@@ -43,7 +47,7 @@ module PersonalAccessTokens
       new_token = target_user.personal_access_tokens.create(create_token_params)
 
       if new_token.persisted?
-        update_bot_membership(target_user, new_token.expires_at)
+        update_project_bot_membership(target_user, new_token.expires_at)
         update_project_bot_to_inherit_current_user_external_status
 
         return success_response(new_token)
@@ -56,8 +60,8 @@ module PersonalAccessTokens
       true
     end
 
-    def update_bot_membership(target_user, expires_at)
-      return if target_user.human?
+    def update_project_bot_membership(target_user, expires_at)
+      return unless target_user.project_bot?
 
       # Related to https://gitlab.com/gitlab-org/gitlab/-/issues/514328
       # We must retain bot user membership after it became inactive
@@ -114,6 +118,15 @@ module PersonalAccessTokens
 
     def default_expiration_date
       EXPIRATION_PERIOD.from_now.to_date
+    end
+
+    def track_rotation_event
+      track_internal_event(
+        "rotate_pat",
+        user: target_user,
+        namespace: target_user.namespace,
+        project: nil
+      )
     end
   end
 end

@@ -11,7 +11,7 @@ import {
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { STATUS_OPEN, STATUS_CLOSED } from '~/issues/constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
-import { isExternal, setUrlFragment, visitUrl } from '~/lib/utils/url_utility';
+import { isExternal, visitUrl } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 
@@ -23,14 +23,16 @@ import {
   STATE_OPEN,
   STATE_CLOSED,
   LINKED_CATEGORIES_MAP,
-  WORK_ITEM_TYPE_VALUE_INCIDENT,
-  WORK_ITEM_TYPE_VALUE_ISSUE,
+  WORK_ITEM_TYPE_NAME_INCIDENT,
+  WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_ISSUE,
+  WORK_ITEM_TYPE_NAME_TEST_CASE,
+  WORK_ITEM_TYPE_ENUM_TEST_CASE,
 } from '~/work_items/constants';
 import {
   isAssigneesWidget,
-  isLabelsWidget,
+  findLabelsWidget,
   findLinkedItemsWidget,
   canRouterNav,
 } from '~/work_items/utils';
@@ -122,15 +124,21 @@ export default {
     },
     isIncident() {
       return (
-        this.issuable.workItemType?.name === WORK_ITEM_TYPE_VALUE_INCIDENT ||
+        this.issuable.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT ||
         this.issuable?.type === WORK_ITEM_TYPE_ENUM_INCIDENT
       );
     },
     isServiceDeskIssue() {
       return (
         (this.issuable?.type === WORK_ITEM_TYPE_ENUM_ISSUE ||
-          this.issuable.workItemType?.name === WORK_ITEM_TYPE_VALUE_ISSUE) &&
+          this.issuable.workItemType?.name === WORK_ITEM_TYPE_NAME_ISSUE) &&
         this.issuable?.author?.username === SUPPORT_BOT_USERNAME
+      );
+    },
+    isTestCase() {
+      return (
+        this.issuable.workItemType?.name === WORK_ITEM_TYPE_NAME_TEST_CASE ||
+        this.issuable?.type === WORK_ITEM_TYPE_ENUM_TEST_CASE
       );
     },
     author() {
@@ -158,7 +166,7 @@ export default {
       return (
         this.issuable.labels?.nodes ||
         this.issuable.labels ||
-        this.issuable.widgets?.find(isLabelsWidget)?.labels.nodes ||
+        findLabelsWidget(this.issuable)?.labels.nodes ||
         []
       );
     },
@@ -248,9 +256,6 @@ export default {
           this.issuable.assignees,
       );
     },
-    issuableNotesLink() {
-      return setUrlFragment(this.issuableLinkHref, 'notes');
-    },
     statusBadgeVariant() {
       if (this.isMergeRequest && this.isClosed) {
         return 'danger';
@@ -269,8 +274,9 @@ export default {
         // incidents and Service Desk issues
         !this.isIncident &&
         !this.isServiceDeskIssue &&
-        this.glFeatures.workItemsViewPreference &&
-        gon.current_user_use_work_items_view
+        !this.isTestCase &&
+        (this.glFeatures.workItemViewForIssues ||
+          (this.glFeatures.workItemsViewPreference && gon.current_user_use_work_items_view))
       );
     },
     hiddenIssuableTitle() {
@@ -292,8 +298,7 @@ export default {
     },
     scopedLabel(label) {
       const allowsScopedLabels =
-        this.hasScopedLabelsFeature ||
-        this.issuable.widgets?.find(isLabelsWidget)?.allowsScopedLabels;
+        this.hasScopedLabelsFeature || findLabelsWidget(this.issuable)?.allowsScopedLabels;
       return allowsScopedLabels && isScopedLabel(label);
     },
     labelTitle(label) {
@@ -303,17 +308,6 @@ export default {
       const value = encodeURIComponent(this.labelTitle(label));
       return `?${this.labelFilterParam}[]=${value}`;
     },
-    /**
-     * This is needed as an independent method since
-     * when user changes current page, `$refs.authorLink`
-     * will be null until next page results are loaded & rendered.
-     */
-    getAuthorPopoverTarget() {
-      if (this.$refs.authorLink) {
-        return this.$refs.authorLink.$el;
-      }
-      return '';
-    },
     handleIssuableItemClick(e) {
       if (e.metaKey || e.ctrlKey || this.showCheckbox || e.button === 1) {
         return;
@@ -321,7 +315,7 @@ export default {
       e.preventDefault();
       // Unsupported types incidents and Service Desk issues
       // should not open in drawer
-      if (this.isIncident || this.isServiceDeskIssue || !this.preventRedirect) {
+      if (this.isIncident || this.isServiceDeskIssue || this.isTestCase || !this.preventRedirect) {
         this.navigateToIssuable();
         return;
       }

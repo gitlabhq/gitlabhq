@@ -4,6 +4,7 @@ import { toSentenceCase } from '../../utils/common';
 import * as ast from '../parser/ast';
 import { getFieldAlias } from './field_aliases';
 import { getFunction } from './functions';
+import { derivedFields } from './derived_fields';
 
 const getValue = (astNode) => {
   if (astNode.type === ast.Types.COLLECTION) return astNode.value.map(getValue);
@@ -21,7 +22,9 @@ export const transformAstToDisplayFields = (astNode) => {
   if (astNode.type === ast.Types.COLLECTION) return astNode.value.map(transformAstToDisplayFields);
   if (astNode.type === ast.Types.FIELD_NAME) {
     const fieldName = getValue(astNode);
-    return { key: fieldName, label: toSentenceCase(astNode.value), name: fieldName };
+    const displayField = { key: fieldName, label: toSentenceCase(astNode.value), name: fieldName };
+    if (derivedFields[fieldName]) displayField.transform = derivedFields[fieldName];
+    return displayField;
   }
   if (astNode.type === ast.Types.FUNCTION_CALL) {
     const args = getValue(astNode.args);

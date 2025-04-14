@@ -458,7 +458,7 @@ authentication mode (`patroni['tls_client_mode']`), must each have the same valu
    gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
    ```
 
-1. [Enable monitoring](../postgresql/pgbouncer.md#enable-monitoring)
+1. [Enable monitoring](pgbouncer.md#enable-monitoring)
 
 #### PgBouncer Checkpoint
 
@@ -560,7 +560,7 @@ gitlab-rake gitlab:db:configure
 
 > **Note**: If you encounter a `rake aborted!` error stating that PgBouncer is failing to connect to PostgreSQL it may be that your PgBouncer node's IP address is missing from
 PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb` on your database nodes. See
-[PgBouncer error `ERROR:  pgbouncer cannot connect to server`](../postgresql/replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server) before you proceed.
+[PgBouncer error `ERROR:  pgbouncer cannot connect to server`](replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server) before you proceed.
 
 ### Backups
 
@@ -571,7 +571,7 @@ Do not backup or restore GitLab through a PgBouncer connection: this causes a Gi
 ### Ensure GitLab is running
 
 At this point, your GitLab instance should be up and running. Verify you're able
-to sign in, and create issues and merge requests. For more information, see [Troubleshooting replication and failover](../postgresql/replication_and_failover_troubleshooting.md).
+to sign in, and create issues and merge requests. For more information, see [Troubleshooting replication and failover](replication_and_failover_troubleshooting.md).
 
 ## Example configuration
 
@@ -899,7 +899,7 @@ Stopping or restarting the Patroni service on the leader node triggers an automa
 
 In GitLab 16.5 and earlier, PgBouncer nodes do not automatically fail over alongside
 Patroni nodes. PgBouncer services
-[must be restarted manually](../postgresql/replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
+[must be restarted manually](replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
 for a successful switchover.
 
 {{< /alert >}}
@@ -1053,7 +1053,7 @@ Considering these, you should carefully plan your PostgreSQL upgrade:
    ```
 
 If issues are encountered upgrading the replicas,
-[there is a troubleshooting section](../postgresql/replication_and_failover_troubleshooting.md#postgresql-major-version-upgrade-fails-on-a-patroni-replica) that might be the solution.
+[there is a troubleshooting section](replication_and_failover_troubleshooting.md#postgresql-major-version-upgrade-fails-on-a-patroni-replica) that might be the solution.
 
 {{< alert type="note" >}}
 

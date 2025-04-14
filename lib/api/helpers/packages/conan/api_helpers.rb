@@ -39,11 +39,11 @@ module API
           end
 
           def present_package_download_urls
-            present_download_urls(::API::Entities::ConanPackage::ConanPackageManifest, &:package_urls)
+            present_download_urls(::API::Entities::Packages::Conan::PackageManifest, &:package_urls)
           end
 
           def present_recipe_download_urls
-            present_download_urls(::API::Entities::ConanPackage::ConanRecipeManifest, &:recipe_urls)
+            present_download_urls(::API::Entities::Packages::Conan::RecipeManifest, &:recipe_urls)
           end
 
           def recipe_upload_urls
@@ -167,7 +167,7 @@ module API
             package_file = ::Packages::Conan::PackageFileFinder
               .new(
                 package,
-                params[:file_name].to_s,
+                file_name: params[:file_name].to_s,
                 conan_file_type: file_type,
                 conan_package_reference: declared(params)[:conan_package_reference],
                 recipe_revision: params[:recipe_revision]

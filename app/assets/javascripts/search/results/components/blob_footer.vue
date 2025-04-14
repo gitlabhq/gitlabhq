@@ -1,6 +1,6 @@
 <script>
 import { GlSprintf, GlButton, GlLink } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { s__, n__ } from '~/locale';
 import { DEFAULT_FETCH_CHUNKS, DEFAULT_SHOW_CHUNKS } from '~/search/results/constants';
 import { EVENT_CLICK_BLOB_RESULTS_SHOW_MORE_LESS } from '~/search/results/tracking';
 import { InternalEvents } from '~/tracking';
@@ -17,10 +17,9 @@ export default {
   },
   mixins: [trackingMixin],
   i18n: {
-    showMore: s__('GlobalSearch|Show %{matches} more matches'),
     showLess: s__('GlobalSearch|Show less'),
     showMoreInFile: s__(
-      'GlobalSearch|%{lessButtonStart}Show less%{lessButtonEnd} - Too many matches found. Showing %{showingMatches} chunks out of %{fileMatches} results. %{fileLinkStart}Open the file to view all.%{fileLinkEnd}',
+      'GlobalSearch|%{lessButtonStart}Show less%{lessButtonEnd} - Showing %{showingMatches} of %{fileMatches} results. %{fileLinkStart}Open the file to view all results.%{fileLinkEnd}',
     ),
   },
   props: {
@@ -70,6 +69,13 @@ export default {
         this.showingChunks >= DEFAULT_FETCH_CHUNKS && this.fileMatchCountTotal > this.matchesTotal
       );
     },
+    showMoreButtonText() {
+      return n__(
+        'GlobalSearch|Show 1 more result',
+        'GlobalSearch|Show %d more results',
+        this.howMuchMore,
+      );
+    },
   },
   methods: {
     toggleShowMore() {
@@ -91,11 +97,7 @@ export default {
 <template>
   <div v-if="!showMore" data-testid="showing-less">
     <gl-button category="tertiary" size="medium" @click="toggleShowMore">
-      <gl-sprintf :message="$options.i18n.showMore">
-        <template #matches>
-          <span>{{ howMuchMore }}</span>
-        </template>
-      </gl-sprintf>
+      {{ showMoreButtonText }}
     </gl-button>
   </div>
   <div v-else-if="hasMoreWeCanShow" data-testid="has-more-we-show">

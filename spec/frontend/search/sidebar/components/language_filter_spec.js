@@ -104,7 +104,7 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
       findShowMoreButton().vm.$emit('click');
 
       expect(trackingSpy).toHaveBeenCalledWith('search:agreggations:language:click', 'Show More', {
-        label: 'All Filters',
+        label: 'AllFilters',
       });
     });
 

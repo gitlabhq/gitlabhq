@@ -83,6 +83,7 @@ export async function mountIssuesListApp() {
     hasAnyIssues,
     hasAnyProjects,
     hasBlockedIssuesFeature,
+    hasCustomFieldsFeature,
     hasIssuableHealthStatusFeature,
     hasIssueDateFilterFeature,
     hasIssueWeightsFeature,
@@ -114,6 +115,7 @@ export async function mountIssuesListApp() {
     wiReportAbusePath,
     wiNewCommentTemplatePaths,
     hasLinkedItemsEpicsFeature,
+    timeTrackingLimitToHours,
   } = el.dataset;
 
   return new Vue({
@@ -157,6 +159,7 @@ export async function mountIssuesListApp() {
       hasAnyIssues: parseBoolean(hasAnyIssues),
       hasAnyProjects: parseBoolean(hasAnyProjects),
       hasBlockedIssuesFeature: parseBoolean(hasBlockedIssuesFeature),
+      hasCustomFieldsFeature: parseBoolean(hasCustomFieldsFeature),
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
       hasIssueDateFilterFeature: parseBoolean(hasIssueDateFilterFeature),
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
@@ -200,6 +203,7 @@ export async function mountIssuesListApp() {
       hasSubepicsFeature: false,
       hasLinkedItemsEpicsFeature: parseBoolean(hasLinkedItemsEpicsFeature),
       commentTemplatePaths: JSON.parse(wiNewCommentTemplatePaths),
+      timeTrackingLimitToHours: parseBoolean(timeTrackingLimitToHours),
     },
     render: (createComponent) => createComponent(IssuesListApp),
   });

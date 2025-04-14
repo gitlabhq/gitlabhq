@@ -26,7 +26,13 @@ This guide helps non-Python developers get started with Python quickly and effic
       curl --silent --show-error --location "https://install.python-poetry.org" | python3 -
      ```
 
-   - Make sure to ready the Poetry installation [guide](https://python-poetry.org/docs/) for full installation details
+   - Poetry can also be installed with Mise:
+
+      ```shell
+       mise install poetry
+      ```
+
+   - Make sure to read the Poetry installation [guide](https://python-poetry.org/docs/) for full installation details
 
    - Once installed, create a new Python project with Poetry:
 
@@ -87,7 +93,7 @@ We use pytest for testing Python code. To learn more about writing and running t
 1. **[Python Testing with pytest (Book)](https://pragprog.com/titles/bopytest2/python-testing-with-pytest-second-edition/)**
    This book is a comprehensive guide to testing Python code with pytest. It covers everything from the basics of writing tests to advanced topics like fixtures, plugins, and test organization.
 
-1. **[Python Function to flowchart)](https://gitlab.com/srayner/funcgraph/)**
+1. **[Python Function to flowchart](https://gitlab.com/srayner/funcgraph/)**
    This project takes any Python function and automatically creates a visual flowchart showing how the code works.
 
 ---
@@ -112,7 +118,7 @@ Refer to [Track and Propose Sessions for Python Learning Group](https://gitlab.c
 
 ### Communication
 
-- Stay updated by following the [learning group issue](<https://gitlab.com/gitlab-org/gitlab/-/issues/517449>)
+- Stay updated by following the [learning group issue](https://gitlab.com/gitlab-org/gitlab/-/issues/517449)
 - Join the discussion on Slack: **#python_getting_started**
 
 ---

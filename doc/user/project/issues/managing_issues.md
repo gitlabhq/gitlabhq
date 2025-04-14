@@ -39,7 +39,7 @@ To edit an issue:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select the title of your issue to view it.
-1. To the right of the title, select **Edit title and description** ({{< icon name="pencil" >}}).
+1. To the right of the title, select **Edit** ({{< icon name="pencil" >}}).
 1. Edit the available fields.
 1. Select **Save changes**.
 
@@ -47,7 +47,8 @@ To edit an issue:
 
 {{< details >}}
 
-- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Tier: Ultimate
+- Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com
 - Status: Experiment
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
@@ -421,10 +422,10 @@ To automatically close an issue, use the following keywords followed by the issu
 
 Available keywords:
 
-- Close, Closes, Closed, Closing, close, closes, closed, closing
-- Fix, Fixes, Fixed, Fixing, fix, fixes, fixed, fixing
-- Resolve, Resolves, Resolved, Resolving, resolve, resolves, resolved, resolving
-- Implement, Implements, Implemented, Implementing, implement, implements, implemented, implementing
+- `Close`, `Closes`, `Closed`, `Closing`, `close`, `closes`, `closed`, `closing`
+- `Fix`, `Fixes`, `Fixed`, `Fixing`, `fix`, `fixes`, `fixed`, `fixing`
+- `Resolve`, `Resolves`, `Resolved`, `Resolving`, `resolve`, `resolves`, `resolved`, `resolving`
+- `Implement`, `Implements`, `Implemented`, `Implementing`, `implement`, `implements`, `implemented`, `implementing`
 
 Available issue reference formats:
 
@@ -520,7 +521,7 @@ This truncation makes it easier to find other elements on the page without scrol
 
 Prerequisites:
 
-- Your administrator must have [enabled the new look for issues](issue_work_items.md).
+- [The new look for issues](issue_work_items.md) must be enabled.
 
 To change whether descriptions are truncated:
 
@@ -543,7 +544,7 @@ Issue attributes are shown in a sidebar to the right of the description when spa
 
 Prerequisites:
 
-- Your administrator must have [enabled the new look for issues](issue_work_items.md).
+- [The new look for issues](issue_work_items.md) must be enabled.
 
 To hide the sidebar and increase space for the description:
 
@@ -808,6 +809,7 @@ You can use the OR operator (**is one of: `||`**) when you [filter the list of i
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `issues_list_drawer`. Disabled by default.
+- In GitLab 17.11, if [the new look for issues](issue_work_items.md) is enabled, this feature is also enabled.
 
 {{< /history >}}
 
@@ -815,7 +817,6 @@ You can use the OR operator (**is one of: `||`**) when you [filter the list of i
 
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 

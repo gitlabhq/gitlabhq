@@ -40,7 +40,7 @@ Different features are available in different [GitLab tiers](https://about.gitla
 
 | Capability                                                                                           | In Free & Premium      | In Ultimate            |
 |:-----------------------------------------------------------------------------------------------------|:-----------------------|:-----------------------|
-| [Customize analyzer settings](configure.md#customize-analyzer-settings)                                          | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| [Customize analyzer behavior](configure.md#customize-analyzer-behavior)                                          | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
 | Download [output](#output)                                                                           | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
 | See new findings in the merge request widget                                                         | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | View identified secrets in the pipelines' **Security** tab                                           | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
@@ -53,7 +53,7 @@ Different features are available in different [GitLab tiers](https://about.gitla
 
 Pipeline secret detection is optimized to balance coverage and run time.
 Only the current state of the repository and future commits are scanned for secrets.
-To identify secrets already present in the repository's history, run an historic scan once
+To identify secrets already present in the repository's history, run a historic scan once
 after enabling pipeline secret detection. Scan results are available only after the pipeline is completed.
 
 Exactly what is scanned for secrets depends on the type of pipeline,
@@ -61,26 +61,38 @@ and whether any additional configuration is set.
 
 By default, when you run a pipeline:
 
-- On the **default branch**, the Git working tree is scanned.
-  This means the entire repository is scanned as though it were a typical directory.
-- On a **new, non-default branch**, the content of all commits from the most recent commit on the parent branch to the latest commit is scanned.
-- On an **existing, non-default branch**, the content of all commits from the most recent branch commit to the latest commit is scanned.
+- On a branch:
+  - On the **default branch**, the Git working tree is scanned.
+    This means the entire repository is scanned as though it were a typical directory.
+  - On a **new, non-default branch**, the content of all commits from the most recent commit on the parent branch to the latest commit is scanned.
+  - On an **existing, non-default branch**, the content of all commits from the last pushed commit to the latest commit is scanned.
 - On a **merge request**, the content of all commits on the branch is scanned. If the analyzer can't access every commit,
   the content of all commits from the parent to the latest commit is scanned. To use merge request pipelines, you must use the
   [`latest` pipeline secret detection template](../../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 To override the default behavior, use the [available CI/CD variables](configure.md#available-cicd-variables).
 
-### Full history pipeline secret detection
+### Run a historic scan
 
 By default, pipeline secret detection scans only the current state of the Git repository. Any secrets
 contained in the repository's history are not detected. Run a historic scan to check for secrets from
 all commits and branches in the Git repository.
 
-You should do a historic scan only once, after enabling pipeline secret detection. Historic scans
+You should run a historic scan only once, after enabling pipeline secret detection. Historic scans
 can take a long time, especially for larger repositories with lengthy Git histories. After
-completing an initial full history scan, use only standard pipeline secret detection as part of your
+completing an initial historic scan, use only standard pipeline secret detection as part of your
 pipeline.
+
+To run a historic scan:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Build > Pipelines**.
+1. Select **New pipeline**.
+1. Add a CI/CD variable:
+   1. From the dropdown list, select **Variable**.
+   1. In the **Input variable key** box, enter `SECRET_DETECTION_HISTORIC_SCAN`.
+   1. In the **Input variable value** box, enter `true`.
+1. Select **New pipeline**.
 
 ### Advanced vulnerability tracking
 
@@ -112,9 +124,12 @@ For more information, see the confidential project `https://gitlab.com/gitlab-or
 ### Detected secrets
 
 Pipeline secret detection scans the repository's content for specific patterns. Each pattern matches
-a specific type of secret and is specified in a rule by using a TOML syntax. The default set of
-rules is maintained by GitLab. In the Ultimate tier, you can customize the default ruleset to suit
-your needs. For details, see [Customize analyzer rulesets](configure.md#customize-analyzer-rulesets). To confirm
+a specific type of secret and is specified in a rule by using a TOML syntax. GitLab maintains the default set of rules.
+
+With GitLab Ultimate you can extend these rules to suit your needs. For example, while personal access tokens that use a custom prefix are not detected by default, you can customize the rules to identify these tokens.
+For details, see [Customize analyzer rulesets](configure.md#customize-analyzer-rulesets).
+
+To confirm
 which secrets are detected by pipeline secret detection, see
 [Detected secrets](../detected_secrets.md). To provide reliable, high-confidence results, pipeline
 secret detection only looks for passwords or other unstructured secrets in specific contexts like
@@ -209,6 +224,18 @@ For more information, see:
 
 - [Report file schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/secret-detection-report-format.json)
 - [Example report file](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/qa/expect/secrets/gl-secret-detection-report.json)
+
+## Remediate a leaked secret
+
+When a secret is detected, you should rotate it immediately. GitLab attempts to
+[automatically revoke](../automatic_response.md) some types of leaked secrets. For those that are not
+automatically revoked, you must do so manually.
+
+[Purging a secret from the repository's history](../../../project/repository/repository_size.md#purge-files-from-repository-history)
+does not fully address the leak. The original secret remains in any existing forks or
+clones of the repository.
+
+For instructions on how to respond to a leaked secret, select the vulnerability in the vulnerability report.
 
 ## FIPS-enabled images
 
@@ -320,17 +347,5 @@ before_script:
 ```
 
 For more information about this issue, see [issue 465974](https://gitlab.com/gitlab-org/gitlab/-/issues/465974).
-
-## Warnings
-
-### Responding to a leaked secret
-
-When a secret is detected, you should rotate it immediately. GitLab attempts to
-[automatically revoke](../automatic_response.md) some types of leaked secrets. For those that are not
-automatically revoked, you must do so manually.
-
-[Purging a secret from the repository's history](../../../project/repository/repository_size.md#purge-files-from-repository-history)
-does not fully address the leak. The original secret remains in any existing forks or
-clones of the repository.
 
 <!-- markdownlint-enable MD025 -->

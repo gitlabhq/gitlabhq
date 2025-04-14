@@ -52,6 +52,7 @@ class Projects::BlobController < Projects::ApplicationController
     push_frontend_feature_flag(:blob_repository_vue_header_app, @project)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
     push_frontend_feature_flag(:directory_code_dropdown_updates, current_user)
+    push_frontend_feature_flag(:ci_pipeline_status_realtime, @project)
   end
 
   def new

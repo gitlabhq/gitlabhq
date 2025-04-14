@@ -2,8 +2,8 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
-import { STATE_OPEN, WORK_ITEM_TYPE_VALUE_TASK } from '../../constants';
-import { findHierarchyWidgets, getDefaultHierarchyChildrenCount, getItems } from '../../utils';
+import { STATE_OPEN, WORK_ITEM_TYPE_NAME_TASK } from '../../constants';
+import { findHierarchyWidget, getDefaultHierarchyChildrenCount, getItems } from '../../utils';
 import toggleHierarchyTreeChildMutation from '../../graphql/client/toggle_hierarchy_tree_child.mutation.graphql';
 import isExpandedHierarchyTreeChildQuery from '../../graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
@@ -116,7 +116,7 @@ export default {
       update({ workItem }) {
         if (workItem) {
           this.isLoadingChildren = false;
-          const { hasChildren, children } = findHierarchyWidgets(workItem.widgets);
+          const { hasChildren, children } = findHierarchyWidget(workItem);
           this.children = children.nodes;
           return {
             pageInfo: children.pageInfo,
@@ -154,10 +154,7 @@ export default {
   },
   computed: {
     hasChildren() {
-      return (
-        findHierarchyWidgets(this.childItem.widgets).hasChildren ||
-        this.hierarchyWidget?.hasChildren
-      );
+      return findHierarchyWidget(this.childItem).hasChildren || this.hierarchyWidget?.hasChildren;
     },
     shouldExpandChildren() {
       // In case the parent is the same as the child,
@@ -166,8 +163,7 @@ export default {
       if (this.parentId === this.childItem.id) {
         return false;
       }
-      const rolledUpCountsByType =
-        findHierarchyWidgets(this.childItem.widgets)?.rolledUpCountsByType || [];
+      const rolledUpCountsByType = findHierarchyWidget(this.childItem)?.rolledUpCountsByType || [];
       const nrOpenChildren = rolledUpCountsByType
         .map((i) => i.countsByState.all - i.countsByState.closed)
         .reduce((sum, n) => sum + n, 0);
@@ -190,7 +186,7 @@ export default {
       return this.childItem.workItemType.name;
     },
     iconClass() {
-      if (this.childItemType === WORK_ITEM_TYPE_VALUE_TASK) {
+      if (this.childItemType === WORK_ITEM_TYPE_NAME_TASK) {
         return this.isItemOpen ? 'gl-fill-icon-success' : 'gl-fill-icon-info';
       }
       return '';
@@ -214,7 +210,7 @@ export default {
       };
     },
     shouldShowWeight() {
-      return this.childItemType === WORK_ITEM_TYPE_VALUE_TASK ? this.showTaskWeight : true;
+      return this.childItemType === WORK_ITEM_TYPE_NAME_TASK ? this.showTaskWeight : true;
     },
     allowedChildTypes() {
       return this.allowedChildrenByType?.[this.childItemType] || [];

@@ -322,10 +322,10 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       it 'creates system note about title change' do
         update_merge_request(opts)
 
-        note = find_note('changed title')
+        note = find_note('<div>changed title')
 
         expect(note).not_to be_nil
-        expect(note.note).to eq 'changed title from **{-Old-} title** to **{+New+} title**'
+        expect(note.note).to eq '<div>changed title from <code class="idiff"><span class="idiff left right deletion">Old</span> title</code> to <code class="idiff"><span class="idiff left right addition">New</span> title</code></div>'
       end
 
       it 'creates system note about description change' do

@@ -7,7 +7,7 @@ export const RUNNER_PAGE_SIZE = 20;
 export const RUNNER_JOB_COUNT_LIMIT = 1000;
 
 export const RUNNER_DETAILS_PROJECTS_PAGE_SIZE = 5;
-export const RUNNER_DETAILS_JOBS_PAGE_SIZE = 30;
+export const RUNNER_DETAILS_JOBS_PAGE_SIZE = 20;
 
 export const I18N_FETCH_ERROR = s__('Runners|Something went wrong while fetching runner data.');
 export const I18N_CREATE_ERROR = s__(
@@ -149,6 +149,11 @@ export const INSTANCE_TYPE = 'INSTANCE_TYPE';
 export const GROUP_TYPE = 'GROUP_TYPE';
 export const PROJECT_TYPE = 'PROJECT_TYPE';
 export const RUNNER_TYPES = [INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE];
+
+// CiRunnerCreationState
+
+export const CREATION_STATE_STARTED = 'STARTED';
+export const CREATION_STATE_FINISHED = 'FINISHED';
 
 // CiRunnerStatus
 

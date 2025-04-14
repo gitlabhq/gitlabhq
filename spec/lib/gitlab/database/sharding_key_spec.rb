@@ -9,7 +9,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_sharding_key) do
     [
-      'merge_request_diff_commits_b5377a7a34', # has a desired sharding key instead
       'web_hook_logs_daily' # temporary copy of web_hook_logs
     ]
   end
@@ -29,7 +28,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       *['labels.project_id', 'labels.group_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
       'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
       'sprints.group_id',
-      *['todos.project_id', 'todos.group_id']
+      *['todos.project_id', 'todos.group_id'],
+      *uploads_and_partitions
     ]
   end
 
@@ -44,6 +44,35 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'security_orchestration_policy_configurations.project_id',
       'security_orchestration_policy_configurations.namespace_id',
       *['protected_branches.project_id', 'protected_branches.namespace_id']
+    ]
+  end
+
+  # The following tables are work in progress as part of
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
+  # TODO: Remove these excepttions once the issue is closed.
+  let(:uploads_and_partitions) do
+    [
+      "achievement_uploads.namespace_id",
+      "ai_vectorizable_file_uploads.project_id",
+      "alert_management_alert_metric_image_uploads.project_id",
+      "bulk_import_export_upload_uploads.project_id", "bulk_import_export_upload_uploads.namespace_id",
+      "dependency_list_export_part_uploads.organization_id",
+      "dependency_list_export_uploads.organization_id", "dependency_list_export_uploads.namespace_id",
+      "dependency_list_export_uploads.project_id",
+      "design_management_action_uploads.namespace_id",
+      "import_export_upload_uploads.project_id", "import_export_upload_uploads.namespace_id",
+      "issuable_metric_image_uploads.namespace_id",
+      "namespace_uploads.namespace_id",
+      "note_uploads.namespace_id",
+      "organization_detail_uploads.organization_id",
+      "project_import_export_relation_export_upload_uploads.project_id",
+      "project_topic_uploads.organization_id",
+      "project_uploads.project_id",
+      "snippet_uploads.organization_id",
+      "vulnerability_export_part_uploads.organization_id",
+      "vulnerability_export_uploads.organization_id",
+      "vulnerability_archive_export_uploads.project_id",
+      "vulnerability_remediation_uploads.project_id"
     ]
   end
 
@@ -63,12 +92,17 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'ci_pipeline_schedule_variables.project_id',
       'ci_build_trace_chunks.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'p_ci_job_annotations.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
+      'ci_build_pending_states.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'ci_builds_runner_session.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'p_ci_pipelines_config.project_id', # LFK already present on p_ci_pipelines and cascade delete all ci resources
+      'ci_trigger_requests.project_id', # LFK already present on ci_triggers and cascade delete all ci resources
       'ci_unit_test_failures.project_id', # LFK already present on ci_unit_tests and cascade delete all ci resources
       'dast_profiles_pipelines.project_id', # LFK already present on dast_profiles and will cascade delete
       'dast_scanner_profiles_builds.project_id', # LFK already present on dast_scanner_profiles and will cascade delete
       'vulnerability_finding_links.project_id', # LFK already present on vulnerability_occurrence with cascade delete
+      'vulnerability_occurrence_identifiers.project_id', # LFK present on vulnerability_occurrence with cascade delete
+      'secret_detection_token_statuses.project_id',
+      # LFK already present on vulnerability_occurrence with cascade delete.
       'ldap_group_links.group_id',
       'namespace_descendants.namespace_id',
       'p_batched_git_ref_updates_deletions.project_id',
@@ -91,7 +125,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'virtual_registries_packages_maven_cache_entries.group_id',
       # The table contains references in the object storage and thus can't have cascading delete
       # nor being NULL by the definition of a sharding key.
-      'packages_nuget_symbols.project_id'
+      'packages_nuget_symbols.project_id',
+      'packages_package_files.project_id'
     ]
   end
 
@@ -191,7 +226,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     end
   end
 
-  it 'ensures all organization_id columns are not nullable, have no default, and have a foreign key' do
+  it 'ensures all organization_id columns are not nullable, have no default, and have a foreign key',
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/527615' do
     loose_foreign_keys = Gitlab::Database::LooseForeignKeys.definitions.group_by(&:from_table)
 
     sql = <<~SQL
@@ -224,10 +260,39 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       "oauth_access_grants" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "oauth_openid_requests" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "oauth_device_grants" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
-      "uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "bulk_import_trackers" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517823",
       "ai_duo_chat_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/516140",
-      "fork_networks" => "https://gitlab.com/gitlab-org/gitlab/-/issues/522958"
+      "fork_networks" => "https://gitlab.com/gitlab-org/gitlab/-/issues/522958",
+      "merge_request_diff_commit_users" => "https://gitlab.com/gitlab-org/gitlab/-/issues/526725",
+      # All the tables below related to uploads are part of the same work to
+      # add sharding key to the table
+      "uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "abuse_report_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "achievement_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "ai_vectorizable_file_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "alert_management_alert_metric_image_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "appearance_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "bulk_import_export_upload_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "dependency_list_export_part_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "dependency_list_export_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "design_management_action_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "import_export_upload_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "issuable_metric_image_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "namespace_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "note_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "organization_detail_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "project_import_export_relation_export_upload_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "project_topic_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "project_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "snippet_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "uploads_9ba88c4165" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "user_permission_export_upload_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "user_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "vulnerability_export_part_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "vulnerability_export_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "vulnerability_archive_export_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
+      "vulnerability_remediation_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199"
+      # End of uploads related tables
     }
 
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }

@@ -106,7 +106,8 @@ class Explore::ProjectsController < Explore::ApplicationController
 
     finder_params = {
       minimum_search_length: MIN_SEARCH_LENGTH,
-      not_aimed_for_deletion: true
+      not_aimed_for_deletion: true,
+      current_organization: current_organization
     }
 
     projects = ProjectsFinder.new(current_user: current_user, params: params.merge(finder_params)).execute
@@ -120,7 +121,7 @@ class Explore::ProjectsController < Explore::ApplicationController
   def load_topics
     @topics = Projects::TopicsFinder.new(
       params: params.permit(:search),
-      organization_id: organization_id
+      organization_id: current_organization&.id
     ).execute.page(pagination_params[:page]).without_count
   end
 
@@ -131,7 +132,9 @@ class Explore::ProjectsController < Explore::ApplicationController
                    params[:topic_name]
                  end
 
-    @topic = Projects::Topic.for_organization(organization_id).find_by_name_case_insensitive(topic_name)
+    return unless current_organization
+
+    @topic = Projects::Topic.for_organization(current_organization.id).find_by_name_case_insensitive(topic_name)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -179,8 +182,8 @@ class Explore::ProjectsController < Explore::ApplicationController
     flash.now[:notice] = _('You must sign in to search for specific projects.')
   end
 
-  def organization_id
-    ::Current.organization&.id
+  def current_organization
+    ::Current.organization
   end
 end
 

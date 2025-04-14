@@ -10,53 +10,53 @@ RSpec.describe Gitlab::ImportExport::MembersMapper do
       let(:exported_user_id) { 99 }
       let(:exported_members) do
         [{
-           "id" => 2,
-           "access_level" => 40,
-           "source_id" => 14,
-           "source_type" => source_type,
-           "notification_level" => 3,
-           "created_at" => "2016-03-11T10:21:44.822Z",
-           "updated_at" => "2016-03-11T10:21:44.822Z",
-           "created_by_id" => 1,
-           "invite_email" => nil,
-           "invite_token" => nil,
-           "invite_accepted_at" => nil,
-           "user" =>
-             {
-               "id" => exported_user_id,
-               "public_email" => user2.email,
-               "username" => 'test'
-             },
-           "user_id" => 19
-         },
-         {
-           "id" => 3,
-           "access_level" => 40,
-           "source_id" => 14,
-           "source_type" => source_type,
-           "user_id" => nil,
-           "notification_level" => 3,
-           "created_at" => "2016-03-11T10:21:44.822Z",
-           "updated_at" => "2016-03-11T10:21:44.822Z",
-           "created_by_id" => 2,
-           "invite_email" => 'invite@test.com',
-           "invite_token" => 'token',
-           "invite_accepted_at" => nil
-         },
-         {
-           "id" => 3,
-           "access_level" => 40,
-           "source_id" => 14,
-           "source_type" => source_type,
-           "user_id" => nil,
-           "notification_level" => 3,
-           "created_at" => "2016-03-11T10:21:44.822Z",
-           "updated_at" => "2016-03-11T10:21:44.822Z",
-           "created_by_id" => nil,
-           "invite_email" => 'invite2@test.com',
-           "invite_token" => 'token',
-           "invite_accepted_at" => nil
-         }]
+          "id" => 2,
+          "access_level" => 40,
+          "source_id" => 14,
+          "source_type" => source_type,
+          "notification_level" => 3,
+          "created_at" => "2016-03-11T10:21:44.822Z",
+          "updated_at" => "2016-03-11T10:21:44.822Z",
+          "created_by_id" => 1,
+          "invite_email" => nil,
+          "invite_token" => nil,
+          "invite_accepted_at" => nil,
+          "user" =>
+          {
+            "id" => exported_user_id,
+            "public_email" => user2.email,
+            "username" => 'test'
+          },
+          "user_id" => 19
+        },
+          {
+            "id" => 3,
+            "access_level" => 40,
+            "source_id" => 14,
+            "source_type" => source_type,
+            "user_id" => nil,
+            "notification_level" => 3,
+            "created_at" => "2016-03-11T10:21:44.822Z",
+            "updated_at" => "2016-03-11T10:21:44.822Z",
+            "created_by_id" => 2,
+            "invite_email" => 'invite@test.com',
+            "invite_token" => 'token',
+            "invite_accepted_at" => nil
+          },
+          {
+            "id" => 3,
+            "access_level" => 40,
+            "source_id" => 14,
+            "source_type" => source_type,
+            "user_id" => nil,
+            "notification_level" => 3,
+            "created_at" => "2016-03-11T10:21:44.822Z",
+            "updated_at" => "2016-03-11T10:21:44.822Z",
+            "created_by_id" => nil,
+            "invite_email" => 'invite2@test.com',
+            "invite_token" => 'token',
+            "invite_accepted_at" => nil
+          }]
       end
 
       let(:members_mapper) do

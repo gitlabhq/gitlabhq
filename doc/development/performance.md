@@ -33,7 +33,7 @@ This document describes various guidelines to ensure good and consistent perform
   - [GitLab performance monitoring](../administration/monitoring/performance/_index.md)
   - [Development department performance indicators](https://handbook.gitlab.com/handbook/engineering/development/performance-indicators/)
   - [Service measurement](service_measurement.md)
-- Self-managed administration and customer-focused:
+- GitLab Self-Managed administration and customer-focused:
   - [File system performance benchmarking](../administration/operations/filesystem_benchmarking.md)
   - [Sidekiq performance troubleshooting](../administration/sidekiq/sidekiq_troubleshooting.md)
 

@@ -5,6 +5,7 @@ import {
   createUserCountsManager,
   userCounts,
   destroyUserCountsManager,
+  setGlobalTodoCount,
 } from '~/super_sidebar/user_counts_manager';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 
@@ -44,6 +45,16 @@ describe('User Count Manager', () => {
     Object.assign(userCounts, userCountDefaults, { last_update: 0 });
 
     global.BroadcastChannel = newBroadcastChannelMock;
+  });
+
+  describe('userCounts', () => {
+    it('returns total_merge_requests', () => {
+      expect(userCounts.total_merge_requests).toEqual(7);
+
+      Object.assign(userCounts, userCountUpdate, { last_update: 0 });
+
+      expect(userCounts.total_merge_requests).toEqual(101901);
+    });
   });
 
   describe('createUserCountsManager', () => {
@@ -90,6 +101,16 @@ describe('User Count Manager', () => {
 
         expect(userCounts).toMatchObject(userCountUpdate);
         expect(userCounts.i_am_unknown).toBeUndefined();
+      });
+
+      it('does not update total_merge_requests', () => {
+        expect(userCounts).toMatchObject(userCountDefaults);
+        expect(userCounts.total_merge_requests).toEqual(7);
+
+        channelMock.onmessage({ data: { ...userCountUpdate, total_merge_requests: 22 } });
+
+        expect(userCounts).toMatchObject(userCountUpdate);
+        expect(userCounts.total_merge_requests).toEqual(101901);
       });
     });
 
@@ -234,6 +255,42 @@ describe('User Count Manager', () => {
         destroyUserCountsManager();
 
         expect(channelMock.close).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('setGlobalTodoCount', () => {
+    beforeEach(() => {
+      createUserCountsManager();
+      channelMock.postMessage.mockClear();
+    });
+
+    describe('when called with invalid values', () => {
+      it.each([undefined, null, '435', -12, Number.MAX_SAFE_INTEGER + 1])(
+        `does nothing for %s`,
+        (value) => {
+          expect(userCounts.todos).toBe(userCountDefaults.todos);
+
+          setGlobalTodoCount(value);
+
+          expect(userCounts.todos).toBe(userCountDefaults.todos);
+          expect(userCounts.todos).not.toBe(value);
+          expect(channelMock.postMessage).not.toHaveBeenCalled();
+        },
+      );
+    });
+
+    describe('when called with valid values', () => {
+      it.each([0, 3, 12023])(`does update the todos value and broadcast for %s`, (value) => {
+        expect(userCounts.todos).not.toBe(value);
+
+        setGlobalTodoCount(value);
+
+        expect(userCounts.todos).toBe(value);
+        expect(channelMock.postMessage).toHaveBeenCalledWith({
+          last_update: Date.now(),
+          todos: value,
+        });
       });
     });
   });

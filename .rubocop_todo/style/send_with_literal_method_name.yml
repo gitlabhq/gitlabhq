@@ -1,7 +1,0 @@
----
-# Cop supports --autocorrect.
-Style/SendWithLiteralMethodName:
-  Exclude:
-    - 'lib/gitlab/database/load_balancing/connection_proxy.rb'
-    - 'spec/lib/gitlab/ci/config/entry/retry_spec.rb'
-    - 'spec/support/shared_examples/quick_actions/issuable/close_quick_action_shared_examples.rb'

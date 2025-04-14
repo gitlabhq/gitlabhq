@@ -21,7 +21,7 @@ module CachedIntrospectionQuery
             name
             description
             locations
-            args {
+            args(includeDeprecated: true) {
               ...InputValue
             }
           }
@@ -35,7 +35,7 @@ module CachedIntrospectionQuery
         fields(includeDeprecated: true) {
           name
           description
-          args {
+          args(includeDeprecated: true) {
             ...InputValue
           }
           type {
@@ -44,7 +44,7 @@ module CachedIntrospectionQuery
           isDeprecated
           deprecationReason
         }
-        inputFields {
+        inputFields(includeDeprecated: true) {
           ...InputValue
         }
         interfaces {
@@ -68,6 +68,8 @@ module CachedIntrospectionQuery
           ...TypeRef
         }
         defaultValue
+        isDeprecated
+        deprecationReason
       }
 
       fragment TypeRef on __Type {

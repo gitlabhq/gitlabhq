@@ -106,7 +106,7 @@ describe('Token access table', () => {
       createComponent({ items: [mockGroups[0]] });
 
       expect(findPolicies().findAll('li').at(0).text()).toBe('Read to Jobs');
-      expect(findPolicies().findAll('li').at(1).text()).toBe('Read and write to Containers');
+      expect(findPolicies().findAll('li').at(1).text()).toBe('Read and write to Deployments');
     });
 
     it('shows default text when item has default permissions selected', () => {

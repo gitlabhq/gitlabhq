@@ -28,8 +28,8 @@
 .rd-hunk-header {
   // this is used when a hunk header doesn't have any text, only expand buttons
   min-height: calc(1em * $code-line-height);
-  border-top: 1px solid var(--rd-hunk-header-border-color, $gray-100);
-  border-bottom: 1px solid var(--rd-hunk-header-border-color, $gray-100);
+  border-top: 1px solid var(--rd-hunk-header-border-color, var(--gl-border-color-default));
+  border-bottom: 1px solid var(--rd-hunk-header-border-color, var(--gl-border-color-default));
   background-color: var(--rd-hunk-header-background-color, $gray-50);
   color: var(--rd-hunk-header-color, $gray-400);
 

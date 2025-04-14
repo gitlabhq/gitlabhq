@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Deleting a container registry tag protection rule', :aggregate_failures, feature_category: :container_registry do
+RSpec.describe Mutations::ContainerRegistry::Protection::TagRule::Delete, :aggregate_failures, feature_category: :container_registry do
   include ContainerRegistryHelpers
   include GraphqlHelpers
 
@@ -20,6 +20,8 @@ RSpec.describe 'Deleting a container registry tag protection rule', :aggregate_f
   before do
     stub_gitlab_api_client_to_support_gitlab_api(supported: true)
   end
+
+  specify { expect(described_class).to require_graphql_authorizations(:destroy_container_registry_protection_tag_rule) }
 
   subject(:post_graphql_mutation_request) do
     post_graphql_mutation(mutation, current_user: current_user)
@@ -44,7 +46,11 @@ RSpec.describe 'Deleting a container registry tag protection rule', :aggregate_f
         'id' => container_protection_rule.to_global_id.to_s,
         'tagNamePattern' => container_protection_rule.tag_name_pattern,
         'minimumAccessLevelForDelete' => container_protection_rule.minimum_access_level_for_delete.upcase,
-        'minimumAccessLevelForPush' => container_protection_rule.minimum_access_level_for_push.upcase
+        'minimumAccessLevelForPush' => container_protection_rule.minimum_access_level_for_push.upcase,
+        'immutable' => container_protection_rule.immutable?,
+        'userPermissions' => {
+          'destroyContainerRegistryProtectionTagRule' => true
+        }
       }
     )
   end
@@ -64,6 +70,5 @@ RSpec.describe 'Deleting a container registry tag protection rule', :aggregate_f
   end
 
   include_examples 'when user does not have permission'
-  include_examples 'when feature flag container_registry_protected_tags is disabled'
   include_examples 'when the GitLab API is not supported'
 end

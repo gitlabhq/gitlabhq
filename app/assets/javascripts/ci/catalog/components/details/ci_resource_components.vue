@@ -15,7 +15,7 @@ export default {
     GlTruncate,
     HelpIcon,
   },
-  inputHelpLink: helpPagePath('ci/yaml/inputs', {
+  inputHelpLink: helpPagePath('ci/inputs/_index.md', {
     anchor: 'define-input-parameters-with-specinputs',
   }),
   props: {

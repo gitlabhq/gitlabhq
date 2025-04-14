@@ -8,7 +8,9 @@ class AddIndexZoektIndexIdAndStateOnZoektRepositories < Gitlab::Database::Migrat
   TABLE_NAME = :zoekt_repositories
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- large tables
     add_concurrent_index(TABLE_NAME, %i[zoekt_index_id state], name: INDEX_NAME)
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

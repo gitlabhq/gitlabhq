@@ -42,7 +42,7 @@ Apdex measurements are used to determine uptime.
 ## IP allowlist
 
 To access monitoring resources, the requesting client IP needs to be included in the allowlist.
-For details, see [how to add IPs to the allowlist for the monitoring endpoints](../monitoring/ip_allowlist.md).
+For details, see [how to add IPs to the allowlist for the monitoring endpoints](ip_allowlist.md).
 
 ## Using the endpoints locally
 

@@ -178,6 +178,13 @@ RSpec.describe QA::Git::Repository do
           end
         end
 
+        context 'when set to auto merge' do
+          it_behaves_like 'command with retries' do
+            let(:push_options) { '-o merge_request.auto_merge' }
+            let(:call_method) { repository.push_changes(push_options: { auto_merge: true }) }
+          end
+        end
+
         context 'when set to remove source branch' do
           it_behaves_like 'command with retries' do
             let(:push_options) { '-o merge_request.remove_source_branch' }

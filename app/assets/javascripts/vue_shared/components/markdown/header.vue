@@ -50,6 +50,7 @@ export default {
     editorAiActions: { default: () => [] },
     mrGeneratedContent: { default: null },
     canSummarizeChanges: { default: false },
+    canUseComposer: { default: false },
   },
   props: {
     previewMarkdown: {
@@ -131,18 +132,6 @@ export default {
       return this.newCommentTemplatePaths.length > 0
         ? this.newCommentTemplatePaths
         : this.newCommentTemplatePathsProp;
-    },
-    mdTable() {
-      const header = s__('MarkdownEditor|header');
-      const divider = '-'.repeat(header.length);
-      const cell = ' '.repeat(header.length);
-
-      return [
-        `| ${header} | ${header} |`,
-        `| ${divider} | ${divider} |`,
-        `| ${cell} | ${cell} |`,
-        `| ${cell} | ${cell} |`,
-      ].join('\n');
     },
     mdSuggestion() {
       const codeblockChars = repeatCodeBackticks(this.lineContent);
@@ -689,7 +678,7 @@ export default {
             :new-comment-template-paths="commentTemplatePaths"
             @select="insertSavedReply"
           />
-          <template v-if="!previewMarkdown && canSummarizeChanges">
+          <template v-if="!previewMarkdown && canSummarizeChanges && !canUseComposer">
             <header-divider />
             <summarize-code-changes />
           </template>

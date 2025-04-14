@@ -538,14 +538,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
             end
           end
 
-          context 'when pat_expiry_inherited_members_notification FF is disabled' do
-            before do
-              stub_feature_flags(pat_expiry_inherited_members_notification: false)
-            end
-
-            it_behaves_like 'does not email inherited members'
-          end
-
           context 'when instance setting resource_access_token_notify_inherited is enforced' do
             before do
               stub_application_setting(
@@ -714,14 +706,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
                 )
               )
             end
-          end
-
-          context 'when pat_expiry_inherited_members_notification FF is disabled' do
-            before do
-              stub_feature_flags(pat_expiry_inherited_members_notification: false)
-            end
-
-            it_behaves_like 'does not email inherited members'
           end
 
           context 'when instance setting resource_access_token_notify_inherited is enforced' do
@@ -1743,6 +1727,60 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
           should_not_email_anyone
         end
+      end
+    end
+  end
+
+  context 'wiki page note', :deliver_mails_inline do
+    let_it_be(:project) { create(:project, :public, :repository) }
+    let(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
+    let(:note) { create(:note, noteable: wiki_page_meta, project: project) }
+
+    before_all do
+      build_team(project)
+      build_group(project)
+      update_custom_notification(:new_note, @u_guest_custom, resource: project)
+      update_custom_notification(:new_note, @u_custom_global)
+    end
+
+    before do
+      reset_delivered_emails!
+    end
+
+    describe '#new_note, #perform_enqueued_jobs' do
+      it do
+        notification.new_note(note)
+        should_email(@u_guest_watcher)
+        should_email(@u_custom_global)
+        should_email(@u_guest_custom)
+        should_email(@u_watcher)
+        should_email_nested_group_user(@pg_watcher)
+        should_not_email(@u_mentioned)
+        should_not_email(note.author)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+        should_not_email(@u_lazy_participant)
+        should_not_email_nested_group_user(@pg_disabled)
+      end
+
+      it do
+        note.update_attribute(:note, '@mention referenced')
+        notification.new_note(note)
+
+        should_email(@u_guest_watcher)
+        should_email(@u_watcher)
+        should_email(@u_mentioned)
+        should_email_nested_group_user(@pg_watcher)
+        should_not_email(note.author)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+        should_not_email(@u_lazy_participant)
+        should_not_email_nested_group_user(@pg_disabled)
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { note }
+        let(:notification_trigger) { notification.new_note(note) }
       end
     end
   end
@@ -4564,6 +4602,134 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
         deletion_date,
         mail: "inactive_project_deletion_warning_email"
       )
+    end
+  end
+
+  describe 'project scheduled for deletion' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project) }
+
+    context 'when project emails are disabled' do
+      before do
+        allow(project).to receive(:emails_disabled?).and_return(true)
+      end
+
+      it 'does not send any emails' do
+        expect(Notify).not_to receive(:project_scheduled_for_deletion)
+
+        subject.project_scheduled_for_deletion(project)
+      end
+    end
+
+    context 'when project emails are enabled' do
+      before do
+        allow(project).to receive(:emails_disabled?).and_return(false)
+      end
+
+      context 'when user is owner' do
+        it 'sends email' do
+          expect(Notify).to receive(:project_scheduled_for_deletion).with(project.first_owner.id, project.id).and_call_original
+
+          subject.project_scheduled_for_deletion(project)
+        end
+
+        context 'when owner is blocked' do
+          it 'does not send email' do
+            project.owner.block!
+
+            expect(Notify).not_to receive(:project_scheduled_for_deletion)
+
+            subject.project_scheduled_for_deletion(project)
+          end
+        end
+      end
+
+      context 'when project has multiple owners' do
+        it 'sends email to all owners' do
+          project.add_owner(user)
+
+          expect(Notify).to receive(:project_scheduled_for_deletion).with(project.first_owner.id, project.id).and_call_original
+          expect(Notify).to receive(:project_scheduled_for_deletion).with(user.id, project.id).and_call_original
+
+          subject.project_scheduled_for_deletion(project)
+        end
+      end
+
+      context 'when project has no direct owners but belongs to a group with owners' do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:project) { create(:project, group: group) }
+        let_it_be(:group_owner) { create(:user) }
+
+        before do
+          group.add_owner(group_owner)
+          # Ensure project has no direct owners
+          project.members.owners.delete_all if project.members.owners.any?
+        end
+
+        it 'sends email to group owners' do
+          expect(Notify).to receive(:project_scheduled_for_deletion).with(group_owner.id, project.id).and_call_original
+
+          subject.project_scheduled_for_deletion(project)
+        end
+      end
+    end
+  end
+
+  describe 'group scheduled for deletion' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+
+    context 'when group emails are disabled' do
+      before do
+        allow(group).to receive(:emails_disabled?).and_return(true)
+      end
+
+      it 'does not send any emails' do
+        expect(Notify).not_to receive(:group_scheduled_for_deletion)
+
+        subject.group_scheduled_for_deletion(group)
+      end
+    end
+
+    context 'when group emails are enabled' do
+      before do
+        allow(group).to receive(:emails_disabled?).and_return(false)
+      end
+
+      context 'when user is owner' do
+        it 'sends email' do
+          group.add_owner(user)
+
+          expect(Notify).to receive(:group_scheduled_for_deletion).with(user.id, group.id).and_call_original
+
+          subject.group_scheduled_for_deletion(group)
+        end
+
+        context 'when owner is blocked' do
+          it 'does not send email' do
+            group.add_owner(user)
+            user.block!
+
+            expect(Notify).not_to receive(:group_scheduled_for_deletion)
+
+            subject.group_scheduled_for_deletion(group)
+          end
+        end
+      end
+
+      context 'when group has multiple owners' do
+        let_it_be(:another_user) { create(:user) }
+
+        it 'sends email to all owners' do
+          group.add_owner(user)
+          group.add_owner(another_user)
+
+          expect(Notify).to receive(:group_scheduled_for_deletion).with(user.id, group.id).and_call_original
+          expect(Notify).to receive(:group_scheduled_for_deletion).with(another_user.id, group.id).and_call_original
+
+          subject.group_scheduled_for_deletion(group)
+        end
+      end
     end
   end
 

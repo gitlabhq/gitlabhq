@@ -304,4 +304,62 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
       it { is_expected.to be false }
     end
   end
+
+  describe '.render_product_usage_data_collection_changes', :do_not_mock_admin_mode_setting do
+    let_it_be(:admin) { create(:user, :admin) }
+
+    subject(:render_callout) { helper.render_product_usage_data_collection_changes(current_user) }
+
+    context 'when current_user is nil' do
+      let(:current_user) { nil }
+
+      it 'does not render the callout' do
+        expect(helper).not_to receive(:render)
+        render_callout
+      end
+    end
+
+    context 'when current_user is not an admin' do
+      let(:current_user) { user }
+
+      before do
+        allow(user).to receive(:can_admin_all_resources?).and_return(false)
+      end
+
+      it 'does not render the callout' do
+        expect(helper).not_to receive(:render)
+        render_callout
+      end
+    end
+
+    context 'when current_user is admin but has dismissed the callout' do
+      let(:current_user) { admin }
+
+      before do
+        allow(admin).to receive(:can_admin_all_resources?).and_return(true)
+        allow(helper).to receive(:user_dismissed?)
+          .with(described_class::PRODUCT_USAGE_DATA_COLLECTION_CHANGES).and_return(true)
+      end
+
+      it 'does not render the callout' do
+        expect(helper).not_to receive(:render)
+        render_callout
+      end
+    end
+
+    context 'when current_user is admin and has not dismissed the callout' do
+      let(:current_user) { admin }
+
+      before do
+        allow(admin).to receive(:can_admin_all_resources?).and_return(true)
+        allow(helper).to receive(:user_dismissed?)
+          .with(described_class::PRODUCT_USAGE_DATA_COLLECTION_CHANGES).and_return(false)
+      end
+
+      it 'renders the callout' do
+        expect(helper).to receive(:render).with('shared/product_usage_data_collection_changes_callout')
+        render_callout
+      end
+    end
+  end
 end

@@ -5,7 +5,6 @@ export default {
   name: 'SmartVirtualList',
   components: { VirtualList },
   props: {
-    size: { type: Number, required: true },
     length: { type: Number, required: true },
     remain: { type: Number, required: true },
     rtag: { type: String, default: 'div', required: false },

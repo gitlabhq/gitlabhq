@@ -8,6 +8,21 @@ RSpec.describe PreviewMarkdownService, feature_category: :markdown do
   let(:user) { developer }
   let(:service) { described_class.new(container: project, current_user: user, params: params) }
 
+  context 'when a block is specified' do
+    let(:params) { { text: "Take a look #{user.to_reference}" } }
+
+    it 'uses the html returned by the block' do
+      expect(Banzai::Renderer).to receive(:render).once.and_call_original
+
+      result = service.execute do |_markdown|
+        Banzai.render("Don't look at #{user.to_reference}", project: project)
+      end
+
+      expect(result[:users]).to eq [user.username]
+      expect(result[:rendered_html]).to include("Don't look at")
+    end
+  end
+
   describe 'user references' do
     let(:params) { { text: "Take a look #{user.to_reference}" } }
 

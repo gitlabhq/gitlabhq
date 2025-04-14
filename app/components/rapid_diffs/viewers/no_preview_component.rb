@@ -37,6 +37,8 @@ module RapidDiffs
           _("Preview size limit exceeded, changes collapsed.")
         elsif !@diff_file.diffable?
           _("Preview suppressed by a .gitattributes entry or the file's encoding is unsupported.")
+        elsif @diff_file.whitespace_only?
+          _("Contains only whitespace changes.")
         elsif @diff_file.new_file? || @diff_file.content_changed?
           _("No diff preview for this file type.")
         end

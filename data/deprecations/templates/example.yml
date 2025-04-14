@@ -30,6 +30,7 @@
   reporter: exampleuser  # The GitLab username of the person reporting the change
   stage: stage
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/000000
+  check_impact:  # Link to a resource, like a tool, issue, docs section, or KB article, that has *concrete steps* for customers to assess the impact of this change.
   impact:  # Can be one of: [critical, high, medium, low]
   impact_details:  # Use the impact calculator and paste the full url in here. It will deep link to the configuration. https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?
   impact_offering:  # The offering this impacts. Can be one or a combination of: [GitLab.com, Dedicated, self-managed]

@@ -1,7 +1,7 @@
 <script>
 import { GlFormCheckbox, GlTableLite, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
 import { tableField } from '../utils';
@@ -16,7 +16,7 @@ const defaultFields = [
   tableField({ key: 'status', label: s__('Runners|Status'), thClasses: ['gl-w-3/20'] }),
   tableField({ key: 'summary', label: s__('Runners|Runner configuration') }),
   tableField({ key: 'owner', label: s__('Runners|Owner'), thClasses: ['gl-w-4/20'] }),
-  tableField({ key: 'actions', label: '', thClasses: ['gl-w-3/20'] }),
+  tableField({ key: 'actions', label: __('Actions'), thClasses: ['md:gl-invisible', 'gl-w-3/20'] }),
 ];
 
 export default {
@@ -79,7 +79,7 @@ export default {
       if (this.checkable) {
         const checkboxField = tableField({
           key: 'checkbox',
-          label: s__('Runners|Checkbox'),
+          label: __('Select'),
           thClasses: ['gl-w-9'],
           tdClass: ['gl-text-center'],
         });
@@ -136,6 +136,7 @@ export default {
       <template #cell(checkbox)="{ item }">
         <gl-form-checkbox
           v-if="canDelete(item)"
+          class="gl-flex"
           :checked="isChecked(item)"
           @change="onCheckboxChange(item, $event)"
         />

@@ -280,7 +280,7 @@ RSpec.describe ContainerRegistry::Client, feature_category: :container_registry 
         stub_upload('path', "{\n  \"config\": {}\n}", 'sha256:627025e22fcdc17810e8edb86c703b2359c5b27f72289013793049a92ab735bf', 500)
       end
 
-      it { is_expected.to be nil }
+      it { is_expected.to be_nil }
     end
   end
 

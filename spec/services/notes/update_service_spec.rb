@@ -395,5 +395,18 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
         update_note(note: 'new text')
       end
     end
+
+    context 'wiki page note' do
+      let(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
+      let(:note) { create(:note, project: project, noteable: wiki_page_meta, author: user, note: "Old note #{user2.to_reference}") }
+
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'update_wiki_page_note' }
+        let(:category) { described_class.name }
+        let(:namespace) { nil }
+
+        subject(:track_event) { update_note(note: 'edited') }
+      end
+    end
   end
 end

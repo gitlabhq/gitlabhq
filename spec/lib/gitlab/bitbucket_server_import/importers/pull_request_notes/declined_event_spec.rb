@@ -37,14 +37,20 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Decli
       cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
       expect(cached_references).to contain_exactly(
         ['Event', instance_of(Integer), 'author_id', source_user.id],
+        ["ResourceStateEvent", instance_of(Integer), "user_id", source_user.id],
         ['MergeRequest::Metrics', instance_of(Integer), 'latest_closed_by_id', source_user.id]
       )
     end
 
     it 'imports the declined event' do
       expect { importer.execute(declined_event) }
-        .to change { merge_request.events.count }.from(0).to(1)
+        .to change { merge_request.resource_state_events.count }.from(0).to(1)
+        .and change { merge_request.events.count }.from(0).to(1)
         .and change { merge_request.resource_state_events.count }.from(0).to(1)
+
+      state_event = merge_request.resource_state_events.first
+      expect(state_event.user_id).to eq(source_user.mapped_user_id)
+      expect(state_event.state).to eq('closed')
 
       metrics = merge_request.metrics.reload
       expect(metrics.latest_closed_by_id).to eq(source_user.mapped_user_id)

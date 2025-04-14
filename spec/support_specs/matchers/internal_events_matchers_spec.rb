@@ -490,7 +490,7 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
     end
 
     context 'with additional properties' do
-      let(:event) { 'push_package_to_registry' }
+      let(:event) { 'g_edit_by_sfe' }
       let(:user) { user_1 }
       let(:project) { project_1 }
       let(:expected_label) { 'Awesome label value' }
@@ -536,6 +536,19 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
           let(:event_attribute_overrides) { { additional_properties: { label: unexpected_label } } }
         end
       end
+    end
+
+    context "with an event that has metrics using filters" do
+      let(:event) { 'push_package_to_registry' }
+
+      subject(:assertion) { track_event }
+
+      before do
+        # Mark examples as pending so that a passing test will raise an error.
+        pending('This example should always fail. Protects against false positives.')
+      end
+
+      it_behaves_like 'internal event tracking'
     end
   end
 

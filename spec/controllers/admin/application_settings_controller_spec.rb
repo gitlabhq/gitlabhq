@@ -277,6 +277,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       it_behaves_like 'updates boolean attribute', :require_admin_approval_after_user_signup
       it_behaves_like 'updates boolean attribute', :remember_me_enabled
       it_behaves_like 'updates boolean attribute', :require_personal_access_token_expiry
+      it_behaves_like 'updates boolean attribute', :organization_cluster_agent_authorization_enabled
     end
 
     context "personal access token prefix settings" do
@@ -458,6 +459,17 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
 
         expect(response).to redirect_to(general_admin_application_settings_path)
         expect(application_settings.reload.ci_max_includes).to eq(200)
+      end
+    end
+
+    context 'deletion adjourned period' do
+      let(:application_settings) { ApplicationSetting.current }
+
+      it 'updates deletion_adjourned_period setting' do
+        put :update, params: { application_setting: { deletion_adjourned_period: 6 } }
+
+        expect(response).to redirect_to(general_admin_application_settings_path)
+        expect(application_settings.reload.deletion_adjourned_period).to eq(6)
       end
     end
   end

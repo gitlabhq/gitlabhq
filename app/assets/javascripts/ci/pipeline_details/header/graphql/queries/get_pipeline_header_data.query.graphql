@@ -16,7 +16,6 @@ query getPipelineHeaderData($fullPath: ID!, $iid: ID!) {
         id
         detailsPath
         icon
-        group
         text
       }
       errorMessages {

@@ -137,6 +137,21 @@ RSpec.describe Resolvers::ContainerRepositoryTagsResolver, feature_category: :co
       end
 
       it_behaves_like 'fetching via tags and filter in place'
+
+      context 'when Faraday connection error occurs' do
+        before do
+          allow(repository).to receive(:tags).and_raise(Faraday::Error, nil, nil)
+        end
+
+        it 'raises a ResourceNotAvailable error with appropriate message' do
+          expected_message = "Can't connect to the container registry. If this error persists, please review the \
+troubleshooting documentation."
+
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable, expected_message) do
+            resolver(args)
+          end
+        end
+      end
     end
 
     def resolver(args, opts = {})

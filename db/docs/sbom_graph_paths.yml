@@ -1,0 +1,13 @@
+---
+table_name: sbom_graph_paths
+classes:
+  - Sbom::GraphPath
+feature_categories:
+- dependency_management
+description: Stores dependency graph paths
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184240
+milestone: '17.11'
+gitlab_schema: gitlab_sec
+sharding_key:
+  project_id: projects
+table_size: small

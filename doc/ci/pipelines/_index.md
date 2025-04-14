@@ -49,12 +49,12 @@ Pipelines can be configured in many different ways:
   followed by the next stage.
 - [Pipelines that use the `needs` keyword](../yaml/needs.md) run based on dependencies
   between jobs and can run more quickly than basic pipelines.
-- [Merge request pipelines](../pipelines/merge_request_pipelines.md) run for merge
+- [Merge request pipelines](merge_request_pipelines.md) run for merge
   requests only (rather than for every commit).
-- [Merged results pipelines](../pipelines/merged_results_pipelines.md)
+- [Merged results pipelines](merged_results_pipelines.md)
   are merge request pipelines that act as though the changes from the source branch have
   already been merged into the target branch.
-- [Merge trains](../pipelines/merge_trains.md)
+- [Merge trains](merge_trains.md)
   use merged results pipelines to queue merges one after the other.
 - [Parent-child pipelines](downstream_pipelines.md#parent-child-pipelines) break down complex pipelines
   into one parent pipeline that can trigger multiple child sub-pipelines, which all
@@ -82,6 +82,7 @@ and [view your pipeline status](https://marketplace.visualstudio.com/items?itemN
 {{< history >}}
 
 - **Run pipeline** name [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/482718) to **New pipeline** in GitLab 17.7.
+- **Inputs** option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525504) in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Enabled by default.
 
 {{< /history >}}
 
@@ -96,18 +97,29 @@ To execute a pipeline manually:
 1. Select **Build > Pipelines**.
 1. Select **New pipeline**.
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
-1. Enter any [CI/CD variables](../variables/_index.md) required for the pipeline to run.
-   You can set specific variables to have their [values prefilled in the form](#prefill-variables-in-manual-pipelines).
+1. (Optional) Enter any:
+   - [Inputs](../inputs/_index.md) required for the pipeline to run. Default values for inputs are prefilled,
+     but can be modified. Input values must follow the expected type.
+   - [CI/CD variables](../variables/_index.md). You can configure variables to have their
+     [values prefilled in the form](#prefill-variables-in-manual-pipelines). Using inputs to
+     control pipeline behavior offers improved security and flexibility over CI/CD variables.
 1. Select **New pipeline**.
 
 The pipeline now executes the jobs as configured.
 
 #### Prefill variables in manual pipelines
 
+{{< history >}}
+
+- Markdown rendering on the **Run pipeline** page [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/441474) in GitLab 17.11.
+
+{{< /history >}}
+
 You can use the [`description` and `value`](../yaml/_index.md#variablesdescription)
 keywords to [define pipeline-level (global) variables](../variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
 that are prefilled when running a pipeline manually. Use the description to explain
 information such as what the variable is used for, and what the acceptable values are.
+You can use Markdown in the description.
 
 Job-level variables cannot be pre-filled.
 
@@ -508,13 +520,13 @@ This table lists the refspecs injected for each pipeline type:
 |-------------------------------------------------------------------|----------|
 | pipeline for branches                                             | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
 | pipeline for tags                                                 | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>` |
-| [merge request pipeline](../pipelines/merge_request_pipelines.md) | `+refs/pipelines/<id>:refs/pipelines/<id>` |
+| [merge request pipeline](merge_request_pipelines.md) | `+refs/pipelines/<id>:refs/pipelines/<id>` |
 
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
 running pipeline job. This ref can be created even after the associated branch or tag has been
 deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/_index.md#stopping-an-environment),
-and [merge trains](../pipelines/merge_trains.md) that might run pipelines after branch deletion.
+and [merge trains](merge_trains.md) that might run pipelines after branch deletion.
 
 <!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
 

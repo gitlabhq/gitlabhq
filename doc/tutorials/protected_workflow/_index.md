@@ -33,7 +33,7 @@ example project named "Excelsior", and creates a minimal approval workflow for t
 
 ## Before you begin
 
-- You must have the Maintainer or Owner role.
+- You must have at least the Maintainer role.
 - You need a list of managers and their email addresses.
 - You need a list of your backend and frontend engineers, and their email addresses.
 - You understand [semantic versioning](https://semver.org/) for branch names.

@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import eventHub from '~/merge_request_dashboard/event_hub';
 import MergeRequestQuery from '~/merge_request_dashboard/components/merge_requests_query.vue';
 import reviewerQuery from '~/merge_request_dashboard/queries/reviewer.query.graphql';
 import reviewerCountQuery from '~/merge_request_dashboard/queries/reviewer_count.query.graphql';
@@ -20,6 +21,7 @@ describe('Merge requests query component', () => {
 
   function createComponent(
     props = { query: 'reviewRequestedMergeRequests', variables: { state: 'opened' } },
+    mergeRequests = [createMockMergeRequest({ title: 'reviewer' })],
   ) {
     reviewerQueryMock = jest.fn().mockResolvedValue({
       data: {
@@ -33,7 +35,7 @@ describe('Merge requests query component', () => {
               startCursor: null,
               endCursor: null,
             },
-            nodes: [createMockMergeRequest({ title: 'reviewer' })],
+            nodes: mergeRequests,
           },
         },
       },
@@ -96,7 +98,6 @@ describe('Merge requests query component', () => {
       perPage: 20,
       state: 'opened',
       sort: 'UPDATED_DESC',
-      includeMergeabilityChecks: false,
     });
   });
 
@@ -109,7 +110,6 @@ describe('Merge requests query component', () => {
       perPage: 20,
       state: 'opened',
       sort: 'UPDATED_DESC',
-      includeMergeabilityChecks: false,
     });
   });
 
@@ -142,5 +142,35 @@ describe('Merge requests query component', () => {
         ]),
       }),
     );
+  });
+
+  describe('when refetching', () => {
+    it('refetches merge requests with eventHub emit event and query type matches', async () => {
+      createComponent(
+        { query: 'reviewRequestedMergeRequests', variables: { state: 'opened' } },
+        [],
+      );
+
+      await waitForPromises();
+
+      eventHub.$emit('refetch.mergeRequests', 'reviewRequestedMergeRequests');
+
+      await waitForPromises();
+
+      expect(reviewerQueryMock.mock.calls).toHaveLength(2);
+      expect(reviewerQueryMock.mock.calls[1][0]).toEqual(expect.objectContaining({ perPage: 20 }));
+    });
+
+    it('does not refetch merge requests with eventHub emit event and query type does not matches', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      eventHub.$emit('refetch.mergeRequests', 'assignedMergeRequests');
+
+      await waitForPromises();
+
+      expect(reviewerQueryMock.mock.calls).toHaveLength(1);
+    });
   });
 });

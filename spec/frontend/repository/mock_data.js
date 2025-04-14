@@ -57,30 +57,16 @@ export const userPermissionsMock = {
   __typename: 'ProjectPermissions',
 };
 
-export const projectMock = {
+export const getProjectMockWithOverrides = ({ userPermissionsOverride = {} } = {}) => ({
   __typename: 'Project',
   id: 'gid://gitlab/Project/7',
-  userPermissions: userPermissionsMock,
-  pathLocks: {
-    __typename: 'PathLockConnection',
-    nodes: [
-      {
-        __typename: 'PathLock',
-        id: 'gid://gitlab/PathLock/2',
-        path: 'locked_file.js',
-        user: {
-          id: 'gid://gitlab/User/1',
-          username: 'root',
-          name: 'Administrator',
-          __typename: 'UserCore',
-        },
-      },
-    ],
-  },
+  userPermissions: { ...userPermissionsMock, ...userPermissionsOverride },
   repository: {
     empty: false,
   },
-};
+});
+
+export const projectMock = getProjectMockWithOverrides();
 
 export const propsMock = { path: 'some_file.js', projectPath: 'some/path' };
 
@@ -118,8 +104,8 @@ export const blobControlsDataMock = {
           canModifyBlob: true,
           canModifyBlobWithWebIde: true,
           forkAndViewPath: 'fork/view/path',
-          editBlobPath: 'edit/blob/path/file.js',
-          ideEditPath: 'ide/blob/path/file.js',
+          editBlobPath: 'https://edit/blob/path/file.js',
+          ideEditPath: 'https://ide/blob/path/file.js',
           pipelineEditorPath: 'pipeline/editor/path/file.yml',
           gitpodBlobUrl: 'gitpod/blob/url/file.js',
           simpleViewer: {
@@ -256,11 +242,11 @@ export const headerAppInjected = {
   isReadmeView: false,
   isFork: false,
   needsToFork: true,
-  gitpodEnabled: false,
+  isGitpodEnabledForUser: false,
   isBlob: true,
   showEditButton: true,
   showWebIdeButton: true,
-  showGitpodButton: false,
+  isGitpodEnabledForInstance: false,
   showPipelineEditorUrl: true,
   webIdeUrl: 'https://gitlab.com/project/-/ide/',
   editUrl: 'https://gitlab.com/project/-/edit/main/',
@@ -282,6 +268,7 @@ export const headerAppInjected = {
     'https://gitlab.com/example-group/example-project/-/jobs/artifacts/main/download?job=build',
   ],
   isBinary: false,
+  rootRef: 'main',
 };
 
 export const FILE_SIZE_3MB = 3000000;
@@ -292,4 +279,81 @@ export const currentUserDataMock = {
   gitpodEnabled: true,
   preferencesGitpodPath: 'preferences/gitpod/path',
   profileEnableGitpodPath: 'profile/enable/gitpod/path',
+};
+
+export const applicationInfoMock = { gitpodEnabled: true };
+
+export const mockPipelineStatusUpdatedResponse = {
+  data: {
+    ciPipelineStatusUpdated: {
+      id: 'gid://gitlab/Ci::Pipeline/1257',
+      retryable: false,
+      cancelable: false,
+      __typename: 'Pipeline',
+      detailedStatus: {
+        detailsPath: '/root/simple-ci-project/-/pipelines/1257',
+        icon: 'status_success',
+        id: 'success-1255-1255',
+        label: 'passed',
+        text: 'Passed',
+        __typename: 'DetailedStatus',
+      },
+    },
+  },
+};
+
+const defaultPipelineEdges = [
+  {
+    __typename: 'PipelineEdge',
+    node: {
+      __typename: 'Pipeline',
+      id: 'gid://gitlab/Ci::Pipeline/167',
+      detailedStatus: {
+        __typename: 'DetailedStatus',
+        id: 'id',
+        detailsPath: 'https://test.com/pipeline',
+        icon: 'status_running',
+        text: 'failed',
+      },
+    },
+  },
+];
+
+export const createCommitData = ({ pipelineEdges = defaultPipelineEdges, signature = null }) => {
+  return {
+    data: {
+      project: {
+        __typename: 'Project',
+        id: 'gid://gitlab/Project/6',
+        repository: {
+          __typename: 'Repository',
+          lastCommit: {
+            __typename: 'Commit',
+            id: 'gid://gitlab/CommitPresenter/123456789',
+            sha: '123456789',
+            title: 'Commit title',
+            titleHtml: 'Commit title',
+            descriptionHtml: '',
+            message: '',
+            webPath: '/commit/123',
+            authoredDate: '2019-01-01',
+            authorName: 'Test',
+            authorGravatar: 'https://test.com',
+            author: {
+              __typename: 'UserCore',
+              id: 'gid://gitlab/User/1',
+              name: 'Test',
+              avatarUrl: 'https://test.com',
+              webPath: '/test',
+            },
+            signature,
+            pipelines: {
+              __typename: 'PipelineConnection',
+              edges: pipelineEdges,
+            },
+          },
+        },
+      },
+    },
+  };
 };

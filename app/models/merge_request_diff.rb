@@ -9,6 +9,11 @@ class MergeRequestDiff < ApplicationRecord
   include BulkInsertableAssociations
   include ShaAttribute
 
+  ignore_columns %i[
+    id_convert_to_bigint
+    merge_request_id_convert_to_bigint
+  ], remove_with: '18.3', remove_after: '2025-07-17'
+
   # Don't display more than 100 commits at once
   COMMITS_SAFE_SIZE = 100
   BATCH_SIZE = 1000
@@ -86,7 +91,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   scope :by_project_id, ->(project_id) do
-    joins(:merge_request).where(merge_requests: { target_project_id: project_id })
+    where(project_id: project_id)
   end
 
   scope :recent, ->(limit = 100) { order(id: :desc).limit(limit) }

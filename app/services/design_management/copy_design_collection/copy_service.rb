@@ -63,6 +63,14 @@ module DesignManagement
         :temporary_branch, :target_design_collection, :target_issue,
         :target_repository, :target_project, :versions
 
+      # Designs are being copied over to a target repository. Target repository's default branch can be different
+      # from source repository. E.g. we have some old projects where `master` is still the default branch, whereas
+      # newer projects have `main` as repository default branch.
+      #
+      # So we need to make sure we lookup the correct merge branch based on target repository
+      def target_branch
+        target_repository.root_ref || Gitlab::DefaultBranch.value(object: target_project)
+      end
       alias_method :merge_branch, :target_branch
 
       def log_exception(exception)

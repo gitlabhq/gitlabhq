@@ -11,7 +11,7 @@ module WikiHelpers
     params = {
       file_name: file_name,
       file_content: File.read(expand_fixture_path(file_name))
-     }
+    }
 
     ::Wikis::CreateAttachmentService.new(
       container: wiki.container,

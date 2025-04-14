@@ -118,6 +118,26 @@ class Clusters::ClustersController < ::Clusters::BaseController
     redirect_to cluster.show_path(params: { tab: 'migrate' })
   end
 
+  def update_migration
+    migration_params = params.require(:cluster_migration).permit(:issue_url)
+
+    response = Clusters::Migration::UpdateService.new(
+      cluster.cluster,
+      clusterable: clusterable,
+      current_user: current_user,
+      issue_url: migration_params[:issue_url]
+    ).execute
+
+    if response.success?
+      flash[:notice] = s_('ClusterIntegration|Migration issue updated successfully')
+    else
+      flash[:alert] =
+        format(s_('ClusterIntegration|Migration issue update - failed: "%{error}"'), error: response.message)
+    end
+
+    redirect_to cluster.show_path(params: { tab: 'migrate' })
+  end
+
   private
 
   def migrate_params

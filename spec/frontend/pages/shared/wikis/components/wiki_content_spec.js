@@ -1,7 +1,7 @@
 import { GlSkeletonLoader, GlAlert } from '@gitlab/ui';
 import { nextTick } from 'vue';
-import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WikiContent from '~/pages/shared/wikis/components/wiki_content.vue';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import axios from '~/lib/utils/axios_utils';
@@ -18,7 +18,7 @@ describe('pages/shared/wikis/components/wiki_content', () => {
   let mock;
 
   function buildWrapper(propsData = {}) {
-    wrapper = shallowMount(WikiContent, {
+    wrapper = shallowMountExtended(WikiContent, {
       provide: {
         contentApi: PATH,
       },
@@ -36,7 +36,7 @@ describe('pages/shared/wikis/components/wiki_content', () => {
 
   const findGlAlert = () => wrapper.findComponent(GlAlert);
   const findGlSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findContent = () => wrapper.find('[data-testid="wiki-page-content"]');
+  const findContent = () => wrapper.findByTestId('wiki-page-content');
 
   describe('when loading content', () => {
     beforeEach(() => {

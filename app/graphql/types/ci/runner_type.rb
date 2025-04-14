@@ -34,6 +34,10 @@ module Types
         method: :registration_type,
         description: 'Type of runner registration.',
         experiment: { milestone: '17.0' }
+      field :creation_state, Types::Ci::RunnerCreationStateEnum, null: true,
+        description: 'Runner creation state. Used to determine if a runner has been registered ' \
+          'and has contacted the GitLab instance.',
+        experiment: { milestone: '17.11' }
       field :description, GraphQL::Types::String, null: true,
         description: 'Description of the runner.'
       field :edit_admin_url, GraphQL::Types::String, null: true,
@@ -72,7 +76,7 @@ module Types
         resolver: Resolvers::Ci::RunnerManagersResolver
       field :maximum_timeout, GraphQL::Types::Int, null: true,
         description: 'Maximum timeout (in seconds) for jobs processed by the runner.'
-      field :owner_project, ::Types::ProjectType, null: true,
+      field :owner_project, ::Types::Projects::ProjectInterface, null: true,
         description: 'Project that owns the runner. For project runners only.',
         resolver: ::Resolvers::Ci::RunnerOwnerProjectResolver
       field :paused, GraphQL::Types::Boolean, null: false,

@@ -148,9 +148,9 @@ module FilteredSearchHelpers
 
   def reaction_token(reaction_name = nil, is_emoji = true)
     if is_emoji
-      { name: 'My-Reaction', emoji_name: reaction_name }
+      { name: 'My reaction', emoji_name: reaction_name }
     else
-      create_token('My-Reaction', reaction_name)
+      create_token('My reaction', reaction_name)
     end
   end
 

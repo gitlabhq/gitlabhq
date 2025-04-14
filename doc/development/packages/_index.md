@@ -17,7 +17,8 @@ Development and architectural documentation for the package registry:
 - [Structure / Schema](structure.md)
 - API documentation
   - [Composer](../../api/packages/composer.md)
-  - [Conan](../../api/packages/conan.md)
+  - [Conan v1](../../api/packages/conan_v1.md)
+  - [Conan v2](../../api/packages/conan_v2.md)
   - [Debian](../../api/packages/debian.md)
   - [Generic](../../user/packages/generic_packages/_index.md)
   - [Go Proxy](../../api/packages/go_proxy.md)

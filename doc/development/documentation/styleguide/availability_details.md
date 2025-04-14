@@ -35,7 +35,7 @@ title: 'Topic title'
 
 ## Available options
 
-Use the following text for the tier, offering, status, and version history.
+Use the following text for the tier, offering, add-on, status, and version history.
 
 ### Offering
 
@@ -52,6 +52,13 @@ For example:
 - `GitLab Self-Managed`
 - `GitLab Self-Managed, GitLab Dedicated`
 
+{{< alert type="note" >}}
+
+If you have reviewed a page and it specifically doesn't apply to GitLab Dedicated,
+[assign metadata](../metadata.md#indicate-gitlab-dedicated-support).
+
+{{< /alert >}}
+
 ### Tier
 
 For tier, choose one:
@@ -60,24 +67,22 @@ For tier, choose one:
 - `Premium, Ultimate`
 - `Ultimate`
 
-#### GitLab Duo Pro or Enterprise add-on
-
-Document add-ons by using the phrase `with` and the add-on.
-For example, `with GitLab Duo Pro`.
-
-The possibilities are:
-
-```markdown
-- Tier: Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise
-- Tier: Ultimate with GitLab Duo Pro or Enterprise
-- Tier: Ultimate with GitLab Duo Enterprise
-```
-
 {{< alert type="note" >}}
 
 GitLab Dedicated always includes an Ultimate subscription.
 
 {{< /alert >}}
+
+#### Add-ons
+
+For add-ons, the possibilities are:
+
+```markdown
+- Add-on: GitLab Duo Pro
+- Add-on: GitLab Duo Enterprise
+- Add-on: GitLab Duo Pro or Enterprise
+- Add-on: GitLab Duo with Amazon Q
+```
 
 ### Status
 
@@ -98,7 +103,7 @@ In addition:
 - Ensure that the output generates properly.
 - Ensure the version history begins with `-`.
 - If possible, include a link to the related issue. If there is no related issue, link to a merge request, or epic.
-- Do not link to [confidential issues](../styleguide/_index.md#confidential-or-restricted-access-links).
+- Do not link to [confidential issues](_index.md#confidential-or-restricted-access-links).
 - Do not link to the pricing page. Do not include the subscription tier.
 
 #### Updated features
@@ -224,6 +229,8 @@ For example, if a feature applies to one tier for GitLab.com and a different ava
 
 In this case, do any or all of the following:
 
+- Use [metadata](../metadata.md#indicate-lack-of-product-availability-details)
+  to indicate that the page has been reviewed and does not need availability details.
 - Use a [`type="note"`](_index.md#note) alert box to describe the availability details.
 - Add availability details under other topic titles where this information makes more sense.
 - Do not add availability details under the H1.

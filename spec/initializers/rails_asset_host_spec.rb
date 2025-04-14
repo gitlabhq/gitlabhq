@@ -21,7 +21,7 @@ RSpec.describe 'Rails asset host initializer' do
   it 'uses no asset host by default' do
     load_initializer
 
-    expect(subject).to be nil
+    expect(subject).to be_nil
   end
 
   context 'with cdn_host defined in gitlab.yml' do

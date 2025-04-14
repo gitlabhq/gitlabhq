@@ -1,0 +1,9 @@
+---
+name: container_registry_immutable_tags
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/515996
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183135
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/505455
+milestone: '17.11'
+group: group::container registry
+type: beta
+default_enabled: false

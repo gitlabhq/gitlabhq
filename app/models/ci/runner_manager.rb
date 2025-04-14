@@ -66,7 +66,8 @@ module Ci
 
     validate :no_sharding_key_id, if: :instance_type?
 
-    cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at, :executor_type
+    cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at,
+      :executor_type, :creation_state
 
     # The `STALE_TIMEOUT` constant defines the how far past the last contact or creation date a runner manager
     # will be considered stale
@@ -139,7 +140,7 @@ module Ci
       read_attribute(:contacted_at)
     end
 
-    def heartbeat(values, update_contacted_at: true)
+    def heartbeat(values)
       ##
       # We can safely ignore writes performed by a runner heartbeat. We do
       # not want to upgrade database connection proxy to use the primary
@@ -149,7 +150,7 @@ module Ci
         values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config,
           :executor, :runtime_features) || {}
 
-        values.merge!(contacted_at: Time.current, creation_state: :finished) if update_contacted_at
+        values.merge!(contacted_at: Time.current, creation_state: :finished)
 
         if values.include?(:executor)
           values[:executor_type] = EXECUTOR_NAME_TO_TYPES.fetch(values.delete(:executor), :unknown)
@@ -163,6 +164,10 @@ module Ci
         # We save data without validation, it will always change due to `contacted_at`
         update_columns(values) if persist_cached_data?
       end
+    end
+
+    def supports_after_script_on_cancel?
+      !!runtime_features['cancel_gracefully']
     end
 
     private

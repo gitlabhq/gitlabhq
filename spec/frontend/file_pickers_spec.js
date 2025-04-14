@@ -23,7 +23,7 @@ describe('initFilePickers', () => {
           <button type="button" class="js-filepicker-button">
             <span class="gl-button-text">Choose file…</span>
           </button>
-          <span class="file_name js-filepicker-filename">Choose file...</span>
+          <span class="file_name js-filepicker-filename">Choose file…</span>
           <input accept type="file" class="js-filepicker-input hidden" />
           <span class="js-filepicker-error gl-hidden gl-text-danger">The maximum file size is 200 KiB.</span
         </div>

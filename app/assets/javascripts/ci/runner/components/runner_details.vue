@@ -89,7 +89,7 @@ export default {
 <template>
   <div>
     <div class="gl-pt-4">
-      <dl class="runner-details-grid-template gl-mb-0 gl-grid">
+      <dl class="gl-mb-0 gl-grid gl-grid-cols-[auto_1fr]">
         <runner-detail :label="s__('Runners|Description')" :value="runner.description" />
         <runner-detail
           :label="s__('Runners|Last contact')"

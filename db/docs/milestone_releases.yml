@@ -8,14 +8,6 @@ description: https://docs.gitlab.com/ee/user/project/releases/#associate-milesto
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/a43ab8d6a430014e875deb3bff3fd8d8da256747
 milestone: '12.3'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: release_id
-        table: releases
-        sharding_key: project_id
-        belongs_to: release
-desired_sharding_key_migration_job_name: BackfillMilestoneReleasesProjectId
+sharding_key:
+  project_id: projects
 table_size: small

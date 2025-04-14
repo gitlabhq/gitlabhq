@@ -75,6 +75,7 @@ Example response:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.
 - Specify a service account user username or name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144841) in GitLab 16.10.
 - Specify a service account user email address was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181456) in GitLab 17.9 [with a flag](../administration/feature_flags.md) named `group_service_account_custom_email`.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186476) in GitLab 17.11. Feature flag `group_service_account_custom_email` removed.
 
 {{< /history >}}
 
@@ -196,6 +197,71 @@ Example request:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts/181"
 ```
 
+## List all personal access tokens for a service account user
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/526924) in GitLab 17.11.
+
+{{< /history >}}
+
+Lists all personal access tokens for a service account user in a top-level group.
+
+```plaintext
+GET /groups/:id/service_accounts/:user_id/personal_access_tokens
+```
+
+Supported attributes:
+
+| Attribute          | Type                | Required | Description |
+| ------------------ | ------------------- | -------- | ----------- |
+| `id`      | integer/string | yes  | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
+| `user_id` | integer | yes      | ID of service account user. |
+| `created_after`    | datetime (ISO 8601) | No       | If defined, returns tokens created after the specified time. |
+| `created_before`   | datetime (ISO 8601) | No       | If defined, returns tokens created before the specified time. |
+| `expires_after`    | date (ISO 8601)     | No       | If defined, returns tokens that expire after the specified time. |
+| `expires_before`   | date (ISO 8601)     | No       | If defined, returns tokens that expire before the specified time. |
+| `last_used_after`  | datetime (ISO 8601) | No       | If defined, returns tokens last used after the specified time. |
+| `last_used_before` | datetime (ISO 8601) | No       | If defined, returns tokens last used before the specified time. |
+| `revoked`          | boolean             | No       | If `true`, only returns revoked tokens. |
+| `search`           | string              | No       | If defined, returns tokens that include the specified value in the name. |
+| `sort`             | string              | No       | If defined, sorts the results by the specified value. Possible values: `created_asc`, `created_desc`, `expires_asc`, `expires_desc`, `last_used_asc`, `last_used_desc`, `name_asc`, `name_desc`. |
+| `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
+
+Example request:
+
+```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/187/service_accounts/195/personal_access_tokens?sort=id_desc&search=token2b&created_before=2025-03-27"
+```
+
+Example response:
+
+```json
+[
+    {
+        "id": 187,
+        "name": "service_accounts_token2b",
+        "revoked": false,
+        "created_at": "2025-03-26T14:42:51.084Z",
+        "description": null,
+        "scopes": [
+            "api"
+        ],
+        "user_id": 195,
+        "last_used_at": null,
+        "active": true,
+        "expires_at": null
+    }
+]
+```
+
+Example of unsuccessful responses:
+
+- `401: Unauthorized`
+- `404 Group Not Found`
+
 ## Create a personal access token for a service account user
 
 {{< history >}}
@@ -205,12 +271,6 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 {{< /history >}}
 
 Creates a personal access token for an existing service account user in a given top-level group.
-
-{{< alert type="note" >}}
-
-This endpoint only works on top-level groups.
-
-{{< /alert >}}
 
 ```plaintext
 POST /groups/:id/service_accounts/:user_id/personal_access_tokens
@@ -249,6 +309,49 @@ Example response:
   "token":"<token_value>"
 }
 ```
+
+## Revoke a personal access token for a service account user
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184287) in GitLab 17.10
+
+{{< /history >}}
+
+Revokes a personal access token for an existing service account user in a given top-level group.
+
+{{< alert type="note" >}}
+
+This endpoint only works on top-level groups.
+
+{{< /alert >}}
+
+```plaintext
+DELETE /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id
+```
+
+Parameters:
+
+| Attribute    | Type            | Required | Description |
+| ------------ | --------------- | -------- | ----------- |
+| `id`         | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `user_id`    | integer | yes      | The ID of the service account user.                            |
+| `token_id`   | integer | yes      | The ID of the token. |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/35/service_accounts/71/personal_access_tokens/6"
+```
+
+If successful, returns `204: No Content`.
+
+Other possible responses:
+
+- `400: Bad Request` if not revoked successfully.
+- `401: Unauthorized` if the request is not authorized.
+- `403: Forbidden` if the request is not allowed.
+- `404: Not Found` if the access token does not exist.
 
 ## Rotate a personal access token for a service account user
 

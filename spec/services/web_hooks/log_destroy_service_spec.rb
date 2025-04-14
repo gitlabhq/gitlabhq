@@ -14,7 +14,7 @@ RSpec.describe WebHooks::LogDestroyService, feature_category: :webhooks do
 
       it 'deletes the logs' do
         expect { service.execute }
-          .to change(WebHookLog, :count).from(3).to(0)
+          .to change { WebHookLog.count }.from(3).to(0)
       end
 
       context 'when the data-set exceeds the batch size' do
@@ -24,7 +24,7 @@ RSpec.describe WebHooks::LogDestroyService, feature_category: :webhooks do
 
         it 'deletes the logs' do
           expect { service.execute }
-            .to change(WebHookLog, :count).from(3).to(0)
+            .to change { WebHookLog.count }.from(3).to(0)
         end
       end
 

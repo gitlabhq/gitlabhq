@@ -8,10 +8,12 @@ module PreviewMarkdown
       container: resource_parent,
       current_user: current_user,
       params: markdown_service_params
-    ).execute
+    ).execute do |text|
+      view_context.markdown(text, markdown_context_params)
+    end
 
     render json: {
-      body: view_context.markdown(result[:text], markdown_context_params),
+      body: result[:rendered_html],
       references: {
         users: result[:users],
         suggestions: SuggestionSerializer.new.represent_diff(result[:suggestions]),

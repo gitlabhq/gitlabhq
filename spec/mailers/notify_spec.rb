@@ -699,6 +699,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
         it 'contains an introduction' do
           issuable_url = "project_#{note.noteable_type.underscore}_url"
+          issuable_url = "project_wiki_url" if note.for_wiki_page?
           anchor = "note_#{note.id}"
 
           is_expected.to have_body_text "started a new <a href=\"#{public_send(issuable_url, project, note.noteable, anchor: anchor)}\">discussion</a>"
@@ -810,6 +811,42 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
         it 'contains a link to the issue note' do
           is_expected.to have_body_text note_on_issue_path
+        end
+      end
+
+      describe 'on a wiki_page' do
+        let(:wiki_page_meta) { create(:wiki_page_meta, canonical_slug: 'slug', container: project) }
+        let(:note) { create_note }
+
+        let(:note_on_wiki_path) { project_wiki_page_url(wiki_page_meta, anchor: "note_#{note.id}") }
+
+        def create_note
+          create(:discussion_note_on_wiki_page, noteable: wiki_page_meta, project: project, author: note_author)
+        end
+
+        before do
+          allow(note).to receive(:noteable).and_return(wiki_page_meta)
+          allow(wiki_page_meta).to receive(:id).and_return(wiki_page_meta.canonical_slug)
+        end
+
+        subject { described_class.note_wiki_page_email(recipient.id, note.id) }
+
+        it_behaves_like 'a discussion note email', :discussion_note_on_wiki_page
+        it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+          let(:model) { wiki_page_meta }
+        end
+
+        it_behaves_like 'it should show Gmail Actions View Wiki link'
+        it_behaves_like 'an unsubscribeable thread'
+        it_behaves_like 'appearance header and footer enabled'
+        it_behaves_like 'appearance header and footer not enabled'
+
+        it 'has the correct subject' do
+          is_expected.to have_referable_subject(wiki_page_meta, reply: true)
+        end
+
+        it 'contains a link to the wiki page note' do
+          is_expected.to have_body_text note_on_wiki_path
         end
       end
     end

@@ -6,8 +6,8 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import { __ } from '~/locale';
 
 const barLabel = __('File templates');
-const templateListDropdownLabel = __('Choose a template...');
-const templateTypesDropdownLabel = __('Choose a type...');
+const templateListDropdownLabel = __('Choose a template…');
+const templateTypesDropdownLabel = __('Choose a type…');
 const undoButtonText = __('Undo');
 
 export default {

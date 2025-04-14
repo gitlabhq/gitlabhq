@@ -235,6 +235,46 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
     end
   end
 
+  describe '.default_branch_for' do
+    let(:project) { create(:project) }
+
+    context 'when project has no default branch' do
+      before do
+        allow(project).to receive(:default_branch).and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(described_class.default_branch_for(project)).to be_nil
+      end
+    end
+
+    context 'when project has a default branch' do
+      let(:default_branch_name) { 'main' }
+
+      before do
+        allow(project).to receive(:default_branch).and_return(default_branch_name)
+      end
+
+      context 'when the default branch is protected' do
+        let!(:protected_branch) { create(:protected_branch, project: project, name: default_branch_name) }
+
+        it 'returns the protected branch record' do
+          expect(described_class.default_branch_for(project)).to eq(protected_branch)
+        end
+      end
+
+      context 'when the default branch is not protected' do
+        before do
+          create(:protected_branch, project: project, name: 'some-other-branch')
+        end
+
+        it 'returns nil' do
+          expect(described_class.default_branch_for(project)).to be_nil
+        end
+      end
+    end
+  end
+
   describe '#default_branch?' do
     context 'when group level' do
       subject { build_stubbed(:protected_branch, project: nil, group: build(:group)) }

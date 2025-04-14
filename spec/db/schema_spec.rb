@@ -14,33 +14,6 @@ RSpec.describe 'Database schema',
   let(:tables) { connection.tables }
   let(:columns_name_with_jsonb) { retrieve_columns_name_with_jsonb }
 
-  let(:ignored_indexes_on_fks_map) do
-    {
-      ci_build_trace_metadata: [%w[partition_id build_id], %w[partition_id trace_artifact_id]], # the index on build_id is enough
-      ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
-      ci_daily_build_group_report_results: [%w[partition_id last_pipeline_id]], # index on last_pipeline_id is sufficient
-      ci_pipeline_artifacts: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-      ci_pipeline_chat_data: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-      ci_pipeline_messages: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-      ci_pipeline_metadata: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-      ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-      ci_pipelines: [%w[auto_canceled_by_partition_id auto_canceled_by_id]], # index on auto_canceled_by_id is sufficient
-      ci_pipelines_config: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-      ci_sources_pipelines: [%w[source_partition_id source_pipeline_id], %w[partition_id pipeline_id]],
-      ci_sources_projects: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-      ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
-      p_ci_build_trace_metadata: [%w[partition_id build_id], %w[partition_id trace_artifact_id]], # the index on build_id is enough
-      p_ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
-      p_ci_builds_execution_configs: [%w[partition_id pipeline_id]], # the index on pipeline_id is enough
-      p_ci_pipelines: [%w[auto_canceled_by_partition_id auto_canceled_by_id]], # index on auto_canceled_by_id is sufficient
-      p_ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
-      p_ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
-      slack_integrations_scopes: [%w[slack_api_scope_id]],
-      users: [%w[accepted_term_id]],
-      subscription_add_on_purchases: [["subscription_add_on_id"]] # index handled via composite index with namespace_id
-    }.with_indifferent_access.freeze
-  end
-
   # If splitting FK and table removal into two MRs as suggested in the docs, use this constant in the initial FK removal MR.
   # In the subsequent table removal MR, remove the entries.
   # See: https://docs.gitlab.com/ee/development/migration_style_guide.html#dropping-a-database-table
@@ -60,6 +33,7 @@ RSpec.describe 'Database schema',
       abuse_report_notes: %w[discussion_id],
       ai_code_suggestion_events: %w[user_id],
       ai_duo_chat_events: %w[user_id organization_id],
+      ai_troubleshoot_job_events: %w[user_id job_id],
       application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id
         eks_access_key_id],
       approvals: %w[user_id project_id],
@@ -145,6 +119,7 @@ RSpec.describe 'Database schema',
       deploy_keys_projects: %w[deploy_key_id],
       deployments: %w[deployable_id user_id],
       deployment_merge_requests: %w[project_id],
+      description_versions: %w[namespace_id], # namespace_id will be added as an FK after backfill
       draft_notes: %w[discussion_id commit_id],
       epics: %w[updated_by_id last_edited_by_id state_id],
       events: %w[target_id],
@@ -218,8 +193,33 @@ RSpec.describe 'Database schema',
       timelogs: %w[user_id],
       todos: %w[target_id commit_id],
       uploads: %w[model_id organization_id namespace_id project_id],
+      uploads_9ba88c4165: %w[model_id],
+      abuse_report_uploads: %w[model_id],
+      achievement_uploads: %w[model_id],
+      ai_vectorizable_file_uploads: %w[model_id],
+      alert_management_alert_metric_image_uploads: %w[model_id],
+      appearance_uploads: %w[model_id],
+      bulk_import_export_upload_uploads: %w[model_id],
+      dependency_list_export_part_uploads: %w[model_id],
+      dependency_list_export_uploads: %w[model_id],
+      design_management_action_uploads: %w[model_id],
+      import_export_upload_uploads: %w[model_id],
+      issuable_metric_image_uploads: %w[model_id],
+      namespace_uploads: %w[model_id],
+      note_uploads: %w[model_id],
+      organization_detail_uploads: %w[model_id],
+      project_import_export_relation_export_upload_uploads: %w[model_id],
+      project_topic_uploads: %w[model_id],
+      project_uploads: %w[model_id],
+      snippet_uploads: %w[model_id],
+      user_permission_export_upload_uploads: %w[model_id],
+      user_uploads: %w[model_id],
+      vulnerability_export_part_uploads: %w[model_id],
+      vulnerability_export_uploads: %w[model_id],
+      vulnerability_archive_export_uploads: %w[model_id],
+      vulnerability_remediation_uploads: %w[model_id],
       user_agent_details: %w[subject_id],
-      users: %w[color_mode_id color_scheme_id created_by_id theme_id managing_group_id],
+      users: %w[color_mode_id color_scheme_id created_by_id theme_id managing_group_id accepted_term_id],
       users_star_projects: %w[user_id],
       vulnerability_finding_links: %w[project_id],
       vulnerability_identifiers: %w[external_id],
@@ -252,6 +252,7 @@ RSpec.describe 'Database schema',
       instance_integrations: %w[project_id group_id inherit_from_id], # these columns are not used in instance integrations
       group_scim_identities: %w[temp_source_id], # temporary column that is not a foreign key
       group_scim_auth_access_tokens: %w[temp_source_id], # temporary column that is not a foreign key
+      secret_detection_token_statuses: %w[project_id],
       system_access_group_microsoft_graph_access_tokens: %w[temp_source_id], # temporary column that is not a foreign key
       system_access_group_microsoft_applications: %w[temp_source_id], # temporary column that is not a foreign key
       subscription_user_add_on_assignment_versions: %w[item_id user_id purchase_id], # Managed by paper_trail gem, no need for FK on the historical data
@@ -275,7 +276,7 @@ RSpec.describe 'Database schema',
       events: 16,
       group_type_ci_runners: 17,
       instance_type_ci_runners: 17,
-      issues: 39,
+      issues: 35,
       members: 21,
       merge_requests: 33,
       namespaces: 26,
@@ -286,9 +287,20 @@ RSpec.describe 'Database schema',
       project_type_ci_runners: 17,
       projects: 55,
       sbom_occurrences: 25,
-      users: 32,
+      users: 33, # To decrement back to 32 after the removal of a temporary index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184848
       vulnerability_reads: 23
     }.with_indifferent_access.freeze
+  end
+
+  # For partitioned CI references we do not require a composite index starting with `partition_id` as each partition
+  # only contains records with a single `partition_id`. As such the index on the other id in the foreign key will be
+  # sufficient.
+  def ci_partitioned_foreign_key?(foreign_key)
+    target = foreign_key.to_table.split('.').last
+    schema = Gitlab::Database::GitlabSchema.table_schema!(target)
+    schema == :gitlab_ci &&
+      Array.wrap(foreign_key.column).many? &&
+      foreign_key.column.first.end_with?('partition_id')
   end
 
   context 'for table' do
@@ -311,7 +323,7 @@ RSpec.describe 'Database schema',
 
           context 'with all foreign keys' do
             # for index to be effective, the FK constraint has to be at first place
-            it 'are indexed' do
+            it 'are indexed', :aggregate_failures do
               indexed_columns = indexes.filter_map do |index|
                 columns = index.columns
 
@@ -324,14 +336,10 @@ RSpec.describe 'Database schema',
                 columns if index.where.nil? || index.where == "(#{columns.first} IS NOT NULL)"
               end
 
-              foreign_keys_columns = all_foreign_keys.filter_map do |fk|
-                conditions = fk.options[:conditions]
-                next fk.column unless conditions&.any?
-
-                [fk.column, *conditions.map { |c| c[:column] }]
+              required_indexed_foreign_keys = all_foreign_keys.reject do |fk|
+                ci_partitioned_foreign_key?(fk) ||
+                  fk.options[:conditions]&.any?
               end
-
-              required_indexed_columns = to_columns(foreign_keys_columns - ignored_index_columns(table))
 
               # Add the composite primary key to the list of indexed columns because
               # postgres and mysql both automatically create an index on the primary
@@ -339,7 +347,9 @@ RSpec.describe 'Database schema',
               # automatically generated indexes (like the primary key index).
               indexed_columns.push(composite_primary_key)
 
-              expect(required_indexed_columns).to be_indexed_by(indexed_columns)
+              required_indexed_foreign_keys.each do |required_indexed_foreign_key| # rubocop:disable RSpec/IteratedExpectation -- We want to aggregate all failures
+                expect(required_indexed_foreign_key).to be_indexed_by(indexed_columns)
+              end
             end
           end
 
@@ -459,7 +469,7 @@ RSpec.describe 'Database schema',
         "ApplicationSetting" => %w[repository_storages_weighted oauth_provider rate_limits_unauthenticated_git_http],
         "AlertManagement::Alert" => %w[payload],
         "AlertManagement::HttpIntegration" => %w[payload_example],
-        "Ci::BuildMetadata" => %w[config_options config_variables runtime_runner_features],
+        "Ci::BuildMetadata" => %w[config_options config_variables],
         "Ci::Runner" => %w[config],
         "ExperimentSubject" => %w[context],
         "ExperimentUser" => %w[context],
@@ -474,7 +484,7 @@ RSpec.describe 'Database schema',
         "Sbom::Occurrence" => %w[ancestors],
         "Security::ApprovalPolicyRule" => %w[content],
         "Security::Policy" => %w[metadata],
-        "ServicePing::NonSqlServicePing" => %w[payload], # Usage data payload changes often, we cannot use one schema
+        "ServicePing::NonSqlServicePing" => %w[payload metadata], # Usage data payloads change often, we cannot use one schema
         "ServicePing::QueriesServicePing" => %w[payload], # Usage data payload changes often, we cannot use one schema
         "Security::ScanExecutionPolicyRule" => %w[content],
         "Security::VulnerabilityManagementPolicyRule" => %w[content],
@@ -683,10 +693,6 @@ RSpec.describe 'Database schema',
 
   def ignored_fk_columns(table)
     removed_fks_map.merge(ignored_fk_columns_map).fetch(table, [])
-  end
-
-  def ignored_index_columns(table)
-    ignored_indexes_on_fks_map.fetch(table, [])
   end
 
   def ignored_limit_enums(model)

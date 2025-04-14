@@ -40,7 +40,6 @@ Rails/TimeZone:
     - 'spec/lib/gitlab/analytics/cycle_analytics/base_query_builder_spec.rb'
     - 'spec/lib/gitlab/app_json_logger_spec.rb'
     - 'spec/lib/gitlab/app_text_logger_spec.rb'
-    - 'spec/lib/gitlab/auth/current_user_mode_spec.rb'
     - 'spec/lib/gitlab/checks/timed_logger_spec.rb'
     - 'spec/lib/gitlab/ci/cron_parser_spec.rb'
     - 'spec/lib/gitlab/cycle_analytics/stage_summary_spec.rb'

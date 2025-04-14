@@ -301,14 +301,12 @@ describe('HeaderActions component', () => {
 
           it(`${isItemVisible ? 'shows' : 'hides'} "${itemText}" item`, () => {
             expect(
-              findDropdownItems()
-                .filter((item) => {
-                  return item.props('item')
-                    ? item.props('item').text === itemText
-                    : item.text() === itemText;
-                })
-                .exists(),
-            ).toBe(isItemVisible);
+              findDropdownItems().filter((item) => {
+                return item.props('item')
+                  ? item.props('item').text === itemText
+                  : item.text() === itemText;
+              }),
+            ).toHaveLength(isItemVisible ? 1 : 0);
           });
         },
       );

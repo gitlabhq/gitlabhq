@@ -15,7 +15,12 @@ title: Import project from repository by URL
 You can import your existing repositories by providing the Git URL. You can't import GitLab issues and merge requests
 this way. Other methods provide more complete import methods.
 
-If the repository is too large, the import can timeout.
+If the repository is too large, the import might time out.
+
+You can import your Git repository by:
+
+- [Using the UI](#import-a-project-by-using-the-ui)
+- [Using the API](#import-a-project-by-using-the-api)
 
 ## Prerequisites
 
@@ -32,7 +37,7 @@ If the repository is too large, the import can timeout.
 - If importing a private repository, an access token for authenticated access to the source repository might be required
   instead of a password.
 
-## Import project by URL
+## Import a project by using the UI
 
 1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Import project**.
@@ -43,3 +48,46 @@ If the repository is too large, the import can timeout.
 1. Select **Create project**.
 
 Your newly created project is displayed.
+
+### Import a timed-out project
+
+Imports of large repositories might time out after three hours.
+To import a timed-out project:
+
+1. Clone the repository.
+
+   ```shell
+   git clone --mirror https://example.com/group/project.git
+   ```
+
+   The `--mirror` option ensures all branches, tags, and refs are copied.
+
+1. Add the new remote repository.
+
+   ```shell
+   cd repository.git
+   git remote add new-origin https://gitlab.com/group/project.git
+   ```
+
+1. Push everything to the new remote repository.
+
+   ```shell
+   git push --mirror new-origin
+   ```
+
+## Import a project by using the API
+
+You can use the [Projects API](../../../api/projects.md#create-a-project) to import a Git repository:
+
+```shell
+curl --location "https://gitlab.example.com/api/v4/projects/" \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <your-token>' \
+--data-raw '{
+    "description": "New project description",
+    "path": "new_project_path",
+    "import_url": "https://username:password@example.com/group/project.git"
+}'
+```
+
+Some providers do not allow a password and instead require an access token.

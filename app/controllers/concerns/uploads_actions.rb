@@ -80,8 +80,8 @@ module UploadsActions
   # behavior when serving uploads.
   def set_request_format_from_path_extension
     path = request.headers['action_dispatch.original_path'] || request.headers['PATH_INFO']
-
-    return unless match = path&.match(/\.(\w+)\z/)
+    match = path&.match(/\.(\w+)\z/)
+    return unless match
 
     format = Mime[match.captures.first]
 
@@ -120,7 +120,8 @@ module UploadsActions
 
   # rubocop: disable CodeReuse/ActiveRecord
   def build_uploader_from_upload
-    return unless uploader = build_uploader
+    uploader = build_uploader
+    return unless uploader
 
     upload_paths = uploader.upload_paths(params[:filename])
     upload = Upload.find_by(model: model, uploader: uploader_class.to_s, path: upload_paths)

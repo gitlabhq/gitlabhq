@@ -9,21 +9,23 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
   using RSpec::Parameterized::TableSyntax
   include HttpIOHelpers
 
+  let_it_be(:namespace) { create(:namespace) }
+
   let_it_be(:project, reload: true) do
-    create(:project, :repository, public_builds: false)
+    create(:project, :repository, namespace: namespace, public_builds: false)
   end
 
   let_it_be(:pipeline, reload: true) do
     create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
   end
 
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let(:api_user) { user }
   let(:maintainer) { create(:project_member, :maintainer, project: project).user }
   let(:reporter) { create(:project_member, :reporter, project: project).user }
   let(:guest) { create(:project_member, :guest, project: project).user }
 
-  let(:running_job) do
+  let_it_be(:running_job) do
     create(
       :ci_build,
       :running,
@@ -34,7 +36,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     )
   end
 
-  let(:canceling_job) do
+  let_it_be(:canceling_job) do
     create(
       :ci_build,
       :canceling,
@@ -45,7 +47,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     )
   end
 
-  let!(:job) do
+  let_it_be_with_reload(:job) do
     create(:ci_build, :success, :tags, pipeline: pipeline, artifacts_expire_at: 1.day.since)
   end
 
@@ -433,7 +435,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       it 'returns project jobs' do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_limited_pagination_headers
-        expect(json_response).to be_an Array
+        expect(json_response.pluck("id")).to match_array([running_job.id, job.id, canceling_job.id])
       end
 
       it 'returns correct values' do
@@ -492,7 +494,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
         it do
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response).to be_an Array
+          expect(json_response).to be_empty
         end
       end
 
@@ -501,7 +503,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
         it do
           expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response).to be_an Array
+          expect(json_response.pluck("id")).to match_array([running_job.id])
         end
       end
 
@@ -512,10 +514,8 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       end
 
       it_behaves_like 'an endpoint with keyset pagination' do
-        let_it_be(:another_build) { create(:ci_build, :success, :tags, project: project, pipeline: pipeline) }
-
-        let(:first_record) { project.builds.last }
-        let(:second_record) { project.builds.first }
+        let(:first_record) { job }
+        let(:second_record) { canceling_job }
         let(:api_call) { api("/projects/#{project.id}/jobs", user) }
       end
     end
@@ -544,16 +544,12 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
   end
 
   describe 'GET /projects/:id/jobs offset pagination' do
-    before do
-      running_job
-    end
-
     it 'returns one record for the first page' do
       get api("/projects/#{project.id}/jobs", api_user), params: { per_page: 1 }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response.size).to eq(1)
-      expect(json_response.first['id']).to eq(running_job.id)
+      expect(json_response.first['id']).to eq(job.id)
     end
 
     it 'returns second record when passed in offset and per_page params' do
@@ -561,21 +557,17 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response.size).to eq(1)
-      expect(json_response.first['id']).to eq(job.id)
+      expect(json_response.first['id']).to eq(canceling_job.id)
     end
   end
 
   describe 'GET /projects/:id/jobs keyset pagination' do
-    before do
-      running_job
-    end
-
     it 'returns first page with cursor to next page' do
-      get api("/projects/#{project.id}/jobs", api_user), params: { pagination: 'keyset', per_page: 1 }
+      get api("/projects/#{project.id}/jobs", api_user), params: { pagination: 'keyset', per_page: 2 }
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response.size).to eq(1)
-      expect(json_response.first['id']).to eq(running_job.id)
+      expect(json_response.size).to eq(2)
+      expect(json_response.first['id']).to eq(job.id)
       expect(response.headers["Link"]).to include("cursor")
       next_cursor = response.headers["Link"].match("(?<cursor_data>cursor=.*?)&")["cursor_data"]
 
@@ -584,7 +576,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       expect(response).to have_gitlab_http_status(:ok)
       json_response = Gitlab::Json.parse(response.body)
       expect(json_response.size).to eq(1)
-      expect(json_response.first['id']).to eq(job.id)
+      expect(json_response.first['id']).to eq(running_job.id)
       expect(response.headers).not_to include("Link")
     end
 
@@ -875,65 +867,54 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
   end
 
   [
-    [:job, false, 'success', true, :user, :created],
-    [:running_job, false, 'canceled', true, :user, :created],
-    [:canceling_job, false, 'canceling', true, :user, :created],
-    [:job, true, 'success', true, :user, :forbidden],
-    [:running_job, true, 'running', true, :user, :forbidden],
-    [:running_job, true, 'running', true, :maintainer, :created], # Force cancel does not default to regular cancel
-    [:canceling_job, true, 'canceling', true, :user, :forbidden],
-    [:canceling_job, true, 'canceled', true, :maintainer, :created],
-    [:running_job, true, 'canceled', false, :user, :created],          # With flag disabled, force flag is ignored,
-    [:running_job, true, 'canceled', false, :maintainer, :created],    # so behaves as if force=false
-    [:canceling_job, true, 'canceling', false, :user, :created],
-    [:canceling_job, true, 'canceling', false, :maintainer, :created]
-  ].each do |job, force_param, expected_job_status, flag_state, user_sym, http_status|
+    [:job, false, 'success', :user, :created],
+    [:running_job, false, 'canceled', :user, :created],
+    [:canceling_job, false, 'canceling', :user, :created],
+    [:job, true, 'success', :user, :forbidden],
+    [:running_job, true, 'running', :user, :forbidden],
+    [:running_job, true, 'running', :maintainer, :created], # Force cancel does not default to regular cancel
+    [:canceling_job, true, 'canceling', :user, :forbidden],
+    [:canceling_job, true, 'canceled', :maintainer, :created]
+  ].each do |job, force_param, expected_job_status, user_sym, http_status|
     describe "POST /projects/:id/jobs/:#{job}_id/cancel?force=#{force_param}" do
-      context "with :force_cancel_build flag #{flag_state ? 'enabled' : 'disabled'}" do
-        let(:api_user) { send(user_sym) }
+      let(:api_user) { send(user_sym) }
 
-        before do
-          stub_feature_flags(force_cancel_build: flag_state)
-          post api("/projects/#{project.id}/jobs/#{send(job).id}/cancel?force=#{force_param}", api_user)
-        end
+      before do
+        post api("/projects/#{project.id}/jobs/#{send(job).id}/cancel?force=#{force_param}", api_user)
+      end
 
-        context 'authorized user' do
-          context "#{user_sym} with :cancel_build permission" do
-            it "cancels :#{job}" do
-              expect(response).to have_gitlab_http_status(http_status)
+      context 'authorized user' do
+        context "#{user_sym} with :cancel_build permission" do
+          it "cancels :#{job}" do
+            expect(response).to have_gitlab_http_status(http_status)
 
-              if http_status != :forbidden
-                json_response = Gitlab::Json.parse(response.body)
-                expect(json_response['status']).to eq(expected_job_status)
-              end
-            end
-          end
-
-          context 'user without :cancel_build permission' do
-            let(:api_user) { reporter }
-
-            it 'does not cancel job' do
-              expect(response).to have_gitlab_http_status(:forbidden)
+            if http_status != :forbidden
+              json_response = Gitlab::Json.parse(response.body)
+              expect(json_response['status']).to eq(expected_job_status)
             end
           end
         end
 
-        context 'unauthorized user' do
-          let(:api_user) { nil }
+        context 'user without :cancel_build permission' do
+          let(:api_user) { reporter }
 
           it 'does not cancel job' do
-            expect(response).to have_gitlab_http_status(:unauthorized)
+            expect(response).to have_gitlab_http_status(:forbidden)
           end
+        end
+      end
+
+      context 'unauthorized user' do
+        let(:api_user) { nil }
+
+        it 'does not cancel job' do
+          expect(response).to have_gitlab_http_status(:unauthorized)
         end
       end
     end
   end
 
   describe 'POST /projects/:id/jobs/:job_id/retry' do
-    let_it_be(:namespace) { create(:namespace) }
-    let_it_be(:project) { create(:project, :repository, namespace: namespace, public_builds: false) }
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch) }
-
     let!(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
 
     def call_retry_job
@@ -950,7 +931,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         context 'when the job is a build' do
           it 'retries non-running job' do
             expect(response).to have_gitlab_http_status(:created)
-            expect(project.builds.first.status).to eq('canceled')
+            expect(job.reload.status).to eq('canceled')
             expect(json_response['status']).to eq('pending')
           end
         end
@@ -986,7 +967,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         context 'user with :update_build permission' do
           it 'retries non-running job' do
             expect(response).to have_gitlab_http_status(:created)
-            expect(project.builds.first.status).to eq('canceled')
+            expect(job.reload.status).to eq('canceled')
             expect(json_response['status']).to eq('pending')
           end
         end
@@ -1044,7 +1025,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
             call_retry_job
 
             expect(response).to have_gitlab_http_status(:forbidden)
-            expect(project.builds.first.status).to eq('canceled')
+            expect(job.reload.status).to eq('canceled')
             expect(json_response['status']).to be_nil
           end
         end

@@ -19,19 +19,6 @@ export default {
       type: Object,
       required: true,
     },
-    hasResults: {
-      type: Boolean,
-      required: true,
-    },
-    isLoading: {
-      type: Boolean,
-      required: true,
-    },
-    error: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   computed: {
     ...mapState(['query', 'groupInitialJson', 'projectInitialJson', 'repositoryRef']),
@@ -52,9 +39,6 @@ export default {
     },
     resultsTotal() {
       return this.blobSearch?.matchCount;
-    },
-    showBar() {
-      return this.hasResults && !this.hasError && !this.isLoading;
     },
     getBaseURL() {
       return getBaseURL();
@@ -80,9 +64,6 @@ export default {
         this?.resultsTotal ?? 0,
       );
     },
-    hasError() {
-      return Boolean(this.error);
-    },
   },
   methods: {
     handleInput(selected) {
@@ -93,7 +74,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="showBar" class="search-results-status gl-my-4">
+  <div class="search-results-status gl-my-4">
     <gl-sprintf v-if="!query.project_id && !query.group_id" :message="resultsSimple">
       <template #resultsTotal>{{ resultsTotal }}</template>
       <template #term

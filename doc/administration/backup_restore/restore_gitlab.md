@@ -53,7 +53,7 @@ To restore a backup, **you must also restore the GitLab secrets**.
 If you are migrating to a new GitLab instance, you must copy the GitLab secrets file from the old server.
 These include the database encryption key, [CI/CD variables](../../ci/variables/_index.md), and
 variables used for [two-factor authentication](../../user/profile/account/two_factor_authentication.md).
-Without the keys, [multiple issues occur](../backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost), including loss of access by users with [two-factor authentication enabled](../../user/profile/account/two_factor_authentication.md),
+Without the keys, [multiple issues occur](troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost), including loss of access by users with [two-factor authentication enabled](../../user/profile/account/two_factor_authentication.md),
 and GitLab Runners cannot sign in.
 
 Restore:
@@ -489,6 +489,55 @@ For example:
   ```shell
   sudo -u git -H bundle exec rake gitlab:backup:restore
   ```
+
+### Restoring using server-side repository backups
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4941) in `gitlab-backup` in GitLab 16.3.
+- Server-side support in `gitlab-backup` for restoring a specified backup instead of the latest backup [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132188) in GitLab 16.6.
+- Server-side support in `gitlab-backup` for creating incremental backups [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6475) in GitLab 16.6.
+- Server-side support in `backup-utility` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438393) in GitLab 17.0.
+
+{{< /history >}}
+
+When a server-side backup is collected, the restore process defaults to use the server-side restore mechanism shown in
+[Create server-side repository backups](backup_gitlab.md#create-server-side-repository-backups). You can configure backup restoration so that the Gitaly
+node that hosts each repository is responsible for pulling the necessary backup data directly from object storage.
+
+1. [Configure a server-side backup destination in Gitaly](../gitaly/configure_gitaly.md#configure-server-side-backups).
+1. Start a server-side backup restore process and specifying the [ID of the backup](backup_archive_process.md#backup-id) you wish to restore:
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+```shell
+sudo gitlab-backup restore BACKUP=11493107454_2018_04_25_10.6.4-ce
+```
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled" >}}
+
+```shell
+sudo -u git -H bundle exec rake gitlab:backup:restore BACKUP=11493107454_2018_04_25_10.6.4-ce
+```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+```shell
+kubectl exec <Toolbox pod name> -it -- backup-utility --restore -t <backup_ID> --repositories-server-side
+```
+
+When using [cron-based backups](https://docs.gitlab.com/charts/backup-restore/backup.html#cron-based-backup),
+add the `--repositories-server-side` flag to the extra arguments.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Troubleshooting
 

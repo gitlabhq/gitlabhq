@@ -52,7 +52,6 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
       __typename
       id
       iid
-      complete
       usesNeeds
       userPermissions {
         updatePipeline
@@ -62,6 +61,7 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
         nodes {
           # eslint-disable-next-line @graphql-eslint/require-id-when-available -- for detailedStatus.id
           ...LinkedPipelineData
+          name
         }
       }
       upstream {
@@ -108,7 +108,6 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
                   id
                   name
                   kind
-                  scheduledAt
                   needs {
                     __typename
                     nodes {

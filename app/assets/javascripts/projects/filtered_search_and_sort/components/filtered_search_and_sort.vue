@@ -7,10 +7,9 @@ import { queryToObject, objectToQuery, visitUrl } from '~/lib/utils/url_utility'
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import { ACCESS_LEVEL_OWNER_INTEGER } from '~/access_level/constants';
 import { InternalEvents } from '~/tracking';
+import { SORT_DIRECTION_ASC, SORT_DIRECTION_DESC } from '~/groups_projects/constants';
 import {
   SORT_OPTIONS,
-  SORT_DIRECTION_ASC,
-  SORT_DIRECTION_DESC,
   SORT_OPTION_UPDATED,
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,

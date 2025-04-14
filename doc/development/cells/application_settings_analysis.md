@@ -14,12 +14,12 @@ title: Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 492
+- Number of attributes: 495
 - Number of encrypted attributes: 41 (8.0%)
-- Number of attributes documented: 298 (61.0%)
+- Number of attributes documented: 298 (60.0%)
 - Number of attributes on GitLab.com different from the defaults: 222 (45.0%)
-- Number of attributes with `clusterwide` set: 492 (100.0%)
-- Number of attributes with `clusterwide: true` set: 123 (25.0%)
+- Number of attributes with `clusterwide` set: 495 (100.0%)
+- Number of attributes with `clusterwide: true` set: 126 (25.0%)
 
 ## Individual columns
 
@@ -66,6 +66,7 @@ title: Application Settings analysis
 | `can_create_group` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `can_create_organization` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `check_namespace_plan` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
+| `ci_cd_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `ci_job_token_signing_key` | `true` | `bytea` | `` | `false` | `null` | `true` | `true`| `false` |
 | `ci_jwt_signing_key` | `true` | `text` | `` | `false` | `null` | `true` | `true`| `false` |
 | `ci_max_includes` | `false` | `integer` | `integer` | `true` | `150` | `false` | `false`| `true` |
@@ -103,6 +104,7 @@ title: Application Settings analysis
 | `database_grafana_api_url` | `false` | `text` | `` | `false` | `null` | `true` | `true`| `false` |
 | `database_grafana_tag` | `false` | `text` | `` | `false` | `null` | `true` | `true`| `false` |
 | `database_max_running_batched_background_migrations` | `false` | `integer` | `` | `true` | `2` | `true` | `true`| `false` |
+| `database_reindexing` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `deactivate_dormant_users` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `deactivate_dormant_users_period` | `false` | `integer` | `integer` | `true` | `90` | `false` | `false`| `true` |
 | `deactivation_email_additional_text` | `false` | `text` | `` | `false` | `null` | `true` | `true`| `false` |
@@ -145,6 +147,7 @@ title: Application Settings analysis
 | `domain_denylist` | `false` | `text` | `array of strings` | `false` | `null` | `true` | `true`| `true` |
 | `domain_denylist_enabled` | `false` | `boolean` | `boolean` | `false` | `false` | `true` | `true`| `true` |
 | `dsa_key_restriction` | `false` | `integer` | `integer` | `true` | `'-1'::integer` | `false` | `false`| `true` |
+| `duo_chat` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `duo_features_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `duo_workflow` | `false` | `jsonb` | `` | `false` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `ecdsa_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
@@ -400,7 +403,6 @@ title: Application Settings analysis
 | `security_approval_policies_limit` | `false` | `integer` | `integer` | `true` | `5` | `false` | `false`| `true` |
 | `security_policies` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `security_policy_global_group_approvers_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `true` | `false`| `true` |
-| `security_policy_scheduled_scans_max_concurrency` | `false` | `integer` | `` | `true` | `10000` | `false` | `false`| `false` |
 | `security_txt_content` | `false` | `text` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `sentry_clientside_dsn` | `false` | `text` | `` | `false` | `null` | `true` | `false`| `false` |
 | `sentry_clientside_traces_sample_rate` | `false` | `double` | `` | `true` | `0.0` | `true` | `false`| `false` |

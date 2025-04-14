@@ -1003,10 +1003,10 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         :developer   | :developer      | true | true
         :maintainer  | :developer      | true | true
         :owner       | :developer      | true | true
-        :guest       | :developer      | true | false
-        :planner     | :developer      | true | false
-        :reporter    | :developer      | true | false
-        :anonymous   | :developer      | true | false
+        :guest       | :developer      | true | true
+        :planner     | :developer      | true | true
+        :reporter    | :developer      | true | true
+        :anonymous   | :developer      | true | true
         :developer   | :maintainer     | true | false
         :maintainer  | :maintainer     | true | true
         :owner       | :maintainer     | true | true
@@ -1055,8 +1055,8 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
         before do
           ci_cd_settings = project.ci_cd_settings
-          ci_cd_settings.pipeline_variables_minimum_override_role = minimum_role
-          ci_cd_settings.restrict_user_defined_variables = restrict_variables
+          ci_cd_settings[:pipeline_variables_minimum_override_role] = minimum_role
+          ci_cd_settings[:restrict_user_defined_variables] = restrict_variables
           ci_cd_settings.save!
         end
 
@@ -3162,7 +3162,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
-  describe 'update_runners_registration_token' do
+  describe 'runner registration token settings' do
     # Override project with a version with namespace_settings
     let(:project) { project_with_runner_registration_token }
     let(:allow_runner_registration_token) { true }
@@ -3174,6 +3174,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     context 'when anonymous' do
       let(:current_user) { anonymous }
 
+      it { is_expected.not_to be_allowed(:read_runners_registration_token) }
       it { is_expected.not_to be_allowed(:update_runners_registration_token) }
     end
 
@@ -3181,16 +3182,19 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       let(:current_user) { create(:admin) }
 
       context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:read_runners_registration_token) }
         it { is_expected.to be_allowed(:update_runners_registration_token) }
 
         context 'with registration tokens disabled' do
           let(:allow_runner_registration_token) { false }
 
+          it { is_expected.to be_disallowed(:read_runners_registration_token) }
           it { is_expected.to be_disallowed(:update_runners_registration_token) }
         end
       end
 
       context 'when admin mode is disabled' do
+        it { is_expected.to be_disallowed(:read_runners_registration_token) }
         it { is_expected.to be_disallowed(:update_runners_registration_token) }
       end
     end
@@ -3199,6 +3203,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       context role do
         let(:current_user) { send(role) }
 
+        it { is_expected.to be_disallowed(:read_runners_registration_token) }
         it { is_expected.to be_disallowed(:update_runners_registration_token) }
       end
     end
@@ -3207,11 +3212,13 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       context role do
         let(:current_user) { send(role) }
 
+        it { is_expected.to be_allowed(:read_runners_registration_token) }
         it { is_expected.to be_allowed(:update_runners_registration_token) }
 
         context 'with registration tokens disabled' do
           let(:allow_runner_registration_token) { false }
 
+          it { is_expected.to be_disallowed(:read_runners_registration_token) }
           it { is_expected.to be_disallowed(:update_runners_registration_token) }
         end
       end
@@ -3975,32 +3982,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       else
         it { is_expected.not_to be_allowed(:write_model_experiments) }
       end
-    end
-  end
-
-  describe 'when project is created and owned by a banned user' do
-    let_it_be(:project) { create(:project, :public) }
-
-    let(:current_user) { guest }
-
-    before do
-      allow(project).to receive(:created_and_owned_by_banned_user?).and_return(true)
-    end
-
-    it { expect_disallowed(:read_project) }
-
-    context 'when current user is an admin', :enable_admin_mode do
-      let(:current_user) { admin }
-
-      it { expect_allowed(:read_project) }
-    end
-
-    context 'when hide_projects_of_banned_users FF is disabled' do
-      before do
-        stub_feature_flags(hide_projects_of_banned_users: false)
-      end
-
-      it { expect_allowed(:read_project) }
     end
   end
 

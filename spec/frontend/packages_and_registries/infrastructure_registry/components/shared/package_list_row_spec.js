@@ -23,7 +23,6 @@ describe('packages_list_row', () => {
   const findPackagePath = () => wrapper.findComponent(PackagePath);
   const findDeleteButton = () => wrapper.findByTestId('action-delete');
   const findInfrastructureIconAndName = () => wrapper.findComponent(InfrastructureIconAndName);
-  const findListItem = () => wrapper.findComponent(ListItem);
   const findPackageLink = () => wrapper.findComponent(GlLink);
   const findWarningIcon = () => wrapper.findByTestId('warning-icon');
 
@@ -150,10 +149,6 @@ describe('packages_list_row', () => {
   describe(`when the package is in ${PACKAGE_ERROR_STATUS} status`, () => {
     beforeEach(() => {
       mountComponent({ packageEntity: { ...packageWithoutTags, status: PACKAGE_ERROR_STATUS } });
-    });
-
-    it('list item has a disabled prop', () => {
-      expect(findListItem().props('disabled')).toBe(true);
     });
 
     it('details link is disabled', () => {

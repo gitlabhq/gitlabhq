@@ -21,6 +21,9 @@ module API
         Gitlab::Utils.append_path(Gitlab.config.gitlab.relative_url_root, path)
       end
 
+      # This function should only be used to expose an API path or URL.
+      # It should not be used with Rails
+      # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183415#note_2387443102
       def expose_url(path)
         url_options = Gitlab::Application.routes.default_url_options
         protocol, host, port, script_name = url_options.values_at(:protocol, :host, :port, :script_name)

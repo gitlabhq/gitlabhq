@@ -57,7 +57,6 @@ export default {
   },
   data() {
     return {
-      loading: true,
       editor: null,
     };
   },
@@ -92,6 +91,7 @@ export default {
     onFileChange() {
       this.$emit('input', this.editor.getValue());
     },
+    // eslint-disable-next-line vue/no-unused-properties -- getEditor() is part of the component's public API.
     getEditor() {
       return this.editor;
     },

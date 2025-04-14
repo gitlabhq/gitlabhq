@@ -1,75 +1,84 @@
+import { GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import IssueCount from '~/boards/components/item_count.vue';
 
 describe('IssueCount', () => {
   let wrapper;
-  let maxIssueCount;
-  let itemsSize;
+  let maxCount;
+  let currentCount;
 
   const createComponent = (props) => {
     wrapper = shallowMount(IssueCount, { propsData: props });
   };
 
+  const findGlSprintf = () => wrapper.findComponent(GlSprintf);
+
   afterEach(() => {
-    maxIssueCount = 0;
-    itemsSize = 0;
+    maxCount = 0;
+    currentCount = 0;
   });
 
-  describe('when maxIssueCount is zero', () => {
+  describe('when maxCount is zero', () => {
     beforeEach(() => {
-      itemsSize = 3;
+      currentCount = 3;
 
-      createComponent({ maxIssueCount: 0, itemsSize });
+      createComponent({ maxCount: 0, currentCount });
     });
 
-    it('contains issueSize in the template', () => {
-      expect(wrapper.find('[data-testid="board-items-count"]').text()).toEqual(String(itemsSize));
+    it('contains currentCount in the template', () => {
+      expect(wrapper.find('[data-testid="board-items-count"]').text()).toEqual(
+        String(currentCount),
+      );
     });
 
-    it('does not contains maxIssueCount in the template', () => {
+    it('does not contains maxCount in the template', () => {
       expect(wrapper.find('.max-issue-size').exists()).toBe(false);
     });
   });
 
-  describe('when maxIssueCount is greater than zero', () => {
+  describe('when maxCount is greater than zero', () => {
     beforeEach(() => {
-      maxIssueCount = 2;
-      itemsSize = 1;
+      maxCount = 2;
+      currentCount = 1;
 
-      createComponent({ maxIssueCount, itemsSize });
+      createComponent({ maxCount, currentCount });
     });
 
     it('contains issueSize in the template', () => {
-      expect(wrapper.find('[data-testid="board-items-count"]').text()).toEqual(String(itemsSize));
+      expect(wrapper.find('[data-testid="board-items-count"]').text()).toEqual(
+        String(currentCount),
+      );
     });
 
-    it('contains maxIssueCount in the template', () => {
-      expect(wrapper.find('.max-issue-size').text()).toContain(String(maxIssueCount));
+    it('contains maxCount in the template', () => {
+      expect(findGlSprintf().attributes('message')).toContain(`/ %{maxCount}`);
     });
 
-    it('does not have red text when issueSize is less than maxIssueCount', () => {
+    it('does not have red text when issueSize is less than maxCount', () => {
       expect(wrapper.classes('.gl-text-red-700')).toBe(false);
     });
   });
 
-  describe('when issueSize is greater than maxIssueCount', () => {
+  describe('when issueSize is greater than maxCount', () => {
     beforeEach(() => {
-      itemsSize = 3;
-      maxIssueCount = 2;
+      currentCount = 3;
+      maxCount = 2;
 
-      createComponent({ maxIssueCount, itemsSize });
+      createComponent({ maxCount, currentCount });
     });
 
     it('contains issueSize in the template', () => {
-      expect(wrapper.find('[data-testid="board-items-count"]').text()).toEqual(String(itemsSize));
+      expect(wrapper.find('[data-testid="board-items-count"]').text()).toEqual(
+        String(currentCount),
+      );
     });
 
-    it('contains maxIssueCount in the template', () => {
-      expect(wrapper.find('.max-issue-size').text()).toContain(String(maxIssueCount));
+    it('contains maxCount in the template', () => {
+      expect(findGlSprintf().attributes('message')).toContain(`/ %{maxCount}`);
     });
 
     it('has red text', () => {
-      expect(wrapper.find('.gl-text-red-700').text()).toEqual(String(itemsSize));
+      expect(wrapper.find('.gl-text-red-700').text()).toEqual(String(currentCount));
     });
   });
 });

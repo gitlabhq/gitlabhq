@@ -8,7 +8,7 @@ import { getParameterByName } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
   FORM_TYPES,
-  WORK_ITEM_TYPE_VALUE_MAP,
+  NAME_TO_ENUM_MAP,
   WORK_ITEMS_TYPE_MAP,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
@@ -16,13 +16,13 @@ import {
   CHILD_ITEMS_ANCHOR,
   WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
   WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
-  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_NAME_EPIC,
   WIDGET_TYPE_HIERARCHY,
   INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
   DETAIL_VIEW_QUERY_PARAM_NAME,
 } from '../../constants';
 import {
-  findHierarchyWidgets,
+  findHierarchyWidget,
   getDefaultHierarchyChildrenCount,
   saveToggleToLocalStorage,
   getToggleFromLocalStorage,
@@ -162,7 +162,7 @@ export default {
         return !this.workItemId;
       },
       update({ workItem = {} }) {
-        const { children } = findHierarchyWidgets(workItem.widgets);
+        const { children } = findHierarchyWidget(workItem);
         this.workItem = workItem;
         return children || {};
       },
@@ -207,20 +207,20 @@ export default {
       let childTypes = this.allowedChildTypes;
       // To remove EPICS actions when subepics are not available
       if (
-        this.workItemType.toUpperCase() === WORK_ITEM_TYPE_ENUM_EPIC &&
+        NAME_TO_ENUM_MAP[this.workItemType] === WORK_ITEM_TYPE_ENUM_EPIC &&
         !this.hasSubepicsFeature
       ) {
         childTypes = childTypes.filter((type) => {
-          return type.name.toUpperCase() !== WORK_ITEM_TYPE_ENUM_EPIC;
+          return NAME_TO_ENUM_MAP[type.name] !== WORK_ITEM_TYPE_ENUM_EPIC;
         });
       }
 
       const reorderedChildTypes = childTypes.slice().sort((a, b) => a.id.localeCompare(b.id));
       return reorderedChildTypes.map((type) => {
-        const enumType = WORK_ITEM_TYPE_VALUE_MAP[type.name];
+        const enumType = NAME_TO_ENUM_MAP[type.name];
         const depthLimitByType =
           this.depthLimitReachedByType?.find(
-            (item) => item.workItemType?.name.toUpperCase() === enumType,
+            (item) => NAME_TO_ENUM_MAP[item.workItemType?.name] === enumType,
           ) || {};
 
         return {
@@ -241,7 +241,7 @@ export default {
     },
     hasIndirectChildren() {
       return this.children
-        .map((child) => findHierarchyWidgets(child.widgets) || {})
+        .map((child) => findHierarchyWidget(child) || {})
         .some((hierarchy) => hierarchy.hasChildren);
     },
     isLoadingChildren() {
@@ -266,7 +266,7 @@ export default {
       return this.showRolledUpWeight && this.rolledUpWeight !== null;
     },
     showTaskWeight() {
-      return this.workItemType !== WORK_ITEM_TYPE_VALUE_EPIC;
+      return this.workItemType !== WORK_ITEM_TYPE_NAME_EPIC;
     },
     allowedChildrenByType() {
       return this.workItemTypes.reduce((acc, type) => {
@@ -311,13 +311,19 @@ export default {
       },
     },
   },
+  created() {
+    window.addEventListener('popstate', this.checkDrawerParams);
+  },
+  beforeDestroy() {
+    window.removeEventListener('popstate', this.checkDrawerParams);
+  },
   mounted() {
     this.showLabels = getToggleFromLocalStorage(this.showLabelsLocalStorageKey);
     this.showClosed = getToggleFromLocalStorage(this.showClosedLocalStorageKey);
   },
   methods: {
     genericActionItems(workItem) {
-      const enumType = WORK_ITEM_TYPE_VALUE_MAP[workItem];
+      const enumType = NAME_TO_ENUM_MAP[workItem];
       const workItemName = WORK_ITEMS_TYPE_MAP[enumType].name.toLowerCase();
       return [
         {
@@ -376,6 +382,7 @@ export default {
       const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
 
       if (!queryParam) {
+        this.$emit('show-modal', { modalWorkItem: null });
         return;
       }
 

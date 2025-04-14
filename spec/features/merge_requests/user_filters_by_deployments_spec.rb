@@ -64,9 +64,9 @@ RSpec.describe 'Merge Requests > User filters by deployments', :js, feature_cate
     visit(project_merge_requests_path(project, state: :merged))
   end
 
-  describe 'filtering by deployed-before' do
+  describe 'filtering by deployed before' do
     it 'applies the filter' do
-      select_tokens 'Deployed-before'
+      select_tokens 'Deployed before'
       find_by_testid('filtered-search-token-segment-input').send_keys '2020-10-02'
 
       send_keys :enter
@@ -76,9 +76,9 @@ RSpec.describe 'Merge Requests > User filters by deployments', :js, feature_cate
     end
   end
 
-  describe 'filtering by deployed-after' do
+  describe 'filtering by deployed after' do
     it 'applies the filter' do
-      select_tokens 'Deployed-after'
+      select_tokens 'Deployed after'
       find_by_testid('filtered-search-token-segment-input').send_keys '2020-10-01'
 
       send_keys :enter

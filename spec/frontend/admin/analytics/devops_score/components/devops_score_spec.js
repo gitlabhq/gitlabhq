@@ -45,7 +45,7 @@ describe('DevopsScore', () => {
 
       it('displays the correct message', () => {
         expect(findEmptyState().text().replace(/\s+/g, ' ')).toBe(
-          'Data is still calculating... It may be several days before you see feature usage data. See example DevOps Score page in our documentation.',
+          'Data is still calculating… It may be several days before you see feature usage data. See example DevOps Score page in our documentation.',
         );
       });
 

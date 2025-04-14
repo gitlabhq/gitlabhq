@@ -24,7 +24,7 @@ For GitLab.com, see [Credentials inventory for GitLab.com](../user/group/credent
 
 {{< /alert >}}
 
-Use the credentials inventory to monitor and control access to your GitLab self-managed instance.
+Use the credentials inventory to monitor and control access to your GitLab Self-Managed instance.
 
 As an administrator, you can:
 

@@ -8,8 +8,16 @@ module Gitlab
     class SiphonGenerator < Rails::Generators::Base
       source_root File.expand_path('templates', __dir__)
 
-      desc "Generates a migration that creates a table for receiving replicated " \
-        "data (using Siphon) from a matching PG table."
+      desc <<~DESC
+        Generates a migration that creates a table for receiving replicated data (using Siphon)
+        from a matching PostgreSQL table.
+
+        Example:
+          rails generate gitlab:click_house:siphon PG_TABLE_NAME
+
+        This will create:
+          db/clickhouse/migrate/main/TIMESTAMP_create_siphon_PG_TABLE_NAME.rb
+      DESC
 
       argument :table_name, type: :string, required: true, desc: "The PG table to be cloned"
 

@@ -4,8 +4,11 @@ module Packages
   module Nuget
     class CreateTemporaryPackageService
       ERRORS = {
-        failed_to_create_temporary_package: ServiceResponse.error(message: 'Failed to create temporary package'),
-        failed_to_create_package_file: ServiceResponse.error(message: 'Failed to create package file')
+        failed_to_create_temporary_package: ServiceResponse.error(message: 'Failed to create temporary package',
+          reason: :bad_request),
+        failed_to_create_package_file: ServiceResponse.error(message: 'Failed to create package file',
+          reason: :bad_request),
+        unauthorized: ServiceResponse.error(message: 'Unauthorized', reason: :unauthorized)
       }.freeze
 
       def initialize(project:, user:, params: {})
@@ -16,6 +19,8 @@ module Packages
       end
 
       def execute
+        return ERRORS[:unauthorized] unless user.can?(:create_package, project)
+
         response = ERRORS[:failed_to_create_temporary_package]
 
         # Transaction to cover temporary package and package file creation

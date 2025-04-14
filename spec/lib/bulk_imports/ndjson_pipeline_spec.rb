@@ -179,6 +179,19 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
           expect(Import::SourceUser.pluck(:source_user_identifier)).to match_array(%w[101 102 103 104 105 106])
         end
       end
+
+      context 'when relation hash includes attributes from source ghost user' do
+        before do
+          allow(context).to receive(:source_ghost_user_id).and_return('107')
+        end
+
+        it 'skips creating source user and placeholder user for ghost user references' do
+          expect { subject.deep_transform_relation!(relation_hash, 'test', relation_definition) { |a, _b| a } }
+          .to change { Import::SourceUser.count }.by(4).and change { User.count }.by(4)
+
+          expect(Import::SourceUser.pluck(:source_user_identifier)).not_to include('107')
+        end
+      end
     end
 
     context 'when subrelations is an array' do

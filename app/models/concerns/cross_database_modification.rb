@@ -13,7 +13,7 @@ module CrossDatabaseModification
     ].freeze
 
     def self.logger
-      @logger ||= Logger.new(LOG_FILENAME, formatter: ->(_, _, _, msg) { Gitlab::Json.dump(msg) + "\n" })
+      @logger ||= Logger.new(LOG_FILENAME, formatter: ->(_, _, _, msg) { "#{Gitlab::Json.dump(msg)}\n" })
     end
 
     def self.log_gitlab_transactions_stack(action: nil, example: nil)

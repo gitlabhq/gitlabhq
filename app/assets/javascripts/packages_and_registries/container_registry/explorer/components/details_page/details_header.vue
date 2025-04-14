@@ -228,12 +228,8 @@ export default {
         text-sr-only
         no-caret
       >
-        <gl-disclosure-dropdown-item @action="$emit('delete')">
-          <template #list-item>
-            <span class="gl-text-red-500">
-              {{ $options.i18n.DELETE_IMAGE_TEXT }}
-            </span>
-          </template>
+        <gl-disclosure-dropdown-item variant="danger" @action="$emit('delete')">
+          <template #list-item>{{ $options.i18n.DELETE_IMAGE_TEXT }}</template>
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown>
     </template>

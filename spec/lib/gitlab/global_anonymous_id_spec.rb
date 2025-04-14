@@ -103,4 +103,21 @@ RSpec.describe Gitlab::GlobalAnonymousId, feature_category: :code_suggestions do
       expect { described_class.user_id(build(:project, id: 1)) }.to raise_error(ArgumentError)
     end
   end
+
+  describe '.instance_uuid' do
+    it 'is stable for the same instance UUID' do
+      instance_uuid_1 = described_class.instance_uuid
+      instance_uuid_2 = described_class.instance_uuid
+
+      expect(instance_uuid_1).to be_instance_of(String)
+      expect(instance_uuid_2).to eq(instance_uuid_1)
+    end
+
+    it 'is using sha256 to hash the instance UUID' do
+      expect(Gitlab::CryptoHelper).to receive(:sha256).and_return(uuid1)
+      expect(Gitlab::UUID).to receive(:v5).with(uuid1).and_return(uuid1)
+
+      described_class.instance_uuid
+    end
+  end
 end

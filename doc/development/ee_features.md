@@ -17,6 +17,13 @@ title: Guidelines for implementing Enterprise Edition features
   [EE features list](https://about.gitlab.com/features/).
 <!-- markdownlint-enable MD044 -->
 
+## Runtime modes in development
+
+1. **EE Unlicensed**: this is what you have from a plain GDK installation, if you've installed from the [main repository](https://gitlab.com/gitlab-org/gitlab)
+1. **EE licensed**: when you [add a valid license to your GDK](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/setup/gitlab.md#adding-a-license-from-staging-customers-portal-to-your-gdk)
+1. **GitLab.com SaaS**: when you [simulate SaaS](#simulate-a-saas-instance)
+1. **CE**: in any of the states above, when you [simulate CE](#simulate-a-ce-instance-with-a-licensed-gdk)
+
 ## SaaS-only feature
 
 Use the following guidelines when you develop a feature that is only applicable for SaaS (for example, a CustomersDot integration).
@@ -106,8 +113,10 @@ See [extending CE with EE guide](#extend-ce-features-with-ee-backend-code).
 ### SaaS-only features in tests
 
 Introducing a SaaS-only feature into the codebase creates an additional code path that should be tested.
-It is strongly advised to include automated tests for all code affected by a SaaS-only feature, both when **enabled** and **disabled**
-to ensure the feature works properly.
+Include automated tests for all code affected by a SaaS-only feature, both when the feature is **enabled**
+and **disabled** to ensure the feature works properly.
+
+#### Use the `stub_saas_features` helper
 
 To enable a SaaS-only feature in a test, use the `stub_saas_features`
 helper. For example, to globally disable the `purchases_additional_minutes` feature
@@ -134,6 +143,32 @@ context 'when purchases_additional_minutes is available' do
 
   it 'returns true' do
     ::Gitlab::Saas.feature_available?(:purchases_additional_minutes) # => true
+  end
+end
+```
+
+#### Use the `:saas` metadata helper
+
+Depending on the type of tests, the `stub_saas_features` approach might not be enough to enable SaaS.
+In those cases, you can use the `:saas` RSpec metadata helper.
+
+For more information about tests, see
+[Tests depending on SaaS](testing_guide/best_practices.md#tests-depending-on-saas).
+
+Testing both paths with the metadata helper looks like:
+
+```ruby
+it 'shows custom projects templates tab' do
+  page.within '.project-template .custom-instance-project-templates-tab' do
+    expect(page).to have_content 'Instance'
+  end
+end
+
+context 'when SaaS', :saas do
+  it 'does not show Instance tab' do
+    page.within '.project-template' do
+      expect(page).not_to have_content 'Instance'
+    end
   end
 end
 ```

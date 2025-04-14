@@ -1018,11 +1018,11 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
     def post_play
       post :play, params: {
-                    namespace_id: project.namespace,
-                    project_id: project,
-                    id: job.id,
-                    job_variables_attributes: variable_attributes
-                  }
+        namespace_id: project.namespace,
+        project_id: project,
+        id: job.id,
+        job_variables_attributes: variable_attributes
+      }
     end
   end
 
@@ -1086,23 +1086,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
           it 'can be forced to cancel' do
             expect(job.reload).to be_canceled
-          end
-        end
-
-        context 'a canceling job force canceled with flag :force_cancel_build disabled' do
-          let(:job) { create(:ci_build, :canceling, pipeline: pipeline) }
-
-          before do
-            stub_feature_flags(force_cancel_build: false)
-            post_cancel force: "true"
-          end
-
-          it 'returns unprocessable_entity' do
-            expect(response).to have_gitlab_http_status(:unprocessable_entity)
-          end
-
-          it 'cannot be forced to cancel' do
-            expect(job.reload).to be_canceling
           end
         end
       end
@@ -1177,6 +1160,27 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
       end
 
       it 'responds with not_found' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'does not transit to canceled' do
+        expect(job.reload).not_to be_canceled
+      end
+    end
+
+    context 'when user is forbidden from cancelling the build' do
+      let(:job) { create(:ci_build, :cancelable, pipeline: pipeline) }
+
+      before do
+        sign_in(user)
+        # Stub BuildCancelService invocation to return false when ability for cancel_build operation is evaluated
+        allow_next_instance_of(Ci::BuildCancelService) do |service|
+          allow(service).to receive(:allowed?).and_return(false)
+        end
+        post_cancel
+      end
+
+      it 'responds with not_found for access_denied case' do
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
@@ -1338,20 +1342,20 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
     def post_erase
       post :erase, params: {
-                     namespace_id: project.namespace,
-                     project_id: project,
-                     id: job.id
-                   }
+        namespace_id: project.namespace,
+        project_id: project,
+        id: job.id
+      }
     end
   end
 
   describe 'GET raw' do
     subject do
       post :raw, params: {
-                   namespace_id: project.namespace,
-                   project_id: project,
-                   id: job.id
-                 }
+        namespace_id: project.namespace,
+        project_id: project,
+        id: job.id
+      }
     end
 
     context 'when job has a trace artifact' do

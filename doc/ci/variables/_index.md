@@ -842,7 +842,6 @@ You can specify a pipeline variable when you:
 - Use [push options](../../topics/git/commit.md#push-options-for-gitlab-cicd).
 - Pass variables to a downstream pipeline by using either the [`variables` keyword](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline),
   [`trigger:forward` keyword](../yaml/_index.md#triggerforward) or [`dotenv` variables](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job).
-- Specify variables when creating a [pipeline schedule](../pipelines/schedules.md#add-a-pipeline-schedule).
 - Specify variables when [running a manual job](../pipelines/_index.md#run-a-pipeline-manually).
 
 These variables have [higher precedence](#cicd-variable-precedence) and can override
@@ -854,44 +853,53 @@ You should avoid overriding predefined variables in most cases, as it can cause 
 
 {{< /alert >}}
 
+{{< alert type="note" >}}
+
+In [GitLab 17.7](../../update/deprecations.md#increased-default-security-for-use-of-pipeline-variables)
+and later, [pipeline inputs](../inputs/_index.md#for-a-pipeline) are recommended over passing pipeline variables.
+For enhanced security, you should [disable pipeline variables](#restrict-pipeline-variables) when using inputs.
+
+{{< /alert >}}
+
 ### Restrict pipeline variables
-
-You can limit who can run pipelines with pipeline variables to specific user roles.
-To limit the use of pipeline variables to only the Maintainer role and higher:
-
-- Use [the projects API](../../api/projects.md#edit-a-project) to enable the `restrict_user_defined_variables` setting.
-  The setting is `disabled` by default.
-
-When users with the Developer role or lower try to [use pipeline variables](#use-pipeline-variables),
-they receive the `Insufficient permissions to set pipeline variables` error message.
-
-If you [store your CI/CD configurations in a different repository](../pipelines/settings.md#specify-a-custom-cicd-configuration-file),
-use this setting for control over the environment the pipeline runs in.
-
-#### Set a minimum role for pipeline variables
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1.
-- For GitLab.com, setting defaults [updated for all new projects in new namespaces](https://gitlab.com/gitlab-org/gitlab/-/issues/502382) to `enabled` for `restrict_user_defined_variables` and `no_one_allowed` for `ci_pipeline_variables_minimum_override_role` in GitLab 17.7.
+- For GitLab.com, setting defaults [updated for all new projects in new namespaces](https://gitlab.com/gitlab-org/gitlab/-/issues/502382)
+  to `no_one_allowed` for `ci_pipeline_variables_minimum_override_role` in GitLab 17.7.
 
 {{< /history >}}
+
+You can limit who can [run pipelines with pipeline variables](#use-pipeline-variables)
+to specific user roles. When users with a lower role try to use pipeline variables,
+they receive an `Insufficient permissions to set pipeline variables` error message.
 
 Prerequisites:
 
 - You must have the Maintainer role in the project. If the minimum role was previously set to `owner`
   or `no_one_allowed`, then you must have the Owner role in the project.
 
-To change the setting, use [the projects API](../../api/projects.md#edit-a-project)
-to set `ci_pipeline_variables_minimum_override_role` to one of:
+To limit the use of pipeline variables to only the Maintainer role and higher:
 
-- `no_one_allowed`: No pipelines can run with pipeline variables.
-  Default for new projects in new namespaces on GitLab.com.
-- `owner`: Only users with the Owner role can run pipelines with pipeline variables.
-  You must have the Owner role for the project to change the setting to this value.
-- `maintainer`: Only users with at least the Maintainer role can run pipelines with pipeline variables.
-  Default when not specified on GitLab Self-Managed and GitLab Dedicated.
-- `developer`: Only users with at least the Developer role can run pipelines with pipeline variables.
+- Go to **Settings > CI/CD > Variables**.
+- Under **Minimum role to use pipeline variables**, select one of:
+  - `no_one_allowed`: No pipelines can run with pipeline variables.
+    Default for new projects in new namespaces on GitLab.com.
+  - `owner`: Only users with the Owner role can run pipelines with pipeline variables.
+    You must have the Owner role for the project to change the setting to this value.
+  - `maintainer`: Only users with at least the Maintainer role can run pipelines with pipeline variables.
+    Default when not specified on GitLab Self-Managed and GitLab Dedicated.
+  - `developer`: Only users with at least the Developer role can run pipelines with pipeline variables.
+
+You can also use [the projects API](../../api/projects.md#edit-a-project) to set
+the role for the `ci_pipeline_variables_minimum_override_role` setting.
+
+This restriction does not affect the use of CI/CD variables from the project or group settings.
+Most jobs can still use the `variables` keyword in the YAML configuration, but not
+jobs that use the `trigger` keyword to trigger downstream pipelines. Trigger jobs
+pass variables to a downstream pipelines as pipeline variables, which is also controlled
+by this setting.
 
 ## Exporting variables
 
@@ -1150,6 +1158,41 @@ As a workaround you can either:
 - Use [File-type](#use-file-type-cicd-variables) CI/CD variables for large environment variables where possible.
 - If a single large variable is larger than `ARG_MAX`, try using [Secure Files](../secure_files/_index.md), or
   bring the file to the job through some other mechanism.
+
+### `Insufficient permissions to set pipeline variables` error for a downstream pipeline
+
+When triggering a downstream pipeline, you might get this error unexpectedly:
+
+```plaintext
+Failed - (downstream pipeline can not be created, Insufficient permissions to set pipeline variables)
+```
+
+This error occurs when a downstream project has [restricted pipeline variables](#restrict-pipeline-variables) and the trigger job either:
+
+- Has variables defined. For example:
+
+  ```yaml
+  trigger-job:
+    variables:
+      VAR_FOR_DOWNSTREAM: "test"
+    trigger: my-group/my-project
+  ```
+
+- Receives variables from [default variables](../yaml/_index.md#default-variables) defined in a top-level `variables` section. For example:
+
+  ```yaml
+  variables:
+    DEFAULT_VAR: "test"
+  
+  trigger-job:
+    trigger: my-group/my-project
+  ```
+
+Variables passed to a downstream pipeline in a trigger job are [pipeline variables](#use-pipeline-variables),
+so the workaround is to either:
+
+- Remove the `variables` defined in the trigger job to avoid passing variables.
+- [Prevent default variables from being passed to the downstream pipeline](../pipelines/downstream_pipelines.md#prevent-default-variables-from-being-passed).
 
 ### Default variable doesn't expand in job variable of the same name
 

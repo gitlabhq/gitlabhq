@@ -158,7 +158,6 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
           'groups_and_projects_organization_path' => '/-/organizations/default/groups_and_projects',
           'users_organization_path' => '/-/organizations/default/users',
           'new_group_path' => '/-/organizations/default/groups/new',
-          'groups_path' => '/-/organizations/default/groups',
           'new_project_path' => '/projects/new',
           'association_counts' => stubbed_results,
           'organization_groups_projects_sort' => 'name_asc',
@@ -202,7 +201,6 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
         {
           'organization_gid' => 'gid://gitlab/Organizations::Organization/1',
           'new_group_path' => '/-/organizations/default/groups/new',
-          'groups_path' => '/-/organizations/default/groups',
           'new_project_path' => '/projects/new',
           'organization_groups_projects_sort' => 'name_asc',
           'organization_groups_projects_display' => 'projects',

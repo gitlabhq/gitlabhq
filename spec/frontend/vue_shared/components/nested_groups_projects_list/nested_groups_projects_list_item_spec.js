@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
@@ -10,6 +11,11 @@ import {
   topLevelGroupA,
   topLevelGroupB,
 } from '~/vue_shared/components/nested_groups_projects_list/mock_data';
+
+// We need to globally render components to avoid circular references
+// https://v2.vuejs.org/v2/guide/components-edge-cases.html#Circular-References-Between-Components
+Vue.component('NestedGroupsProjectsList', NestedGroupsProjectsList);
+Vue.component('NestedGroupsProjectsListItem', NestedGroupsProjectsListItem);
 
 describe('NestedGroupsProjectsListItem', () => {
   let wrapper;

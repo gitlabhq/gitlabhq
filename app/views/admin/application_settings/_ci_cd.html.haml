@@ -25,13 +25,13 @@
         .form-text.gl-text-subtle= s_('AdminSettings|Add a custom message with details about instance runners. The message is visible when you view runners for projects and groups. Markdown is supported.')
       .form-group
         = f.label :max_artifacts_size, _('Maximum artifacts size (MB)'), class: 'label-bold'
-        = f.number_field :max_artifacts_size, class: 'form-control gl-form-input'
+        = f.number_field :max_artifacts_size, class: 'form-control gl-form-input', min: 0
         .form-text.gl-text-subtle
           = _("The maximum file size for job artifacts.")
           = link_to _('Learn more.'), help_page_path('administration/settings/continuous_integration.md', anchor: 'maximum-artifacts-size')
       .form-group
         = f.label :max_artifacts_content_include_size, _('Maximum artifacts archive size (bytes)'), class: 'label-bold'
-        = f.number_field :max_artifacts_content_include_size, class: 'form-control gl-form-input'
+        = f.number_field :max_artifacts_content_include_size, class: 'form-control gl-form-input', min: 0
         .form-text.gl-text-subtle
           = _("The maximum file size for job artifacts archive.")
       .form-group
@@ -52,7 +52,7 @@
         = f.gitlab_ui_checkbox_component :protected_ci_variables, s_('AdminSettings|Protect CI/CD variables by default'), help_text: s_('AdminSettings|New CI/CD variables in projects and groups default to protected.')
       .form-group
         = f.label :ci_max_includes, s_('AdminSettings|Maximum includes'), class: 'label-bold'
-        = f.number_field :ci_max_includes, class: 'form-control gl-form-input'
+        = f.number_field :ci_max_includes, class: 'form-control gl-form-input', min: 0
         .form-text.gl-text-subtle
           = s_('AdminSettings|The maximum number of included files per pipeline.')
       .form-group
@@ -97,36 +97,36 @@
                 = f.hidden_field(:plan_id, value: plan.id)
                 .form-group
                   = f.label :ci_instance_level_variables, plan_limit_setting_description(:ci_instance_level_variables)
-                  = f.number_field :ci_instance_level_variables, class: 'form-control gl-form-input'
+                  = f.number_field :ci_instance_level_variables, class: 'form-control gl-form-input', min: 0
                 .form-group
                   = f.label :dotenv_size, plan_limit_setting_description(:dotenv_size)
-                  = f.number_field :dotenv_size, class: 'form-control gl-form-input'
+                  = f.number_field :dotenv_size, class: 'form-control gl-form-input', min: 0
                 .form-group
                   = f.label :dotenv_variables, plan_limit_setting_description(:dotenv_variables)
-                  = f.number_field :dotenv_variables, class: 'form-control gl-form-input'
+                  = f.number_field :dotenv_variables, class: 'form-control gl-form-input', min: 0
                 .form-group
                   = f.label :ci_pipeline_size, plan_limit_setting_description(:ci_pipeline_size)
-                  = f.number_field :ci_pipeline_size, class: 'form-control gl-form-input'
+                  = f.number_field :ci_pipeline_size, class: 'form-control gl-form-input', min: 0
                 .form-group
                   = f.label :ci_active_jobs, plan_limit_setting_description(:ci_active_jobs)
-                  = f.number_field :ci_active_jobs, class: 'form-control gl-form-input'
+                  = f.number_field :ci_active_jobs, class: 'form-control gl-form-input', min: 0
                 .form-group
                   = f.label :ci_project_subscriptions, plan_limit_setting_description(:ci_project_subscriptions)
-                  = f.number_field :ci_project_subscriptions, class: 'form-control gl-form-input'
+                  = f.number_field :ci_project_subscriptions, class: 'form-control gl-form-input', min: 0
                 .form-group
                   = f.label :ci_pipeline_schedules, plan_limit_setting_description(:ci_pipeline_schedules)
-                  = f.number_field :ci_pipeline_schedules, class: 'form-control gl-form-input'
+                  = f.number_field :ci_pipeline_schedules, class: 'form-control gl-form-input', min: 0
                 .form-group
                   = f.label :ci_needs_size_limit, plan_limit_setting_description(:ci_needs_size_limit)
-                  = f.number_field :ci_needs_size_limit, class: 'form-control gl-form-input'
+                  = f.number_field :ci_needs_size_limit, class: 'form-control gl-form-input', min: 0
                   .form-text.gl-text-subtle= s_('AdminSettings|This limit cannot be disabled. Set to 0 to block all job (needs) dependencies.')
                 .form-group
                   = f.label :ci_registered_group_runners, plan_limit_setting_description(:ci_registered_group_runners)
-                  = f.number_field :ci_registered_group_runners, class: 'form-control gl-form-input'
+                  = f.number_field :ci_registered_group_runners, class: 'form-control gl-form-input', min: 0
                 .form-group
                   = f.label :ci_registered_project_runners, plan_limit_setting_description(:ci_registered_project_runners)
-                  = f.number_field :ci_registered_project_runners, class: 'form-control gl-form-input'
+                  = f.number_field :ci_registered_project_runners, class: 'form-control gl-form-input', min: 0
                 .form-group
                   = f.label :pipeline_hierarchy_size, plan_limit_setting_description(:pipeline_hierarchy_size)
-                  = f.number_field :pipeline_hierarchy_size, class: 'form-control gl-form-input'
+                  = f.number_field :pipeline_hierarchy_size, class: 'form-control gl-form-input', min: 0
                 = f.submit s_('AdminSettings|Save %{name} limits').html_safe % { name: plan.name.capitalize }, pajamas_button: true

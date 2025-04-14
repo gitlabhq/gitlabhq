@@ -12,17 +12,17 @@ export async function initHiddenFilesWarning() {
     el,
     pinia,
     computed: {
-      ...mapState(useDiffsView, ['diffStats']),
+      ...mapState(useDiffsView, ['overflow', 'totalFilesCount']),
     },
     render(h) {
-      if (!this.diffStats?.renderOverflowWarning) return null;
+      if (!this.overflow) return null;
 
       return h(HiddenFilesWarning, {
         props: {
-          total: this.diffStats?.realSize,
-          visible: this.diffStats?.size,
-          plainDiffPath: this.diffStats?.plainDiffPath,
-          emailPatchPath: this.diffStats?.emailPatchPath,
+          total: this.totalFilesCount,
+          visible: this.overflow?.visibleCount,
+          plainDiffPath: this.overflow?.diffPath,
+          emailPatchPath: this.overflow?.emailPath,
         },
       });
     },

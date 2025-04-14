@@ -1,6 +1,6 @@
 - title: "Dependency Scanning for JavaScript vendored libraries"
   # The milestones for the deprecation announcement, and the removal.
-  removal_milestone: "18.0"
+  removal_milestone: "19.0"
   announcement_milestone: "17.9"
   # Change breaking_change to false if needed.
   breaking_change: true
@@ -15,7 +15,7 @@
   manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   body: |  # (required) Don't change this line.
     The [Dependency Scanning for JavaScript vendored libraries](https://docs.gitlab.com/user/application_security/dependency_scanning/#javascript) feature
-    provided by the Gemnasium analyzer for Dependency Scanning is deprecated in GitLab 17.9 and reaches end of support in GitLab 18.0.
+    provided by the Gemnasium analyzer for Dependency Scanning is deprecated in GitLab 17.9.
 
     While this functionality will continue to work when using the Gemnasium analyzer, it will not be available after migrating to the new Dependency Scanning analyzer.
     See details in [the migration guide](https://docs.gitlab.com/user/application_security/dependency_scanning/migration_guide_to_sbom_based_scans/)
@@ -31,7 +31,7 @@
 # 2) Mention `@gitlab-com/support` in this merge request.
 #
   # When support for this feature ends, in XX.YY milestone format.
-  end_of_support_milestone: 18.0
+  end_of_support_milestone:
   # Array of tiers the feature is currently available to,
   # like [Free, Silver, Gold, Core, Premium, Ultimate]
   tiers: Ultimate

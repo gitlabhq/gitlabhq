@@ -90,7 +90,8 @@ module Projects
         suggestion_commit_message: @project.suggestion_commit_message,
         merge_commit_template: @project.merge_commit_template,
         squash_commit_template: @project.squash_commit_template,
-        import_data: { data: { fork_branch: branch } }
+        import_data: { data: { fork_branch: branch } },
+        repository_storage: @project.repository_storage
       }
 
       if @project.avatar.present? && @project.avatar.image?
@@ -109,7 +110,13 @@ module Projects
     end
 
     def fork_network
-      @fork_network ||= @project.fork_network || @project.build_root_of_fork_network
+      @fork_network ||= @project.fork_network || build_fork_network
+    end
+
+    def build_fork_network
+      @project.build_root_of_fork_network.tap do |fork_network|
+        fork_network.organization = @project.organization
+      end
     end
 
     def build_fork_network_member(fork_to_project)

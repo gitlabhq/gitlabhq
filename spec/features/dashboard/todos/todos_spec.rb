@@ -21,6 +21,10 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :notifications do
 
   it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_todos_path, :todos
 
+  it_behaves_like 'page with product usage data collection banner' do
+    let(:page_path) { dashboard_todos_path }
+  end
+
   context 'when the todo references a merge request' do
     let(:referenced_mr) { create(:merge_request, source_project: project) }
     let(:note) { create(:note, project: project, note: "Check out #{referenced_mr.to_reference}", noteable: create(:issue, project: project)) }
@@ -380,7 +384,7 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :notifications do
     end
 
     it 'allows to change sort order and direction' do
-      # default sort is by `created_at` (desc)
+      # default sort is by `timestamp_coalesce(todos.snoozed_until, todos.created_at)` (desc)
       expect(page).to have_content(
         /#{newest_but_never_updated.target.title}.*#{middle_old_and_middle_updated.target.title}.*#{oldest_but_most_recently_updated.target.title}/
       )
@@ -392,7 +396,7 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :notifications do
       )
 
       # change order
-      click_on 'Created' # to open order dropdown
+      click_on 'Recommended' # to open order dropdown
       find('li', text: 'Updated').click # to change to `updated_at`
       expect(page).to have_content(
         /#{newest_but_never_updated.target.title}.*#{middle_old_and_middle_updated.target.title}.*#{oldest_but_most_recently_updated.target.title}/
@@ -460,60 +464,6 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :notifications do
         find_by_testid('filtered-search-term-input').click # Move focus away from the list
         expect(page).to have_content 'Not sure where to go next?' # Shows empty state
         expect(page).not_to have_content todo1.target.title
-      end
-    end
-  end
-
-  describe '"Mark all as done" button' do
-    it 'does not show' do
-      create_todo
-      visit dashboard_todos_path
-      expect(page).not_to have_content 'Mark all as done'
-    end
-
-    context 'with todos_bulk_actions feature disabled' do
-      before do
-        stub_feature_flags(todos_bulk_actions: false)
-      end
-
-      context 'with no pending todos' do
-        it 'does not show' do
-          visit dashboard_todos_path
-          expect(page).not_to have_content 'Mark all as done'
-        end
-      end
-
-      context 'with pending todos' do
-        let_it_be(:self_assigned) { create_todo(author: user, target: issue) }
-        let_it_be(:self_marked) { create_todo(author: user, target: issue2, action: :marked) }
-        let_it_be(:other_assigned) { create_todo(author: user2, target: issue3) }
-
-        context 'with no filters applied' do
-          it 'marks all pending todos as done' do
-            visit dashboard_todos_path
-            click_on 'Mark all as done'
-
-            expect(page).to have_content 'Not sure where to go next?'
-            within('.gl-toast') do
-              expect(page).to have_content 'Marked 3 to-dos as done'
-              find('a.gl-toast-action', text: 'Undo').click
-            end
-            expect(page).to have_content 'Restored 3 to-dos'
-            expect(page).to have_selector('ol[data-testid="todo-item-list"] > li', count: 3)
-          end
-        end
-
-        context 'with filters applied' do
-          it 'only marks the filtered todos as done' do
-            visit dashboard_todos_path(author_id: user.id)
-            click_on 'Mark all as done'
-
-            expect(page).to have_content 'Sorry, your filter produced no results'
-            click_on 'Clear'
-            expect(page).to have_selector('ol[data-testid="todo-item-list"] > li', count: 1)
-            expect(page).to have_content(other_assigned.author.name)
-          end
-        end
       end
     end
   end

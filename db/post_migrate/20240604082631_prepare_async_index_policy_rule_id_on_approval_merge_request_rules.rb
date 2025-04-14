@@ -7,7 +7,9 @@ class PrepareAsyncIndexPolicyRuleIdOnApprovalMergeRequestRules < Gitlab::Databas
 
   # TODO: Index to be created synchronously as part of https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155256
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- large tables
     prepare_async_index :approval_merge_request_rules, :approval_policy_rule_id, name: INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

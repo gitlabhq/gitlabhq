@@ -20,8 +20,6 @@ module Ci
         runner_manager = runner.runner_managers.find_by_system_xid!(system_id)
         runner_manager.destroy!
 
-        runner.clear_heartbeat if runner.runner_managers.empty?
-
         ServiceResponse.success
       end
 

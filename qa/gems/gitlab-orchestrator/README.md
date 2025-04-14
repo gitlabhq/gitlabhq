@@ -1,15 +1,17 @@
 # `orchestrator`
 
-`orchestrator` is a CLI tool that supports setting up and deploying [Cloud Native GitLab](https://gitlab.com/gitlab-org/build/CNG) builds
-using the official [GitLab Chart](https://gitlab.com/gitlab-org/charts/gitlab).
+`orchestrator` is a CLI tool that supports setting up and deploying:
+- [Cloud Native GitLab](https://gitlab.com/gitlab-org/build/CNG) using the official [GitLab Chart](https://gitlab.com/gitlab-org/charts/gitlab).
+- [Omnibus GitLab](https://docs.gitlab.com/install/docker/) instances using Docker.
 
 ## Usage
 
-`orchestrator` is internal gem so it is not published to [rubygems](https://rubygems.org/). Run `orchestrator` by prefixing commands with
-`bundle exec` within its directory.
+`orchestrator` is an internal gem; it is not published on [rubygems](https://rubygems.org/). Run `orchestrator` by prefixing commands with
+`bundle exec` within its directory, for example:
 
 ```shell
-$ bundle exec orchestrator
+$ bundle exec orchestrator help
+
 Commands:
   orchestrator create [SUBCOMMAND]   # Manage deployment related object creation
   orchestrator destroy [SUBCOMMAND]  # Manage deployment related object cleanup
@@ -18,6 +20,24 @@ Commands:
   orchestrator log [SUBCOMMAND]      # Manage deployment related logs
   orchestrator version               # Print orchestrator version
 ```
+
+### Example commands
+
+#### 1) Create a Cloud Native GitLab deployment (Helm-based)
+
+```shell
+$ bundle exec orchestrator create deployment kind
+```
+
+This command spins up a Kubernetes cluster using [kind](https://kind.sigs.k8s.io/) and deploys GitLab via the Helm chart.
+
+#### 2) Create a Docker-based GitLab Omnibus instance
+
+```shell
+$ bundle exec orchestrator create instance gitlab
+```
+
+This command launches a local container using the GitLab Docker image.
 
 ### Environment variables
 

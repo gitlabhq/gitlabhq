@@ -7,6 +7,7 @@ RSpec.describe 'Import multiple repositories by uploading a manifest file', :js,
   let(:group) { create(:group) }
 
   before do
+    stub_feature_flags(new_project_creation_form: false)
     stub_application_setting(import_sources: ['manifest'])
 
     sign_in(user)
@@ -33,6 +34,7 @@ RSpec.describe 'Import multiple repositories by uploading a manifest file', :js,
     page.within(second_row) do
       click_on 'Import'
     end
+    click_on 'Continue import'
 
     wait_for_requests
 

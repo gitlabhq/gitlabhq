@@ -243,10 +243,10 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
       it 'selects itself as a target project' do
         get :branch_to,
           params: {
-          namespace_id: project.namespace,
-          project_id: project,
-          ref: 'master'
-        }
+            namespace_id: project.namespace,
+            project_id: project,
+            ref: 'master'
+          }
 
         expect(assigns(:target_project)).to eq(project)
         expect(response).to have_gitlab_http_status(:ok)

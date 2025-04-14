@@ -6,7 +6,6 @@ import { scrollToElement } from '~/lib/utils/common_utils';
 import { slugify } from '~/lib/utils/text_utility';
 import { getLocationHash, setUrlParams } from '~/lib/utils/url_utility';
 import { BACK_URL_PARAM, CREATED_ASC } from '~/releases/constants';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { __, sprintf } from '~/locale';
@@ -32,7 +31,6 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     release: {
       type: Object,
@@ -131,7 +129,7 @@ export default {
     v-bind="$attrs"
     class="gl-mt-5"
     :is-highlighted="isHighlighted"
-    :class="{ 'bg-line-target-blue': isHighlighted }"
+    :class="{ '!gl-bg-feedback-info': isHighlighted }"
     data-testid="release-block"
   >
     <template #title>

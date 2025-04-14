@@ -137,8 +137,8 @@ RSpec.describe IssuableCollections do
 
       it 'mutates the search into a filter by iid' do
         is_expected.to include({
-            'iids' => '5',
-            'search' => nil
+          'iids' => '5',
+          'search' => nil
         })
       end
     end

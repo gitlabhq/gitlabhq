@@ -4,18 +4,9 @@ classes:
 - MergeRequestDiffDetail
 feature_categories:
 - geo_replication
-description: External MR diff replication detail
+description: Separate table for merge_request_diffs containing Geo verification metadata.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34248
 milestone: '13.4'
-gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: merge_request_diff_id
-        table: merge_request_diffs
-        sharding_key: project_id
-        belongs_to: merge_request_diff
+gitlab_schema: gitlab_main_cell_local
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/493768
 table_size: small
-desired_sharding_key_migration_job_name: BackfillMergeRequestDiffDetailsProjectId

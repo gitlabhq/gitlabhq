@@ -19,22 +19,21 @@
 }
 
 .note-button.add-diff-note {
+  @apply gl-bg-default gl-text-feedback-info;
   opacity: 0;
   will-change: opacity;
   border-radius: 50%;
-  background: $white;
   padding: 1px;
   font-size: 12px;
-  @apply gl-text-link;
-  border: 1px solid $blue-500;
+  border: 1px solid var(--gl-feedback-info-icon-color);
   width: 24px;
   height: 24px;
 
   &:hover,
   &.inverted {
-    background: $blue-500;
-    border-color: $blue-600;
-    color: $white;
+    @apply gl-text-default;
+    background: var(--gl-feedback-info-icon-color);
+    border-color: var(--gl-feedback-info-icon-color);
   }
 
   &:active {
@@ -42,16 +41,15 @@
   }
 
   &[disabled] {
-    background: $white;
-    border-color: $gray-200;
-    @apply gl-text-disabled;
+    @apply gl-bg-default gl-text-disabled;
+    border-color: var(--gl-text-color-disabled);
     cursor: not-allowed;
   }
 }
 
 .unified-diff-components-diff-note-button {
   &::before {
-    background-color: $blue-500;
+    background-color: var(--gl-feedback-info-icon-color);
     mask-image: url('icons-stacked.svg#comment');
     mask-repeat: no-repeat;
     mask-size: cover;
@@ -64,7 +62,7 @@
   &:hover:not([disabled]),
   &.inverted {
     &::before {
-      background-color: $white;
+      @apply gl-bg-default;
     }
   }
 }

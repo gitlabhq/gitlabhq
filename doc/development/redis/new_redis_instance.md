@@ -7,7 +7,7 @@ title: Add a new Redis instance
 
 GitLab can make use of multiple [Redis instances](../redis.md#redis-instances).
 These instances are functionally partitioned so that, for example, we
-can store [CI trace chunks](../../administration/cicd/job_logs.md#incremental-logging-architecture)
+can store [CI trace chunks](../../administration/cicd/job_logs.md#incremental-logging)
 from one Redis instance while storing sessions in another.
 
 From time to time we might want to add a new Redis instance. Typically this will

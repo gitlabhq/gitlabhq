@@ -220,14 +220,14 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
 
     describe 'my-reaction' do
       it 'filters', :aggregate_failures do
-        select_tokens 'My-Reaction', '=', AwardEmoji::THUMBS_UP, submit: true
+        select_tokens 'My reaction', '=', AwardEmoji::THUMBS_UP, submit: true
 
         expect(page).to have_css('.issue', count: 1)
         expect(page).to have_link(issue.title)
 
         click_button 'Clear'
 
-        select_tokens 'My-Reaction', '!=', AwardEmoji::THUMBS_UP, submit: true
+        select_tokens 'My reaction', '!=', AwardEmoji::THUMBS_UP, submit: true
 
         expect(page).to have_css('.issue', count: 2)
         expect(page).to have_link(incident.title)
@@ -235,7 +235,7 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
 
         click_button 'Clear'
 
-        select_tokens 'My-Reaction', '=', 'None', submit: true
+        select_tokens 'My reaction', '=', 'None', submit: true
 
         expect(page).to have_css('.issue', count: 2)
         expect(page).to have_link(incident.title)
@@ -243,7 +243,7 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
 
         click_button 'Clear'
 
-        select_tokens 'My-Reaction', '=', 'Any', submit: true
+        select_tokens 'My reaction', '=', 'Any', submit: true
 
         expect(page).to have_css('.issue', count: 1)
         expect(page).to have_link(issue.title)
@@ -252,7 +252,7 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
 
     describe 'search within' do
       it 'filters', :aggregate_failures do
-        select_tokens 'Search Within', 'Titles'
+        select_tokens 'Search within', 'Titles'
         send_keys 'eee', :enter, :enter
 
         expect(page).to have_css('.issue', count: 1)
@@ -260,7 +260,7 @@ RSpec.describe 'Work items list filters', :js, feature_category: :team_planning 
 
         click_button 'Clear'
 
-        select_tokens 'Search Within', 'Descriptions'
+        select_tokens 'Search within', 'Descriptions'
         send_keys 'aaa', :enter, :enter
 
         expect(page).to have_css('.issue', count: 1)

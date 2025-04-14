@@ -5,6 +5,8 @@ module Gitlab
     # Class for parsing Git attribute files and extracting the attributes for
     # file patterns.
     class AttributesParser
+      include Gitlab::Utils::StrongMemoize
+
       def initialize(attributes_data = "")
         @data = attributes_data || ""
       end
@@ -91,6 +93,11 @@ module Gitlab
 
       private
 
+      def attribute_parser_fix_enabled?
+        Feature.enabled?(:attribute_parser_fix, Feature.current_request)
+      end
+      strong_memoize_attr :attribute_parser_fix_enabled?
+
       # Parses the Git attributes file contents.
       def parse_data
         pairs = []
@@ -103,7 +110,13 @@ module Gitlab
 
           parsed = attrs ? parse_attributes(attrs) : {}
 
-          absolute_pattern = File.join('/', pattern)
+          absolute_pattern =
+            if attribute_parser_fix_enabled?
+              pattern.starts_with?('/') ? pattern : File.join('**/', pattern)
+            else
+              File.join('/', pattern)
+            end
+
           pairs << [absolute_pattern, parsed]
         end
 

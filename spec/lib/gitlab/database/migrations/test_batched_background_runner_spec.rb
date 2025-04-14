@@ -102,8 +102,10 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
         let(:interval) { 5.minutes }
         let(:params) { { version: nil, connection: connection } }
         let(:migration_name) { 'CopyColumnUsingBackgroundMigrationJob' }
-        let(:migration_file_path) { result_dir.join('CopyColumnUsingBackgroundMigrationJob', 'details.json') }
+        let(:migration_result_dir) { result_dir.join(migration_name) }
+        let(:migration_file_path) {  migration_result_dir.join('details.json') }
         let(:json_file) { Gitlab::Json.parse(File.read(migration_file_path)) }
+
         let(:expected_file_keys) { %w[interval total_tuple_count max_batch_size] }
 
         before do
@@ -148,6 +150,20 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
           subject
 
           expect(json_file.keys).to match_array(expected_file_keys)
+        end
+
+        it 'writes batch details to a file for each batch' do
+          subject
+
+          Gitlab::Database::SharedModel.using_connection(connection) do
+            migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_by!(job_class_name: migration_name)
+            migration.batched_jobs.order(:id).find_each.each_with_index do |job, idx|
+              path = migration_result_dir.join("batch_#{idx + 1}", "batch-details.json")
+              details = Gitlab::Json.parse(File.read(path))
+              expect(details['min_value']).to eq(job.min_value)
+              expect(details['max_value']).to eq(job.max_value)
+            end
+          end
         end
       end
 
@@ -349,7 +365,9 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
       end
 
       context 'running a real background migration' do
-        let(:migration_file_path) { result_dir.join(background_migration_job_class.name.demodulize, 'details.json') }
+        let(:migration_name) { background_migration_job_class.name.demodulize }
+        let(:migration_result_dir) { result_dir.join(migration_name) }
+        let(:migration_file_path) { migration_result_dir.join('details.json') }
         let(:json_file) { Gitlab::Json.parse(File.read(migration_file_path)) }
         let(:params) { { version: nil, connection: connection } }
         let(:expected_file_keys) { %w[interval total_tuple_count max_batch_size] }
@@ -384,6 +402,20 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
           subject
 
           expect(json_file.keys).to match_array(expected_file_keys)
+        end
+
+        it 'writes batch details to a file for each batch' do
+          subject
+
+          Gitlab::Database::SharedModel.using_connection(connection) do
+            migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_by!(job_class_name: migration_name)
+            migration.batched_jobs.order(:id).find_each.each_with_index do |job, idx|
+              path = migration_result_dir.join("batch_#{idx + 1}", "batch-details.json")
+              details = Gitlab::Json.parse(File.read(path))
+              expect(details['min_cursor']).to eq(job.min_cursor)
+              expect(details['max_cursor']).to eq(job.max_cursor)
+            end
+          end
         end
       end
     end

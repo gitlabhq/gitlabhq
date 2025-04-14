@@ -70,3 +70,41 @@
           = s_('ClusterIntegration|Enter a unique name for your new GitLab Agent. This name will be used to identify the agent in your project.')
 
       = f.submit s_('ClusterIntegration|Create agent and migrate'), pajamas_button: true
+
+  %h5.gl-mt-6= s_('ClusterIntegration|Step 2. Migrate your environments')
+
+  - migration_issue = cluster_migration&.issue
+  - if migration_issue.present?
+    %p.gl-font-bold.gl-mb-2
+      = s_('ClusterIntegration|Migration issue')
+    %p.gl-flex.gl-flex-wrap.gl-items-center.gl-gap-3
+      - issue_link_name = "#{migration_issue.title} (##{migration_issue.id})"
+      - issue_project = Project.find(migration_issue.project_id)
+      = link_to issue_link_name, project_issue_path(issue_project, migration_issue)
+
+      - is_opened = migration_issue.state == 'opened'
+      - issue_state_variant = is_opened ? :success : :info
+      - issue_state_icon = is_opened ? 'issue-open-m' : 'issue-close'
+      - issue_state_text = is_opened ? _('Open') : _('Closed')
+      = render Pajamas::BadgeComponent.new(issue_state_text,
+        variant: issue_state_variant,
+        icon: issue_state_icon)
+
+      - completion = migration_issue.task_completion_status
+      - completion_count = completion[:count].is_a?(Numeric) ? completion[:count] : 0
+      - if completion_count > 0
+        %span
+          = sprite_icon('task-done')
+          #{completion[:completed_count]}/#{completion[:count]}
+
+  - else
+    = gitlab_ui_form_for cluster_migration, url: clusterable.update_cluster_migration_path(@cluster), html: { class: 'fieldset-form' }, method: :put do |f|
+      .form-group.-gl-mt-2{ class: 'md:gl-w-1/2' }
+        = f.label :issue_url, s_('ClusterIntegration|Migration issue'), class: 'label-bold'
+        = f.text_field :issue_url, name: 'cluster_migration[issue_url]', class: 'form-control gl-form-input', placeholder: s_('ClusterIntegration|Migration issue URL'), disabled: !agent.present?
+        .form-text.gl-text-subtle
+          = s_('ClusterIntegration|To track migration progress, create an issue and enter the issue URL.')
+
+      - tooltip_title = agent.present? ? nil : s_('ClusterIntegration|You must connect the agent before you can save a migration issue.')
+      .gl-inline-block{ data: { toggle: 'tooltip', placement: 'top', container: 'body', title: tooltip_title } }
+        = f.submit s_('ClusterIntegration|Save migration issue'), pajamas_button: true, disabled: !agent.present?

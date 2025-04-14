@@ -12,7 +12,7 @@ title: Groups API
 
 {{< /details >}}
 
-Use the Groups API to list and manage GitLab groups through REST API calls. For more information, see [groups](../user/group/_index.md).
+Use this API to view and manage GitLab groups. For more information, see [groups](../user/group/_index.md).
 
 Endpoint responses might vary based on the [permissions](../user/permissions.md) of the authenticated user in the group.
 
@@ -375,7 +375,7 @@ When the parameter `statistics=true` is used and the authenticated user is an ad
 
 - `container_registry_size_is_estimated`: Indicates whether the size is an exact calculation based on actual data from all repositories (`false`) or estimated due to performance constraints (`true`).
 
-For self-managed instances, the [container registry metadata database](../administration/packages/container_registry_metadata_database.md) must be enabled to include the container registry size attributes.
+For GitLab Self-Managed instances, the [container registry metadata database](../administration/packages/container_registry_metadata_database.md) must be enabled to include the container registry size attributes.
 
 ```json
 [

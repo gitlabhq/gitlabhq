@@ -40,7 +40,7 @@ module ProfilesHelper
 
   # Overridden in EE::ProfilesHelper#ssh_key_expiration_tooltip
   def ssh_key_expiration_tooltip(key)
-    return key.errors.full_messages.join(', ') if key.errors.full_messages.any?
+    key.errors.full_messages.join(', ') if key.errors.full_messages.any?
   end
 
   # Overridden in EE::ProfilesHelper#ssh_key_expires_field_description

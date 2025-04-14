@@ -7,5 +7,6 @@ feature_categories:
 description: Stores routes for redirect after changing the path to group or project
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/11136
 milestone: '9.2'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main_cell
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514146
 table_size: small

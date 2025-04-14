@@ -157,6 +157,38 @@ The modules that can be configured for logging are as follows:
 | `WEBGW`    | Used to log messages sent to the target application when running active checks.                   |
 | `SCOPE`    | Used to log messages related to [scope management](configuration/customize_settings.md#managing-scope). |
 
+### SECURE_LOG_LEVEL
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/524632) in GitLab 17.11.
+
+{{< /history >}}
+
+As a simpler alternative to configuring log modules with `DAST_LOG_FILE_CONFIG`, you can set `SECURE_LOG_LEVEL`:
+
+- To any of the [supported log levels](#log-levels). 
+  When you do this, the specified level becomes the default log level in the log file for all modules.
+- To `debug` or `trace` to enable the [auth report](configuration/authentication.md#configure-the-authentication-report).
+- To `trace` to enable [DevTools logging](#chromium-devtools-logging).
+
+For example:
+
+```yaml
+include:
+  - template: DAST.gitlab-ci.yml
+
+dast:
+  variables:
+    SECURE_LOG_LEVEL: "trace"
+    # is equivalent to:
+    # DAST_LOG_FILE_CONFIG: "loglevel:trace"
+    # DAST_LOG_DEVTOOLS_CONFIG: "Default:messageAndBody,truncate:2000" 
+    # DAST_AUTH_REPORT: "true"
+```
+
+Settings from `DAST_LOG_FILE_CONFIG`, `DAST_LOG_DEVTOOLS_CONFIG`, `DAST_AUTH_REPORT` override the settings from `SECURE_LOG_LEVEL`.
+
 ### Example - log crawled paths
 
 Set the log module `CRAWL` to `DEBUG` to log navigation paths found during the crawl phase of the scan. This is useful for understanding

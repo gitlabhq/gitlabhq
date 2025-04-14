@@ -21,8 +21,13 @@ RSpec.shared_examples 'WikiPages::DestroyService#execute' do |container_type|
 
     subject(:track_event) { service.execute(page) }
 
-    it_behaves_like 'internal event tracking' do
-      let(:event) { 'delete_wiki_page' }
+    it "triggers an internal event" do
+      expect { track_event }.to trigger_internal_events('delete_wiki_page').with(
+        category: 'InternalEventTracking',
+        user: user,
+        project: project,
+        namespace: namespace
+      )
     end
 
     context 'with group container', if: container_type == :group do
@@ -40,10 +45,14 @@ RSpec.shared_examples 'WikiPages::DestroyService#execute' do |container_type|
     context 'when the deleted page is a template' do
       let(:page) { create(:wiki_page, title: "#{Wiki::TEMPLATES_DIR}/foobar") }
 
-      it_behaves_like 'internal event tracking' do
-        let(:event) { 'delete_wiki_page' }
-        let(:label) { 'template' }
-        let(:property) { 'markdown' }
+      it "triggers an internal event" do
+        expect { track_event }.to trigger_internal_events('delete_wiki_page').with(
+          category: 'InternalEventTracking',
+          user: user,
+          project: project,
+          namespace: namespace,
+          additional_properties: { label: 'template', property: 'markdown' }
+        )
       end
     end
   end

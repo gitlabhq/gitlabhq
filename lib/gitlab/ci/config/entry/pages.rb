@@ -22,7 +22,7 @@ module Gitlab
 
             with_options allow_nil: true do
               validates :path_prefix, type: String
-              validates :expire_in, duration: { parser: ::Gitlab::Ci::Build::DurationParser }
+              validates :expire_in, duration: { parser: ::Gitlab::Ci::Build::DurationParser, variable: true }
               validates :publish, type: String
             end
           end

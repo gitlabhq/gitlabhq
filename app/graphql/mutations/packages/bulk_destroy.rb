@@ -5,7 +5,7 @@ module Mutations
     class BulkDestroy < ::Mutations::BaseMutation
       graphql_name 'DestroyPackages'
 
-      MAX_PACKAGES = 20
+      MAX_PACKAGES = 100
       TOO_MANY_IDS_ERROR = "Cannot delete more than #{MAX_PACKAGES} packages"
 
       argument :ids,

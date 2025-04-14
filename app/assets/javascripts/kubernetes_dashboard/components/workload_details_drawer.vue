@@ -41,6 +41,8 @@ export default {
     onDeletePod(pod) {
       this.$emit('delete-pod', pod);
     },
+    // This method is triggered from outside of the component
+    // eslint-disable-next-line vue/no-unused-properties
     toggle(item, section) {
       if (!isEqual(item, this.selectedItem)) {
         this.open(item, section);

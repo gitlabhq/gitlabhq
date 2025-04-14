@@ -34,7 +34,7 @@
   .markdown-code-block pre.code {
     padding: $gl-padding-8 $input-horizontal-padding;
     margin: 0 0 $gl-padding-8;
-    border: 1px solid $gray-100;
+    border: 1px solid $gl-border-color-default;
     border-radius: $border-radius-small;
   }
 }

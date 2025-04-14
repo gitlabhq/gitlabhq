@@ -30,9 +30,10 @@
 #     not_aimed_for_deletion: boolean
 #     full_paths: string[]
 #     organization: Scope the groups to the Organizations::Organization
+#     current_organization: Organizations::Organization - The current organization from the request
 #     language: int
 #     language_name: string
-#
+#     active: boolean - Whether to include projects that are not archived.
 class ProjectsFinder < UnionFinder
   include CustomAttributesFilter
   include UpdatedAtFilter
@@ -57,10 +58,6 @@ class ProjectsFinder < UnionFinder
       else
         init_collection
       end
-
-    if Feature.enabled?(:hide_projects_of_banned_users)
-      collection = without_created_and_owned_by_banned_user(collection)
-    end
 
     use_cte = params.delete(:use_cte)
     collection = Project.wrap_with_cte(collection) if use_cte
@@ -91,6 +88,7 @@ class ProjectsFinder < UnionFinder
     collection = by_topics(collection)
     collection = by_topic_id(collection)
     collection = by_search(collection)
+    collection = by_active(collection)
     collection = by_archived(collection)
     collection = by_custom_attributes(collection)
     collection = by_not_aimed_for_deletion(collection)
@@ -206,7 +204,7 @@ class ProjectsFinder < UnionFinder
 
     topics = params[:topic].instance_of?(String) ? params[:topic].split(',') : params[:topic]
     topics.map(&:strip).uniq.reject(&:empty?).each do |topic|
-      items = items.with_topic_by_name(topic)
+      items = items.with_topic_by_name_and_organization_id(topic, topic_organization_ids)
     end
 
     items
@@ -215,7 +213,7 @@ class ProjectsFinder < UnionFinder
   def by_topic_id(items)
     return items unless params[:topic_id].present?
 
-    topic = Projects::Topic.find_by(id: params[:topic_id]) # rubocop: disable CodeReuse/ActiveRecord
+    topic = Projects::Topic.find_by_id_and_organization_id(params[:topic_id], topic_organization_ids)
     return Project.none unless topic
 
     items.with_topic(topic)
@@ -293,16 +291,35 @@ class ProjectsFinder < UnionFinder
     items.in_organization(organization)
   end
 
+  def by_active(items)
+    return items if params[:active].nil?
+
+    params[:active] ? active(items) : inactive(items)
+  end
+
+  def active(items)
+    items.non_archived
+  end
+
+  def inactive(items)
+    items.archived
+  end
+
   def finder_params
     return {} unless min_access_level?
 
     { min_access_level: params[:min_access_level] }
   end
 
-  def without_created_and_owned_by_banned_user(projects)
-    return projects if current_user&.can?(:admin_all_resources)
-
-    projects.without_created_and_owned_by_banned_user
+  # Returns the available organizations to filter topics
+  def topic_organization_ids
+    @topic_organization_ids ||= begin
+      organization_ids = []
+      organization_ids << current_user.organization_ids if current_user
+      organization_ids << params[:organization].id if params[:organization]
+      organization_ids << params[:current_organization].id if params[:current_organization]
+      organization_ids.flatten.uniq.compact
+    end
   end
 end
 

@@ -7,7 +7,7 @@ module Authn
         RANDOM_BYTES_LENGTH = 16
         BASE64_PAYLOAD_LENGTH_HOLDER_BYTES = 2
         CRC_BYTES = 7
-        VALID_ROUTING_KEYS = %i[c g o p u].freeze
+        VALID_ROUTING_KEYS = %i[c g o p u t].freeze
         REQUIRED_ROUTING_KEYS = %i[o].freeze
         MAXIMUM_SIZE_OF_ROUTING_PAYLOAD = 159
         DEFAULT_ROUTING_PAYLOAD_HASH =

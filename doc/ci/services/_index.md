@@ -269,33 +269,15 @@ test:
 
 ## Available settings for `services`
 
-{{< history >}}
-
-- Introduced in GitLab and GitLab Runner 9.4.
-
-{{< /history >}}
-
-| Setting                           | Required                             | GitLab version | Description                                                                                                                                                                                                                                                                                                                         |
-|-----------------------------------|--------------------------------------|----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `name`                            | yes, when used with any other option | 9.4            | Full name of the image to use. If the full image name includes a registry hostname, use the `alias` option to define a shorter service access name. For more information, see [Accessing the services](#accessing-the-services).                                                                                                    |
-| `entrypoint`                      | no                                   | 9.4            | Command or script to execute as the container's entrypoint. It's translated to the Docker `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`](https://docs.docker.com/reference/dockerfile/#entrypoint) directive, where each shell token is a separate string in the array. |
-| `command`                         | no                                   | 9.4            | Command or script that should be used as the container's command. It's translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`](https://docs.docker.com/reference/dockerfile/#cmd) directive, where each shell token is a separate string in the array.                     |
-| `alias` <sup>1</sup> <sup>3</sup> | no                                   | 9.4            | Additional aliases to access the service from the job's container. Multiple aliases can be separated by spaces or commas. For more information, see [Accessing the services](#accessing-the-services).                                                                                                                              |
-| `variables` <sup>2</sup>          | no                                   | 14.5           | Additional environment variables that are passed exclusively to the service. The syntax is the same as [Job Variables](../variables/_index.md). Service variables cannot reference themselves.                                                                                                                                      |
-
-**Footnotes:**
-
-1. Alias support for the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2229) in GitLab Runner 12.8, and is only available for Kubernetes version 1.7 or later.
-1. Service variables support for the Docker and the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3158) in GitLab Runner 14.8.
-1. Use alias as a container name for the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421131) in GitLab Runner 17.9. For more information, see [Configuring the service containers name with the Kubernetes executor](#using-aliases-as-service-container-names-for-the-kubernetes-executor).
+| Setting      | Required                             | GitLab version | Description |
+|--------------|--------------------------------------|----------------|-------------|
+| `name`       | yes, when used with any other option | 9.4            | Full name of the image to use. If the full image name includes a registry hostname, use the `alias` option to define a shorter service access name. For more information, see [Accessing the services](#accessing-the-services). |
+| `entrypoint` | no                                   | 9.4            | Command or script to execute as the container's entrypoint. It's translated to the Docker `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`](https://docs.docker.com/reference/dockerfile/#entrypoint) directive, where each shell token is a separate string in the array. |
+| `command`    | no                                   | 9.4            | Command or script that should be used as the container's command. It's translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`](https://docs.docker.com/reference/dockerfile/#cmd) directive, where each shell token is a separate string in the array. |
+| `alias`      | no                                   | 9.4            | Additional aliases to access the service from the job's container. Multiple aliases can be separated by spaces or commas. For more information, see [Accessing the services](#accessing-the-services). Using alias as a container name for the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421131) in GitLab Runner 17.9. For more information, see [Configuring the service containers name with the Kubernetes executor](#using-aliases-as-service-container-names-for-the-kubernetes-executor). |
+| `variables`  | no                                   | 14.5           | Additional environment variables that are passed exclusively to the service. The syntax is the same as [Job Variables](../variables/_index.md). Service variables cannot reference themselves. |
 
 ## Starting multiple services from the same image
-
-{{< history >}}
-
-- Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended configuration options](../docker/using_docker_images.md#extended-docker-configuration-options).
-
-{{< /history >}}
 
 Before the new extended Docker configuration options, the following configuration
 would not work properly:
@@ -327,12 +309,6 @@ however now each of them are also accessible with the alias configured
 in `.gitlab-ci.yml` file.
 
 ## Setting a command for the service
-
-{{< history >}}
-
-- Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended configuration options](../docker/using_docker_images.md#extended-docker-configuration-options).
-
-{{< /history >}}
 
 Let's assume you have a `super/sql:latest` image with some SQL database
 in it. You would like to use it as a service for your job. Let's also

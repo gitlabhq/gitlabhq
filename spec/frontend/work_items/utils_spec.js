@@ -11,15 +11,15 @@ import {
   WORK_ITEM_TYPE_ENUM_TASK,
   WORK_ITEM_TYPE_ENUM_TEST_CASE,
   WORK_ITEM_TYPE_ENUM_TICKET,
-  WORK_ITEM_TYPE_VALUE_EPIC,
-  WORK_ITEM_TYPE_VALUE_INCIDENT,
-  WORK_ITEM_TYPE_VALUE_ISSUE,
-  WORK_ITEM_TYPE_VALUE_KEY_RESULT,
-  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-  WORK_ITEM_TYPE_VALUE_REQUIREMENTS,
-  WORK_ITEM_TYPE_VALUE_TASK,
-  WORK_ITEM_TYPE_VALUE_TEST_CASE,
-  WORK_ITEM_TYPE_VALUE_TICKET,
+  WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_INCIDENT,
+  WORK_ITEM_TYPE_NAME_ISSUE,
+  WORK_ITEM_TYPE_NAME_KEY_RESULT,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_REQUIREMENTS,
+  WORK_ITEM_TYPE_NAME_TASK,
+  WORK_ITEM_TYPE_NAME_TEST_CASE,
+  WORK_ITEM_TYPE_NAME_TICKET,
 } from '~/work_items/constants';
 import {
   autocompleteDataSources,
@@ -38,6 +38,7 @@ import {
   formatSelectOptionForCustomField,
   preserveDetailsState,
   getParentGroupName,
+  createBranchMRApiPathHelper,
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
@@ -70,6 +71,13 @@ describe('autocompleteDataSources', () => {
         '/foobar/project/group/-/autocomplete_sources/milestones?type=WorkItem&work_item_type_id=2',
       iterations:
         '/foobar/project/group/-/autocomplete_sources/iterations?type=WorkItem&work_item_type_id=2',
+      contacts:
+        '/foobar/project/group/-/autocomplete_sources/contacts?type=WorkItem&work_item_type_id=2',
+      snippets:
+        '/foobar/project/group/-/autocomplete_sources/snippets?type=WorkItem&work_item_type_id=2',
+      vulnerabilities:
+        '/foobar/project/group/-/autocomplete_sources/vulnerabilities?type=WorkItem&work_item_type_id=2',
+      wikis: '/foobar/project/group/-/autocomplete_sources/wikis?type=WorkItem&work_item_type_id=2',
     });
   });
 
@@ -84,6 +92,11 @@ describe('autocompleteDataSources', () => {
       epics: '/foobar/project/group/-/autocomplete_sources/epics?type=WorkItem&type_id=2',
       milestones: '/foobar/project/group/-/autocomplete_sources/milestones?type=WorkItem&type_id=2',
       iterations: '/foobar/project/group/-/autocomplete_sources/iterations?type=WorkItem&type_id=2',
+      contacts: '/foobar/project/group/-/autocomplete_sources/contacts?type=WorkItem&type_id=2',
+      snippets: '/foobar/project/group/-/autocomplete_sources/snippets?type=WorkItem&type_id=2',
+      vulnerabilities:
+        '/foobar/project/group/-/autocomplete_sources/vulnerabilities?type=WorkItem&type_id=2',
+      wikis: '/foobar/project/group/-/autocomplete_sources/wikis?type=WorkItem&type_id=2',
     });
   });
 
@@ -111,6 +124,9 @@ describe('autocompleteDataSources', () => {
         '/foobar/groups/group/-/autocomplete_sources/milestones?type=WorkItem&work_item_type_id=2',
       iterations:
         '/foobar/groups/group/-/autocomplete_sources/iterations?type=WorkItem&work_item_type_id=2',
+      vulnerabilities:
+        '/foobar/groups/group/-/autocomplete_sources/vulnerabilities?type=WorkItem&work_item_type_id=2',
+      wikis: '/foobar/groups/group/-/autocomplete_sources/wikis?type=WorkItem&work_item_type_id=2',
     });
   });
 
@@ -131,6 +147,9 @@ describe('autocompleteDataSources', () => {
       epics: '/foobar/groups/group/-/autocomplete_sources/epics?type=WorkItem&type_id=2',
       milestones: '/foobar/groups/group/-/autocomplete_sources/milestones?type=WorkItem&type_id=2',
       iterations: '/foobar/groups/group/-/autocomplete_sources/iterations?type=WorkItem&type_id=2',
+      vulnerabilities:
+        '/foobar/groups/group/-/autocomplete_sources/vulnerabilities?type=WorkItem&type_id=2',
+      wikis: '/foobar/groups/group/-/autocomplete_sources/wikis?type=WorkItem&type_id=2',
     });
   });
 });
@@ -189,16 +208,16 @@ describe('newWorkItemPath', () => {
 
 describe('convertTypeEnumToName', () => {
   it.each`
-    name                                 | enumValue
-    ${WORK_ITEM_TYPE_VALUE_EPIC}         | ${WORK_ITEM_TYPE_ENUM_EPIC}
-    ${WORK_ITEM_TYPE_VALUE_INCIDENT}     | ${WORK_ITEM_TYPE_ENUM_INCIDENT}
-    ${WORK_ITEM_TYPE_VALUE_ISSUE}        | ${WORK_ITEM_TYPE_ENUM_ISSUE}
-    ${WORK_ITEM_TYPE_VALUE_KEY_RESULT}   | ${WORK_ITEM_TYPE_ENUM_KEY_RESULT}
-    ${WORK_ITEM_TYPE_VALUE_OBJECTIVE}    | ${WORK_ITEM_TYPE_ENUM_OBJECTIVE}
-    ${WORK_ITEM_TYPE_VALUE_REQUIREMENTS} | ${WORK_ITEM_TYPE_ENUM_REQUIREMENTS}
-    ${WORK_ITEM_TYPE_VALUE_TASK}         | ${WORK_ITEM_TYPE_ENUM_TASK}
-    ${WORK_ITEM_TYPE_VALUE_TEST_CASE}    | ${WORK_ITEM_TYPE_ENUM_TEST_CASE}
-    ${WORK_ITEM_TYPE_VALUE_TICKET}       | ${WORK_ITEM_TYPE_ENUM_TICKET}
+    name                                | enumValue
+    ${WORK_ITEM_TYPE_NAME_EPIC}         | ${WORK_ITEM_TYPE_ENUM_EPIC}
+    ${WORK_ITEM_TYPE_NAME_INCIDENT}     | ${WORK_ITEM_TYPE_ENUM_INCIDENT}
+    ${WORK_ITEM_TYPE_NAME_ISSUE}        | ${WORK_ITEM_TYPE_ENUM_ISSUE}
+    ${WORK_ITEM_TYPE_NAME_KEY_RESULT}   | ${WORK_ITEM_TYPE_ENUM_KEY_RESULT}
+    ${WORK_ITEM_TYPE_NAME_OBJECTIVE}    | ${WORK_ITEM_TYPE_ENUM_OBJECTIVE}
+    ${WORK_ITEM_TYPE_NAME_REQUIREMENTS} | ${WORK_ITEM_TYPE_ENUM_REQUIREMENTS}
+    ${WORK_ITEM_TYPE_NAME_TASK}         | ${WORK_ITEM_TYPE_ENUM_TASK}
+    ${WORK_ITEM_TYPE_NAME_TEST_CASE}    | ${WORK_ITEM_TYPE_ENUM_TEST_CASE}
+    ${WORK_ITEM_TYPE_NAME_TICKET}       | ${WORK_ITEM_TYPE_ENUM_TICKET}
   `('returns %name when given the enum %enumValue', ({ name, enumValue }) => {
     expect(convertTypeEnumToName(enumValue)).toBe(name);
   });
@@ -456,5 +475,69 @@ describe('preserveDetailsState', () => {
       <details open="true"><summary>Test 1</summary><p>Content 1</p></details>
       <details><summary>Test 2</summary><p>Content 2</p></details>
     `);
+  });
+});
+
+describe('createBranch', () => {
+  it('returns a "create branch" path when given fullPath', () => {
+    expect(createBranchMRApiPathHelper.createBranch('myGroup/myProject')).toBe(
+      '/myGroup/myProject/-/branches',
+    );
+  });
+});
+
+describe('createMR', () => {
+  const fullPath = 'gitlab-org/gitlab';
+  const workItemIID = '12';
+  const sourceBranch = '12-fix';
+  const targetBranch = 'main';
+
+  it('returns MR url with target branch', () => {
+    const path = createBranchMRApiPathHelper.createMR({
+      fullPath,
+      workItemIid: workItemIID,
+      sourceBranch,
+      targetBranch,
+    });
+    expect(path).toBe(
+      '/gitlab-org/gitlab/-/merge_requests/new?merge_request%5Bissue_iid%5D=12&merge_request%5Bsource_branch%5D=12-fix&merge_request%5Btarget_branch%5D=main',
+    );
+  });
+
+  it('returns MR url without target branch', () => {
+    const path = createBranchMRApiPathHelper.createMR({
+      fullPath,
+      workItemIid: workItemIID,
+      sourceBranch,
+    });
+    expect(path).toBe(
+      '/gitlab-org/gitlab/-/merge_requests/new?merge_request%5Bissue_iid%5D=12&merge_request%5Bsource_branch%5D=12-fix',
+    );
+  });
+
+  it('returns MR url with relative url', () => {
+    gon.relative_url_root = '/foobar';
+
+    const path = createBranchMRApiPathHelper.createMR({
+      fullPath,
+      workItemIid: workItemIID,
+      sourceBranch,
+    });
+    expect(path).toBe(
+      '/foobar/gitlab-org/gitlab/-/merge_requests/new?merge_request%5Bissue_iid%5D=12&merge_request%5Bsource_branch%5D=12-fix',
+    );
+  });
+
+  it('returns url with encoded branch names', () => {
+    const path = createBranchMRApiPathHelper.createMR({
+      fullPath,
+      workItemIid: workItemIID,
+      sourceBranch: 'source-branch#1',
+      targetBranch: 'target-branch#1',
+    });
+
+    expect(path).toBe(
+      '/gitlab-org/gitlab/-/merge_requests/new?merge_request%5Bissue_iid%5D=12&merge_request%5Bsource_branch%5D=source-branch%231&merge_request%5Btarget_branch%5D=target-branch%231',
+    );
   });
 });

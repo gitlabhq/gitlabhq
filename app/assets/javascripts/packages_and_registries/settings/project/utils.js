@@ -5,6 +5,7 @@ import {
   OLDER_THAN_OPTIONS,
   KEEP_N_DUPLICATED_PACKAGE_FILES_FIELDNAME,
   KEEP_N_DUPLICATED_PACKAGE_FILES_OPTIONS,
+  MinimumAccessLevelText,
 } from './constants';
 
 export const findDefaultOption = (options) => {
@@ -33,4 +34,8 @@ export const formOptionsGenerator = () => {
     keepN: optionLabelGenerator(KEEP_N_OPTIONS, keepNTranslationGenerator),
     [KEEP_N_DUPLICATED_PACKAGE_FILES_FIELDNAME]: KEEP_N_DUPLICATED_PACKAGE_FILES_OPTIONS,
   };
+};
+
+export const getAccessLevelLabel = (level) => {
+  return MinimumAccessLevelText[level];
 };

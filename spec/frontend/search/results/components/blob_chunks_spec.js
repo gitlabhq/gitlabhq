@@ -34,10 +34,7 @@ describe('BlobChunks', () => {
   const findGlLink = () => wrapper.findAllComponents(GlLink);
   const findLine = () => wrapper.findAllByTestId('search-blob-line');
   const findLineNumbers = () => wrapper.findAllByTestId('search-blob-line-numbers');
-  const findNonHighlightedLineCode = () =>
-    wrapper.findAllByTestId('search-blob-line-code-non-highlighted');
-  const findHighlightedLineCode = () =>
-    wrapper.findAllByTestId('search-blob-line-code-highlighted');
+  const findHighlightedLineCode = () => wrapper.findAllByTestId('search-blob-line-code');
   const findBlameLink = () =>
     findGlLink().wrappers.filter(
       (w) => w.attributes('data-testid') === 'search-blob-line-blame-link',
@@ -47,14 +44,16 @@ describe('BlobChunks', () => {
 
   describe('when initial render', () => {
     beforeEach(() => {
+      const mockHighlightedText = 'test test test';
+      jest.spyOn(BlobChunks.methods, 'codeHighlighting').mockResolvedValue(mockHighlightedText);
+      isUnsupportedLanguage.mockReturnValue(true);
       createComponent(mockDataForBlobChunk);
     });
 
     it('renders default state', () => {
       expect(findLine()).toHaveLength(4);
       expect(findLineNumbers()).toHaveLength(4);
-      expect(findNonHighlightedLineCode()).toHaveLength(4);
-      expect(findHighlightedLineCode()).toHaveLength(0);
+      expect(findHighlightedLineCode()).toHaveLength(4);
       expect(findGlLink()).toHaveLength(8);
       expect(findGlIcon()).toHaveLength(4);
     });
@@ -119,11 +118,10 @@ describe('BlobChunks', () => {
       });
 
       it('sets line text directly when language is unsupported', () => {
-        const lineElements = wrapper.findAllByTestId('search-blob-line-code-non-highlighted');
+        const lineElements = wrapper.findAllByTestId('search-blob-line-code');
 
         expect(lineElements.exists()).toBe(true);
-        expect(wrapper.vm.lines[0].text).toBe(mockHighlightedText);
-        expect(wrapper.vm.lines[0].richText).toBeNull();
+        expect(wrapper.vm.lines[0].richText).toBe(mockHighlightedText);
       });
     });
 
@@ -140,11 +138,10 @@ describe('BlobChunks', () => {
       });
 
       it('sets richText when language is supported', () => {
-        const lineElements = wrapper.findAllByTestId('search-blob-line-code-highlighted');
+        const lineElements = wrapper.findAllByTestId('search-blob-line-code');
 
         expect(lineElements.exists()).toBe(true);
         expect(wrapper.vm.lines[0].richText).toBe(mockHighlightedText);
-        expect(wrapper.vm.lines[0].text).not.toBe(mockHighlightedText);
       });
     });
   });

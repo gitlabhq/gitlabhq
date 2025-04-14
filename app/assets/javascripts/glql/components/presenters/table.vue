@@ -1,10 +1,11 @@
 <script>
 import { GlIcon, GlLink, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import { __ } from '~/locale';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import Sorter from '../../core/sorter';
 import ThResizable from '../common/th_resizable.vue';
+import GlqlFooter from '../common/footer.vue';
+import GlqlActions from '../common/actions.vue';
 
 export default {
   name: 'TablePresenter',
@@ -13,10 +14,12 @@ export default {
     GlLink,
     GlSprintf,
     GlSkeletonLoader,
+    GlqlFooter,
     ThResizable,
     CrudComponent,
+    GlqlActions,
   },
-  inject: ['presenter'],
+  inject: ['presenter', 'queryKey'],
   props: {
     data: {
       required: true,
@@ -42,14 +45,18 @@ export default {
       fields: this.config.fields,
       sorter: new Sorter(items),
       table: null,
+      isCollapsed: false,
     };
   },
   computed: {
     title() {
       return this.config.title || __('GLQL table');
     },
-    docsPath() {
-      return `${helpPagePath('user/glql/_index')}#glql-views`;
+    showCopyContentsAction() {
+      return Boolean(this.items.length) && !this.isCollapsed && !this.isPreview;
+    },
+    showEmptyState() {
+      return !this.items.length && !this.isPreview;
     },
   },
   async mounted() {
@@ -57,21 +64,25 @@ export default {
 
     this.table = this.$refs.table;
   },
-  i18n: {
-    generatedMessage: __('%{linkStart}View%{linkEnd} powered by GLQL'),
-  },
 };
 </script>
 <template>
   <crud-component
+    :anchor-id="queryKey"
     :title="title"
     :description="config.description"
     :count="items.length"
     is-collapsible
+    persist-collapsed-state
     class="!gl-mt-5 gl-overflow-hidden"
     :body-class="{ '!gl-m-[-1px] !gl-p-0': items.length || isPreview }"
     footer-class="!gl-border-t-0"
+    @collapsed="isCollapsed = true"
+    @expanded="isCollapsed = false"
   >
+    <template #actions>
+      <glql-actions :show-copy-contents="showCopyContentsAction" :modal-title="title" />
+    </template>
     <div class="gl-table-shadow">
       <table ref="table" class="!gl-my-0 gl-overflow-y-hidden">
         <thead class="gl-text-sm">
@@ -114,19 +125,10 @@ export default {
       </table>
     </div>
 
-    <template v-if="!items.length && !isPreview" #empty>
+    <template v-if="showEmptyState" #empty>
       {{ __('No data found for this query.') }}
     </template>
 
-    <template #footer>
-      <div class="gl-flex gl-items-center gl-gap-1 gl-text-sm gl-text-subtle" data-testid="footer">
-        <gl-icon class="gl-mb-1 gl-mr-1" :size="12" name="tanuki" />
-        <gl-sprintf :message="$options.i18n.generatedMessage">
-          <template #link="{ content }">
-            <gl-link :href="docsPath" target="_blank">{{ content }}</gl-link>
-          </template>
-        </gl-sprintf>
-      </div>
-    </template>
+    <template #footer><glql-footer /></template>
   </crud-component>
 </template>

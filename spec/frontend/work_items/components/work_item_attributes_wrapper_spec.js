@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
 import Participants from '~/sidebar/components/participants/participants.vue';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
-import WorkItemDueDates from '~/work_items/components/work_item_due_dates.vue';
+import WorkItemDates from 'ee_else_ce/work_items/components/work_item_dates.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';
@@ -19,7 +19,7 @@ import {
   mockParticipantWidget,
   allowedParentTypesResponse,
   allowedParentTypesEmptyResponse,
-} from '../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 describe('WorkItemAttributesWrapper component', () => {
   let wrapper;
@@ -54,7 +54,7 @@ describe('WorkItemAttributesWrapper component', () => {
     .mockResolvedValue(allowedParentTypesEmptyResponse);
 
   const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
-  const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDates);
+  const findWorkItemDates = () => wrapper.findComponent(WorkItemDates);
   const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
   const findWorkItemMilestone = () => wrapper.findComponent(WorkItemMilestone);
   const findWorkItemParent = () => wrapper.findComponent(WorkItemParent);
@@ -138,20 +138,20 @@ describe('WorkItemAttributesWrapper component', () => {
       ${'when widget is returned from API'}     | ${true}            | ${true}
       ${'when widget is not returned from API'} | ${false}           | ${false}
     `('$description', ({ datesWidgetPresent, exists }) => {
-      it(`${datesWidgetPresent ? 'renders' : 'does not render'} due date component`, () => {
+      it(`${datesWidgetPresent ? 'renders' : 'does not render'} dates component`, () => {
         const response = workItemResponseFactory({ datesWidgetPresent });
         createComponent({ workItem: response.data.workItem });
 
-        expect(findWorkItemDueDate().exists()).toBe(exists);
+        expect(findWorkItemDates().exists()).toBe(exists);
       });
     });
 
-    it('renders WorkItemDueDate', async () => {
+    it('renders WorkItemDates', async () => {
       createComponent();
 
       await waitForPromises();
 
-      expect(findWorkItemDueDate().exists()).toBe(true);
+      expect(findWorkItemDates().exists()).toBe(true);
     });
   });
 
@@ -230,30 +230,15 @@ describe('WorkItemAttributesWrapper component', () => {
   });
 
   describe('CRM contacts widget', () => {
-    describe('when workItemsAlpha FF is disabled', () => {
-      it.each`
-        description                                               | crmContactsWidgetPresent | exists
-        ${'renders when widget is returned from API'}             | ${true}                  | ${false}
-        ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
-      `('$description', ({ crmContactsWidgetPresent, exists }) => {
-        const response = workItemResponseFactory({ crmContactsWidgetPresent });
-        createComponent({ workItem: response.data.workItem });
+    it.each`
+      description                                               | crmContactsWidgetPresent | exists
+      ${'renders when widget is returned from API'}             | ${true}                  | ${true}
+      ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
+    `('$description', ({ crmContactsWidgetPresent, exists }) => {
+      const response = workItemResponseFactory({ crmContactsWidgetPresent });
+      createComponent({ workItem: response.data.workItem, workItemsAlpha: true });
 
-        expect(findWorkItemCrmContacts().exists()).toBe(exists);
-      });
-    });
-
-    describe('when workItemsAlpha FF is enabled', () => {
-      it.each`
-        description                                               | crmContactsWidgetPresent | exists
-        ${'renders when widget is returned from API'}             | ${true}                  | ${true}
-        ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
-      `('$description', ({ crmContactsWidgetPresent, exists }) => {
-        const response = workItemResponseFactory({ crmContactsWidgetPresent });
-        createComponent({ workItem: response.data.workItem, workItemsAlpha: true });
-
-        expect(findWorkItemCrmContacts().exists()).toBe(exists);
-      });
+      expect(findWorkItemCrmContacts().exists()).toBe(exists);
     });
   });
 

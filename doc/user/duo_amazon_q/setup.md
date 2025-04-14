@@ -8,6 +8,7 @@ title: Set up GitLab Duo with Amazon Q
 {{< details >}}
 
 - Tier: Ultimate
+- Add-on: GitLab Duo with Amazon Q
 - Offering: GitLab Self-Managed
 - Status: Preview/Beta
 
@@ -22,7 +23,7 @@ title: Set up GitLab Duo with Amazon Q
 
 {{< alert type="note" >}}
 
-If you have a Duo Pro or Duo Enterprise add-on, this feature is not available.
+If you have a GitLab Duo Pro or Duo Enterprise add-on, this feature is not available.
 
 {{< /alert >}}
 
@@ -38,6 +39,8 @@ To set up GitLab Duo with Amazon Q, you must:
 - [Complete the prerequisites](#prerequisites)
 - [Create an identity provider](#create-an-iam-identity-provider)
 - [Create an IAM role](#create-an-iam-role)
+- [Add the policy](#add-the-policy)
+- [Allow administrators to use customer managed keys](#allow-administrators-to-use-customer-managed-keys)
 - [Enter the ARN in GitLab and enable Amazon Q](#enter-the-arn-in-gitlab-and-enable-amazon-q)
 - [Add the Amazon Q user to your project](#add-the-amazon-q-user-to-your-project)
 
@@ -45,12 +48,13 @@ To set up GitLab Duo with Amazon Q, you must:
 
 - You must have GitLab Self-Managed:
   - On GitLab 17.8 or later.
-  - On an instance in AWS.
+  - On an instance in AWS. The instance must allow incoming network access to Amazon Q services originating from these IP addresses:
+    - `34.228.181.128`
+    - `44.219.176.187`
+    - `54.226.244.221`
   - With an HTTPS URL that can be accessed by Amazon Q (the SSL certificate must not be self-signed).
     For more details about SSL, see [Configure SSL for a Linux package installation](https://docs.gitlab.com/omnibus/settings/ssl/).
   - With an Ultimate subscription that is synchronized with GitLab. (No trial access.)
-- GitLab Duo features [must be turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
-  (Experimental and beta features are off by default.)
 
 ### Create an IAM identity provider
 
@@ -58,10 +62,15 @@ Start by creating an IAM identity provider.
 
 First, you need the some values from GitLab:
 
+Prerequisites:
+
+- You must be an administrator.
+
 1. Sign in to GitLab.
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
-1. Expand **Configure GitLab Duo with Amazon Q**.
+1. Expand **GitLab Duo with Amazon Q**.
+1. Select **View configuration setup**.
 1. Under step 1, copy the provider URL and audience. You will need them in the next step.
 
 Now, create an AWS identity provider:
@@ -92,7 +101,7 @@ After you set up the IAM role, you cannot change the AWS account that's associat
 1. Skip **Permissions policies** by selecting **Next**. You will create an inline policy later.
 1. Ensure the trust policy is correct. It should look like this:
 
-   ```plaintext
+   ```json
    {
     "Version": "2012-10-17",
     "Statement": [
@@ -115,6 +124,8 @@ After you set up the IAM role, you cannot change the AWS account that's associat
 
 1. Name the role, for example `QDeveloperAccess`, and select **Create role**.
 
+### Add the policy
+
 Now edit the role and add the policy:
 
 1. Find the role that you just created and select it.
@@ -131,21 +142,42 @@ Now edit the role and add the policy:
 
    ```json
    {
-      "Version": "2012-10-17",
-      "Statement": [
-         {
-            "Sid": "GitLabDuoPermissions",
-            "Effect": "Allow",
-            "Action": [
-               "q:SendEvent",
-               "q:CreateOAuthAppConnection",
-               "q:CreateAuthGrant",
-               "q:UpdateAuthGrant",
-               "q:UpdateOAuthAppConnection"
-            ],
-            "Resource": "*"
-         }
-      ]
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Sid": "GitLabDuoUsagePermissions",
+         "Effect": "Allow",
+         "Action": [
+           "q:SendEvent",
+           "q:CreateAuthGrant",
+           "q:UpdateAuthGrant",
+           "q:GenerateCodeRecommendations",
+           "q:SendMessage",
+           "q:ListPlugins",
+           "q:VerifyOAuthAppConnection"
+         ],
+         "Resource": "*"
+       },
+       {
+         "Sid": "GitLabDuoManagementPermissions",
+         "Effect": "Allow",
+         "Action": [
+           "q:CreateOAuthAppConnection",
+           "q:DeleteOAuthAppConnection"
+         ],
+         "Resource": "*"
+       },
+       {
+         "Sid": "GitLabDuoPluginPermissions",
+         "Effect": "Allow",
+         "Action": [
+           "q:CreatePlugin",
+           "q:DeletePlugin",
+           "q:GetPlugin"
+         ],
+         "Resource": "arn:aws:qdeveloper:*:*:plugin/GitLabDuoWithAmazonQ/*"
+       }
+     ]
    }
    ```
 
@@ -158,6 +190,49 @@ Now edit the role and add the policy:
    arn:aws:iam::123456789:role/QDeveloperAccess
    ```
 
+#### Allow administrators to use customer managed keys
+
+If you are an administrator, you can use AWS Key Management Service (AWS KMS)
+customer managed keys (CMKs) to encrypt customer data.
+
+Update the role policy to grant permission to use CMKs when you create your key policy on a configured role in the KMS console.
+
+The `kms:ViaService` condition key limits the use of a KMS key to requests from specified AWS services.
+Additionally, it's used to deny permission to use a KMS key when the request comes from particular services.
+With the condition key, you can limit who can use CMK for encrypting or decrypting content.
+
+```json
+{
+   "Version": "2012-10-17",
+   "Statement": [
+      {
+         "Sid": "Sid0",
+         "Effect": "Allow",
+         "Principal": {
+            "AWS": "arn:aws:iam::<awsAccountId>:role/<rolename>"
+         },
+         "Action": [
+            "kms:GenerateDataKeyWithoutPlaintext",
+            "kms:Decrypt",
+            "kms:ReEncryptFrom",
+            "kms:ReEncryptTo"
+         ],
+         "Resource": "*",
+         "Condition": {
+            "StringEquals": {
+                "kms:ViaService": [
+                    "q.<region>.amazonaws.com"
+                ]
+            }
+        }
+      }
+   ]
+}
+```
+
+For more information, see
+[`kms:ViaService` in the AWS KMS Developer Guide](https://docs.aws.amazon.com/kms/latest/developerguide/conditions-kms.html#conditions-kms-via-service).
+
 ### Enter the ARN in GitLab and enable Amazon Q
 
 Now, enter the ARN into GitLab and determine which groups and projects can access the feature.
@@ -169,11 +244,12 @@ Prerequisites:
 1. Sign in to GitLab.
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
-1. Expand **Configure GitLab Duo with Amazon Q**.
+1. Expand **GitLab Duo with Amazon Q**.
 1. Select **View configuration setup**.
 1. Under **IAM role's ARN**, paste the ARN.
 1. To determine which groups and projects can use GitLab Duo with Amazon Q, choose an option:
    - To turn it on for the instance, but let groups and projects turn it off, select **On by default**.
+     - Optional. To configure Amazon Q to automatically review code in merge requests, select **Have Amazon Q review code in merge requests automatically**.
    - To turn it off for the instance, but let groups and projects turn it on, select **Off by default**.
    - To turn it off for the instance, and to prevent groups or projects from ever turning it on, select **Always off**.
 
@@ -199,37 +275,6 @@ Now add the Amazon Q service account user as a member of your project.
 1. For **Select a role**, select **Developer**.
 1. Select **Invite**.
 
-### Configure the AI gateway
-
-Now configure your AI gateway.
-
-1. On your GitLab instance, in a Rails console, configure your AI gateway URL.
-
-   The default settings should work for the production setup. Be sure that `GITLAB_LICENSE_MODE`, `CUSTOMER_PORTAL_URL`, and `CLOUD_CONNECTOR_SELF_SIGN_TOKENS` are NOT set.
-
-   If `ai_gateway_url` is set in the database, update it to point to the AI Gateway production endpoint:
-
-   ```ruby
-   Ai::Setting.instance.update!(ai_gateway_url: "https://cloud.gitlab.com/ai")
-   ```
-
-   For staging, your `/etc/gitlab/gitlab.rb` should have:
-
-   ```ruby
-   gitlab_rails['env'] = {
-     "GITLAB_LICENSE_MODE" => "test",
-     "CUSTOMER_PORTAL_URL" => "https://customers.staging.gitlab.com",
-   }
-   ```
-
-   For staging, your Rails console should have:
-
-   ```ruby
-   Ai::Setting.instance.update!(ai_gateway_url: "https://cloud.staging.gitlab.com/ai")
-   ```
-
-1. Run `gitlab-ctl reconfigure` for these changes to take effect.
-
 ## Turn off GitLab Duo with Amazon Q
 
 You can turn off GitLab Duo with Amazon Q for the instance, group, or project.
@@ -242,9 +287,10 @@ Prerequisites:
 
 To turn off GitLab Duo with Amazon Q for the instance:
 
+1. Sign in to GitLab.
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
-1. Expand **Amazon Q**.
+1. Expand **GitLab Duo with Amazon Q**.
 1. Select **View configuration setup**.
 1. Select **Always off**.
 1. Select **Save changes**.
@@ -277,3 +323,8 @@ To turn off GitLab Duo with Amazon Q for a project:
 1. Select **Settings > General**.
 1. Under **Amazon Q**, turn the toggle off.
 1. Select **Save changes**.
+
+## Troubleshooting
+
+If you experience issues connecting GitLab to Amazon Q,
+ensure your GitLab installation meets [all the prerequisites](#prerequisites).

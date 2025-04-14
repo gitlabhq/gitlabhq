@@ -45,7 +45,8 @@ You should take a multi-layered security approach and enable all available secre
 If a secret is committed to a repository, GitLab records the exposure
 in the vulnerability report. For some secret types, GitLab can even
 automatically revoke the exposed secret. You should always revoke and
-replace exposed secrets as soon as possible.
+replace exposed secrets as soon as possible. For secret-specific remediation guidance,
+review the details provided in the vulnerability report.
 
 ## Related topics
 

@@ -1,9 +1,18 @@
 <script>
-import { GlIcon, GlBadge, GlFormInput, GlButton, GlLink, GlTooltip, GlSprintf } from '@gitlab/ui';
+import {
+  GlIcon,
+  GlBadge,
+  GlFormInput,
+  GlButton,
+  GlLink,
+  GlTooltip,
+  GlSprintf,
+  GlModal,
+} from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
-import { __ } from '~/locale';
-import { helpPagePath } from '~/helpers/help_page_helper';
+import { __, s__ } from '~/locale';
+import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import ImportTargetDropdown from '../../components/import_target_dropdown.vue';
 import ImportStatus from '../../components/import_status.vue';
@@ -13,6 +22,7 @@ import { isProjectImportable, isImporting, isIncompatible, getImportStatus } fro
 export default {
   name: 'ProviderRepoTableRow',
   components: {
+    HelpPageLink,
     HelpPopover,
     ImportStatus,
     ImportTargetDropdown,
@@ -23,6 +33,7 @@ export default {
     GlLink,
     GlTooltip,
     GlSprintf,
+    GlModal,
   },
   inject: {
     userNamespace: {
@@ -48,6 +59,7 @@ export default {
   data() {
     return {
       isSelectedForReimport: false,
+      showMembershipsModal: false,
     };
   },
 
@@ -61,7 +73,7 @@ export default {
 
     showMembershipsWarning() {
       const userNamespaceSelected = this.importTarget.targetNamespace === this.userNamespace;
-      return this.isImportNotStarted && userNamespaceSelected;
+      return (this.isImportNotStarted || this.isSelectedForReimport) && userNamespaceSelected;
     },
 
     isFinished() {
@@ -143,15 +155,20 @@ export default {
       }
     },
 
+    onImportClick() {
+      if (this.showMembershipsWarning) {
+        this.showMembershipsModal = true;
+      } else {
+        this.handleImportRepo();
+      }
+    },
+
     onSelect(value) {
       this.updateImportTarget({ targetNamespace: value });
     },
   },
-
-  helpPath: helpPagePath('/user/project/import/github'),
-  membershipsHelpPath: helpPagePath('user/project/import/_index', {
-    anchor: 'user-contribution-and-membership-mapping',
-  }),
+  actionPrimary: { text: s__('ImportProjects|Continue import') },
+  actionCancel: { text: __('Cancel') },
 };
 </script>
 
@@ -223,7 +240,8 @@ export default {
               'ImportProjects|Imported files will be kept. You can import this repository again later.',
             )
           }}
-          <gl-link :href="$options.helpPath" target="_blank">{{ __('Learn more.') }}</gl-link>
+          <help-page-link href="/user/project/import/github">{{ __('Learn more') }}</help-page-link
+          >.
         </div>
       </gl-tooltip>
       <gl-button
@@ -239,10 +257,33 @@ export default {
         v-if="isImportNotStarted || isFinished"
         type="button"
         data-testid="import-button"
-        @click="handleImportRepo()"
+        @click="onImportClick"
       >
         {{ importButtonText }}
       </gl-button>
+      <gl-modal
+        v-if="showMembershipsWarning"
+        v-model="showMembershipsModal"
+        :title="
+          s__('ImportProjects|Are you sure you want to import the project to a personal namespace?')
+        "
+        :action-primary="$options.actionPrimary"
+        :action-cancel="$options.actionCancel"
+        @primary="handleImportRepo"
+      >
+        <p>
+          {{
+            s__(
+              'ImportProjects|Importing a project into a personal namespace results in all contributions being mapped to the same bot user and they cannot be reassigned. To map contributions to actual users, import the project to a group instead.',
+            )
+          }}
+          <help-page-link
+            href="/user/project/import/_index"
+            anchor="user-contribution-and-membership-mapping"
+            >{{ __('Learn more') }}</help-page-link
+          >.
+        </p>
+      </gl-modal>
       <span class="gl-ml-3 gl-inline-flex gl-gap-3">
         <help-popover
           v-show="showMembershipsWarning"
@@ -252,12 +293,14 @@ export default {
         >
           {{
             s__(
-              'ImportProjects|Importing a project into a personal namespace results in all contributions being mapped to the same bot user. To map contributions to real users, import projects into a group instead.',
+              'ImportProjects|Importing a project into a personal namespace results in all contributions being mapped to the same bot user and they cannot be reassigned. To map contributions to actual users, import the project to a group instead.',
             )
           }}
-          <gl-link :href="$options.membershipsHelpPath" target="_blank">{{
-            __('Learn more.')
-          }}</gl-link>
+          <help-page-link
+            href="/user/project/import/_index"
+            anchor="user-contribution-and-membership-mapping"
+            >{{ __('Learn more') }}</help-page-link
+          >.
         </help-popover>
 
         <help-popover v-if="isFinished" icon="information-o">

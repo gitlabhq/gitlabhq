@@ -296,6 +296,52 @@ describe('Upload dropzone component', () => {
     });
   });
 
+  describe('file input change', () => {
+    // See note in the 'updates file input files value' test for more details
+    // on why this function exists.
+    const stubFileInputOnWrapper = (files = []) => {
+      Object.defineProperty(wrapper.vm.$refs.fileUpload, 'files', {
+        writable: true,
+        value: files,
+      });
+    };
+    const validFile = { type: 'image/jpg' };
+    const invalidFile = { type: 'audio/midi' };
+
+    describe('when all uploaded files are valid', () => {
+      it('emits change event with valid files', () => {
+        createComponent();
+
+        stubFileInputOnWrapper([validFile, validFile]);
+        findFileInput().trigger('change');
+
+        expect(wrapper.emitted('change')).toEqual([[[validFile, validFile]]]);
+      });
+
+      it('emits single file when singleFileSelection is true', () => {
+        createComponent({
+          props: { singleFileSelection: true },
+        });
+
+        stubFileInputOnWrapper([validFile]);
+        findFileInput().trigger('change');
+
+        expect(wrapper.emitted('change')).toEqual([[validFile]]);
+      });
+    });
+
+    describe('when some uploaded files are invalid', () => {
+      it('emits error event when some uploaded files are invalid', () => {
+        createComponent();
+
+        stubFileInputOnWrapper([validFile, invalidFile]);
+        findFileInput().trigger('change');
+
+        expect(wrapper.emitted('error')).toHaveLength(1);
+      });
+    });
+  });
+
   describe('updates file input files value', () => {
     // NOTE: the component assigns dropped files from the drop event to the
     // input.files property. There's a restriction that nothing but a FileList

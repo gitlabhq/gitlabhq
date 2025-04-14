@@ -270,13 +270,13 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
       context 'access expiry date' do
         subject do
           put :update, xhr: true, params: {
-                                            project_member: {
-                                              expires_at: expires_at
-                                            },
-                                            namespace_id: project.namespace,
-                                            project_id: project,
-                                            id: requester
-                                          }
+            project_member: {
+              expires_at: expires_at
+            },
+            namespace_id: project.namespace,
+            project_id: project,
+            id: requester
+          }
         end
 
         context 'when set to a date in the past' do
@@ -360,10 +360,10 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
       context 'when member is not found' do
         it 'returns 404' do
           delete :destroy, params: {
-                             namespace_id: project.namespace,
-                             project_id: project,
-                             id: 42
-                           }
+            namespace_id: project.namespace,
+            project_id: project,
+            id: 42
+          }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -415,10 +415,10 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
 
           it '[HTML] removes user from members', :aggregate_failures do
             delete :destroy, params: {
-                               namespace_id: project.namespace,
-                               project_id: project,
-                               id: member
-                             }
+              namespace_id: project.namespace,
+              project_id: project,
+              id: member
+            }
 
             expect(response).to redirect_to(
               project_project_members_path(project)
@@ -448,9 +448,9 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
       context 'when member is not found' do
         it 'returns 404' do
           delete :leave, params: {
-                           namespace_id: project.namespace,
-                           project_id: project
-                         }
+            namespace_id: project.namespace,
+            project_id: project
+          }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -464,9 +464,9 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
 
           it 'removes user from members', :aggregate_failures do
             delete :leave, params: {
-                             namespace_id: project.namespace,
-                             project_id: project
-                           }
+              namespace_id: project.namespace,
+              project_id: project
+            }
 
             expect(controller).to set_flash.to "You left the \"#{project.human_name}\" project."
             expect(response).to redirect_to(dashboard_projects_path)
@@ -483,9 +483,9 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
 
           it 'cannot remove themselves from the project' do
             delete :leave, params: {
-                             namespace_id: project.namespace,
-                             project_id: project
-                           }
+              namespace_id: project.namespace,
+              project_id: project
+            }
 
             expect(response).to have_gitlab_http_status(:forbidden)
           end
@@ -498,9 +498,9 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
 
           it 'removes user from members', :aggregate_failures do
             delete :leave, params: {
-                             namespace_id: project.namespace,
-                             project_id: project
-                           }
+              namespace_id: project.namespace,
+              project_id: project
+            }
 
             expect(controller).to set_flash.to 'Your access request to the project has been withdrawn.'
             expect(response).to redirect_to(project_path(project))
@@ -518,9 +518,9 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
 
       it 'creates a new ProjectMember that is not a team member', :aggregate_failures do
         post :request_access, params: {
-                                namespace_id: project.namespace,
-                                project_id: project
-                              }
+          namespace_id: project.namespace,
+          project_id: project
+        }
 
         expect(controller).to set_flash.to 'Your request for access has been queued for review.'
         expect(response).to redirect_to(
@@ -541,10 +541,10 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
       context 'when member is not found' do
         it 'returns 404' do
           post :approve_access_request, params: {
-                                          namespace_id: project.namespace,
-                                          project_id: project,
-                                          id: 42
-                                        }
+            namespace_id: project.namespace,
+            project_id: project,
+            id: 42
+          }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -558,10 +558,10 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
 
           it 'returns 404', :aggregate_failures do
             post :approve_access_request, params: {
-                                            namespace_id: project.namespace,
-                                            project_id: project,
-                                            id: member
-                                          }
+              namespace_id: project.namespace,
+              project_id: project,
+              id: member
+            }
 
             expect(response).to have_gitlab_http_status(:not_found)
             expect(project.members).not_to include member
@@ -575,10 +575,10 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
 
           it 'adds user to members', :aggregate_failures do
             post :approve_access_request, params: {
-                                            namespace_id: project.namespace,
-                                            project_id: project,
-                                            id: member
-                                          }
+              namespace_id: project.namespace,
+              project_id: project,
+              id: member
+            }
 
             expect(response).to redirect_to(
               project_project_members_path(project)

@@ -18,6 +18,8 @@ module AuthHelper
   ].freeze
   LDAP_PROVIDER = /\Aldap/
   POPULAR_PROVIDERS = %w[google_oauth2 github].freeze
+  SHA1_CHAR_PAIR_COUNT = 20
+  SHA256_CHAR_PAIR_COUNT = 32
 
   delegate :slack_app_id, to: :'Gitlab::CurrentSettings.current_application_settings'
 
@@ -163,6 +165,27 @@ module AuthHelper
     enabled_button_based_providers.any?
   end
 
+  def step_up_auth_params(provider_name, step_up_auth_scope)
+    return {} if Feature.disabled?(:omniauth_step_up_auth_for_admin_mode, current_user)
+
+    # Get provider configuration for step up auth scope
+    provider_config = Gitlab::Auth::OAuth::Provider
+      .config_for(provider_name)
+      &.dig('step_up_auth', step_up_auth_scope.to_s)
+      &.to_h
+
+    return {} if provider_config.blank?
+
+    base_params = { step_up_auth_scope: step_up_auth_scope }
+    config_params = provider_config['params'].to_h
+
+    base_params
+      .merge!(config_params)
+      .transform_values do |v|
+        v.is_a?(Hash) ? v.to_json : v
+      end
+  end
+
   def provider_image_tag(provider, size = 64)
     label = label_for_provider(provider)
 
@@ -266,6 +289,17 @@ module AuthHelper
       path: codes_profile_two_factor_auth_path,
       password_required: password_required.to_s,
       variant: 'default' }
+  end
+
+  def certificate_fingerprint_algorithm(fingerprint)
+    case fingerprint.scan(/[0-9a-f]{2}/i).length
+    when SHA1_CHAR_PAIR_COUNT
+      # v2.x will change to RubySaml::XML::SHA1
+      XMLSecurity::Document::SHA1
+    when SHA256_CHAR_PAIR_COUNT
+      # v2.x will change to RubySaml::XML::SHA256
+      XMLSecurity::Document::SHA256
+    end
   end
 
   extend self

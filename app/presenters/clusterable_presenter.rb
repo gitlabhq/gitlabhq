@@ -44,6 +44,10 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
     raise NotImplementedError
   end
 
+  def update_cluster_migration_path(cluster)
+    raise NotImplementedError
+  end
+
   def cluster_status_cluster_path(cluster, params = {})
     raise NotImplementedError
   end

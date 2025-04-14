@@ -14,7 +14,7 @@ const TestComponent = {
   mixins: [pipelineVariablesPermissionsMixin],
   template: `
     <div>
-      <div v-if="pipelineVariablesPermissionsLoading" data-testid="loading-state">Loading...</div>
+      <div v-if="pipelineVariablesPermissionsLoading" data-testid="loading-state">Loading…</div>
       <div v-else-if="canViewPipelineVariables" data-testid="authorized-content">Authorized</div>
       <div v-else data-testid="unauthorized-content">Unauthorized</div>
       <div v-if="hasError" data-testid="error-state">Error occurred</div>

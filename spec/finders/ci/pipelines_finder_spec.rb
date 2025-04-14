@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelinesFinder do
+RSpec.describe Ci::PipelinesFinder, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:empty_project) { create(:project, :public) }
   let(:current_user) { nil }
   let(:params) { {} }
 
-  subject { described_class.new(project, current_user, params).execute }
+  subject(:execute) { described_class.new(project, current_user, params).execute }
 
   describe "#execute" do
     context 'when params is empty' do
@@ -162,6 +162,41 @@ RSpec.describe Ci::PipelinesFinder do
           is_expected.to be_empty
         end
       end
+
+      context 'when ref exists as a virtual ref' do
+        let_it_be(:merge_request) do
+          create(:merge_request, source_project: project, source_branch: 'my-mr-branch-ref', target_branch: 'master')
+        end
+
+        let(:params) { { ref: merge_request.source_branch } }
+
+        it 'returns empty' do
+          is_expected.to be_empty
+        end
+
+        context 'when pipeline on merge request with matching source branch exists' do
+          let_it_be(:pipeline) do
+            create(:ci_pipeline, project: project, ref: "refs/#{Repository::REF_MERGE_REQUEST}/#{merge_request.iid}/head")
+          end
+
+          it 'returns matched pipeline' do
+            is_expected.to contain_exactly(pipeline)
+          end
+
+          context 'when source does not include merge_request_event' do
+            let(:params) do
+              {
+                ref: merge_request.source_branch,
+                source: Ci::Pipeline.sources.keys.excluding('merge_request_event')
+              }
+            end
+
+            it 'returns empty' do
+              is_expected.to be_empty
+            end
+          end
+        end
+      end
     end
 
     context 'when username is specified' do
@@ -215,13 +250,62 @@ RSpec.describe Ci::PipelinesFinder do
     end
 
     context 'when updated_at filters are specified' do
-      let(:params) { { updated_before: 1.day.ago, updated_after: 3.days.ago } }
       let!(:pipeline1) { create(:ci_pipeline, project: project, updated_at: 2.days.ago) }
       let!(:pipeline2) { create(:ci_pipeline, project: project, updated_at: 4.days.ago) }
       let!(:pipeline3) { create(:ci_pipeline, project: project, updated_at: 1.hour.ago) }
 
-      it 'returns deployments with matched updated_at' do
-        is_expected.to match_array([pipeline1])
+      context 'when both filters are specified' do
+        let(:params) { { updated_before: 1.day.ago, updated_after: 3.days.ago } }
+
+        it 'returns pipelines with matched updated_at' do
+          is_expected.to match_array([pipeline1])
+        end
+      end
+
+      context 'when only updated_before is specified' do
+        let(:params) { { updated_before: 1.day.ago } }
+
+        it 'returns pipelines with matched updated_at' do
+          is_expected.to match_array([pipeline1, pipeline2])
+        end
+      end
+
+      context 'when only updated_after is specified' do
+        let(:params) { { updated_after: 1.day.ago } }
+
+        it 'returns pipelines with matched updated_at' do
+          is_expected.to match_array([pipeline3])
+        end
+      end
+    end
+
+    context 'when created_at filters are specified' do
+      let!(:pipeline1) { create(:ci_pipeline, project: project, created_at: 2.days.ago) }
+      let!(:pipeline2) { create(:ci_pipeline, project: project, created_at: 4.days.ago) }
+      let!(:pipeline3) { create(:ci_pipeline, project: project, created_at: 1.hour.ago) }
+
+      context 'when both filters are specified' do
+        let(:params) { { created_before: 1.day.ago, created_after: 3.days.ago } }
+
+        it 'returns pipelines with matched created_at' do
+          is_expected.to match_array([pipeline1])
+        end
+      end
+
+      context 'when only created_before is specified' do
+        let(:params) { { created_before: 1.day.ago } }
+
+        it 'returns pipelines with matched created_at' do
+          is_expected.to match_array([pipeline1, pipeline2])
+        end
+      end
+
+      context 'when only created_after is specified' do
+        let(:params) { { created_after: 1.day.ago } }
+
+        it 'returns pipelines with matched created_at' do
+          is_expected.to match_array([pipeline3])
+        end
       end
     end
 
@@ -349,7 +433,7 @@ RSpec.describe Ci::PipelinesFinder do
 
       with_them do
         it 'returns the pipelines ordered' do
-          expect(subject).to eq(ordered_pipelines.map { |name| public_send(name) })
+          expect(execute).to eq(ordered_pipelines.map { |name| public_send(name) })
         end
       end
     end

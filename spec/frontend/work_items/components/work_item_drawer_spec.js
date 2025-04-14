@@ -8,7 +8,10 @@ import { stubComponent } from 'helpers/stub_component';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
-import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
+import {
+  DETAIL_VIEW_QUERY_PARAM_NAME,
+  DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME,
+} from '~/work_items/constants';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
@@ -162,7 +165,10 @@ describe('WorkItemDrawer', () => {
 
       findGlDrawer().vm.$emit('close');
 
-      expect(removeParams).toHaveBeenCalledWith([DETAIL_VIEW_QUERY_PARAM_NAME]);
+      expect(removeParams).toHaveBeenCalledWith([
+        DETAIL_VIEW_QUERY_PARAM_NAME,
+        DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME,
+      ]);
     });
 
     describe('`clickOutsideExcludeSelector` prop', () => {

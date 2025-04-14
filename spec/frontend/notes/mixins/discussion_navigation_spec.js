@@ -2,13 +2,16 @@ import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import createEventHub from '~/helpers/event_hub_factory';
 import * as utils from '~/lib/utils/common_utils';
 import discussionNavigation from '~/notes/mixins/discussion_navigation';
 import notesModule from '~/notes/stores/modules';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 
-let scrollToFile;
 const discussion = (id, index) => ({
   id,
   resolvable: index % 2 === 0, // discussions 'b' and 'd' are not resolvable
@@ -27,11 +30,13 @@ const createComponent = () => ({
   },
 });
 
-describe('Discussion navigation mixin', () => {
-  Vue.use(Vuex);
+Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
+describe('Discussion navigation mixin', () => {
   let wrapper;
   let store;
+  let pinia;
   let expandDiscussion;
 
   const findDiscussionEl = (id) => document.querySelector(`div[data-discussion-id="${id}"]`);
@@ -53,8 +58,10 @@ describe('Discussion navigation mixin', () => {
       </div>`,
     );
 
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+
     expandDiscussion = jest.fn();
-    scrollToFile = jest.fn();
     const { actions, ...notesRest } = notesModule();
     store = new Vuex.Store({
       modules: {
@@ -62,16 +69,11 @@ describe('Discussion navigation mixin', () => {
           ...notesRest,
           actions: { ...actions, expandDiscussion },
         },
-        diffs: {
-          namespaced: true,
-          actions: { scrollToFile, disableVirtualScroller: () => {} },
-          state: { diffFiles: [] },
-        },
       },
     });
     store.state.notes.discussions = createDiscussions();
 
-    wrapper = shallowMount(createComponent(), { store });
+    wrapper = shallowMount(createComponent(), { store, pinia });
   });
 
   afterEach(() => {

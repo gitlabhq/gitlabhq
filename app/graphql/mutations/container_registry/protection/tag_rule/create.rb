@@ -7,8 +7,7 @@ module Mutations
         class Create < ::Mutations::BaseMutation
           graphql_name 'createContainerProtectionTagRule'
           description 'Creates a protection rule to control which user roles ' \
-            'can modify container image tags matching a specified pattern. ' \
-            'Available only when feature flag `container_registry_protected_tags` is enabled.'
+            'can modify container image tags matching a specified pattern.'
 
           include FindsProject
 
@@ -52,10 +51,6 @@ module Mutations
 
           def resolve(project_path:, **kwargs)
             project = authorized_find!(project_path)
-
-            if Feature.disabled?(:container_registry_protected_tags, project)
-              raise_resource_not_available_error!("'container_registry_protected_tags' feature flag is disabled")
-            end
 
             response =
               ::ContainerRegistry::Protection::CreateTagRuleService

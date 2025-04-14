@@ -10,4 +10,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/03654a6abf47c88
 milestone: '7.2'
 gitlab_schema: gitlab_main
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514599
-table_size: small
+table_size: medium

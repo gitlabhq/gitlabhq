@@ -207,13 +207,19 @@ The following tokens are supported:
 
 {{< /details >}}
 
+{{< history >}}
+
+- Basic authentication for Maven packages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212854) in GitLab 16.0.
+
+{{< /history >}}
+
 The following authentication protocols are supported:
 
 | Package type                                           | Supported auth protocols                                    |
 |--------------------------------------------------------|-------------------------------------------------------------|
 | [Maven (with `mvn`)](../maven_repository/_index.md)    | Headers, Basic auth                                         |
 | [Maven (with `gradle`)](../maven_repository/_index.md) | Headers, Basic auth                                         |
-| [Maven (with `sbt`)](../maven_repository/_index.md)    | Basic auth ([pulling](#pulling-packages) only) (1)          |
+| [Maven (with `sbt`)](../maven_repository/_index.md)    | Basic auth ([pulling](#pulling-packages) only)          |
 | [npm](../npm_registry/_index.md)                       | OAuth                                                       |
 | [NuGet](../nuget_repository/_index.md)                 | Basic auth                                                  |
 | [PyPI](../pypi_repository/_index.md)                   | Basic auth                                                  |
@@ -225,8 +231,6 @@ The following authentication protocols are supported:
 | [Debian](../debian_repository/_index.md)               | Basic auth                                                  |
 | [Go](../go_proxy/_index.md)                            | Basic auth                                                  |
 | [Ruby gems](../rubygems_registry/_index.md)            | Token                                                       |
-
-1. Basic authentication for Maven packages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212854) in GitLab 16.0.
 
 ## Supported hash types
 

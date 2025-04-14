@@ -28,11 +28,8 @@ describe('Timeline events form', () => {
   useFakeDate(fakeDate);
   let wrapper;
 
-  const mountComponent = ({ mountMethod = mountExtended } = {}, props = {}, glFeatures = {}) => {
+  const mountComponent = ({ mountMethod = mountExtended } = {}, props = {}) => {
     wrapper = mountMethod(TimelineEventsForm, {
-      provide: {
-        glFeatures,
-      },
       propsData: {
         showSaveAndAdd: true,
         isEventProcessed: false,

@@ -9,7 +9,8 @@ Use vulnerability risk data to help assess the potential impact to your environm
 
 - Severity: Each vulnerability is assigned a standardized GitLab severity value.
 
-- For vulnerabilities in the [Common Vulnerabilities and Exposures (CVE)](https://www.cve.org/) catalog, the following data can be retrieved by using a GraphQL query:
+- For vulnerabilities in the [Common Vulnerabilities and Exposures (CVE)](https://www.cve.org/) catalog,
+the following data can be retrieved through the [vulnerability details](_index.md) page or by using a GraphQL query:
   - Likelihood of exploitation: [Exploit Prediction Scoring System (EPSS)](https://www.first.org/epss) score.
   - Existence of known exploits: [Known Exploited Vulnerabilities (KEV)](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) status.
 
@@ -43,6 +44,18 @@ The KEV catalog lists vulnerabilities that are known to have been exploited. You
 the remediation of vulnerabilities in the KEV catalog above other vulnerabilities. Attacks using
 these vulnerabilities have occurred and the exploitation method is likely known to attackers.
 
+## Reachability
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16510) in GitLab 17.11.
+
+{{< /history >}}
+
+Reachability shows whether a vulnerable package is actively used in your application.
+Vulnerabilities in packages that your code directly interacts with pose a higher risk than those in unused dependencies.
+Prioritize fixing reachable vulnerabilities, as they represent real exposure points that attackers could exploit.
+
 ## Query risk assessment data
 
 Use the GraphQL API to query the severity, EPSS, and KEV values of vulnerabilities in a project.
@@ -71,6 +84,7 @@ client.
           isKnownExploit
           cve
         }
+        reachability
       }
     }
   }
@@ -98,6 +112,7 @@ Example output:
               "isKnownExploit": false,
               "cve": "CVE-2019-3859"
             }
+            "reachability": "UNKNOWN"
           },
           {
             "severity": "CRITICAL",
@@ -112,6 +127,7 @@ Example output:
               "isKnownExploit": true,
               "cve": "CVE-2016-8735"
             }
+            "reachability": "IN_USE"
           },
         ]
       }
@@ -137,6 +153,6 @@ Vulnerabilities are listed in the following order:
 1. Higher EPSS scores (closer to 1) are prioritized.
 1. Severities are ordered from `Critical` to `Low`.
 
-Only vulnerabilities detected by [dependency scanning](../dependency_scanning/_index.md) and [container scanning](../container_scanning/_index.md) are included because the Vulnerability Prioritizer CI/CD component requires data only available in Common Vulnerabilities and Exposures (CVE) records. Moreover, only [detected (**Needs triage**) and confirmed](../vulnerabilities/_index.md#vulnerability-status-values) vulnerabilities are shown.
+Only vulnerabilities detected by [dependency scanning](../dependency_scanning/_index.md) and [container scanning](../container_scanning/_index.md) are included because the Vulnerability Prioritizer CI/CD component requires data only available in Common Vulnerabilities and Exposures (CVE) records. Moreover, only [detected (**Needs triage**) and confirmed](_index.md#vulnerability-status-values) vulnerabilities are shown.
 
 To add the Vulnerability Prioritizer CI/CD component to your project's CI/CD pipeline, see the [Vulnerability Prioritizer documentation](https://gitlab.com/components/vulnerability-prioritizer).

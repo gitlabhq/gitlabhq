@@ -13,7 +13,7 @@ import WorkItemLinkChildContents from '../shared/work_item_link_child_contents.v
 import removeLinkedItemsMutation from '../../graphql/remove_linked_items.mutation.graphql';
 import addLinkedItemsMutation from '../../graphql/add_linked_items.mutation.graphql';
 
-import { RELATIONSHIP_TYPE_ENUM, WORK_ITEM_TYPE_VALUE_INCIDENT } from '../../constants';
+import { RELATIONSHIP_TYPE_ENUM, WORK_ITEM_TYPE_NAME_INCIDENT } from '../../constants';
 
 export default {
   RELATIONSHIP_TYPE_ENUM,
@@ -189,7 +189,7 @@ export default {
     },
     handleLinkedItemClick(event, linkedItem) {
       // if the linkedItem is incident, redirect to the incident page
-      if (linkedItem?.workItem?.workItemType?.name === WORK_ITEM_TYPE_VALUE_INCIDENT) {
+      if (linkedItem?.workItem?.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT) {
         visitUrl(linkedItem.workItem.webUrl);
       } else {
         this.$emit('showModal', { event, child: linkedItem.workItem });

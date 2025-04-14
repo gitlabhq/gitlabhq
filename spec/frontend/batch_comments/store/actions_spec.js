@@ -362,4 +362,11 @@ describe('Batch comments store actions', () => {
       });
     });
   });
+
+  describe('setDrawerOpened', () => {
+    it('sets drawerOpened state', () => {
+      store.setDrawerOpened(true);
+      expect(store.drawerOpened).toBe(true);
+    });
+  });
 });

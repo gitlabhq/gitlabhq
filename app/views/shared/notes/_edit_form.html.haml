@@ -9,8 +9,11 @@
       = render 'shared/notes/hints'
 
     .note-form-actions.clearfix
-      .settings-message.note-edit-warning.js-finish-edit-warning
-        = _("Finish editing this message first!")
+      = render Pajamas::AlertComponent.new(variant: :warning,
+        dismissible: false,
+        alert_options: { class: 'js-finish-edit-warning gl-hidden gl-mb-3' }) do |c|
+        - c.with_body do
+          = _("Finish editing this message first!")
       = render Pajamas::ButtonComponent.new(type: 'submit', variant: :confirm, button_options: { class: 'js-comment-save-button', data: { testid: 'save-comment-button' } }) do
         = _("Save comment")
       = render Pajamas::ButtonComponent.new(button_options: { class: 'note-edit-cancel' }) do

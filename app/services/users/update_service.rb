@@ -29,6 +29,7 @@ module Users
       @user.user_detail # prevent assignment
 
       discard_read_only_attributes
+      append_extension_marketplace_attributes
       assign_attributes
 
       if check_password && require_password_check? && !@user.valid_password?(@validation_password)
@@ -139,6 +140,19 @@ module Users
       else
         []
       end
+    end
+
+    def append_extension_marketplace_attributes
+      return unless params.has_key?(:extensions_marketplace_enabled)
+
+      value = params.delete(:extensions_marketplace_enabled)
+      marketplace_home_url = ::WebIde::ExtensionMarketplace.marketplace_home_url(user: @user)
+      update_params = ::WebIde::ExtensionMarketplaceOptIn.params(
+        enabled: value,
+        marketplace_home_url: marketplace_home_url
+      )
+
+      params.merge!(update_params)
     end
 
     def assign_attributes

@@ -242,10 +242,8 @@ module API
       put ':id/packages/maven/*path/:file_name/authorize', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
         authorize_upload!
 
-        if Feature.enabled?(:packages_protected_packages_maven, user_project)
-          package_name = params[:path].rpartition('/').first
-          protect_package!(package_name, :maven)
-        end
+        package_name = params[:path].rpartition('/').first
+        protect_package!(package_name, :maven)
 
         status 200
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE

@@ -41,7 +41,7 @@ module Resolvers
           register_instructions: instructions.register_command
         }
       ensure
-        raise Gitlab::Graphql::Errors::ResourceNotAvailable, ACCESS_DENIED if access_denied?(instructions)
+        raise_resource_not_available_error! ACCESS_DENIED if access_denied?(instructions)
       end
 
       private

@@ -14,11 +14,6 @@ export default {
       default: false,
       required: false,
     },
-    disabled: {
-      type: Boolean,
-      default: false,
-      required: false,
-    },
     selected: {
       type: Boolean,
       default: false,

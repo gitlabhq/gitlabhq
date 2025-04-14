@@ -88,7 +88,7 @@ module Ci
       end
 
       def create_database_partition?(database_partition)
-        if Feature.enabled?(:ci_partitioning_automation, :instance)
+        if Feature.enabled?(:ci_create_dynamic_partitions, :instance)
           Ci::Partition.provisioning(database_partition.values.max).present?
         else
           database_partition.before?(Ci::Partition::LATEST_PARTITION_VALUE)

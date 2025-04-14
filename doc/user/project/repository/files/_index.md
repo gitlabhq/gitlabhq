@@ -94,6 +94,31 @@ Historical information about files in your repository is available in the GitLab
 - [Git blame](git_blame.md): shows each line of a text-based file, and the most
   recent commit that changed the line.
 
+## View open merge requests for a file
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/448868) in GitLab 17.10 [with a flag](../../../../administration/feature_flags.md) named `filter_blob_path`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
+
+When viewing a file in your repository, GitLab shows a badge with the number of open merge requests that target the current branch and modify the file. This helps you identify files that have pending changes.
+
+To view the open merge requests for a file:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Go to the file you want to view.
+1. At the top right of the screen, next to the filename, look for the green badge with the number
+   of {{< icon name="merge-request-open" >}} **Open** merge requests.
+1. Select the badge to see a list of open merge requests created in the past 30 days.
+1. Select any merge request in the list to go to that merge request.
+
 ## Search for a file
 
 {{< history >}}

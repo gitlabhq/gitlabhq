@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe 'groups/settings/_remove.html.haml' do
+  before do
+    stub_feature_flags(downtier_delayed_deletion: false)
+  end
+
   describe 'render' do
     it 'enables the Remove group button for a group' do
       group = build(:group)

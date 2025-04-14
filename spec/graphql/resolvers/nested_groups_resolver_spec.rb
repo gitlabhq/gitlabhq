@@ -136,5 +136,104 @@ RSpec.describe Resolvers::NestedGroupsResolver, feature_category: :groups_and_pr
         end
       end
     end
+
+    context 'when sorting results' do
+      let_it_be(:parent_group) { create(:group, name: 'Parent Group') }
+      let_it_be(:group_1) { create(:group, parent: parent_group, name: 'C-group_1', path: 'a-group_1') }
+      let_it_be(:group_2) { create(:group, parent: parent_group, name: 'B-group_2', path: 'c-group_2') }
+      let_it_be(:group_3) { create(:group, parent: parent_group, name: 'A-group_3', path: 'b-group_3') }
+
+      subject { resolve(described_class, obj: parent_group, args: params, ctx: { current_user: user }) }
+
+      context 'when sorting by name' do
+        context 'in ascending order' do
+          let(:params) { { sort: 'NAME_ASC' } }
+
+          it 'sorts the groups by name in ascending order' do
+            is_expected.to eq(
+              [
+                group_3,
+                group_2,
+                group_1
+              ]
+            )
+          end
+        end
+
+        context 'in descending order' do
+          let(:params) { { sort: 'NAME_DESC' } }
+
+          it 'sorts the groups by name in descending order' do
+            is_expected.to eq(
+              [
+                group_1,
+                group_2,
+                group_3
+              ]
+            )
+          end
+        end
+      end
+
+      context 'when sorting by path' do
+        context 'in ascending order' do
+          let(:params) { { sort: 'PATH_ASC' } }
+
+          it 'sorts the groups by path in ascending order' do
+            is_expected.to eq(
+              [
+                group_1,
+                group_3,
+                group_2
+              ]
+            )
+          end
+        end
+
+        context 'in descending order' do
+          let(:params) { { sort: 'PATH_DESC' } }
+
+          it 'sorts the groups by path in descending order' do
+            is_expected.to eq(
+              [
+                group_2,
+                group_3,
+                group_1
+              ]
+            )
+          end
+        end
+      end
+
+      context 'when sorting by ID' do
+        context 'in ascending order' do
+          let(:params) { { sort: 'ID_ASC' } }
+
+          it 'sorts the groups by ID in ascending order' do
+            is_expected.to eq(
+              [
+                group_1,
+                group_2,
+                group_3
+              ]
+            )
+          end
+        end
+
+        context 'in descending order' do
+          let(:params) { { sort: 'ID_DESC' } }
+
+          it 'sorts the groups by ID in descending order' do
+            is_expected.to eq(
+              [
+                group_3,
+                group_2,
+                group_1
+              ]
+            )
+          end
+        end
+      end
+    end
   end
 end

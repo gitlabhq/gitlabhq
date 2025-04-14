@@ -26,10 +26,8 @@ describe('SignUpRestrictionsApp', () => {
 
   const findForm = () => wrapper.findByTestId('form');
   const findInputCsrf = () => findForm().find('[name="authenticity_token"]');
-
   const findDenyListRawRadio = () => queryByLabelText('Enter denylist manually');
   const findDenyListFileRadio = () => queryByLabelText('Upload denylist file');
-
   const findDenyListRawInputGroup = () => wrapper.findByTestId('domain-denylist-raw-input-group');
   const findDenyListFileInputGroup = () => wrapper.findByTestId('domain-denylist-file-input-group');
 
@@ -84,7 +82,7 @@ describe('SignUpRestrictionsApp', () => {
     });
   });
 
-  describe('domain deny list', () => {
+  describe('domain denylist', () => {
     describe('when it is set to raw from props', () => {
       beforeEach(() => {
         mountComponent({ mountFn: mount });

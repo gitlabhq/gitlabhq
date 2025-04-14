@@ -28,7 +28,6 @@ import getPendingTodosCount from './queries/get_pending_todos_count.query.graphq
 import TodoItem from './todo_item.vue';
 import TodosEmptyState from './todos_empty_state.vue';
 import TodosFilterBar, { SORT_OPTIONS } from './todos_filter_bar.vue';
-import TodosMarkAllDoneButton from './todos_mark_all_done_button.vue';
 import TodosBulkBar from './todos_bulk_bar.vue';
 import TodosPagination from './todos_pagination.vue';
 
@@ -44,7 +43,6 @@ export default {
     TodosEmptyState,
     TodosFilterBar,
     TodoItem,
-    TodosMarkAllDoneButton,
     TodosBulkBar,
     TodosPagination,
   },
@@ -141,9 +139,6 @@ export default {
       const { sort: _, ...filters } = this.queryFilterValues;
       return Object.values(filters).some((value) => value.length > 0);
     },
-    isOnDoneTab() {
-      return this.currentTab === TABS_INDICES.done;
-    },
     isOnSnoozedTab() {
       return this.currentTab === TABS_INDICES.snoozed;
     },
@@ -156,13 +151,7 @@ export default {
     showEmptyState() {
       return this.isOnFirstPage && !this.isLoading && this.todos.length === 0;
     },
-    showMarkAllAsDone() {
-      if (this.glFeatures.todosBulkActions) return false;
-
-      return this.currentTab === TABS_INDICES.pending && !this.showEmptyState;
-    },
     showSelectAll() {
-      if (!this.glFeatures.todosBulkActions) return false;
       if (this.isOnAllTab) return false;
 
       return !(this.showEmptyState || this.isLoadingWithSpinner);
@@ -180,8 +169,25 @@ export default {
       else if (ids.length === this.todos.length) this.selectAllChecked = true;
     },
     todos(todos) {
+      const pageSize = this.cursor.first || this.cursor.last;
+      // If we are on the last page, and have 0 todos, we want to load the previous page
       if (!this.isOnFirstPage && todos.length === 0) {
-        this.cursor.after = null; // go to first page
+        this.updateCursor({
+          last: pageSize,
+          after: null,
+          first: null,
+          before: null,
+        });
+      }
+      // If we are on the first page, have less than a page full of todos, but more todos available,
+      // we load the full first page
+      else if (this.isOnFirstPage && todos.length < pageSize && this.pageInfo.hasNextPage) {
+        this.updateCursor({
+          last: null,
+          after: null,
+          first: pageSize,
+          before: null,
+        });
       }
     },
   },
@@ -216,6 +222,14 @@ export default {
     updateCursor(cursor) {
       this.cursor = cursor;
     },
+    resetPagination() {
+      this.cursor = {
+        first: this.cursor.first || this.cursor.last,
+        after: null,
+        last: null,
+        before: null,
+      };
+    },
     tabChanged(tabIndex) {
       if (tabIndex === this.currentTab) {
         return;
@@ -228,13 +242,8 @@ export default {
       });
       this.currentTab = tabIndex;
 
-      // Use the previous page size, but fetch the first N of the new tab
-      this.cursor = {
-        first: this.cursor.first || this.cursor.last,
-        after: null,
-        last: null,
-        before: null,
-      };
+      this.resetPagination();
+
       this.syncActiveTabToUrl();
     },
     syncActiveTabToUrl() {
@@ -254,6 +263,7 @@ export default {
     },
     handleFiltersChanged(data) {
       this.alert?.dismiss();
+      this.resetPagination();
       this.queryFilterValues = { ...data };
     },
     handleVisibilityChanged() {
@@ -357,12 +367,6 @@ export default {
       </gl-tabs>
 
       <div class="gl-my-3 gl-mr-5 gl-flex gl-flex-grow gl-items-center gl-justify-end gl-gap-3">
-        <todos-mark-all-done-button
-          v-show="showMarkAllAsDone"
-          :filters="queryFilterValues"
-          @change="updateAllQueries"
-        />
-
         <gl-button
           id="todo-refresh-btn"
           v-gl-tooltip.hover
@@ -380,7 +384,12 @@ export default {
 
     <div>
       <div class="gl-flex gl-flex-col">
-        <div v-show="showSelectAll" class="gl-flex gl-items-baseline gl-gap-2 gl-px-5 gl-py-3">
+        <div
+          v-show="showSelectAll"
+          data-testid="todos-bulk-bar-container"
+          class="todos-bulk-bar gl-border-b gl-z-2 gl-flex gl-items-baseline gl-gap-2 gl-bg-default gl-px-5 gl-py-3"
+          :class="{ 'is-sticky': selectedIds.length }"
+        >
           <gl-form-checkbox
             v-model="selectAllChecked"
             data-testid="todos-select-all"

@@ -6,6 +6,7 @@ import {
 import ProjectsListItem from './projects_list_item.vue';
 
 export default {
+  name: 'ProjectsList',
   components: { ProjectsListItem },
   props: {
     /**
@@ -31,7 +32,7 @@ export default {
      *   createdAt: string;
      * }[]
      */
-    projects: {
+    items: {
       type: Array,
       required: true,
     },
@@ -60,7 +61,7 @@ export default {
 <template>
   <ul class="gl-list-none gl-p-0">
     <projects-list-item
-      v-for="project in projects"
+      v-for="project in items"
       :key="project.id"
       :project="project"
       :show-project-icon="showProjectIcon"

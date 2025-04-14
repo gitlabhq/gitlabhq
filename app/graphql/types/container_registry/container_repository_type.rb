@@ -56,7 +56,7 @@ module Types
         object.tags_count
       rescue Faraday::Error
         raise_resource_not_available_error!(
-          'We are having trouble connecting to the Container Registry. ' \
+          'We are having trouble connecting to the container registry. ' \
             'If this error persists, please review the troubleshooting documentation.'
         )
       end

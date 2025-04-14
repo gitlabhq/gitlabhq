@@ -12,6 +12,7 @@ RSpec.describe 'Maintainer manages group runners related to project', feature_ca
   end
 
   before do
+    stub_feature_flags(vue_project_runners_settings: false)
     sign_in(user)
   end
 
@@ -65,7 +66,7 @@ RSpec.describe 'Maintainer manages group runners related to project', feature_ca
           it 'group runners are available' do
             visit project_runners_path(project)
 
-            expect(page).to have_content 'Available group runners: 1'
+            expect(page).to have_content 'Group runners 1'
             expect(page).to have_content 'group-runner'
           end
 
@@ -90,7 +91,7 @@ RSpec.describe 'Maintainer manages group runners related to project', feature_ca
               visit project_runners_path(project)
 
               within_testid 'group-runners' do
-                expect(page).to have_content format(_('Available group runners: %{runners}'), { runners: 2 })
+                expect(page).to have_content 'Group runners 2'
               end
             end
 

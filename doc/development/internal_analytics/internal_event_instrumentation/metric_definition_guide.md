@@ -143,7 +143,7 @@ An example of a single event selection rule which updates a unique count metric 
 
 ### Filters
 
-Filters are used to constrain which events cause an metric to increase.
+Filters are used to constrain which events cause a metric to increase.
 
 This filter includes only `pull_package` events with `label: rubygems`:
 

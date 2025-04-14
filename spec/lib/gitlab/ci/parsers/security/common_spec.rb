@@ -300,7 +300,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
             empty_report = Gitlab::Ci::Reports::Security::Report.new(artifact.file_type, pipeline, 2.weeks.ago)
             described_class.parse!({}.to_json, empty_report)
 
-            expect(empty_report.scan).to be(nil)
+            expect(empty_report.scan).to be_nil
           end
         end
 

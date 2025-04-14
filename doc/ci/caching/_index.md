@@ -147,12 +147,6 @@ Fallback keys follow the same processing logic as `cache:key`:
 
 ### Global fallback key
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1534) in GitLab Runner 13.4.
-
-{{< /history >}}
-
 You can use the `$CI_COMMIT_REF_SLUG` [predefined variable](../variables/predefined_variables.md)
 to specify your [`cache:key`](../yaml/_index.md#cachekey). For example, if your
 `$CI_COMMIT_REF_SLUG` is `test`, you can set a job to download cache that's tagged with `test`.

@@ -7,7 +7,7 @@ module Packages
         current_user, group, params = { with_package_registry_enabled: true,
                                         packages_class: ::Packages::Composer::Package }
       )
-        super(current_user, group, params)
+        super
       end
 
       def execute

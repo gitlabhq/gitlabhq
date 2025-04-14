@@ -1,0 +1,17 @@
+---
+description: Rotation of a project access token
+internal_events: true
+action: rotate_prat
+identifiers:
+- project
+- namespace
+- user
+product_group: authentication
+product_categories:
+- system_access
+milestone: '17.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184008
+tiers:
+- free
+- premium
+- ultimate

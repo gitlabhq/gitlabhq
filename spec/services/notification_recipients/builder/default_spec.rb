@@ -42,125 +42,171 @@ RSpec.describe NotificationRecipients::Builder::Default, feature_category: :team
     end
 
     context 'custom notifications' do
-      shared_examples 'custom notification recipients' do
-        let_it_be(:custom_notification_user) { create(:user) }
-        let_it_be(:another_group)   { create(:group) }
-        let_it_be(:another_project) { create(:project, namespace: another_group) }
+      let_it_be(:custom_notification_user) { create(:user) }
+      let_it_be(:another_group)   { create(:group) }
+      let_it_be(:another_project) { create(:project, namespace: another_group) }
 
-        context 'with project custom notification setting' do
-          before do
-            create(:notification_setting, source: project, user: custom_notification_user, level: :custom)
-          end
-
-          it 'adds the user to the recipients' do
-            expect(subject.recipients.map(&:user)).to include(custom_notification_user)
-          end
+      context 'with project custom notification setting' do
+        before do
+          create(:notification_setting, source: project, user: custom_notification_user, level: :custom)
         end
 
-        context 'with the project custom notification setting in another project' do
-          before do
-            create(:notification_setting, source: another_project, user: custom_notification_user, level: :custom)
-          end
+        it 'adds the user to the recipients' do
+          expect(subject.recipients.map(&:user)).to include(custom_notification_user)
+        end
+      end
 
-          it 'does not add the user to the recipients' do
-            expect(subject.recipients.map(&:user)).not_to include(custom_notification_user)
-          end
+      context 'with the project custom notification setting in another project' do
+        before do
+          create(:notification_setting, source: another_project, user: custom_notification_user, level: :custom)
         end
 
-        context 'with group custom notification setting' do
-          before do
-            create(:notification_setting, source: group, user: custom_notification_user, level: :custom)
-          end
+        it 'does not add the user to the recipients' do
+          expect(subject.recipients.map(&:user)).not_to include(custom_notification_user)
+        end
+      end
 
-          it 'adds the user to the recipients' do
-            expect(subject.recipients.map(&:user)).to include(custom_notification_user)
-          end
+      context 'with group custom notification setting' do
+        before do
+          create(:notification_setting, source: group, user: custom_notification_user, level: :custom)
         end
 
-        context 'with the group custom notification setting in another group' do
-          before do
-            create(:notification_setting, source: another_group, user: custom_notification_user, level: :custom)
-          end
+        it 'adds the user to the recipients' do
+          expect(subject.recipients.map(&:user)).to include(custom_notification_user)
+        end
+      end
 
-          it 'does not add the user to the recipients' do
-            expect(subject.recipients.map(&:user)).not_to include(custom_notification_user)
-          end
+      context 'with the group custom notification setting in another group' do
+        before do
+          create(:notification_setting, source: another_group, user: custom_notification_user, level: :custom)
         end
 
-        context 'with project global custom notification setting' do
-          before do
-            create(:notification_setting, source: project, user: custom_notification_user, level: :global)
-          end
+        it 'does not add the user to the recipients' do
+          expect(subject.recipients.map(&:user)).not_to include(custom_notification_user)
+        end
+      end
 
-          context 'with global custom notification setting' do
-            before do
-              create(:notification_setting, source: nil, user: custom_notification_user, level: :custom)
-            end
-
-            it 'adds the user to the recipients' do
-              expect(subject.recipients.map(&:user)).to include(custom_notification_user)
-            end
-          end
-
-          context 'without global custom notification setting' do
-            it 'does not add the user to the recipients' do
-              expect(subject.recipients.map(&:user)).not_to include(custom_notification_user)
-            end
-          end
+      context 'with project global custom notification setting' do
+        before do
+          create(:notification_setting, source: project, user: custom_notification_user, level: :global)
         end
 
-        context 'with group global custom notification setting' do
-          before do
-            create(:notification_setting, source: group, user: custom_notification_user, level: :global)
-          end
-
-          context 'with global custom notification setting' do
-            before do
-              create(:notification_setting, source: nil, user: custom_notification_user, level: :custom)
-            end
-
-            it 'adds the user to the recipients' do
-              expect(subject.recipients.map(&:user)).to include(custom_notification_user)
-            end
-          end
-
-          context 'without global custom notification setting' do
-            it 'does not add the user to the recipients' do
-              expect(subject.recipients.map(&:user)).not_to include(custom_notification_user)
-            end
-          end
-        end
-
-        context 'with group custom notification setting in deeply nested parent group' do
-          let(:grand_parent_group) { create(:group, :public) }
-          let(:parent_group) { create(:group, :public, parent: grand_parent_group) }
-          let(:group) { create(:group, :public, parent: parent_group) }
-          let(:project) { create(:project, :public, group: group, developers: project_watcher) }
-          let(:target) { create(:issue, project: project) }
-
-          before do
-            create(:notification_setting, source: grand_parent_group, user: custom_notification_user, level: :custom)
-          end
-
-          it 'adds the user to the recipients' do
-            expect(subject.recipients.map(&:user)).to include(custom_notification_user)
-          end
-        end
-
-        context 'without a project or group' do
-          let(:target) { create(:project_snippet) }
-
+        context 'with global custom notification setting' do
           before do
             create(:notification_setting, source: nil, user: custom_notification_user, level: :custom)
           end
 
+          it 'adds the user to the recipients' do
+            expect(subject.recipients.map(&:user)).to include(custom_notification_user)
+          end
+        end
+
+        context 'without global custom notification setting' do
           it 'does not add the user to the recipients' do
             expect(subject.recipients.map(&:user)).not_to include(custom_notification_user)
           end
         end
       end
 
-      it_behaves_like 'custom notification recipients'
+      context 'with group global custom notification setting' do
+        before do
+          create(:notification_setting, source: group, user: custom_notification_user, level: :global)
+        end
+
+        context 'with global custom notification setting' do
+          before do
+            create(:notification_setting, source: nil, user: custom_notification_user, level: :custom)
+          end
+
+          it 'adds the user to the recipients' do
+            expect(subject.recipients.map(&:user)).to include(custom_notification_user)
+          end
+        end
+
+        context 'without global custom notification setting' do
+          it 'does not add the user to the recipients' do
+            expect(subject.recipients.map(&:user)).not_to include(custom_notification_user)
+          end
+        end
+      end
+
+      context 'with group custom notification setting in deeply nested parent group' do
+        let(:grand_parent_group) { create(:group, :public) }
+        let(:parent_group) { create(:group, :public, parent: grand_parent_group) }
+        let(:group) { create(:group, :public, parent: parent_group) }
+        let(:project) { create(:project, :public, group: group, developers: project_watcher) }
+        let(:target) { create(:issue, project: project) }
+
+        before do
+          create(:notification_setting, source: grand_parent_group, user: custom_notification_user, level: :custom)
+        end
+
+        it 'adds the user to the recipients' do
+          expect(subject.recipients.map(&:user)).to include(custom_notification_user)
+        end
+      end
+
+      context 'without a project or group' do
+        let(:target) { create(:project_snippet) }
+
+        before do
+          create(:notification_setting, source: nil, user: custom_notification_user, level: :custom)
+        end
+
+        it 'does not add the user to the recipients' do
+          expect(subject.recipients.map(&:user)).not_to include(custom_notification_user)
+        end
+      end
+
+      context 'when target is a work item' do
+        before_all do
+          create(
+            :notification_setting,
+            source: project,
+            user: custom_notification_user,
+            level: :custom,
+            new_issue: true,
+            reopen_issue: true,
+            close_issue: true,
+            reassign_issue: true,
+            issue_due: true
+          )
+        end
+
+        context 'when work item is an issue' do
+          let_it_be(:target) { create(:work_item, :issue, project: project) }
+
+          where(:action) do
+            %w[new reopen close reassign]
+          end
+
+          with_them do
+            subject { described_class.new(target, current_user, action: action).tap { |s| s.build! } }
+
+            it "adds the user to the recipients" do
+              expect(subject.notification_recipients.map(&:user)).to include(custom_notification_user)
+            end
+          end
+        end
+
+        context 'when work item issue is due' do
+          subject { described_class.new(target, current_user, action: :due, custom_action: :issue_due).tap { |s| s.build! } }
+
+          it "adds the user to the recipients" do
+            expect(subject.notification_recipients.map(&:user)).to include(custom_notification_user)
+          end
+        end
+
+        context 'when work item is not an issue' do
+          let_it_be(:target) { create(:work_item, :task, project: project) }
+
+          subject { described_class.new(target, current_user, action: :new).tap { |s| s.build! } }
+
+          it 'does not add the user to the recipients' do
+            expect(subject.notification_recipients.map(&:user)).not_to include(custom_notification_user)
+          end
+        end
+      end
     end
   end
 end

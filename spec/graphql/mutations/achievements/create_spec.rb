@@ -31,6 +31,23 @@ RSpec.describe Mutations::Achievements::Create, feature_category: :user_profile 
       end
     end
 
+    context 'when the feature is not enabled' do
+      before do
+        stub_feature_flags(achievements: false)
+      end
+
+      it 'raises an error' do
+        allow_next_instance_of(described_class) do |instance|
+          allow(instance).to receive(:authorized_find!).and_return(group)
+        end
+
+        expect do
+          resolve_mutation
+        end.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable,
+          '`achievements` feature flag is disabled.')
+      end
+    end
+
     context 'when the user has permission' do
       before do
         group.add_maintainer(current_user)

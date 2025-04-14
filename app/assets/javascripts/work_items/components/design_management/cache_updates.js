@@ -1,7 +1,7 @@
 import produce from 'immer';
 import { differenceBy } from 'lodash';
 import { createAlert } from '~/alert';
-import { findDesignWidget } from '~/work_items/utils';
+import { findDesignsWidget } from '~/work_items/utils';
 import { designWidgetOf, extractCurrentDiscussion } from './utils';
 import {
   designArchiveError,
@@ -28,7 +28,7 @@ const addNewDesignToStore = (store, designManagementUpload, query) => {
   store.writeQuery({
     ...query,
     data: produce(sourceData, (draftData) => {
-      const designWidget = findDesignWidget(draftData.workItem.widgets);
+      const designWidget = findDesignsWidget(draftData.workItem);
       const currentDesigns = designWidget.designCollection.designs.nodes;
       const difference = differenceBy(designManagementUpload.designs, currentDesigns, 'filename');
 
@@ -78,7 +78,7 @@ const addNewVersionToStore = (store, query, version) => {
   const sourceData = store.readQuery(query);
 
   const data = produce(sourceData, (draftData) => {
-    const designWidget = findDesignWidget(draftData.workItem.widgets);
+    const designWidget = findDesignsWidget(draftData.workItem);
     designWidget.designCollection.versions.nodes = [
       version,
       ...designWidgetOf(draftData).designCollection.versions.nodes,
@@ -103,7 +103,7 @@ const moveDesignInStore = (store, designManagementMove, query) => {
   const sourceData = store.readQuery(query);
 
   const data = produce(sourceData, (draftData) => {
-    const designWidget = findDesignWidget(draftData.workItem.widgets);
+    const designWidget = findDesignsWidget(draftData.workItem);
     designWidget.designCollection.designs.nodes =
       designManagementMove.designCollection.designs.nodes;
   });

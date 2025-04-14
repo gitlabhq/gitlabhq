@@ -13,8 +13,10 @@ import {
 import markAsDoneMutation from '~/todos/components/mutations/mark_as_done.mutation.graphql';
 import markAsPendingMutation from '~/todos/components/mutations/mark_as_pending.mutation.graphql';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { updateGlobalTodoCount } from '~/sidebar/utils';
 
 Vue.use(VueApollo);
+jest.mock('~/sidebar/utils');
 
 describe('TodoItemActions', () => {
   let wrapper;
@@ -100,22 +102,34 @@ describe('TodoItemActions', () => {
   });
 
   describe('toggling the status', () => {
-    it('marks pending todos as done and emits the `change` event', async () => {
+    it('marks pending todos as done, emits the `change` event, and optimistic update of the count', async () => {
       createComponent();
       findToggleStatusButton().vm.$emit('click');
       await waitForPromises();
 
       expect(markAsDoneMutationSuccessHandler).toHaveBeenCalled();
       expect(wrapper.emitted('change')).toHaveLength(1);
+      expect(updateGlobalTodoCount).toHaveBeenCalledWith(-1);
     });
 
-    it('marks done todos as pending and emits the `change` event', async () => {
+    it('marks snoozed todos as done and emits the `change` event, and NO optimistic update of the count', async () => {
+      createComponent({ props: { isSnoozed: true } });
+      findToggleStatusButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(markAsDoneMutationSuccessHandler).toHaveBeenCalled();
+      expect(wrapper.emitted('change')).toHaveLength(1);
+      expect(updateGlobalTodoCount).not.toHaveBeenCalledWith();
+    });
+
+    it('marks done todos as pending and emits the `change` event, and optimistic update of the count', async () => {
       createComponent({ props: { todo: { ...mockTodo, state: TODO_STATE_DONE } } });
       findToggleStatusButton().vm.$emit('click');
       await waitForPromises();
 
       expect(markAsPendingMutationSuccessHandler).toHaveBeenCalled();
       expect(wrapper.emitted('change')).toHaveLength(1);
+      expect(updateGlobalTodoCount).toHaveBeenCalledWith(+1);
     });
 
     it('should track an event', () => {

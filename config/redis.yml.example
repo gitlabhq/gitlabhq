@@ -1,7 +1,5 @@
 ---
 development:
-  buffered_counter:
-    url: redis://localhost:6379
   chat:
     cluster:
       - redis://localhost:7001
@@ -30,8 +28,6 @@ development:
     url: redis://localhost:6379
 
 test:
-  buffered_counter:
-    url: redis://localhost:6379
   chat:
     cluster:
       - redis://localhost:7001

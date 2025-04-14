@@ -6,9 +6,9 @@ import waitForPromises from 'helpers/wait_for_promises';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import {
-  WORK_ITEMS_TYPE_MAP,
+  WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
-  WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+  WORK_ITEMS_TYPE_MAP,
 } from '~/work_items/constants';
 import CreateWorkItemCancelConfirmationModal from '~/work_items/components/create_work_item_cancel_confirmation_modal.vue';
 
@@ -40,17 +40,19 @@ describe('CreateWorkItemModal', () => {
   const createComponent = ({
     asDropdownItem = false,
     hideButton = false,
-    workItemTypeName = 'EPIC',
+    preselectedWorkItemType = 'EPIC',
     relatedItem = null,
     alwaysShowWorkItemTypeSelect = false,
+    namespaceFullName = 'GitLab.org / GitLab',
   } = {}) => {
     wrapper = shallowMount(CreateWorkItemModal, {
       propsData: {
-        workItemTypeName,
+        preselectedWorkItemType,
         asDropdownItem,
         hideButton,
         relatedItem,
         alwaysShowWorkItemTypeSelect,
+        namespaceFullName,
       },
       provide: {
         fullPath: 'full-path',
@@ -88,6 +90,7 @@ describe('CreateWorkItemModal', () => {
       await nextTick();
 
       expect(findCreateModal().props('visible')).toBe(true);
+      expect(findForm().props('namespaceFullName')).toBe('GitLab.org / GitLab');
       expect(mockEvent.preventDefault).toHaveBeenCalled();
     });
 
@@ -111,8 +114,8 @@ describe('CreateWorkItemModal', () => {
       expect(findTrigger().exists()).toBe(false);
     });
 
-    it('has text of "New item" when the `alwaysShowWorkItemTypeSelect` prop is `true` and we also have a `workItemTypeName`', () => {
-      createComponent({ alwaysShowWorkItemTypeSelect: true, workItemTypeName: 'ISSUE' });
+    it('has text of "New item" when the `alwaysShowWorkItemTypeSelect` prop is `true` and we also have a `preselectedWorkItemType`', () => {
+      createComponent({ alwaysShowWorkItemTypeSelect: true, preselectedWorkItemType: 'ISSUE' });
 
       expect(findTrigger().text()).toBe('New item');
     });
@@ -148,9 +151,9 @@ describe('CreateWorkItemModal', () => {
     expect(findCreateModal().props('visible')).toBe(false);
   });
 
-  for (const [workItemTypeName, vals] of Object.entries(WORK_ITEMS_TYPE_MAP)) {
-    it(`has link to new work item page in modal header for ${workItemTypeName}`, async () => {
-      createComponent({ workItemTypeName });
+  for (const [preselectedWorkItemType, vals] of Object.entries(WORK_ITEMS_TYPE_MAP)) {
+    it(`has link to new work item page in modal header for ${preselectedWorkItemType}`, async () => {
+      createComponent({ preselectedWorkItemType });
 
       const routeParamName = vals.routeParamName || WORK_ITEM_TYPE_ROUTE_WORK_ITEM;
 
@@ -184,7 +187,7 @@ describe('CreateWorkItemModal', () => {
 
       expect(wrapper.find('h2').text()).toBe('New epic');
 
-      findForm().vm.$emit('changeType', WORK_ITEM_TYPE_ENUM_KEY_RESULT);
+      findForm().vm.$emit('changeType', WORK_ITEM_TYPE_NAME_KEY_RESULT);
       await nextTick();
       findForm().vm.$emit('workItemCreated', { webUrl: '/' });
 

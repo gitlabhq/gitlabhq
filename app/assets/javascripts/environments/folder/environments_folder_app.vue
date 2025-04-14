@@ -188,9 +188,9 @@ export default {
 </script>
 <template>
   <div>
-    <delete-environment-modal :environment="environmentToDelete" graphql />
-    <stop-environment-modal :environment="environmentToStop" graphql />
-    <confirm-rollback-modal :environment="environmentToRollback" graphql />
+    <delete-environment-modal :environment="environmentToDelete" />
+    <stop-environment-modal :environment="environmentToStop" />
+    <confirm-rollback-modal :environment="environmentToRollback" />
     <canary-update-modal :environment="environmentToChangeCanary" :weight="weight" />
     <h4 class="gl-font-normal" data-testid="folder-name">
       {{ $options.i18n.pageTitle }} /
@@ -251,6 +251,7 @@ export default {
       v-model="pageNumber"
       :per-page="$options.perPage"
       :total-items="totalItems"
+      class="gl-mt-6"
       align="center"
     />
   </div>

@@ -9,7 +9,7 @@ title: The Customers Portal
 For some management tasks for your subscription and account, such as purchasing additional seats or storage and viewing invoices, you use the Customers Portal. See the following pages for specific instructions on managing your subscription:
 
 - [GitLab SaaS subscription](gitlab_com/_index.md)
-- [Self-managed subscription](self_managed/_index.md)
+- [GitLab Self-Managed subscription](self_managed/_index.md)
 
 If you made your purchase through an authorized reseller, you must contact them directly to make changes to your subscription.
 For more information, see [Customers that purchased through a reseller](#customers-that-purchased-through-a-reseller).
@@ -168,6 +168,20 @@ method as the default:
 1. On the left sidebar, select **Billing account settings**.
 1. **Edit** the selected payment method and check the **Make default payment method** checkbox.
 1. Select **Save Changes**.
+
+## Pay for an invoice
+
+You can pay for your invoices in the Customers Portal with a credit card.
+
+To pay for an invoice:
+
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. On the left sidebar, select **Invoices**.
+1. On the invoice you want to pay for, select **Pay for invoice**.
+1. Complete the payment form.
+
+If you would like to use an alternative payment method,
+[contact our Billing team](https://customers.gitlab.com/contact_us#contact-billing-team).
 
 ## Link a GitLab.com account
 

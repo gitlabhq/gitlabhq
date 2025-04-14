@@ -15,7 +15,7 @@ module ActiveContext
 
         def add_ref(ref)
           @refs << ref
-          @operations << build_operation(ref)
+          build_operation(ref)
 
           refs.size >= BATCH_SIZE
         end
@@ -29,8 +29,7 @@ module ActiveContext
         end
 
         def process_bulk_errors(result)
-          # we already return only failed references so nothing to do here
-          result
+          result.uniq { |ref| ref.unique_identifier(nil) }
         end
 
         def reset
@@ -43,18 +42,32 @@ module ActiveContext
         def build_operation(ref)
           case ref.operation.to_sym
           when :upsert
-            { "#{ref.partition_name}": { upsert: build_indexed_json(ref) }, ref: ref }
+            ref.jsons.each do |hash|
+              @operations << { "#{ref.partition_name}": { upsert: build_indexed_json(hash, ref) }, ref: ref }
+            end
+            @operations << build_delete_operation(ref: ref, include_ref_version: true)
           when :delete
-            { "#{ref.partition_name}": { delete: ref.identifier }, ref: ref }
+            @operations << build_delete_operation(ref: ref)
           else
             raise StandardError, "Operation #{ref.operation} is not supported"
           end
         end
 
-        def build_indexed_json(ref)
-          ref.as_indexed_json
-            .merge(partition_id: ref.partition_number)
+        def build_indexed_json(hash, ref)
+          hash
+            .merge(
+              partition_id: ref.partition_number,
+              id: hash[:unique_identifier]
+            )
+            .except(:unique_identifier)
             .transform_values { |value| convert_pg_array(value) }
+        end
+
+        def build_delete_operation(ref:, include_ref_version: false)
+          hash = { ref_id: ref.identifier }
+          hash[:ref_version] = ref.ref_version if include_ref_version
+
+          { "#{ref.partition_name}": { delete: hash }, ref: ref }
         end
 
         def convert_pg_array(value)

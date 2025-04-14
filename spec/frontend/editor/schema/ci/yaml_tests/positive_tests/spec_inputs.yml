@@ -1,0 +1,51 @@
+# Global component: spec section with inputs
+spec:
+  inputs:
+    string_input:
+      type: string
+      description: "String input"
+    number_input:
+      type: number
+      description: "Number input"
+    boolean_input:
+      type: boolean
+      description: "Boolean input"
+    array_input:
+      type: array
+      description: "Array input"
+
+# Global component: include with inputs
+include:
+  - local: "template.yml"
+    inputs:
+      environment: "production"
+      version: "v2.0.0"
+      debug: false
+      workers: 4
+
+# Job: trigger with downstream inputs
+trigger_job:
+  trigger:
+    project: "group/project"
+    strategy: depend
+    inputs:
+      environment: "production"
+      version: "v2.1.0"
+      debug: false
+      matrix:
+        - browser: "chrome"
+          device: "desktop"
+
+# Job: trigger with child pipeline inputs
+child_pipeline_job:
+  trigger:
+    include:
+      - local: "child.yml"
+        inputs:
+          environment: "staging"
+          version: "v1.5.0"
+      - project: "group/project"
+        file: "template.yml"
+        inputs:
+          debug: true
+          workers: 8

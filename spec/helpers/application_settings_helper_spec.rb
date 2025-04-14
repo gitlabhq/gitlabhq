@@ -51,6 +51,11 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
         .to include(*%i[snowplow_collector_hostname snowplow_cookie_domain snowplow_enabled snowplow_app_id])
     end
 
+    it 'contains product usage data setting' do
+      expect(helper.visible_attributes)
+        .to include(:gitlab_product_usage_data_enabled)
+    end
+
     it 'contains :resource_usage_limits' do
       expect(helper.visible_attributes).to include(:resource_usage_limits)
     end
@@ -92,6 +97,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
         global_search_users_enabled
         global_search_issues_enabled
         global_search_merge_requests_enabled
+        global_search_block_anonymous_searches_enabled
       ]
       expect(helper.visible_attributes).to include(*expected_fields)
     end
@@ -386,16 +392,18 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
       application_setting.global_search_merge_requests_enabled = false
       application_setting.global_search_users_enabled = false
       application_setting.global_search_snippet_titles_enabled = true
+      application_setting.global_search_block_anonymous_searches_enabled = true
       helper.instance_variable_set(:@application_setting, application_setting)
     end
 
     it 'returns correctly checked checkboxes' do
       helper.gitlab_ui_form_for(application_setting, url: search_admin_application_settings_path) do |form|
         result = helper.global_search_settings_checkboxes(form)
-        expect(result[0]).to have_checked_field('Enable issues tab in global search results', with: 1)
-        expect(result[1]).not_to have_checked_field('Enable merge requests tab in global search results', with: 1)
-        expect(result[2]).to have_checked_field('Enable snippet tab in global search results', with: 1)
-        expect(result[3]).not_to have_checked_field('Enable users tab in global search results', with: 1)
+        expect(result[0]).to have_checked_field('Enable blocking of anonymous global search requests', with: 1)
+        expect(result[1]).to have_checked_field('Enable issues tab in global search results', with: 1)
+        expect(result[2]).not_to have_checked_field('Enable merge requests tab in global search results', with: 1)
+        expect(result[3]).to have_checked_field('Enable snippet tab in global search results', with: 1)
+        expect(result[4]).not_to have_checked_field('Enable users tab in global search results', with: 1)
       end
     end
   end
@@ -446,6 +454,20 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
         )
       end
     end
+  end
+
+  describe '.deletion_protection_data' do
+    let_it_be(:application_setting) { build(:application_setting) }
+
+    before do
+      application_setting.deletion_adjourned_period = 1
+
+      helper.instance_variable_set(:@application_setting, application_setting)
+    end
+
+    subject { helper.deletion_protection_data }
+
+    it { is_expected.to eq({ deletion_adjourned_period: 1 }) }
   end
 
   describe '#vscode_extension_marketplace_settings_view' do

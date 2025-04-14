@@ -8,4 +8,4 @@ description: Represents a zoekt repository
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141864
 milestone: '16.9'
 gitlab_schema: gitlab_main_cell_local
-table_size: small
+table_size: large

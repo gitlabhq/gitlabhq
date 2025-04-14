@@ -25,7 +25,12 @@ module BulkImports
     private
 
     def process_bulk_import
-      bulk_import.start! if bulk_import.created?
+      if bulk_import.created?
+        bulk_import.start!
+        # Fetch and cache the source ghost user id to avoid repeated API calls.
+        # This also avoids inconsistent ghost user mapping if concurrent API responses occasionally fail.
+        BulkImports::SourceInternalUserFinder.new(bulk_import.configuration).set_ghost_user_id
+      end
 
       created_entities.first(next_batch_size).each do |entity|
         create_tracker(entity)

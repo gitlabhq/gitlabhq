@@ -17,14 +17,14 @@ export * from '@gitlab/ui';
 
 /* eslint-disable global-require */
 
-jest.mock('@gitlab/ui/src/directives/tooltip.js', () => ({
+jest.mock('@gitlab/ui/src/directives/tooltip/tooltip.js', () => ({
   GlTooltipDirective: {
     bind() {},
     unbind() {},
   },
 }));
-jest.mock('@gitlab/ui/dist/directives/tooltip.js', () =>
-  require('@gitlab/ui/src/directives/tooltip'),
+jest.mock('@gitlab/ui/dist/directives/tooltip/tooltip.js', () =>
+  require('@gitlab/ui/src/directives/tooltip/tooltip'),
 );
 
 jest.mock('@gitlab/ui/src/components/base/tooltip/tooltip.vue', () => ({

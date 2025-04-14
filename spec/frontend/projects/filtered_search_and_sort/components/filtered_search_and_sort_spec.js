@@ -6,9 +6,8 @@ import {
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
   SORT_OPTIONS,
-  SORT_DIRECTION_ASC,
-  SORT_DIRECTION_DESC,
 } from '~/projects/filtered_search_and_sort/constants';
+import { SORT_DIRECTION_ASC, SORT_DIRECTION_DESC } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import ProjectsExploreFilteredSearchAndSort from '~/projects/filtered_search_and_sort/components/filtered_search_and_sort.vue';

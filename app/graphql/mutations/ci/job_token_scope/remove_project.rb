@@ -25,7 +25,7 @@ module Mutations
             reason: 'Outbound job token scope is being removed. This field can now only be set to INBOUND',
             milestone: '16.9'
           },
-          description: 'Direction of access, which defaults to outbound.'
+          description: 'Direction of access, which defaults to inbound.'
 
         field :ci_job_token_scope_allowlist_entry,
           Types::Ci::JobTokenScope::AllowlistEntryType,
@@ -38,7 +38,9 @@ module Mutations
           null: true,
           description: "CI job token's access scope."
 
-        def resolve(project_path:, target_project_path:, direction: :outbound)
+        def resolve(
+          project_path:, target_project_path:,
+          direction: ::Types::Ci::JobTokenScope::DirectionEnum.values["INBOUND"].value)
           project = authorized_find!(project_path)
           target_project = Project.find_by_full_path(target_project_path)
 

@@ -11,12 +11,12 @@ import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutati
 import WorkItemCrmContacts from '~/work_items/components/work_item_crm_contacts.vue';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import {
-  getGroupCrmContactsResponse,
-  mockCrmContacts,
   updateWorkItemMutationResponseFactory,
   updateWorkItemMutationErrorResponse,
   workItemByIidResponseFactory,
-} from '../mock_data';
+  getGroupCrmContactsResponse,
+  mockCrmContacts,
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 Vue.use(VueApollo);
 

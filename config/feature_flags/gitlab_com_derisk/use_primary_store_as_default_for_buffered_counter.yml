@@ -1,9 +1,0 @@
----
-name: use_primary_store_as_default_for_buffered_counter
-feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/data-access/durability/team/-/issues/71
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182086
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520436
-milestone: '17.10'
-group: group::durability
-type: gitlab_com_derisk
-default_enabled: false

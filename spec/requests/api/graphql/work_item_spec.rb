@@ -20,7 +20,9 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       last_edited_at: 1.day.ago,
       last_edited_by: guest,
       user_agent_detail: create(:user_agent_detail)
-    )
+    ).tap do |work_item|
+      create_list(:discussion_note_on_issue, 3, noteable: work_item, project: project)
+    end
   end
 
   let_it_be(:child_item1) { create(:work_item, :task, project: project, id: 1200) }
@@ -52,6 +54,19 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
     end
   end
 
+  context "for showPlanUpgradePromotion field" do
+    context "when the namespace is in a free plan" do
+      before do
+        post_graphql(query, current_user: current_user)
+      end
+
+      it "returns true" do
+        # For FOSS/ce version the api will always return true
+        expect(work_item_data).to include('showPlanUpgradePromotion' => true)
+      end
+    end
+  end
+
   context 'when the user can read the work item' do
     let(:incoming_email_token) { current_user.incoming_email_token }
     let(:work_item_email) do
@@ -74,10 +89,12 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
         'state' => "OPEN",
         'title' => work_item.title,
         'confidential' => work_item.confidential,
+        'userDiscussionsCount' => 3,
         'workItemType' => hash_including('id' => work_item.work_item_type.to_gid.to_s),
         'reference' => work_item.to_reference,
         'createNoteEmail' => work_item_email,
         'archived' => false,
+        'hidden' => false,
         'userPermissions' => hash_including(
           'readWorkItem' => true,
           'updateWorkItem' => true,
@@ -596,6 +613,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
               ... on WorkItemWidgetAwardEmoji {
                 upvotes
                 downvotes
+                newCustomEmojiPath
                 awardEmoji {
                   nodes {
                     name
@@ -614,6 +632,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                 'type' => 'AWARD_EMOJI',
                 'upvotes' => work_item.upvotes,
                 'downvotes' => work_item.downvotes,
+                'newCustomEmojiPath' => Gitlab::Routing.url_helpers.new_group_custom_emoji_path(group),
                 'awardEmoji' => {
                   'nodes' => match_array(
                     [emoji, upvote, downvote].map { |e| { 'name' => e.name } }
@@ -859,12 +878,20 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
             widgets {
               type
               ... on WorkItemWidgetNotes {
-                discussions(filter: ONLY_COMMENTS, first: 10) {
+                discussions(filter: ALL_NOTES, first: 10) {
                   nodes {
                     id
+                    resolvable
+                    resolvedBy {
+                      username
+                    }
+                    userPermissions {
+                      resolveNote
+                    }
                     notes {
                       nodes {
                         id
+                        system
                         body
                         maxAccessLevelOfAuthor
                         authorIsContributor
@@ -880,6 +907,12 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                     }
                   }
                 }
+                notes(last: 1) {
+                  nodes {
+                    id
+                    body
+                  }
+                }
               }
             }
           GRAPHQL
@@ -889,6 +922,52 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
 
         before_all do
           create(:award_emoji, awardable: note, name: 'rocket', user: developer)
+        end
+
+        context 'when fetching resolvable notes data' do
+          context 'with system notes' do
+            let_it_be(:comment1) { create(:discussion_note_on_issue, project: work_item.project, noteable: work_item) }
+            let_it_be(:comment2) { create(:note, discussion_id: comment1.discussion_id) }
+            let_it_be(:sys_note1) { create(:system_note, project: work_item.project, noteable: work_item) }
+            let_it_be(:sys_note2) { create(:resource_state_event, user: developer, issue: work_item, state: :closed) }
+
+            it 'returns resolve note permission' do
+              all_widgets = graphql_dig_at(work_item_data, :widgets)
+              notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
+              discussions = graphql_dig_at(notes_widget['discussions'], :nodes)
+
+              expect(discussions).to include(
+                hash_including(
+                  'id' => note.discussion.to_global_id.to_s,
+                  'resolvable' => false,
+                  'userPermissions' => {
+                    'resolveNote' => true
+                  }
+                ),
+                hash_including(
+                  'id' => comment1.discussion.to_global_id.to_s,
+                  'resolvable' => true,
+                  'userPermissions' => {
+                    'resolveNote' => true
+                  }
+                ),
+                hash_including(
+                  'id' => sys_note1.discussion.to_global_id.to_s,
+                  'resolvable' => false,
+                  'userPermissions' => {
+                    'resolveNote' => false
+                  }
+                ),
+                hash_including(
+                  'id' => sys_note2.work_item_synthetic_system_note.discussion.to_global_id.to_s,
+                  'resolvable' => false,
+                  'userPermissions' => {
+                    'resolveNote' => false
+                  }
+                )
+              )
+            end
+          end
         end
 
         it 'returns award emoji data' do
@@ -917,8 +996,23 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
           notes = graphql_dig_at(notes_widget['discussions'], :nodes).flat_map { |d| d['notes']['nodes'] }
 
-          expect(notes).to contain_exactly(
+          expect(notes).to include(
             hash_including('maxAccessLevelOfAuthor' => 'Developer', 'authorIsContributor' => false)
+          )
+        end
+
+        it 'can return the latest note' do
+          latest_note = create(:note, project: work_item.project, noteable: work_item, note: 'Last note')
+
+          post_graphql(query, current_user: developer)
+
+          all_widgets = graphql_dig_at(work_item_data, :widgets)
+          notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
+          note = graphql_dig_at(notes_widget['notes'], :nodes).last
+
+          expect(note).to include(
+            'id' => latest_note.to_gid.to_s,
+            'body' => latest_note.note
           )
         end
 
@@ -1293,6 +1387,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
               ... on WorkItemWidgetDevelopment {
                 willAutoCloseByMergeRequest
                 closingMergeRequests {
+                  count
                   nodes {
                     id
                     fromMrDescription
@@ -1337,6 +1432,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                   'type' => 'DEVELOPMENT',
                   'willAutoCloseByMergeRequest' => true,
                   'closingMergeRequests' => {
+                    'count' => 2,
                     'nodes' => containing_exactly(
                       hash_including(
                         'id' => mr_closing_issue1.to_gid.to_s,
@@ -1503,6 +1599,64 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                   'nodes' => containing_exactly(
                     hash_including(
                       'email' => obfuscated_email
+                    )
+                  )
+                }
+              )
+            )
+          )
+        end
+      end
+    end
+
+    describe 'contacts widget' do
+      let(:work_item_fields) do
+        <<~GRAPHQL
+          id
+          widgets {
+            type
+            ... on WorkItemWidgetCrmContacts {
+              contactsAvailable
+              contacts {
+                nodes {
+                  firstName
+                }
+              }
+            }
+          }
+        GRAPHQL
+      end
+
+      context 'when no contacts are available' do
+        it 'returns expected data' do
+          expect(work_item_data).to include(
+            'widgets' => array_including(
+              hash_including(
+                'type' => 'CRM_CONTACTS',
+                'contactsAvailable' => false,
+                'contacts' => {
+                  'nodes' => be_empty
+                }
+              )
+            )
+          )
+        end
+      end
+
+      context 'when contacts are available' do
+        let_it_be(:contact) { create(:contact, group: work_item.project.group) }
+        let_it_be(:issue_contact) { create(:issue_customer_relations_contact, issue: work_item, contact: contact) }
+
+        it 'returns expected data' do
+          expect(work_item_data).to include(
+            'widgets' => array_including(
+              hash_including(
+                'type' => 'CRM_CONTACTS',
+                'contactsAvailable' => true,
+                'contacts' => {
+                  'nodes' => containing_exactly(
+                    hash_including(
+                      'firstName' => contact.first_name
                     )
                   )
                 }

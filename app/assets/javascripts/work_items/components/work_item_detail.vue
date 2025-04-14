@@ -11,6 +11,7 @@ import noAccessSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-searc
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __ } from '~/locale';
+import { InternalEvents } from '~/tracking';
 import { getParameterByName, updateHistory, removeParams } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
@@ -31,19 +32,19 @@ import {
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_AWARD_EMOJI,
   WIDGET_TYPE_HIERARCHY,
-  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_LINKED_ITEMS,
   WIDGET_TYPE_DESIGNS,
   WORK_ITEM_REFERENCE_CHAR,
-  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_NAME_EPIC,
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_DEVELOPMENT,
   STATE_OPEN,
   WIDGET_TYPE_ERROR_TRACKING,
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_MILESTONE,
-  WORK_ITEM_TYPE_VALUE_INCIDENT,
+  WORK_ITEM_TYPE_NAME_INCIDENT,
 } from '../constants';
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
@@ -78,7 +79,6 @@ import WorkItemDescription from './work_item_description.vue';
 import WorkItemNotes from './work_item_notes.vue';
 import WorkItemAwardEmoji from './work_item_award_emoji.vue';
 import WorkItemRelationships from './work_item_relationships/work_item_relationships.vue';
-import WorkItemErrorTracking from './work_item_error_tracking.vue';
 import WorkItemStickyHeader from './work_item_sticky_header.vue';
 import WorkItemAncestors from './work_item_ancestors/work_item_ancestors.vue';
 import WorkItemTitle from './work_item_title.vue';
@@ -90,10 +90,14 @@ import DesignUploadButton from './design_management/upload_button.vue';
 import WorkItemDevelopment from './work_item_development/work_item_development.vue';
 import WorkItemCreateBranchMergeRequestSplitButton from './work_item_development/work_item_create_branch_merge_request_split_button.vue';
 
+const WorkItemErrorTracking = () => import('~/work_items/components/work_item_error_tracking.vue');
+
 const defaultWorkspacePermissions = {
   createDesign: false,
   moveDesign: false,
 };
+
+const trackingMixin = InternalEvents.mixin();
 
 export default {
   name: 'WorkItemDetail',
@@ -134,14 +138,8 @@ export default {
     WorkItemDevelopment,
     WorkItemCreateBranchMergeRequestSplitButton,
   },
-  mixins: [glFeatureFlagMixin()],
-  inject: [
-    'fullPath',
-    'reportAbusePath',
-    'groupPath',
-    'hasSubepicsFeature',
-    'hasLinkedItemsEpicsFeature',
-  ],
+  mixins: [glFeatureFlagMixin(), trackingMixin],
+  inject: ['fullPath', 'groupPath', 'hasSubepicsFeature', 'hasLinkedItemsEpicsFeature'],
   props: {
     isModal: {
       type: Boolean,
@@ -342,6 +340,9 @@ export default {
     canSummarizeComments() {
       return this.workItem.userPermissions?.summarizeComments;
     },
+    hasBlockedWorkItemsFeature() {
+      return this.workItem.userPermissions?.blockedWorkItems;
+    },
     isDiscussionLocked() {
       return this.workItemNotes?.discussionLocked;
     },
@@ -360,7 +361,7 @@ export default {
     hasParent() {
       const { workItemType, parentWorkItem, hasSubepicsFeature } = this;
 
-      if (workItemType === WORK_ITEM_TYPE_VALUE_EPIC) {
+      if (workItemType === WORK_ITEM_TYPE_NAME_EPIC) {
         return Boolean(hasSubepicsFeature && parentWorkItem);
       }
 
@@ -410,8 +411,8 @@ export default {
     workItemAwardEmoji() {
       return this.findWidget(WIDGET_TYPE_AWARD_EMOJI);
     },
-    workItemErrorTrackingIdentifier() {
-      return this.findWidget(WIDGET_TYPE_ERROR_TRACKING)?.identifier;
+    workItemErrorTracking() {
+      return this.findWidget(WIDGET_TYPE_ERROR_TRACKING) ?? {};
     },
     workItemHierarchy() {
       return this.findWidget(WIDGET_TYPE_HIERARCHY);
@@ -446,7 +447,7 @@ export default {
       return !this.isModal && !this.editMode && !this.isDrawer;
     },
     workItemLinkedItems() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC
         ? this.findWidget(WIDGET_TYPE_LINKED_ITEMS) && this.hasLinkedItemsEpicsFeature
         : this.findWidget(WIDGET_TYPE_LINKED_ITEMS);
     },
@@ -527,7 +528,11 @@ export default {
       return this.workItem?.namespace?.fullName || '';
     },
     contextualViewEnabled() {
-      return gon.current_user_use_work_items_view || this.workItemsAlphaEnabled;
+      return (
+        gon.current_user_use_work_items_view ||
+        this.workItemsAlphaEnabled ||
+        this.glFeatures?.workItemViewForIssues
+      );
     },
     hasChildren() {
       return this.workItemHierarchy?.hasChildren;
@@ -624,9 +629,14 @@ export default {
       document.title = s__('404|Not found');
     },
     openContextualView({ event, modalWorkItem }) {
+      if (!modalWorkItem) {
+        this.activeChildItem = null;
+        return;
+      }
+
       if (
         !this.contextualViewEnabled ||
-        modalWorkItem.workItemType?.name === WORK_ITEM_TYPE_VALUE_INCIDENT ||
+        modalWorkItem.workItemType?.name === WORK_ITEM_TYPE_NAME_INCIDENT ||
         this.isDrawer
       ) {
         return;
@@ -840,12 +850,18 @@ export default {
     },
     handleToggleSidebar() {
       this.showSidebar = !this.showSidebar;
+      this.trackEvent('change_work_item_sidebar_visibility', {
+        label: this.showSidebar.toString(), // New sidebar visibility
+      });
     },
     handleTruncationEnabled() {
       this.truncationEnabled = !this.truncationEnabled;
+      this.trackEvent('change_work_item_description_truncation', {
+        label: this.truncationEnabled.toString(), // New user truncation setting
+      });
     },
   },
-  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
   WORKSPACE_PROJECT,
   noAccessSvg,
 };
@@ -1129,9 +1145,9 @@ export default {
             </aside>
 
             <work-item-error-tracking
-              v-if="workItemErrorTrackingIdentifier"
+              v-if="workItemErrorTracking.identifier"
               :full-path="workItemFullPath"
-              :identifier="workItemErrorTrackingIdentifier"
+              :iid="iid"
             />
 
             <design-widget
@@ -1195,6 +1211,7 @@ export default {
               :work-item-type="workItem.workItemType.name"
               :can-admin-work-item-link="canAdminWorkItemLink"
               :active-child-item-id="activeChildItemId"
+              :has-blocked-work-items-feature="hasBlockedWorkItemsFeature"
               @showModal="openContextualView"
             />
 
@@ -1216,7 +1233,6 @@ export default {
               :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
               :can-set-work-item-metadata="canAssignUnassignUser"
               :can-summarize-comments="canSummarizeComments"
-              :report-abuse-path="reportAbusePath"
               :is-discussion-locked="isDiscussionLocked"
               :is-work-item-confidential="workItem.confidential"
               :new-comment-template-paths="newCommentTemplatePaths"

@@ -568,6 +568,6 @@ Merge requests that can trigger Package and QA, can trigger a FIPS package and a
 Reference Architecture test pipeline. The base image used for the trigger is
 Ubuntu 20.04 FIPS:
 
-1. Trigger `e2e:test-on-omnibus` job, if not already triggered.
+1. Trigger `e2e:test-on-omnibus-ee` job, if not already triggered.
 1. On the `gitlab-omnibus-mirror` child pipeline, manually trigger `Trigger:package:fips`.
 1. When the package job is complete, manually trigger the `RAT:FIPS` job.

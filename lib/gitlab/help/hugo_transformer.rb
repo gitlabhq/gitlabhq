@@ -56,6 +56,31 @@ module Gitlab
         end.strip
       end
 
+      def hugo_anchor(title)
+        # Handle nil or non-string input
+        return "" if title.nil?
+
+        title_str = title.to_s
+        # Replace code blocks with placeholders and save them temporarily
+        code_blocks = []
+        result = title_str.downcase.gsub(/`([^`]+)`/) do |_|
+          code_blocks << Regexp.last_match(1)
+          "{{CODE#{code_blocks.size - 1}}}"
+        end
+
+        # Process non-code-block text
+        result = result.gsub(/[^\w\s\-{}]/, '')  # Remove special characters
+        result = result.gsub(/[\s_]+/, '-')      # Replace spaces and underscores with dashes
+
+        # Put code blocks back, replacing special characters but not underscores
+        result = result.gsub(/\{\{CODE(\d+)\}\}/) do |_|
+          code_blocks[Regexp.last_match(1).to_i].gsub(/[^\w\s\-{}]/, '')
+        end
+
+        # Remove leading and trailing dashes
+        result.gsub(/^-+|-+$/, '')
+      end
+
       private
 
       def handle_disclaimer_alerts(content)

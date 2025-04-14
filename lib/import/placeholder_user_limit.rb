@@ -26,17 +26,6 @@ module Import
       end
     end
 
-    private
-
-    attr_reader :root_namespace
-
-    def calculate_has_exceeded
-      count = ::Import::SourceUser.namespace_placeholder_user_count(root_namespace, limit: limit)
-      return false unless count > 0
-
-      count >= limit
-    end
-
     def limit
       cached_limit = cache.read_integer(limit_cache_key)
       return cached_limit unless cached_limit.nil?
@@ -46,6 +35,20 @@ module Import
         # As these details rarely change, we can cache for a longer period.
         cache.write(limit_cache_key, limit, timeout: LIMIT_CACHE_TTL)
       end
+    end
+
+    def count
+      @count ||= ::Import::SourceUser.namespace_placeholder_user_count(root_namespace, limit: limit)
+    end
+
+    private
+
+    attr_reader :root_namespace
+
+    def calculate_has_exceeded
+      return false unless count > 0
+
+      count >= limit
     end
 
     def calculate_limit

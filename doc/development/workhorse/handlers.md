@@ -114,14 +114,14 @@ participant Rails
 participant Gitaly
 
 Note left of Git on client: git clone/fetch
-Git on client->>+Workhorse: GET /foo/bar.git/info/refs/?service=git-upload-pack
+Git on client->>+Workhorse: GET /foo/bar.git/info/refs?service=git-upload-pack
 Workhorse->>+Rails: GET Repositories::GitHttpController#info_refs
 Note right of Rails: Access check/Log activity
 Rails-->>Workhorse: 200 OK, Gitlab::Workhorse.git_http_ok
 Workhorse->>+Gitaly: SmartHTTPService.InfoRefsUploadPack gRPC request
 Gitaly -->>-Workhorse: SmartHTTPService.InfoRefsUploadPack gRPC response
 Workhorse-->>-Git on client: send info-refs response
-Git on client->>+Workhorse: GET /foo/bar.git/info/refs/?service=git-upload-pack
+Git on client->>+Workhorse: GET /foo/bar.git/info/refs?service=git-upload-pack
 Workhorse->>+Rails: GET Repositories::GitHttpController#git_receive_pack
 Note right of Rails: Access check/Update statistics
 Rails-->>Workhorse: 200 OK, Gitlab::Workhorse.git_http_ok
@@ -141,14 +141,14 @@ participant Rails
 participant Gitaly
 
 Note left of Git on client: git push
-Git on client->>+Workhorse: GET /foo/bar.git/info/refs/?service=git-receive-pack
+Git on client->>+Workhorse: GET /foo/bar.git/info/refs?service=git-receive-pack
 Workhorse->>+Rails: GET Repositories::GitHttpController#info_refs
 Note right of Rails: Access check/Log activity
 Rails-->>Workhorse: 200 OK, Gitlab::Workhorse.git_http_ok
 Workhorse->>+Gitaly: SmartHTTPService.InfoRefsReceivePack gRPC request
 Gitaly -->>-Workhorse: SmartHTTPService.InfoRefsReceivePack gRPC response
 Workhorse-->>-Git on client: send info-refs response
-Git on client->>+Workhorse: GET /foo/bar.git/info/refs/?service=git-receive-pack
+Git on client->>+Workhorse: GET /foo/bar.git/info/refs?service=git-receive-pack
 Workhorse->>+Rails: GET Repositories::GitHttpController#git_receive_pack
 Note right of Rails: Access check/Update statistics
 Rails-->>Workhorse: 200 OK, Gitlab::Workhorse.git_http_ok

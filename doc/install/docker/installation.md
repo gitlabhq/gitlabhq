@@ -2,6 +2,7 @@
 stage: Systems
 group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn about the prerequisites, strategies, and steps for installing GitLab in a Docker container.
 title: Install GitLab in a Docker container
 ---
 
@@ -147,7 +148,6 @@ install, and upgrade your Docker-based GitLab installation:
 1. Create a `docker-compose.yml` file. For example:
 
    ```yaml
-   version: '3.6'
    services:
      gitlab:
        image: gitlab/gitlab-ee:<version>-ee.0
@@ -181,7 +181,6 @@ install, and upgrade your Docker-based GitLab installation:
    `ports` section:
 
    ```yaml
-   version: '3.6'
    services:
      gitlab:
        image: gitlab/gitlab-ee:<version>-ee.0
@@ -275,8 +274,7 @@ process with:
 and the password from the following command:
 
    ```shell
-   sudo docker exec -it gitlab grep 'Password:' 
-   /etc/gitlab/initial_root_password
+   sudo docker exec -it gitlab grep 'Password:' /etc/gitlab/initial_root_password
    ```
 
 {{< alert type="note" >}}
@@ -301,7 +299,6 @@ Here's an example that deploys GitLab with four runners as a [stack](https://doc
 1. Create a `docker-compose.yml` file:
 
    ```yaml
-   version: "3.6"
    services:
      gitlab:
        image: gitlab/gitlab-ee:<version>-ee.0

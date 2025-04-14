@@ -12,10 +12,6 @@ module Mutations
         required: true,
         description: 'Global IDs of the to-do items to process (a maximum of 100 is supported at once).'
 
-      field :todos, [::Types::TodoType],
-        null: false,
-        description: 'Updated to-do items.'
-
       def resolve(ids:, **kwargs)
         check_update_limit!(amount: ids.size)
 

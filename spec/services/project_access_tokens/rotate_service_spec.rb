@@ -20,6 +20,14 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
         expect(new_token.expires_at).to eq(1.week.from_now.to_date)
         expect(new_token.user).to eq(token.user)
       end
+
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'rotate_prat' }
+        let(:category) { described_class.name }
+        let(:user) { token.user }
+        let(:namespace) { project.namespace }
+        subject(:track_event) { response }
+      end
     end
 
     context 'when user tries to rotate token with different access level' do
@@ -126,13 +134,18 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
 
           context 'when its a bot user' do
             let_it_be(:bot_user) { create(:user, :project_bot) }
+            let_it_be(:token, reload: true) { create(:personal_access_token, user: bot_user) }
             let_it_be(:bot_user_membership) do
-              create(:project_member, :developer, user: bot_user, project: create(:project))
+              create(
+                :project_member,
+                :developer,
+                user: bot_user,
+                project: create(:project),
+                expires_at: token.expires_at
+              )
             end
 
-            let_it_be(:token, reload: true) { create(:personal_access_token, user: bot_user) }
-
-            it 'does not update membership expires at' do
+            it 'does not set membership expires at' do
               response
               expect(bot_user_membership.reload.expires_at).to be_nil
             end

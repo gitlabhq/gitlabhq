@@ -26,7 +26,8 @@ module WorkItemsHelper
       can_create_projects: can?(current_user, :create_projects, group).to_s,
       new_project_path: new_project_path(namespace_id: group&.id),
       group_id: group&.id,
-      has_issue_date_filter_feature: has_issue_date_filter_feature?(resource_parent, current_user).to_s
+      has_issue_date_filter_feature: has_issue_date_filter_feature?(resource_parent, current_user).to_s,
+      time_tracking_limit_to_hours: Gitlab::CurrentSettings.time_tracking_limit_to_hours.to_s
     }
   end
 

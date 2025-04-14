@@ -9,13 +9,13 @@ title: GitLab Duo Workflow use cases
 
 - Tier: Ultimate
 - Offering: GitLab.com
-- Status: Experiment
+- Status: Private beta
 
 {{< /details >}}
 
 {{< alert type="warning" >}}
 
-This feature is considered [experimental](../../policy/development_stages_support.md) and is not intended for customer usage outside of initial design partners. We expect major changes to this feature.
+This feature is [a private beta](../../policy/development_stages_support.md) and is not intended for customer usage outside of initial design partners. We expect major changes to this feature.
 
 {{< /alert >}}
 

@@ -1,0 +1,8 @@
+@import 'mixins_and_variables_and_functions';
+@import 'components/rapid_diffs';
+
+$mr-tabs-height: $grid-size * 6;
+
+.rd-app {
+  --rd-app-sticky-top: calc(#{$calc-application-header-height} + #{$mr-tabs-height});
+}

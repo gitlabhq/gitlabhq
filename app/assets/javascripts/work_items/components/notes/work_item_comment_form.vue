@@ -5,7 +5,7 @@ import { s__, __ } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import {
   STATE_OPEN,
-  WORK_ITEM_TYPE_VALUE_TASK,
+  WORK_ITEM_TYPE_NAME_TASK,
   WIDGET_TYPE_EMAIL_PARTICIPANTS,
   i18n,
 } from '~/work_items/constants';
@@ -206,7 +206,7 @@ export default {
       return this.isNoteInternal ? this.$options.i18n.addInternalNote : this.commentButtonText;
     },
     docsLinks() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_TASK
+      return this.workItemType === WORK_ITEM_TYPE_NAME_TASK
         ? {
             confidential_issues_docs_path: DOCS_WORK_ITEM_CONFIDENTIAL_TASKS_PATH,
             locked_discussion_docs_path: DOCS_WORK_ITEM_LOCKED_TASKS_PATH,
@@ -371,14 +371,17 @@ export default {
           :noteable-type="workItemTypeKey"
         >
           <markdown-editor
+            class="js-gfm-wrapper"
             :value="commentText"
             :render-markdown-path="markdownPreviewPath"
             :markdown-docs-path="$options.constantOptions.markdownDocsPath"
             :new-comment-template-paths="newCommentTemplatePaths"
             :autocomplete-data-sources="autocompleteDataSources"
             :form-field-props="formFieldProps"
-            :add-spacing-classes="false"
             :uploads-path="uploadsPath"
+            :data-work-item-full-path="fullPath"
+            :data-work-item-id="workItemId"
+            :data-work-item-iid="workItemIid"
             use-bottom-toolbar
             supports-quick-actions
             :autofocus="autofocus"

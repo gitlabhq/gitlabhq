@@ -4,6 +4,11 @@ module Snippets
   class BaseService < ::BaseProjectService
     UPDATE_COMMIT_MSG = 'Update snippet'
     INITIAL_COMMIT_MSG = 'Initial commit'
+    INVALID_PARAMS_ERROR = :invalid_params_error
+    INVALID_PARAMS_MESSAGES = {
+      cannot_be_used_together: 'and snippet files cannot be used together',
+      invalid_data: 'have invalid data'
+    }.freeze
 
     CreateRepositoryError = Class.new(StandardError)
 
@@ -39,19 +44,20 @@ module Snippets
     def invalid_params_error(snippet)
       if snippet_actions.valid?
         [:content, :file_name].each do |key|
-          snippet.errors.add(key, 'and snippet files cannot be used together') if params.key?(key)
+          snippet.errors.add(key, INVALID_PARAMS_MESSAGES[:cannot_be_used_together]) if params.key?(key)
         end
       else
-        snippet.errors.add(:snippet_actions, 'have invalid data')
+        snippet.errors.add(:snippet_actions, INVALID_PARAMS_MESSAGES[:invalid_data])
       end
 
-      snippet_error_response(snippet, 422)
+      # Callers need to interpret into 422
+      snippet_error_response(snippet, INVALID_PARAMS_ERROR)
     end
 
-    def snippet_error_response(snippet, http_status)
+    def snippet_error_response(snippet, reason)
       ServiceResponse.error(
         message: snippet.errors.full_messages.to_sentence,
-        http_status: http_status,
+        reason: reason,
         payload: { snippet: snippet }
       )
     end

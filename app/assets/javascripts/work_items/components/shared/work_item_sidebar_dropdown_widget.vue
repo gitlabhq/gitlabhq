@@ -1,35 +1,17 @@
 <script>
-import {
-  GlButton,
-  GlForm,
-  GlLoadingIcon,
-  GlCollapsibleListbox,
-  GlTooltipDirective,
-} from '@gitlab/ui';
-import { isEmpty, debounce } from 'lodash';
-import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { sanitize } from '~/lib/dompurify';
-import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { GlCollapsibleListbox } from '@gitlab/ui';
+import { debounce, isEmpty } from 'lodash';
 import { keysFor } from '~/behaviors/shortcuts/keybindings';
-
-import { s__, __, sprintf } from '~/locale';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { sanitize } from '~/lib/dompurify';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { __, sprintf } from '~/locale';
+import WorkItemSidebarWidget from './work_item_sidebar_widget.vue';
 
 export default {
-  i18n: {
-    none: s__('WorkItem|None'),
-    noMatchingResults: s__('WorkItem|No matching results'),
-    editButtonLabel: __('Edit'),
-    applyButtonLabel: __('Apply'),
-    resetButtonText: __('Clear'),
-  },
   components: {
-    GlButton,
-    GlLoadingIcon,
-    GlForm,
     GlCollapsibleListbox,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
+    WorkItemSidebarWidget,
   },
   props: {
     canUpdate: {
@@ -141,7 +123,7 @@ export default {
       return `work-item-dropdown-listbox-value-${this.dropdownName}`;
     },
     resetButton() {
-      return this.resetButtonLabel || this.$options.i18n.resetButtonText;
+      return this.resetButtonLabel || __('Clear');
     },
     toggleText() {
       return !this.toggleDropdownText && !this.hasValue
@@ -222,39 +204,24 @@ export default {
 </script>
 
 <template>
-  <div>
-    <div class="gl-flex gl-items-center gl-gap-3">
-      <!-- hide header when editing, since we then have a form label. Keep it reachable for screenreader nav  -->
-      <h3 :class="{ 'gl-sr-only': isEditing }" class="gl-heading-5 !gl-mb-0">
-        {{ dropdownLabel }}
-      </h3>
-      <gl-loading-icon v-if="updateInProgress" />
-      <gl-button
-        v-if="canUpdate && !isEditing"
-        v-gl-tooltip.viewport.html
-        :title="tooltipText"
-        data-testid="edit-button"
-        category="tertiary"
-        size="small"
-        class="shortcut-sidebar-dropdown-toggle gl-ml-auto gl-flex-shrink-0"
-        :disabled="updateInProgress"
-        @click="isEditing = true"
-        >{{ $options.i18n.editButtonLabel }}</gl-button
-      >
-    </div>
-    <gl-form v-if="isEditing">
-      <div class="gl-flex gl-items-center gl-justify-between">
-        <label :for="inputId" class="gl-heading-5 !gl-mb-0">{{ dropdownLabel }}</label>
-        <gl-button
-          data-testid="apply-button"
-          category="tertiary"
-          size="small"
-          class="gl-flex-shrink-0"
-          :disabled="updateInProgress"
-          @click="isEditing = false"
-          >{{ $options.i18n.applyButtonLabel }}</gl-button
-        >
-      </div>
+  <work-item-sidebar-widget
+    :can-update="canUpdate"
+    :is-editing="isEditing"
+    :is-updating="updateInProgress"
+    :tooltip-text="tooltipText"
+    @startEditing="isEditing = true"
+    @stopEditing="isEditing = false"
+  >
+    <template #title>
+      {{ dropdownLabel }}
+    </template>
+    <template #content>
+      <slot v-if="hasValue" name="readonly"></slot>
+      <slot v-else name="none">
+        <span class="gl-text-subtle">{{ s__('WorkItem|None') }}</span>
+      </slot>
+    </template>
+    <template #editing-content>
       <slot name="body">
         <gl-collapsible-listbox
           :id="inputId"
@@ -270,7 +237,7 @@ export default {
           :header-text="headerText"
           :toggle-text="toggleText"
           :search-placeholder="searchPlaceholder"
-          :no-results-text="$options.i18n.noMatchingResults"
+          :no-results-text="s__('WorkItem|No matching results')"
           :items="listItems"
           :selected="localSelectedItem"
           :reset-button-label="resetButton"
@@ -292,10 +259,6 @@ export default {
           </template>
         </gl-collapsible-listbox>
       </slot>
-    </gl-form>
-    <slot v-else-if="hasValue" name="readonly"></slot>
-    <slot v-else name="none">
-      <span class="gl-text-subtle">{{ $options.i18n.none }}</span>
-    </slot>
-  </div>
+    </template>
+  </work-item-sidebar-widget>
 </template>

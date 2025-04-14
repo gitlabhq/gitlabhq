@@ -8,7 +8,8 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
-import { mapGetters, mapState } from 'vuex';
+import { mapGetters as mapVuexGetters, mapState as mapVuexState } from 'vuex';
+import { mapState } from 'pinia';
 import { __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
@@ -24,8 +25,10 @@ import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import TodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import SubscriptionsWidget from '~/sidebar/components/subscriptions/sidebar_subscriptions_widget.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import SubmitReviewButton from '~/batch_comments/components/submit_review_button.vue';
+import { badgeState } from '~/merge_requests/badge_state';
+import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import titleSubscription from '../queries/title.subscription.graphql';
-import { badgeState } from './merge_request_header.vue';
 
 export default {
   TYPE_MERGE_REQUEST,
@@ -53,6 +56,7 @@ export default {
     },
   },
   components: {
+    SubmitReviewButton,
     GlIntersectionObserver,
     GlLink,
     GlSprintf,
@@ -97,11 +101,11 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['getNoteableData', 'discussionTabCounter']),
-    ...mapState({
-      activeTab: (state) => state.page.activeTab,
+    ...mapVuexGetters(['getNoteableData', 'discussionTabCounter']),
+    ...mapVuexState({
       doneFetchingBatchDiscussions: (state) => state.notes.doneFetchingBatchDiscussions,
     }),
+    ...mapState(useMrNotes, ['activeTab']),
     badgeState() {
       return badgeState;
     },
@@ -257,6 +261,7 @@ export default {
           </ul>
           <div class="gl-ml-auto gl-hidden gl-items-center lg:gl-flex">
             <discussion-counter :blocks-merge="blocksMerge" hide-options />
+            <submit-review-button v-if="glFeatures.improvedReviewExperience" class="gl-mr-3" />
             <div v-if="isSignedIn" :class="{ 'gl-flex gl-gap-3': isNotificationsTodosButtons }">
               <todo-widget
                 :issuable-id="issuableId"

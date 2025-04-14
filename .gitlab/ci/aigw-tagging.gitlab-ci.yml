@@ -1,6 +1,6 @@
 trigger-ai-gateway-tagging:
   stage: ai-gateway
-  image: curlimages/curl:latest
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}curlimages/curl:latest
   script:
     - |
       curl -X POST --fail \

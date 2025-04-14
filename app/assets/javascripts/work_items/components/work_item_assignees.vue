@@ -146,10 +146,9 @@ export default {
           text: user?.name,
         }));
 
-        const selectedUsers =
-          allUsers
-            .filter(({ id }) => this.assigneeIdsToShowAtTopOfTheListbox.includes(id))
-            .sort(sortNameAlphabetically) || [];
+        const selectedUsers = allUsers.filter(({ id }) =>
+          this.assigneeIdsToShowAtTopOfTheListbox.includes(id),
+        );
 
         const unselectedUsers = allUsers.filter(
           ({ id }) => !this.assigneeIdsToShowAtTopOfTheListbox.includes(id),
@@ -215,11 +214,23 @@ export default {
       return unionBy(this.assignees, this.searchUsers, this.participants, this.localUsers, 'id');
     },
     localAssignees() {
-      return (
+      const assignees =
         this.filteredAssignees
           .filter(({ id }) => this.localAssigneeIds.includes(id))
-          .sort(sortNameAlphabetically) || []
+          .sort(sortNameAlphabetically) || [];
+
+      const localAssigneeCurrentUser = assignees.find(
+        // uses gon to avoid race condition where filteredAssignees is computed before currentUser is fetched
+        ({ username }) => username === gon?.current_username,
       );
+
+      if (localAssigneeCurrentUser) {
+        return [
+          localAssigneeCurrentUser,
+          ...assignees.filter(({ id }) => id !== localAssigneeCurrentUser?.id),
+        ];
+      }
+      return assignees;
     },
   },
   watch: {

@@ -271,6 +271,7 @@ InitializerConnections.raise_if_new_database_connection do
           get :cluster_status, format: :json
           delete :clear_cache
           post :migrate
+          put :update_migration
         end
       end
     end
@@ -340,6 +341,8 @@ InitializerConnections.raise_if_new_database_connection do
     end
 
     root to: "root#index"
+
+    get '/-/u/:id' => 'users/redirect#redirect_from_id'
 
     get '*unmatched_route', to: 'application#route_not_found', format: false
 

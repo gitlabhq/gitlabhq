@@ -8,7 +8,7 @@ module Import
     MEMBER_DELETE_BATCH_SIZE = 1_000
     GROUP_FINDER_MEMBER_RELATIONS = %i[direct inherited shared_from_groups].freeze
     PROJECT_FINDER_MEMBER_RELATIONS = %i[direct inherited invited_groups shared_into_ancestors].freeze
-    RELATION_BATCH_SLEEP = 5 # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/504995
+    RELATION_BATCH_SLEEP = 5
     DATABASE_TABLE_HEALTH_INDICATORS = [Gitlab::Database::HealthStatus::Indicators::AutovacuumActiveOnTable].freeze
     GLOBAL_DATABASE_HEALTH_INDICATORS = [
       Gitlab::Database::HealthStatus::Indicators::WriteAheadLog,
@@ -102,10 +102,20 @@ module Import
           alias_version: reference_group.alias_version
         ) do |model_relation, placeholder_references|
           if Feature.enabled?(:reassignment_throttling, reassigned_by_user)
+            # The `#db_table_unavailable?` check is behind a feature flag that we intend not to roll out.
+            # The flag is a conservative measure to allow us to enable it IF it's determined that we should
+            # be delaying reassignments when tables are being autovacuumed.
+            # See https://gitlab.com/gitlab-org/gitlab/-/issues/525566#note_2418809939.
+            #
+            # TODO Remove the following block of code, and all related code (`unavailable_tables`,
+            # `#db_table_unavailable?`, and `DATABASE_TABLE_HEALTH_INDICATORS`) as part of
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/534613
+            #
             # If table health check fails, skip processing this relation
             # and move on to the next one. We later raise a `DatabaseHealthError` to
             # reschedule the reassignment where the skipped relations can be tried again.
-            if db_table_unavailable?(model_relation)
+            if Feature.enabled?(:reassignment_throttling_table_check, reassigned_by_user) &&
+                db_table_unavailable?(model_relation)
               unavailable_tables << model_relation.table_name
               next
             end
@@ -115,8 +125,7 @@ module Import
 
           reassign_placeholder_records_batch(model_relation, placeholder_references)
 
-          # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/504995
-          Kernel.sleep RELATION_BATCH_SLEEP unless Feature.enabled?(:reassignment_throttling, reassigned_by_user)
+          Kernel.sleep RELATION_BATCH_SLEEP
         end
 
       rescue Import::PlaceholderReferences::AliasResolver::MissingAlias => e

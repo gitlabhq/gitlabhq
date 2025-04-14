@@ -24,16 +24,21 @@ export default {
       type: Boolean,
       default: false,
     },
+    clickHouseEnabledForAnalytics: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
+    const isClickHouseAvailable =
+      this.clickHouseEnabledForAnalytics && this.glFeatures?.ciImprovedProjectPipelineAnalytics;
+
     const tabs = [
       {
         key: 'pipelines',
         event: 'p_analytics_ci_cd_pipelines',
         title: __('Pipelines'),
-        componentIs: this.glFeatures?.ciImprovedProjectPipelineAnalytics
-          ? PipelinesDashboardClickhouse
-          : PipelinesDashboard,
+        componentIs: isClickHouseAvailable ? PipelinesDashboardClickhouse : PipelinesDashboard,
         lazy: true,
       },
     ];

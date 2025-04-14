@@ -1,0 +1,9 @@
+---
+name: vue_project_runners_settings
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/33803
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185957
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/527130
+milestone: '17.11'
+group: group::runner
+type: wip
+default_enabled: false

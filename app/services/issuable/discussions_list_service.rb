@@ -40,10 +40,14 @@ module Issuable
       project = notes.first&.project
       notes = ::Preloaders::Projects::NotesPreloader.new(project, current_user).call(notes)
 
-      # we need to check the permission on every note, because some system notes for instance can have references to
-      # resources that some user do not have read access, so those notes are filtered out from the list of notes.
-      # see Note#all_referenced_mentionables_allowed?
-      notes = notes.select { |n| n.readable_by?(current_user) }
+      # Permission check required for system notes only:
+      # - System notes may reference resources the user cannot access
+      # - see Note#all_referenced_mentionables_allowed?
+      #
+      # Regular user notes don't need this check because:
+      # - If user can access the work item, they have `read_note` ability
+      # - Internal notes are separately filtered in NotesFinder.redact_internal
+      notes = notes.select { |n| !n.system? || n.readable_by?(current_user) }
 
       Discussion.build_collection(notes, issuable)
     end

@@ -77,7 +77,7 @@ RSpec.describe API::Ml::Mlflow::ApiHelpers, feature_category: :mlops do
       let(:params) { {} }
 
       it 'returns nil' do
-        expect(gitlab_tags).to be nil
+        expect(gitlab_tags).to be_nil
       end
     end
 

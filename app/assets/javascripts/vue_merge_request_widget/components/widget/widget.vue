@@ -436,7 +436,7 @@ export default {
         </div>
         <div
           v-if="!glFeatures.mrReportsTab && isCollapsible && !isSummaryLoading"
-          class="gl-border-l gl-ml-3 gl-h-6 gl-pl-3"
+          class="gl-border-l gl-ml-3 gl-h-6 gl-border-l-section gl-pl-3"
         >
           <gl-button
             v-gl-tooltip

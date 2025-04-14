@@ -59,7 +59,7 @@ Before any upgrade, consider all audiences and targets, ordered by how immediate
    GitLab SaaS is affected with the next deployment.
 1. **GitLab Self-Managed.** Customers installing GitLab via [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab) use none of the above.
    Instead, their Ruby version is defined by the [Ruby software bundle](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/config/software/ruby.rb) in Omnibus.
-   Self-managed customers are affected as soon as they upgrade to the release containing this change.
+   GitLab Self-Managed customers are affected as soon as they upgrade to the release containing this change.
 
 ## Ruby upgrade approach
 
@@ -215,7 +215,7 @@ prudent to skip this step until you have verified that it runs smoothly in produ
 rollout. In this case, go to the next step first, and then, after the verification period has passed, promote
 the new Ruby to be the new default.
 
-### Update CNG, Omnibus, Self-compiled and merge the GitLab MR
+### Update CNG, Omnibus, and Self-compiled and merge the GitLab MR
 
 The last step is to use the new Ruby in production. This
 requires updating Omnibus and production Docker images to use the new version.

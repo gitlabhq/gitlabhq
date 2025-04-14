@@ -349,38 +349,6 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
       end
     end
 
-    describe '/remind_me' do
-      let(:issue) { create(:issue, project: project, milestone: milestone) }
-      let(:note_text) { '/remind_me 1d' }
-      let(:note) { create(:note_on_issue, noteable: issue, project: project, note: note_text) }
-
-      context 'on an issue' do
-        it 'leaves the note empty' do
-          expect(execute(note)).to be_empty
-        end
-
-        it 'attempts to set a reminder' do
-          expect(Issuable::CreateReminderWorker).to receive(:perform_in)
-
-          execute(note)
-        end
-      end
-
-      context 'on a merge request' do
-        let(:note_mr) { create(:note_on_merge_request, project: project, note: note_text) }
-
-        it 'leaves the note empty' do
-          expect(execute(note_mr)).to be_empty
-        end
-
-        it 'attempts to set a reminder' do
-          expect(Issuable::CreateReminderWorker).to receive(:perform_in)
-
-          execute(note)
-        end
-      end
-    end
-
     describe '/add_child' do
       let_it_be_with_reload(:noteable) { create(:work_item, :objective, project: project) }
       let_it_be(:child) { create(:work_item, :objective, project: project) }

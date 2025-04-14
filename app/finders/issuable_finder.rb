@@ -124,8 +124,6 @@ class IssuableFinder
     items = filter_negated_items(items) if should_filter_negated_args?
 
     # This has to be last as we use a CTE as an optimization fence
-    # for counts by passing the force_cte param and passing the
-    # attempt_group_search_optimizations param
     # https://www.postgresql.org/docs/current/static/queries-with.html
     items = by_search(items)
 
@@ -179,7 +177,7 @@ class IssuableFinder
   #
   # rubocop: disable CodeReuse/ActiveRecord
   def count_by_state
-    count_params = params.merge(state: nil, sort: nil, force_cte: true)
+    count_params = params.merge(state: nil, sort: nil)
     finder = self.class.new(current_user, count_params)
 
     state_counts = finder
@@ -246,10 +244,6 @@ class IssuableFinder
         end
       end
     end
-  end
-
-  def force_cte?
-    !!params[:force_cte]
   end
 
   def init_collection

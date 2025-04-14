@@ -35,11 +35,13 @@ module Gitlab
               return
             end
 
-            # `user_finder` did some optimization to cache the `user_id`, let's keep avoid loading the `User` object
-            # however, we need to wrap the `user_id` with `User` model so that the downstream logic can work properly
-            user = User.new(id: user_id)
-
-            SystemNoteService.change_status(merge_request, merge_request.target_project, user, 'closed', nil)
+            state_event = record_state_event(user_id, declined_event)
+            push_reference(
+              project,
+              state_event,
+              :user_id,
+              declined_event[:decliner_username]
+            )
 
             event = record_event(user_id)
             push_reference(project, event, :author_id, declined_event[:decliner_username])
@@ -69,6 +71,21 @@ module Gitlab
               target_id: merge_request.id,
               imported_from: ::Import::HasImportSource::IMPORT_SOURCES[:bitbucket_server]
             )
+          end
+
+          def record_state_event(user_id, declined_event)
+            attrs = {
+              importing: true,
+              merge_request_id: merge_request.id,
+              user_id: user_id,
+              state: 'closed',
+              close_after_error_tracking_resolve: false,
+              close_auto_resolve_prometheus_alert: false,
+              created_at: declined_event[:created_at],
+              imported_from: ::Import::HasImportSource::IMPORT_SOURCES[:bitbucket_server]
+            }
+
+            ResourceStateEvent.create!(attrs)
           end
         end
       end

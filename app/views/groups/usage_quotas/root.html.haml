@@ -1,0 +1,20 @@
+- content_for :usage_quotas_alerts do
+  = render_if_exists 'shared/usage_quotas/alerts'
+
+- content_for :usage_quotas_subtitle do
+  %span{ data: { testid: 'group-usage-message-content' } }
+    = safe_format(s_('UsageQuota|Usage of group resources across the projects in the %{strong_start}%{group_name}%{strong_end} group'),
+      { group_name: @group.name },
+      tag_pair(tag.strong, :strong_start, :strong_end))
+
+- content_for :usage_quotas_tabs do
+  = render_if_exists 'shared/usage_quotas/tabs_content/seats'
+  = render_if_exists 'shared/usage_quotas/tabs_content/code_suggestions'
+  = render_if_exists 'shared/usage_quotas/tabs_content/pipelines'
+  #js-storage-usage-app{ data: storage_usage_app_data(@group) }
+  = render_if_exists 'shared/usage_quotas/tabs_content/transfer'
+  = render_if_exists 'shared/usage_quotas/tabs_content/product_analytics'
+  = render_if_exists 'shared/usage_quotas/tabs_content/pages'
+  #js-import-usage-app{ data: import_usage_app_data(@group) }
+
+= render 'shared/usage_quotas/index'

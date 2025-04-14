@@ -262,6 +262,8 @@ To add a new visualization render type:
 
 1. Create a new Vue component that accepts `data` and `options` properties.
    See [`line_chart.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/line_chart.vue) as an example.
+1. Add relevant storybook stories for the different states of the visualization
+   See [`line_chart.stories.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/line_chart.stories.js) as an example.
 1. Add your component to the list of conditional components imports in [`analytics_dashboard_panel.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_dashboard_panel.vue).
 1. Add your component to the schema's list of `AnalyticsVisualization` enum type in [`analytics_visualization.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json).
 

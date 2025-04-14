@@ -243,37 +243,6 @@ module Gitlab
 
         ########################################################################
         #
-        # /remind_me
-        #
-        types Issue, MergeRequest
-        desc do
-          _('Set to-do reminder')
-        end
-        explanation do
-          _('Creates a reminder to-do item after the specified time period.')
-        end
-        params '<1w 3d 2h 14m>'
-        parse_params do |raw_delay|
-          ChronicDuration.parse(raw_delay)
-        end
-        condition do
-          Feature.enabled?(:remind_me_quick_action, quick_action_target.project)
-        end
-        command :remind_me do |parsed_delay|
-          # Schedule a CreateReminderWorker for the specified delay
-          #
-          ::Issuable::CreateReminderWorker.perform_in(
-            parsed_delay,
-            quick_action_target.id,
-            quick_action_target.class.to_s,
-            current_user.id
-          )
-
-          @execution_message[:remind_me] = _('Reminder set.')
-        end
-
-        ########################################################################
-        #
         # /remove_estimate, /remove_time_estimate
         #
         desc { _('Remove time estimate') }

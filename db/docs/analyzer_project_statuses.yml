@@ -1,0 +1,12 @@
+---
+table_name: analyzer_project_statuses
+classes:
+- Security::AnalyzerProjectStatus
+feature_categories:
+- security_asset_inventories
+description: Stores analyzer status per project
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184448
+milestone: '17.11'
+gitlab_schema: gitlab_sec
+sharding_key:
+  project_id: projects

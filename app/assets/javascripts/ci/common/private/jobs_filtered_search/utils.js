@@ -1,3 +1,4 @@
+import { JOB_SOURCES } from 'ee_else_ce/ci/common/private/jobs_filtered_search/tokens/constants';
 import { jobStatusValues, jobRunnerTypeValues } from './constants';
 
 // validates query string used for filtered search
@@ -9,6 +10,11 @@ export const validateQueryString = (queryStringObj) => {
         const statusValue = queryStringValue.toUpperCase();
         const statusValueValid = jobStatusValues.includes(statusValue);
         return statusValueValid ? { ...acc, statuses: statusValue } : acc;
+      }
+      case 'sources': {
+        const sourceValue = queryStringValue.toUpperCase();
+        const sourceValueValid = JOB_SOURCES.some((source) => source.value === sourceValue);
+        return sourceValueValid ? { ...acc, sources: sourceValue } : acc;
       }
       case 'runnerTypes': {
         const runnerTypesValue = queryStringValue.toUpperCase();

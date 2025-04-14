@@ -6,7 +6,7 @@ module Ci
       include EditScopeValidations
 
       def execute(target, default_permissions, policies)
-        return unless Feature.enabled?(:add_policies_to_ci_job_token, project)
+        return unless project.job_token_policies_enabled?
 
         validate_target_exists!(target)
         validate_permissions!(target)

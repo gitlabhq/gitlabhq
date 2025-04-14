@@ -569,7 +569,7 @@ FactoryBot.define do
     trait :dast do
       options do
         {
-            artifacts: { reports: { dast: 'gl-dast-report.json' } }
+          artifacts: { reports: { dast: 'gl-dast-report.json' } }
         }
       end
     end
@@ -577,7 +577,7 @@ FactoryBot.define do
     trait :sast do
       options do
         {
-            artifacts: { reports: { sast: 'gl-sast-report.json' } }
+          artifacts: { reports: { sast: 'gl-sast-report.json' } }
         }
       end
     end
@@ -585,7 +585,7 @@ FactoryBot.define do
     trait :secret_detection do
       options do
         {
-            artifacts: { reports: { secret_detection: 'gl-secret-detection-report.json' } }
+          artifacts: { reports: { secret_detection: 'gl-secret-detection-report.json' } }
         }
       end
     end
@@ -593,7 +593,7 @@ FactoryBot.define do
     trait :dependency_scanning do
       options do
         {
-            artifacts: { reports: { dependency_scanning: 'gl-dependency-scanning-report.json' } }
+          artifacts: { reports: { dependency_scanning: 'gl-dependency-scanning-report.json' } }
         }
       end
     end
@@ -601,7 +601,7 @@ FactoryBot.define do
     trait :container_scanning do
       options do
         {
-            artifacts: { reports: { container_scanning: 'gl-container-scanning-report.json' } }
+          artifacts: { reports: { container_scanning: 'gl-container-scanning-report.json' } }
         }
       end
     end
@@ -609,7 +609,7 @@ FactoryBot.define do
     trait :cluster_image_scanning do
       options do
         {
-            artifacts: { reports: { cluster_image_scanning: 'gl-cluster-image-scanning-report.json' } }
+          artifacts: { reports: { cluster_image_scanning: 'gl-cluster-image-scanning-report.json' } }
         }
       end
     end
@@ -633,12 +633,12 @@ FactoryBot.define do
     trait :multiple_report_artifacts do
       options do
         {
-            artifacts: {
-              reports: {
-                sast: 'gl-sast-report.json',
-                container_scanning: 'gl-container-scanning-report.json'
-              }
+          artifacts: {
+            reports: {
+              sast: 'gl-sast-report.json',
+              container_scanning: 'gl-container-scanning-report.json'
             }
+          }
         }
       end
     end

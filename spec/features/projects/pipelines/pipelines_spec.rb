@@ -305,7 +305,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
         it 'contains badge with tooltip which contains error' do
           expect(pipeline).to have_yaml_errors
           expect(page).to have_selector(
-            %(span[title="#{pipeline.yaml_errors}"]))
+            %(button[title="#{pipeline.yaml_errors}"]))
         end
 
         it 'contains badge that indicates failure reason' do
@@ -315,7 +315,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
         it 'contains badge with tooltip which contains failure reason' do
           expect(pipeline.failure_reason?).to eq true
           expect(page).to have_selector(
-            %(span[title="#{pipeline.present.failure_reason}"]))
+            %(button[title="#{pipeline.present.failure_reason}"]))
         end
       end
 

@@ -3,7 +3,7 @@
 
 %div{ data: { testid: 'issue-title-input-field' } }
   = form.text_field :title, required: true, aria: { required: true }, maxlength: 255, autofocus: true,
-    autocomplete: 'off', class: 'form-control pad', dir: 'auto', data: { testid: 'issuable-form-title-field' }
+    autocomplete: 'off', class: 'form-control pad js-issuable-title', dir: 'auto', data: { testid: 'issuable-form-title-field' }
 
   - if issuable.respond_to?(:draft?)
     .gl-pt-3

@@ -186,14 +186,9 @@ To disable diff previews for all projects in a group:
 
 - Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
 - Feature flag `pat_expiry_inherited_members_notification` [enabled by default in GitLab 17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/393772).
+- Feature flag `pat_expiry_inherited_members_notification` removed in GitLab `17.11`
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of emails to inherited project and group members is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
 
 The following group and project members receive notification emails about access tokens that are expiring soon:
 
@@ -223,16 +218,11 @@ For more information, see:
 {{< history >}}
 
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) 60 day and 30 days triggers to project and group access tokens webhooks in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+- Feature flag `pat_expiry_inherited_members_notification` removed in GitLab `17.11`
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
-
-GitLab sends multiple [expiry emails](../group/settings/group_access_tokens.md#group-access-token-expiry-emails) and triggers a related [webhook](../project/integrations/webhook_events.md#project-and-group-access-token-events) before a group token expires. By default, GitLab only triggers these webhooks 7 days before the token expires. When this feature is enabled, GitLab also can trigger these webhooks 60 days and 30 days before the token expires.
+GitLab sends multiple [expiry emails](settings/group_access_tokens.md#group-access-token-expiry-emails) and triggers a related [webhook](../project/integrations/webhook_events.md#project-and-group-access-token-events) before a group token expires. By default, GitLab only triggers these webhooks 7 days before the token expires. When this feature is enabled, GitLab also can trigger these webhooks 60 days and 30 days before the token expires.
 
 To enable additional triggers for these webhooks:
 
@@ -302,6 +292,12 @@ and must be paid at the next [quarterly reconciliation](../../subscriptions/quar
 
 When you turn on restricted access, groups cannot add new billable users when there are no seats
 left in the subscription.
+
+{{< alert type="note" >}}
+
+If [user cap](#user-cap-for-groups) is enabled for a group that has pending members, when you enable restricted access all pending members are automatically removed from the group.
+
+{{< /alert >}}
 
 Prerequisites:
 

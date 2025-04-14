@@ -31,6 +31,7 @@ export const formatGroups = (groups) =>
       maxAccessLevel: accessLevel,
       userPermissions,
       organizationEditPath: editPath,
+      descendantGroupsCount,
       ...group
     }) => ({
       ...group,
@@ -42,9 +43,10 @@ export const formatGroups = (groups) =>
       accessLevel,
       editPath,
       availableActions: availableGroupActions(userPermissions),
-      actionLoadingStates: {
-        [ACTION_DELETE]: false,
-      },
+      descendantGroupsCount,
+      children: [],
+      childrenLoading: false,
+      hasChildren: Boolean(descendantGroupsCount),
     }),
   );
 

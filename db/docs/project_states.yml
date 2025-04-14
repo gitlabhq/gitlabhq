@@ -7,7 +7,6 @@ feature_categories:
 description: Separate table for project containing Geo verification metadata.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117909
 milestone: '16.0'
-gitlab_schema: gitlab_main_cell
-sharding_key:
-  project_id: projects
+gitlab_schema: gitlab_main_cell_local
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/524719
 table_size: small

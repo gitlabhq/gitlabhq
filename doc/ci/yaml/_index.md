@@ -23,7 +23,7 @@ This file is where you define the CI/CD jobs that make up your pipeline.
   [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
 
 When you are editing your `.gitlab-ci.yml` file, you can validate it with the
-[CI Lint](../yaml/lint.md) tool.
+[CI Lint](lint.md) tool.
 
 If you are editing content on this page, follow the [instructions for documenting keywords](../../development/cicd/cicd_reference_documentation_guide.md).
 
@@ -33,12 +33,12 @@ A GitLab CI/CD pipeline configuration includes:
 
 - [Global keywords](#global-keywords) that configure pipeline behavior:
 
-  | Keyword                   | Description |
-  |---------------------------|:------------|
-  | [`default`](#default)     | Custom default values for job keywords. |
-  | [`include`](#include)     | Import configuration from other YAML files. |
-  | [`stages`](#stages)       | The names and order of the pipeline stages. |
-  | [`workflow`](#workflow)   | Control what types of pipeline run. |
+  | Keyword                 | Description |
+  |-------------------------|:------------|
+  | [`default`](#default)   | Custom default values for job keywords. |
+  | [`include`](#include)   | Import configuration from other YAML files. |
+  | [`stages`](#stages)     | The names and order of the pipeline stages. |
+  | [`workflow`](#workflow) | Control what types of pipeline run. |
 
 - [Header keywords](#header-keywords)
 
@@ -48,39 +48,39 @@ A GitLab CI/CD pipeline configuration includes:
 
 - [Jobs](../jobs/_index.md) configured with [job keywords](#job-keywords):
 
-  | Keyword                                       | Description                                                                                                 |
-  |:----------------------------------------------|:------------------------------------------------------------------------------------------------------------|
-  | [`after_script`](#after_script)               | Override a set of commands that are executed after job.                                                     |
-  | [`allow_failure`](#allow_failure)             | Allow job to fail. A failed job does not cause the pipeline to fail.                                        |
-  | [`artifacts`](#artifacts)                     | List of files and directories to attach to a job on success.                                                |
-  | [`before_script`](#before_script)             | Override a set of commands that are executed before job.                                                    |
-  | [`cache`](#cache)                             | List of files that should be cached between subsequent runs.                                                |
-  | [`coverage`](#coverage)                       | Code coverage settings for a given job.                                                                     |
-  | [`dast_configuration`](#dast_configuration)   | Use configuration from DAST profiles on a job level.                                                        |
-  | [`dependencies`](#dependencies)               | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from.  |
-  | [`environment`](#environment)                 | Name of an environment to which the job deploys.                                                            |
-  | [`extends`](#extends)                         | Configuration entries that this job inherits from.                                                          |
-  | [`identity`](#identity)                       | Authenticate with third party services using identity federation.                                           |
-  | [`image`](#image)                             | Use Docker images.                                                                                          |
-  | [`inherit`](#inherit)                         | Select which global defaults all jobs inherit.                                                              |
-  | [`interruptible`](#interruptible)             | Defines if a job can be canceled when made redundant by a newer run.                                        |
+  | Keyword                                       | Description |
+  |:----------------------------------------------|:------------|
+  | [`after_script`](#after_script)               | Override a set of commands that are executed after job. |
+  | [`allow_failure`](#allow_failure)             | Allow job to fail. A failed job does not cause the pipeline to fail. |
+  | [`artifacts`](#artifacts)                     | List of files and directories to attach to a job on success. |
+  | [`before_script`](#before_script)             | Override a set of commands that are executed before job. |
+  | [`cache`](#cache)                             | List of files that should be cached between subsequent runs. |
+  | [`coverage`](#coverage)                       | Code coverage settings for a given job. |
+  | [`dast_configuration`](#dast_configuration)   | Use configuration from DAST profiles on a job level. |
+  | [`dependencies`](#dependencies)               | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from. |
+  | [`environment`](#environment)                 | Name of an environment to which the job deploys. |
+  | [`extends`](#extends)                         | Configuration entries that this job inherits from. |
+  | [`identity`](#identity)                       | Authenticate with third party services using identity federation. |
+  | [`image`](#image)                             | Use Docker images. |
+  | [`inherit`](#inherit)                         | Select which global defaults all jobs inherit. |
+  | [`interruptible`](#interruptible)             | Defines if a job can be canceled when made redundant by a newer run. |
   | [`manual_confirmation`](#manual_confirmation) | Define a custom confirmation message for a manual job. |
-  | [`needs`](#needs)                             | Execute jobs earlier than the stage ordering.                                                               |
-  | [`pages`](#pages)                             | Upload the result of a job to use with GitLab Pages.                                                        |
-  | [`parallel`](#parallel)                       | How many instances of a job should be run in parallel.                                                      |
-  | [`release`](#release)                         | Instructs the runner to generate a [release](../../user/project/releases/_index.md) object.                  |
-  | [`resource_group`](#resource_group)           | Limit job concurrency.                                                                                      |
-  | [`retry`](#retry)                             | When and how many times a job can be auto-retried in case of a failure.                                     |
+  | [`needs`](#needs)                             | Execute jobs earlier than the stage ordering. |
+  | [`pages`](#pages)                             | Upload the result of a job to use with GitLab Pages. |
+  | [`parallel`](#parallel)                       | How many instances of a job should be run in parallel. |
+  | [`release`](#release)                         | Instructs the runner to generate a [release](../../user/project/releases/_index.md) object. |
+  | [`resource_group`](#resource_group)           | Limit job concurrency. |
+  | [`retry`](#retry)                             | When and how many times a job can be auto-retried in case of a failure. |
   | [`rules`](#rules)                             | List of conditions to evaluate and determine selected attributes of a job, and whether or not it's created. |
-  | [`script`](#script)                           | Shell script that is executed by a runner.                                                                  |
-  | [`run`](#run)                                 | Run configuration that is executed by a runner.                                                             |
-  | [`secrets`](#secrets)                         | The CI/CD secrets the job needs.                                                                            |
-  | [`services`](#services)                       | Use Docker services images.                                                                                 |
-  | [`stage`](#stage)                             | Defines a job stage.                                                                                        |
-  | [`tags`](#tags)                               | List of tags that are used to select a runner.                                                              |
-  | [`timeout`](#timeout)                         | Define a custom job-level timeout that takes precedence over the project-wide setting.                      |
-  | [`trigger`](#trigger)                         | Defines a downstream pipeline trigger.                                                                      |
-  | [`when`](#when)                               | When to run job.                                                                                            |
+  | [`script`](#script)                           | Shell script that is executed by a runner. |
+  | [`run`](#run)                                 | Run configuration that is executed by a runner. |
+  | [`secrets`](#secrets)                         | The CI/CD secrets the job needs. |
+  | [`services`](#services)                       | Use Docker services images. |
+  | [`stage`](#stage)                             | Defines a job stage. |
+  | [`tags`](#tags)                               | List of tags that are used to select a runner. |
+  | [`timeout`](#timeout)                         | Define a custom job-level timeout that takes precedence over the project-wide setting. |
+  | [`trigger`](#trigger)                         | Defines a downstream pipeline trigger. |
+  | [`when`](#when)                               | When to run job. |
 
 - [CI/CD variables](#variables)
 
@@ -437,7 +437,7 @@ In this example:
 
 **Related topics**:
 
-- [Set input values when using `include`](inputs.md#set-input-values-when-using-include).
+- [Set input values when using `include`](../inputs/_index.md#for-configuration-added-with-include).
 
 #### `include:rules`
 
@@ -911,16 +911,17 @@ with `---`.
 Add a `spec` section to the header of a YAML file to configure the behavior of a pipeline
 when a configuration is added to the pipeline with the `include` keyword.
 
+Specs must be declared at the top of a configuration file, in a header section separated
+from the rest of the configuration with `---`.
+
 #### `spec:inputs`
 
-You can use `spec:inputs` to define input parameters for the CI/CD configuration you intend to add
-to a pipeline with `include`. Use `include:inputs` to define the values to use when the pipeline runs.
-
-Use the inputs to customize the behavior of the configuration when included in CI/CD configuration.
+You can use `spec:inputs` to define [inputs](inputs.md) for the CI/CD configuration.
 
 Use the interpolation format `$[[ inputs.input-id ]]` to reference the values outside of the header section.
-Inputs are evaluated and interpolated when the configuration is fetched during pipeline creation, but before the
-configuration is merged with the contents of the `.gitlab-ci.yml` file.
+Inputs are evaluated and interpolated when the configuration is fetched during pipeline creation.
+When using `inputs`, interpolation completes before the configuration is merged
+with the contents of the `.gitlab-ci.yml` file.
 
 **Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
@@ -944,15 +945,17 @@ scan-website:
 **Additional details**:
 
 - Inputs are mandatory unless you use [`spec:inputs:default`](#specinputsdefault)
-  to set a default value.
+  to set a default value. Avoid mandatory inputs unless you only use inputs with
+  [`include:inputs`](#includeinputs).
 - Inputs expect strings unless you use [`spec:inputs:type`](#specinputstype) to set a
   different input type.
 - A string containing an interpolation block must not exceed 1 MB.
 - The string inside an interpolation block must not exceed 1 KB.
+- You can define input values [when running a new pipeline](../inputs/_index.md#for-a-pipeline).
 
 **Related topics**:
 
-- [Define input parameters with `spec:inputs`](inputs.md#define-input-parameters-with-specinputs).
+- [Define input parameters with `spec:inputs`](../inputs/_index.md#define-input-parameters-with-specinputs).
 
 ##### `spec:inputs:default`
 
@@ -1116,7 +1119,7 @@ in a header section.
 
 **Supported values**: Can be one of:
 
-- `array`, to accept an [array](../yaml/inputs.md#array-type) of inputs.
+- `array`, to accept an [array](../inputs/_index.md#array-type) of inputs.
 - `string`, to accept string inputs (default when not defined).
 - `number`, to only accept numeric inputs.
 - `boolean`, to only accept `true` or `false` inputs.
@@ -1319,7 +1322,7 @@ attached to the job when it [succeeds, fails, or always](#artifactswhen).
 
 The artifacts are sent to GitLab after the job finishes. They are
 available for download in the GitLab UI if the size is smaller than the
-[maximum artifact size](../../user/gitlab_com/_index.md#gitlab-cicd).
+[maximum artifact size](../../user/gitlab_com/_index.md#cicd).
 
 By default, jobs in later stages automatically download all the artifacts created
 by jobs in earlier stages. You can control artifact download behavior in jobs with
@@ -1344,17 +1347,13 @@ link outside it.
 **Supported values**:
 
 - An array of file paths, relative to the project directory.
-- You can use Wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
-  patterns and:
-  - In [GitLab Runner 13.0 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620),
-    [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
-  - In GitLab Runner 12.10 and earlier, [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
+- You can use Wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming)) patterns and [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match) patterns.
 - For [GitLab Pages job](#pages):
   - In [GitLab 17.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/428018),
-    the [`pages:pages.publish`](#pagespagespublish) path is automatically appended to `artifacts:paths`,
+    the [`pages.publish`](#pagespublish) path is automatically appended to `artifacts:paths`,
     so you don't need to specify it again.
   - In [GitLab 17.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/428018),
-    when the [`pages:pages.publish`](#pagespagespublish) path is not specified,
+    when the [`pages.publish`](#pagespublish) path is not specified,
     the `public` directory is automatically appended to `artifacts:paths`.
 
 CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
@@ -1465,7 +1464,7 @@ job:
   them fail with a [`could not retrieve the needed artifacts` error](../jobs/job_artifacts_troubleshooting.md#error-message-this-job-could-not-start-because-it-could-not-retrieve-the-needed-artifacts).
   Set the expiry time to be longer, or use [`dependencies`](#dependencies) in later jobs
   to ensure they don't try to fetch expired artifacts.
-- `artifacts:expire_in` doesn't affect GitLab Pages deployments. To configure Pages deployments' expiry, use [`pages:pages.expire_in`](#pagespagesexpire_in).
+- `artifacts:expire_in` doesn't affect GitLab Pages deployments. To configure Pages deployments' expiry, use [`pages.expire_in`](#pagesexpire_in).
 
 #### `artifacts:expose_as`
 
@@ -1787,12 +1786,8 @@ Use the `cache:paths` keyword to choose which files or directories to cache.
 **Supported values**:
 
 - An array of paths relative to the project directory (`$CI_PROJECT_DIR`).
-  You can use wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
-  patterns:
-  - In [GitLab Runner 13.0 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620),
-    [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
-  - In GitLab Runner 12.10 and earlier,
-    [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
+  You can use wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming)) and
+  [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match) patterns.
 
 [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file) are supported.
 
@@ -2247,6 +2242,9 @@ from. The specified jobs must all be in earlier stages. You can also set a job t
 When `dependencies` is not defined in a job, all jobs in earlier stages are considered dependent
 and the job fetches all artifacts from those jobs.
 
+To fetch artifacts from a job in the same stage, you must use [`needs:artifacts`](#needsartifacts).
+You should not combine `dependencies` with `needs` in the same job.
+
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
 **Supported values**:
@@ -2301,8 +2299,6 @@ the [stage](#stages) precedence.
 - The job status does not matter. If a job fails or it's a manual job that isn't triggered, no error occurs.
 - If the artifacts of a dependent job are [expired](#artifactsexpire_in) or
   [deleted](../jobs/job_artifacts.md#delete-job-log-and-artifacts), then the job fails.
-- To fetch artifacts from a job in the same stage, you must use [`needs:artifacts`](#needsartifacts).
-  You should not combine `dependencies` with `needs` in the same job.
 
 ### `environment`
 
@@ -3160,7 +3156,7 @@ In this example, a new pipeline causes a running pipeline to cancel `step-1` and
 ### `needs`
 
 Use `needs` to execute jobs out-of-order. Relationships between jobs
-that use `needs` can be visualized as a [directed acyclic graph](../yaml/needs.md).
+that use `needs` can be visualized as a [directed acyclic graph](needs.md).
 
 You can ignore stage ordering and run some jobs without waiting for others to complete.
 Jobs in multiple stages can run concurrently.
@@ -3355,7 +3351,7 @@ build_job:
   or the group/project must have public visibility.
 - You can't use `needs:project` in the same job as [`trigger`](#trigger).
 - When using `needs:project` to download artifacts from another pipeline, the job does not wait for
-  the needed job to complete. [Using `needs` to wait for jobs to complete](../yaml/needs.md)
+  the needed job to complete. [Using `needs` to wait for jobs to complete](needs.md)
   is limited to jobs in the same pipeline. Make sure that the needed job in the other
   pipeline completes before the job that needs it tries to download the artifacts.
 - You can't download artifacts from jobs that run in [`parallel`](#parallel).
@@ -3592,13 +3588,57 @@ uploads static content to GitLab. The content is then published as a website.
 
 You must:
 
-- Define [`artifacts`](#artifacts) with a path to the content directory, which is
-  `public` by default.
-- Use [`pages.publish`](#pagespagespublish) if want to use a different content directory.
+- Define `pages: true` to publish a directory named `public`
+- Alternatively, define [`pages.publish`](#pagespublish) if want to use a different content directory.
 
-**Keyword type**: Job name.
+**Keyword type**: Job keyword or Job name (deprecated). You can use it only as part of a job.
+
+**Supported Values**:
+
+- A boolean. Uses the default configuration when set to `true`
+- A hash of configuration options, see the following sections for details.
 
 **Example of `pages`**:
+
+```yaml
+create-pages:
+  stage: deploy
+  script:
+    - mv my-html-content public
+  pages: true  # specifies that this is a Pages job and publishes the default public directory
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  environment: production
+```
+
+This example renames the `my-html-content/` directory to `public/`.
+This directory is exported as an artifact and published with GitLab Pages.
+
+**Example using a configuration hash**:
+
+```yaml
+create-pages:
+  stage: deploy
+  script:
+    - echo "nothing to do here"
+  pages:  # specifies that this is a Pages job and publishes the default public directory
+    publish: my-html-content
+    expire_in: "1 week"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  environment: production
+```
+
+This example does not move the directory, but uses the `publish` property directly.
+It also configures the pages deployment to be unpublished after a week.
+
+**Deprecated: Use `pages` as a job name**
+
+Using `pages` as a job name results in the same behavior as specifying
+the Pages property `pages: true`. This method is available for backwards compatibility,
+but might not receive all future improvements to the Pages job configuration.
+
+**Example using `pages` as a job name**:
 
 ```yaml
 pages:  # specifies that this is a Pages job and publishes the default public directory
@@ -3610,17 +3650,28 @@ pages:  # specifies that this is a Pages job and publishes the default public di
   environment: production
 ```
 
-This example renames the `my-html-content/` directory to `public/`.
-This directory is exported as an artifact and published with GitLab Pages.
+To use `pages` as a job name without triggering a Pages deployment, set the `pages`
+property to false:
 
-#### `pages:pages.publish`
+```yaml
+pages:
+  stage: deploy
+  script:
+    - mv my-html-content public
+  pages: false # this job will not trigger a Pages deployment
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  environment: production
+```
+
+#### `pages.publish`
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415821) in GitLab 16.1.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/500000) to allow variables when passed to `publish` property in GitLab 17.9.
 - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) the `publish` property under the `pages` keyword in GitLab 17.9.
-- [Appended](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) the `pages:pages.publish` path automatically to `artifacts:paths` in GitLab 17.10.
+- [Appended](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) the `pages.publish` path automatically to `artifacts:paths` in GitLab 17.10.
 
 {{< /history >}}
 
@@ -3637,7 +3688,7 @@ this path is automatically appended to [`artifacts:paths`](#artifactspaths).
 **Example of `pages.publish`**:
 
 ```yaml
-pages:
+create-pages:
   stage: deploy
   script:
     - npx @11ty/eleventy --input=path/to/eleventy/root --output=dist
@@ -3655,7 +3706,7 @@ as an artifact and published with GitLab Pages.
 It is also possible to use variables in the `pages.publish` field. For example:
 
 ```yaml
-pages:
+create-pages:
   stage: deploy
   script:
     - mkdir -p $CUSTOM_FOLDER/$CUSTOM_PATH
@@ -3669,7 +3720,9 @@ pages:
     CUSTOM_SUBFOLDER: "custom_subfolder"
 ```
 
-#### `pages:pages.path_prefix`
+The publish path specified must be relative to the build root.
+
+#### `pages.path_prefix`
 
 {{< details >}}
 
@@ -3705,7 +3758,7 @@ Leading and trailing hyphens or periods are not permitted.
 **Example of `pages.path_prefix`**:
 
 ```yaml
-pages:
+create-pages:
   stage: deploy
   script:
     - echo "Pages accessible through ${CI_PAGES_URL}/${CI_COMMIT_BRANCH}"
@@ -3715,7 +3768,7 @@ pages:
 
 In this example, a different pages deployment is created for each branch.
 
-#### `pages:pages.expire_in`
+#### `pages.expire_in`
 
 {{< details >}}
 
@@ -3726,7 +3779,8 @@ In this example, a different pages deployment is created for each branch.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/456478) in GitLab 17.4
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/456478) in GitLab 17.4.
+- Support for variables [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/492289) in GitLab 17.11.
 
 {{< /history >}}
 
@@ -3741,7 +3795,7 @@ To disable this behavior, set the value to `never`.
 **Keyword type**: Job keyword. You can use it only as part of a `pages` job.
 
 **Supported values**: The expiry time. If no unit is provided, the time is in seconds.
-Valid values include:
+Variables are also supported. Valid values include:
 
 - `'42'`
 - `42 seconds`
@@ -3752,11 +3806,12 @@ Valid values include:
 - `47 yrs 6 mos and 4d`
 - `3 weeks and 2 days`
 - `never`
+- `$DURATION`
 
-**Example of `pages:pages.expire_in`**:
+**Example of `pages.expire_in`**:
 
 ```yaml
-pages:
+create-pages:
   stage: deploy
   script:
     - echo "Pages accessible through ${CI_PAGES_URL}"
@@ -3889,7 +3944,7 @@ deploystacks: [vultr, processing]
           PROVIDER: [aws, gcp]
   ```
 
-  - There's a [known issue](../debugging.md#config-should-be-an-array-of-hashes-error-message) when using [`!reference` tags](../yaml/yaml_optimization.md#reference-tags) with `parallel:matrix`.
+  - There's a [known issue](../debugging.md#config-should-be-an-array-of-hashes-error-message) when using [`!reference` tags](yaml_optimization.md#reference-tags) with `parallel:matrix`.
 
 **Related topics**:
 
@@ -5209,7 +5264,7 @@ job:
 
 {{< /history >}}
 
-Use `secrets:token` to explicitly select a token to use when authenticating with Vault by referencing the token's CI/CD variable.
+Use `secrets:token` to explicitly select a token to use when authenticating with the external secrets provider by referencing the token's CI/CD variable.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -5234,7 +5289,9 @@ job:
 
 **Additional details**:
 
-- When the `token` keyword is not set, the first ID token is used to authenticate.
+- When the `token` keyword is not set and there is only one token defined, the defined token will automatically be used.
+- If there is more than one token defined, you should specify which token to use by setting the `token` keyword.
+  If you do not specify which token to use, it is not possible to predict which token is used each time the job runs.
 
 ### `services`
 
@@ -5645,6 +5702,26 @@ trigger-multi-project-pipeline:
   to authenticate with the [pipeline triggers API](../../api/pipeline_triggers.md).
   The trigger token is different than the `trigger` keyword.
 
+#### `trigger:inputs`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519963) in GitLab 17.11.
+
+{{</history >}}
+
+Use `trigger:inputs` to set the [inputs](../inputs/_index.md) for a multi-project pipeline
+when the downstream pipeline configuration uses [`spec:inputs`](#specinputs).
+
+**Example of `trigger:inputs`**:
+
+```yaml
+trigger:
+  - project: 'my-group/my-project'
+    inputs:
+      website: "My website"
+```
+
 #### `trigger:include`
 
 Use `trigger:include` to declare that a job is a "trigger job" which starts a
@@ -5653,7 +5730,7 @@ Use `trigger:include` to declare that a job is a "trigger job" which starts a
 Additionally, use:
 
 - `trigger:include:artifact` to trigger a [dynamic child pipeline](../pipelines/downstream_pipelines.md#dynamic-child-pipelines).
-- `trigger:include:inputs` to set the [inputs](inputs.md) when the downstream pipeline configuration
+- `trigger:include:inputs` to set the [inputs](../inputs/_index.md) when the downstream pipeline configuration
   uses [`spec:inputs`](#specinputs).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
@@ -5673,6 +5750,28 @@ trigger-child-pipeline:
 **Related topics**:
 
 - [Child pipeline configuration examples](../pipelines/downstream_pipelines.md#trigger-a-downstream-pipeline-from-a-job-in-the-gitlab-ciyml-file).
+
+#### `trigger:include:inputs`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519963) in GitLab 17.11.
+
+{{</history >}}
+
+Use `trigger:include:inputs` to set the [inputs](../inputs/_index.md) for a child pipeline
+when the downstream pipeline configuration uses [`spec:inputs`](#specinputs).
+
+**Example of `trigger:inputs`**:
+
+```yaml
+trigger-job:
+  trigger:
+    include:
+      - local: path/to/child-pipeline.yml
+        inputs:
+          website: "My website"
+```
 
 #### `trigger:project`
 
@@ -5747,26 +5846,6 @@ successfully complete before starting.
   jobs in later stages do not start until the trigger job completes.
 - If the downstream pipeline has a failed job, but the job uses [`allow_failure: true`](#allow_failure),
   the downstream pipeline is considered successful and the trigger job shows **success**.
-
-#### `trigger:inputs`
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519963) in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Disabled by default.
-
-{{</history >}}
-
-Use `trigger:inputs` to set the [inputs](inputs.md) when the downstream pipeline configuration
-uses [`spec:inputs`](#specinputs).
-
-**Example of `trigger:inputs`**:
-
-```yaml
-trigger:
-  - project: 'my-group/my-project'
-    inputs:
-      website: "My website"
-```
 
 #### `trigger:forward`
 
@@ -6053,7 +6132,7 @@ The description displays with [the prefilled variable name when running a pipeli
 
 **Supported values**:
 
-- A string.
+- A string. You can use Markdown.
 
 **Example of `variables:description`**:
 

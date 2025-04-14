@@ -62,6 +62,7 @@ Example of response:
     },
     "coverage": null,
     "archived": false,
+    "source": "push",
     "allow_failure": false,
     "created_at": "2015-12-24T15:51:21.802Z",
     "started_at": "2015-12-24T17:54:27.722Z",
@@ -155,6 +156,7 @@ Example of response:
     },
     "coverage": null,
     "archived": false,
+    "source": "push",
     "allow_failure": false,
     "created_at": "2015-12-24T15:51:21.727Z",
     "started_at": "2015-12-24T17:54:24.729Z",
@@ -253,6 +255,7 @@ Example of response:
     },
     "coverage": null,
     "archived": false,
+    "source": "push",
     "allow_failure": false,
     "created_at": "2015-12-24T15:51:21.727Z",
     "started_at": "2015-12-24T17:54:24.729Z",
@@ -336,6 +339,7 @@ Example of response:
     },
     "coverage": null,
     "archived": false,
+    "source": "push",
     "allow_failure": false,
     "created_at": "2015-12-24T15:51:21.802Z",
     "started_at": "2015-12-24T17:54:27.722Z",
@@ -434,6 +438,7 @@ Example of response:
     },
     "coverage": null,
     "archived": false,
+    "source": "push",
     "allow_failure": false,
     "created_at": "2015-12-24T15:51:21.802Z",
     "started_at": "2015-12-24T17:54:27.722Z",
@@ -529,6 +534,7 @@ Example of response:
   },
   "coverage": null,
   "archived": false,
+  "source": "push",
   "allow_failure": false,
   "created_at": "2015-12-24T15:51:21.880Z",
   "started_at": "2015-12-24T17:54:30.733Z",
@@ -686,6 +692,7 @@ Example of response:
   },
   "coverage": null,
   "archived": false,
+  "source": "push",
   "allow_failure": false,
   "created_at": "2015-12-24T15:51:21.880Z",
   "started_at": "2015-12-24T17:54:30.733Z",
@@ -775,7 +782,7 @@ POST /projects/:id/jobs/:job_id/cancel
 |-----------|----------------|----------|-------------|
 | `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`  | integer        | Yes      | ID of a job. |
-| `force`   | boolean        | No       | [Forces cancellation](../ci/jobs/job_logs.md#force-cancel-a-job) of a job in `canceling` state when set to `true`. |
+| `force`   | boolean        | No       | [Forces cancellation](../ci/jobs/_index.md#force-cancel-a-job) of a job in `canceling` state when set to `true`. |
 
 ```shell
 curl --request POST \
@@ -798,6 +805,7 @@ Example of response:
   },
   "coverage": null,
   "archived": false,
+  "source": "push",
   "allow_failure": false,
   "created_at": "2016-01-11T10:13:33.506Z",
   "started_at": "2016-01-11T10:14:09.526Z",
@@ -856,6 +864,7 @@ Example of response:
   },
   "coverage": null,
   "archived": false,
+  "source": "push",
   "allow_failure": false,
   "created_at": "2016-01-11T10:13:33.506Z",
   "started_at": null,
@@ -924,6 +933,7 @@ Example of response:
   },
   "coverage": null,
   "archived": false,
+  "source": "push",
   "allow_failure": false,
   "download_url": null,
   "id": 1,
@@ -1012,6 +1022,7 @@ Example response:
   },
   "coverage": null,
   "archived": false,
+  "source": "push",
   "allow_failure": false,
   "created_at": "2016-01-11T10:13:33.506Z",
   "started_at": null,

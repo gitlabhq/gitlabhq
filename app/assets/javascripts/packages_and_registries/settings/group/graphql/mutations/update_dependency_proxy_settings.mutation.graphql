@@ -2,6 +2,7 @@ mutation updateDependencyProxySettings($input: UpdateDependencyProxySettingsInpu
   updateDependencyProxySettings(input: $input) {
     dependencyProxySetting {
       enabled
+      identity
     }
     errors
   }

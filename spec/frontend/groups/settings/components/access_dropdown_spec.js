@@ -91,7 +91,7 @@ describe('Access Level Dropdown', () => {
     });
 
     it('should make api calls when search query is updated', async () => {
-      createComponent({ showUsers: true });
+      createComponent({ showUsers: true, inherited: true });
       const search = 'root';
 
       findSearchBox().vm.$emit('input', search);
@@ -101,7 +101,7 @@ describe('Access Level Dropdown', () => {
         includeParentSharedGroups: true,
         search,
       });
-      expect(getUsers).toHaveBeenCalledWith(search);
+      expect(getUsers).toHaveBeenCalledWith(search, true);
     });
   });
 

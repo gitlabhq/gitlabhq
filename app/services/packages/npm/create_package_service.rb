@@ -19,6 +19,7 @@ module Packages
       def execute
         return error('Unauthorized', ERROR_REASON_UNAUTHORIZED) unless can_create_package?
         return error('Version is empty.', ERROR_REASON_INVALID_PARAMETER) if version.blank?
+        return error('Name is empty.', ERROR_REASON_INVALID_PARAMETER) if name.blank?
         return error('Attachment data is empty.', ERROR_REASON_INVALID_PARAMETER) if attachment['data'].blank?
         return error('Package already exists.', ERROR_REASON_PACKAGE_EXISTS) if current_package_exists?
         return error('Package protected.', ERROR_REASON_PACKAGE_PROTECTED) if package_protected?

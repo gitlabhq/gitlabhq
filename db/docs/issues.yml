@@ -11,4 +11,4 @@ milestone: "<6.0"
 gitlab_schema: gitlab_main_cell
 sharding_key:
   namespace_id: namespaces
-table_size: small
+table_size: over_limit

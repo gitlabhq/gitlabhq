@@ -94,6 +94,10 @@ The default prefix is `glpat-` but administrators can change it.
 [Project access tokens](../../user/project/settings/project_access_tokens.md) and
 [group access tokens](../../user/group/settings/group_access_tokens.md) also inherit this prefix.
 
+By default, [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md) and
+[pipeline secret detection](../../user/application_security/secret_detection/pipeline/_index.md#detected-secrets) do not detect custom prefixes.
+Custom prefixes might cause an increase in false negatives.
+
 ### Set a prefix
 
 To change the default global prefix:
@@ -111,7 +115,7 @@ You can also configure the prefix by using the
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179852) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `custom_prefix_for_all_token_types`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179852) in GitLab 17.10 [with a flag](../feature_flags.md) named `custom_prefix_for_all_token_types`. Disabled by default.
 
 {{< /history >}}
 
@@ -126,11 +130,10 @@ This feature is available for testing, but not ready for production use.
 You can set a custom prefix for all tokens generated on your instance.
 By default, GitLab uses `gl` as the instance prefix.
 
-{{< alert type="note" >}}
+Custom token prefixes apply only to the following tokens:
 
-Custom token prefixes apply only to feed tokens.
-
-{{< /alert >}}
+- [Feed tokens](../../security/tokens/_index.md#feed-token)
+- [Deploy tokens](../../user/project/deploy_tokens/_index.md)
 
 Prerequisites:
 
@@ -143,6 +146,21 @@ To set a custom token prefix:
 1. Expand the **Account and limit** section.
 1. In the **Instance token prefix** field, enter your custom prefix.
 1. Select **Save changes**.
+
+{{< alert type="note" >}}
+
+By default, [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md), [client-side secret detection](../../user/application_security/secret_detection/client/_index.md) and
+[pipeline secret detection](../../user/application_security/secret_detection/pipeline/_index.md#detected-secrets) do not detect custom instance token prefixes. This may result in an increase in false negatives.
+
+{{< /alert >}}
+
+### Token prefix benefits
+
+Using custom token prefixes provides the following benefits:
+
+- Makes your tokens distinct and identifiable.
+- Helps identify leaked tokens during security scans.
+- Reduces the risk of token confusion between different instances.
 
 ## Repository size limit
 
@@ -229,6 +247,35 @@ You can change how long users can remain signed in without activity.
 If [Remember me](#turn-remember-me-on-or-off) is enabled, users' sessions can remain active for an indefinite period of time.
 
 For details, see [cookies used for sign-in](../../user/profile/_index.md#cookies-used-for-sign-in).
+
+### Set sessions to expire from creation date
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395038) in GitLab 17.11 with a [flag](../feature_flags.md) named `session_expire_from_init`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of session expiry from creation dates is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+By default, sessions expire a set amount of time after the session becomes inactive. Instead, you can configure sessions to expire a set amount of time after the session is created.
+
+When the session duration is met, the session ends and the user is signed out even if:
+
+- The user is still actively using the session.
+- The user selected [remember me](#turn-remember-me-on-or-off) during sign in.
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Account and limit**.
+1. Select the **Expire session from creation date** checkbox.
+
+After a session ends, a window prompts the user to sign in again.
 
 ### Turn **Remember me** on or off
 

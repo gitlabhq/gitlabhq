@@ -2,7 +2,7 @@
 key_path: counts.orphaned_namespaces
 description: Whether orphaned namespaces are present
 product_group: organizations
-value_type: number
+value_type: boolean
 status: active
 milestone: "17.6"
 instrumentation_class: OrphanedNamespacesMetric

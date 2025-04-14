@@ -1,0 +1,100 @@
+# elements like %{queue} are variables and should not be translated
+it:
+  Actions: Azioni
+  AddToQueue: Aggiungi alla coda
+  AreYouSure: Sei sicuro?
+  AreYouSureDeleteJob: Sei sicuro di voler cancellare questo lavoro?
+  AreYouSureDeleteQueue: Sei sicuro di voler cancellare la coda %{queue}?
+  Arguments: Argomenti
+  BackToApp: Torna all'App
+  Busy: Occupato
+  Class: Classe
+  Connections: Connessioni
+  CreatedAt: Creato il
+  CurrentMessagesInQueue: Messaggi in <span class='title'>%{queue}</span>
+  Dashboard: Dashboard
+  Dead: Arrestato
+  DeadJobs: Lavori arrestati
+  Delete: Cancella
+  DeleteAll: Cancella tutti
+  Deploy: Distribuire
+  Enqueued: In coda
+  Error: Errore
+  ErrorBacktrace: Backtrace dell'errore
+  ErrorClass: Classe dell'errore
+  ErrorMessage: Messaggio di errore
+  ExecutionTime: Tempo di esecuzione
+  Extras: Extra
+  Failed: Fallito
+  Failures: Fallimenti
+  Failure: Fallimento
+  GoBack: ← Indietro
+  History: Storia
+  Job: Lavoro
+  Jobs: Lavori
+  Kill: Uccidere
+  KillAll: Uccidere tutti
+  LastRetry: Ultimo tentativo
+  Latency: Latenza
+  LivePoll: Live poll
+  MemoryUsage: Memoria utilizzata
+  Name: Nome
+  Namespace: Namespace
+  NextRetry: Prossimo tentativo
+  NoDeadJobsFound: Non ci sono lavori arrestati
+  NoRetriesFound: Non sono stati trovati nuovi tentativi
+  NoScheduledFound: Non ci sono lavori pianificati
+  NotYetEnqueued: Non ancora in coda
+  OneMonth: 1 mese
+  OneWeek: 1 settimana
+  OriginallyFailed: Primo fallimento
+  Pause: Metti in pausa
+  Paused: In pausa
+  PeakMemoryUsage: Memoria utilizzata (max.)
+  Plugins: Plugins
+  PollingInterval: Intervallo di polling
+  Process: Processo
+  Processed: Processato
+  Processes: Processi
+  Queue: Coda
+  Queues: Code
+  Quiet: Silenzia
+  QuietAll: Silenzia Tutti
+  Realtime: Tempo reale
+  Retries: Nuovi tentativi
+  RetryAll: Riprova tutti
+  RetryCount: Totale tentativi
+  RetryNow: Riprova
+  Scheduled: Pianificato
+  ScheduledJobs: Lavori pianificati
+  Seconds: Secondi
+  ShowAll: Mostra tutti
+  SixMonths: 6 mesi
+  Size: Dimensione
+  Started: Iniziato
+  Status: Stato
+  Stop: Ferma
+  StopAll: Ferma Tutti
+  StopPolling: Ferma il polling
+  Success: Successo
+  Summary: Riepilogo
+  Thread: Thread
+  Threads: Threads
+  ThreeMonths: 3 mesi
+  Time: Ora
+  Unpause: Riattiva
+  Uptime: Uptime (giorni)
+  Utilization: Utilizzo
+  Version: Versione
+  When: Quando
+  Worker: Lavoratore
+  active: attivo
+  idle: inattivo
+  Metrics: Metriche
+  NoDataFound: Nessun dato trovato
+  TotalExecutionTime: Tempo totale di esecuzione
+  AvgExecutionTime: Tempo medio di esecuzione
+  Context: Contesto
+  NoJobMetricsFound: Metriche recenti di lavoro non trovate
+  Filter: Filtro
+  AnyJobContent: Qualsiasi contenuto di lavoro

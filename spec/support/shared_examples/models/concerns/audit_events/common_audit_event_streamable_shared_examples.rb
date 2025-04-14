@@ -16,21 +16,21 @@ RSpec.shared_examples 'streaming audit event model' do
       allow(streamer).to receive(:streamable?).and_return(true)
     end
 
-    it 'enqueues a streaming worker' do
-      expect(AuditEvents::AuditEventStreamingWorker)
-        .to receive(:perform_async)
-        .with('custom_event', nil, kind_of(String))
+    context 'when using json' do
+      it 'enqueues a streaming worker with json params' do
+        expect(AuditEvents::AuditEventStreamingWorker)
+          .to receive(:perform_async)
+          .with('custom_event', nil, kind_of(String))
 
-      audit_event.stream_to_external_destinations(event_name: event_name, use_json: true)
+        audit_event.stream_to_external_destinations(event_name: event_name, use_json: true)
+      end
     end
 
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(stream_audit_events_from_new_tables: false)
-      end
-
-      it 'does not enqueue worker' do
-        expect(AuditEvents::AuditEventStreamingWorker).not_to receive(:perform_async)
+    context 'when not using json' do
+      it 'enqueues a streaming worker with id and model class' do
+        expect(AuditEvents::AuditEventStreamingWorker)
+          .to receive(:perform_async)
+          .with('custom_event', audit_event.id, nil, audit_event.class.name)
 
         audit_event.stream_to_external_destinations(event_name: event_name)
       end

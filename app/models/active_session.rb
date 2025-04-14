@@ -76,7 +76,8 @@ class ActiveSession
       session_private_id = request.session.id.private_id
       client = Gitlab::SafeDeviceDetector.new(request.user_agent)
       timestamp = Time.current
-      expiry = Settings.gitlab['session_expire_delay'] * 60
+      key = key_name(user.id, session_private_id)
+      expiry = expiry_time(key)
 
       active_user_session = new(
         ip_address: request.remote_ip,
@@ -94,7 +95,7 @@ class ActiveSession
       Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
         redis.pipelined do |pipeline|
           pipeline.setex(
-            key_name(user.id, session_private_id),
+            key,
             expiry,
             active_user_session.dump
           )
@@ -167,6 +168,26 @@ class ActiveSession
 
   private_class_method def self.rack_key_name(session_id)
     "#{Gitlab::Redis::Sessions::SESSION_NAMESPACE}:#{session_id}"
+  end
+
+  def self.expiry_time(key)
+    # initialize to defaults
+    ttl = Settings.gitlab['session_expire_delay'] * 60
+
+    return ttl unless Feature.enabled?(:session_expire_from_init, :instance) &&
+      Gitlab::CurrentSettings.session_expire_from_init
+
+    # If we're initializing a session, there won't already be a session
+    # Only use current session TTL if we have expire session from init enabled
+    Gitlab::Redis::Sessions.with do |redis|
+      # redis returns -2 if the key doesn't exist, -1 if no TTL
+      ttl_expire = redis.ttl(key)
+
+      # for new sessions, return default ttl, otherwise, keep same ttl
+      ttl = ttl_expire if ttl_expire > -1
+    end
+
+    ttl
   end
 
   def self.key_name(user_id, session_id = '*')

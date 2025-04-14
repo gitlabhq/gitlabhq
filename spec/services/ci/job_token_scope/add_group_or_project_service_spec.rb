@@ -7,7 +7,7 @@ RSpec.describe Ci::JobTokenScope::AddGroupOrProjectService, feature_category: :c
   let_it_be(:target_project) { create(:project) }
   let_it_be(:target_group) { create(:group) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:policies) { %w[read_containers read_packages] }
+  let_it_be(:policies) { %w[read_deployments read_packages] }
 
   let(:response_success) { ServiceResponse.success }
 
@@ -38,7 +38,7 @@ RSpec.describe Ci::JobTokenScope::AddGroupOrProjectService, feature_category: :c
     context 'when project is a target to add' do
       let(:target) { target_project }
       let(:add_project_service_double) { instance_double(::Ci::JobTokenScope::AddProjectService) }
-      let(:policies) { %w[read_containers] }
+      let(:policies) { %w[read_deployments] }
 
       before do
         allow(::Ci::JobTokenScope::AddProjectService).to receive(:new)

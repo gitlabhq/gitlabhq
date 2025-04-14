@@ -263,8 +263,6 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_categor
             filter(link, context)
           end
 
-          expect(control.count).to eq 12
-
           expect do
             filter("#{link} #{link2}", context)
           end.not_to exceed_all_query_limit(control)

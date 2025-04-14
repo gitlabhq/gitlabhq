@@ -8,7 +8,9 @@ module Gitlab
       def add_metric(metric, time_frame: 'none', options: {})
         metric_class = "Gitlab::Usage::Metrics::Instrumentations::#{metric}".constantize
 
-        metric_class.new(time_frame: time_frame, options: options).instrumentation
+        Gitlab::UsageData.with_metadata do
+          metric_class.new(time_frame: time_frame, options: options).instrumentation
+        end
       end
 
       def count(relation, column = nil, batch: true, batch_size: nil, start: nil, finish: nil)

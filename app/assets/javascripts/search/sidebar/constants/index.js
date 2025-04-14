@@ -21,8 +21,8 @@ export const NAV_LINK_DEFAULT_CLASSES = [...LABEL_DEFAULT_CLASSES, 'gl-justify-b
 export const NAV_LINK_COUNT_DEFAULT_CLASSES = ['gl-text-sm', 'gl-font-normal'];
 
 export const TRACKING_ACTION_CLICK = 'search:filters:click';
-export const TRACKING_LABEL_APPLY = 'Apply Filters';
-export const TRACKING_LABEL_RESET = 'Reset Filters';
+export const TRACKING_LABEL_APPLY = 'ApplyFilters';
+export const TRACKING_LABEL_RESET = 'ResetFilters';
 
 export const ARCHIVED_TRACKING_NAMESPACE = 'search:archived:select';
 export const ARCHIVED_TRACKING_LABEL_CHECKBOX = 'checkbox';

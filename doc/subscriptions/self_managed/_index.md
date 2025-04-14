@@ -56,7 +56,7 @@ A user is not counted as a billable user if:
 - They are [deactivated](../../administration/moderate_users.md#deactivate-a-user) or
   [blocked](../../administration/moderate_users.md#block-a-user).
 - They are [pending approval](../../administration/moderate_users.md#users-pending-approval).
-- They have only the [Minimal Access role](../../user/permissions.md#users-with-minimal-access) on self-managed Ultimate subscriptions.
+- They have only the [Minimal Access role](../../user/permissions.md#users-with-minimal-access) on GitLab Self-Managed Ultimate subscriptions.
 - They have only the [Guest role on an Ultimate subscription](#free-guest-users).
 - They do not have project or group memberships on an Ultimate subscription.
 - The account is a GitLab-created account:
@@ -629,4 +629,4 @@ After your license has expired:
 
 ## Storage
 
-The amount of storage and transfer for self-managed instances has no application limits. Administrators are responsible for the underlying infrastructure costs and can set [repository size limits](../../administration/settings/account_and_limit_settings.md#repository-size-limit).
+The amount of storage and transfer for GitLab Self-Managed instances has no application limits. Administrators are responsible for the underlying infrastructure costs and can set [repository size limits](../../administration/settings/account_and_limit_settings.md#repository-size-limit).

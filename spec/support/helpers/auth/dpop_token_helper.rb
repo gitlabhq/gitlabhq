@@ -137,5 +137,9 @@ module Auth
     def create_fingerprint(key)
       Gitlab::SSHPublicKey.new(key).fingerprint_sha256
     end
+
+    def dpop_headers_for(user)
+      { "dpop" => generate_dpop_proof_for(user).proof }
+    end
   end
 end

@@ -279,50 +279,35 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
   describe '#available_for?' do
     using RSpec::Parameterized::TableSyntax
 
-    subject(:available_for) { service.available_for?(merge_request) { yield_result } }
+    subject(:available_for) { service.available_for?(merge_request) }
 
     let(:merge_request) { create(:merge_request) }
-    let(:yield_result) { true }
-    let(:checks_pass) { true }
     let(:can_be_merged) { true }
 
     context 'when can_be_merged is true' do
       before do
         allow(merge_request).to receive(:can_be_merged_by?).and_return(can_be_merged)
-        allow(merge_request).to receive(:mergeability_checks_pass?).and_return(checks_pass)
       end
 
-      context 'when the mergeabilty checks pass is true' do
-        context 'when the yield is true' do
-          it 'returns true' do
-            expect(available_for).to be_truthy
-          end
-        end
-
-        context 'when the yield is false' do
-          let(:yield_result) { false }
-
-          it 'returns false' do
-            expect(available_for).to be_falsey
-          end
+      context 'when the mergeabilty checks pass' do
+        it 'returns true' do
+          expect(available_for).to be_truthy
         end
       end
 
-      context 'when the mergeabilty checks pass is false' do
-        let(:checks_pass) { false }
+      context 'when the mergeabilty checks fail' do
+        let(:failed_result) do
+          Gitlab::MergeRequests::Mergeability::CheckResult.failed(payload: { identifier: 'failed' })
+        end
 
-        context 'when the yield is true' do
-          it 'returns false' do
-            expect(available_for).to be_falsey
+        before do
+          allow_next_instance_of(MergeRequests::Mergeability::CheckOpenStatusService) do |service|
+            allow(service).to receive_messages(skip?: false, execute: failed_result)
           end
         end
 
-        context 'when the yield is false' do
-          let(:yield_result) { false }
-
-          it 'returns false' do
-            expect(available_for).to be_falsey
-          end
+        it 'returns false' do
+          expect(available_for).to be_falsey
         end
       end
     end

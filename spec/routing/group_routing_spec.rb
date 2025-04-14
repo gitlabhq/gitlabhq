@@ -74,7 +74,7 @@ RSpec.shared_examples 'groups routing' do
   end
 
   it 'routes to the usage quotas controller' do
-    expect(get("groups/#{group_path}/-/usage_quotas")).to route_to("groups/usage_quotas#index", group_id: group_path)
+    expect(get("groups/#{group_path}/-/usage_quotas")).to route_to("groups/usage_quotas#root", group_id: group_path)
   end
 end
 

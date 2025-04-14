@@ -8,7 +8,9 @@ milestone: "17.0"
 introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150885'
 time_frame: none
 data_source: system
-instrumentation_class: RunnerRegistrationTokensAllowedMetric
+instrumentation_class: GitlabSettingsMetric
+options:
+  setting_method: allow_runner_registration_token?
 data_category: optional
 performance_indicator_type: []
 tiers:

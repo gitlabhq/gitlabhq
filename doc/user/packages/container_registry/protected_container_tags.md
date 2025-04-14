@@ -16,6 +16,8 @@ title: Protected container tags
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505455) as an [experiment](../../../policy/development_stages_support.md) in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `container_registry_protected_tags`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/505455) in GitLab 17.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/524076) in GitLab 17.11. Feature flag `container_registry_protected_tags` removed.
 
 {{< /history >}}
 
@@ -102,7 +104,7 @@ The protection rule is deleted and matching tags are no longer protected.
 Rule changes rely on JWT tokens to propagate between services. As a result, changes to protection rules and user access roles might take effect only after current JWT tokens expire. The delay equals the [configured token duration](../../../administration/packages/container_registry.md#increase-token-duration):
 
 - Default: 5 minutes
-- GitLab.com: [15 minutes](../../gitlab_com/_index.md#gitlab-container-registry)
+- GitLab.com: [15 minutes](../../gitlab_com/_index.md#container-registry)
 
 Most container registry clients (including Docker, the GitLab UI, and the API) request a new token for each operation, but custom clients might retain a token for its full validity period.
 
@@ -115,3 +117,13 @@ To ensure tag protection, direct manifest deletion requests are only allowed whe
 
 - Tag protection is disabled
 - The user has permission to delete any protected tags
+
+## Deleting container images
+
+You cannot [delete container images](delete_container_registry_images.md) if all the following conditions are true:
+
+- The container image has tags.
+- The project has container registry tag protection rules.
+- Your access level is lower than the `minimum_access_delete_level` defined in any of the rules.
+
+This restriction applies regardless of whether the rule patterns match the container image tags.

@@ -16,8 +16,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
   end
 
   describe '/api/v4/runners' do
-    describe 'POST /api/v4/runners/verify', :freeze_time do
-      let_it_be_with_reload(:runner) { create(:ci_runner, token_expires_at: 3.days.from_now) }
+    describe 'POST /api/v4/runners/verify', :freeze_time, :clean_gitlab_redis_cache do
+      let_it_be_with_reload(:runner) { create(:ci_runner, :unregistered, token_expires_at: 3.days.from_now) }
 
       let(:params) { nil }
 
@@ -50,9 +50,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
         context 'with glrt-prefixed token' do
           let_it_be(:registration_token) { 'glrt-abcdefg123456' }
-          let_it_be(:registration_type) { :authenticated_user }
           let_it_be(:runner) do
-            create(:ci_runner, registration_type: registration_type,
+            create(:ci_runner, :unregistered, registration_type: :authenticated_user,
               token: registration_token, token_expires_at: 3.days.from_now)
           end
 
@@ -67,8 +66,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             })
           end
 
-          it 'does not update contacted_at' do
-            expect { verify }.not_to change { runner.reload.contacted_at }.from(nil)
+          it 'does not update creation_state' do
+            expect { verify }.not_to change { runner.reload.creation_state }.from('started')
           end
         end
 
@@ -85,6 +84,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
         it 'updates contacted_at' do
           expect { verify }.to change { runner.reload.contacted_at }.from(nil).to(Time.current)
+        end
+
+        it 'does not update creation_state' do
+          expect { verify }.not_to change { runner.reload.creation_state }.from('started')
         end
 
         context 'with non-expiring runner token' do

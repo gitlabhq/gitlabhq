@@ -605,13 +605,13 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
       ])
     end
 
-    describe 'Update user' do
+    describe 'Update user', :js do
       before do
         fill_in 'user_name', with: 'Big Bang'
         fill_in 'user_email', with: 'bigbang@mail.com'
         fill_in 'user_password', with: 'AValidPassword1'
         fill_in 'user_password_confirmation', with: 'AValidPassword1'
-        choose 'user_access_level_admin'
+        choose 'Administrator'
         check 'Private profile'
       end
 
@@ -632,7 +632,7 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
         expect(user.private_profile).to eq(true)
       end
 
-      context 'when updating the organization access level', :js do
+      context 'when updating the organization access level' do
         it 'updates the user organization access level' do
           organization_user = Organizations::OrganizationUser
             .find_by(user_id: user.id, organization_id: current_organization.id)

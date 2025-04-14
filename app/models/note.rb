@@ -29,6 +29,8 @@ class Note < ApplicationRecord
   include EachBatch
   include Spammable
 
+  ignore_column :attachment, remove_with: '18.1', remove_after: '2025-05-15'
+
   cache_markdown_field :note, pipeline: :note, issuable_reference_expansion_enabled: true
 
   redact_field :note
@@ -97,9 +99,6 @@ class Note < ApplicationRecord
   validates :project, presence: true, if: :for_project_noteable?
   validates :namespace, presence: true
 
-  # Attachments are deprecated and are handled by Markdown uploader
-  validates :attachment, file_size: { maximum: :max_attachment_size }
-
   validates :noteable_type, presence: true
   validates :noteable_id, presence: true, unless: [:for_commit?, :importing?]
   validates :commit_id, presence: true, if: :for_commit?
@@ -116,11 +115,6 @@ class Note < ApplicationRecord
   end
 
   validate :does_not_exceed_notes_limit?, on: :create, unless: [:system?, :importing?]
-
-  # @deprecated attachments are handled by the Upload model.
-  #
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/20830
-  mount_uploader :attachment, AttachmentUploader
 
   # Scopes
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
@@ -311,10 +305,6 @@ class Note < ApplicationRecord
 
   def active?
     true
-  end
-
-  def max_attachment_size
-    Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i
   end
 
   def hook_attrs
@@ -721,10 +711,6 @@ class Note < ApplicationRecord
   # - cached_markdown_version
   def attribute_names_for_serialization
     attributes.keys
-  end
-
-  def uploads_sharding_key
-    { namespace_id: namespace_id }
   end
 
   private

@@ -143,15 +143,6 @@
   # for keeping only the N latest cache files, so we take advantage of it with `pull-push`.
   policy: push
 
-.qa-ruby-gems-cache: &qa-ruby-gems-cache
-  key:
-    prefix: "qa-ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}"
-    files:
-      - qa/Gemfile.lock
-  paths:
-    - qa/vendor/ruby
-  policy: pull
-
 .setup-test-env-cache:
   cache:
     - *ruby-gems-cache
@@ -201,11 +192,30 @@
     - *ruby-gems-cache
     - *node-modules-cache
 
+# E2E related gem caching
 .qa-bundler-variables: &qa-bundler-variables
   BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
   BUNDLE_SILENCE_ROOT_WARNING: "true"
   BUNDLE_PATH: vendor
   BUNDLE_WITHOUT: development
+
+.qa-ruby-gems-cache: &qa-ruby-gems-cache
+  key:
+    prefix: "qa-ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}"
+    files:
+      - qa/Gemfile.lock
+  paths:
+    - qa/vendor/ruby
+  policy: pull
+
+.qa-ruby-orchestrator-gems-cache: &qa-ruby-orchestrator-gems-cache
+  key:
+    prefix: "qa-orchestrator-ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}"
+    files:
+      - qa/gems/gitlab-orchestrator/Gemfile.lock
+  paths:
+    - qa/gems/gitlab-orchestrator/vendor/ruby
+  policy: pull
 
 .cng-helm-cache: &cng-helm-cache
   key: cng-helm-cache-${GITLAB_HELM_CHART_REF}
@@ -222,7 +232,7 @@
   variables: *qa-bundler-variables
   cache:
     - <<: *qa-ruby-gems-cache
-      policy: pull-push
+      policy: push
 
 .cng-qa-cache:
   variables:
@@ -239,7 +249,18 @@
   cache:
     - *qa-ruby-gems-cache
     - <<: *cng-helm-cache
-      policy: pull-push
+      policy: push
+
+.qa-orchestrator-cache:
+  variables: *qa-bundler-variables
+  cache:
+    - <<: *qa-ruby-orchestrator-gems-cache
+
+.qa-orchestrator-cache-push:
+  variables: *qa-bundler-variables
+  cache:
+    - <<: *qa-ruby-orchestrator-gems-cache
+      policy: push
 
 .yarn-cache:
   cache:
@@ -319,46 +340,8 @@
 
 .zoekt-services:
   services:
-    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.9
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.10
       alias: zoekt-ci-image
-
-.ai-gateway-variables:
-  variables:
-    AIGW_AUTH__BYPASS_EXTERNAL: true
-    AIGW_GOOGLE_CLOUD_PLATFORM__PROJECT: $VERTEX_AI_PROJECT
-    AIGW_GOOGLE_CLOUD_PLATFORM__SERVICE_ACCOUNT_JSON_KEY: $VERTEX_AI_CREDENTIALS
-    AIGW_FASTAPI__DOCS_URL: "/docs"
-    AIGW_FASTAPI__OPENAPI_URL: "/openapi.json"
-    AIGW_FASTAPI__API_PORT: 5052
-    ANTHROPIC_API_KEY: $ANTHROPIC_API_KEY_FOR_SERVICE
-    # CI_DEBUG_SERVICES: "true"  # Enable this variable when you debug ai-gateway boot failure.
-
-.ai-gateway-services:
-  services:
-    - name: registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:v1.18.0
-      alias: ai-gateway
-
-.litellm-proxy-variables:
-  variables:
-    LITELLM_CONFIG_CONTENT: |
-      model_list:
-        - model_name: codestral
-          litellm_params:
-            model: ollama/codestral
-            mock_response: "Mock response from codestral"
-        - model_name: mistral
-          litellm_params:
-            model: ollama/mistral
-            mock_response: "Mock response from mistral"
-
-.litellm-proxy-services:
-  services:
-    - name: ghcr.io/berriai/litellm:main-latest
-      alias: litellm-proxy
-      entrypoint: ["/bin/sh", "-c"]
-      command:
-        - |
-          mkdir -p /tmp && echo "${LITELLM_CONFIG_CONTENT}" > /tmp/config.yaml && litellm --config /tmp/config.yaml
 
 .use-pg14:
   extends:
@@ -410,13 +393,9 @@
   extends:
     - .use-pg14
     - .zoekt-variables
-    - .ai-gateway-variables
-    - .litellm-proxy-variables
   services:
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.es7-services, services]
-    - !reference [.ai-gateway-services, services]
-    - !reference [.litellm-proxy-services, services]
 
 .use-pg15-es7-ee:
   extends:
@@ -445,7 +424,7 @@
 .es8-services:
   services:
     - !reference [.zoekt-services, services]
-    - name: elasticsearch:8.11.4
+    - name: elasticsearch:8.17.4
 
 .es8-variables:
   variables:
@@ -578,15 +557,6 @@
     CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
     CLICKHOUSE_DB: gitlab_clickhouse_test
 
-.use-kaniko:
-  image:
-    name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:kaniko
-    entrypoint: [""]
-  before_script:
-    - source scripts/utils.sh
-    - mkdir -p /kaniko/.docker
-    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
-
 .as-if-foss:
   variables:
     FOSS_ONLY: '1'
@@ -594,30 +564,41 @@
 .use-docker-in-docker:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}docker:${DOCKER_VERSION}
   services:
-    - docker:${DOCKER_VERSION}-dind
+    - name: "$GL_DOCKER_REGISTRY_MIRROR/docker:${DOCKER_VERSION}-dind"
+      alias: docker
+      entrypoint: ["sh", "-c", "dockerd-entrypoint.sh $GL_DOCKER_DIND_OPTIONS"]
   variables:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
+    GL_DOCKER_REGISTRY_MIRROR: mirror.gcr.io
+    GL_DOCKER_REGISTRY_MIRROR_ENDPOINT: https://${GL_DOCKER_REGISTRY_MIRROR}
+    GL_DOCKER_DIND_OPTIONS: "--registry-mirror=$GL_DOCKER_REGISTRY_MIRROR_ENDPOINT"
   tags:
     # See https://gitlab.com/gitlab-com/www-gitlab-com/-/issues/7019 for tag descriptions
     - gitlab-org-docker
 
-.use-buildx:
-  extends: .use-docker-in-docker
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-slim:docker-${DOCKER_VERSION}
-  variables:
-    QEMU_IMAGE: tonistiigi/binfmt:qemu-v7.0.0
+.buildx-setup:
   before_script:
-    - !reference [.default-utils-before_script, before_script]
-    - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
+    - |
+      if [ -n "$CI_REGISTRY" ]; then
+        echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
+      fi
     - |
       if [[ "${ARCH}" =~ arm64 ]]; then
         echo -e "\033[1;33mInstalling latest qemu emulators\033[0m"
+        export QEMU_IMAGE=${QEMU_IMAGE:-tonistiigi/binfmt:qemu-v9.2.2}
         docker pull -q ${QEMU_IMAGE};
         docker run --rm --privileged ${QEMU_IMAGE} --uninstall qemu-*;
         docker run --rm --privileged ${QEMU_IMAGE} --install all;
       fi
     - docker buildx create --use  # creates and set's to active buildkit builder
+
+.use-buildx:
+  extends: .use-docker-in-docker
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-slim:docker-${DOCKER_VERSION}
+  before_script:
+    - !reference [.default-utils-before_script, before_script]
+    - !reference [.buildx-setup, before_script]
 
 .use-kube-context:
   before_script:
@@ -633,7 +614,7 @@
       url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/repository/files/scripts%2Futils.sh/raw?ref=${CI_COMMIT_SHA}"
       curl -f --header "Private-Token: ${PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE}" "${url}" --create-dirs --output scripts/utils.sh
     - source scripts/utils.sh
-    - run_timed_command "download_files ${FILES_TO_DOWNLOAD}"
+    - download_files ${FILES_TO_DOWNLOAD}
 
 .with_secret:
   id_tokens:

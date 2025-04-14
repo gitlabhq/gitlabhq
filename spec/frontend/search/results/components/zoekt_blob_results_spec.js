@@ -5,7 +5,6 @@ import { GlLoadingIcon, GlCard } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ZoektBlobResults from '~/search/results/components/zoekt_blob_results.vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import EmptyResult from '~/search/results/components/result_empty.vue';
 
 import { MOCK_QUERY, mockGetBlobSearchQuery } from '../../mock_data';
 
@@ -44,7 +43,6 @@ describe('ZoektBlobResults', () => {
   };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findEmptyResult = () => wrapper.findComponent(EmptyResult);
 
   beforeEach(() => {
     window.gon.user_color_mode = 'gl-light';
@@ -78,21 +76,6 @@ describe('ZoektBlobResults', () => {
     it(`renders component properly`, async () => {
       await nextTick();
       expect(wrapper.element).toMatchSnapshot();
-    });
-  });
-
-  describe('when component has no results', () => {
-    beforeEach(async () => {
-      createComponent({
-        propsData: { hasResults: false },
-      });
-      jest.advanceTimersByTime(500);
-      await waitForPromises();
-    });
-
-    it(`renders component properly`, async () => {
-      await nextTick();
-      expect(findEmptyResult().exists()).toBe(true);
     });
   });
 });

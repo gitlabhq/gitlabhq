@@ -1,12 +1,16 @@
 <script>
 import { GlTooltipDirective, GlIcon, GlLink, GlButton } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
+import { InternalEvents } from '~/tracking';
+import { HISTORY_BUTTON_CLICK } from '~/tracking/constants';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import getRefMixin from '../mixins/get_ref';
+
+const trackingMixin = InternalEvents.mixin();
 
 export default {
   components: {
@@ -21,7 +25,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [getRefMixin],
+  mixins: [getRefMixin, trackingMixin],
   props: {
     commit: {
       type: Object,
@@ -51,6 +55,9 @@ export default {
   methods: {
     toggleShowDescription() {
       this.showDescription = !this.showDescription;
+    },
+    handleHistoryClick() {
+      this.trackEvent(HISTORY_BUTTON_CLICK);
     },
   },
   defaultAvatarUrl,
@@ -107,7 +114,12 @@ export default {
           data-testid="text-expander"
           @click="toggleShowDescription"
         />
-        <gl-button size="small" data-testid="collapsible-commit-history" :href="historyUrl">
+        <gl-button
+          size="small"
+          data-testid="collapsible-commit-history"
+          :href="historyUrl"
+          @click="handleHistoryClick"
+        >
           {{ __('History') }}
         </gl-button>
       </div>

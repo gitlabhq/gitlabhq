@@ -40,7 +40,7 @@ for authenticating into Vault. To do this, sign in to GitLab and follow these st
 1. Select **Save application**.
 1. Copy the **Client ID** and **Client Secret**, or keep the page open for reference.
 
-![GitLab OAuth provider](img/gitlab_oauth_vault_v12_6.png)
+![GitLab as an OAuth provider](img/gitlab_oauth_vault_v12_6.png)
 
 ## Enable OpenID Connect on Vault
 

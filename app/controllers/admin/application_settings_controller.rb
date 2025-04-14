@@ -197,6 +197,7 @@ module Admin
         :lets_encrypt_notification_email,
         :lets_encrypt_terms_of_service_accepted,
         :domain_denylist_file,
+        :deletion_adjourned_period,
         :raw_blob_request_limit,
         :issues_create_limit,
         :notes_create_limit,

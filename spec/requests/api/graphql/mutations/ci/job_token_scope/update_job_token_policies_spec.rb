@@ -43,11 +43,17 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
 
   let(:mutation_response) { graphql_mutation_response(:ci_job_token_scope_update_policies) }
 
+  before do
+    allow_next_found_instance_of(Project) do |project|
+      allow(project).to receive(:job_token_policies_enabled?).and_return(true)
+    end
+  end
+
   context 'when policies are updated for a target project' do
     let_it_be(:target_project) { create(:project, :private) }
     let_it_be(:target_path) { target_project.full_path }
 
-    let(:policies) { %w[READ_CONTAINERS READ_PACKAGES] }
+    let(:policies) { %w[READ_DEPLOYMENTS READ_PACKAGES] }
 
     context 'when user does not have permissions to admin project' do
       let_it_be(:current_user) { create(:user, guest_of: target_project) }
@@ -77,7 +83,7 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
             source_project: project,
             target_project: target_project,
             default_permissions: false,
-            job_token_policies: %w[read_containers],
+            job_token_policies: %w[read_deployments],
             direction: :inbound
           )
         end
@@ -111,13 +117,15 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
           end
         end
 
-        context 'when feature-flag `add_policies_to_ci_job_token` is disabled' do
+        context 'when job token policies are disabled' do
           before do
-            stub_feature_flags(add_policies_to_ci_job_token: false)
+            allow_next_found_instance_of(Project) do |project|
+              allow(project).to receive(:job_token_policies_enabled?).and_return(false)
+            end
           end
 
           it_behaves_like 'a mutation that returns top-level errors',
-            errors: ["`add_policies_to_ci_job_token` feature flag is disabled."]
+            errors: ['job token policies are disabled.']
         end
       end
     end
@@ -127,7 +135,7 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
     let_it_be(:target_group) { create(:group, :private) }
     let_it_be(:target_path) { target_group.full_path }
 
-    let(:policies) { %w[READ_CONTAINERS READ_PACKAGES] }
+    let(:policies) { %w[READ_DEPLOYMENTS READ_PACKAGES] }
 
     context 'when user does not have permissions to admin project' do
       let_it_be(:current_user) { create(:user, guest_of: target_group) }
@@ -157,7 +165,7 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
             source_project: project,
             target_group: target_group,
             default_permissions: false,
-            job_token_policies: %w[read_containers]
+            job_token_policies: %w[read_deployments]
           )
         end
 
@@ -190,13 +198,15 @@ RSpec.describe 'CiJobTokenScopeUpdatePolicies', feature_category: :continuous_in
           end
         end
 
-        context 'when feature-flag `add_policies_to_ci_job_token` is disabled' do
+        context 'when job token policies are disabled' do
           before do
-            stub_feature_flags(add_policies_to_ci_job_token: false)
+            allow_next_found_instance_of(Project) do |project|
+              allow(project).to receive(:job_token_policies_enabled?).and_return(false)
+            end
           end
 
           it_behaves_like 'a mutation that returns top-level errors',
-            errors: ["`add_policies_to_ci_job_token` feature flag is disabled."]
+            errors: ['job token policies are disabled.']
         end
       end
     end

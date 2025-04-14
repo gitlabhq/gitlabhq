@@ -222,6 +222,55 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
     end
   end
 
+  describe '#project_runners_settings_data' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+
+    subject(:result) { helper.project_runners_settings_data(project) }
+
+    before do
+      allow(helper).to receive(:can?).and_call_original
+    end
+
+    context 'when the user has all permissions' do
+      before do
+        allow(helper).to receive(:can?).with(user, :admin_group, group).and_return(true)
+        allow(helper).to receive(:can?).with(user, :create_runner, project).and_return(true)
+        allow(helper).to receive(:can?).with(user, :read_runners_registration_token, project).and_return(true)
+        allow(project.namespace).to receive(:allow_runner_registration_token?).and_return(true)
+      end
+
+      it 'returns project data to render runners settings' do
+        expect(result).to include(
+          can_create_runner: 'true',
+          allow_registration_token: 'true',
+          registration_token: project.runners_token,
+          group_full_path: group.full_path,
+          new_project_runner_path: new_project_runner_path(project)
+        )
+      end
+    end
+
+    context 'when user cannot manage runners' do
+      before do
+        allow(helper).to receive(:can?).with(user, :admin_group, group).and_return(false)
+        allow(helper).to receive(:can?).with(user, :create_runner, project).and_return(false)
+        allow(helper).to receive(:can?).with(user, :read_runners_registration_token, project).and_return(false)
+        allow(project.namespace).to receive(:allow_runner_registration_token?).and_return(false)
+      end
+
+      it 'returns appropriate permissions' do
+        expect(result).to include(
+          can_create_runner: 'false',
+          allow_registration_token: 'false',
+          registration_token: nil,
+          group_full_path: group.full_path,
+          new_project_runner_path: new_project_runner_path(project)
+        )
+      end
+    end
+  end
+
   describe '#toggle_shared_runners_settings_data' do
     let_it_be(:group) { create(:group) }
 

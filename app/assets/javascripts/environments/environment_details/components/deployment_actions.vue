@@ -80,9 +80,6 @@ export default {
     isActionsShown() {
       return this.actions.length > 0;
     },
-    deploymentIid() {
-      return this.approvalEnvironment.deploymentIid;
-    },
     environment() {
       return this.approvalEnvironment.environment;
     },
@@ -106,7 +103,7 @@ export default {
 </script>
 <template>
   <div>
-    <actions-component v-if="isActionsShown" :actions="actions" graphql />
+    <actions-component v-if="isActionsShown" :actions="actions" />
     <gl-button
       v-if="isRollbackAvailable"
       v-gl-modal.confirm-rollback-modal

@@ -2,12 +2,13 @@
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Enable and configure ClickHouse for data analytics in GitLab.
 title: Use ClickHouse for analytics reports
 ---
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
+- Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}

@@ -63,7 +63,9 @@ export default {
 
     window.addEventListener('resize', this.debouncedHeightCalc, { passive: true });
     window.addEventListener('scroll', this.debouncedRecordScroll, { passive: true });
-    window.mrTabs.eventHub.$on('MergeRequestTabChange', this.onTabChange);
+    if (window.mrTabs) {
+      window.mrTabs?.eventHub?.$on('MergeRequestTabChange', this.onTabChange);
+    }
 
     this.calculateScrollerHeight();
   },
@@ -72,7 +74,9 @@ export default {
     this.mediaQueryMatch = null;
     window.removeEventListener('resize', this.debouncedHeightCalc, { passive: true });
     window.removeEventListener('scroll', this.debouncedRecordScroll, { passive: true });
-    window.mrTabs.eventHub.$off('MergeRequestTabChange', this.onTabChange);
+    if (window.mrTabs) {
+      window.mrTabs.eventHub.$off('MergeRequestTabChange', this.onTabChange);
+    }
   },
   methods: {
     recordScroll() {

@@ -44,7 +44,7 @@ class Import::BitbucketServerController < Import::BaseController
     result = Import::BitbucketServerService.new(
       client,
       current_user,
-      params.merge({ organization_id: Current.organization_id })
+      params.merge({ organization_id: Current.organization&.id })
     ).execute(credentials)
 
     if result[:status] == :success

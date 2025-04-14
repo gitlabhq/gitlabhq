@@ -51,9 +51,7 @@ describe('EnvironmentActions Component', () => {
 
   it('should render a dropdown button with aria-label description', () => {
     createComponent();
-    expect(wrapper.findComponent(GlDisclosureDropdown).attributes('aria-label')).toBe(
-      'Deploy to...',
-    );
+    expect(wrapper.findComponent(GlDisclosureDropdown).attributes('aria-label')).toBe('Deploy to…');
   });
 
   describe('manual actions', () => {

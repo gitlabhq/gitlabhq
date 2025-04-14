@@ -157,14 +157,16 @@ module Gitlab
       payload.merge!(::Gitlab::Instrumentation::Middleware::PathTraversalCheck.payload)
     end
 
-    # Returns the queuing duration for a Sidekiq job in seconds, as a float, if the
+    # Returns the total queuing duration for a Sidekiq job in seconds, as a float, if the
     # `enqueued_at` field or `created_at` field is available.
+    # Includes buffering duration if a job was buffered by ConcurrencyLimit middleware.
     #
     # * If the job doesn't contain sufficient information, returns nil
     # * If the job has a start time in the future, returns 0
     # * If the job contains an invalid start time value, returns nil
     # @param [Hash] job a Sidekiq job, represented as a hash
-    def self.queue_duration_for_job(job)
+    # @param [Boolean] with_buffering_duration whether to include buffering duration by ConcurrencyLimit
+    def self.queue_duration_for_job(job, with_buffering_duration: true)
       # Old gitlab-shell messages don't provide enqueued_at/created_at attributes
       enqueued_at = job['enqueued_at'] || job['created_at']
       return unless enqueued_at
@@ -172,11 +174,18 @@ module Gitlab
       enqueued_at_time = convert_to_time(enqueued_at)
       return unless enqueued_at_time
 
-      round_elapsed_time(enqueued_at_time)
+      buffering_duration = buffering_duration_for_job(job) # concurrency_limit_buffered_at -> enqueued_at
+      queueing_duration = round_elapsed_time(enqueued_at_time) # enqueued_at -> now
+
+      if with_buffering_duration && !queueing_duration.nil? && !buffering_duration.nil?
+        queueing_duration += buffering_duration
+      end
+
+      queueing_duration
     end
 
-    # Returns the buffering duration for a Sidekiq job in seconds, as a float, if the
-    # `concurrency_limit_buffered_at` field is available.
+    # Returns the time a Sidekiq job waiting from being buffered until enqueued again in seconds, as a float, if the
+    # `concurrency_limit_buffered_at` and `enqueued_at`/`created_at` field is available.
     #
     # * If the job doesn't contain sufficient information, returns nil
     # * If the job has a start time in the future, returns 0
@@ -186,10 +195,17 @@ module Gitlab
       buffered_at = job['concurrency_limit_buffered_at']
       return unless buffered_at
 
+      # Old gitlab-shell messages don't provide enqueued_at/created_at attributes
+      enqueued_at = job['enqueued_at'] || job['created_at']
+      return unless enqueued_at
+
       buffered_at_time = convert_to_time(buffered_at)
       return unless buffered_at_time
 
-      round_elapsed_time(buffered_at_time)
+      enqueued_at_time = convert_to_time(enqueued_at)
+      return unless enqueued_at
+
+      round_elapsed_time(buffered_at_time, enqueued_at_time)
     end
 
     # Returns the time it took for a scheduled job to be enqueued in seconds, as a float,

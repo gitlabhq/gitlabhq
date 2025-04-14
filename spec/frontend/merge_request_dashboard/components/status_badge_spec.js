@@ -23,7 +23,20 @@ describe('Merge request status badge component', () => {
   });
 
   it('renders badge', () => {
-    createComponent();
+    window.gon = { current_user_id: 1 };
+
+    createComponent({
+      mergeRequest: {
+        reviewers: {
+          nodes: [
+            {
+              id: 'gid://gitlab/User/1',
+              mergeRequestInteraction: { reviewState: 'REVIEWED' },
+            },
+          ],
+        },
+      },
+    });
 
     expect(findStatusBadge().element).toMatchSnapshot();
   });

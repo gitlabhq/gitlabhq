@@ -387,7 +387,7 @@ gitlab_rails['env'] = {
 ```
 
 For self-compiled installations, set the environment variable.
-Refer to [Puma Worker timeout](../operations/puma.md#change-the-worker-timeout).
+Refer to [Puma Worker timeout](puma.md#change-the-worker-timeout).
 
 [Reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation) GitLab for the changes to take effect.
 
@@ -401,7 +401,7 @@ separate Rails process to debug the issue:
 1. Sign in to your GitLab account.
 1. Copy the URL that is causing problems (for example, `https://gitlab.com/ABC`).
 1. Create a personal access token for your user (User Settings -> Access tokens).
-1. Bring up the [GitLab Rails console.](../operations/rails_console.md#starting-a-rails-console-session)
+1. Bring up the [GitLab Rails console.](rails_console.md#starting-a-rails-console-session)
 1. At the Rails console, run:
 
    ```ruby

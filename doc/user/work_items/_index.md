@@ -2,6 +2,7 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Organize your team's work with GitLab work items. Track tasks, epics, issues, and objectives in a unified view to connect strategy with implementation and monitor progress."
 title: Work items
 ---
 
@@ -35,14 +36,14 @@ GitLab supports the following work item types:
 - [Issues](../project/issues/_index.md): Track tasks, features, and bugs.
 - [Epics](../group/epics/_index.md): Manage large initiatives across multiple milestones and issues.
 - [Tasks](../tasks.md): Track small units of work.
-- [Objectives and key results)](../okrs.md): Track strategic goals and their measurable outcomes.
+- [Objectives and key results](../okrs.md): Track strategic goals and their measurable outcomes.
 - [Test cases](../../ci/test_cases/_index.md): Integrate test planning directly into your GitLab workflows.
 
 ## View all work items
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513092) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `work_item_planning_view`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513092) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `work_item_planning_view`. Disabled by default.
 
 {{< /history >}}
 
@@ -144,3 +145,4 @@ For more information about sorting logic, see
 - [Labels](../project/labels.md)
 - [Iterations](../group/iterations/_index.md)
 - [Milestones](../project/milestones/_index.md)
+- [Custom fields](custom_fields.md)

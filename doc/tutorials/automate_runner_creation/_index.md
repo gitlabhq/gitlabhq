@@ -106,7 +106,7 @@ To create a project access token:
    - By default, this date can be a maximum of 365 days later than the current date. In GitLab 17.6 or later, you can [extend this limit to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901).
 
    - An instance-wide [maximum lifetime](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens)
-     setting can limit the maximum allowable lifetime on self-managed instances.
+     setting can limit the maximum allowable lifetime on GitLab Self-Managed instances.
 1. From the **Select a role** dropdown list:
    - For the project access token, select **Maintainer**.
    - For the group access token, select **Owner**.

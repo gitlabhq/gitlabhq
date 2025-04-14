@@ -39,7 +39,7 @@ Prerequisites:
 | `projects_to_exclude`        | array of integers | no        | The IDs of projects to exclude from the feature.  |
 
 ```shell
-curl --header PUT "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/7/security_settings?secret_push_protection_enabled=true&projects_to_exclude[]=1&projects_to_exclude[]=2"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/7/security_settings?secret_push_protection_enabled=true&projects_to_exclude[]=1&projects_to_exclude[]=2"
 ```
 
 Example response:

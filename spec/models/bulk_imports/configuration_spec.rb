@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe BulkImports::Configuration, type: :model, feature_category: :importers do
   describe 'associations' do
-    it { is_expected.to belong_to(:bulk_import).required }
+    it { is_expected.to belong_to(:bulk_import).optional }
   end
 
   describe 'validations' do

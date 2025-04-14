@@ -5,10 +5,10 @@
   = image_tag('illustrations/error/error-403-lg.svg', alt: '403', lazy: false)
   %h1
     = s_("403|403: You do not have the permission to access this page")
-  - if message
-    %p
-      = message
+
   %p
+    - if message
+      = message
     = s_('403|Please contact your GitLab administrator to get permission.')
   .action-container.js-go-back{ hidden: true }
     = render Pajamas::ButtonComponent.new(variant: :confirm) do

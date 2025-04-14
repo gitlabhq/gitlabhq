@@ -27,6 +27,7 @@ FactoryBot.define do
         without_loaded_metadatum { false }
         conan_package_reference { package.conan_package_references.first }
         conan_recipe_revision { package.conan_recipe_revisions.first }
+        conan_package_revision { package.conan_package_revisions.first }
       end
 
       trait(:conan_recipe_file) do
@@ -64,7 +65,8 @@ FactoryBot.define do
           unless evaluator.without_loaded_metadatum
             create :conan_file_metadatum, :package_file,
               { package_file: package_file, package_reference: evaluator.conan_package_reference,
-                recipe_revision: evaluator.conan_recipe_revision }.compact
+                recipe_revision: evaluator.conan_recipe_revision,
+                package_revision: evaluator.conan_package_revision }.compact
           end
         end
 
@@ -80,7 +82,8 @@ FactoryBot.define do
           unless evaluator.without_loaded_metadatum
             create :conan_file_metadatum, :package_file,
               { package_file: package_file, package_reference: evaluator.conan_package_reference,
-                recipe_revision: evaluator.conan_recipe_revision }.compact
+                recipe_revision: evaluator.conan_recipe_revision,
+                package_revision: evaluator.conan_package_revision }.compact
           end
         end
 
@@ -101,7 +104,8 @@ FactoryBot.define do
           unless evaluator.without_loaded_metadatum
             create :conan_file_metadatum, :package_file,
               { package_file: package_file, package_reference: evaluator.conan_package_reference,
-                recipe_revision: evaluator.conan_recipe_revision }.compact
+                recipe_revision: evaluator.conan_recipe_revision,
+                package_revision: evaluator.conan_package_revision }.compact
           end
         end
 

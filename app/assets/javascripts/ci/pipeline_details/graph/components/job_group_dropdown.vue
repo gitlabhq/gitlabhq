@@ -2,11 +2,13 @@
 import {
   GlBadge,
   GlDisclosureDropdown,
+  GlDisclosureDropdownGroup,
   GlTooltipDirective,
   GlResizeObserverDirective,
 } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import JobDropdownItem from '~/ci/common/private/job_dropdown_item.vue';
+import { FAILED_STATUS } from '~/ci/constants';
 import { JOB_DROPDOWN } from '../constants';
 import JobItem from './job_item.vue';
 
@@ -22,6 +24,7 @@ export default {
     JobItem,
     GlBadge,
     GlDisclosureDropdown,
+    GlDisclosureDropdownGroup,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -72,6 +75,18 @@ export default {
       // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2615
       return this.isMobile ? 'bottom-start' : 'right-start';
     },
+    isFailed() {
+      return this.group?.status?.group === 'failed';
+    },
+    nonFailedJobs() {
+      return this.group?.jobs.filter((job) => job.status?.group !== FAILED_STATUS);
+    },
+    failedJobs() {
+      return this.group?.jobs.filter((job) => job.status?.group === FAILED_STATUS);
+    },
+    hasFailedJobs() {
+      return this.failedJobs.length > 0;
+    },
   },
   methods: {
     handleResize() {
@@ -100,7 +115,11 @@ export default {
     @hidden="hideDropdown"
   >
     <template #toggle>
-      <button type="button" :class="cssClassJobName" class="gl-w-full gl-bg-transparent gl-pr-4">
+      <button
+        type="button"
+        :class="[cssClassJobName, { 'ci-job-item-failed': isFailed }]"
+        class="gl-w-full gl-bg-transparent gl-pr-4"
+      >
         <div class="gl-flex gl-items-stretch gl-justify-between">
           <job-item
             :type="$options.jobItemTypes.jobDropdown"
@@ -115,12 +134,26 @@ export default {
       </button>
     </template>
     <ul class="gl-m-0 gl-w-34 gl-overflow-y-auto gl-p-0" @click.stop>
-      <job-dropdown-item
-        v-for="job in group.jobs"
-        :key="job.id"
-        :job="job"
-        @jobActionExecuted="$emit('pipelineActionRequestComplete')"
-      />
+      <gl-disclosure-dropdown-group v-if="hasFailedJobs" data-testid="failed-jobs">
+        <template #group-label>
+          {{ s__('Pipelines|Failed jobs') }}
+        </template>
+        <job-dropdown-item
+          v-for="job in failedJobs"
+          :key="job.id"
+          :job="job"
+          @jobActionExecuted="$emit('pipelineActionRequestComplete')"
+        />
+      </gl-disclosure-dropdown-group>
+
+      <gl-disclosure-dropdown-group :bordered="hasFailedJobs">
+        <job-dropdown-item
+          v-for="job in nonFailedJobs"
+          :key="job.id"
+          :job="job"
+          @jobActionExecuted="$emit('pipelineActionRequestComplete')"
+        />
+      </gl-disclosure-dropdown-group>
     </ul>
   </gl-disclosure-dropdown>
 </template>

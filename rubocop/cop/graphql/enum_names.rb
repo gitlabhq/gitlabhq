@@ -1,37 +1,36 @@
 # frozen_string_literal: true
 
-# This cop enforces the enum naming conventions from the enum style guide:
-# https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#enums
-#
-# @example
-#
-#   # bad
-#   class FooBar < BaseEnum
-#     value 'FOO'
-#   end
-#
-#   class SubparEnum < BaseEnum
-#   end
-#
-#   class UngoodEnum < BaseEnum
-#     graphql_name 'UngoodEnum'
-#   end
-#
-#   # good
-#
-#   class GreatEnum < BaseEnum
-#     graphql_name 'Great'
-#
-#     value 'BAR'
-#   end
-#
-#   class NiceEnum < BaseEnum
-#     declarative_enum NiceDeclarativeEnum
-#   end
-
 module RuboCop
   module Cop
     module Graphql
+      # This cop enforces the enum naming conventions from the enum style guide:
+      # https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#enums
+      #
+      # @example
+      #
+      #   # bad
+      #   class FooBar < BaseEnum
+      #     value 'FOO'
+      #   end
+      #
+      #   class SubparEnum < BaseEnum
+      #   end
+      #
+      #   class UngoodEnum < BaseEnum
+      #     graphql_name 'UngoodEnum'
+      #   end
+      #
+      #   # good
+      #
+      #   class GreatEnum < BaseEnum
+      #     graphql_name 'Great'
+      #
+      #     value 'BAR'
+      #   end
+      #
+      #   class NiceEnum < BaseEnum
+      #     declarative_enum NiceDeclarativeEnum
+      #   end
       class EnumNames < RuboCop::Cop::Base
         SEE_SG_MSG = "See https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#enums"
         CLASS_NAME_SUFFIX_MSG = "Enum class names must end with `Enum`. #{SEE_SG_MSG}".freeze

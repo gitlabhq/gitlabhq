@@ -11,6 +11,8 @@ and isn't the most recent one).
 MSG
 
 DB_MESSAGE = <<~MSG
+## Database review
+
 This merge request requires a database review. To make sure these
 changes are reviewed, take the following steps:
 

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Packages::TagsFinder
   attr_reader :project, :package_name, :params
 

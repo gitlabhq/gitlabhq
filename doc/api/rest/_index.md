@@ -55,7 +55,7 @@ instance being overloaded.
 - For details, see [Rate limits](../../security/rate_limits.md).
 - For details of the rate limit settings used by
 GitLab.com, see
-  [GitLab.com-specific rate limits](../../user/gitlab_com/_index.md#gitlabcom-specific-rate-limits).
+  [GitLab.com-specific rate limits](../../user/gitlab_com/_index.md#rate-limits-on-gitlabcom).
 
 ## Response format
 

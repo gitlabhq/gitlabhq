@@ -315,7 +315,7 @@ export default {
     <design-note-pin :is-resolved="discussion.resolved" :label="discussion.index" />
     <ul
       class="design-discussion gl-border gl-relative gl-list-none gl-rounded-base gl-border-section gl-p-0"
-      :class="{ 'gl-bg-blue-50': isDiscussionActive }"
+      :class="{ 'active-discussion': isDiscussionActive }"
       data-testid="design-discussion-content"
     >
       <design-note

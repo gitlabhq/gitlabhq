@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineCreation::StartPipelineService, feature_category: :continuous_integration do
-  let(:pipeline) { build(:ci_pipeline) }
+  let_it_be(:project) { create(:project, :repository) }
+  let(:sha) { project.repository.commit.sha }
+  let(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
 
   subject(:service) { described_class.new(pipeline) }
 
@@ -24,9 +26,30 @@ RSpec.describe Ci::PipelineCreation::StartPipelineService, feature_category: :co
     end
 
     it 'creates pipeline ref' do
-      expect(pipeline.persistent_ref).to receive(:create).once
+      expect { service.execute }
+        .to change { pipeline.reload.persistent_ref.exist? }.to(true)
+    end
 
-      service.execute
+    context 'when pipeline ref exists' do
+      before do
+        pipeline.persistent_ref.create # rubocop:disable Rails/SaveBang -- not AR instance
+      end
+
+      it 'does not create pipeline ref' do
+        expect(pipeline.persistent_ref).not_to receive(:create)
+        expect { service.execute }
+          .not_to change { pipeline.reload.persistent_ref.exist? }.from(true)
+      end
+    end
+
+    context 'when fail to create pipeline ref' do
+      let(:sha) { 'unknown' }
+
+      it 'drops pipeline' do
+        expect { service.execute }
+          .to change { pipeline.reload.status }.to('failed')
+          .and change { pipeline.reload.failure_reason }.to('pipeline_ref_creation_failure')
+      end
     end
 
     it 'calls ProjectWithPipelineVariablei.upsert_for_pipeline' do

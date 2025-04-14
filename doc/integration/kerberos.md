@@ -148,7 +148,7 @@ with your Kerberos credentials.
 The first time users sign in to GitLab with their Kerberos accounts,
 GitLab creates a matching account.
 Before you continue, review the [common configuration settings](omniauth.md#configure-common-settings)
-options in Omnibus and GitLab source. You must also include `kerberos`.
+options for Linux package and self-compiled instances. You must also include `kerberos`.
 
 With that information at hand:
 

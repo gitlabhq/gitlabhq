@@ -64,7 +64,7 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
             context 'with path updates' do
               it 'does not allow the update' do
                 expect(subject).to be false
-                expect(public_group.errors[:base].first).to match(/Docker images in their Container Registry/)
+                expect(public_group.errors[:base].first).to match(/Docker images in their container registry/)
               end
             end
 
@@ -93,7 +93,7 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
 
             it 'does not allow path updates' do
               expect(subject).to be false
-              expect(public_group.errors[:base].first).to match(/Docker images in their Container Registry/)
+              expect(public_group.errors[:base].first).to match(/Docker images in their container registry/)
             end
           end
         end

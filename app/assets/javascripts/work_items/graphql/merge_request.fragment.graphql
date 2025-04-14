@@ -23,6 +23,7 @@ fragment MergeRequestFragment on MergeRequest {
   project {
     id
     name
+    path
     namespace {
       path
     }

@@ -4,10 +4,10 @@ classes:
 - Ai::DuoWorkflows::Checkpoint
 feature_categories:
 - duo_workflow
-description:
-introduced_by_url:
+description: 
+introduced_by_url: 
 milestone: '17.2'
 gitlab_schema: gitlab_main_cell
 sharding_key:
   project_id: projects
-table_size: small
+table_size: medium

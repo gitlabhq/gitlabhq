@@ -1,6 +1,6 @@
 - title: 'Registration tokens and server-side runner arguments in `POST /api/v4/runners` endpoint'  # (required) The name of the feature to be deprecated
   announcement_milestone: '15.6'  # (required) The milestone when this feature was first announced as deprecated.
-  removal_milestone: '18.0'  # (required) The milestone when this feature is planned to be removed
+  removal_milestone: '20.0'  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   reporter: pedropombeiro  # (required) GitLab username of the person reporting the deprecation
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
@@ -13,7 +13,8 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     The support for registration tokens and certain runner configuration arguments in the `POST` method operation on the `/api/v4/runners` endpoint is deprecated.
     This endpoint [registers](https://docs.gitlab.com/api/runners/#create-a-runner) a runner
-    with a GitLab instance at the instance, group, or project level through the API. In GitLab 18.0, registration tokens, and support for certain configuration arguments,
+    with a GitLab instance at the instance, group, or project level through the API.
+    In a future GitLab major release, registration tokens, and support for certain configuration arguments,
     will start returning the HTTP `410 Gone` status code. For more information, see [Migrating to the new runner registration workflow](https://docs.gitlab.com/ci/runners/new_creation_workflow/#prevent-your-runner-registration-workflow-from-breaking).
 
     The configuration arguments disabled for runner authentication tokens are:

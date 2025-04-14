@@ -14,7 +14,7 @@ export const MINIMUM_ROLE_OWNER = 'owner';
 export default {
   name: 'PipelineVariablesMinimumOverrideRole',
   helpPath: helpPagePath('ci/variables/_index', {
-    anchor: 'set-a-minimum-role-for-pipeline-variables',
+    anchor: 'restrict-pipeline-variables',
   }),
   ROLE_OPTIONS: [
     {

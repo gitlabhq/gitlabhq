@@ -6,11 +6,11 @@ import {
   ROUTES,
   RELATED_ITEM_ID_URL_QUERY_PARAM,
   BASE_ALLOWED_CREATE_TYPES,
-  WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_VALUE_MAP,
-  WORK_ITEM_TYPE_ENUM_INCIDENT,
+  WORK_ITEM_TYPE_NAME_ISSUE,
+  WORK_ITEM_TYPE_NAME_INCIDENT,
 } from '../constants';
 import workItemRelatedItemQuery from '../graphql/work_item_related_item.query.graphql';
+import { convertTypeEnumToName } from '../utils';
 
 export default {
   name: 'CreateWorkItemPage',
@@ -20,7 +20,7 @@ export default {
   },
   inject: ['isGroup'],
   props: {
-    workItemTypeName: {
+    workItemTypeEnum: {
       type: String,
       required: false,
       default: null,
@@ -32,7 +32,7 @@ export default {
       relatedItemId: getParameterByName(RELATED_ITEM_ID_URL_QUERY_PARAM),
       isCancelConfirmationModalVisible: false,
       shouldDiscardDraft: false,
-      workItemType: this.workItemTypeName,
+      workItemType: convertTypeEnumToName(this.workItemTypeEnum),
     };
   },
   apollo: {
@@ -62,10 +62,10 @@ export default {
   },
   computed: {
     isIssue() {
-      return this.workItemTypeName === WORK_ITEM_TYPE_ENUM_ISSUE;
+      return this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE;
     },
     isIncident() {
-      return this.workItemTypeName === WORK_ITEM_TYPE_ENUM_INCIDENT;
+      return this.workItemType === WORK_ITEM_TYPE_NAME_INCIDENT;
     },
     allowedWorkItemTypes() {
       if (this.isIssue || this.isIncident) {
@@ -80,10 +80,7 @@ export default {
       this.workItemType = type;
     },
     workItemCreated({ workItem, numberOfDiscussionsResolved }) {
-      if (
-        this.$router &&
-        WORK_ITEM_TYPE_VALUE_MAP[this.workItemType] !== WORK_ITEM_TYPE_ENUM_INCIDENT
-      ) {
+      if (this.$router && !this.isIncident) {
         const routerPushObject = {
           name: ROUTES.workItem,
           params: { iid: workItem.iid },
@@ -141,7 +138,7 @@ export default {
 <template>
   <div>
     <create-work-item
-      :work-item-type-name="workItemTypeName"
+      :preselected-work-item-type="workItemType"
       :is-group="isGroup"
       :related-item="relatedItem"
       :should-discard-draft="shouldDiscardDraft"
@@ -155,7 +152,7 @@ export default {
     <create-work-item-cancel-confirmation-modal
       v-if="workItemType"
       :is-visible="isCancelConfirmationModalVisible"
-      :work-item-type-name="workItemType"
+      :work-item-type="workItemType"
       @continueEditing="handleContinueEditing"
       @discardDraft="handleDiscardDraft('confirmModal')"
     />

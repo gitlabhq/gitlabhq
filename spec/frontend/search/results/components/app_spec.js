@@ -2,7 +2,6 @@ import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
-import { GlAlert } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -10,6 +9,8 @@ import getBlobSearchQuery from '~/search/graphql/blob_search_zoekt.query.graphql
 import GlobalSearchResultsApp from '~/search/results/components/app.vue';
 import ZoektBlobResults from '~/search/results/components/zoekt_blob_results.vue';
 import StatusBar from '~/search/results/components/status_bar.vue';
+import EmptyResult from '~/search/results/components/result_empty.vue';
+import ErrorResult from '~/search/results/components/result_error.vue';
 import mutations from '~/search/store/mutations';
 import {
   MOCK_QUERY,
@@ -58,8 +59,9 @@ describe('GlobalSearchResultsApp', () => {
   };
 
   const findZoektBlobResults = () => wrapper.findComponent(ZoektBlobResults);
+  const findEmptyResult = () => wrapper.findComponent(EmptyResult);
   const findStatusBar = () => wrapper.findComponent(StatusBar);
-  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findError = () => wrapper.findComponent(ErrorResult);
 
   describe('when loading results', () => {
     beforeEach(async () => {
@@ -87,9 +89,7 @@ describe('GlobalSearchResultsApp', () => {
     });
 
     it('renders alert', () => {
-      expect(findAlert().text()).toBe(
-        'Could not load search results. Refresh the page to try again.',
-      );
+      expect(findError().exists()).toBe(true);
       expect(findZoektBlobResults().exists()).toBe(false);
     });
   });
@@ -108,42 +108,48 @@ describe('GlobalSearchResultsApp', () => {
       await waitForPromises();
     });
 
-    it(`renders component properly`, async () => {
+    it(`Renders empty state`, async () => {
       await waitForPromises();
-      expect(findZoektBlobResults().props('hasResults')).toBe(false);
+      expect(findZoektBlobResults().exists()).toBe(false);
+      expect(findEmptyResult().exists()).toBe(true);
+    });
+
+    it('Renders status bar in correct order', () => {
+      expect(findStatusBar().exists()).toBe(true);
+      expect(findStatusBar().element.nextElementSibling).toBe(findEmptyResult().element);
     });
   });
 
   describe('when we have results', () => {
-    describe.each`
-      scope       | searchType    | isRendered
-      ${'blobs'}  | ${'zoekt'}    | ${true}
-      ${'issues'} | ${'zoekt'}    | ${false}
-      ${'blobs'}  | ${'advanced'} | ${false}
-      ${'issues'} | ${'basic'}    | ${false}
-    `(`has scope: $scope, searchType: $searchType`, ({ scope, searchType, isRendered }) => {
-      let spy;
-      beforeEach(async () => {
-        getterSpies.currentScope = jest.fn(() => scope);
-        createComponent({
-          initialState: { query: { scope }, searchType, navigation: MOCK_NAVIGATION_DATA },
-        });
-        spy = jest.spyOn(wrapper?.vm?.$store, 'commit');
-        jest.advanceTimersByTime(500);
-        await waitForPromises();
+    let spy;
+    beforeEach(async () => {
+      getterSpies.currentScope = jest.fn(() => 'blobs');
+      createComponent({
+        initialState: {
+          query: { scope: 'blobs' },
+          searchType: 'zoekt',
+          navigation: MOCK_NAVIGATION_DATA,
+        },
+        queryHandler: blobSearchHandler,
       });
+      spy = jest.spyOn(wrapper?.vm?.$store, 'commit');
+      jest.advanceTimersByTime(500);
+      await waitForPromises();
+    });
 
-      it(`${isRendered ? 'calls' : 'does not call'} mutation RECEIVE_NAVIGATION_COUNT`, () => {
-        expect(spy).toHaveBeenCalledWith('RECEIVE_NAVIGATION_COUNT', {
-          count: '369',
-          key: 'blobs',
-        });
+    it(`calls mutation RECEIVE_NAVIGATION_COUNT`, () => {
+      expect(spy).toHaveBeenCalledWith('RECEIVE_NAVIGATION_COUNT', {
+        count: '369',
+        key: 'blobs',
       });
+    });
 
-      it(`correctly renders components`, () => {
-        expect(findZoektBlobResults().exists()).toBe(isRendered);
-        expect(findStatusBar().exists()).toBe(isRendered);
-      });
+    it(`correctly renders results`, () => {
+      expect(findZoektBlobResults().exists()).toBe(true);
+    });
+
+    it(`correctly renders status`, () => {
+      expect(findStatusBar().exists()).toBe(true);
     });
   });
 });

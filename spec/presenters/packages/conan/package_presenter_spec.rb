@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ::Packages::Conan::PackagePresenter, feature_category: :package_registry do
   let_it_be(:user) { create(:user) }
-  let_it_be(:package) { create(:conan_package, without_recipe_revisions: true) }
+  let_it_be(:package) { create(:conan_package, without_revisions: true) }
   let_it_be(:conan_package_reference) { package.conan_package_references.first }
   let_it_be(:alternative_reference) { create(:conan_package_reference, package: package, recipe_revision: nil) }
 

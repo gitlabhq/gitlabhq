@@ -49,4 +49,7 @@ export const SERVICE_PING_PIPELINE_SECURITY_VISIT = 'users_visiting_pipeline_sec
 export const FIND_FILE_BUTTON_CLICK = 'click_find_file_button_on_repository_pages';
 export const FIND_FILE_SHORTCUT_CLICK = 'click_go_to_file_shortcut';
 
+export const BLAME_BUTTON_CLICK = 'click_blame_control_on_blob_page';
+export const HISTORY_BUTTON_CLICK = 'click_history_control_on_blob_page';
+
 export const REF_SELECTOR_CLICK = 'click_ref_selector_on_blob_page';

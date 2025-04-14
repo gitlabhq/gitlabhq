@@ -120,7 +120,7 @@ This setting tells the runner you want the job to deploy your website
 with GitLab Pages:
 
 ```yaml
-deploy-pages:
+create-pages:
   script:
     - gem install bundler
     - bundle install
@@ -139,7 +139,7 @@ Jekyll uses a destination flag (`-d`) to specify an output directory for the bui
 Add the destination to your `.gitlab-ci.yml` file:
 
 ```yaml
-deploy-pages:
+create-pages:
   script:
     - gem install bundler
     - bundle install
@@ -151,18 +151,18 @@ deploy-pages:
 
 {{< history >}}
 
-- Automatically appending `pages:pages.publish` path to `artifacts:paths` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) in GitLab 17.10 for Pages jobs only.
+- Automatically appending `pages.publish` path to `artifacts:paths` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428018) in GitLab 17.10 for Pages jobs only.
 
 {{< /history >}}
 
 Now that Jekyll has output the files to the `public` directory, the runner needs to know where
 to get them. In GitLab 17.10 and later, for Pages jobs only, the `public` directory is
 appended automatically to [`artifacts:paths`](../../../../ci/yaml/_index.md#artifactspaths)
-when the [`pages:pages.publish`](../../../../ci/yaml/_index.md#pagespagespublish) path
+when the [`pages.publish`](../../../../ci/yaml/_index.md#pagespublish) path
 is not explicitly specified:
 
 ```yaml
-deploy-pages:
+create-pages:
   script:
     - gem install bundler
     - bundle install
@@ -176,7 +176,7 @@ Your `.gitlab-ci.yml` file should now look like this:
 default:
   image: ruby:3.2
 
-deploy-pages:
+create-pages:
   script:
     - gem install bundler
     - bundle install
@@ -221,7 +221,7 @@ workflow:
   rules:
     - if: $CI_COMMIT_BRANCH
 
-deploy-pages:
+create-pages:
   script:
     - gem install bundler
     - bundle install
@@ -240,7 +240,7 @@ workflow:
   rules:
     - if: $CI_COMMIT_BRANCH
 
-deploy-pages:
+create-pages:
   script:
     - gem install bundler
     - bundle install
@@ -270,7 +270,7 @@ workflow:
   rules:
     - if: $CI_COMMIT_BRANCH
 
-deploy-pages:
+create-pages:
   stage: deploy
   script:
     - gem install bundler
@@ -293,7 +293,7 @@ workflow:
   rules:
     - if: $CI_COMMIT_BRANCH
 
-deploy-pages:
+create-pages:
   stage: deploy
   script:
     - gem install bundler
@@ -347,7 +347,7 @@ workflow:
   rules:
     - if: $CI_COMMIT_BRANCH
 
-deploy-pages:
+create-pages:
   stage: deploy
   script:
     - bundle exec jekyll build -d public
@@ -390,7 +390,7 @@ workflow:
     - if: $CI_COMMIT_BRANCH
 
 
-deploy-pages:
+create-pages:
   stage: deploy
   script:
     - bundle exec jekyll build -d public

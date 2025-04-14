@@ -300,7 +300,7 @@ Prerequisites:
 
 Projects in a group (not a personal namespace) can be deleted after a delay period.
 
-On self-managed instances, group administrators can define a deletion delay period of between 1 and 90 days.
+On GitLab Self-Managed instances, group administrators can define a deletion delay period of between 1 and 90 days.
 On SaaS, there is a non-adjustable default retention period of seven days.
 
 You can [view projects that are pending deletion](#view-projects-pending-deletion),

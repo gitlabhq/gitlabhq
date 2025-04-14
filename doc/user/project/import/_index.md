@@ -33,7 +33,7 @@ You can also copy GitLab projects by using a GitLab file export, which is a supp
 
 {{< history >}}
 
-- All importers default to disabled for GitLab Self-Managed installations. This change was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118970) in GitLab 16.0.
+- All importers default to disabled for GitLab Self-Managed instances. This change was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118970) in GitLab 16.0.
 
 {{< /history >}}
 
@@ -130,8 +130,6 @@ GitLab.com and GitLab Self-Managed.
 For information on the other method available for GitLab Self-Managed with disabled feature flags,
 see the documentation for each importer.
 
-User contribution mapping is not supported when you import projects to a personal namespace.
-
 Any memberships and contributions you import are first mapped to [placeholder users](#placeholder-users).
 These placeholders are created on the destination instance even if
 users with the same email addresses exist on the source instance.
@@ -139,6 +137,12 @@ Until you reassign contributions on the destination instance,
 all contributions display as associated with placeholders.
 For the behavior associated with subsequent imports to the same top-level group,
 see [placeholder user limits](#placeholder-user-limits).
+
+{{< alert type="note" >}}
+
+Ghost user contributions are handled differently. Contributions previously made by the ghost user (deleted user) on the source instance will automatically be mapped to the ghost user on the destination instance without creating placeholder users.
+
+{{< /alert >}}
 
 After the import has completed, you can:
 
@@ -151,14 +155,22 @@ After the import has completed, you can:
 When you reassign a contribution to a user on the destination instance, the user can
 [accept](#accept-contribution-reassignment) or [reject](#reject-contribution-reassignment) the reassignment.
 
+{{< alert type="note" >}}
+
+User contribution mapping is not supported when you import projects to a [personal namespace](../../namespace/_index.md#types-of-namespaces).
+When you import to a personal namespace, all contributions are assigned to
+a single non-functional user called `Import User` and they cannot be reassigned.
+[Issue 525342](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) proposes to map all contributions to the importing user instead.
+
+{{< /alert >}}
+
 ### Requirements
 
 - You must be able to create enough users, subject to [user limits](#placeholder-user-limits).
 - If you import to GitLab.com, you must set up your paid namespace before the import.
 - If you import to GitLab.com and use [SAML SSO for GitLab.com groups](../../group/saml_sso/_index.md),
-  all users must link their SAML identity to their GitLab.com account before you start to
+  all users must link their SAML identity to their GitLab.com account before you can
   [reassign contributions and memberships](#reassign-contributions-and-memberships).
-  Otherwise, memberships cannot be validated and relations are not created correctly on GitLab.com.
 
 ### Placeholder users
 
@@ -183,7 +195,10 @@ A placeholder user is created for each user on the source instance, except in th
 - You are importing a project from [Gitea](gitea.md) and the user has been deleted on Gitea before the import.
   Contributions from these "ghost users" are mapped to the user who imported the project and not to a placeholder user.
 - You have exceeded your [placeholder user limit](#placeholder-user-limits). Contributions from any new users after exceeding your limit are
-  mapped to a single import user.
+  mapped to a single non-functional user called `Import User`.
+- You are importing to a [personal namespace](../../namespace/_index.md#types-of-namespaces).
+  Contributions are assigned to a single non-functional user called `Import User`.
+  [Issue 525342](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) proposes to map all contributions to the importing user instead.
 
 #### Placeholder user attributes
 
@@ -253,6 +268,13 @@ If these limits are not sufficient for your import, [contact GitLab Support](htt
 For GitLab Self-Managed and GitLab Dedicated, no placeholder limits apply by default.
 A GitLab administrator can [set a placeholder limit](../../../administration/instance_limits.md#import-placeholder-user-limits) on their instance.
 
+To view your current placeholder user usage and limits:
+
+1. On the left sidebar, select **Search or go to** and
+   find your group. This group must be at the top level.
+1. Select **Settings > Usage Quotas**.
+1. Select the **Import** tab.
+
 For imports to GitLab.com, some contributions might not be created
 because these contributions are mapped to the same user.
 For example, if multiple merge request approvers are mapped to the same user,
@@ -268,7 +290,7 @@ These contributions include:
 
 You cannot determine the number of placeholder users you need in advance.
 When the placeholder user limit is reached, the import does not fail.
-Instead, all contributions are assigned to a bot user called `Import User`.
+Instead, all contributions are assigned to a single non-functional user called `Import User`.
 
 Every change creates a system note, which is not affected by the placeholder user limit.
 
@@ -289,6 +311,8 @@ On the destination instance, users with the Owner role for a top-level group can
 All the contributions initially assigned to a single placeholder user can only be reassigned to a single active regular
 user on the destination instance. The contributions assigned to a single placeholder user cannot be split among multiple
 active regular users.
+If an assigned user becomes inactive before accepting the reassignment request,
+the pending reassignment remains linked to the user until they accept it.
 
 Bot user contributions and memberships on the source instance cannot be reassigned to bot users on the destination instance.
 You might choose to keep source bot user contributions [assigned to a placeholder user](#keep-as-placeholder).
@@ -302,6 +326,8 @@ Users that receive a reassignment request can:
 
 In subsequent imports to the same top-level group, contributions and memberships that belong to the same source user
 are mapped automatically to the user who previously accepted reassignments for that source user.
+
+#### Completing the reassignment
 
 The reassignment process must be fully completed before you:
 
@@ -372,7 +398,6 @@ Before a user accepts the reassignment, you can [cancel the request](#cancel-rea
 
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
@@ -425,6 +450,9 @@ After you reassign contributions, GitLab sends you an email with the number of:
 
 If any rows have not been successfully processed, the email has a CSV file with more detailed results.
 
+To reassign placeholder users in bulk without using the UI,
+see [Group placeholder reassignments API](../../../api/group_placeholder_reassignments.md).
+
 #### Keep as placeholder
 
 You might not want to reassign contributions and memberships to users on the destination instance. For example, you
@@ -442,6 +470,12 @@ actual users later. Ensure all required reassignments are completed before keepi
 placeholders.
 
 You can keep contributions assigned to placeholder users either one at a time or in bulk.
+
+When applied in bulk, it affects the entire namespace and only users with the following
+**Reassignment status** values in the **Awaiting reassignment** tab:
+
+- `Not started`
+- `Rejected`
 
 To keep placeholder users one at a time:
 
@@ -697,7 +731,7 @@ Check the import status:
 
 Search logs for relevant information:
 
-For self-managed instances:
+For GitLab Self-Managed instances:
 
 1. Check the [Sidekiq logs](../../../administration/logs/_index.md#sidekiqlog) and [`exceptions_json` logs](../../../administration/logs/_index.md#exceptions_jsonlog).
 1. Search for entries related to `RepositoryImportWorker` and the correlation ID from [Check import status](#check-import-status).
@@ -719,7 +753,7 @@ For GitLab.com (GitLab team members only):
    json.class: "RepositoryImportWorker" AND json.meta.project: "<project.full_path>"
    ```
 
-1. Look for the same fields as mentioned for self-managed instances.
+1. Look for the same fields as mentioned for GitLab Self-Managed instances.
 
 #### Identify common issues
 

@@ -22,4 +22,5 @@ OmniAuth.config.logger = Gitlab::AppLogger
 
 OmniAuth.config.before_request_phase do |env|
   Gitlab::Auth::OAuth::BeforeRequestPhaseOauthLoginCounterIncrement.call(env)
+  Gitlab::Auth::Oidc::StepUpAuthBeforeRequestPhase.call(env)
 end

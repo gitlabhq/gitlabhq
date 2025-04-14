@@ -150,31 +150,6 @@ RSpec.describe UsersFinder do
         expect(users).to contain_exactly(user, normal_user, external_user, admin_user, unconfirmed_user, omniauth_user, internal_user, project_bot, service_account_user)
       end
 
-      context 'when filtering by_membership' do
-        let_it_be(:group_user) { create(:user) }
-        let_it_be(:project_user) { create(:user) }
-        let_it_be(:group) { create(:group, developers: [user]) }
-        let_it_be(:project) { create(:project, developers: [user]) }
-
-        subject(:users) { described_class.new(user, by_membership: true).execute }
-
-        it 'includes the user and project owner' do
-          expect(users).to contain_exactly(user, project.owner)
-        end
-
-        it 'includes users who are members of the user groups' do
-          group.add_developer(group_user)
-
-          expect(users).to contain_exactly(user, project.owner, group_user)
-        end
-
-        it 'includes users who are members of the user projects' do
-          project.add_developer(project_user)
-
-          expect(users).to contain_exactly(user, project.owner, project_user)
-        end
-      end
-
       context 'when filtering by_member_source_ids' do
         let_it_be(:group_user) { create(:user) }
         let_it_be(:project_user) { create(:user) }

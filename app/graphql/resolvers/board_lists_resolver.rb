@@ -20,6 +20,10 @@ module Resolvers
 
     alias_method :board, :object
 
+    def self.complexity_multiplier(args) # rubocop:disable Lint/UnusedMethodArgument -- Leaving `args` to match the expected schema method definition and avoid method lookup issues in the test environment
+      0.005
+    end
+
     def resolve_with_lookahead(id: nil, issue_filters: {})
       lists = board_lists(id)
       context.scoped_set!(:issue_filters, item_filters(issue_filters))

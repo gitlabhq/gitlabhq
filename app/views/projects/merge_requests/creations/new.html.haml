@@ -1,17 +1,1 @@
-- add_to_breadcrumbs _("Merge requests"), project_merge_requests_path(@project)
-- breadcrumb_title _("New merge request")
-- page_title _("New merge request")
-- add_page_specific_style 'page_bundles/pipelines'
-- add_page_specific_style 'page_bundles/ci_status'
-- add_page_specific_style 'page_bundles/merge_request'
-
-- conflicting_mr = @merge_request.existing_mrs_targeting_same_branch.first
-
-- if @merge_request.can_be_created && !params[:change_branches] && !conflicting_mr
-  = render 'new_submit'
-- else
-  - if conflicting_mr
-    - link_to_mr = link_to(conflicting_mr.to_reference, project_merge_request_path(conflicting_mr.target_project, conflicting_mr))
-    - flash.now[:alert] = safe_format(s_("These branches already have an open merge request: %{link_to_mr}. Select a different source or target branch."), link_to_mr: link_to_mr)
-
-  = render 'new_compare'
+= render "page"

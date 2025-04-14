@@ -70,31 +70,6 @@ RSpec.describe Current, feature_category: :cell do
     end
   end
 
-  describe '.organization_id' do
-    subject(:organization_id) { described_class.organization_id }
-
-    context 'when organization is set' do
-      before do
-        described_class.organization = current_organization
-      end
-
-      it 'returns the id of the organization' do
-        expect(organization_id).not_to be_nil
-        expect(organization_id).to eq(current_organization.id)
-      end
-    end
-
-    context 'when organization is nil' do
-      before do
-        described_class.organization = nil
-      end
-
-      it 'returns nil' do
-        expect(organization_id).to be_nil
-      end
-    end
-  end
-
   describe '.organization' do
     subject(:assigned_organization) { described_class.organization }
 

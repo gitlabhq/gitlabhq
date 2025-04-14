@@ -62,6 +62,8 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
     end
 
     it 'creates a draft note' do
+      expect(Banzai::Renderer).to receive(:render).once.and_call_original
+
       expect { create_draft_note }.to change { DraftNote.count }.by(1)
     end
 

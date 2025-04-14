@@ -1,5 +1,10 @@
 <script>
-import { GlButton, GlLoadingIcon, GlOutsideDirective as Outside } from '@gitlab/ui';
+import {
+  GlButton,
+  GlLoadingIcon,
+  GlOutsideDirective as Outside,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, SIDEBAR_CLOSE_WIDGET } from '~/behaviors/shortcuts/keybindings';
 
@@ -9,10 +14,16 @@ export default {
     GlLoadingIcon,
   },
   directives: {
+    GlTooltip: GlTooltipDirective,
     Outside,
   },
   props: {
     canUpdate: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isEditing: {
       type: Boolean,
       required: false,
       default: false,
@@ -22,11 +33,21 @@ export default {
       required: false,
       default: false,
     },
+    tooltipText: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
   },
   data() {
     return {
-      isEditing: false,
+      editing: false,
     };
+  },
+  watch: {
+    isEditing(isEditing) {
+      this.editing = isEditing;
+    },
   },
   mounted() {
     Mousetrap.bind(keysFor(SIDEBAR_CLOSE_WIDGET), this.stopEditing);
@@ -36,7 +57,8 @@ export default {
   },
   methods: {
     startEditing() {
-      this.isEditing = true;
+      this.editing = true;
+      this.$emit('startEditing');
     },
     stopEditing({ target } = {}) {
       // This prevents the v-outside directive from treating a
@@ -44,7 +66,7 @@ export default {
       if (target?.classList.contains('pika-select')) {
         return;
       }
-      this.isEditing = false;
+      this.editing = false;
       this.$emit('stopEditing');
     },
   },
@@ -59,19 +81,21 @@ export default {
       </h3>
       <gl-loading-icon v-if="isUpdating" />
       <gl-button
-        v-if="canUpdate && !isEditing"
+        v-if="canUpdate && !editing"
         key="edit-button"
-        class="gl-ml-auto gl-shrink-0"
+        v-gl-tooltip.viewport.html
+        class="shortcut-sidebar-dropdown-toggle gl-ml-auto gl-shrink-0"
         category="tertiary"
         :disabled="isUpdating"
         size="small"
+        :title="tooltipText"
         data-testid="edit-button"
         @click="startEditing"
       >
         {{ __('Edit') }}
       </gl-button>
       <gl-button
-        v-if="isEditing"
+        v-if="editing"
         key="apply-button"
         class="gl-ml-auto gl-shrink-0"
         category="tertiary"
@@ -83,7 +107,7 @@ export default {
         {{ __('Apply') }}
       </gl-button>
     </div>
-    <div v-if="isEditing" v-outside="stopEditing">
+    <div v-if="editing" v-outside="stopEditing">
       <slot name="editing-content" :stop-editing="stopEditing"></slot>
     </div>
     <slot v-else name="content"></slot>

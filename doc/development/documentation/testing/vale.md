@@ -280,7 +280,7 @@ find . -name '*.md' | sort | xargs vale --minAlertLevel warning --output line > 
 find . -name '*.md' | sort | xargs vale --minAlertLevel error --output line > ../../results.txt
 ```
 
-These results can be used to generate [documentation-related issues for Hackathons](https://handbook.gitlab.com/handbook/product/ux/technical-writing/workflow/#create-issues-for-a-hackathon).
+These results can be used to generate [documentation-related issues for Hackathons](../workflow.md#create-issues-for-a-hackathon).
 
 ## Enable custom rules locally
 

@@ -14,7 +14,7 @@ class Projects::NotesController < Projects::ApplicationController
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_resolve_note!, only: [:resolve, :unresolve]
 
-  feature_category :team_planning, [:index, :create, :update, :destroy, :delete_attachment, :toggle_award_emoji]
+  feature_category :team_planning, [:index, :create, :update, :destroy, :toggle_award_emoji]
   feature_category :code_review_workflow, [:resolve, :unresolve, :outdated_line_change]
   urgency :low
 
@@ -34,15 +34,6 @@ class Projects::NotesController < Projects::ApplicationController
       'code_review_workflow'
     when 'commit', 'project_snippet'
       'source_code_management'
-    end
-  end
-
-  def delete_attachment
-    note.remove_attachment!
-    note.update_attribute(:attachment, nil)
-
-    respond_to do |format|
-      format.js { head :ok }
     end
   end
 

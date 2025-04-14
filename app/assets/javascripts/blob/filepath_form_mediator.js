@@ -28,6 +28,7 @@ export default class FilepathFormMediator {
     const $fileEditor = $('.file-editor');
 
     this.$filenameInput = $fileEditor.find('.js-file-path-name-input');
+    this.$filenameInput.on('input', () => this.toggleValidationError(false));
   }
 
   // eslint-disable-next-line max-params
@@ -96,5 +97,13 @@ export default class FilepathFormMediator {
       input.value = name;
       input.dispatchEvent(new Event('input'));
     }
+  }
+
+  toggleValidationError(showError) {
+    document.querySelector('.js-filepath-error').classList.toggle('gl-hidden', !showError);
+    this.$filenameInput.toggleClass(
+      'gl-border !gl-border-solid gl-border-red-500 !gl-shadow-none',
+      showError,
+    );
   }
 }

@@ -51,6 +51,7 @@ The following metrics are available:
 | `gitlab_cache_operations_total`                                  | Counter     | 12.2    | Cache operations by controller or action                                                                              | `controller`, `action`, `operation`, `store`, `endpoint_id`              |
 | `gitlab_cache_read_multikey_count`                               | Histogram   | 15.7    | Count of keys in multi-key cache read operations                                                                      | `controller`, `action`, `store`, `endpoint_id`                   |
 | `gitlab_ci_job_token_inbound_access`                             | Counter     | 17.2   | Count of inbound accesses via CI job token | |
+| `gitlab_ci_job_token_authorization_failures`                     | Counter     | 17.11  | Count of failed authorization attempts via CI JOB Token | `same_root_ancestor` |
 | `gitlab_ci_pipeline_builder_scoped_variables_duration`           | Histogram   | 14.5   | Time in seconds it takes to create the scoped variables for a CI/CD job | |
 | `gitlab_ci_pipeline_creation_duration_seconds`                   | Histogram   | 13.0    | Time in seconds it takes to create a CI/CD pipeline                                                                   | `gitlab`                                                  |
 | `gitlab_ci_pipeline_size_builds`                                 | Histogram   | 13.1    | Total number of builds within a pipeline grouped by a pipeline source                                                 | `source`                                                  |
@@ -204,7 +205,6 @@ The following metrics are available:
 | `gitlab_rack_attack_throttle_limit` | Gauge | 17.6 | Reports the maximum number of requests that a client can make before Rack Attack throttles them. | `event_name` |
 | `gitlab_rack_attack_throttle_period_seconds` | Gauge | 17.6 | Reports the duration over which requests for a client are counted before Rack Attack throttles them. | `event_name` |
 | `gitlab_application_rate_limiter_throttle_utilization_ratio` | Histogram | 17.6 | Utilization ratio of a throttle in GitLab Application Rate Limiter. | `throttle_key`, `peek`, `feature_category` |
-| `search_zoekt_task_processing_queue_size` | Gauge | 17.9 | Number of tasks waiting to be processed by Zoekt. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184641) in GitLab 17.10 and planned for removal in 18.0. Use `gitlab-exporter` instead. | `node_name` |
 | `gitlab_dependency_path_cte_real_duration_seconds` | Histogram | 17.10 |  Duration in seconds spent resolving the ancestor dependency paths for a given component. | |
 | `dependency_path_cte_paths_found` | Counter | 17.10 |  Counts the number of ancestor dependency paths found for a given dependency. | `max_depth_reached`, `cyclic` |
 

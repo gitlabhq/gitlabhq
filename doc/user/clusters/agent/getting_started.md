@@ -52,7 +52,7 @@ the `api` scope:
 1. Select the `api` scope.
 1. Select **Create personal access token**.
 
-You can also use a [project](../../../user/project/settings/project_access_tokens.md) or [group access token](../../../user/group/settings/group_access_tokens.md) with the `api` scope and the `developer` role.
+You can also use a [project](../../project/settings/project_access_tokens.md) or [group access token](../../group/settings/group_access_tokens.md) with the `api` scope and the `developer` role.
 
 ### Bootstrap Flux
 

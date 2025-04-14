@@ -240,7 +240,8 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
         reset_path: new_issuable_address_project_path(project, issuable_type: 'issue'),
         rss_path: '#',
         show_new_issue_link: 'true',
-        sign_in_path: new_user_session_path
+        sign_in_path: new_user_session_path,
+        time_tracking_limit_to_hours: "false"
       }
 
       expect(helper.project_issues_list_data(project, current_user)).to include(expected)
@@ -298,7 +299,8 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
         new_project_path: new_project_path(namespace_id: group.id),
         rss_path: '#',
         sign_in_path: new_user_session_path,
-        group_id: group.id
+        group_id: group.id,
+        time_tracking_limit_to_hours: "false"
       }
 
       expect(helper.group_issues_list_data(group, current_user)).to include(expected)

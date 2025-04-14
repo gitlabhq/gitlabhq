@@ -8,6 +8,10 @@ RSpec.describe Authn::AgnosticTokenIdentifier, feature_category: :system_access 
       it 'finds the correct revocable token type' do
         expect(token).to be_instance_of(token_type)
       end
+
+      it 'detects whether the value is a token' do
+        expect(described_class.token?(plaintext)).to be token?
+      end
     end
   end
 
@@ -29,23 +33,45 @@ RSpec.describe Authn::AgnosticTokenIdentifier, feature_category: :system_access 
   subject(:token) { described_class.token_for(plaintext, :group_token_revocation_service) }
 
   context 'with supported token types' do
-    where(:plaintext, :token_type) do
-      ref(:personal_access_token) | ::Authn::Tokens::PersonalAccessToken
-      ref(:impersonation_token) | ::Authn::Tokens::PersonalAccessToken
-      ref(:feed_token) | ::Authn::Tokens::FeedToken
-      ref(:deploy_token) | ::Authn::Tokens::DeployToken
-      ref(:oauth_application_secret) | ::Authn::Tokens::OauthApplicationSecret
-      ref(:cluster_agent_token) | ::Authn::Tokens::ClusterAgentToken
-      ref(:runner_authentication_token) | ::Authn::Tokens::RunnerAuthenticationToken
-      ref(:ci_trigger_token) | ::Authn::Tokens::CiTriggerToken
-      ref(:feature_flags_client_token) | ::Authn::Tokens::FeatureFlagsClientToken
-      ref(:gitlab_session) | ::Authn::Tokens::GitlabSession
-      ref(:incoming_email_token) | ::Authn::Tokens::IncomingEmailToken
-      'unsupported' | NilClass
+    where(:plaintext, :token_type, :token?) do
+      ref(:personal_access_token)       | ::Authn::Tokens::PersonalAccessToken        | true
+      ref(:impersonation_token)         | ::Authn::Tokens::PersonalAccessToken        | true
+      ref(:feed_token)                  | ::Authn::Tokens::FeedToken                  | true
+      ref(:deploy_token)                | ::Authn::Tokens::DeployToken                | true
+      ref(:oauth_application_secret)    | ::Authn::Tokens::OauthApplicationSecret     | true
+      ref(:cluster_agent_token)         | ::Authn::Tokens::ClusterAgentToken          | true
+      ref(:runner_authentication_token) | ::Authn::Tokens::RunnerAuthenticationToken  | true
+      ref(:ci_trigger_token)            | ::Authn::Tokens::CiTriggerToken             | true
+      ref(:feature_flags_client_token)  | ::Authn::Tokens::FeatureFlagsClientToken    | true
+      ref(:gitlab_session)              | ::Authn::Tokens::GitlabSession              | true
+      ref(:incoming_email_token)        | ::Authn::Tokens::IncomingEmailToken         | true
+      'unsupported'                     | NilClass                                    | false
     end
 
     with_them do
-      it_behaves_like 'supported token type'
+      context 'with default instance prefix' do
+        it_behaves_like 'supported token type'
+      end
+
+      context 'with custom instance prefix' do
+        let_it_be(:instance_prefix) { 'instance-prefix-' }
+
+        before do
+          stub_application_setting(instance_token_prefix: instance_prefix)
+        end
+
+        # this will make sure that we find old tokens with the default instance prefix,
+        # even if we have configured a custom one:
+        it_behaves_like 'supported token type'
+      end
+
+      context 'with feature flag custom_prefix_for_all_token_types disabled' do
+        before do
+          stub_feature_flags(custom_prefix_for_all_token_types: false)
+        end
+
+        it_behaves_like 'supported token type'
+      end
     end
   end
 
@@ -61,13 +87,17 @@ RSpec.describe Authn::AgnosticTokenIdentifier, feature_category: :system_access 
     context 'when job is running' do
       let(:status) { :running }
 
-      it_behaves_like 'supported token type'
+      it_behaves_like 'supported token type' do
+        let(:token?) { true }
+      end
     end
 
     context 'when job is not running' do
       let(:status) { :success }
 
-      it_behaves_like 'supported token type'
+      it_behaves_like 'supported token type' do
+        let(:token?) { true }
+      end
     end
   end
 end

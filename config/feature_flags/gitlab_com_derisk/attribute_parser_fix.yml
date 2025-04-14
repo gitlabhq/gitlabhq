@@ -1,0 +1,9 @@
+---
+name: attribute_parser_fix
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/513617
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178281
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514208
+milestone: '17.11'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

@@ -12,6 +12,7 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
   end
 
   before do
+    stub_feature_flags(vue_project_runners_settings: false)
     sign_in(user)
   end
 
@@ -20,7 +21,7 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
       create(:ci_runner_machine, runner: project_runner, platform: 'darwin')
     end
 
-    it 'user sees the project runner' do
+    it 'user sees the project runner', :js do
       visit project_runners_path(project)
 
       within_testid 'assigned_project_runners' do
@@ -29,7 +30,9 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
 
       click_on project_runner.short_sha
 
-      expect(page).to have_content(project_runner_manager.platform)
+      wait_for_requests
+
+      expect(page).to have_content(project_runner.description)
     end
 
     it 'user can pause and resume the project runner' do
@@ -56,7 +59,7 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
       visit project_runners_path(project)
 
       within_testid 'assigned_project_runners' do
-        click_on 'Remove runner'
+        click_on 'Delete runner'
       end
 
       expect(page).not_to have_content(project_runner.display_name)
@@ -74,7 +77,7 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
       check 'protected'
       click_button 'Save changes'
 
-      expect(page).to have_content 'Protected Yes'
+      expect(page).to have_content 'Protected'
     end
 
     context 'when a runner has a tag', :js do
@@ -94,7 +97,7 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
         uncheck 'run-untagged'
         click_button 'Save changes'
 
-        expect(page).to have_content 'Can run untagged jobs No'
+        expect(page).not_to have_content 'Runs untagged jobs'
       end
     end
 
@@ -116,7 +119,12 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
           visit project_runners_path(project)
 
           within_testid 'available-shared-runners' do
-            expect(page).to have_content format(_('Available instance runners: %{count}'), { count: 2 })
+            within_testid 'crud-title' do
+              expect(page).to have_content _('Instance runners')
+            end
+            within_testid 'crud-count' do
+              expect(page).to have_content 2
+            end
           end
         end
 
@@ -178,7 +186,7 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
       it 'user sees instance runners description' do
         visit project_runners_path(project)
 
-        within_testid('shared-runners-description') do
+        within_testid('available-shared-runners') do
           expect(page).not_to have_content('The same instance runner executes code from multiple projects')
           expect(page).to have_content(shared_runners_html)
         end

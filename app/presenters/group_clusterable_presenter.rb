@@ -20,6 +20,11 @@ class GroupClusterablePresenter < ClusterablePresenter
     migrate_group_cluster_path(clusterable, cluster)
   end
 
+  override :update_cluster_migration_path
+  def update_cluster_migration_path(cluster)
+    update_migration_group_cluster_path(clusterable, cluster)
+  end
+
   override :cluster_path
   def cluster_path(cluster, params = {})
     group_cluster_path(clusterable, cluster, params)
@@ -32,7 +37,7 @@ class GroupClusterablePresenter < ClusterablePresenter
 
   override :sidebar_text
   def sidebar_text
-    s_('ClusterIntegration|Adding a Kubernetes cluster to your group will automatically share the cluster across all your projects. Use review apps, deploy your applications, and easily run your pipelines for all projects using the same cluster.')
+    s_('ClusterIntegration|Connect your group to a Kubernetes cluster with the GitLab agent and share the connection across multiple projects. Use review apps, deploy your applications, and easily run your pipelines for all projects using the same cluster.')
   end
 
   override :learn_more_link

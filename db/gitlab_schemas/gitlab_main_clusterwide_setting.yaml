@@ -1,0 +1,15 @@
+name: gitlab_main_clusterwide_setting
+description: Schema for all Cluster setting tables, ex. application_settings, etc.
+allow_cross_joins:
+  - gitlab_shared
+  - gitlab_main
+  - gitlab_main_cell
+allow_cross_transactions:
+  - gitlab_internal
+  - gitlab_shared
+  - gitlab_main
+  - gitlab_main_cell
+  - gitlab_main_clusterwide
+allow_cross_foreign_keys:
+  - gitlab_main
+require_sharding_key: false

@@ -1,9 +1,9 @@
 <script>
 import { isArray } from 'lodash';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import imageDiffMixin from 'ee_else_ce/diffs/mixins/image_diff';
 import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 
 function calcPercent(pos, renderedSize) {
   return (100 * pos) / renderedSize;
@@ -54,16 +54,22 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('diffs', ['getDiffFileByHash', 'getCommentFormForDiffFile']),
+    ...mapState(useLegacyDiffs, ['getDiffFileByHash', 'getCommentFormForDiffFile']),
     currentCommentForm() {
       return this.getCommentFormForDiffFile(this.fileHash);
     },
     allDiscussions() {
       return isArray(this.discussions) ? this.discussions : [this.discussions];
     },
+    formPosition() {
+      return {
+        left: `${this.currentCommentForm.xPercent}%`,
+        top: `${this.currentCommentForm.yPercent}%`,
+      };
+    },
   },
   methods: {
-    ...mapActions('diffs', ['openDiffFileCommentForm']),
+    ...mapActions(useLegacyDiffs, ['openDiffFileCommentForm']),
     getImageDimensions() {
       return {
         width: Math.round(this.$parent.width),
@@ -131,12 +137,6 @@ export default {
       @click="clickedToggle(discussion)"
     />
 
-    <design-note-pin
-      v-if="canComment && currentCommentForm"
-      :position="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
-        left: `${currentCommentForm.xPercent}%`,
-        top: `${currentCommentForm.yPercent}%`,
-      } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
-    />
+    <design-note-pin v-if="canComment && currentCommentForm" :position="formPosition" />
   </div>
 </template>

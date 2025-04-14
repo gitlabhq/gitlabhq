@@ -1,10 +1,8 @@
 ---
-# Error: gitlab_base.Substitutions
-#
-# Checks for misused terms that should never be used at GitLab.
-# SubstitutionWarning.yml also exists.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.Substitutions
+description: |
+  Checks for misused terms that should never be used at GitLab.
+  SubstitutionWarning.yml also exists.
 extends: substitution
 message: "Use '%s' instead of '%s'."
 link: https://handbook.gitlab.com/handbook/communication/top-misused-terms/

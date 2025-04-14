@@ -95,7 +95,7 @@ can't run more frequently than the worker.
 
 The default frequency of the pipeline schedule worker is `3-59/10 * * * *` (every ten minutes,
 starting with `0:03`, `0:13`, `0:23`, and so on). The default frequency for GitLab.com
-is listed in the [GitLab.com settings](../../user/gitlab_com/_index.md#gitlab-cicd).
+is listed in the [GitLab.com settings](../../user/gitlab_com/_index.md#cicd).
 
 To change the frequency of the pipeline schedule worker:
 

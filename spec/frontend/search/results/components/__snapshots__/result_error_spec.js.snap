@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`when resultsError when component loads normally renders component properly 1`] = `
+<section
+  class="gl-empty-state gl-flex gl-flex-col gl-text-center"
+>
+  <div
+    class="gl-max-w-full"
+  >
+    <img
+      alt=""
+      class="gl-dark-invert-keep-hue gl-max-w-full"
+      height="144"
+      src="file-mock"
+    />
+  </div>
+  <div
+    class="gl-empty-state-content gl-m-auto gl-mx-auto gl-my-0 gl-p-5"
+    data-testid="gl-empty-state-content"
+  >
+    <h1
+      class="gl-leading-36 gl-mb-0 gl-mt-0 gl-text-size-h-display h4"
+    >
+      A problem has occurred
+    </h1>
+    <p
+      class="gl-mb-0 gl-mt-4 gl-text-subtle"
+    >
+      To resolve the problem, check the query syntax and try again.
+      <a
+        class="gl-link"
+        data-testid="syntax-link"
+        href="/help/user/search/exact_code_search.md#syntax"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        What is the supported syntax
+      </a>
+    </p>
+    <div
+      class="gl-flex gl-flex-wrap gl-justify-center gl-mt-5"
+    />
+  </div>
+</section>
+`;

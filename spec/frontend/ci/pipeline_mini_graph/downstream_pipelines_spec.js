@@ -67,7 +67,7 @@ describe('Downstream Pipelines', () => {
       it('should render the correct tooltip text', () => {
         const tooltip = getBinding(findPipelineCounter().element, 'gl-tooltip');
 
-        expect(tooltip.value.title).toContain('more downstream pipelines');
+        expect(tooltip.value.title).toContain('more downstream pipeline');
       });
 
       it('should set the correct pipeline path', () => {

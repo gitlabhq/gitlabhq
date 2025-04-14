@@ -24,9 +24,9 @@ module Gitlab
           url: Gitlab::UrlBuilder.build(release),
           action: action,
           assets: {
-              count: release.assets_count,
-              links: release.links.map(&:hook_attrs),
-              sources: release.sources.map(&:hook_attrs)
+            count: release.assets_count,
+            links: release.links.map(&:hook_attrs),
+            sources: release.sources.map(&:hook_attrs)
           },
           commit: release.commit.hook_attrs
         }

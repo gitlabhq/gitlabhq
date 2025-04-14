@@ -1,0 +1,7 @@
+%p= delete_delayed_message(@project)
+- if @project.adjourned_deletion?
+  #js-project-delayed-delete-button{ data: project_delete_delayed_button_data(@project) }
+- else
+  -# This is a free project, it will use delayed deletion but can only be restored by an admin.
+  -# Use the standard delete button so there is no message about it being able to be restored.
+  #js-project-delete-button{ data: project_delete_delayed_button_data(@project) }

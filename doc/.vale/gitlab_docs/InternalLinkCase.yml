@@ -1,9 +1,7 @@
 ---
-# Error: gitlab_docs.InternalLinkCase
-#
-# Checks that anchor fragments on internal links are in lower-case.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_docs.InternalLinkCase
+description: |
+  Checks that anchor fragments on internal links are in lower-case.
 extends: existence
 message: "Use lowercase for the anchor link."
 link: https://docs.gitlab.com/development/documentation/styleguide/#anchor-links
@@ -11,4 +9,4 @@ vocab: false
 level: error
 scope: raw
 raw:
-  - '[^\`]\[[^\[\]]+\]\((https?:){0}[\w\/\.]*?#[^\s]*?[A-Z][^\) ]*\)[^\`]'
+  - '(?<!\`)\[[^\[\]]+\]\((?!https?:)[^\)]*?#[^\s\)]*?[A-Z][^\)]*?\)(?!\`)'

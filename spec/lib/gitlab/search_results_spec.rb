@@ -109,6 +109,18 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
       end
     end
 
+    describe '#counts' do
+      where(:scope) do
+        %w[projects issues merge_requests blobs commits wiki_blobs epics milestones users unknown]
+      end
+
+      with_them do
+        it 'returns an empty array' do
+          expect(results.counts(scope)).to be_empty
+        end
+      end
+    end
+
     context "when count_limit is lower than total amount" do
       before do
         allow(results).to receive(:count_limit).and_return(1)
@@ -456,23 +468,7 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
           end
         end
 
-        context 'when users_search_scoped_to_authorized_namespaces_basic_search is enabled' do
-          before do
-            stub_feature_flags(users_search_scoped_to_authorized_namespaces_basic_search: true)
-            stub_feature_flags(users_search_scoped_to_authorized_namespaces_basic_search_by_ids: false)
-          end
-
-          include_examples 'returns users'
-        end
-
-        context 'when users_search_scoped_to_authorized_namespaces_basic_search_by_ids is enabled' do
-          before do
-            stub_feature_flags(users_search_scoped_to_authorized_namespaces_basic_search_by_ids: true)
-            stub_feature_flags(users_search_scoped_to_authorized_namespaces_basic_search: false)
-          end
-
-          include_examples 'returns users'
-        end
+        include_examples 'returns users'
       end
     end
   end

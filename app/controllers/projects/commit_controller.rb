@@ -122,6 +122,7 @@ class Projects::CommitController < Projects::ApplicationController
     return render_404 unless @commit
 
     assign_change_commit_vars
+    @commit_params[:revert] = true
 
     return render_404 if @start_branch.blank?
 
@@ -164,6 +165,8 @@ class Projects::CommitController < Projects::ApplicationController
     @reload_stream_url = diffs_stream_url(@commit)
     @stream_url = diffs_stream_url(@commit, streaming_offset, diff_view)
     @diffs_slice = @commit.first_diffs_slice(streaming_offset, commit_diff_options)
+    @diff_files_endpoint = diff_files_metadata_namespace_project_commit_path
+    @diffs_stats_endpoint = diffs_stats_namespace_project_commit_path
 
     show
   end
@@ -301,6 +304,14 @@ class Projects::CommitController < Projects::ApplicationController
 
   def diffs_resource
     commit&.diffs(commit_diff_options)
+  end
+
+  def complete_diff_path
+    project_commit_path(project, commit, format: :patch)
+  end
+
+  def email_format_path
+    project_commit_path(project, commit, format: :diff)
   end
 end
 

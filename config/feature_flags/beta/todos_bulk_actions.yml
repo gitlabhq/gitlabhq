@@ -1,9 +1,0 @@
----
-name: todos_bulk_actions
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/16564
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179403
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520958
-milestone: '17.9'
-group: group::personal productivity
-type: beta
-default_enabled: true

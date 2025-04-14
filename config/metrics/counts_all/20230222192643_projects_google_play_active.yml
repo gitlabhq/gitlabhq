@@ -10,6 +10,9 @@ milestone: "15.10"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111621
 time_frame: all
 data_source: database
+instrumentation_class: ActiveProjectIntegrationsMetric
+options:
+  type: google_play
 data_category: optional
 performance_indicator_type: []
 tiers:

@@ -2,6 +2,9 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { computed } from 'vue';
 import { __ } from '~/locale';
+import { logError } from '~/lib/logger';
+import { visitUrl } from '~/lib/utils/url_utility';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
 import getRefMixin from '~/repository/mixins/get_ref';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -19,18 +22,23 @@ import {
 } from '~/behaviors/shortcuts/keybindings';
 import { sanitize } from '~/lib/dompurify';
 import { InternalEvents } from '~/tracking';
-import { FIND_FILE_BUTTON_CLICK } from '~/tracking/constants';
+import { FIND_FILE_BUTTON_CLICK, BLAME_BUTTON_CLICK } from '~/tracking/constants';
 import { updateElementsVisibility } from '~/repository/utils/dom';
 import {
   showSingleFileEditorForkSuggestion,
   showWebIdeForkSuggestion,
+  isIdeTarget,
+  forkSuggestionForSelectedEditor,
 } from '~/repository/utils/fork_suggestion_utils';
+import { showBlameButton, isUsingLfs } from '~/repository/utils/storage_info_utils';
 import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql';
 import userGitpodInfo from '~/repository/queries/user_gitpod_info.query.graphql';
+import applicationInfoQuery from '~/blob/queries/application_info.query.graphql';
 import { getRefType } from '~/repository/utils/ref_type';
 import OpenMrBadge from '~/repository/components/header_area/open_mr_badge.vue';
+import OverflowMenu from 'ee_else_ce/repository/components/header_area/blob_overflow_menu.vue';
+import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
 import { TEXT_FILE_TYPE, EMPTY_FILE, DEFAULT_BLOB_INFO } from '../../constants';
-import OverflowMenu from './blob_overflow_menu.vue';
 
 export default {
   i18n: {
@@ -45,12 +53,13 @@ export default {
     OpenMrBadge,
     GlButton,
     OverflowMenu,
+    ForkSuggestionModal,
     WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [getRefMixin, glFeatureFlagMixin()],
+  mixins: [getRefMixin, glFeatureFlagMixin(), InternalEvents.mixin()],
   apollo: {
     project: {
       query: blobControlsQuery,
@@ -65,18 +74,39 @@ export default {
       skip() {
         return !this.filePath;
       },
-      error() {
+      error(error) {
         createAlert({ message: this.$options.i18n.errorMessage });
+        logError(
+          `Failed to fetch blob controls. See exception details for more information.`,
+          error,
+        );
+        Sentry.captureException(error);
       },
     },
     currentUser: {
       query: userGitpodInfo,
-      error() {
+      error(error) {
         createAlert({ message: this.$options.i18n.errorMessage });
+        logError(
+          `Failed to fetch current user. See exception details for more information.`,
+          error,
+        );
+        Sentry.captureException(error);
+      },
+    },
+    gitpodEnabled: {
+      query: applicationInfoQuery,
+      error(error) {
+        createAlert({ message: this.$options.i18n.errorMessage });
+        logError(
+          `Failed to fetch application info. See exception details for more information.`,
+          error,
+        );
+        Sentry.captureException(error);
       },
     },
   },
-  inject: ['currentRef', 'gitpodEnabled'],
+  inject: ['currentRef'],
   provide() {
     return {
       blobInfo: computed(() => this.blobInfo ?? DEFAULT_BLOB_INFO.repository.blobs.nodes[0]),
@@ -107,6 +137,8 @@ export default {
     return {
       project: {},
       currentUser: {},
+      gitpodEnabled: false,
+      isForkSuggestionModalVisible: false,
     };
   },
   computed: {
@@ -125,20 +157,11 @@ export default {
     userPermissions() {
       return this.project?.userPermissions || DEFAULT_BLOB_INFO.userPermissions;
     },
-    storageInfo() {
-      const { storedExternally, externalStorage } = this.blobInfo;
-      return {
-        isExternallyStored: storedExternally,
-        storageType: externalStorage,
-        isLfs: storedExternally && externalStorage === 'lfs',
-      };
-    },
     showBlameButton() {
-      const { isExternallyStored, isLfs } = this.storageInfo;
-      return !isExternallyStored && !isLfs;
+      return showBlameButton(this.blobInfo);
     },
     isUsingLfs() {
-      return this.storageInfo.isLfs;
+      return isUsingLfs(this.blobInfo);
     },
     isBinaryFileType() {
       return (
@@ -224,27 +247,55 @@ export default {
       );
     },
     handleFindFile() {
-      InternalEvents.trackEvent(FIND_FILE_BUTTON_CLICK);
+      this.trackEvent(FIND_FILE_BUTTON_CLICK);
       Shortcuts.focusSearchFile();
+    },
+    handleBlameClick() {
+      this.trackEvent(BLAME_BUTTON_CLICK);
     },
     onCopy() {
       navigator.clipboard.writeText(this.blobInfo.rawTextBlob);
+    },
+    onShowForkSuggestion() {
+      this.isForkSuggestionModalVisible = true;
+    },
+    onEdit(target) {
+      const { ideEditPath, editBlobPath } = this.blobInfo;
+      const showForkSuggestionForSelectedEditor = forkSuggestionForSelectedEditor(
+        target,
+        this.shouldShowWebIdeForkSuggestion,
+        this.shouldShowSingleFileEditorForkSuggestion,
+      );
+
+      if (showForkSuggestionForSelectedEditor) {
+        this.isForkSuggestionModalVisible = true;
+      } else {
+        visitUrl(isIdeTarget(target) ? ideEditPath : editBlobPath);
+      }
     },
   },
 };
 </script>
 <template>
-  <div v-if="showBlobControls" class="gl-flex gl-flex-wrap gl-items-center gl-gap-3">
+  <div
+    v-if="showBlobControls"
+    class="gl-flex gl-flex-wrap gl-items-center gl-gap-3"
+    data-testid="blob-controls"
+  >
     <open-mr-badge
       v-if="glFeatures.filterBlobPath"
       :project-path="projectPath"
       :blob-path="filePath"
+      class="!gl-ml-auto"
     />
     <gl-button
       v-gl-tooltip.html="findFileTooltip"
       :aria-keyshortcuts="findFileShortcutKey"
       data-testid="find"
-      :class="$options.buttonClassList"
+      :class="[
+        $options.buttonClassList,
+        { 'gl-hidden sm:gl-inline-flex': glFeatures.blobOverflowMenu },
+      ]"
       @click="handleFindFile"
     >
       {{ $options.i18n.findFile }}
@@ -253,8 +304,12 @@ export default {
       v-if="showBlameButton"
       data-testid="blame"
       :href="blobInfo.blamePath"
-      :class="$options.buttonClassList"
+      :class="[
+        $options.buttonClassList,
+        { 'gl-hidden sm:gl-inline-flex': glFeatures.blobOverflowMenu },
+      ]"
       class="js-blob-blame-link"
+      @click="handleBlameClick"
     >
       {{ $options.i18n.blame }}
     </gl-button>
@@ -274,7 +329,7 @@ export default {
     <web-ide-link
       v-if="glFeatures.blobOverflowMenu && showWebIdeLink"
       :show-edit-button="!isBinaryFileType"
-      class="!gl-ml-auto gl-mr-0"
+      class="!gl-m-0"
       :edit-url="blobInfo.editBlobPath"
       :web-ide-url="blobInfo.ideEditPath"
       :needs-to-fork="shouldShowSingleFileEditorForkSuggestion"
@@ -282,26 +337,32 @@ export default {
       :show-pipeline-editor-button="Boolean(blobInfo.pipelineEditorPath)"
       :pipeline-editor-url="blobInfo.pipelineEditorPath"
       :gitpod-url="blobInfo.gitpodBlobUrl"
-      :show-gitpod-button="gitpodEnabled"
-      :gitpod-enabled="currentUser && currentUser.gitpodEnabled"
+      :is-gitpod-enabled-for-instance="gitpodEnabled"
+      :is-gitpod-enabled-for-user="currentUser && currentUser.gitpodEnabled"
       :project-path="projectPath"
       :project-id="projectIdAsNumber"
       :user-preferences-gitpod-path="currentUser && currentUser.preferencesGitpodPath"
       :user-profile-enable-gitpod-path="currentUser && currentUser.profileEnableGitpodPath"
       is-blob
       disable-fork-modal
-      v-on="$listeners"
+      @edit="onEdit"
+    />
+    <fork-suggestion-modal
+      v-if="!isLoadingRepositoryBlob"
+      :visible="isForkSuggestionModalVisible"
+      :fork-path="blobInfo.forkAndViewPath"
+      @hide="isForkSuggestionModalVisible = false"
     />
 
     <overflow-menu
       v-if="!isLoadingRepositoryBlob && glFeatures.blobOverflowMenu"
-      :user-permissions="userPermissions"
       :project-path="projectPath"
       :is-binary-file-type="isBinaryFileType"
       :override-copy="true"
       :is-empty-repository="project.repository.empty"
       :is-using-lfs="isUsingLfs"
       @copy="onCopy"
+      @showForkSuggestion="onShowForkSuggestion"
     />
   </div>
 </template>

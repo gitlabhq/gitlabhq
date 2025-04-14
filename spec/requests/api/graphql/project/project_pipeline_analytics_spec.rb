@@ -10,14 +10,15 @@ RSpec.describe 'Query.project.pipelineAnalytics', :aggregate_failures, :click_ho
   let_it_be(:guest) { create(:user, guest_of: project) }
   let_it_be(:pipelines_data) do
     current_time = Time.utc(2024, 5, 11)
+    common_data = { ref: 'main', source: :pipeline }
 
     [
-      [:running, 35.minutes.before(current_time), 30.minutes, 'main', :pipeline],
-      [:success, 1.day.before(current_time), 30.minutes, 'main2', :push],
-      [:failed, 5.days.before(current_time), 2.hours, 'main', :pipeline],
-      [:canceled, 4.5.days.before(current_time), 30.minutes, 'main', :pipeline],
-      [:failed, 1.week.before(current_time), 45.minutes, 'main', :pipeline],
-      [:skipped, 7.months.before(current_time), 45.minutes, 'main', :pipeline]
+      { status: :running, started_at: 35.minutes.before(current_time), duration: 30.minutes, **common_data },
+      { status: :success, started_at: 1.day.before(current_time), duration: 30.minutes, ref: 'main2', source: :push },
+      { status: :failed, started_at: 5.days.before(current_time), duration: 2.hours, **common_data },
+      { status: :canceled, started_at: 4.5.days.before(current_time), duration: 30.minutes, **common_data },
+      { status: :failed, started_at: 1.week.before(current_time), duration: 45.minutes, **common_data },
+      { status: :skipped, started_at: 7.months.before(current_time), duration: 45.minutes, **common_data }
     ]
   end
 
@@ -59,7 +60,7 @@ RSpec.describe 'Query.project.pipelineAnalytics', :aggregate_failures, :click_ho
 
   describe 'legacy statistics' do
     let_it_be(:pipelines) do
-      pipelines_data.map { |data| create_pipeline(*data) }
+      pipelines_data.map { |data| create_pipeline(**data) }
     end
 
     let(:simulated_current_time) { Time.utc(2024, 5, 11) }
@@ -307,7 +308,7 @@ RSpec.describe 'Query.project.pipelineAnalytics', :aggregate_failures, :click_ho
 
     private
 
-    def create_pipeline(status, started_at, duration, ref, source)
+    def create_pipeline(status:, started_at:, duration:, ref:, source:)
       pipeline = create(:ci_pipeline, status, project: project, ref: ref, source: source,
         created_at: 1.second.before(started_at), started_at: started_at)
 

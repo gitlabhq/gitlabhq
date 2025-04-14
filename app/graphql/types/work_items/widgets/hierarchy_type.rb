@@ -18,13 +18,16 @@ module Types
 
         field :children, ::Types::WorkItemType.connection_type,
           null: true, complexity: 5,
-          description: 'Child work items.'
+          description: 'Child work items.',
+          resolver: Resolvers::WorkItems::ChildrenResolver,
+          skip_type_authorization: [:read_work_item]
 
         field :ancestors, ::Types::WorkItemType.connection_type,
           null: true, complexity: 5,
           description: 'Ancestors (parents) of the work item.',
           extras: [:lookahead],
-          resolver: Resolvers::WorkItems::AncestorsResolver
+          resolver: Resolvers::WorkItems::AncestorsResolver,
+          skip_type_authorization: [:read_work_item]
 
         field :has_children, GraphQL::Types::Boolean,
           null: false, description: 'Indicates if the work item has children.'
@@ -54,13 +57,6 @@ module Types
         # rubocop: enable CodeReuse/ActiveRecord
 
         alias_method :has_children, :has_children?
-
-        def children
-          relation = object.children
-          relation = relation.inc_relations_for_permission_check unless object.children.loaded?
-
-          relation
-        end
       end
       # rubocop:enable Graphql/AuthorizeTypes
     end

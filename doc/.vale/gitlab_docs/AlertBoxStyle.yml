@@ -1,9 +1,7 @@
 ---
-# Error: gitlab_docs.AlertBoxStyle
-#
-# Makes sure alert boxes use Hugo shortcodes
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_docs.AlertBoxStyle
+description: |
+  Makes sure alert boxes use Hugo shortcodes.
 extends: existence
 message: "Alert boxes are defined with hugo shortcodes. View the style guide for details."
 link: https://docs.gitlab.com/development/documentation/styleguide/#alert-boxes

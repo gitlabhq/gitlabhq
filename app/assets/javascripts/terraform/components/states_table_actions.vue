@@ -251,7 +251,7 @@ export default {
         <gl-dropdown-divider />
 
         <gl-dropdown-item data-testid="terraform-state-remove" @click="showRemoveModal = true">
-          <span class="gl-text-red-500">{{ $options.i18n.remove }}</span>
+          <span class="gl-text-danger">{{ $options.i18n.remove }}</span>
         </gl-dropdown-item>
       </template>
     </gl-dropdown>

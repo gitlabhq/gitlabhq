@@ -402,11 +402,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           _, updates, _ = service.execute(content, issuable)
 
           expect(updates).to eq(spend_time: {
-                                  category: nil,
-                                  duration: 3600,
-                                  user_id: developer.id,
-                                  spent_at: DateTime.current
-                                })
+            category: nil,
+            duration: 3600,
+            user_id: developer.id,
+            spent_at: DateTime.current
+          })
         end
       end
     end
@@ -417,11 +417,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           _, updates, _ = service.execute(content, issuable)
 
           expect(updates).to eq(spend_time: {
-                                  category: nil,
-                                  duration: -7200,
-                                  user_id: developer.id,
-                                  spent_at: DateTime.current
-                                })
+            category: nil,
+            duration: -7200,
+            user_id: developer.id,
+            spent_at: DateTime.current
+          })
         end
       end
 
@@ -437,11 +437,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         _, updates, _ = service.execute(content, issuable)
 
         expect(updates).to eq(spend_time: {
-                                category: nil,
-                                duration: 1800,
-                                user_id: developer.id,
-                                spent_at: Date.parse(date)
-                              })
+          category: nil,
+          duration: 1800,
+          user_id: developer.id,
+          spent_at: Date.parse(date)
+        })
       end
     end
 
@@ -633,16 +633,22 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     describe 'move issue command' do
       it 'returns the move issue message' do
         _, _, message = service.execute("/move #{project.full_path}", issue)
-        translated_string = _("Moved this issue to %{project_full_path}.")
+        translated_string = _("Moved this item to %{project_full_path}.")
         formatted_message = format(translated_string, project_full_path: project.full_path.to_s)
 
         expect(message).to eq(formatted_message)
       end
 
-      it 'returns move issue failure message when the referenced issue is not found' do
+      it 'returns move issue failure message when the referenced project is not found' do
         _, _, message = service.execute('/move invalid', issue)
 
-        expect(message).to eq(_("Failed to move this issue because target project doesn't exist."))
+        expect(message).to eq(_("Unable to move. Target project or group doesn't exist or doesn't support this item type."))
+      end
+
+      it 'returns move issue failure message when the path provided is to a group' do
+        _, _, message = service.execute("/move #{group.full_path}", issue)
+
+        expect(message).to eq(_("Unable to move. Target project or group doesn't exist or doesn't support this item type."))
       end
 
       context "when we pass a work_item" do
@@ -652,7 +658,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         it '/move execution method message' do
           _, _, message = service.execute(move_command, work_item)
 
-          expect(message).to eq("Moved this issue to #{project.full_path}.")
+          expect(message).to eq("Moved this item to #{project.full_path}.")
         end
       end
     end
@@ -660,16 +666,22 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     describe 'clone issue command' do
       it 'returns the clone issue message' do
         _, _, message = service.execute("/clone #{project.full_path}", issue)
-        translated_string = _("Cloned this issue to %{project_full_path}.")
+        translated_string = _("Cloned this item to %{project_full_path}.")
         formatted_message = format(translated_string, project_full_path: project.full_path.to_s)
 
         expect(message).to eq(formatted_message)
       end
 
-      it 'returns clone issue failure message when the referenced issue is not found' do
+      it 'returns clone issue failure message when the referenced project is not found' do
         _, _, message = service.execute('/clone invalid', issue)
 
-        expect(message).to eq(_("Failed to clone this issue because target project doesn't exist."))
+        expect(message).to eq(_("Unable to clone. Target project or group doesn't exist or doesn't support this item type."))
+      end
+
+      it 'returns clone issue failure message when the path provided is to a group' do
+        _, _, message = service.execute("/clone #{group.full_path}", issue)
+
+        expect(message).to eq(_("Unable to clone. Target project or group doesn't exist or doesn't support this item type."))
       end
 
       context "when we pass a work_item" do
@@ -678,7 +690,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         it '/clone execution method message' do
           _, _, message = service.execute("/clone #{project.full_path}", work_item)
 
-          expect(message).to eq("Cloned this issue to #{project.full_path}.")
+          expect(message).to eq("Cloned this item to #{project.full_path}.")
         end
       end
     end
@@ -3322,7 +3334,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           it 'returns success message' do
             _, _, message = service.execute(content, task_work_item)
 
-            expect(message).to eq(_('Parent set successfully'))
+            expect(message).to eq(_('Parent item set successfully.'))
           end
 
           it 'sets correct update params' do
@@ -3341,7 +3353,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
               _, updates, message = service.execute(content, task_work_item)
 
               expect(updates).to be_empty
-              expect(message).to eq("This parent does not exist or you don't have sufficient permission.")
+              expect(message).to eq("This parent item does not exist or you don't have sufficient permission.")
               expect(task_work_item.reload.work_item_parent).to be_nil
             end
           end
@@ -3355,7 +3367,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
               _, updates, message = service.execute(content, task_work_item_with_parent)
 
               expect(updates).to be_empty
-              expect(message).to eq("Work item #{task_work_item_with_parent.to_reference} has already been added to " \
+              expect(message).to eq("#{task_work_item_with_parent.to_reference} has already been added to " \
                 "parent #{parent.to_reference}.")
               expect(task_work_item_with_parent.reload.work_item_parent).to eq parent
             end
@@ -3369,8 +3381,8 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
               _, updates, message = service.execute(content, task_work_item)
 
               expect(updates).to be_empty
-              expect(message).to eq("Cannot assign a confidential parent to a non-confidential work item. Make the " \
-                "work item confidential and try again")
+              expect(message).to eq("Cannot assign a confidential parent item to a non-confidential child item. Make " \
+                "the child item confidential and try again.")
               expect(task_work_item.reload.work_item_parent).to be_nil
             end
           end
@@ -3383,7 +3395,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
               _, updates, message = service.execute(content, task_work_item)
 
               expect(updates).to be_empty
-              expect(message).to eq("Cannot assign this work item type to parent type")
+              expect(message).to eq("Cannot assign this child type to parent type.")
               expect(task_work_item.reload.work_item_parent).to be_nil
             end
           end
@@ -3396,7 +3408,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
             _, updates, message = service.execute(content, task_work_item)
 
             expect(updates).to be_empty
-            expect(message).to eq("This parent does not exist or you don't have sufficient permission.")
+            expect(message).to eq("This parent item does not exist or you don't have sufficient permission.")
           end
         end
 
@@ -3454,7 +3466,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
         it 'returns correct explanation' do
           _, explanations = service.explain(content, work_item)
-          translated_string = _("Remove %{parent_to_reference} as this item's parent.")
+          translated_string = _("Remove %{parent_to_reference} as this item's parent item.")
           formatted_message = format(translated_string, parent_to_reference: parent.to_reference(work_item).to_s)
 
           expect(explanations)
@@ -3465,7 +3477,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           _, updates, message = service.execute(content, work_item)
 
           expect(updates).to eq(remove_parent: true)
-          expect(message).to eq(_('Parent removed successfully'))
+          expect(message).to eq(_('Parent item removed successfully.'))
         end
       end
     end
@@ -3831,7 +3843,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       it 'includes the project name' do
         _, explanations = service.explain(content, issue)
 
-        expect(explanations).to eq([_("Moves this issue to test/project.")])
+        expect(explanations).to eq([_("Moves this item to test/project.")])
       end
 
       context "when work item type is an issue" do
@@ -3841,7 +3853,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         it "/move is available" do
           _, explanations = service.explain(move_command, work_item)
 
-          expect(explanations).to match_array(["Moves this issue to test/project."])
+          expect(explanations).to match_array(["Moves this item to test/project."])
         end
       end
     end
@@ -3852,7 +3864,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       it 'includes the project name' do
         _, explanations = service.explain(content, issue)
 
-        expect(explanations).to match_array([_("Clones this issue, without comments, to test/project.")])
+        expect(explanations).to match_array([_("Clones this item, without comments, to test/project.")])
       end
 
       context "when work item type is an issue" do
@@ -3861,7 +3873,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
         it "/clone is available" do
           _, explanations = service.explain("/clone test/project", work_item)
 
-          expect(explanations).to match_array(["Clones this issue, without comments, to test/project."])
+          expect(explanations).to match_array(["Clones this item, without comments, to test/project."])
         end
       end
     end
@@ -4110,7 +4122,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       shared_examples 'command is available' do
         it 'explanation contains correct message' do
           _, explanations = service.explain(command, work_item)
-          translated_string = _("Change item's parent to %{parent_ref}.")
+          translated_string = _("Set %{parent_ref} as this item's parent item.")
           formatted_message = format(translated_string, parent_ref: parent_ref.to_s)
 
           expect(explanations).to contain_exactly(formatted_message)

@@ -49,7 +49,7 @@ module Gitlab
             keep = keep_class.new(logger: @logger, filter_identifiers: @filter_identifiers)
             keep.each_change do |change|
               unless change.valid?
-                @logger.warn "Ignoring invalid change from: #{keep_class}"
+                @logger.warn "Ignoring invalid change from #{keep_class} with identifier #{change.identifiers}"
                 next
               end
 

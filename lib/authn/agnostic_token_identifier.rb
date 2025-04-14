@@ -19,7 +19,15 @@ module Authn
     ].freeze
 
     def self.token_for(plaintext, source)
-      TOKEN_TYPES.find { |x| x.prefix?(plaintext) }&.new(plaintext, source)
+      token_type(plaintext)&.new(plaintext, source)
+    end
+
+    def self.token?(plaintext)
+      token_type(plaintext).present?
+    end
+
+    def self.token_type(plaintext)
+      TOKEN_TYPES.find { |x| x.prefix?(plaintext) }
     end
   end
 end

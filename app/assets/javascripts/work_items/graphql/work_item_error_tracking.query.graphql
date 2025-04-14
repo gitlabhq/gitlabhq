@@ -1,0 +1,28 @@
+query workItemErrorTracking($fullPath: ID!, $iid: String!) {
+  namespace(fullPath: $fullPath) {
+    id
+    workItem(iid: $iid) {
+      id
+      widgets {
+        ... on WorkItemWidgetErrorTracking {
+          type
+          identifier
+          stackTrace {
+            nodes {
+              absolutePath
+              columnNumber
+              context {
+                line
+                lineNumber
+              }
+              filename
+              function
+              lineNumber
+            }
+          }
+          status
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,8 @@
 // eslint-disable-next-line no-restricted-imports
-import { mapGetters, mapActions, mapState } from 'vuex';
+import { mapGetters, mapActions as mapVuexActions, mapState } from 'vuex';
+import { mapActions } from 'pinia';
 import { scrollToElement, contentTop } from '~/lib/utils/common_utils';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 
 function isOverviewPage() {
   return window.mrTabs?.currentAction === 'show';
@@ -93,8 +95,8 @@ export default {
     }),
   },
   methods: {
-    ...mapActions(['expandDiscussion', 'setCurrentDiscussionId']),
-    ...mapActions('diffs', ['scrollToFile', 'disableVirtualScroller']),
+    ...mapVuexActions(['expandDiscussion', 'setCurrentDiscussionId']),
+    ...mapActions(useLegacyDiffs, ['scrollToFile', 'disableVirtualScroller']),
 
     async jumpToNextDiscussion(scrollOptions) {
       await this.disableVirtualScroller();

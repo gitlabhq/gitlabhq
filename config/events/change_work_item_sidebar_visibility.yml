@@ -1,0 +1,18 @@
+---
+description: Work item sidebar shown or hidden
+internal_events: true
+action: change_work_item_sidebar_visibility
+identifiers:
+- user
+additional_properties:
+  label:
+    description: New sidebar visibility
+product_group: project_management
+product_categories:
+- team_planning
+milestone: '17.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184858
+tiers:
+- free
+- premium
+- ultimate

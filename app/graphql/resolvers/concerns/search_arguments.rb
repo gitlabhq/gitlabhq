@@ -2,6 +2,7 @@
 
 module SearchArguments
   extend ActiveSupport::Concern
+  include Gitlab::Graphql::Authorize::AuthorizeResource
 
   included do
     argument :search, GraphQL::Types::String,
@@ -48,8 +49,11 @@ module SearchArguments
       rate_limiter_key,
       scope: rate_limiter_scope
     )
-      raise Gitlab::Graphql::Errors::ResourceNotAvailable,
-        'This endpoint has been requested with the search argument too many times. Try again later.'
+      error_msg = <<~ERR.squish
+        This endpoint has been requested with the search argument too many times. Try again later.
+      ERR
+
+      raise_resource_not_available_error! error_msg
     end
   end
 

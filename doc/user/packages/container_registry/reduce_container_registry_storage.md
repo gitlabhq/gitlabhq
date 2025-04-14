@@ -41,7 +41,7 @@ View storage usage data for your container registry repositories.
 
 Prerequisites:
 
-- For self-managed instances, an administrator must [enable the container registry metadata database](../../../administration/packages/container_registry_metadata_database.md).
+- For GitLab Self-Managed instances, an administrator must [enable the container registry metadata database](../../../administration/packages/container_registry_metadata_database.md).
 - You must have at least the Maintainer role for the project or the Owner role for the namespace.
 
 To view storage usage for a project:
@@ -61,7 +61,7 @@ You can also use:
 
 Prerequisites:
 
-- For self-managed instances, an administrator must [enable the container registry metadata database](../../../administration/packages/container_registry_metadata_database.md).
+- For GitLab Self-Managed instances, an administrator must [enable the container registry metadata database](../../../administration/packages/container_registry_metadata_database.md).
 - You must have the Owner role for the group.
 
 To view storage usage for a group:
@@ -90,7 +90,7 @@ Storage data updates occur:
 
 {{< alert type="note" >}}
 
-For self-managed instances, storage data becomes available after an administrator enables the metadata database.
+For GitLab Self-Managed instances, storage data becomes available after an administrator enables the metadata database.
 On GitLab.com, the metadata database is enabled by default.
 
 {{< /alert >}}
@@ -110,7 +110,7 @@ An image layer is only counted once if:
 - You share the image layer across different repositories.
 
 Only layers that are referenced by tagged images are accounted for. Untagged images and any layers
-referenced exclusively by them are subject to [online garbage collection](../container_registry/delete_container_registry_images.md#garbage-collection).
+referenced exclusively by them are subject to [online garbage collection](delete_container_registry_images.md#garbage-collection).
 Untagged image layers are automatically deleted after 24 hours if they remain unreferenced during that period.
 
 Image layers are stored on the storage backend in the original (usually compressed) format. This
@@ -132,7 +132,7 @@ in the namespace. Untagged image layers are not ignored. As a result,
 the displayed usage size might not change significantly after deleting tags. Instead,
 the size value only changes when:
 
-- An automated [garbage collection process](../container_registry/delete_container_registry_images.md#garbage-collection)
+- An automated [garbage collection process](delete_container_registry_images.md#garbage-collection)
   runs and deletes untagged image layers. After a user deletes a tag, a garbage collection run
   is scheduled to start 24 hours later. During that run, images that were previously tagged
   are analyzed and their layers deleted if not referenced by any other tagged image.
@@ -349,7 +349,7 @@ You can use the following application settings to prevent server resource starva
   during execution of policies. Cached timestamps are stored in [Redis](../../../development/architecture.md#redis).
   Enabled by default.
 
-For self-managed instances, those settings can be updated in the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
+For GitLab Self-Managed instances, those settings can be updated in the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
 ApplicationSetting.last.update(container_registry_expiration_policies_worker_capacity: 3)

@@ -83,6 +83,12 @@ class ProtectedBranch < ApplicationRecord
     name.underscore.humanize.downcase
   end
 
+  def self.default_branch_for(project)
+    return unless project&.default_branch
+
+    project.protected_branches.detect { |branch| branch.name == project.default_branch }
+  end
+
   def default_branch?
     return false unless project.present?
 

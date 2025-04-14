@@ -15,8 +15,9 @@ module WorkItems
     validates :widget_options, absence: true, unless: :weight?
 
     scope :enabled, -> { where(disabled: false) }
+    scope :by_enabled_widget_type, ->(widget_type) { enabled.where(widget_type: widget_type) }
 
-    enum widget_type: {
+    enum :widget_type, {
       assignees: 0,
       description: 1,
       hierarchy: 2,

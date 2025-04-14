@@ -81,8 +81,6 @@ events:
   unique: user.id
 - name: i_quickactions_relate
   unique: user.id
-- name: i_quickactions_remind_me
-  unique: user.id
 - name: i_quickactions_remove_child_epic
   unique: user.id
 - name: i_quickactions_remove_due_date

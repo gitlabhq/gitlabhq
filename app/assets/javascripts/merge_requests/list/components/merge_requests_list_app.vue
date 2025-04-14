@@ -127,7 +127,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   inject: {
-    autocompleteAwardEmojisPat: { default: '' },
+    autocompleteAwardEmojisPath: { default: '' },
     fullPath: { default: '' },
     hasAnyMergeRequests: { default: false },
     hasScopedLabelsFeature: { default: false },
@@ -480,7 +480,11 @@ export default {
       );
     },
     sortOptions() {
-      return getSortOptions({ hasManualSort: false, hasMergedDate: this.state === STATUS_MERGED });
+      return getSortOptions({
+        hasManualSort: false,
+        hasMergedDate: this.state === STATUS_MERGED,
+        hasDueDate: false,
+      });
     },
     tabCounts() {
       const { openedMergeRequests, closedMergeRequests, mergedMergeRequests, allMergeRequests } =

@@ -64,10 +64,6 @@ describe('Sidebar date Widget', () => {
     });
   };
 
-  beforeEach(() => {
-    window.gon.first_day_of_week = 1;
-  });
-
   afterEach(() => {
     fakeApollo = null;
   });
@@ -134,7 +130,6 @@ describe('Sidebar date Widget', () => {
         value: new Date(date),
         autocomplete: 'off',
         defaultDate: expect.any(Object),
-        firstDay: window.gon.first_day_of_week,
       });
     });
 

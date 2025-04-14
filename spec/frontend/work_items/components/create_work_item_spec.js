@@ -18,13 +18,10 @@ import WorkItemParent from '~/work_items/components/work_item_parent.vue';
 import WorkItemProjectsListbox from '~/work_items/components/work_item_links/work_item_projects_listbox.vue';
 import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
 import {
-  WORK_ITEM_TYPE_ENUM_EPIC,
-  WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_ENUM_INCIDENT,
-  WORK_ITEM_TYPE_VALUE_INCIDENT,
-  WORK_ITEM_TYPE_VALUE_ISSUE,
-  WORK_ITEM_TYPE_VALUE_MAP,
-  WORK_ITEM_TYPE_VALUE_TASK,
+  WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_INCIDENT,
+  WORK_ITEM_TYPE_NAME_ISSUE,
+  WORK_ITEM_TYPE_NAME_TASK,
   WORK_ITEMS_TYPE_MAP,
 } from '~/work_items/constants';
 import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
@@ -34,10 +31,10 @@ import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.grap
 import { resolvers } from '~/graphql_shared/issuable_client';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import {
-  createWorkItemMutationErrorResponse,
   createWorkItemMutationResponse,
+  createWorkItemMutationErrorResponse,
   createWorkItemQueryResponse,
-} from '../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/alert');
 jest.mock('~/work_items/graphql/cache_utils', () => ({
@@ -91,10 +88,13 @@ describe('Create work item component', () => {
   const findCreateButton = () => wrapper.find('[data-testid="create-button"]');
   const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
 
+  const namespaceWorkItemTypes =
+    namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes;
+
   const createComponent = ({
     props = {},
     mutationHandler = createWorkItemSuccessHandler,
-    workItemTypeName = WORK_ITEM_TYPE_ENUM_EPIC,
+    preselectedWorkItemType = WORK_ITEM_TYPE_NAME_EPIC,
   } = {}) => {
     mockApollo = createMockApollo(
       [
@@ -108,7 +108,7 @@ describe('Create work item component', () => {
     wrapper = shallowMount(CreateWorkItem, {
       apolloProvider: mockApollo,
       propsData: {
-        workItemTypeName,
+        preselectedWorkItemType,
         ...props,
       },
       provide: {
@@ -191,11 +191,10 @@ describe('Create work item component', () => {
       'Clears cache on cancel for workItemType: %s with the correct data',
       async (type) => {
         const typeName = WORK_ITEMS_TYPE_MAP[type].value;
-        const expectedWorkItemTypeData =
-          namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
-            ({ name }) => name === typeName,
-          );
-        createComponent({ workItemTypeName: WORK_ITEM_TYPE_VALUE_MAP[typeName] });
+        const expectedWorkItemTypeData = namespaceWorkItemTypes.find(
+          ({ name }) => name === typeName,
+        );
+        createComponent({ preselectedWorkItemType: typeName });
         await waitForPromises();
 
         findCancelButton().vm.$emit('click');
@@ -214,7 +213,7 @@ describe('Create work item component', () => {
 
   describe('When there is no work item type', () => {
     beforeEach(() => {
-      createComponent({ workItemTypeName: null });
+      createComponent({ preselectedWorkItemType: null });
       return waitForPromises();
     });
 
@@ -239,58 +238,67 @@ describe('Create work item component', () => {
     );
 
     it('defaults the selected project to the injected `fullPath` value', async () => {
-      createComponent({ props: { showProjectSelector: true } });
+      const namespaceFullName = 'GitLab.org / GitLab';
+      createComponent({
+        props: { showProjectSelector: true, namespaceFullName },
+      });
       await waitForPromises();
 
+      expect(findProjectsSelector().props('currentProjectName')).toBe(namespaceFullName);
       expect(findProjectsSelector().props('selectedProjectFullPath')).toBe('full-path');
     });
   });
 
   describe('Work item types dropdown', () => {
-    it('displays a list of work item types including "Select type" option when workItemTypeName is not provided', async () => {
-      createComponent({ props: { workItemTypeName: null } });
+    it('displays a list of work item types including "Select type" option when preselectedWorkItemType is not provided', async () => {
+      createComponent({ props: { preselectedWorkItemType: null } });
       await waitForPromises();
       // +1 for the "Select type" option
-      const expectedOptions =
-        namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.length + 1;
+      const expectedOptions = namespaceWorkItemTypes.length + 1;
 
       expect(findSelect().attributes('options').split(',')).toHaveLength(expectedOptions);
     });
 
-    it('hides the type selector if workItemTypeName is provided', async () => {
-      createComponent({ props: { workItemTypeName: WORK_ITEM_TYPE_ENUM_EPIC } });
+    it('hides the type selector if preselectedWorkItemType is provided', async () => {
+      createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_EPIC } });
       await waitForPromises();
 
       expect(findSelect().exists()).toBe(false);
     });
 
-    it('shows the type selector when alwaysShowWorkItemTypeSelect=true even if workItemTypeName is provided', async () => {
+    it('shows the type selector when alwaysShowWorkItemTypeSelect=true even if preselectedWorkItemType is provided', async () => {
       createComponent({
-        props: { workItemTypeName: WORK_ITEM_TYPE_ENUM_EPIC, alwaysShowWorkItemTypeSelect: true },
+        props: {
+          preselectedWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
+          alwaysShowWorkItemTypeSelect: true,
+        },
       });
       await waitForPromises();
 
       expect(findSelect().exists()).toBe(true);
     });
 
-    it('does not show the "Select type" option when workItemTypeName is provided and alwaysShowWorkItemTypeSelect=true', async () => {
+    it('does not show the "Select type" option when preselectedWorkItemType is provided and alwaysShowWorkItemTypeSelect=true', async () => {
       createComponent({
-        props: { workItemTypeName: WORK_ITEM_TYPE_ENUM_EPIC, alwaysShowWorkItemTypeSelect: true },
+        props: {
+          preselectedWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
+          alwaysShowWorkItemTypeSelect: true,
+        },
       });
       await waitForPromises();
 
       expect(findSelect().attributes('options').split(',')).toHaveLength(
-        namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.length,
+        namespaceWorkItemTypes.length,
       );
     });
 
     it('restricts the type selector to types provided by allowedWorkItemTypes', async () => {
       const allowedWorkItemTypes = [
-        WORK_ITEM_TYPE_VALUE_INCIDENT,
-        WORK_ITEM_TYPE_VALUE_ISSUE,
-        WORK_ITEM_TYPE_VALUE_TASK,
+        WORK_ITEM_TYPE_NAME_INCIDENT,
+        WORK_ITEM_TYPE_NAME_ISSUE,
+        WORK_ITEM_TYPE_NAME_TASK,
       ];
-      createComponent({ props: { workItemTypeName: null, allowedWorkItemTypes } });
+      createComponent({ props: { preselectedWorkItemType: null, allowedWorkItemTypes } });
       await waitForPromises();
       // +1 for the "Select type" option
       const expectedOptions = allowedWorkItemTypes.length + 1;
@@ -299,7 +307,7 @@ describe('Create work item component', () => {
     });
 
     it('selects a work item type on click', async () => {
-      createComponent({ props: { workItemTypeName: null } });
+      createComponent({ props: { preselectedWorkItemType: null } });
       await waitForPromises();
       const mockId = 'Issue';
 
@@ -517,7 +525,7 @@ describe('Create work item component', () => {
   describe('Create work item widgets for Issue work item type', () => {
     describe('default', () => {
       beforeEach(async () => {
-        createComponent({ workItemTypeName: WORK_ITEM_TYPE_ENUM_ISSUE });
+        createComponent({ preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE });
         await waitForPromises();
       });
 
@@ -544,17 +552,13 @@ describe('Create work item component', () => {
       it('renders the work item milestone widget', () => {
         expect(findMilestoneWidget().exists()).toBe(true);
       });
-
-      it('renders the work item parent widget', () => {
-        expect(findParentWidget().exists()).toBe(true);
-      });
     });
   });
 
   describe('Create work item widgets for Incident work item type', () => {
     describe('default', () => {
       beforeEach(async () => {
-        createComponent({ workItemTypeName: WORK_ITEM_TYPE_ENUM_INCIDENT });
+        createComponent({ preselectedWorkItemType: WORK_ITEM_TYPE_NAME_INCIDENT });
         await waitForPromises();
       });
 
@@ -708,7 +712,10 @@ describe('Create work item component', () => {
 
   describe('New work item to resolve threads', () => {
     it('when not resolving any thread, does not pass resolve params to mutation', async () => {
-      createComponent({ singleWorkItemType: true, workItemTypeName: WORK_ITEM_TYPE_ENUM_ISSUE });
+      createComponent({
+        singleWorkItemType: true,
+        preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE,
+      });
       await waitForPromises();
 
       await updateWorkItemTitle();
@@ -724,7 +731,10 @@ describe('Create work item component', () => {
     it('when resolving all threads in a merge request', async () => {
       setWindowLocation('?merge_request_id=13');
 
-      createComponent({ singleWorkItemType: true, workItemTypeName: WORK_ITEM_TYPE_ENUM_ISSUE });
+      createComponent({
+        singleWorkItemType: true,
+        preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE,
+      });
       await waitForPromises();
 
       await updateWorkItemTitle();
@@ -745,7 +755,10 @@ describe('Create work item component', () => {
         '?discussion_to_resolve=13&merge_request_to_resolve_discussions_of=112&merge_request_id=13',
       );
 
-      createComponent({ singleWorkItemType: true, workItemTypeName: WORK_ITEM_TYPE_ENUM_ISSUE });
+      createComponent({
+        singleWorkItemType: true,
+        preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE,
+      });
       await waitForPromises();
 
       await updateWorkItemTitle();

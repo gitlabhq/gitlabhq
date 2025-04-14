@@ -6,13 +6,13 @@ import {
   GlButton,
   GlSearchBoxByType,
 } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import micromatch from 'micromatch';
 import { getModifierKey } from '~/constants';
 import { s__, sprintf } from '~/locale';
 import { RecycleScroller } from 'vendor/vue-virtual-scroller';
 import { isElementClipped } from '~/lib/utils/common_utils';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import DiffFileRow from './diff_file_row.vue';
 import TreeListHeight from './tree_list_height.vue';
 
@@ -41,6 +41,11 @@ export default {
       required: false,
       default: null,
     },
+    totalFilesCount: {
+      type: [Number, String],
+      default: undefined,
+      required: false,
+    },
   },
   data() {
     return {
@@ -48,8 +53,14 @@ export default {
     };
   },
   computed: {
-    ...mapState('diffs', ['renderTreeList', 'currentDiffFileId', 'viewedDiffFileIds', 'realSize']),
-    ...mapGetters('diffs', ['fileTree', 'allBlobs', 'linkedFile']),
+    ...mapState(useLegacyDiffs, [
+      'renderTreeList',
+      'currentDiffFileId',
+      'viewedDiffFileIds',
+      'fileTree',
+      'allBlobs',
+      'linkedFile',
+    ]),
     filteredTreeList() {
       let search = this.search.toLowerCase().trim();
 
@@ -153,8 +164,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('diffs', ['toggleTreeOpen', 'setRenderTreeList', 'setTreeOpen']),
-
+    ...mapActions(useLegacyDiffs, ['toggleTreeOpen', 'setRenderTreeList', 'setTreeOpen']),
     scrollVirtualScrollerToFileHash(hash) {
       const item = document.querySelector(`[data-file-row="${hash}"]`);
       if (item && !isElementClipped(item, this.$refs.scroller.$el)) return;
@@ -185,7 +195,9 @@ export default {
   <div class="tree-list-holder flex-column gl-flex" data-testid="file-tree-container">
     <div class="gl-mb-3 gl-flex gl-items-center">
       <h5 class="gl-my-0 gl-inline-block">{{ __('Files') }}</h5>
-      <gl-badge class="gl-ml-2" data-testid="file-count">{{ realSize }}</gl-badge>
+      <gl-badge v-if="totalFilesCount != null" class="gl-ml-2" data-testid="file-count">{{
+        totalFilesCount
+      }}</gl-badge>
       <gl-button-group class="gl-ml-auto">
         <gl-button
           v-gl-tooltip.hover

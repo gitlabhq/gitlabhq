@@ -70,7 +70,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
-  it { is_expected.to respond_to(:set_cancel_gracefully) }
   it { is_expected.to respond_to(:cancel_gracefully?) }
 
   it { is_expected.to delegate_method(:merge_request?).to(:pipeline) }
@@ -198,32 +197,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   it_behaves_like 'a triggerable processable', :ci_build
-
-  describe '.ref_protected' do
-    subject { described_class.ref_protected }
-
-    context 'when protected is true' do
-      let!(:job) { create(:ci_build, :protected, pipeline: pipeline) }
-
-      it { is_expected.to include(job) }
-    end
-
-    context 'when protected is false' do
-      let!(:job) { create(:ci_build, pipeline: pipeline) }
-
-      it { is_expected.not_to include(job) }
-    end
-
-    context 'when protected is nil' do
-      let!(:job) { create(:ci_build, pipeline: pipeline) }
-
-      before do
-        job.update_attribute(:protected, nil)
-      end
-
-      it { is_expected.not_to include(job) }
-    end
-  end
 
   describe '.with_downloadable_artifacts' do
     subject { described_class.with_downloadable_artifacts }
@@ -3644,9 +3617,9 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
         stub_application_setting(ci_jwt_signing_key: rsa_key)
         build.metadata.update!(id_tokens: {
-                                 'ID_TOKEN_1' => { aud: 'developers' },
-                                 'ID_TOKEN_2' => { aud: 'maintainers' }
-                               })
+          'ID_TOKEN_1' => { aud: 'developers' },
+          'ID_TOKEN_2' => { aud: 'maintainers' }
+        })
         build.runner = build_stubbed(:ci_runner)
       end
 
@@ -3692,10 +3665,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
         stub_application_setting(ci_jwt_signing_key: rsa_key)
         build.metadata.update!(id_tokens: {
-                                 'ID_TOKEN_1' => { aud: '$CI_SERVER_URL' },
-                                 'ID_TOKEN_2' => { aud: 'https://$CI_SERVER_HOST' },
-                                 'ID_TOKEN_3' => { aud: ['developers', '$CI_SERVER_URL', 'https://$CI_SERVER_HOST'] }
-                               })
+          'ID_TOKEN_1' => { aud: '$CI_SERVER_URL' },
+          'ID_TOKEN_2' => { aud: 'https://$CI_SERVER_HOST' },
+          'ID_TOKEN_3' => { aud: ['developers', '$CI_SERVER_URL', 'https://$CI_SERVER_HOST'] }
+        })
         build.runner = build_stubbed(:ci_runner)
       end
 
@@ -3734,9 +3707,9 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
         stub_application_setting(ci_jwt_signing_key: rsa_key)
         build.metadata.update!(id_tokens: {
-                                 'ID_TOKEN_1' => { aud: '$ENVIRONMENT_SCOPED_VAR' },
-                                 'ID_TOKEN_2' => { aud: ['$CI_ENVIRONMENT_NAME', '$ENVIRONMENT_SCOPED_VAR'] }
-                               })
+          'ID_TOKEN_1' => { aud: '$ENVIRONMENT_SCOPED_VAR' },
+          'ID_TOKEN_2' => { aud: ['$CI_ENVIRONMENT_NAME', '$ENVIRONMENT_SCOPED_VAR'] }
+        })
         build.runner = build_stubbed(:ci_runner)
       end
 
@@ -5795,9 +5768,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     context 'when the builds runner supports canceling' do
       include_context 'when canceling support'
 
-      it 'returns true' do
-        expect(job.supports_canceling?).to be true
-      end
+      specify { expect(job.supports_canceling?).to be true }
     end
   end
 
@@ -5806,28 +5777,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when the builds runner supports canceling' do
       include_context 'when canceling support'
-      it 'returns true' do
-        expect(job.supports_force_cancel?).to be true
-      end
-    end
-  end
 
-  describe '#runtime_runner_features' do
-    subject do
-      build.save!
-      build.reload.cancel_gracefully?
-    end
-
-    let(:build) { create(:ci_build, pipeline: pipeline) }
-
-    it 'cannot cancel gracefully' do
-      expect(subject).to be false
-    end
-
-    it 'can cancel gracefully' do
-      build.set_cancel_gracefully
-
-      expect(subject).to be true
+      specify { expect(job.supports_force_cancel?).to be true }
     end
   end
 
@@ -6218,23 +6169,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     with_them do
       it { is_expected.to eq(expected_token) }
-    end
-  end
-
-  describe '#valid_token?' do
-    subject { build.valid_token?(token) }
-
-    let_it_be(:build) { create(:ci_build, :running) }
-    let(:token) { build.token }
-
-    it { is_expected.to be(true) }
-
-    context 'when the token is a database token' do
-      before do
-        stub_feature_flags(ci_job_token_jwt: false)
-      end
-
-      it { is_expected.to be(true) }
     end
   end
 end

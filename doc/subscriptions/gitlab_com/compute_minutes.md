@@ -18,11 +18,12 @@ pricing for additional compute minutes on the [GitLab Pricing page](https://abou
 
 Additional compute minutes:
 
-- Are valid for 12 months from date of purchase or until all compute minutes are consumed,
-  whichever comes first. Expiry of compute minutes is not enforced.
 - Are used only after the monthly quota included in your subscription runs out.
 - Are [carried over to the next month](#monthly-rollover-of-purchased-compute-minutes),
   if any remain at the end of the month.
+- Are valid for 12 months from date of purchase if not consumed earlier.
+- Expiry of compute minutes is not yet enforced, which allows their use even after the expiry date.
+  However, GitLab does not guarantee that compute minutes will remain valid after the expiry date.
 - Bought on a trial subscription are available after the trial ends or upgrading to a paid plan.
 - Remain available when you change subscription tiers, including changes between paid tiers or to the Free tier.
 

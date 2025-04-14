@@ -30,7 +30,7 @@
         %h5.gl-mt-0= s_("Profiles|Upload new avatar")
         .gl-flex.gl-items-center.gl-my-3
           = render Pajamas::ButtonComponent.new(button_options: { class: 'js-choose-user-avatar-button' }) do
-            = s_("Profiles|Choose file...")
+            = s_("Profiles|Choose file…")
           %span.gl-ml-3.js-avatar-filename= s_("Profiles|No file chosen.")
           = f.file_field :avatar, class: 'js-user-avatar-input hidden', accept: 'image/*'
         .form-text.gl-text-subtle

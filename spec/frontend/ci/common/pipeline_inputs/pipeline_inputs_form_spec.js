@@ -6,9 +6,9 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import InputsTableSkeletonLoader from '~/ci/common/pipeline_inputs/inputs_table_skeleton_loader.vue';
+import InputsTableSkeletonLoader from '~/ci/common/pipeline_inputs/pipeline_inputs_table/inputs_table_skeleton_loader.vue';
 import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form.vue';
-import PipelineInputsTable from '~/ci/common/pipeline_inputs/pipeline_inputs_table.vue';
+import PipelineInputsTable from '~/ci/common/pipeline_inputs/pipeline_inputs_table/pipeline_inputs_table.vue';
 import getPipelineInputsQuery from '~/ci/common/pipeline_inputs/graphql/queries/pipeline_creation_inputs.query.graphql';
 /** mock data to be replaced with fixtures - https://gitlab.com/gitlab-org/gitlab/-/issues/525243 */
 import {
@@ -31,24 +31,27 @@ describe('PipelineInputsForm', () => {
   let wrapper;
   let pipelineInputsHandler;
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = async ({ props = {}, provide = {} } = {}) => {
     const handlers = [[getPipelineInputsQuery, pipelineInputsHandler]];
     const mockApollo = createMockApollo(handlers);
     wrapper = shallowMountExtended(PipelineInputsForm, {
       propsData: {
-        ...props,
         ...defaultProps,
+        ...props,
       },
       provide: {
         ...defaultProvide,
+        ...provide,
       },
       apolloProvider: mockApollo,
     });
+    await waitForPromises();
   };
 
   const findSkeletonLoader = () => wrapper.findComponent(InputsTableSkeletonLoader);
   const findInputsTable = () => wrapper.findComponent(PipelineInputsTable);
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
+  const findEmptyState = () => wrapper.findByText('There are no inputs for this configuration.');
 
   describe('mounted', () => {
     beforeEach(() => {
@@ -83,13 +86,40 @@ describe('PipelineInputsForm', () => {
       });
 
       it('sends the correct props to the table', () => {
-        const expectedInputs = mockPipelineInputsResponse.data.project.ciPipelineCreationInputs;
+        const expectedInputs = [
+          {
+            name: 'deploy_environment',
+            description: 'Specify deployment environment',
+            default: 'staging',
+            type: 'text',
+            required: false,
+            options: ['staging', 'production'],
+            regex: '^(staging|production)$',
+          },
+          {
+            name: 'api_token',
+            description: 'API token for deployment',
+            default: '',
+            type: 'text',
+            required: true,
+            options: [],
+            regex: null,
+          },
+          {
+            name: 'tags',
+            description: 'Tags for deployment',
+            default: '',
+            type: 'ARRAY',
+            required: false,
+            options: [],
+            regex: null,
+          },
+        ];
         expect(findInputsTable().props('inputs')).toEqual(expectedInputs);
       });
 
       it('updates the count in the crud component', () => {
-        const count = mockPipelineInputsResponse.data.project.ciPipelineCreationInputs.length;
-        expect(findCrudComponent().props('count')).toBe(count);
+        expect(findCrudComponent().props('count')).toBe(3);
       });
     });
 
@@ -104,9 +134,7 @@ describe('PipelineInputsForm', () => {
       });
 
       it('displays the empty state message when there are no inputs', () => {
-        expect(wrapper.findByText('There are no inputs for this configuration.').exists()).toBe(
-          true,
-        );
+        expect(findEmptyState().exists()).toBe(true);
       });
     });
 
@@ -117,12 +145,36 @@ describe('PipelineInputsForm', () => {
 
       it('handles GraphQL error', async () => {
         await createComponent();
-        await waitForPromises();
 
         expect(createAlert).toHaveBeenCalledWith({
           message: 'There was a problem fetching the pipeline inputs.',
         });
       });
+    });
+
+    describe('when projectPath is not provided', () => {
+      beforeEach(async () => {
+        pipelineInputsHandler = jest.fn();
+        await createComponent({ provide: { projectPath: '' } });
+      });
+
+      it('does not execute the query', () => {
+        expect(pipelineInputsHandler).not.toHaveBeenCalled();
+        expect(findEmptyState().exists()).toBe(true);
+      });
+    });
+  });
+
+  describe('savedInputs prop', () => {
+    it('overwrites default values if saved input values are provided', async () => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
+      const savedInputs = [{ name: 'deploy_environment', value: 'saved-value' }];
+      await createComponent({ props: { savedInputs } });
+
+      const updatedInput = findInputsTable()
+        .props('inputs')
+        .find((i) => i.name === 'deploy_environment');
+      expect(updatedInput.default).toBe('saved-value');
     });
   });
 
@@ -130,7 +182,6 @@ describe('PipelineInputsForm', () => {
     it('processes and emits update events from the table component', async () => {
       pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
       await createComponent();
-      await waitForPromises();
 
       const updatedInput = { ...wrapper.vm.inputs[0], value: 'updated-value' };
       findInputsTable().vm.$emit('update', updatedInput);
@@ -145,6 +196,50 @@ describe('PipelineInputsForm', () => {
         value: input.default,
       }));
       expect(wrapper.emitted()['update-inputs'][0][0]).toEqual(expectedEmittedValue);
+    });
+
+    it('converts string values to arrays for ARRAY type inputs', async () => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
+      await createComponent();
+
+      // Get the array input from the current inputs prop of the table
+      const inputs = findInputsTable().props('inputs');
+      const arrayInput = inputs.find((input) => input.type === 'ARRAY');
+
+      const updatedInput = {
+        ...arrayInput,
+        default: '[1,2,3]',
+      };
+
+      findInputsTable().vm.$emit('update', updatedInput);
+
+      // Check that the emitted value contains the converted array
+      const emittedValues = wrapper.emitted()['update-inputs'][0][0];
+      const emittedArrayValue = emittedValues.find((item) => item.name === 'tags').value;
+
+      expect(Array.isArray(emittedArrayValue)).toBe(true);
+      expect(emittedArrayValue).toEqual([1, 2, 3]);
+    });
+
+    it('converts complex object arrays correctly', async () => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
+      await createComponent();
+
+      const inputs = findInputsTable().props('inputs');
+      const arrayInput = inputs.find((input) => input.type === 'ARRAY');
+
+      const updatedInput = {
+        ...arrayInput,
+        default: '[{"key": "value"}, {"another": "object"}]',
+      };
+
+      findInputsTable().vm.$emit('update', updatedInput);
+
+      const emittedValues = wrapper.emitted()['update-inputs'][0][0];
+      const emittedArrayValue = emittedValues.find((item) => item.name === 'tags').value;
+
+      expect(Array.isArray(emittedArrayValue)).toBe(true);
+      expect(emittedArrayValue).toEqual([{ key: 'value' }, { another: 'object' }]);
     });
   });
 });

@@ -27,7 +27,7 @@ const createComponent = ({ provide = {}, props = {} } = {}) => {
       helpLinks: storageTypeHelpPaths,
       isLoading: false,
       sortBy: 'storage',
-      sortableFields: { storage: false },
+      enableSortableFields: false,
       ...props,
     },
   });
@@ -61,18 +61,34 @@ describe('ProjectList', () => {
     it('will allow sorting for fields that have sorting enabled', () => {
       createComponent({
         props: {
-          sortableFields: { storage: true },
+          enableSortableFields: true,
         },
       });
       expect(findTable().props('fields')).toEqual(
-        expect.arrayContaining([expect.objectContaining({ key: 'storage', sortable: true })]),
+        expect.arrayContaining([
+          expect.objectContaining({ key: 'storage', sortable: true }),
+          expect.objectContaining({ key: 'repository', sortable: true }),
+          expect.objectContaining({ key: 'buildArtifacts', sortable: true }),
+          expect.objectContaining({ key: 'lfsObjects', sortable: true }),
+          expect.objectContaining({ key: 'packages', sortable: true }),
+          expect.objectContaining({ key: 'wiki', sortable: true }),
+          expect.objectContaining({ key: 'containerRegistry', sortable: true }),
+        ]),
       );
     });
 
     it('will disable sorting by storage field', () => {
       createComponent();
       expect(findTable().props('fields')).toEqual(
-        expect.arrayContaining([expect.objectContaining({ key: 'storage', sortable: false })]),
+        expect.arrayContaining([
+          expect.objectContaining({ key: 'storage', sortable: false }),
+          expect.objectContaining({ key: 'repository', sortable: false }),
+          expect.objectContaining({ key: 'buildArtifacts', sortable: false }),
+          expect.objectContaining({ key: 'lfsObjects', sortable: false }),
+          expect.objectContaining({ key: 'packages', sortable: false }),
+          expect.objectContaining({ key: 'wiki', sortable: false }),
+          expect.objectContaining({ key: 'containerRegistry', sortable: false }),
+        ]),
       );
     });
   });

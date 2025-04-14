@@ -215,6 +215,8 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
     let(:connection_pool) { instance_double(ActiveRecord::ConnectionAdapters::ConnectionPool) }
     let(:ar_connection) { instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) }
     let(:connection_model) { class_double(ActiveRecord::Base) }
+    let(:collection) { double }
+    let(:user) { double }
 
     before do
       allow_any_instance_of(described_class).to receive(:create_connection_model)
@@ -231,14 +233,18 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
 
       allow(raw_connection).to receive(:server_version).and_return(120000)
       allow(ActiveContext::Databases::Postgresql::QueryResult).to receive(:new)
+      allow(collection).to receive_messages(collection_name: 'test', redact_unauthorized_results!: [[], []])
+
+      allow(ActiveContext::Databases::Postgresql::Processor).to receive(:transform)
+        .and_return('SELECT * FROM pg_stat_activity')
     end
 
     it 'executes query and returns QueryResult' do
       expect(ar_connection).to receive(:execute).with('SELECT * FROM pg_stat_activity')
       expect(ActiveContext::Databases::Postgresql::QueryResult)
-        .to receive(:new).with(query_result)
+        .to receive(:new).with(result: query_result, collection: collection, user: user).and_call_original
 
-      client.search('test query')
+      client.search(collection: collection, query: ActiveContext::Query.filter(project_id: 1), user: user)
     end
   end
 
@@ -320,17 +326,17 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
       let(:collection_name) { 'test_collection' }
       let(:operations) do
         [
-          { collection_name => { delete: 1 } }
+          { collection_name => { delete: { ref_id: 1 } } }
         ]
       end
 
       before do
-        allow(model_class).to receive(:where).with(id: [1]).and_return(model_class)
+        allow(model_class).to receive(:where).with(ref_id: [1]).and_return(model_class)
         allow(model_class).to receive(:delete_all).and_return(1)
       end
 
       it 'processes delete operations with the model' do
-        expect(model_class).to receive(:where).with(id: [1])
+        expect(model_class).to receive(:where).with(ref_id: [1])
         expect(model_class).to receive(:delete_all)
 
         result = client.bulk_process(operations)
@@ -651,15 +657,15 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
 
     context 'with delete operation' do
       let(:operation_type) { :delete }
-      let(:operation_data) { 1 }
+      let(:operation_data) { { ref_id: 1 } }
 
       before do
-        allow(model).to receive(:where).with(id: [operation_data]).and_return(model)
+        allow(model).to receive(:where).with(ref_id: [1]).and_return(model)
         allow(model).to receive(:delete_all).and_return(1)
       end
 
       it 'processes delete operations successfully' do
-        expect(model).to receive(:where).with(id: [operation_data])
+        expect(model).to receive(:where).with(ref_id: [1])
         expect(model).to receive(:delete_all)
 
         result = client.send(:perform_bulk_operation, operation_type, model, collection_name, operations)

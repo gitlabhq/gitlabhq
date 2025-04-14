@@ -7,7 +7,6 @@ feature_categories:
 description: Stores information about group wiki repositories.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31121
 milestone: '13.0'
-gitlab_schema: gitlab_main_cell
-sharding_key:
-  group_id: namespaces
+gitlab_schema: gitlab_main_cell_local
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/524716
 table_size: small

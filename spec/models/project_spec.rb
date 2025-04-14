@@ -30,6 +30,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to belong_to(:project_namespace).class_name('Namespaces::ProjectNamespace').with_foreign_key('project_namespace_id').inverse_of(:project) }
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to belong_to(:pool_repository) }
+    it { is_expected.to belong_to(:deleting_user) }
     it { is_expected.to have_many(:users) }
     it { is_expected.to have_many(:maintainers).through(:project_members).source(:user).conditions(members: { access_level: Gitlab::Access::MAINTAINER }) }
     it { is_expected.to have_many(:owners_and_maintainers).through(:project_members).source(:user).conditions(members: { access_level: Gitlab::Access::MAINTAINER }) }
@@ -138,6 +139,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:releases) }
     it { is_expected.to have_many(:lfs_objects_projects) }
     it { is_expected.to have_many(:project_group_links) }
+    it { is_expected.to have_many(:invited_groups).through(:project_group_links).source(:group) }
     it { is_expected.to have_many(:notification_settings).dependent(:delete_all) }
     it { is_expected.to have_many(:forked_to_members).class_name('ForkNetworkMember') }
     it { is_expected.to have_many(:forks).through(:forked_to_members) }
@@ -361,25 +363,21 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       context 'with project namespaces' do
-        shared_examples 'creates project namespace' do
-          it 'automatically creates a project namespace' do
-            project = build(:project, path: 'hopefully-valid-path1')
-            project.save!
+        it 'automatically creates a project namespace' do
+          project = build(:project, path: 'hopefully-valid-path1')
+          project.save!
 
-            expect(project).to be_persisted
-            expect(project.project_namespace).to be_persisted
-            expect(project.project_namespace).to be_in_sync_with_project(project)
-            expect(project.reload.project_namespace.traversal_ids).to eq([project.namespace.traversal_ids, project.project_namespace.id].flatten.compact)
-          end
+          expect(project).to be_persisted
+          expect(project.project_namespace).to be_persisted
+          expect(project.project_namespace).to be_in_sync_with_project(project)
+          expect(project.reload.project_namespace.traversal_ids).to match_array([project.namespace.traversal_ids, project.project_namespace.id].flatten.compact)
         end
-
-        it_behaves_like 'creates project namespace'
       end
     end
 
     context 'updating a project' do
       let_it_be(:project_namespace) { create(:project_namespace) }
-      let_it_be(:project) { project_namespace.project }
+      let_it_be(:project, reload: true) { project_namespace.project }
 
       context 'when project has an associated project namespace' do
         # when FF is disabled creating a project does not create a project_namespace, so we create one
@@ -396,19 +394,20 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           expect(project.reload.project_namespace).to be_in_sync_with_project(project)
         end
 
-        context 'when same project is being updated in 2 instances' do
-          it 'syncs only changed attributes' do
-            project1 = described_class.last
-            project2 = described_class.last
+        it 'syncs changed attributes' do
+          project.update!(name: "New project name", path: "new_project_path")
 
-            project_name = project1.name
-            project_path = project1.path
+          expect(project.reload.project_namespace).to be_in_sync_with_project(project)
+        end
 
-            project1.update!(name: project_name + "-1")
-            project2.update!(path: project_path + "-1")
+        # Regression test for edge-case introduced by 0a71dc3f33e809198d522d3cf2a28781aeac5809
+        it 'syncs organization_id even when it is the only change' do
+          new_org = create(:organization)
 
-            expect(project.reload.project_namespace).to be_in_sync_with_project(project)
-          end
+          project.parent.update_column(:organization_id, new_org.id)
+          project.update!(organization_id: new_org.id)
+
+          expect(project.reload.project_namespace).to be_in_sync_with_project(project)
         end
       end
     end
@@ -654,6 +653,20 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           expect(index_of_has_many_notes_association).to be < index_of_issuable_included_association
         end
       end
+    end
+
+    describe '#invited_groups.with_developer_access' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:guest_group) { create(:project_group_link, :guest, project: project).group }
+      let_it_be(:planner_group) { create(:project_group_link, :planner, project: project).group }
+      let_it_be(:reporter_group) { create(:project_group_link, :reporter, project: project).group }
+      let_it_be(:maintainer_group) { create(:project_group_link, :maintainer, project: project).group }
+      let_it_be(:developer_group) { create(:project_group_link, project: project).group }
+      let_it_be(:owner_group) { create(:project_group_link, :owner, project: project).group }
+
+      subject { project.invited_groups.with_developer_access }
+
+      it { is_expected.to contain_exactly(developer_group, maintainer_group, owner_group) }
     end
   end
 
@@ -2312,12 +2325,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:project2) { create(:project, star_count: 1) }
     let_it_be(:project3) { create(:project, last_activity_at: 2.minutes.ago) }
 
-    before_all do
-      create(:project_statistics, project: project1, repository_size: 1)
-      create(:project_statistics, project: project2, repository_size: 3)
-      create(:project_statistics, project: project3, repository_size: 2)
-    end
-
     it 'reorders the input relation by start count desc' do
       projects = described_class.sort_by_attribute(:stars_desc)
 
@@ -2348,16 +2355,54 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(projects).to eq([project1, project2, project3].sort_by(&:path).reverse)
     end
 
-    it 'reorders the input relation by storage size asc' do
-      projects = described_class.sort_by_attribute(:storage_size_asc)
+    context 'with project_statistics' do
+      describe '.sort_by_attribute with project_statistics' do
+        def create_project_statistics_with_size(project, size)
+          create(:project_statistics,
+            project: project,
+            repository_size: size,
+            snippets_size: size,
+            build_artifacts_size: size,
+            lfs_objects_size: size,
+            packages_size: size,
+            wiki_size: size,
+            container_registry_size: size).project
+        end
 
-      expect(projects).to eq([project1, project3, project2])
-    end
+        let_it_be(:project4) { create(:project) }
 
-    it 'reorders the input relation by storage size desc' do
-      projects = described_class.sort_by_attribute(:storage_size_desc)
+        before_all do
+          create_project_statistics_with_size(project1, 1)
+          create_project_statistics_with_size(project2, 3)
+          create_project_statistics_with_size(project3, 2)
+          create_project_statistics_with_size(project4, 2)
+        end
 
-      expect(projects).to eq([project2, project3, project1])
+        where(:ascending, :descending) do
+          :storage_size_asc | :storage_size_desc
+          :repository_size_asc | :repository_size_desc
+          :snippets_size_asc | :snippets_size_desc
+          :build_artifacts_size_asc | :build_artifacts_size_desc
+          :lfs_objects_size_asc | :lfs_objects_size_desc
+          :packages_size_asc | :packages_size_desc
+          :wiki_size_asc | :wiki_size_desc
+          :container_registry_size_asc | :container_registry_size_desc
+        end
+
+        with_them do
+          context 'ascending' do
+            it 'sorts by attribute ascending first and id descending second' do
+              expect(described_class.sort_by_attribute(ascending)).to eq([project1, project4, project3, project2])
+            end
+          end
+
+          context 'descending' do
+            it 'sorts by attribute descending first and id descending second' do
+              expect(described_class.sort_by_attribute(descending)).to eq([project2, project4, project3, project1])
+            end
+          end
+        end
+      end
     end
   end
 
@@ -2385,6 +2430,32 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'descending' do
       it { expect(described_class.sorted_by_storage_size_desc).to eq([project_2, project_3, project_1]) }
+    end
+  end
+
+  describe '.not_aimed_for_deletion' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:delayed_deletion_project) { create(:project, marked_for_deletion_at: Date.current) }
+
+    it do
+      expect(described_class.not_aimed_for_deletion).to contain_exactly(project)
+    end
+  end
+
+  describe '.by_marked_for_deletion_on' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:marked_for_deletion_project) { create(:project, marked_for_deletion_at: Date.parse('2024-01-01')) }
+
+    context 'when marked_for_deletion_on is present' do
+      it 'return projects marked for deletion' do
+        expect(described_class.by_marked_for_deletion_on(Date.parse('2024-01-01'))).to contain_exactly(marked_for_deletion_project)
+      end
+    end
+
+    context 'when marked_for_deletion_on is not present' do
+      it 'return projects not marked for deletion' do
+        expect(described_class.by_marked_for_deletion_on(nil)).to contain_exactly(project)
+      end
     end
   end
 
@@ -6410,7 +6481,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it 'executes hooks which were backed off and are no longer backed off' do
       project = create(:project)
       hook = create(:project_hook, project: project, push_events: true)
-      WebHooks::AutoDisabling::FAILURE_THRESHOLD.succ.times { hook.backoff! }
+      WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD.succ.times { hook.backoff! }
 
       expect_any_instance_of(ProjectHook).to receive(:async_execute).once
 
@@ -9458,153 +9529,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '.without_created_and_owned_by_banned_user' do
-    let_it_be(:other_project) { create(:project) }
-
-    subject(:results) { described_class.without_created_and_owned_by_banned_user }
-
-    context 'when project creator is not banned' do
-      let_it_be(:project_of_active_user) { create(:project, creator: create(:user)) }
-
-      it 'includes the project' do
-        expect(results).to match_array([other_project, project_of_active_user])
-      end
-    end
-
-    context 'when project creator is banned' do
-      let_it_be(:banned_user) { create(:user, :banned) }
-      let_it_be(:project_of_banned_user) { create(:project, creator: banned_user) }
-
-      context 'when project creator is also an owner' do
-        let_it_be(:project_auth) do
-          project = project_of_banned_user
-          create(:project_authorization, :owner, user: project.creator, project: project)
-        end
-
-        it 'excludes the project' do
-          expect(results).to match_array([other_project])
-        end
-      end
-
-      context 'when project creator is not an owner' do
-        it 'includes the project' do
-          expect(results).to match_array([other_project, project_of_banned_user])
-        end
-      end
-    end
-  end
-
-  describe '.with_created_and_owned_by_banned_user' do
-    let_it_be(:other_project) { create(:project) }
-
-    subject(:results) { described_class.with_created_and_owned_by_banned_user }
-
-    context 'when project creator is not banned' do
-      let_it_be(:project_of_active_user) { create(:project, creator: create(:user)) }
-
-      it 'does not include the project' do
-        expect(results).to be_empty
-      end
-    end
-
-    context 'when project creator is banned' do
-      let_it_be(:banned_user) { create(:user, :banned) }
-      let_it_be(:project_of_banned_user) { create(:project, creator: banned_user) }
-
-      context 'when project creator is also an owner' do
-        let_it_be(:project_auth) do
-          project = project_of_banned_user
-          create(:project_authorization, :owner, user: project.creator, project: project)
-        end
-
-        it 'includes the banned user project' do
-          expect(results).to match_array([project_of_banned_user])
-        end
-      end
-
-      context 'when project creator is not an owner' do
-        it 'does not include the project' do
-          expect(results).not_to be_present
-        end
-      end
-    end
-  end
-
-  describe '.with_active_owners' do
-    subject(:results) { described_class.with_active_owners }
-
-    context 'when the project owner is active' do
-      let_it_be(:project) { create(:project) }
-
-      it 'includes the project' do
-        expect(results).to match_array([project])
-      end
-    end
-
-    context 'when the project owner is banned' do
-      let_it_be(:project) { create(:project) }
-
-      before_all do
-        project.owners.first.ban!
-      end
-
-      it 'does not include the project' do
-        expect(results).not_to be_present
-      end
-
-      context 'when the project has another active owner' do
-        before do
-          project.add_owner(create(:user))
-        end
-
-        it 'includes the project' do
-          expect(results).to match_array([project])
-        end
-      end
-
-      context 'when the project has an active owner that is not human' do
-        before do
-          project.add_owner(create(:user, :project_bot))
-        end
-
-        it 'does not include the project' do
-          expect(results).not_to be_present
-        end
-      end
-    end
-  end
-
-  describe '#created_and_owned_by_banned_user?' do
-    subject { project.created_and_owned_by_banned_user? }
-
-    context 'when creator is banned' do
-      let_it_be(:creator) { create(:user, :banned) }
-      let_it_be(:project) { create(:project, creator: creator) }
-
-      it { is_expected.to eq false }
-
-      context 'when creator is an owner' do
-        let_it_be(:project_auth) do
-          create(:project_authorization, :owner, user: project.creator, project: project)
-        end
-
-        it { is_expected.to eq true }
-      end
-    end
-
-    context 'when creator is not banned' do
-      let_it_be(:project) { create(:project) }
-
-      it { is_expected.to eq false }
-    end
-
-    context 'when there is no creator' do
-      let_it_be(:project) { build_stubbed(:project, creator: nil) }
-
-      it { is_expected.to eq false }
-    end
-  end
-
   it_behaves_like 'something that has web-hooks' do
     let_it_be_with_reload(:object) { create(:project) }
 
@@ -9773,8 +9697,23 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   context 'with loose foreign key on projects.creator_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
+      let(:lfk_column) { :marked_for_deletion_by_user_id }
       let_it_be(:parent) { create(:user) }
       let_it_be(:model) { create(:project, creator: parent) }
+    end
+
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let(:lfk_column) { :creator_id }
+      let_it_be(:parent) { create(:user) }
+      let_it_be(:model) { create(:project, creator: parent) }
+    end
+  end
+
+  context 'with loose foreign key on projects.marked_for_deletion_by_user_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let(:lfk_column) { :marked_for_deletion_by_user_id }
+      let_it_be(:parent) { create(:user) }
+      let_it_be(:model) { create(:project, deleting_user: parent) }
     end
   end
 
@@ -9923,10 +9862,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   describe '#uploads_sharding_key' do
     it 'returns namespace_id' do
-      namespace = build_stubbed(:namespace)
-      project = build_stubbed(:project, namespace: namespace)
+      project = build_stubbed(:project)
 
-      expect(project.uploads_sharding_key).to eq(namespace_id: namespace.id)
+      expect(project.uploads_sharding_key).to eq(project_id: project.id)
     end
   end
 
@@ -9955,6 +9893,84 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it 'returns false' do
         expect(project.pages_domain_present?('https://unknown.com')).to be(false)
       end
+    end
+  end
+
+  describe '#has_container_registry_protected_tag_rules?' do
+    let_it_be_with_refind(:project) { create(:project) }
+
+    subject { project.has_container_registry_protected_tag_rules?(action: 'delete', access_level: Gitlab::Access::OWNER) }
+
+    it 'returns false when there is no matching tag protection rule' do
+      create(:container_registry_protection_tag_rule,
+        project: project,
+        minimum_access_level_for_push: :admin,
+        minimum_access_level_for_delete: :maintainer
+      )
+
+      expect(subject).to eq(false)
+    end
+
+    it 'returns true when there exists a matching tag protection rule' do
+      create(
+        :container_registry_protection_tag_rule,
+        project: project,
+        minimum_access_level_for_push: :maintainer,
+        minimum_access_level_for_delete: :admin
+      )
+
+      expect(subject).to eq(true)
+    end
+
+    it 'memoizes the call' do
+      allow(project.container_registry_protection_tag_rules).to receive(:for_actions_and_access).and_call_original
+
+      2.times do
+        project.has_container_registry_protected_tag_rules?(action: 'push', access_level: :maintainer)
+      end
+
+      expect(project.container_registry_protection_tag_rules).to have_received(:for_actions_and_access).with(%w[push], :maintainer).once
+    end
+  end
+
+  describe '#job_token_policies_enabled?' do
+    let_it_be(:project) { build_stubbed(:project) }
+
+    subject { project.job_token_policies_enabled? }
+
+    where(:setting_enabled) { [true, false] }
+
+    before do
+      project.clear_memoization(:job_token_policies_enabled?)
+      allow(project).to receive_message_chain(:namespace, :root_ancestor, :namespace_settings,
+        :job_token_policies_enabled?).and_return(setting_enabled)
+    end
+
+    with_them do
+      it { is_expected.to eq(setting_enabled) }
+    end
+  end
+
+  context 'with loose foreign key on projects.pool_repository_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let_it_be(:parent) { create(:pool_repository) }
+      let_it_be(:model) { create(:project, pool_repository: parent) }
+    end
+  end
+
+  describe '#valid_lfs_oids' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:lfs_object) { create(:lfs_object) }
+    let_it_be(:another_lfs_object) { create(:lfs_object) }
+
+    let(:oids) { [lfs_object.oid, another_lfs_object.oid] }
+
+    before do
+      create(:lfs_objects_project, lfs_object: lfs_object, project: project)
+    end
+
+    it 'returns only the OIDs of LFS objects owned by the project' do
+      expect(project.valid_lfs_oids(oids)).to eq([lfs_object.oid])
     end
   end
 end

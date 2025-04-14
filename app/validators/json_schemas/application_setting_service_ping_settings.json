@@ -7,6 +7,10 @@
     "gitlab_environment_toolkit_instance": {
       "type": "boolean",
       "description": "Indicates whether the instance was provisioned with the GitLab Environment Toolkit for Service Ping reporting."
+    },
+    "gitlab_product_usage_data_enabled": {
+      "type": "boolean",
+      "description": "Indicates whether the instance was provisioned with product usage data tracking."
     }
   }
 }

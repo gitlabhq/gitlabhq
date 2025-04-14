@@ -37,7 +37,6 @@ export const mockIssuableShowProps = {
   enableEdit: true,
   showFieldTitle: false,
   statusIcon: 'issues',
-  statusIconClass: 'sm:gl-hidden',
   workspaceType: 'project',
   taskCompletionStatus: {
     completedCount: 0,

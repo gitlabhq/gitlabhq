@@ -11,12 +11,14 @@ module Authn
         "#{Gitlab::Application.config.session_options[:key]}="
       end
 
-      attr_reader :revocable, :source
+      attr_reader :revocable, :source, :session_id
 
       def initialize(plaintext, source)
-        session = find_session(plaintext)
+        @session_id = find_session_id(plaintext)
 
+        session = find_session
         @revocable = Warden::SessionSerializer.new('rack.session' => session).fetch(:user) if session
+
         @source = source
       end
 
@@ -24,17 +26,21 @@ module Authn
         ::API::Entities::User
       end
 
-      def revoke!(_current_user)
+      def revoke!(current_user)
         raise ::Authn::AgnosticTokenIdentifier::NotFoundError, 'Not Found' if revocable.blank?
 
-        raise ::Authn::AgnosticTokenIdentifier::UnsupportedTokenError, 'Revocation not supported for this token type'
+        Users::DestroySessionService.new(current_user: current_user, user: revocable,
+          private_session_id: session_id.private_id).execute
       end
 
       private
 
-      def find_session(plaintext)
+      def find_session_id(plaintext)
         public_session_id = extract_session(plaintext)
-        session_id = Rack::Session::SessionId.new(public_session_id)
+        Rack::Session::SessionId.new(public_session_id)
+      end
+
+      def find_session
         ActiveSession.sessions_from_ids([session_id.private_id]).first
       end
 

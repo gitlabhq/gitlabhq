@@ -1,5 +1,6 @@
-let exclusionsListRegExp = ['^node_modules/.*'];
+const chalk = require('chalk');
 
+let exclusionsListRegExp = ['^node_modules/.*'];
 /**
  * NOTE: Do not use dependency-cruiser to generate exclusions and combine it with `--ignore-known`
  * flag, it'll fail; dependency-cruiser uses `webpack.config.js` to resolve aliases, and aliases
@@ -7,7 +8,20 @@ let exclusionsListRegExp = ['^node_modules/.*'];
  * ignored in a normal run, they'll fail when the job is started with `as-if-foss`, which removes
  * the `ee/` directory and causes the aliases to resolves to CE imports.
  */
+
 if (!process.env.DISABLE_EXCLUSIONS) {
+  const msg = [
+    `To see the full list of circular dependencies, run the command ${chalk.bold.cyan('DISABLE_EXCLUSIONS=1 yarn deps:check:all')}.`,
+    `If you have fixed existing circular dependencies or find false positives, you can add/remove them from the`,
+    `exclusions list in the 'config/dependency-cruiser.js' file.`,
+    '',
+    chalk.italic(
+      'If the above command fails because of memory issues, increase the memory by prepending it with the following',
+    ),
+    chalk.bold.cyan('NODE_OPTIONS="--max-old-space-size=4096"'),
+  ];
+  console.log(msg.join('\n'));
+
   exclusionsListRegExp = exclusionsListRegExp.concat([
     // Existing exclusions from eslint.config.mjs
     // https://gitlab.com/gitlab-org/gitlab/issues/28716

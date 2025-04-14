@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Scalability
-      # This cop checks for `File` params in API
+      # This cop checks for `File` `params` in API
       #
       # @example
       #

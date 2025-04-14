@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe UserPreference, feature_category: :user_profile do
   let_it_be(:user) { create(:user) }
 
+  let(:marketplace_home_url) { 'https://open-vsx.org' }
   let(:user_preference) { create(:user_preference, user: user) }
 
   describe 'validations' do
@@ -80,6 +81,10 @@ RSpec.describe UserPreference, feature_category: :user_profile do
         is_expected
           .to define_enum_for(:extensions_marketplace_opt_in_status).with_values(unset: 0, enabled: 1, disabled: 2)
       end
+    end
+
+    describe 'extensions_marketplace_opt_in_url' do
+      it { is_expected.to validate_length_of(:extensions_marketplace_opt_in_url).is_at_most(512) }
     end
 
     describe 'organization_groups_projects_display' do
@@ -254,41 +259,20 @@ RSpec.describe UserPreference, feature_category: :user_profile do
     end
   end
 
-  describe '#extensions_marketplace_enabled' do
-    where(:opt_in_status, :expected_value) do
+  describe '#extensions_marketplace_opt_in_url' do
+    where(:opt_in_url, :expectation) do
       [
-        ["enabled", true],
-        ["disabled", false],
-        ["unset", false]
+        [nil, 'https://open-vsx.org'],
+        ['https://open-vsx.org', 'https://open-vsx.org'],
+        ['https://example.com', 'https://example.com']
       ]
     end
 
     with_them do
-      it 'returns boolean from extensions_marketplace_opt_in_status' do
-        user_preference.update!(extensions_marketplace_opt_in_status: opt_in_status)
+      it 'reads attribute and defaults when nil' do
+        user_preference.update!(extensions_marketplace_opt_in_url: opt_in_url)
 
-        expect(user_preference.extensions_marketplace_enabled).to be expected_value
-      end
-    end
-  end
-
-  describe '#extensions_marketplace_enabled=' do
-    where(:value, :expected_opt_in_status) do
-      [
-        [true, "enabled"],
-        [false, "disabled"],
-        [0, "disabled"],
-        [1, "enabled"]
-      ]
-    end
-
-    with_them do
-      it 'updates extensions_marketplace_opt_in_status' do
-        user_preference.update!(extensions_marketplace_opt_in_status: 'unset')
-
-        user_preference.extensions_marketplace_enabled = value
-
-        expect(user_preference.extensions_marketplace_opt_in_status).to be expected_opt_in_status
+        expect(user_preference.extensions_marketplace_opt_in_url).to eq expectation
       end
     end
   end

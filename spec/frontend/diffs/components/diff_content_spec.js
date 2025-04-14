@@ -32,21 +32,14 @@ describe('DiffContent', () => {
   let wrapper;
   let pinia;
 
-  const saveDiffDiscussionMock = jest.fn();
-  const closeDiffFileCommentFormMock = jest.fn();
-
   const noteableTypeGetterMock = jest.fn();
   const getUserDataGetterMock = jest.fn();
-
-  const isInlineViewGetterMock = jest.fn();
-  const isParallelViewGetterMock = jest.fn();
-  const getCommentFormForDiffFileGetterMock = jest.fn();
 
   const defaultProps = {
     diffFile: getDiffFileMock(),
   };
 
-  const createComponent = ({ props, state, provide } = {}) => {
+  const createComponent = ({ props, provide } = {}) => {
     const fakeStore = new Vuex.Store({
       getters: {
         getNoteableData() {
@@ -58,26 +51,6 @@ describe('DiffContent', () => {
         },
         noteableType: noteableTypeGetterMock,
         getUserData: getUserDataGetterMock,
-      },
-      modules: {
-        diffs: {
-          namespaced: true,
-          state: {
-            projectPath: 'project/path',
-            endpoint: 'endpoint',
-            ...state,
-          },
-          getters: {
-            isInlineView: isInlineViewGetterMock,
-            isParallelView: isParallelViewGetterMock,
-            getCommentFormForDiffFile: getCommentFormForDiffFileGetterMock,
-            diffLines: () => () => [...getDiffFileMock().parallel_diff_lines],
-          },
-          actions: {
-            saveDiffDiscussion: saveDiffDiscussionMock,
-            closeDiffFileCommentForm: closeDiffFileCommentFormMock,
-          },
-        },
       },
     });
 
@@ -111,15 +84,14 @@ describe('DiffContent', () => {
         })),
       ],
     });
-    useLegacyDiffs();
+    useLegacyDiffs().projectPath = 'project/path';
+    useLegacyDiffs().endpoint = 'endpoint';
+    useLegacyDiffs().diffFiles = [getDiffFileMock()];
+    useLegacyDiffs().saveDiffDiscussion.mockResolvedValue();
     useNotes();
   });
 
   describe('with text based files', () => {
-    afterEach(() => {
-      [isParallelViewGetterMock, isInlineViewGetterMock].forEach((m) => m.mockRestore());
-    });
-
     const textDiffFile = { ...defaultProps.diffFile, viewer: { name: diffViewerModes.text } };
 
     it('should render diff view if `unifiedDiffComponents` are true', () => {
@@ -147,10 +119,6 @@ describe('DiffContent', () => {
   });
 
   describe('with whitespace only change', () => {
-    afterEach(() => {
-      [isParallelViewGetterMock, isInlineViewGetterMock].forEach((m) => m.mockRestore());
-    });
-
     const textDiffFile = {
       ...defaultProps.diffFile,
       viewer: { name: diffViewerModes.text, whitespace_only: true },
@@ -204,7 +172,6 @@ describe('DiffContent', () => {
     const imageDiffFile = { ...defaultProps.diffFile, viewer: { name: diffViewerModes.image } };
 
     it('renders diff file discussions', () => {
-      getCommentFormForDiffFileGetterMock.mockReturnValue(() => true);
       createComponent({
         props: {
           diffFile: {
@@ -221,7 +188,6 @@ describe('DiffContent', () => {
 
     it('renders diff file drafts', () => {
       const autosaveKey = 'autosave';
-      getCommentFormForDiffFileGetterMock.mockReturnValue(() => true);
       createComponent({
         props: {
           diffFile: {
@@ -240,13 +206,13 @@ describe('DiffContent', () => {
 
     it('emits saveDiffDiscussion when note-form emits `handleFormUpdate`', () => {
       const noteStub = {};
-      getCommentFormForDiffFileGetterMock.mockReturnValue(() => true);
       const currentDiffFile = {
         ...imageDiffFile,
         discussions: [
           { name: 'discussion-stub', position: { position_type: IMAGE_DIFF_POSITION_TYPE } },
         ],
       };
+      useLegacyDiffs().commentForms = [{ fileHash: currentDiffFile.file_hash }];
       createComponent({
         props: {
           diffFile: currentDiffFile,
@@ -254,7 +220,7 @@ describe('DiffContent', () => {
       });
 
       wrapper.findComponent(NoteForm).vm.$emit('handleFormUpdate', noteStub);
-      expect(saveDiffDiscussionMock).toHaveBeenCalledWith(expect.any(Object), {
+      expect(useLegacyDiffs().saveDiffDiscussion).toHaveBeenCalledWith({
         note: noteStub,
         formData: {
           noteableData: expect.any(Object),
@@ -280,7 +246,8 @@ describe('DiffContent', () => {
         ${'without server error'} | ${null}                          | ${SOMETHING_WENT_WRONG}
       `('$scenario', ({ serverError, message }) => {
         beforeEach(async () => {
-          saveDiffDiscussionMock.mockRejectedValue({ response: serverError });
+          useLegacyDiffs().saveDiffDiscussion.mockRejectedValue({ response: serverError });
+          useLegacyDiffs().commentForms = [{ fileHash: imageDiffFile.file_hash }];
 
           createComponent({
             props: {

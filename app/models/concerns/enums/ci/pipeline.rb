@@ -18,7 +18,8 @@ module Enums
           project_deleted: 25,
           filtered_by_rules: 26,
           filtered_by_workflow_rules: 27,
-          composite_identity_forbidden: 28
+          composite_identity_forbidden: 28,
+          pipeline_ref_creation_failure: 29
         }
       end
 

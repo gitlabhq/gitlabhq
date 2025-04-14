@@ -26,6 +26,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
   describe '#execute' do
     let(:admin) { create(:admin) }
 
+    let_it_be(:guest) { create(:user) }
     let_it_be(:maintainer) { create(:user) }
     let_it_be(:developer) { create(:user) }
     let_it_be(:owner) { create(:user) }
@@ -34,19 +35,20 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
       using RSpec::Parameterized::TableSyntax
 
       where(:current_user_role, :project_minimum_role, :from_value, :to_value, :expected_value, :expected_role, :status) do
-        :owner      | :developer  | true  | false | true  | :developer  | :success
-        :owner      | :maintainer | true  | false | true  | :developer  | :success
-        :owner      | :developer  | false | true  | true  | :developer  | :success
+        :owner      | :developer  | true  | false | false | :developer  | :success
+        :owner      | :maintainer | true  | false | false | :developer  | :success
+        :owner      | :developer  | false | true  | true  | :maintainer | :success
         :owner      | :maintainer | false | true  | true  | :maintainer | :success
-        :maintainer | :developer  | true  | false | true  | :developer  | :success
-        :maintainer | :maintainer | true  | false | true  | :developer  | :success
+        :maintainer | :developer  | true  | false | false | :developer  | :success
+        :maintainer | :maintainer | true  | false | false | :developer  | :success
         :maintainer | :owner      | true  | false | true  | :owner      | :api_error
         :maintainer | :owner      | false | true  | true  | :owner      | :success
         :maintainer | :owner      | true  | true  | true  | :owner      | :success
         :developer  | :owner      | true  | false | true  | :owner      | :api_error
-        :developer  | :developer  | true  | false | true  | :developer  | :api_error
+        :developer  | :developer  | true  | false | false | :developer  | :success
         :developer  | :maintainer | true  | false | true  | :maintainer | :api_error
         :developer  | :maintainer | false | true  | false | :developer  | :api_error
+        :guest      | :developer  | false | true  | false | :developer  | :api_error
       end
 
       with_them do
@@ -56,6 +58,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
           project.add_maintainer(maintainer)
           project.add_developer(developer)
           project.add_owner(owner)
+          project.add_guest(guest)
 
           ci_cd_settings = project.ci_cd_settings
           ci_cd_settings[:pipeline_variables_minimum_override_role] = project_minimum_role
@@ -108,6 +111,48 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         it 'allows/disallows to change ci_pipeline_variables_minimum_override_role' do
           result = update_project(project, current_user, ci_pipeline_variables_minimum_override_role: to_value.to_s)
           expect(result[:status]).to eq(status)
+        end
+      end
+
+      context 'when changing both restrict_user_defined_variables and ci_pipeline_variables_minimum_override_role' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:current_user_role, :from_restrict, :to_restrict, :from_role, :to_role, :expected_restrict, :expected_role, :status) do
+          :owner      | true  | false | :owner      | :developer  | false | :developer  | :success
+          :owner      | true  | false | :owner      | :maintainer | false | :developer  | :success
+          :owner      | false | true  | :developer  | :maintainer | true  | :maintainer | :success
+          :owner      | false | true  | :maintainer | :developer  | false | :developer  | :success
+          :maintainer | true  | false | :owner      | :developer  | true  | :owner      | :api_error
+          :maintainer | false | true  | :developer  | :maintainer | true  | :maintainer | :success
+          :maintainer | false | true  | :maintainer | :developer  | false | :developer  | :success
+          :developer  | true  | false | :maintainer | :owner      | true  | :maintainer | :api_error
+          :developer  | false | true  | :owner      | :maintainer | false | :developer  | :api_error
+        end
+
+        with_them do
+          let(:current_user) { public_send(current_user_role) }
+
+          before do
+            project.add_maintainer(maintainer)
+            project.add_developer(developer)
+            project.add_owner(owner)
+
+            ci_cd_settings = project.ci_cd_settings
+            ci_cd_settings[:pipeline_variables_minimum_override_role] = from_role
+            ci_cd_settings[:restrict_user_defined_variables] = from_restrict
+            ci_cd_settings.save!
+          end
+
+          it 'allows/disallows changes to both settings' do
+            result = update_project(project, current_user,
+              restrict_user_defined_variables: to_restrict,
+              ci_pipeline_variables_minimum_override_role: to_role.to_s)
+            expect(result[:status]).to eq(status)
+
+            project.reload
+            expect(project.restrict_user_defined_variables).to eq(expected_restrict)
+            expect(project.ci_pipeline_variables_minimum_override_role).to eq(expected_role.to_s)
+          end
         end
       end
     end

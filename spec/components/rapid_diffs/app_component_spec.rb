@@ -9,7 +9,8 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
   let(:show_whitespace) { true }
   let(:diff_view) { 'inline' }
   let(:update_user_endpoint) { '/update_user' }
-  let(:metadata_endpoint) { '/metadata' }
+  let(:diffs_stats_endpoint) { '/diffs_stats' }
+  let(:diff_files_endpoint) { '/diff_files_metadata' }
 
   it "renders diffs slice" do
     render_component
@@ -21,7 +22,8 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     app = page.find('[data-rapid-diffs]')
     expect(app).not_to be_nil
     expect(app['data-reload-stream-url']).to eq(reload_stream_url)
-    expect(app['data-metadata-endpoint']).to eq(metadata_endpoint)
+    expect(app['data-diffs-stats-endpoint']).to eq(diffs_stats_endpoint)
+    expect(app['data-diff-files-endpoint']).to eq(diff_files_endpoint)
   end
 
   it "renders view settings" do
@@ -31,6 +33,12 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     expect(settings['data-show-whitespace']).to eq('true')
     expect(settings['data-diff-view-type']).to eq(diff_view)
     expect(settings['data-update-user-endpoint']).to eq(update_user_endpoint)
+  end
+
+  it "renders file browser toggle" do
+    render_component
+    container = page.find("[data-file-browser-toggle]")
+    expect(container).not_to be_nil
   end
 
   it "renders sidebar" do
@@ -44,6 +52,19 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     render_component
     container = page.find("[data-file-browser]")
     expect(container[:style]).to include("width: 250px")
+  end
+
+  it "ignores invalid sidebar width" do
+    allow(vc_test_controller).to receive(:cookies).and_return({ mr_tree_list_width: 'foobar' })
+    render_component
+    container = page.find("[data-file-browser]")
+    expect(container[:style]).to be_empty
+  end
+
+  it "hides sidebar" do
+    allow(vc_test_controller).to receive(:cookies).and_return({ file_browser_visible: 'false' })
+    render_component
+    expect(page).to have_css('[data-file-browser]', visible: :hidden)
   end
 
   it "renders stream container" do
@@ -65,11 +86,27 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
   it 'preloads' do
     instance = create_instance
     render_inline(instance)
-    expect(instance.helpers.page_startup_api_calls).to include(metadata_endpoint)
+    expect(instance.helpers.page_startup_api_calls).to include(diffs_stats_endpoint)
+    expect(instance.helpers.page_startup_api_calls).to include(diff_files_endpoint)
     expect(vc_test_controller.view_context.content_for?(:startup_js)).not_to be_nil
   end
 
-  def create_instance
+  context "when there are no diffs" do
+    let(:diffs_slice) { [] }
+
+    it "renders empty state component" do
+      render_component
+      expect(page).to have_text("There are no changes")
+    end
+
+    it "does not render empty state when lazy is true" do
+      instance = create_instance(lazy: true)
+      render_inline(instance)
+      expect(page).not_to have_text("There are no changes")
+    end
+  end
+
+  def create_instance(lazy: false)
     described_class.new(
       diffs_slice:,
       stream_url:,
@@ -77,7 +114,9 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
       show_whitespace:,
       diff_view:,
       update_user_endpoint:,
-      metadata_endpoint:
+      diffs_stats_endpoint:,
+      diff_files_endpoint:,
+      lazy:
     )
   end
 

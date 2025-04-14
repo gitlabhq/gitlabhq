@@ -209,8 +209,11 @@ dast:
 ### Site profile validation
 
 Site profile validation reduces the risk of running an active scan against the wrong website. A site
-must be validated before an active scan can run against it. Each of the site validation methods are
-equivalent in functionality, so use whichever is most suitable:
+must be validated before an active scan can run against it. Site profile validation is not a security feature.
+If necessary, you can run an active DAST scan without validation by using a
+[pipeline scan](browser/configuration/enabling_the_analyzer.md).
+
+Each of the site validation methods are equivalent in functionality, so use whichever is most suitable:
 
 - **Text file validation**: Requires a text file be uploaded to the target site. The text file is
   allocated a name and content that is unique to the project. The validation process checks the

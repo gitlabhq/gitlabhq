@@ -5,7 +5,6 @@ import VueApollo from 'vue-apollo';
 import setEnvironmentToStopMutation from '~/environments/graphql/mutations/set_environment_to_stop.mutation.graphql';
 import isEnvironmentStoppingQuery from '~/environments/graphql/queries/is_environment_stopping.query.graphql';
 import StopComponent from '~/environments/components/environment_stop.vue';
-import eventHub from '~/environments/event_hub';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { resolvedEnvironment } from './graphql/mock_data';
@@ -36,18 +35,6 @@ describe('Stop Component', () => {
     });
   });
 
-  describe('eventHub', () => {
-    beforeEach(() => {
-      createWrapper();
-    });
-
-    it('emits requestStopEnvironment in the event hub when button is clicked', () => {
-      jest.spyOn(eventHub, '$emit');
-      findButton().vm.$emit('click');
-      expect(eventHub.$emit).toHaveBeenCalledWith('requestStopEnvironment', wrapper.vm.environment);
-    });
-  });
-
   describe('graphql', () => {
     Vue.use(VueApollo);
     let mockApollo;
@@ -58,10 +45,7 @@ describe('Stop Component', () => {
     };
 
     const createWrapperWithApollo = () => {
-      createWrapper(
-        { graphql: true, environment: resolvedEnvironment },
-        { apolloProvider: mockApollo },
-      );
+      createWrapper({ environment: resolvedEnvironment }, { apolloProvider: mockApollo });
     };
 
     it('queries for environment stopping state', () => {

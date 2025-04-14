@@ -6,7 +6,7 @@ import { sprintf, s__ } from '~/locale';
 import DevopsScoreCallout from './devops_score_callout.vue';
 
 const defaultHeaderAttrs = {
-  thClass: '!gl-bg-white',
+  thClass: '!gl-bg-default',
   // eslint-disable-next-line max-params
   thAttr: (value, key, item, type) => (type === 'head' ? { 'data-testid': 'header' } : {}),
 };
@@ -72,7 +72,7 @@ export default {
     <devops-score-callout />
     <gl-empty-state
       v-if="isEmpty"
-      :title="__('Data is still calculating...')"
+      :title="__('Data is still calculating…')"
       :svg-path="noDataImagePath"
     >
       <template #description>

@@ -12,7 +12,7 @@ title: Project forks API
 
 {{< /details >}}
 
-You can manage [project forks](../user/project/repository/forking_workflow.md) by using the REST API.
+Use this API to manage forks of GitLab projects. For more information, see [forks](../user/project/repository/forking_workflow.md).
 
 ## Fork a project
 

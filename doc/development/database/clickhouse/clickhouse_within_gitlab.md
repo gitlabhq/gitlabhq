@@ -64,6 +64,12 @@ ClickHouse::Client.select('SELECT 1', :main)
 
 ## Database schema and migrations
 
+To generate a ClickHouse database migration, execute:
+
+``` shell
+bundle exec rails generate gitlab:click_house:migration MIGRATION_CLASS_NAME
+```
+
 To run database migrations, execute:
 
 ```shell

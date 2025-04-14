@@ -797,7 +797,7 @@ RSpec.shared_examples 'recipe file download endpoint' do
   it_behaves_like 'an internal project with packages'
   it_behaves_like 'a private project with packages'
   it_behaves_like 'handling empty values for username and channel'
-  it_behaves_like 'package not found download'
+  it_behaves_like 'package not found'
 end
 
 RSpec.shared_examples 'package file download endpoint' do
@@ -806,7 +806,7 @@ RSpec.shared_examples 'package file download endpoint' do
   it_behaves_like 'an internal project with packages'
   it_behaves_like 'a private project with packages'
   it_behaves_like 'handling empty values for username and channel'
-  it_behaves_like 'package not found download'
+  it_behaves_like 'package not found'
 
   context 'tracking the conan_package.tgz download' do
     let(:package_file) { package.package_files.find_by(file_name: ::Packages::Conan::FileMetadatum::PACKAGE_BINARY) }
@@ -906,7 +906,7 @@ RSpec.shared_examples 'protected package main example' do
   end
 end
 
-RSpec.shared_examples 'workhorse recipe file upload endpoint' do |recipe_revision: false|
+RSpec.shared_examples 'workhorse recipe file upload endpoint' do |revision: false|
   let(:file_name) { 'conanfile.py' }
   let(:params) { { file: temp_file(file_name) } }
 
@@ -931,10 +931,10 @@ RSpec.shared_examples 'workhorse recipe file upload endpoint' do |recipe_revisio
   it_behaves_like 'handling validation error for package'
   it_behaves_like 'protected package main example'
 
-  it { expect { request }.to change { Packages::Conan::RecipeRevision.count }.by(1) } if recipe_revision
+  it { expect { request }.to change { Packages::Conan::RecipeRevision.count }.by(1) } if revision
 end
 
-RSpec.shared_examples 'workhorse package file upload endpoint' do
+RSpec.shared_examples 'workhorse package file upload endpoint' do |revision: false|
   let(:file_name) { 'conaninfo.txt' }
   let(:params) { { file: temp_file(file_name) } }
 
@@ -957,6 +957,16 @@ RSpec.shared_examples 'workhorse package file upload endpoint' do
   it_behaves_like 'handling empty values for username and channel'
   it_behaves_like 'handling validation error for package'
   it_behaves_like 'protected package main example'
+
+  if revision
+    it 'creates a recipe and package revision' do
+      expect { request }
+        .to change { Packages::Conan::RecipeRevision.count }.by(1)
+        .and change { Packages::Conan::PackageRevision.count }.by(1)
+    end
+  end
+
+  it { expect { request }.to change { Packages::Conan::PackageReference.count }.by(1) }
 
   context 'tracking the conan_package.tgz upload' do
     let(:file_name) { ::Packages::Conan::FileMetadatum::PACKAGE_BINARY }
@@ -1028,6 +1038,12 @@ RSpec.shared_examples 'uploads a package file' do
         package_file = project.packages.last.package_files.reload.last
         expect(package_file.file_name).to eq(params[:file].original_filename)
         expect(package_file.conan_file_metadatum.recipe_revision_value).to eq(recipe_revision)
+        expect(package_file.conan_file_metadatum.package_reference_value).to eq(
+          package_file.conan_file_metadatum.package_file? ? conan_package_reference : nil
+        )
+        expect(package_file.conan_file_metadatum.package_revision_value).to eq(
+          package_file.conan_file_metadatum.package_file? ? package_revision : nil
+        )
       end
 
       context 'with existing package' do
@@ -1209,7 +1225,7 @@ RSpec.shared_examples 'accept get request on private project with access to pack
   it_behaves_like 'returning response status', :ok
 end
 
-RSpec.shared_examples 'package not found download' do
+RSpec.shared_examples 'package not found' do
   context 'when package does not exist' do
     let(:recipe_path) { "missing/0.1.0/#{project.full_path.tr('/', '+')}/stable" }
 

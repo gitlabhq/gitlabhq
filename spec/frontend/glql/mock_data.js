@@ -6,6 +6,11 @@ export const MOCK_ISSUE = {
   reference: '#1',
 };
 
+export const MOCK_WORK_ITEM = {
+  ...MOCK_ISSUE,
+  __typename: 'WorkItem',
+};
+
 export const MOCK_EPIC = {
   __typename: 'Epic',
   webUrl: 'https://gitlab.com/groups/gitlab-org/-/epics/1',

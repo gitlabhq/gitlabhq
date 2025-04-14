@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Issuable::Clone::AttributesRewriter do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
+  let_it_be(:parent_group) { create(:group) }
+  let_it_be(:group) { create(:group, parent: parent_group) }
   let_it_be(:project1) { create(:project, :public, group: group) }
   let_it_be(:project2) { create(:project, :public, group: group) }
   let_it_be(:original_issue) { create(:issue, project: project1) }
@@ -58,6 +59,13 @@ RSpec.describe Gitlab::Issuable::Clone::AttributesRewriter do
 
       original_issue.update!(milestone: milestone)
 
+      expect(new_attributes[:milestone_id]).to eq(milestone.id)
+    end
+
+    it 'copies the milestone when old issue milestone is a group milestone on ancestor group' do
+      milestone = create(:milestone, title: 'parent group milestone', group: parent_group)
+
+      original_issue.update!(milestone: milestone)
       expect(new_attributes[:milestone_id]).to eq(milestone.id)
     end
 

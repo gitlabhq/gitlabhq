@@ -177,6 +177,7 @@ describe('ProjectsListItem', () => {
     expect(wrapper.findByTestId('stars-btn').props()).toEqual({
       href: `${project.webUrl}/-/starrers`,
       tooltipText: 'Stars',
+      a11yText: `${project.avatarLabel} has ${project.starCount} stars`,
       iconName: 'star-o',
       stat: project.starCount.toString(),
     });
@@ -234,6 +235,7 @@ describe('ProjectsListItem', () => {
       expect(findMergeRequestsStat().props()).toEqual({
         href: `${project.webUrl}/-/merge_requests`,
         tooltipText: 'Merge requests',
+        a11yText: `${project.avatarLabel} has 5 open merge requests`,
         iconName: 'merge-request',
         stat: '5',
       });
@@ -262,6 +264,7 @@ describe('ProjectsListItem', () => {
       expect(findIssuesStat().props()).toEqual({
         href: `${project.webUrl}/-/issues`,
         tooltipText: 'Issues',
+        a11yText: `${project.avatarLabel} has ${project.openIssuesCount} open issues`,
         iconName: 'issues',
         stat: project.openIssuesCount.toString(),
       });
@@ -289,6 +292,7 @@ describe('ProjectsListItem', () => {
 
       expect(findForksStat().props()).toEqual({
         href: `${project.webUrl}/-/forks`,
+        a11yText: `${project.avatarLabel} has ${project.forksCount} forks`,
         tooltipText: 'Forks',
         iconName: 'fork',
         stat: project.forksCount.toString(),

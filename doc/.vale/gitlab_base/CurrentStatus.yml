@@ -1,9 +1,7 @@
 ---
-# Warning: gitlab_base.CurrentStatus
-#
-# Checks for words that indicate a product or feature may change in the future.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.CurrentStatus
+description: |
+  Checks for words that indicate a product or feature may change in the future.
 extends: existence
 message: "Remove '%s'. The documentation reflects the current state of the product."
 vocab: false

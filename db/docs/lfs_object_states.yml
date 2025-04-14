@@ -7,6 +7,6 @@ feature_categories:
 description: Geo verification states for LFS objects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63981
 milestone: '14.6'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell_local
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/490481
 table_size: small

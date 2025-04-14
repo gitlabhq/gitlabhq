@@ -145,7 +145,7 @@ describe('Merge requests list app', () => {
     expect(findIssuableList().props()).toMatchObject({
       namespace: 'gitlab-org/gitlab',
       recentSearchesStorageKey: 'merge_requests',
-      sortOptions: getSortOptions({ hasManualSort: false }),
+      sortOptions: getSortOptions({ hasManualSort: false, hasDueDate: false }),
       initialSortBy: 'CREATED_DESC',
       issuableSymbol: '!',
       issuables: getQueryResponse.data.namespace.mergeRequests.nodes,

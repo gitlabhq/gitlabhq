@@ -62,7 +62,7 @@ module WorkItems
       # exclude `description` param so that it is not passed into common params after transform_quick_action_params
       parsed_params = work_item.transform_quick_action_params(description_widget_params.except(:description))
 
-      widget_params.merge!(parsed_params[:widgets])
+      widget_params.deep_merge!(parsed_params[:widgets])
       params.merge!(parsed_params[:common])
     end
   end

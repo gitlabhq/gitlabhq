@@ -6,6 +6,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PipelinesDashboardClickhouse from '~/projects/pipelines/charts/components/pipelines_dashboard_clickhouse.vue';
+import BranchCollapsibleListbox from '~/projects/pipelines/charts/components/branch_collapsible_listbox.vue';
 import StatisticsList from '~/projects/pipelines/charts/components/statistics_list.vue';
 import PipelineDurationChart from '~/projects/pipelines/charts/components/pipeline_duration_chart.vue';
 import PipelineStatusChart from '~/projects/pipelines/charts/components/pipeline_status_chart.vue';
@@ -18,6 +19,8 @@ Vue.use(VueApollo);
 jest.mock('~/alert');
 
 const projectPath = 'gitlab-org/gitlab';
+const defaultBranch = 'main';
+const projectBranchCount = 99;
 
 describe('PipelinesDashboardClickhouse', () => {
   useFakeDate('2022-02-15T08:30'); // a date with a time
@@ -25,7 +28,9 @@ describe('PipelinesDashboardClickhouse', () => {
   let wrapper;
   let getPipelineAnalyticsHandler;
 
-  const findGlCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findCollapsibleListbox = (id) =>
+    wrapper.findAllComponents(GlCollapsibleListbox).wrappers.find((w) => w.attributes('id') === id);
+  const findBranchCollapsibleListbox = () => wrapper.findComponent(BranchCollapsibleListbox);
   const findStatisticsList = () => wrapper.findComponent(StatisticsList);
   const findPipelineDurationChart = () => wrapper.findComponent(PipelineDurationChart);
   const findPipelineStatusChart = () => wrapper.findComponent(PipelineStatusChart);
@@ -34,7 +39,9 @@ describe('PipelinesDashboardClickhouse', () => {
   const createComponent = ({ mountFn = shallowMount } = {}) => {
     wrapper = mountFn(PipelinesDashboardClickhouse, {
       provide: {
+        defaultBranch,
         projectPath,
+        projectBranchCount,
       },
       apolloProvider: createMockApollo([[getPipelineAnalyticsQuery, getPipelineAnalyticsHandler]]),
     });
@@ -56,6 +63,104 @@ describe('PipelinesDashboardClickhouse', () => {
     });
   });
 
+  describe('source', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('shows options', () => {
+      const sources = findCollapsibleListbox('pipeline-source')
+        .props('items')
+        .map(({ text }) => text);
+
+      expect(sources).toEqual([
+        'Any source',
+        'Push',
+        'Schedule',
+        'Merge Request Event',
+        'Web',
+        'Trigger',
+        'API',
+        'External',
+        'Pipeline',
+        'Chat',
+        'Web IDE',
+        'External Pull Request Event',
+        'Parent Pipeline',
+        'On-Demand DAST Scan',
+        'On-Demand DAST Validation',
+        'Security Orchestration Policy',
+        'Container Registry Push',
+        'Duo Workflow',
+        'Pipeline Execution Policy Schedule',
+        'Unknown',
+      ]);
+    });
+
+    it('is "Any" by default', async () => {
+      expect(findCollapsibleListbox('pipeline-source').props('selected')).toBe('ANY');
+
+      await waitForPromises();
+
+      expect(getPipelineAnalyticsHandler).toHaveBeenCalledTimes(1);
+      expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith({
+        source: null,
+        fullPath: projectPath,
+        branch: defaultBranch,
+        fromTime: new Date('2022-02-08'),
+        toTime: new Date('2022-02-15'),
+      });
+    });
+
+    it('is set when an option is selected', async () => {
+      findCollapsibleListbox('pipeline-source').vm.$emit('select', 'PUSH');
+
+      await waitForPromises();
+
+      expect(getPipelineAnalyticsHandler).toHaveBeenCalledTimes(2);
+      expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith({
+        source: 'PUSH',
+        fullPath: projectPath,
+        branch: defaultBranch,
+        fromTime: new Date('2022-02-08'),
+        toTime: new Date('2022-02-15'),
+      });
+    });
+  });
+
+  describe('branch', () => {
+    beforeEach(async () => {
+      createComponent();
+
+      await waitForPromises();
+    });
+
+    it('shows listbox with default branch as default value', () => {
+      expect(findBranchCollapsibleListbox().props()).toMatchObject({
+        block: true,
+        selected: 'main',
+        defaultBranch: 'main',
+        projectPath,
+        projectBranchCount,
+      });
+    });
+
+    it('is set when an option is selected', async () => {
+      findBranchCollapsibleListbox().vm.$emit('select', 'feature-branch');
+
+      await waitForPromises();
+
+      expect(getPipelineAnalyticsHandler).toHaveBeenCalledTimes(2);
+      expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith({
+        fromTime: new Date('2022-02-08'),
+        toTime: new Date('2022-02-15'),
+        fullPath: projectPath,
+        branch: 'feature-branch',
+        source: null,
+      });
+    });
+  });
+
   describe('date range', () => {
     beforeEach(async () => {
       createComponent();
@@ -63,26 +168,45 @@ describe('PipelinesDashboardClickhouse', () => {
       await waitForPromises();
     });
 
+    it('shows listbox', () => {
+      expect(findCollapsibleListbox('date-range').props()).toMatchObject({
+        block: true,
+        selected: 7,
+      });
+    });
+
+    it('shows options', () => {
+      const ranges = findCollapsibleListbox('date-range')
+        .props('items')
+        .map(({ text }) => text);
+
+      expect(ranges).toEqual(['Last week', 'Last 30 days', 'Last 90 days', 'Last 180 days']);
+    });
+
     it('is "Last 7 days" by default', () => {
-      expect(findGlCollapsibleListbox().props('selected')).toBe(7);
+      expect(findCollapsibleListbox('date-range').props('selected')).toBe(7);
       expect(getPipelineAnalyticsHandler).toHaveBeenCalledTimes(1);
       expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith({
-        fullPath: projectPath,
         fromTime: new Date('2022-02-08'),
         toTime: new Date('2022-02-15'),
+        fullPath: projectPath,
+        branch: defaultBranch,
+        source: null,
       });
     });
 
     it('is set when an option is selected', async () => {
-      findGlCollapsibleListbox().vm.$emit('select', 90);
+      findCollapsibleListbox('date-range').vm.$emit('select', 90);
 
       await waitForPromises();
 
       expect(getPipelineAnalyticsHandler).toHaveBeenCalledTimes(2);
       expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith({
-        fullPath: projectPath,
         fromTime: new Date('2021-11-17'),
         toTime: new Date('2022-02-15'),
+        fullPath: projectPath,
+        branch: defaultBranch,
+        source: null,
       });
     });
   });

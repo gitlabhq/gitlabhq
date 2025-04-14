@@ -1,0 +1,21 @@
+---
+key_path: counts.count_total_e2e_tests_selected_for_execution_gitlab_pipeline
+description: Count of pipelines where specific e2e tests were selected
+product_group: development_analytics
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184867
+time_frame:
+- 28d
+- 7d
+- all
+data_source: internal_events
+data_category: optional
+tiers:
+- free
+- premium
+- ultimate
+events:
+- name: e2e_tests_selected_for_execution_gitlab_pipeline

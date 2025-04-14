@@ -137,6 +137,15 @@ export default {
       },
     },
   },
+  mounted() {
+    if (this.persistCollapsedState) {
+      if (localStorage.getItem(this.getLocalStorageKeyName()) === 'true') {
+        this.$emit('collapsed');
+      } else {
+        this.$emit('expanded');
+      }
+    }
+  },
   methods: {
     toggleCollapse() {
       this.isCollapsed = !this.isCollapsed;
@@ -159,13 +168,6 @@ export default {
     hideForm() {
       this.isFormVisible = false;
       this.$emit('hideForm');
-    },
-    toggleForm() {
-      if (this.isFormVisible) {
-        this.hideForm();
-      } else {
-        this.showForm();
-      }
     },
     getLocalStorageKeyName() {
       return `crud-collapse-${this.anchorId}`;

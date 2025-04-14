@@ -63,24 +63,24 @@ describe('TodoItemBody', () => {
 
   describe('correct text for actionName', () => {
     it.each`
-      actionName                                        | text                                                                                                                                                  | showsAuthor
-      ${TODO_ACTION_TYPE_ADDED_APPROVER}                | ${'set you as an approver.'}                                                                                                                          | ${true}
-      ${TODO_ACTION_TYPE_APPROVAL_REQUIRED}             | ${'set you as an approver.'}                                                                                                                          | ${true}
-      ${TODO_ACTION_TYPE_ASSIGNED}                      | ${'assigned you.'}                                                                                                                                    | ${true}
-      ${TODO_ACTION_TYPE_BUILD_FAILED}                  | ${'The pipeline failed.'}                                                                                                                             | ${false}
-      ${TODO_ACTION_TYPE_DIRECTLY_ADDRESSED}            | ${'mentioned you.'}                                                                                                                                   | ${true}
-      ${TODO_ACTION_TYPE_MARKED}                        | ${'added a to-do item'}                                                                                                                               | ${true}
-      ${TODO_ACTION_TYPE_MEMBER_ACCESS_REQUESTED}       | ${'has requested access to group Foo'}                                                                                                                | ${true}
-      ${TODO_ACTION_TYPE_MENTIONED}                     | ${'mentioned you.'}                                                                                                                                   | ${true}
-      ${TODO_ACTION_TYPE_MERGE_TRAIN_REMOVED}           | ${'Removed from Merge Train.'}                                                                                                                        | ${false}
-      ${TODO_ACTION_TYPE_OKR_CHECKIN_REQUESTED}         | ${'requested an OKR update for Foo'}                                                                                                                  | ${true}
-      ${TODO_ACTION_TYPE_REVIEW_REQUESTED}              | ${'requested a review.'}                                                                                                                              | ${true}
-      ${TODO_ACTION_TYPE_REVIEW_SUBMITTED}              | ${'reviewed your merge request.'}                                                                                                                     | ${true}
-      ${TODO_ACTION_TYPE_UNMERGEABLE}                   | ${'Could not merge.'}                                                                                                                                 | ${false}
-      ${TODO_ACTION_TYPE_SSH_KEY_EXPIRED}               | ${'Your SSH key has expired.'}                                                                                                                        | ${false}
-      ${TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON}         | ${'Your SSH key is expiring soon.'}                                                                                                                   | ${false}
-      ${TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED}        | ${'You now have access to AI-powered features. Boost your productivity with Code Suggestions and GitLab Duo Chat'}                                    | ${false}
-      ${TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED} | ${'You now have access to AI-powered features. Boost your productivity with Code Suggestions, GitLab Duo Chat, Vulnerability Explanation, and more.'} | ${false}
+      actionName                                        | text                                                                                                        | showsAuthor
+      ${TODO_ACTION_TYPE_ADDED_APPROVER}                | ${'set you as an approver.'}                                                                                | ${true}
+      ${TODO_ACTION_TYPE_APPROVAL_REQUIRED}             | ${'set you as an approver.'}                                                                                | ${true}
+      ${TODO_ACTION_TYPE_ASSIGNED}                      | ${'assigned you.'}                                                                                          | ${true}
+      ${TODO_ACTION_TYPE_BUILD_FAILED}                  | ${'The pipeline failed.'}                                                                                   | ${false}
+      ${TODO_ACTION_TYPE_DIRECTLY_ADDRESSED}            | ${'mentioned you.'}                                                                                         | ${true}
+      ${TODO_ACTION_TYPE_MARKED}                        | ${'added a to-do item'}                                                                                     | ${true}
+      ${TODO_ACTION_TYPE_MEMBER_ACCESS_REQUESTED}       | ${'has requested access to group Foo'}                                                                      | ${true}
+      ${TODO_ACTION_TYPE_MENTIONED}                     | ${'mentioned you.'}                                                                                         | ${true}
+      ${TODO_ACTION_TYPE_MERGE_TRAIN_REMOVED}           | ${'Removed from Merge Train.'}                                                                              | ${false}
+      ${TODO_ACTION_TYPE_OKR_CHECKIN_REQUESTED}         | ${'requested an OKR update for Foo'}                                                                        | ${true}
+      ${TODO_ACTION_TYPE_REVIEW_REQUESTED}              | ${'requested a review.'}                                                                                    | ${true}
+      ${TODO_ACTION_TYPE_REVIEW_SUBMITTED}              | ${'reviewed your merge request.'}                                                                           | ${true}
+      ${TODO_ACTION_TYPE_UNMERGEABLE}                   | ${'Could not merge.'}                                                                                       | ${false}
+      ${TODO_ACTION_TYPE_SSH_KEY_EXPIRED}               | ${'Your SSH key has expired.'}                                                                              | ${false}
+      ${TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON}         | ${'Your SSH key is expiring soon.'}                                                                         | ${false}
+      ${TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED}        | ${'You now have access to AI-powered features. Learn how to set up Code Suggestions and Chat in your IDE.'} | ${false}
+      ${TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED} | ${'You now have access to AI-powered features. Learn how to set up Code Suggestions and Chat in your IDE.'} | ${false}
     `('renders "$text" for the "$actionName" action', ({ actionName, text, showsAuthor }) => {
       createComponent({ action: actionName, memberAccessType: 'group' });
       expect(wrapper.text()).toContain(text);

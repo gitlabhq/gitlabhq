@@ -258,19 +258,6 @@ a `service`.
 This functionality is covered in [the CI services](../services/_index.md)
 documentation.
 
-## Testing things locally
-
-With GitLab Runner 1.0 you can also test any changes locally. From your
-terminal execute:
-
-```shell
-# Check using docker executor
-gitlab-runner exec docker test:app
-
-# Check using shell executor
-gitlab-runner exec shell test:app
-```
-
 ## Example project
 
 We have set up an [Example PHP Project](https://gitlab.com/gitlab-examples/php) for your convenience

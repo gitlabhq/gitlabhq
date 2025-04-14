@@ -1,0 +1,9 @@
+---
+name: blob_overflow_menu
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/450774
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174992
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/522993
+milestone: '17.10'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

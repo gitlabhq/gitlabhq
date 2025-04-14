@@ -2,6 +2,7 @@
 stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn how to generate and export a Software Bill of Materials (SBOM) in CycloneDX format for your project dependencies and save it as a CI/CD artifact.
 title: 'Tutorial: Export dependency list in SBOM format'
 ---
 
@@ -92,7 +93,7 @@ Set up Dependency Scanning. For detailed instructions, follow [the Dependency Sc
        - apk add --update jq curl
      stage: .post
      script:
-       - | 
+       - |
          curl --header "Authorization: Bearer $PRIVATE_TOKEN" --output export.sh --url "https://gitlab.com/api/v4/snippets/<SNIPPET_ID>/raw"
        - /bin/sh export.sh
      artifacts:

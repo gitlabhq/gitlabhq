@@ -32,8 +32,6 @@ tags:
   description: Operations about members
 - name: personal_access_tokens
   description: Operations about personal_access_tokens
-- name: group_access_tokens
-  description: Operations about group_access_tokens
 - name: wikis
   description: Operations about wikis
 - name: alert_management
@@ -42,6 +40,8 @@ tags:
   description: Operations about branches
 - name: secure_files
   description: Operations about secure_files
+- name: cargo_packages
+  description: Operations about cargo_packages
 - name: commits
   description: Operations about commits
 - name: pages
@@ -58,8 +58,6 @@ tags:
   description: Operations about protected_tags
 - name: remote_mirrors
   description: Operations about remote_mirrors
-- name: project_access_tokens
-  description: Operations about project_access_tokens
 - name: tags
   description: Operations about tags
 - name: batched_background_migrations
@@ -82,8 +80,6 @@ tags:
   description: Operations about jobs
 - name: events
   description: Operations about events
-- name: users
-  description: Operations about users
 - name: keys
   description: Operations about keys
 - name: markdown
@@ -92,22 +88,18 @@ tags:
   description: Operations about namespaces
 - name: organizations
   description: Operations about organizations
-- name: project_repository_storage_moves
-  description: Operations about project_repository_storage_moves
 - name: snippets
   description: Operations about snippets
-- name: snippet_repository_storage_moves
-  description: Operations about snippet_repository_storage_moves
 - name: hooks
   description: Operations about hooks
 - name: usage_data
   description: Operations about usage_data
 - name: metrics
   description: Operations about metrics
-- name: user
-  description: Operations about users
 - name: user_counts
   description: Operations about user_counts
+- name: user
+  description: Operations about users
 - name: application
   description: Operations about applications
 - name: import
@@ -996,7 +988,8 @@ paths:
         required: false
       - in: query
         name: all_available
-        description: Show all group that you have access to
+        description: When `true`, returns all accessible groups. When `false`, returns
+          only groups where the user is a member.
         type: boolean
         required: false
       - in: query
@@ -1193,6 +1186,25 @@ paths:
       tags:
       - groups
       operationId: deleteApiV4GroupsId
+  "/api/v4/groups/{id}/restore":
+    post:
+      description: Restore a group.
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID of a group
+        type: string
+        required: true
+      responses:
+        '201':
+          description: Restore a group.
+      tags:
+      - groups
+      operationId: postApiV4GroupsIdRestore
   "/api/v4/groups/{id}/groups/shared":
     get:
       description: Get a list of shared groups this group was invited to
@@ -1664,7 +1676,8 @@ paths:
         required: false
       - in: query
         name: all_available
-        description: Show all group that you have access to
+        description: When `true`, returns all accessible groups. When `false`, returns
+          only groups where the user is a member.
         type: boolean
         required: false
       - in: query
@@ -1795,7 +1808,8 @@ paths:
         required: false
       - in: query
         name: all_available
-        description: Show all group that you have access to
+        description: When `true`, returns all accessible groups. When `false`, returns
+          only groups where the user is a member.
         type: boolean
         required: false
       - in: query
@@ -2179,25 +2193,6 @@ paths:
       tags:
       - groups
       operationId: getApiV4GroupsIdAuditEventsAuditEventId
-  "/api/v4/groups/{id}/restore":
-    post:
-      description: Restore a group.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '201':
-          description: Restore a group.
-      tags:
-      - groups
-      operationId: postApiV4GroupsIdRestore
   "/api/v4/groups/{id}/provisioned_users":
     get:
       description: Get a list of users provisioned by the group
@@ -4074,6 +4069,67 @@ paths:
       tags:
       - group_packages
       operationId: getApiV4GroupsIdPackages
+  "/api/v4/groups/{id}/placeholder_reassignments":
+    get:
+      summary: Download the list of pending placeholder assignments for a group
+      description: This feature was added in GitLab 17.10
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID of a group
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Download the list of pending placeholder assignments for a
+            group
+      tags:
+      - groups
+      operationId: getApiV4GroupsIdPlaceholderReassignments
+    post:
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID of a group
+        type: string
+        required: true
+      - name: postApiV4GroupsIdPlaceholderReassignments
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4GroupsIdPlaceholderReassignments"
+      responses:
+        '201':
+          description: created PlaceholderReassignment
+      tags:
+      - groups
+      operationId: postApiV4GroupsIdPlaceholderReassignments
+  "/api/v4/groups/{id}/placeholder_reassignments/authorize":
+    post:
+      summary: Workhorse authorization for the reassignment CSV file
+      description: This feature was introduced in GitLab 17.10
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID of a group
+        type: string
+        required: true
+      responses:
+        '201':
+          description: Workhorse authorization for the reassignment CSV file
+      tags:
+      - groups
+      operationId: postApiV4GroupsIdPlaceholderReassignmentsAuthorize
   "/api/v4/groups/{id}/variables":
     get:
       description: Get a list of group-level variables
@@ -8151,147 +8207,6 @@ paths:
       tags:
       - personal_access_tokens
       operationId: postApiV4GroupsIdAccessTokensSelfRotate
-  "/api/v4/groups/{id}/access_tokens":
-    get:
-      summary: Get list of all access tokens for the specified resource
-      description: This feature was introduced in GitLab 13.9.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: ID or URL-encoded path of the group
-        type: string
-        required: true
-      - in: query
-        name: state
-        description: Filter tokens which are either active or inactive
-        type: string
-        enum:
-        - active
-        - inactive
-        required: false
-        example: active
-      responses:
-        '200':
-          description: Get list of all access tokens for the specified resource
-          schema:
-            type: array
-            items:
-              "$ref": "#/definitions/API_Entities_ResourceAccessToken"
-      tags:
-      - group_access_tokens
-      operationId: getApiV4GroupsIdAccessTokens
-    post:
-      summary: Create a resource access token
-      description: This feature was introduced in GitLab 13.9.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The group ID
-        type: string
-        required: true
-        example: 2
-      - name: postApiV4GroupsIdAccessTokens
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4GroupsIdAccessTokens"
-      responses:
-        '201':
-          description: Create a resource access token
-          schema:
-            "$ref": "#/definitions/API_Entities_ResourceAccessTokenWithToken"
-      tags:
-      - group_access_tokens
-      operationId: postApiV4GroupsIdAccessTokens
-  "/api/v4/groups/{id}/access_tokens/{token_id}":
-    get:
-      summary: Get an access token for the specified resource by ID
-      description: This feature was introduced in GitLab 14.10.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: ID or URL-encoded path of the group
-        type: string
-        required: true
-      - in: path
-        name: token_id
-        description: The ID of the token
-        type: string
-        required: true
-      responses:
-        '200':
-          description: Get an access token for the specified resource by ID
-          schema:
-            "$ref": "#/definitions/API_Entities_ResourceAccessToken"
-      tags:
-      - group_access_tokens
-      operationId: getApiV4GroupsIdAccessTokensTokenId
-    delete:
-      summary: Revoke a resource access token
-      description: This feature was introduced in GitLab 13.9.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The group ID
-        type: string
-        required: true
-      - in: path
-        name: token_id
-        description: The ID of the token
-        type: string
-        required: true
-      responses:
-        '204':
-          description: Revoke a resource access token
-        '400':
-          description: Bad Request
-        '404':
-          description: Not found
-      tags:
-      - group_access_tokens
-      operationId: deleteApiV4GroupsIdAccessTokensTokenId
-  "/api/v4/groups/{id}/access_tokens/{token_id}/rotate":
-    post:
-      summary: Rotate a resource access token
-      description: This feature was introduced in GitLab 16.0.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The group ID
-        type: string
-        required: true
-      - in: path
-        name: token_id
-        description: The ID of the token
-        type: string
-        required: true
-      - name: postApiV4GroupsIdAccessTokensTokenIdRotate
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4GroupsIdAccessTokensTokenIdRotate"
-      responses:
-        '201':
-          description: Rotate a resource access token
-          schema:
-            "$ref": "#/definitions/API_Entities_ResourceAccessTokenWithToken"
-      tags:
-      - group_access_tokens
-      operationId: postApiV4GroupsIdAccessTokensTokenIdRotate
   "/api/v4/groups/{id}/wikis":
     get:
       description: Get a list of wiki pages
@@ -10638,6 +10553,11 @@ paths:
         type: integer
         format: int32
         required: true
+      - name: postApiV4ProjectsIdJobsJobIdCancel
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4ProjectsIdJobsJobIdCancel"
       responses:
         '201':
           description: Cancel a specific job of a project
@@ -11362,6 +11282,22 @@ paths:
       - in: query
         name: updated_after
         description: 'Return pipelines updated after the specified datetime. Format:
+          ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        type: string
+        format: date-time
+        required: false
+        example: '2015-12-24T15:51:21.880Z'
+      - in: query
+        name: created_before
+        description: 'Return pipelines created before the specified datetime. Format:
+          ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        type: string
+        format: date-time
+        required: false
+        example: '2015-12-24T15:51:21.880Z'
+      - in: query
+        name: created_after
+        description: 'Return pipelines created after the specified datetime. Format:
           ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
         type: string
         format: date-time
@@ -13000,6 +12936,28 @@ paths:
       tags:
       - cluster_agents
       operationId: deleteApiV4ProjectsIdClusterAgentsAgentId
+  "/api/v4/projects/{id}/packages/cargo/config.json":
+    get:
+      summary: Get config.json
+      description: This will be used by cargo for further requests
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Get config.json
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      tags:
+      - cargo_packages
+      operationId: getApiV4ProjectsIdPackagesCargoConfigJson
   "/api/v4/projects/{id}/repository/commits":
     get:
       description: Get a project repository commits
@@ -13878,7 +13836,7 @@ paths:
         '200':
           description: Package Snapshot
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanPackageSnapshot"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_PackageSnapshot"
         '400':
           description: Bad Request
         '403':
@@ -13928,7 +13886,7 @@ paths:
         '200':
           description: Recipe Snapshot
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanRecipeSnapshot"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_RecipeSnapshot"
         '400':
           description: Bad Request
         '403':
@@ -14031,7 +13989,7 @@ paths:
         '200':
           description: Package Digest
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanPackageManifest"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_PackageManifest"
         '400':
           description: Bad Request
         '403':
@@ -14081,7 +14039,7 @@ paths:
         '200':
           description: Recipe Digest
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanRecipeManifest"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_RecipeManifest"
         '400':
           description: Bad Request
         '403':
@@ -14137,7 +14095,7 @@ paths:
         '200':
           description: Package Download Urls
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanPackageManifest"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_PackageManifest"
         '400':
           description: Bad Request
         '403':
@@ -14187,7 +14145,7 @@ paths:
         '200':
           description: Recipe Download Urls
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanRecipeManifest"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_RecipeManifest"
         '400':
           description: Bad Request
         '403':
@@ -14245,7 +14203,7 @@ paths:
         '200':
           description: Package Upload Urls
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanUploadUrls"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_UploadUrls"
         '400':
           description: Bad Request
         '403':
@@ -14297,7 +14255,7 @@ paths:
         '200':
           description: Recipe Upload Urls
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanUploadUrls"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_UploadUrls"
         '400':
           description: Bad Request
         '403':
@@ -14817,6 +14775,168 @@ paths:
       tags:
       - conan_packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansSearch
+  "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/latest":
+    get:
+      summary: Get the latest revision
+      description: This feature was introduced in GitLab 17.11
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      responses:
+        '200':
+          description: Get the latest revision
+          schema:
+            "$ref": "#/definitions/API_Entities_Packages_Conan_RecipeRevision"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelLatest
+  "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions":
+    get:
+      summary: Get the list of revisions
+      description: This feature was introduced in GitLab 17.11
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      responses:
+        '200':
+          description: Get the list of revisions
+          schema:
+            "$ref": "#/definitions/API_Entities_Packages_Conan_RecipeRevision"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisions
+  ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/files"
+  : get:
+      summary: List recipe files
+      description: This feature was introduced in GitLab 17.11
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      - in: path
+        name: recipe_revision
+        description: Recipe revision
+        type: string
+        required: true
+        example: df28fd816be3a119de5ce4d374436b25
+      responses:
+        '200':
+          description: List recipe files
+          schema:
+            "$ref": "#/definitions/API_Entities_Packages_Conan_RecipeFilesList"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFiles
   ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/files/{file_name}"
   : get:
       summary: Download recipe files
@@ -14886,6 +15006,323 @@ paths:
       tags:
       - conan_packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFilesFileName
+    put:
+      summary: Upload recipe package files
+      description: This feature was introduced in GitLab 17.10
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      - in: path
+        name: recipe_revision
+        description: Recipe revision
+        type: string
+        required: true
+        example: df28fd816be3a119de5ce4d374436b25
+      - in: path
+        name: file_name
+        description: Package file name
+        type: string
+        enum:
+        - conanfile.py
+        - conanmanifest.txt
+        - conan_sources.tgz
+        - conan_export.tgz
+        - conaninfo.txt
+        - conan_package.tgz
+        required: true
+        example: conanfile.py
+      - name: putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFilesFileName
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFilesFileName"
+      responses:
+        '200':
+          description: Upload recipe package files
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFilesFileName
+  ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/files/{file_name}/authorize"
+  : put:
+      summary: Workhorse authorize the conan recipe file
+      description: This feature was introduced in GitLab 17.10
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      - in: path
+        name: recipe_revision
+        description: Recipe revision
+        type: string
+        required: true
+        example: df28fd816be3a119de5ce4d374436b25
+      - in: path
+        name: file_name
+        description: Package file name
+        type: string
+        enum:
+        - conanfile.py
+        - conanmanifest.txt
+        - conan_sources.tgz
+        - conan_export.tgz
+        - conaninfo.txt
+        - conan_package.tgz
+        required: true
+        example: conanfile.py
+      responses:
+        '200':
+          description: Workhorse authorize the conan recipe file
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFilesFileNameAuthorize
+  ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/packages/{conan_package_reference}/revisions/{package_revision}/files/{file_name}"
+  : put:
+      summary: Upload package files
+      description: This feature was introduced in GitLab 17.11
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      - in: path
+        name: recipe_revision
+        description: Recipe revision
+        type: string
+        required: true
+        example: df28fd816be3a119de5ce4d374436b25
+      - in: path
+        name: conan_package_reference
+        description: Package reference
+        type: string
+        required: true
+        example: 5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
+      - in: path
+        name: package_revision
+        description: Package revision
+        type: string
+        required: true
+        example: 3bdd2d8c8e76c876ebd1ac0469a4e72c
+      - in: path
+        name: file_name
+        description: Package file name
+        type: string
+        enum:
+        - conanfile.py
+        - conanmanifest.txt
+        - conan_sources.tgz
+        - conan_export.tgz
+        - conaninfo.txt
+        - conan_package.tgz
+        required: true
+        example: conaninfo.txt
+      - name: putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceRevisionsPackageRevisionFilesFileName
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceRevisionsPackageRevisionFilesFileName"
+      responses:
+        '200':
+          description: Upload package files
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceRevisionsPackageRevisionFilesFileName
+  ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/packages/{conan_package_reference}/revisions/{package_revision}/files/{file_name}/authorize"
+  : put:
+      summary: Workhorse authorize the conan package file
+      description: This feature was introduced in GitLab 17.11
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      - in: path
+        name: recipe_revision
+        description: Recipe revision
+        type: string
+        required: true
+        example: df28fd816be3a119de5ce4d374436b25
+      - in: path
+        name: conan_package_reference
+        description: Package reference
+        type: string
+        required: true
+        example: 5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
+      - in: path
+        name: package_revision
+        description: Package revision
+        type: string
+        required: true
+        example: 3bdd2d8c8e76c876ebd1ac0469a4e72c
+      - in: path
+        name: file_name
+        description: Package file name
+        type: string
+        enum:
+        - conanfile.py
+        - conanmanifest.txt
+        - conan_sources.tgz
+        - conan_export.tgz
+        - conaninfo.txt
+        - conan_package.tgz
+        required: true
+        example: conaninfo.txt
+      responses:
+        '200':
+          description: Workhorse authorize the conan package file
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceRevisionsPackageRevisionFilesFileNameAuthorize
   "/api/v4/projects/{id}/packages/debian/dists/*distribution/Release.gpg":
     get:
       summary: The Release file signature
@@ -16911,8 +17348,7 @@ paths:
   "/api/v4/projects/{id}/environments/{environment_id}/stop":
     post:
       summary: Stop an environment
-      description: It returns 200 if the environment was successfully stopped, and
-        404 if the environment does not exist.
+      description: It returns 200 if the environment was successfully stopped.
       produces:
       - application/json
       consumes:
@@ -16940,6 +17376,8 @@ paths:
           description: Stop an environment
           schema:
             "$ref": "#/definitions/API_Entities_Environment"
+        '400':
+          description: Bad request
         '401':
           description: Unauthorized
         '404':
@@ -26005,6 +26443,25 @@ paths:
         default: 20
         required: false
         example: 20
+      - in: query
+        name: order_by
+        description: Return package files ordered by `id`, `created_at` or `file_name`
+        type: string
+        default: id
+        enum:
+        - id
+        - created_at
+        - file_name
+        required: false
+      - in: query
+        name: sort
+        description: Return package files sorted in `asc` or `desc` order.
+        type: string
+        default: asc
+        enum:
+        - asc
+        - desc
+        required: false
       responses:
         '200':
           description: List package files
@@ -26740,6 +27197,8 @@ paths:
           description: Bad Request
         '401':
           description: Unauthorized
+        '403':
+          description: Forbidden
         '404':
           description: Not Found
       tags:
@@ -30570,96 +31029,6 @@ paths:
       tags:
       - projects
       operationId: deleteApiV4ProjectsIdPackagesProtectionRulesPackageProtectionRuleId
-  "/api/v4/projects/{id}/repository_storage_moves":
-    get:
-      summary: Get a list of all project repository storage moves
-      description: This feature was introduced in GitLab 13.1.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID or URL-encoded path of the project
-        type: string
-        required: true
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get a list of all project repository storage moves
-          schema:
-            type: array
-            items:
-              "$ref": "#/definitions/API_Entities_Projects_RepositoryStorageMove"
-      tags:
-      - projects
-      operationId: getApiV4ProjectsIdRepositoryStorageMoves
-    post:
-      summary: Schedule a project repository storage move
-      description: This feature was introduced in GitLab 13.1.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID or URL-encoded path of the project
-        type: string
-        required: true
-      - name: postApiV4ProjectsIdRepositoryStorageMoves
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4ProjectsIdRepositoryStorageMoves"
-      responses:
-        '201':
-          description: Schedule a project repository storage move
-          schema:
-            "$ref": "#/definitions/API_Entities_Projects_RepositoryStorageMove"
-      tags:
-      - projects
-      operationId: postApiV4ProjectsIdRepositoryStorageMoves
-  "/api/v4/projects/{id}/repository_storage_moves/{repository_storage_move_id}":
-    get:
-      summary: Get a project repository storage move
-      description: This feature was introduced in GitLab 13.1.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID or URL-encoded path of the project
-        type: string
-        required: true
-      - in: path
-        name: repository_storage_move_id
-        description: The ID of a project repository storage move
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get a project repository storage move
-          schema:
-            "$ref": "#/definitions/API_Entities_Projects_RepositoryStorageMove"
-      tags:
-      - projects
-      operationId: getApiV4ProjectsIdRepositoryStorageMovesRepositoryStorageMoveId
   "/api/v4/projects/{id}/snapshot":
     get:
       summary: Download a (possibly inconsistent) snapshot of a repository
@@ -31172,6 +31541,27 @@ paths:
       tags:
       - projects
       operationId: deleteApiV4ProjectsIdCustomAttributesKey
+  "/api/v4/projects/{id}/restore":
+    post:
+      description: Restore a project
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        type: integer
+        format: int32
+        required: true
+      responses:
+        '201':
+          description: Restore a project
+          schema:
+            "$ref": "#/definitions/API_Entities_Project"
+      tags:
+      - projects
+      operationId: postApiV4ProjectsIdRestore
   "/api/v4/projects":
     get:
       description: Get a list of visible projects for authenticated user
@@ -32562,27 +32952,6 @@ paths:
       tags:
       - projects
       operationId: getApiV4ProjectsIdStorage
-  "/api/v4/projects/{id}/restore":
-    post:
-      description: Restore a project
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '201':
-          description: Restore a project
-          schema:
-            "$ref": "#/definitions/API_Entities_Project"
-      tags:
-      - projects
-      operationId: postApiV4ProjectsIdRestore
   "/api/v4/projects/{id}/audit_events":
     get:
       description: Get a list of audit events in this project.
@@ -34076,6 +34445,32 @@ paths:
       tags:
       - projects
       operationId: getApiV4ProjectsIdRepositoryCompare
+  "/api/v4/projects/{id}/repository/health":
+    get:
+      description: Get repository health
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+        example: 1
+      - in: query
+        name: generate
+        description: Triggers a new health report to be generated
+        type: boolean
+        default: false
+        required: false
+      responses:
+        '200':
+          description: Get repository health
+          schema:
+            "$ref": "#/definitions/API_Entities_RepositoryHealth"
+      tags:
+      - projects
+      operationId: getApiV4ProjectsIdRepositoryHealth
   "/api/v4/projects/{id}/repository/contributors":
     get:
       description: Get repository contributors
@@ -34290,147 +34685,6 @@ paths:
       tags:
       - personal_access_tokens
       operationId: postApiV4ProjectsIdAccessTokensSelfRotate
-  "/api/v4/projects/{id}/access_tokens":
-    get:
-      summary: Get list of all access tokens for the specified resource
-      description: This feature was introduced in GitLab 13.9.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: ID or URL-encoded path of the project
-        type: string
-        required: true
-      - in: query
-        name: state
-        description: Filter tokens which are either active or inactive
-        type: string
-        enum:
-        - active
-        - inactive
-        required: false
-        example: active
-      responses:
-        '200':
-          description: Get list of all access tokens for the specified resource
-          schema:
-            type: array
-            items:
-              "$ref": "#/definitions/API_Entities_ResourceAccessToken"
-      tags:
-      - project_access_tokens
-      operationId: getApiV4ProjectsIdAccessTokens
-    post:
-      summary: Create a resource access token
-      description: This feature was introduced in GitLab 13.9.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The project ID
-        type: string
-        required: true
-        example: 2
-      - name: postApiV4ProjectsIdAccessTokens
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4ProjectsIdAccessTokens"
-      responses:
-        '201':
-          description: Create a resource access token
-          schema:
-            "$ref": "#/definitions/API_Entities_ResourceAccessTokenWithToken"
-      tags:
-      - project_access_tokens
-      operationId: postApiV4ProjectsIdAccessTokens
-  "/api/v4/projects/{id}/access_tokens/{token_id}":
-    get:
-      summary: Get an access token for the specified resource by ID
-      description: This feature was introduced in GitLab 14.10.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: ID or URL-encoded path of the project
-        type: string
-        required: true
-      - in: path
-        name: token_id
-        description: The ID of the token
-        type: string
-        required: true
-      responses:
-        '200':
-          description: Get an access token for the specified resource by ID
-          schema:
-            "$ref": "#/definitions/API_Entities_ResourceAccessToken"
-      tags:
-      - project_access_tokens
-      operationId: getApiV4ProjectsIdAccessTokensTokenId
-    delete:
-      summary: Revoke a resource access token
-      description: This feature was introduced in GitLab 13.9.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The project ID
-        type: string
-        required: true
-      - in: path
-        name: token_id
-        description: The ID of the token
-        type: string
-        required: true
-      responses:
-        '204':
-          description: Revoke a resource access token
-        '400':
-          description: Bad Request
-        '404':
-          description: Not found
-      tags:
-      - project_access_tokens
-      operationId: deleteApiV4ProjectsIdAccessTokensTokenId
-  "/api/v4/projects/{id}/access_tokens/{token_id}/rotate":
-    post:
-      summary: Rotate a resource access token
-      description: This feature was introduced in GitLab 16.0.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The project ID
-        type: string
-        required: true
-      - in: path
-        name: token_id
-        description: The ID of the token
-        type: string
-        required: true
-      - name: postApiV4ProjectsIdAccessTokensTokenIdRotate
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4ProjectsIdAccessTokensTokenIdRotate"
-      responses:
-        '201':
-          description: Rotate a resource access token
-          schema:
-            "$ref": "#/definitions/API_Entities_ResourceAccessTokenWithToken"
-      tags:
-      - project_access_tokens
-      operationId: postApiV4ProjectsIdAccessTokensTokenIdRotate
   "/api/v4/projects/{id}/issues/{eventable_id}/resource_milestone_events":
     get:
       summary: List project Issue milestone events
@@ -37567,6 +37821,8 @@ paths:
       responses:
         '200':
           description: Download allowed
+        '302':
+          description: Found
         '401':
           description: Unauthorized
         '403':
@@ -37795,7 +38051,7 @@ paths:
         '200':
           description: Package Snapshot
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanPackageSnapshot"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_PackageSnapshot"
         '400':
           description: Bad Request
         '403':
@@ -37840,7 +38096,7 @@ paths:
         '200':
           description: Recipe Snapshot
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanRecipeSnapshot"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_RecipeSnapshot"
         '400':
           description: Bad Request
         '403':
@@ -37933,7 +38189,7 @@ paths:
         '200':
           description: Package Digest
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanPackageManifest"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_PackageManifest"
         '400':
           description: Bad Request
         '403':
@@ -37978,7 +38234,7 @@ paths:
         '200':
           description: Recipe Digest
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanRecipeManifest"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_RecipeManifest"
         '400':
           description: Bad Request
         '403':
@@ -38029,7 +38285,7 @@ paths:
         '200':
           description: Package Download Urls
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanPackageManifest"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_PackageManifest"
         '400':
           description: Bad Request
         '403':
@@ -38074,7 +38330,7 @@ paths:
         '200':
           description: Recipe Download Urls
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanRecipeManifest"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_RecipeManifest"
         '400':
           description: Bad Request
         '403':
@@ -38127,7 +38383,7 @@ paths:
         '200':
           description: Package Upload Urls
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanUploadUrls"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_UploadUrls"
         '400':
           description: Bad Request
         '403':
@@ -38174,7 +38430,7 @@ paths:
         '200':
           description: Recipe Upload Urls
           schema:
-            "$ref": "#/definitions/API_Entities_ConanPackage_ConanUploadUrls"
+            "$ref": "#/definitions/API_Entities_Packages_Conan_UploadUrls"
         '400':
           description: Bad Request
         '403':
@@ -39825,1341 +40081,6 @@ paths:
       tags:
       - projects
       operationId: getApiV4UsersUserIdStarredProjects
-  "/api/v4/users/{id}/custom_attributes":
-    get:
-      description: Get all custom attributes on a user
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get all custom attributes on a user
-          schema:
-            "$ref": "#/definitions/API_Entities_CustomAttribute"
-      tags:
-      - users
-      operationId: getApiV4UsersIdCustomAttributes
-  "/api/v4/users/{id}/custom_attributes/{key}":
-    get:
-      description: Get a custom attribute on a user
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: key
-        description: The key of the custom attribute
-        type: string
-        required: true
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get a custom attribute on a user
-          schema:
-            "$ref": "#/definitions/API_Entities_CustomAttribute"
-      tags:
-      - users
-      operationId: getApiV4UsersIdCustomAttributesKey
-    put:
-      description: Set a custom attribute on a user
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: key
-        description: The key of the custom attribute
-        type: string
-        required: true
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      - name: putApiV4UsersIdCustomAttributesKey
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/putApiV4UsersIdCustomAttributesKey"
-      responses:
-        '200':
-          description: Set a custom attribute on a user
-      tags:
-      - users
-      operationId: putApiV4UsersIdCustomAttributesKey
-    delete:
-      description: Delete a custom attribute on a user
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: key
-        description: The key of the custom attribute
-        type: string
-        required: true
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '204':
-          description: Delete a custom attribute on a user
-      tags:
-      - users
-      operationId: deleteApiV4UsersIdCustomAttributesKey
-  "/api/v4/users/{id}/support_pin":
-    get:
-      summary: Get support PIN for a user. Available only for admins.
-      description: This feature allows administrators to retrieve the support PIN
-        for a specified user
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get support PIN for a user. Available only for admins.
-          schema:
-            "$ref": "#/definitions/API_Entities_UserSupportPin"
-      tags:
-      - users
-      operationId: getApiV4UsersIdSupportPin
-  "/api/v4/users":
-    get:
-      description: Get the list of users
-      produces:
-      - application/json
-      parameters:
-      - in: query
-        name: username
-        description: Get a single user with a specific username
-        type: string
-        required: false
-      - in: query
-        name: extern_uid
-        description: Get a single user with a specific external authentication provider
-          UID
-        type: string
-        required: false
-      - in: query
-        name: provider
-        description: The external provider
-        type: string
-        required: false
-      - in: query
-        name: search
-        description: Search for a username
-        type: string
-        required: false
-      - in: query
-        name: active
-        description: Filters only active users
-        type: boolean
-        default: false
-        required: false
-      - in: query
-        name: humans
-        description: Filters only human users
-        type: boolean
-        default: false
-        required: false
-      - in: query
-        name: external
-        description: Filters only external users
-        type: boolean
-        default: false
-        required: false
-      - in: query
-        name: blocked
-        description: Filters only blocked users
-        type: boolean
-        default: false
-        required: false
-      - in: query
-        name: created_after
-        description: Return users created after the specified time
-        type: string
-        format: date-time
-        required: false
-      - in: query
-        name: created_before
-        description: Return users created before the specified time
-        type: string
-        format: date-time
-        required: false
-      - in: query
-        name: without_projects
-        description: Filters only users without projects
-        type: boolean
-        default: false
-        required: false
-      - in: query
-        name: without_project_bots
-        description: Filters users without project bots
-        type: boolean
-        default: false
-        required: false
-      - in: query
-        name: admins
-        description: Filters only admin users
-        type: boolean
-        default: false
-        required: false
-      - in: query
-        name: two_factor
-        description: Filter users by Two-factor authentication.
-        type: string
-        required: false
-      - in: query
-        name: exclude_active
-        description: Filters only non active users
-        type: boolean
-        default: false
-        required: false
-      - in: query
-        name: exclude_external
-        description: Filters only non external users
-        type: boolean
-        default: false
-        required: false
-      - in: query
-        name: exclude_humans
-        description: Filters only non human users
-        type: boolean
-        default: false
-        required: false
-      - in: query
-        name: exclude_internal
-        description: Filters only non internal users
-        type: boolean
-        default: false
-        required: false
-      - in: query
-        name: order_by
-        description: Return users ordered by a field
-        type: string
-        enum:
-        - id
-        - name
-        - username
-        - created_at
-        - updated_at
-        required: false
-      - in: query
-        name: sort
-        description: Return users sorted in ascending and descending order
-        type: string
-        enum:
-        - asc
-        - desc
-        required: false
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      - in: query
-        name: with_custom_attributes
-        description: Include custom attributes in the response
-        type: boolean
-        default: false
-        required: false
-      - in: query
-        name: skip_ldap
-        description: Skip LDAP users
-        type: boolean
-        default: false
-        required: false
-      - in: query
-        name: saml_provider_id
-        description: Return only users from the specified SAML provider Id
-        type: integer
-        format: int32
-        required: false
-      - in: query
-        name: auditors
-        description: Filters only auditor users
-        type: boolean
-        default: false
-        required: false
-      responses:
-        '200':
-          description: Get the list of users
-          schema:
-            "$ref": "#/definitions/API_Entities_UserBasic"
-      tags:
-      - users
-      operationId: getApiV4Users
-    post:
-      description: Create a user. Available only for admins.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - name: postApiV4Users
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4Users"
-      responses:
-        '201':
-          description: Create a user. Available only for admins.
-          schema:
-            "$ref": "#/definitions/API_Entities_UserWithAdmin"
-      tags:
-      - users
-      operationId: postApiV4Users
-  "/api/v4/users/{id}":
-    get:
-      description: Get a single user
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - in: query
-        name: with_custom_attributes
-        description: Include custom attributes in the response
-        type: boolean
-        default: false
-        required: false
-      responses:
-        '200':
-          description: Get a single user
-          schema:
-            "$ref": "#/definitions/API_Entities_User"
-      tags:
-      - users
-      operationId: getApiV4UsersId
-    put:
-      description: Update a user. Available only for admins.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - name: putApiV4UsersId
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/putApiV4UsersId"
-      responses:
-        '200':
-          description: Update a user. Available only for admins.
-          schema:
-            "$ref": "#/definitions/API_Entities_UserWithAdmin"
-      tags:
-      - users
-      operationId: putApiV4UsersId
-    delete:
-      description: Delete a user. Available only for admins.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - in: query
-        name: hard_delete
-        description: Whether to remove a user's contributions
-        type: boolean
-        required: false
-      responses:
-        '200':
-          description: Delete a user. Available only for admins.
-          schema:
-            "$ref": "#/definitions/API_Entities_Email"
-      tags:
-      - users
-      operationId: deleteApiV4UsersId
-  "/api/v4/users/{user_id}/status":
-    get:
-      description: Get the status of a user
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: user_id
-        description: The ID or username of the user
-        type: string
-        required: true
-      responses:
-        '200':
-          description: Get the status of a user
-      tags:
-      - users
-      operationId: getApiV4UsersUserIdStatus
-  "/api/v4/users/{id}/follow":
-    post:
-      description: Follow a user
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '201':
-          description: Follow a user
-          schema:
-            "$ref": "#/definitions/API_Entities_User"
-      tags:
-      - users
-      operationId: postApiV4UsersIdFollow
-  "/api/v4/users/{id}/unfollow":
-    post:
-      description: Unfollow a user
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '201':
-          description: Unfollow a user
-          schema:
-            "$ref": "#/definitions/API_Entities_User"
-      tags:
-      - users
-      operationId: postApiV4UsersIdUnfollow
-  "/api/v4/users/{id}/following":
-    get:
-      description: Get the users who follow a user
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get the users who follow a user
-          schema:
-            "$ref": "#/definitions/API_Entities_UserBasic"
-      tags:
-      - users
-      operationId: getApiV4UsersIdFollowing
-  "/api/v4/users/{id}/followers":
-    get:
-      description: Get the followers of a user
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get the followers of a user
-          schema:
-            "$ref": "#/definitions/API_Entities_UserBasic"
-      tags:
-      - users
-      operationId: getApiV4UsersIdFollowers
-  "/api/v4/users/{id}/disable_two_factor":
-    patch:
-      summary: Disable two factor authentication for a user. Available only for admins
-      description: This feature was added in GitLab 15.2
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Disable two factor authentication for a user. Available only
-            for admins
-          schema:
-            "$ref": "#/definitions/API_Entities_UserWithAdmin"
-      tags:
-      - users
-      operationId: patchApiV4UsersIdDisableTwoFactor
-  "/api/v4/users/{id}/identities/{provider}":
-    delete:
-      description: Delete a user's identity. Available only for admins
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - in: path
-        name: provider
-        description: The external provider
-        type: string
-        required: true
-      responses:
-        '200':
-          description: Delete a user's identity. Available only for admins
-          schema:
-            "$ref": "#/definitions/API_Entities_UserWithAdmin"
-      tags:
-      - users
-      operationId: deleteApiV4UsersIdIdentitiesProvider
-  "/api/v4/users/{user_id}/project_deploy_keys":
-    get:
-      description: Get the project-level Deploy keys that a specified user can access
-        to.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: user_id
-        description: The ID or username of the user
-        type: string
-        required: true
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get the project-level Deploy keys that a specified user can
-            access to.
-          schema:
-            "$ref": "#/definitions/API_Entities_DeployKey"
-      tags:
-      - users
-      operationId: getApiV4UsersUserIdProjectDeployKeys
-  "/api/v4/users/{user_id}/keys":
-    post:
-      description: Add an SSH key to a specified user. Available only for admins.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: user_id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - name: postApiV4UsersUserIdKeys
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4UsersUserIdKeys"
-      responses:
-        '201':
-          description: Add an SSH key to a specified user. Available only for admins.
-          schema:
-            "$ref": "#/definitions/API_Entities_SSHKey"
-      tags:
-      - users
-      operationId: postApiV4UsersUserIdKeys
-    get:
-      description: Get the SSH keys of a specified user.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: user_id
-        description: The ID or username of the user
-        type: string
-        required: true
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get the SSH keys of a specified user.
-          schema:
-            "$ref": "#/definitions/API_Entities_SSHKey"
-      tags:
-      - users
-      operationId: getApiV4UsersUserIdKeys
-  "/api/v4/users/{id}/keys/{key_id}":
-    get:
-      description: Get a SSH key of a specified user.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - in: path
-        name: key_id
-        description: The ID of the SSH key
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get a SSH key of a specified user.
-          schema:
-            "$ref": "#/definitions/API_Entities_SSHKey"
-      tags:
-      - users
-      operationId: getApiV4UsersIdKeysKeyId
-    delete:
-      description: Delete an existing SSH key from a specified user. Available only
-        for admins.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - in: path
-        name: key_id
-        description: The ID of the SSH key
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Delete an existing SSH key from a specified user. Available
-            only for admins.
-          schema:
-            "$ref": "#/definitions/API_Entities_SSHKey"
-      tags:
-      - users
-      operationId: deleteApiV4UsersIdKeysKeyId
-  "/api/v4/users/{id}/gpg_keys":
-    post:
-      summary: Add a GPG key to a specified user. Available only for admins.
-      description: This feature was added in GitLab 10.0
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - name: postApiV4UsersIdGpgKeys
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4UsersIdGpgKeys"
-      responses:
-        '201':
-          description: Add a GPG key to a specified user. Available only for admins.
-          schema:
-            "$ref": "#/definitions/API_Entities_GpgKey"
-      tags:
-      - users
-      operationId: postApiV4UsersIdGpgKeys
-    get:
-      summary: Get the GPG keys of a specified user.
-      description: This feature was added in GitLab 10.0
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get the GPG keys of a specified user.
-          schema:
-            "$ref": "#/definitions/API_Entities_GpgKey"
-      tags:
-      - users
-      operationId: getApiV4UsersIdGpgKeys
-  "/api/v4/users/{id}/gpg_keys/{key_id}":
-    get:
-      summary: Get a specific GPG key for a given user.
-      description: This feature was added in GitLab 13.5
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - in: path
-        name: key_id
-        description: The ID of the GPG key
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get a specific GPG key for a given user.
-          schema:
-            "$ref": "#/definitions/API_Entities_GpgKey"
-      tags:
-      - users
-      operationId: getApiV4UsersIdGpgKeysKeyId
-    delete:
-      summary: Delete an existing GPG key from a specified user. Available only for
-        admins.
-      description: This feature was added in GitLab 10.0
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - in: path
-        name: key_id
-        description: The ID of the GPG key
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '204':
-          description: Delete an existing GPG key from a specified user. Available
-            only for admins.
-      tags:
-      - users
-      operationId: deleteApiV4UsersIdGpgKeysKeyId
-  "/api/v4/users/{id}/gpg_keys/{key_id}/revoke":
-    post:
-      summary: Revokes an existing GPG key from a specified user. Available only for
-        admins.
-      description: This feature was added in GitLab 10.0
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - in: path
-        name: key_id
-        description: The ID of the GPG key
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '201':
-          description: Revokes an existing GPG key from a specified user. Available
-            only for admins.
-      tags:
-      - users
-      operationId: postApiV4UsersIdGpgKeysKeyIdRevoke
-  "/api/v4/users/{id}/emails":
-    post:
-      description: Add an email address to a specified user. Available only for admins.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - name: postApiV4UsersIdEmails
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4UsersIdEmails"
-      responses:
-        '201':
-          description: Add an email address to a specified user. Available only for
-            admins.
-          schema:
-            "$ref": "#/definitions/API_Entities_Email"
-      tags:
-      - users
-      operationId: postApiV4UsersIdEmails
-    get:
-      description: Get the emails addresses of a specified user. Available only for
-        admins.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get the emails addresses of a specified user. Available only
-            for admins.
-          schema:
-            "$ref": "#/definitions/API_Entities_Email"
-      tags:
-      - users
-      operationId: getApiV4UsersIdEmails
-  "/api/v4/users/{id}/emails/{email_id}":
-    delete:
-      description: Delete an email address of a specified user. Available only for
-        admins.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - in: path
-        name: email_id
-        description: The ID of the email
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Delete an email address of a specified user. Available only
-            for admins.
-          schema:
-            "$ref": "#/definitions/API_Entities_Email"
-      tags:
-      - users
-      operationId: deleteApiV4UsersIdEmailsEmailId
-  "/api/v4/users/{id}/activate":
-    post:
-      description: Activate a deactivated user. Available only for admins.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '201':
-          description: Activate a deactivated user. Available only for admins.
-      tags:
-      - users
-      operationId: postApiV4UsersIdActivate
-  "/api/v4/users/{id}/approve":
-    post:
-      description: Approve a pending user. Available only for admins.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '201':
-          description: Approve a pending user. Available only for admins.
-      tags:
-      - users
-      operationId: postApiV4UsersIdApprove
-  "/api/v4/users/{id}/reject":
-    post:
-      description: Reject a pending user. Available only for admins.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '201':
-          description: Reject a pending user. Available only for admins.
-      tags:
-      - users
-      operationId: postApiV4UsersIdReject
-  "/api/v4/users/{id}/deactivate":
-    post:
-      description: Deactivate an active user. Available only for admins.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '201':
-          description: Deactivate an active user. Available only for admins.
-      tags:
-      - users
-      operationId: postApiV4UsersIdDeactivate
-  "/api/v4/users/{id}/block":
-    post:
-      description: Block a user. Available only for admins.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '201':
-          description: Block a user. Available only for admins.
-      tags:
-      - users
-      operationId: postApiV4UsersIdBlock
-  "/api/v4/users/{id}/unblock":
-    post:
-      description: Unblock a user. Available only for admins.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '201':
-          description: Unblock a user. Available only for admins.
-      tags:
-      - users
-      operationId: postApiV4UsersIdUnblock
-  "/api/v4/users/{id}/ban":
-    post:
-      description: Ban a user. Available only for admins.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '201':
-          description: Ban a user. Available only for admins.
-      tags:
-      - users
-      operationId: postApiV4UsersIdBan
-  "/api/v4/users/{id}/unban":
-    post:
-      description: Unban a user. Available only for admins.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '201':
-          description: Unban a user. Available only for admins.
-      tags:
-      - users
-      operationId: postApiV4UsersIdUnban
-  "/api/v4/users/{user_id}/memberships":
-    get:
-      description: Get memberships
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: user_id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - in: query
-        name: type
-        type: string
-        enum:
-        - Project
-        - Namespace
-        required: false
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get memberships
-          schema:
-            "$ref": "#/definitions/API_Entities_Membership"
-      tags:
-      - users
-      operationId: getApiV4UsersUserIdMemberships
-  "/api/v4/users/{id}/associations_count":
-    get:
-      description: Returns a list of a specified user's count of projects, groups,
-        issues and merge requests.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: ID of the user to query.
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Returns a list of a specified user's count of projects, groups,
-            issues and merge requests.
-      tags:
-      - users
-      operationId: getApiV4UsersIdAssociationsCount
-  "/api/v4/users/{user_id}/impersonation_tokens":
-    get:
-      summary: Retrieve impersonation tokens. Available only for admins.
-      description: This feature was introduced in GitLab 9.0
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: user_id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      - in: query
-        name: state
-        description: Filters (all|active|inactive) impersonation_tokens
-        type: string
-        default: all
-        enum:
-        - all
-        - active
-        - inactive
-        required: false
-      responses:
-        '200':
-          description: Retrieve impersonation tokens. Available only for admins.
-          schema:
-            "$ref": "#/definitions/API_Entities_ImpersonationToken"
-      tags:
-      - users
-      operationId: getApiV4UsersUserIdImpersonationTokens
-    post:
-      summary: Create a impersonation token. Available only for admins.
-      description: This feature was introduced in GitLab 9.0
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: user_id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - name: postApiV4UsersUserIdImpersonationTokens
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4UsersUserIdImpersonationTokens"
-      responses:
-        '201':
-          description: Create a impersonation token. Available only for admins.
-          schema:
-            "$ref": "#/definitions/API_Entities_ImpersonationTokenWithToken"
-      tags:
-      - users
-      operationId: postApiV4UsersUserIdImpersonationTokens
-  "/api/v4/users/{user_id}/impersonation_tokens/{impersonation_token_id}":
-    get:
-      summary: Retrieve impersonation token. Available only for admins.
-      description: This feature was introduced in GitLab 9.0
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: user_id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - in: path
-        name: impersonation_token_id
-        description: The ID of the impersonation token
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Retrieve impersonation token. Available only for admins.
-          schema:
-            "$ref": "#/definitions/API_Entities_ImpersonationToken"
-      tags:
-      - users
-      operationId: getApiV4UsersUserIdImpersonationTokensImpersonationTokenId
-    delete:
-      summary: Revoke a impersonation token. Available only for admins.
-      description: This feature was introduced in GitLab 9.0
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: user_id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - in: path
-        name: impersonation_token_id
-        description: The ID of the impersonation token
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '204':
-          description: Revoke a impersonation token. Available only for admins.
-      tags:
-      - users
-      operationId: deleteApiV4UsersUserIdImpersonationTokensImpersonationTokenId
-  "/api/v4/users/{user_id}/personal_access_tokens":
-    post:
-      summary: Create a personal access token. Available only for admins.
-      description: This feature was introduced in GitLab 13.6
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: user_id
-        description: The ID of the user
-        type: integer
-        format: int32
-        required: true
-      - name: postApiV4UsersUserIdPersonalAccessTokens
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4UsersUserIdPersonalAccessTokens"
-      responses:
-        '201':
-          description: Create a personal access token. Available only for admins.
-          schema:
-            "$ref": "#/definitions/API_Entities_PersonalAccessTokenWithToken"
-      tags:
-      - users
-      operationId: postApiV4UsersUserIdPersonalAccessTokens
   "/api/v4/features":
     get:
       summary: List all features
@@ -41465,6 +40386,8 @@ paths:
           description: Query the GraphQL endpoint of an existing Geo node
         '404':
           description: 404 GeoNode Not Found
+        '500':
+          description: 500 Internal Server Error
       tags:
       - geo
       operationId: postApiV4GeoNodeProxyIdGraphql
@@ -42474,6 +41397,20 @@ paths:
         required: false
         example: '2022-01-01'
       - in: query
+        name: expires_before
+        description: Filter tokens which expire before given datetime
+        type: string
+        format: date
+        required: false
+        example: '2022-01-01'
+      - in: query
+        name: expires_after
+        description: Filter tokens which expire after given datetime
+        type: string
+        format: date
+        required: false
+        example: '2021-01-01'
+      - in: query
         name: search
         description: Filters tokens by name
         type: string
@@ -42585,79 +41522,6 @@ paths:
       tags:
       - personal_access_tokens
       operationId: postApiV4PersonalAccessTokensIdRotate
-  "/api/v4/project_repository_storage_moves":
-    get:
-      summary: Get a list of all project repository storage moves
-      description: This feature was introduced in GitLab 13.0.
-      produces:
-      - application/json
-      parameters:
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get a list of all project repository storage moves
-          schema:
-            type: array
-            items:
-              "$ref": "#/definitions/API_Entities_Projects_RepositoryStorageMove"
-      tags:
-      - project_repository_storage_moves
-      operationId: getApiV4ProjectRepositoryStorageMoves
-    post:
-      summary: Schedule bulk project repository storage moves
-      description: This feature was introduced in GitLab 13.7.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - name: postApiV4ProjectRepositoryStorageMoves
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4ProjectRepositoryStorageMoves"
-      responses:
-        '202':
-          description: Schedule bulk project repository storage moves
-      tags:
-      - project_repository_storage_moves
-      operationId: postApiV4ProjectRepositoryStorageMoves
-  "/api/v4/project_repository_storage_moves/{repository_storage_move_id}":
-    get:
-      summary: Get a project repository storage move
-      description: This feature was introduced in GitLab 13.0.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: repository_storage_move_id
-        description: The ID of a project repository storage move
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get a project repository storage move
-          schema:
-            "$ref": "#/definitions/API_Entities_Projects_RepositoryStorageMove"
-      tags:
-      - project_repository_storage_moves
-      operationId: getApiV4ProjectRepositoryStorageMovesRepositoryStorageMoveId
   "/api/v4/snippets":
     get:
       summary: Get a snippets list for an authenticated user
@@ -42983,169 +41847,6 @@ paths:
       tags:
       - snippets
       operationId: getApiV4SnippetsIdUserAgentDetail
-  "/api/v4/snippets/{id}/repository_storage_moves":
-    get:
-      summary: Get a list of all snippets repository storage moves
-      description: This feature was introduced in GitLab 13.8.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of a snippet
-        type: string
-        required: true
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get a list of all snippets repository storage moves
-          schema:
-            type: array
-            items:
-              "$ref": "#/definitions/API_Entities_Snippets_RepositoryStorageMove"
-      tags:
-      - snippets
-      operationId: getApiV4SnippetsIdRepositoryStorageMoves
-    post:
-      summary: Schedule a snippet repository storage move
-      description: This feature was introduced in GitLab 13.8.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of a snippet
-        type: string
-        required: true
-      - name: postApiV4SnippetsIdRepositoryStorageMoves
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4SnippetsIdRepositoryStorageMoves"
-      responses:
-        '201':
-          description: Schedule a snippet repository storage move
-          schema:
-            "$ref": "#/definitions/API_Entities_Snippets_RepositoryStorageMove"
-      tags:
-      - snippets
-      operationId: postApiV4SnippetsIdRepositoryStorageMoves
-  "/api/v4/snippets/{id}/repository_storage_moves/{repository_storage_move_id}":
-    get:
-      summary: Get a snippet repository storage move
-      description: This feature was introduced in GitLab 13.8.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID of a snippet
-        type: string
-        required: true
-      - in: path
-        name: repository_storage_move_id
-        description: The ID of a snippet repository storage move
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get a snippet repository storage move
-          schema:
-            "$ref": "#/definitions/API_Entities_Snippets_RepositoryStorageMove"
-      tags:
-      - snippets
-      operationId: getApiV4SnippetsIdRepositoryStorageMovesRepositoryStorageMoveId
-  "/api/v4/snippet_repository_storage_moves":
-    get:
-      summary: Get a list of all snippet repository storage moves
-      description: This feature was introduced in GitLab 13.8.
-      produces:
-      - application/json
-      parameters:
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get a list of all snippet repository storage moves
-          schema:
-            type: array
-            items:
-              "$ref": "#/definitions/API_Entities_Snippets_RepositoryStorageMove"
-      tags:
-      - snippet_repository_storage_moves
-      operationId: getApiV4SnippetRepositoryStorageMoves
-    post:
-      summary: Schedule bulk snippet repository storage moves
-      description: This feature was introduced in GitLab 13.8.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - name: postApiV4SnippetRepositoryStorageMoves
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4SnippetRepositoryStorageMoves"
-      responses:
-        '202':
-          description: Schedule bulk snippet repository storage moves
-      tags:
-      - snippet_repository_storage_moves
-      operationId: postApiV4SnippetRepositoryStorageMoves
-  "/api/v4/snippet_repository_storage_moves/{repository_storage_move_id}":
-    get:
-      summary: Get a snippet repository storage move
-      description: This feature was introduced in GitLab 13.8.
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: repository_storage_move_id
-        description: The ID of a snippet repository storage move
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get a snippet repository storage move
-          schema:
-            "$ref": "#/definitions/API_Entities_Snippets_RepositoryStorageMove"
-      tags:
-      - snippet_repository_storage_moves
-      operationId: getApiV4SnippetRepositoryStorageMovesRepositoryStorageMoveId
   "/api/v4/suggestions/{id}/apply":
     put:
       description: Apply suggestion patch in the Merge Request it was created
@@ -43757,537 +42458,20 @@ paths:
       tags:
       - usage_data
       operationId: getApiV4UsageDataQueries
-  "/api/v3/user":
+  "/api/v4/user_counts":
     get:
-      description: Get the currently authenticated user
+      summary: Return the user specific counts
+      description: Assigned open issues, assigned MRs and pending todos count
       produces:
       - application/json
       responses:
         '200':
-          description: Get the currently authenticated user
+          description: Return the user specific counts
           schema:
-            "$ref": "#/definitions/API_Entities_UserPublic"
+            "$ref": "#/definitions/API_Entities_UserCounts"
       tags:
-      - user
-      operationId: getApiV3User
-  "/api/v4/user/keys":
-    get:
-      description: Get the currently authenticated user's SSH keys
-      produces:
-      - application/json
-      parameters:
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get the currently authenticated user's SSH keys
-          schema:
-            "$ref": "#/definitions/API_Entities_SSHKey"
-      tags:
-      - user
-      operationId: getApiV4UserKeys
-    post:
-      description: Add a new SSH key to the currently authenticated user
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - name: postApiV4UserKeys
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4UserKeys"
-      responses:
-        '201':
-          description: Add a new SSH key to the currently authenticated user
-          schema:
-            "$ref": "#/definitions/API_Entities_SSHKey"
-      tags:
-      - user
-      operationId: postApiV4UserKeys
-  "/api/v4/user/keys/{key_id}":
-    get:
-      description: Get a single key owned by currently authenticated user
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: key_id
-        description: The ID of the SSH key
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get a single key owned by currently authenticated user
-          schema:
-            "$ref": "#/definitions/API_Entities_SSHKey"
-      tags:
-      - user
-      operationId: getApiV4UserKeysKeyId
-    delete:
-      description: Delete an SSH key from the currently authenticated user
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: key_id
-        description: The ID of the SSH key
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Delete an SSH key from the currently authenticated user
-          schema:
-            "$ref": "#/definitions/API_Entities_SSHKey"
-      tags:
-      - user
-      operationId: deleteApiV4UserKeysKeyId
-  "/api/v4/user/gpg_keys":
-    get:
-      summary: Get the currently authenticated user's GPG keys
-      description: This feature was added in GitLab 10.0
-      produces:
-      - application/json
-      parameters:
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get the currently authenticated user's GPG keys
-          schema:
-            "$ref": "#/definitions/API_Entities_GpgKey"
-      tags:
-      - user
-      operationId: getApiV4UserGpgKeys
-    post:
-      summary: Add a new GPG key to the currently authenticated user
-      description: This feature was added in GitLab 10.0
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - name: postApiV4UserGpgKeys
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4UserGpgKeys"
-      responses:
-        '201':
-          description: Add a new GPG key to the currently authenticated user
-          schema:
-            "$ref": "#/definitions/API_Entities_GpgKey"
-      tags:
-      - user
-      operationId: postApiV4UserGpgKeys
-  "/api/v4/user/gpg_keys/{key_id}":
-    get:
-      summary: Get a single GPG key owned by currently authenticated user
-      description: This feature was added in GitLab 10.0
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: key_id
-        description: The ID of the GPG key
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get a single GPG key owned by currently authenticated user
-          schema:
-            "$ref": "#/definitions/API_Entities_GpgKey"
-      tags:
-      - user
-      operationId: getApiV4UserGpgKeysKeyId
-    delete:
-      summary: Delete a GPG key from the currently authenticated user
-      description: This feature was added in GitLab 10.0
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: key_id
-        description: The ID of the SSH key
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '204':
-          description: Delete a GPG key from the currently authenticated user
-      tags:
-      - user
-      operationId: deleteApiV4UserGpgKeysKeyId
-  "/api/v4/user/gpg_keys/{key_id}/revoke":
-    post:
-      summary: Revoke a GPG key owned by currently authenticated user
-      description: This feature was added in GitLab 10.0
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: key_id
-        description: The ID of the GPG key
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '201':
-          description: Revoke a GPG key owned by currently authenticated user
-      tags:
-      - user
-      operationId: postApiV4UserGpgKeysKeyIdRevoke
-  "/api/v4/user/emails":
-    get:
-      description: Get the currently authenticated user's email addresses
-      produces:
-      - application/json
-      parameters:
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get the currently authenticated user's email addresses
-          schema:
-            "$ref": "#/definitions/API_Entities_Email"
-      tags:
-      - user
-      operationId: getApiV4UserEmails
-    post:
-      description: Add new email address to the currently authenticated user
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - name: postApiV4UserEmails
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4UserEmails"
-      responses:
-        '201':
-          description: Add new email address to the currently authenticated user
-          schema:
-            "$ref": "#/definitions/API_Entities_Email"
-      tags:
-      - user
-      operationId: postApiV4UserEmails
-  "/api/v4/user/{user_id}/credit_card_validation":
-    put:
-      description: "[DEPRECATED] Update a user's credit_card_validation"
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - in: path
-        name: user_id
-        description: The ID or username of the user
-        type: string
-        required: true
-      - name: putApiV4UserUserIdCreditCardValidation
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/putApiV4UserUserIdCreditCardValidation"
-      responses:
-        '200':
-          description: "[DEPRECATED] Update a user's credit_card_validation"
-          schema:
-            "$ref": "#/definitions/API_Entities_UserCreditCardValidations"
-      tags:
-      - user
-      operationId: putApiV4UserUserIdCreditCardValidation
-  "/api/v4/user/support_pin":
-    post:
-      summary: Create a new Support PIN for the authenticated user
-      description: This feature creates a temporary Support PIN for the authenticated
-        user
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      responses:
-        '201':
-          description: Create a new Support PIN for the authenticated user
-          schema:
-            "$ref": "#/definitions/API_Entities_UserSupportPin"
-      tags:
-      - user
-      operationId: postApiV4UserSupportPin
-    get:
-      summary: Get the current Support PIN for the authenticated user
-      description: This feature retrieves the temporary Support PIN for the authenticated
-        user
-      produces:
-      - application/json
-      responses:
-        '200':
-          description: Get the current Support PIN for the authenticated user
-          schema:
-            "$ref": "#/definitions/API_Entities_UserSupportPin"
-      tags:
-      - user
-      operationId: getApiV4UserSupportPin
-  "/api/v4/user/preferences":
-    put:
-      summary: Update the current user's preferences
-      description: This feature was introduced in GitLab 13.10.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - name: putApiV4UserPreferences
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/putApiV4UserPreferences"
-      responses:
-        '200':
-          description: Update the current user's preferences
-          schema:
-            "$ref": "#/definitions/API_Entities_UserPreferences"
-      tags:
-      - user
-      operationId: putApiV4UserPreferences
-    get:
-      summary: Get the current user's preferences
-      description: This feature was introduced in GitLab 14.0.
-      produces:
-      - application/json
-      responses:
-        '200':
-          description: Get the current user's preferences
-          schema:
-            "$ref": "#/definitions/API_Entities_UserPreferences"
-      tags:
-      - user
-      operationId: getApiV4UserPreferences
-  "/api/v4/user/emails/{email_id}":
-    get:
-      description: Get a single email address owned by the currently authenticated
-        user
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: email_id
-        description: The ID of the email
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get a single email address owned by the currently authenticated
-            user
-          schema:
-            "$ref": "#/definitions/API_Entities_Email"
-      tags:
-      - user
-      operationId: getApiV4UserEmailsEmailId
-    delete:
-      description: Delete an email address from the currently authenticated user
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: email_id
-        description: The ID of the email
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '204':
-          description: Delete an email address from the currently authenticated user
-      tags:
-      - user
-      operationId: deleteApiV4UserEmailsEmailId
-  "/api/v4/user/activities":
-    get:
-      description: Get a list of user activities
-      produces:
-      - application/json
-      parameters:
-      - in: query
-        name: from
-        description: Date string in the format YEAR-MONTH-DAY
-        type: string
-        format: date-time
-        default: '2024-09-05T09:41:43.021Z'
-        required: false
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      responses:
-        '200':
-          description: Get a list of user activities
-      tags:
-      - user
-      operationId: getApiV4UserActivities
-  "/api/v4/user/status":
-    put:
-      summary: Set the status of the current user
-      description: Any parameters that are not passed will be nullified.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - name: putApiV4UserStatus
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/putApiV4UserStatus"
-      responses:
-        '200':
-          description: Set the status of the current user
-          schema:
-            "$ref": "#/definitions/API_Entities_UserStatus"
-      tags:
-      - user
-      operationId: putApiV4UserStatus
-    patch:
-      summary: Set the status of the current user
-      description: Any parameters that are not passed will be ignored.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - name: patchApiV4UserStatus
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/patchApiV4UserStatus"
-      responses:
-        '200':
-          description: Set the status of the current user
-          schema:
-            "$ref": "#/definitions/API_Entities_UserStatus"
-      tags:
-      - user
-      operationId: patchApiV4UserStatus
-    get:
-      description: get the status of the current user
-      produces:
-      - application/json
-      responses:
-        '200':
-          description: get the status of the current user
-          schema:
-            "$ref": "#/definitions/API_Entities_UserStatus"
-      tags:
-      - user
-      operationId: getApiV4UserStatus
-  "/api/v4/user/avatar":
-    put:
-      summary: Set the avatar of the current user
-      description: This feature was introduced in GitLab 17.0.
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - name: putApiV4UserAvatar
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/putApiV4UserAvatar"
-      responses:
-        '200':
-          description: Set the avatar of the current user
-          schema:
-            "$ref": "#/definitions/API_Entities_Avatar"
-      tags:
-      - user
-      operationId: putApiV4UserAvatar
-  "/api/v4/user/personal_access_tokens":
-    post:
-      summary: Create a personal access token with limited scopes for the currently
-        authenticated user
-      description: This feature was introduced in GitLab 16.5
-      produces:
-      - application/json
-      consumes:
-      - application/json
-      parameters:
-      - name: postApiV4UserPersonalAccessTokens
-        in: body
-        required: true
-        schema:
-          "$ref": "#/definitions/postApiV4UserPersonalAccessTokens"
-      responses:
-        '201':
-          description: Create a personal access token with limited scopes for the
-            currently authenticated user
-          schema:
-            "$ref": "#/definitions/API_Entities_PersonalAccessTokenWithToken"
-      tags:
-      - user
-      operationId: postApiV4UserPersonalAccessTokens
+      - user_counts
+      operationId: getApiV4UserCounts
   "/api/v4/user/runners":
     post:
       summary: Create a runner owned by currently authenticated user
@@ -44315,20 +42499,6 @@ paths:
       - user
       - runners
       operationId: postApiV4UserRunners
-  "/api/v4/user_counts":
-    get:
-      summary: Return the user specific counts
-      description: Assigned open issues, assigned MRs and pending todos count
-      produces:
-      - application/json
-      responses:
-        '200':
-          description: Return the user specific counts
-          schema:
-            "$ref": "#/definitions/API_Entities_UserCounts"
-      tags:
-      - user_counts
-      operationId: getApiV4UserCounts
   "/api/v4/application/plan_limits":
     get:
       summary: Get current plan limits
@@ -45369,10 +43539,10 @@ definitions:
       container_registry_size:
         type: integer
         format: int32
-        description: Container Registry size in bytes.
+        description: container registry size in bytes.
       container_registry_size_is_estimated:
         type: boolean
-        description: Indicates whether the deduplicated Container Registry size for
+        description: Indicates whether the deduplicated container registry size for
           the namespace is an estimated value or not.
       dependency_proxy_size:
         type: integer
@@ -45630,6 +43800,9 @@ definitions:
         - default_on
         - default_off
         - never_on
+      amazon_q_auto_review_enabled:
+        type: boolean
+        description: Enable Amazon Q auto review for merge request
       experiment_features_enabled:
         type: boolean
         description: Enable experiment features for this group
@@ -45814,6 +43987,9 @@ definitions:
         - default_on
         - default_off
         - never_on
+      amazon_q_auto_review_enabled:
+        type: boolean
+        description: Enable Amazon Q auto review for merge request
       experiment_features_enabled:
         type: boolean
         description: Enable experiment features for this group
@@ -46138,6 +44314,10 @@ definitions:
           cluster_agents:
             type: string
             example: https://gitlab.example.com/api/v4/projects/4/cluster_agents
+      marked_for_deletion_at:
+        type: string
+      marked_for_deletion_on:
+        type: string
       packages_enabled:
         type: boolean
       empty_repo:
@@ -46296,9 +44476,6 @@ definitions:
         type: boolean
       ci_pipeline_variables_minimum_override_role:
         type: string
-      runners_token:
-        type: string
-        example: b8547b1dc37721d05889db52fa2f02
       runner_token_expiration_interval:
         type: integer
         format: int32
@@ -46319,6 +44496,9 @@ definitions:
         example: continuous
       ci_push_repository_for_job_token_allowed:
         type: boolean
+      runners_token:
+        type: string
+        example: b8547b1dc37721d05889db52fa2f02
       ci_config_path:
         type: string
         example: ''
@@ -46382,10 +44562,6 @@ definitions:
       mirror_overwrites_diverged_branches:
         type: string
       external_authorization_classification_label:
-        type: string
-      marked_for_deletion_at:
-        type: string
-      marked_for_deletion_on:
         type: string
       requirements_enabled:
         type: string
@@ -47558,6 +45734,14 @@ definitions:
         type: string
       pipeline:
         "$ref": "#/definitions/API_Entities_Package_Pipeline"
+  postApiV4GroupsIdPlaceholderReassignments:
+    type: object
+    properties:
+      file:
+        type: file
+        description: The CSV file containing the reassignments
+    required:
+    - file
   API_Entities_Ci_Variable:
     type: object
     properties:
@@ -50595,127 +48779,6 @@ definitions:
       token:
         type: string
     description: API_Entities_ResourceAccessTokenWithToken model
-  API_Entities_ResourceAccessToken:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 2
-      name:
-        type: string
-        example: John Doe
-      revoked:
-        type: boolean
-      created_at:
-        type: string
-        format: date-time
-      description:
-        type: string
-        example: Token to manage api
-      scopes:
-        type: array
-        example:
-        - api
-      user_id:
-        type: integer
-        format: int32
-        example: 3
-      last_used_at:
-        type: string
-        format: date-time
-        example: '2020-08-31T15:53:00.073Z'
-      active:
-        type: boolean
-      expires_at:
-        type: string
-        format: date-time
-        example: '2020-08-31T15:53:00.073Z'
-      access_level:
-        type: integer
-        format: int32
-        enum:
-        - 10
-        - 20
-        - 30
-        - 40
-        - 50
-        example: 40
-      resource_type:
-        type: string
-        enum:
-        - project
-        - group
-        example: project
-      resource_id:
-        type: integer
-        format: int32
-        example: 1234
-    description: API_Entities_ResourceAccessToken model
-  postApiV4GroupsIdAccessTokens:
-    type: object
-    properties:
-      name:
-        type: string
-        description: Resource access token name
-        example: test
-      scopes:
-        type: array
-        description: The permissions of the token
-        example:
-        - api
-        - read_repository
-        items:
-          type: string
-          enum:
-          - api
-          - read_api
-          - create_runner
-          - manage_runner
-          - k8s_proxy
-          - self_rotate
-          - read_repository
-          - write_repository
-          - read_observability
-          - write_observability
-          - ai_features
-      expires_at:
-        type: string
-        format: date
-        description: The expiration date of the token
-        default: '2026-03-05T09:41:42.949Z'
-        example: "\"2021-01-31"
-      description:
-        type: string
-        description: Resource access token description
-        example: test description
-      access_level:
-        type: integer
-        format: int32
-        description: The access level of the token in the group
-        enum:
-        - 10
-        - 15
-        - 20
-        - 30
-        - 40
-        - 50
-        default: 40
-        example: 40
-    required:
-    - name
-    - scopes
-    - expires_at
-    description: Create a resource access token
-  postApiV4GroupsIdAccessTokensTokenIdRotate:
-    type: object
-    properties:
-      expires_at:
-        type: string
-        format: date
-        description: The expiration date of the token
-        example: '2021-01-31'
-    description: Rotate a resource access token
   API_Entities_WikiPageBasic:
     type: object
     properties:
@@ -51193,7 +49256,6 @@ definitions:
         type: string
       local_time:
         type: string
-    description: API_Entities_User model
   API_Entities_Ci_PipelineBasic:
     type: object
     properties:
@@ -51331,6 +49393,14 @@ definitions:
         type: string
         example: online
     description: API_Entities_Ci_RunnerManager model
+  postApiV4ProjectsIdJobsJobIdCancel:
+    type: object
+    properties:
+      force:
+        type: boolean
+        description: Whether to force cancellation for a job in `canceling` state
+        example: true
+    description: Cancel a specific job of a project
   postApiV4ProjectsIdJobsJobIdPlay:
     type: object
     properties:
@@ -51544,6 +49614,9 @@ definitions:
               - env_var
               - file
               default: env_var
+      inputs:
+        type: object
+        description: The list of inputs to be used to create the pipeline.
     required:
     - ref
     description: Create a new pipeline
@@ -52186,6 +50259,9 @@ definitions:
         example:
           VAR1: value1
           VAR2: value2
+      inputs:
+        type: object
+        description: The list of inputs to be used to create the pipeline.
     required:
     - token
     description: Trigger a GitLab project pipeline
@@ -52841,43 +50917,43 @@ definitions:
         description: The name of the tag
         example: v1.0.0
     description: Composer packages endpoint for registering packages
-  API_Entities_ConanPackage_ConanPackageSnapshot:
+  API_Entities_Packages_Conan_PackageSnapshot:
     type: object
     properties:
       package_snapshot:
         type: object
         example: '{ "conan_package.tgz": "749b29bdf72587081ca03ec033ee59dc" }'
-    description: API_Entities_ConanPackage_ConanPackageSnapshot model
-  API_Entities_ConanPackage_ConanRecipeSnapshot:
+    description: API_Entities_Packages_Conan_PackageSnapshot model
+  API_Entities_Packages_Conan_RecipeSnapshot:
     type: object
     properties:
       recipe_snapshot:
         type: object
         example: '{ "conan_sources.tgz": "eadf19b33f4c3c7e113faabf26e76277" }'
-    description: API_Entities_ConanPackage_ConanRecipeSnapshot model
-  API_Entities_ConanPackage_ConanPackageManifest:
+    description: API_Entities_Packages_Conan_RecipeSnapshot model
+  API_Entities_Packages_Conan_PackageManifest:
     type: object
     properties:
       package_urls:
         type: object
         example: '{ "conan_package.tgz": "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/packages/103f6067a947f366ef91fc1b7da351c588d1827f/0/conan_package.tgz"'
-    description: API_Entities_ConanPackage_ConanPackageManifest model
-  API_Entities_ConanPackage_ConanRecipeManifest:
+    description: API_Entities_Packages_Conan_PackageManifest model
+  API_Entities_Packages_Conan_RecipeManifest:
     type: object
     properties:
       recipe_urls:
         type: object
         example: '{ "conan_sources.tgz": "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/0/export/conan_sources.tgz"
           }'
-    description: API_Entities_ConanPackage_ConanRecipeManifest model
-  API_Entities_ConanPackage_ConanUploadUrls:
+    description: API_Entities_Packages_Conan_RecipeManifest model
+  API_Entities_Packages_Conan_UploadUrls:
     type: object
     properties:
       upload_urls:
         type: object
         example: '{ "conan_package.tgz": "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/0/package/103f6067a947f366ef91fc1b7da351c588d1827f/0/conan_package.tgz"
           }'
-    description: API_Entities_ConanPackage_ConanUploadUrls model
+    description: API_Entities_Packages_Conan_UploadUrls model
   putApiV4ProjectsIdPackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionExportFileName:
     type: object
     properties:
@@ -52888,6 +50964,44 @@ definitions:
     - file
     description: Upload recipe package files
   ? putApiV4ProjectsIdPackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionPackageConanPackageReferencePackageRevisionFileName
+  : type: object
+    properties:
+      file:
+        type: file
+        description: The package file to be published (generated by Multipart middleware)
+    required:
+    - file
+    description: Upload package files
+  API_Entities_Packages_Conan_RecipeRevision:
+    type: object
+    properties:
+      revision:
+        type: string
+        example: 75151329520e7685dcf5da49ded2fec0
+        description: The revision hash of the Conan recipe
+      time:
+        type: string
+        example: '2024-12-17T09:16:40.334Z'
+        description: The UTC timestamp when the revision was created
+    description: API_Entities_Packages_Conan_RecipeRevision model
+  API_Entities_Packages_Conan_RecipeFilesList:
+    type: object
+    properties:
+      files:
+        type: object
+        example: '{ "files" : { "conan_sources.tgz" : { }, "conanmanifest.txt" : {
+          }, "conanfile.py" : { } } }'
+    description: API_Entities_Packages_Conan_RecipeFilesList model
+  ? putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFilesFileName
+  : type: object
+    properties:
+      file:
+        type: file
+        description: The package file to be published (generated by Multipart middleware)
+    required:
+    - file
+    description: Upload recipe package files
+  ? putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceRevisionsPackageRevisionFilesFileName
   : type: object
     properties:
       file:
@@ -52939,6 +51053,10 @@ definitions:
         format: date-time
         example: '2015-09-03T07:24:44.627Z'
       expires_at:
+        type: string
+        format: date-time
+        example: '2020-09-03T07:24:44.627Z'
+      last_used_at:
         type: string
         format: date-time
         example: '2020-09-03T07:24:44.627Z'
@@ -53006,6 +51124,10 @@ definitions:
         format: date-time
         example: '2015-09-03T07:24:44.627Z'
       expires_at:
+        type: string
+        format: date-time
+        example: '2020-09-03T07:24:44.627Z'
+      last_used_at:
         type: string
         format: date-time
         example: '2020-09-03T07:24:44.627Z'
@@ -53614,7 +51736,6 @@ definitions:
         enum:
         - always
         - with_action
-        default: always
     required:
     - name
     description: Create a new environment
@@ -59087,7 +57208,10 @@ definitions:
         description: If `true`, removes the source branch.
       merge_when_pipeline_succeeds:
         type: boolean
-        description: If `true`, the merge request is merged when the pipeline succeeds.
+        description: 'Deprecated: Use auto_merge instead.'
+      auto_merge:
+        type: boolean
+        description: If `true`, the merge request is set to auto merge.
       sha:
         type: string
         description: If present, then this SHA must match the HEAD of the source branch,
@@ -59766,8 +57890,6 @@ definitions:
         type: string
       body:
         type: string
-      attachment:
-        type: string
       author:
         "$ref": "#/definitions/API_Entities_UserBasic"
       created_at:
@@ -60399,6 +58521,9 @@ definitions:
       package_type:
         type: string
         example: npm
+      minimum_access_level_for_delete:
+        type: string
+        example: owner
       minimum_access_level_for_push:
         type: string
         example: maintainer
@@ -60419,11 +58544,22 @@ definitions:
         - maven
         - npm
         - pypi
+      minimum_access_level_for_delete:
+        type: string
+        description: Minimum GitLab access level required to delete a package. Valid
+          values include `null`, `owner` or `admin`. If the value is `null`, the default
+          minimum access level is `maintainer`. Must be provided when `minimum_access_level_for_push`
+          is not set. Behind a feature flag named `packages_protected_packages_delete`.
+          Disabled by default.
+        enum:
+        - owner
+        - admin
       minimum_access_level_for_push:
         type: string
-        description: |-
-          Minimum GitLab access level able to push a package. Must be at least `maintainer`.
-                      For example `maintainer`, `owner` or `admin`.
+        description: Minimum GitLab access level required to push a package. Valid
+          values include `null`, `maintainer`, `owner` or `admin`. If the value is
+          `null`, the default minimum access level is `developer`. Must be provided
+          when `minimum_access_level_for_delete` is not set.
         enum:
         - maintainer
         - owner
@@ -60431,7 +58567,6 @@ definitions:
     required:
     - package_name_pattern
     - package_type
-    - minimum_access_level_for_push
     description: Create a package protection rule for a project
   patchApiV4ProjectsIdPackagesProtectionRulesPackageProtectionRuleId:
     type: object
@@ -60449,49 +58584,27 @@ definitions:
         - maven
         - npm
         - pypi
+      minimum_access_level_for_delete:
+        type: string
+        description: Minimum GitLab access level required to delete a package. Valid
+          values include `null`, `owner` or `admin`. If the value is `null`, the default
+          minimum access level is `maintainer`. Must be provided when `minimum_access_level_for_push`
+          is not set. Behind a feature flag named `packages_protected_packages_delete`.
+          Disabled by default.
+        enum:
+        - owner
+        - admin
       minimum_access_level_for_push:
         type: string
-        description: |-
-          Minimum GitLab access level able to push a package. Must be at least `maintainer`.
-                        For example `maintainer`, `owner` or `admin`.
+        description: Minimum GitLab access level required to push a package. Valid
+          values include `null`, `maintainer`, `owner` or `admin`. If the value is
+          `null`, the default minimum access level is `developer`. Must be provided
+          when `minimum_access_level_for_delete` is not set.
         enum:
         - maintainer
         - owner
         - admin
     description: Update a package protection rule for a project
-  API_Entities_Projects_RepositoryStorageMove:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 1
-      created_at:
-        type: string
-        format: date-time
-        example: '2020-05-07T04:27:17.234Z'
-      state:
-        type: string
-        example: scheduled
-      source_storage_name:
-        type: string
-        example: default
-      destination_storage_name:
-        type: string
-        example: storage1
-      error_message:
-        type: string
-        example: Failed to move repository
-      project:
-        "$ref": "#/definitions/API_Entities_ProjectIdentity"
-    description: API_Entities_Projects_RepositoryStorageMove model
-  postApiV4ProjectsIdRepositoryStorageMoves:
-    type: object
-    properties:
-      destination_storage_name:
-        type: string
-        description: The destination storage shard
-    description: Schedule a project repository storage move
   API_Entities_ProjectSnippet:
     type: object
     properties:
@@ -61660,6 +59773,10 @@ definitions:
           cluster_agents:
             type: string
             example: https://gitlab.example.com/api/v4/projects/4/cluster_agents
+      marked_for_deletion_at:
+        type: string
+      marked_for_deletion_on:
+        type: string
       packages_enabled:
         type: boolean
       empty_repo:
@@ -61818,9 +59935,6 @@ definitions:
         type: boolean
       ci_pipeline_variables_minimum_override_role:
         type: string
-      runners_token:
-        type: string
-        example: b8547b1dc37721d05889db52fa2f02
       runner_token_expiration_interval:
         type: integer
         format: int32
@@ -61841,6 +59955,9 @@ definitions:
         example: continuous
       ci_push_repository_for_job_token_allowed:
         type: boolean
+      runners_token:
+        type: string
+        example: b8547b1dc37721d05889db52fa2f02
       ci_config_path:
         type: string
         example: ''
@@ -61904,10 +60021,6 @@ definitions:
       mirror_overwrites_diverged_branches:
         type: string
       external_authorization_classification_label:
-        type: string
-      marked_for_deletion_at:
-        type: string
-      marked_for_deletion_on:
         type: string
       requirements_enabled:
         type: string
@@ -63272,6 +61385,58 @@ definitions:
         type: string
         example: https://gitlab.example.com/gitlab/gitlab-foss/-/compare/main...feature
     description: API_Entities_Compare model
+  API_Entities_RepositoryHealth:
+    type: object
+    properties:
+      size:
+        type: integer
+        format: int32
+        description: Repository size in bytes.
+      references:
+        "$ref": "#/definitions/API_Entities_RepositoryHealth_References"
+      objects:
+        "$ref": "#/definitions/API_Entities_RepositoryHealth_Objects"
+      updated_at:
+        type: string
+        format: date-time
+        example: '2025-02-24T09:05:50.355Z'
+    description: API_Entities_RepositoryHealth model
+  API_Entities_RepositoryHealth_References:
+    type: object
+    properties:
+      loose_count:
+        type: integer
+        format: int32
+        description: Number of loose references in the repository.
+      packed_size:
+        type: integer
+        format: int32
+        description: Size in bytes of packed references in the repository.
+      reference_backend:
+        type: string
+        description: Type of backend used to store references. Either 'REFERENCE_BACKEND_REFTABLE'
+          or 'REFERENCE_BACKEND_FILES'.
+  API_Entities_RepositoryHealth_Objects:
+    type: object
+    properties:
+      size:
+        type: integer
+        format: int32
+        description: Size in bytes of all objects in the repository.
+      recent_size:
+        type: integer
+        format: int32
+        description: Size in bytes of all recent objects in the repository. Recent
+          objects are those which are reachable.
+      stale_size:
+        type: integer
+        format: int32
+        description: Size in bytes of all stale objects in the repository. Stale objects
+          are those which are unreachable and may be deleted during housekeeping.
+      keep_size:
+        type: integer
+        format: int32
+        description: Size in bytes of all packfiles with the .keep extension.
   API_Entities_Contributor:
     type: object
     properties:
@@ -63349,70 +61514,6 @@ definitions:
     description: Generates a changelog section for a release and commits it in a changelog
       file
   postApiV4ProjectsIdAccessTokensSelfRotate:
-    type: object
-    properties:
-      expires_at:
-        type: string
-        format: date
-        description: The expiration date of the token
-        example: '2021-01-31'
-    description: Rotate a resource access token
-  postApiV4ProjectsIdAccessTokens:
-    type: object
-    properties:
-      name:
-        type: string
-        description: Resource access token name
-        example: test
-      scopes:
-        type: array
-        description: The permissions of the token
-        example:
-        - api
-        - read_repository
-        items:
-          type: string
-          enum:
-          - api
-          - read_api
-          - create_runner
-          - manage_runner
-          - k8s_proxy
-          - self_rotate
-          - read_repository
-          - write_repository
-          - read_observability
-          - write_observability
-          - ai_features
-      expires_at:
-        type: string
-        format: date
-        description: The expiration date of the token
-        default: '2026-03-05T09:41:42.948Z'
-        example: "\"2021-01-31"
-      description:
-        type: string
-        description: Resource access token description
-        example: test description
-      access_level:
-        type: integer
-        format: int32
-        description: The access level of the token in the project
-        enum:
-        - 10
-        - 15
-        - 20
-        - 30
-        - 40
-        - 50
-        default: 40
-        example: 40
-    required:
-    - name
-    - scopes
-    - expires_at
-    description: Create a resource access token
-  postApiV4ProjectsIdAccessTokensTokenIdRotate:
     type: object
     properties:
       expires_at:
@@ -64792,677 +62893,6 @@ definitions:
       versions:
         type: string
     description: API_Entities_Terraform_ModuleVersion model
-  putApiV4UsersIdCustomAttributesKey:
-    type: object
-    properties:
-      value:
-        type: string
-        description: The value of the custom attribute
-    required:
-    - value
-    description: Set a custom attribute on a user
-  API_Entities_UserSupportPin:
-    type: object
-    properties:
-      pin:
-        type: string
-        description: The security PIN
-      expires_at:
-        type: string
-        format: date-time
-        description: The expiration time of the PIN
-    description: API_Entities_UserSupportPin model
-  postApiV4Users:
-    type: object
-    properties:
-      email:
-        type: string
-        description: The email of the user
-      password:
-        type: string
-        description: The password of the new user
-      reset_password:
-        type: boolean
-        description: Flag indicating the user will be sent a password reset token
-      skip_confirmation:
-        type: boolean
-        description: Flag indicating the account is confirmed
-      force_random_password:
-        type: boolean
-        description: Flag indicating a random password will be set
-      name:
-        type: string
-        description: The name of the user
-      username:
-        type: string
-        description: The username of the user
-      skype:
-        type: string
-        description: The Skype username
-      linkedin:
-        type: string
-        description: The LinkedIn username
-      twitter:
-        type: string
-        description: The Twitter username
-      discord:
-        type: string
-        description: The Discord user ID
-      website_url:
-        type: string
-        description: The website of the user
-      organization:
-        type: string
-        description: The organization of the user
-      projects_limit:
-        type: integer
-        format: int32
-        description: The number of projects a user can create
-      extern_uid:
-        type: string
-        description: The external authentication provider UID
-      provider:
-        type: string
-        description: The external provider
-      bio:
-        type: string
-        description: The biography of the user
-      location:
-        type: string
-        description: The location of the user
-      pronouns:
-        type: string
-        description: The pronouns of the user
-      public_email:
-        type: string
-        description: The public email of the user
-      commit_email:
-        type: string
-        description: The commit email, _private for private commit email
-      admin:
-        type: boolean
-        description: Flag indicating the user is an administrator
-      can_create_group:
-        type: boolean
-        description: Flag indicating the user can create groups
-      external:
-        type: boolean
-        description: Flag indicating the user is an external user
-      avatar:
-        type: file
-        description: Avatar image for user
-      theme_id:
-        type: integer
-        format: int32
-        description: The GitLab theme for the user
-      color_scheme_id:
-        type: integer
-        format: int32
-        description: The color scheme for the file viewer
-      private_profile:
-        type: boolean
-        description: Flag indicating the user has a private profile
-      note:
-        type: string
-        description: Admin note for this user
-      view_diffs_file_by_file:
-        type: boolean
-        description: Flag indicating the user sees only one file diff per page
-      shared_runners_minutes_limit:
-        type: integer
-        format: int32
-        description: Compute minutes quota for this user
-      extra_shared_runners_minutes_limit:
-        type: integer
-        format: int32
-        description: "(admin-only) Extra compute minutes quota for this user"
-      group_id_for_saml:
-        type: integer
-        format: int32
-        description: ID for group where SAML has been configured
-      auditor:
-        type: boolean
-        description: Flag indicating auditor status of the user
-    required:
-    - email
-    - name
-    - username
-    description: Create a user. Available only for admins.
-  API_Entities_UserWithAdmin:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 1
-      username:
-        type: string
-        example: admin
-      name:
-        type: string
-        example: Administrator
-      state:
-        type: string
-        example: active
-      locked:
-        type: boolean
-      avatar_url:
-        type: string
-        example: https://gravatar.com/avatar/1
-      avatar_path:
-        type: string
-        example: "/user/avatar/28/The-Big-Lebowski-400-400.png"
-      custom_attributes:
-        type: array
-        items:
-          "$ref": "#/definitions/API_Entities_CustomAttribute"
-      web_url:
-        type: string
-        example: https://gitlab.example.com/root
-      created_at:
-        type: string
-      bio:
-        type: string
-      location:
-        type: string
-      public_email:
-        type: string
-      skype:
-        type: string
-      linkedin:
-        type: string
-      twitter:
-        type: string
-      discord:
-        type: string
-      website_url:
-        type: string
-      organization:
-        type: string
-      job_title:
-        type: string
-      pronouns:
-        type: string
-      bot:
-        type: string
-      work_information:
-        type: string
-      followers:
-        type: string
-      following:
-        type: string
-      is_followed:
-        type: string
-      local_time:
-        type: string
-      last_sign_in_at:
-        type: string
-        format: date-time
-        example: '2015-09-03T07:24:01.670Z'
-      confirmed_at:
-        type: string
-        format: date-time
-        example: '2015-09-03T07:24:01.670Z'
-      last_activity_on:
-        type: string
-        format: date-time
-        example: '2015-09-03T07:24:01.670Z'
-      email:
-        type: string
-        example: john@example.com
-      theme_id:
-        type: integer
-        format: int32
-        example: 2
-      color_scheme_id:
-        type: integer
-        format: int32
-        example: 1
-      projects_limit:
-        type: integer
-        format: int32
-        example: 10
-      current_sign_in_at:
-        type: string
-        format: date-time
-        example: '2015-09-03T07:24:01.670Z'
-      identities:
-        "$ref": "#/definitions/API_Entities_Identity"
-      can_create_group:
-        type: boolean
-        example: true
-      can_create_project:
-        type: boolean
-        example: true
-      two_factor_enabled:
-        type: boolean
-        example: true
-      external:
-        type: string
-      private_profile:
-        type: boolean
-        example: 'null'
-      commit_email:
-        type: string
-      shared_runners_minutes_limit:
-        type: string
-      extra_shared_runners_minutes_limit:
-        type: string
-      scim_identities:
-        "$ref": "#/definitions/API_Entities_ScimIdentity"
-      is_admin:
-        type: string
-      note:
-        type: string
-      namespace_id:
-        type: string
-      created_by:
-        "$ref": "#/definitions/API_Entities_UserBasic"
-      email_reset_offered_at:
-        type: string
-      using_license_seat:
-        type: string
-      is_auditor:
-        type: string
-      provisioned_by_group_id:
-        type: string
-      enterprise_group_id:
-        type: string
-      enterprise_group_associated_at:
-        type: string
-    description: API_Entities_UserWithAdmin model
-  putApiV4UsersId:
-    type: object
-    properties:
-      email:
-        type: string
-        description: The email of the user
-      password:
-        type: string
-        description: The password of the new user
-      skip_reconfirmation:
-        type: boolean
-        description: Flag indicating the account skips the confirmation by email
-      name:
-        type: string
-        description: The name of the user
-      username:
-        type: string
-        description: The username of the user
-      skype:
-        type: string
-        description: The Skype username
-      linkedin:
-        type: string
-        description: The LinkedIn username
-      twitter:
-        type: string
-        description: The Twitter username
-      discord:
-        type: string
-        description: The Discord user ID
-      website_url:
-        type: string
-        description: The website of the user
-      organization:
-        type: string
-        description: The organization of the user
-      projects_limit:
-        type: integer
-        format: int32
-        description: The number of projects a user can create
-      extern_uid:
-        type: string
-        description: The external authentication provider UID
-      provider:
-        type: string
-        description: The external provider
-      bio:
-        type: string
-        description: The biography of the user
-      location:
-        type: string
-        description: The location of the user
-      pronouns:
-        type: string
-        description: The pronouns of the user
-      public_email:
-        type: string
-        description: The public email of the user
-      commit_email:
-        type: string
-        description: The commit email, _private for private commit email
-      admin:
-        type: boolean
-        description: Flag indicating the user is an administrator
-      can_create_group:
-        type: boolean
-        description: Flag indicating the user can create groups
-      external:
-        type: boolean
-        description: Flag indicating the user is an external user
-      avatar:
-        type: file
-        description: Avatar image for user
-      theme_id:
-        type: integer
-        format: int32
-        description: The GitLab theme for the user
-      color_scheme_id:
-        type: integer
-        format: int32
-        description: The color scheme for the file viewer
-      private_profile:
-        type: boolean
-        description: Flag indicating the user has a private profile
-      note:
-        type: string
-        description: Admin note for this user
-      view_diffs_file_by_file:
-        type: boolean
-        description: Flag indicating the user sees only one file diff per page
-      shared_runners_minutes_limit:
-        type: integer
-        format: int32
-        description: Compute minutes quota for this user
-      extra_shared_runners_minutes_limit:
-        type: integer
-        format: int32
-        description: "(admin-only) Extra compute minutes quota for this user"
-      group_id_for_saml:
-        type: integer
-        format: int32
-        description: ID for group where SAML has been configured
-      auditor:
-        type: boolean
-        description: Flag indicating auditor status of the user
-    description: Update a user. Available only for admins.
-  postApiV4UsersUserIdKeys:
-    type: object
-    properties:
-      key:
-        type: string
-        description: The new SSH key
-      title:
-        type: string
-        description: The title of the new SSH key
-      expires_at:
-        type: string
-        format: date-time
-        description: The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)
-      usage_type:
-        type: string
-        description: Scope of usage for the SSH key
-        enum:
-        - auth_and_signing
-        - auth
-        - signing
-        default: auth_and_signing
-    required:
-    - key
-    - title
-    description: Add an SSH key to a specified user. Available only for admins.
-  API_Entities_SSHKey:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 1
-      title:
-        type: string
-        example: Sample key 25
-      created_at:
-        type: string
-        format: date-time
-        example: '2015-09-03T07:24:44.627Z'
-      expires_at:
-        type: string
-        format: date-time
-        example: '2020-09-03T07:24:44.627Z'
-      key:
-        type: string
-        example: |-
-          ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt1256k6Yjz\
-                GGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCdd\
-                NaP0L+hM7zhFNzjFvpaMgJw0=
-      usage_type:
-        type: string
-        example: auth
-    description: API_Entities_SSHKey model
-  postApiV4UsersIdGpgKeys:
-    type: object
-    properties:
-      key:
-        type: string
-        description: The new GPG key
-    required:
-    - key
-    description: Add a GPG key to a specified user. Available only for admins.
-  API_Entities_GpgKey:
-    type: object
-    properties:
-      id:
-        type: string
-      key:
-        type: string
-      created_at:
-        type: string
-    description: API_Entities_GpgKey model
-  postApiV4UsersIdEmails:
-    type: object
-    properties:
-      email:
-        type: string
-        description: The email of the user
-      skip_confirmation:
-        type: boolean
-        description: Skip confirmation of email and assume it is verified
-    required:
-    - email
-    description: Add an email address to a specified user. Available only for admins.
-  API_Entities_Email:
-    type: object
-    properties:
-      id:
-        type: string
-      email:
-        type: string
-      confirmed_at:
-        type: string
-    description: API_Entities_Email model
-  API_Entities_Membership:
-    type: object
-    properties:
-      source_id:
-        type: string
-      source_name:
-        type: string
-      source_type:
-        type: string
-      access_level:
-        type: string
-    description: API_Entities_Membership model
-  API_Entities_ImpersonationToken:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 2
-      name:
-        type: string
-        example: John Doe
-      revoked:
-        type: boolean
-      created_at:
-        type: string
-        format: date-time
-      description:
-        type: string
-        example: Token to manage api
-      scopes:
-        type: array
-        example:
-        - api
-      user_id:
-        type: integer
-        format: int32
-        example: 3
-      last_used_at:
-        type: string
-        format: date-time
-        example: '2020-08-31T15:53:00.073Z'
-      active:
-        type: boolean
-      expires_at:
-        type: string
-        format: date-time
-        example: '2020-08-31T15:53:00.073Z'
-      impersonation:
-        type: string
-    description: API_Entities_ImpersonationToken model
-  postApiV4UsersUserIdImpersonationTokens:
-    type: object
-    properties:
-      name:
-        type: string
-        description: The name of the impersonation token
-      description:
-        type: string
-        description: The description of the personal access token
-      expires_at:
-        type: string
-        format: date
-        description: The expiration date in the format YEAR-MONTH-DAY of the impersonation
-          token
-      scopes:
-        type: array
-        description: The array of scopes of the impersonation token
-        items:
-          type: string
-    required:
-    - name
-    description: Create a impersonation token. Available only for admins.
-  API_Entities_ImpersonationTokenWithToken:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 2
-      name:
-        type: string
-        example: John Doe
-      revoked:
-        type: boolean
-      created_at:
-        type: string
-        format: date-time
-      description:
-        type: string
-        example: Token to manage api
-      scopes:
-        type: array
-        example:
-        - api
-      user_id:
-        type: integer
-        format: int32
-        example: 3
-      last_used_at:
-        type: string
-        format: date-time
-        example: '2020-08-31T15:53:00.073Z'
-      active:
-        type: boolean
-      expires_at:
-        type: string
-        format: date-time
-        example: '2020-08-31T15:53:00.073Z'
-      token:
-        type: string
-      impersonation:
-        type: string
-    description: API_Entities_ImpersonationTokenWithToken model
-  postApiV4UsersUserIdPersonalAccessTokens:
-    type: object
-    properties:
-      name:
-        type: string
-        description: The name of the personal access token
-      scopes:
-        type: array
-        description: The array of scopes of the personal access token
-        items:
-          type: string
-          enum:
-          - api
-          - read_api
-          - read_user
-          - create_runner
-          - manage_runner
-          - k8s_proxy
-          - self_rotate
-          - read_repository
-          - write_repository
-          - read_observability
-          - write_observability
-          - ai_features
-          - sudo
-          - admin_mode
-          - read_service_ping
-      description:
-        type: string
-        description: The description of the personal access token
-      expires_at:
-        type: string
-        format: date
-        description: The expiration date in the format YEAR-MONTH-DAY of the personal
-          access token
-    required:
-    - name
-    - scopes
-    description: Create a personal access token. Available only for admins.
-  API_Entities_PersonalAccessTokenWithToken:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 2
-      name:
-        type: string
-        example: John Doe
-      revoked:
-        type: boolean
-      created_at:
-        type: string
-        format: date-time
-      description:
-        type: string
-        example: Token to manage api
-      scopes:
-        type: array
-        example:
-        - api
-      user_id:
-        type: integer
-        format: int32
-        example: 3
-      last_used_at:
-        type: string
-        format: date-time
-        example: '2020-08-31T15:53:00.073Z'
-      active:
-        type: boolean
-      expires_at:
-        type: string
-        format: date-time
-        example: '2020-08-31T15:53:00.073Z'
-      token:
-        type: string
-    description: API_Entities_PersonalAccessTokenWithToken model
   API_Entities_Feature:
     type: object
     properties:
@@ -66774,6 +64204,10 @@ definitions:
         type: string
         format: date-time
         example: '2020-09-03T07:24:44.627Z'
+      last_used_at:
+        type: string
+        format: date-time
+        example: '2020-09-03T07:24:44.627Z'
       key:
         type: string
         example: |-
@@ -66786,6 +64220,149 @@ definitions:
       user:
         "$ref": "#/definitions/API_Entities_UserPublic"
     description: API_Entities_SSHKeyWithUser model
+  API_Entities_UserWithAdmin:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 1
+      username:
+        type: string
+        example: admin
+      name:
+        type: string
+        example: Administrator
+      state:
+        type: string
+        example: active
+      locked:
+        type: boolean
+      avatar_url:
+        type: string
+        example: https://gravatar.com/avatar/1
+      avatar_path:
+        type: string
+        example: "/user/avatar/28/The-Big-Lebowski-400-400.png"
+      custom_attributes:
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_CustomAttribute"
+      web_url:
+        type: string
+        example: https://gitlab.example.com/root
+      created_at:
+        type: string
+      bio:
+        type: string
+      location:
+        type: string
+      public_email:
+        type: string
+      skype:
+        type: string
+      linkedin:
+        type: string
+      twitter:
+        type: string
+      discord:
+        type: string
+      website_url:
+        type: string
+      organization:
+        type: string
+      job_title:
+        type: string
+      pronouns:
+        type: string
+      bot:
+        type: string
+      work_information:
+        type: string
+      followers:
+        type: string
+      following:
+        type: string
+      is_followed:
+        type: string
+      local_time:
+        type: string
+      last_sign_in_at:
+        type: string
+        format: date-time
+        example: '2015-09-03T07:24:01.670Z'
+      confirmed_at:
+        type: string
+        format: date-time
+        example: '2015-09-03T07:24:01.670Z'
+      last_activity_on:
+        type: string
+        format: date-time
+        example: '2015-09-03T07:24:01.670Z'
+      email:
+        type: string
+        example: john@example.com
+      theme_id:
+        type: integer
+        format: int32
+        example: 2
+      color_scheme_id:
+        type: integer
+        format: int32
+        example: 1
+      projects_limit:
+        type: integer
+        format: int32
+        example: 10
+      current_sign_in_at:
+        type: string
+        format: date-time
+        example: '2015-09-03T07:24:01.670Z'
+      identities:
+        "$ref": "#/definitions/API_Entities_Identity"
+      can_create_group:
+        type: boolean
+        example: true
+      can_create_project:
+        type: boolean
+        example: true
+      two_factor_enabled:
+        type: boolean
+        example: true
+      external:
+        type: string
+      private_profile:
+        type: boolean
+        example: 'null'
+      commit_email:
+        type: string
+      shared_runners_minutes_limit:
+        type: string
+      extra_shared_runners_minutes_limit:
+        type: string
+      scim_identities:
+        "$ref": "#/definitions/API_Entities_ScimIdentity"
+      is_admin:
+        type: string
+      note:
+        type: string
+      namespace_id:
+        type: string
+      created_by:
+        "$ref": "#/definitions/API_Entities_UserBasic"
+      email_reset_offered_at:
+        type: string
+      using_license_seat:
+        type: string
+      is_auditor:
+        type: string
+      provisioned_by_group_id:
+        type: string
+      enterprise_group_id:
+        type: string
+      enterprise_group_associated_at:
+        type: string
+    description: API_Entities_UserWithAdmin model
   postApiV4Markdown:
     type: object
     properties:
@@ -67156,6 +64733,45 @@ definitions:
         description: The expiration date of the token
         example: '2021-01-31'
     description: Rotate a personal access token
+  API_Entities_PersonalAccessTokenWithToken:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        example: 2
+      name:
+        type: string
+        example: John Doe
+      revoked:
+        type: boolean
+      created_at:
+        type: string
+        format: date-time
+      description:
+        type: string
+        example: Token to manage api
+      scopes:
+        type: array
+        example:
+        - api
+      user_id:
+        type: integer
+        format: int32
+        example: 3
+      last_used_at:
+        type: string
+        format: date-time
+        example: '2020-08-31T15:53:00.073Z'
+      active:
+        type: boolean
+      expires_at:
+        type: string
+        format: date-time
+        example: '2020-08-31T15:53:00.073Z'
+      token:
+        type: string
+    description: API_Entities_PersonalAccessTokenWithToken model
   API_Entities_PersonalAccessTokenWithLastUsedIps:
     type: object
     properties:
@@ -67208,22 +64824,6 @@ definitions:
         description: The expiration date of the token
         example: '2021-01-31'
     description: Rotate personal access token
-  postApiV4ProjectRepositoryStorageMoves:
-    type: object
-    properties:
-      source_storage_name:
-        type: string
-        description: The source storage shard
-        enum:
-        - default
-      destination_storage_name:
-        type: string
-        description: The destination storage shard
-        enum:
-        - default
-    required:
-    - source_storage_name
-    description: Schedule bulk project repository storage moves
   API_Entities_Snippet:
     type: object
     properties:
@@ -67433,97 +65033,6 @@ definitions:
           required:
           - action
     description: Update an existing snippet
-  API_Entities_Snippets_RepositoryStorageMove:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 1
-      created_at:
-        type: string
-        format: date-time
-        example: '2020-05-07T04:27:17.234Z'
-      state:
-        type: string
-        example: scheduled
-      source_storage_name:
-        type: string
-        example: default
-      destination_storage_name:
-        type: string
-        example: storage1
-      error_message:
-        type: string
-        example: Failed to move repository
-      snippet:
-        "$ref": "#/definitions/API_Entities_BasicSnippet"
-    description: API_Entities_Snippets_RepositoryStorageMove model
-  API_Entities_BasicSnippet:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int32
-        example: 1
-      title:
-        type: string
-        example: test
-      description:
-        type: string
-        example: Ruby test snippet
-      visibility:
-        type: string
-        example: public
-      author:
-        "$ref": "#/definitions/API_Entities_UserBasic"
-      created_at:
-        type: string
-        format: date-time
-        example: '2012-06-28T10:52:04Z'
-      updated_at:
-        type: string
-        format: date-time
-        example: '2012-06-28T10:52:04Z'
-      project_id:
-        type: integer
-        format: int32
-        example: 1
-      web_url:
-        type: string
-        example: http://example.com/example/example/snippets/1
-      raw_url:
-        type: string
-        example: http://example.com/example/example/snippets/1/raw
-      ssh_url_to_repo:
-        type: string
-        example: ssh://user@gitlab.example.com/snippets/65.git
-      http_url_to_repo:
-        type: string
-        example: https://gitlab.example.com/snippets/65.git
-  postApiV4SnippetsIdRepositoryStorageMoves:
-    type: object
-    properties:
-      destination_storage_name:
-        type: string
-        description: The destination storage shard
-    description: Schedule a snippet repository storage move
-  postApiV4SnippetRepositoryStorageMoves:
-    type: object
-    properties:
-      source_storage_name:
-        type: string
-        description: The source storage shard
-        enum:
-        - default
-      destination_storage_name:
-        type: string
-        description: The destination storage shard
-        enum:
-        - default
-    required:
-    - source_storage_name
-    description: Schedule bulk snippet repository storage moves
   putApiV4SuggestionsIdApply:
     type: object
     properties:
@@ -67908,229 +65417,30 @@ definitions:
     required:
     - event
     description: Track gitlab internal events
-  postApiV4UserKeys:
+  API_Entities_UserCounts:
     type: object
     properties:
-      key:
-        type: string
-        description: The new SSH key
-      title:
-        type: string
-        description: The title of the new SSH key
-      expires_at:
-        type: string
-        format: date-time
-        description: The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)
-      usage_type:
-        type: string
-        description: Scope of usage for the SSH key
-        enum:
-        - auth_and_signing
-        - auth
-        - signing
-        default: auth_and_signing
-    required:
-    - key
-    - title
-    description: Add a new SSH key to the currently authenticated user
-  postApiV4UserGpgKeys:
-    type: object
-    properties:
-      key:
-        type: string
-        description: The new GPG key
-    required:
-    - key
-    description: Add a new GPG key to the currently authenticated user
-  putApiV4UserUserIdCreditCardValidation:
-    type: object
-    properties:
-      credit_card_validated_at:
-        type: string
-        format: date-time
-        description: The time when the user's credit card was validated
-      credit_card_expiration_month:
+      merge_requests:
         type: integer
         format: int32
-        description: The month the credit card expires
-      credit_card_expiration_year:
+        example: 10
+      assigned_issues:
         type: integer
         format: int32
-        description: The year the credit card expires
-      credit_card_holder_name:
-        type: string
-        description: The credit card holder name
-      credit_card_mask_number:
-        type: string
-        description: The last 4 digits of credit card number
-      credit_card_type:
-        type: string
-        description: The credit card network name
-      zuora_payment_method_xid:
-        type: string
-        description: The Zuora payment method ID
-      stripe_setup_intent_xid:
-        type: string
-        description: The Stripe setup intent ID
-      stripe_payment_method_xid:
-        type: string
-        description: The Stripe payment method ID
-      stripe_card_fingerprint:
-        type: string
-        description: The Stripe credit card fingerprint
-    required:
-    - credit_card_validated_at
-    - credit_card_expiration_month
-    - credit_card_expiration_year
-    - credit_card_holder_name
-    - credit_card_mask_number
-    - credit_card_type
-    description: "[DEPRECATED] Update a user's credit_card_validation"
-  API_Entities_UserCreditCardValidations:
-    type: object
-    properties:
-      user_id:
-        type: string
-      credit_card_validated_at:
-        type: string
-    description: API_Entities_UserCreditCardValidations model
-  putApiV4UserPreferences:
-    type: object
-    properties:
-      view_diffs_file_by_file:
-        type: boolean
-        description: Flag indicating the user sees only one file diff per page
-      show_whitespace_in_diffs:
-        type: boolean
-        description: Flag indicating the user sees whitespace changes in diffs
-      pass_user_identities_to_ci_jwt:
-        type: boolean
-        description: Flag indicating the user passes their external identities to
-          a CI job as part of a JSON web token.
-    description: Update the current user's preferences
-  API_Entities_UserPreferences:
-    type: object
-    properties:
-      id:
-        type: string
-      user_id:
-        type: string
-      view_diffs_file_by_file:
-        type: string
-      show_whitespace_in_diffs:
-        type: string
-      pass_user_identities_to_ci_jwt:
-        type: string
-    description: API_Entities_UserPreferences model
-  postApiV4UserEmails:
-    type: object
-    properties:
-      email:
-        type: string
-        description: The new email
-    required:
-    - email
-    description: Add new email address to the currently authenticated user
-  putApiV4UserStatus:
-    type: object
-    properties:
-      emoji:
-        type: string
-        description: The emoji to set on the status
-      message:
-        type: string
-        description: The status message to set
-      availability:
-        type: string
-        description: The availability of user to set
-      clear_status_after:
-        type: string
-        description: Automatically clear emoji, message and availability fields after
-          a certain time
-        enum:
-        - 30_minutes
-        - 3_hours
-        - 8_hours
-        - 1_day
-        - 3_days
-        - 7_days
-        - 30_days
-    description: Set the status of the current user
-  API_Entities_UserStatus:
-    type: object
-    properties:
-      emoji:
-        type: string
-      message:
-        type: string
-      availability:
-        type: string
-      message_html:
-        type: string
-      clear_status_at:
-        type: string
-    description: API_Entities_UserStatus model
-  patchApiV4UserStatus:
-    type: object
-    properties:
-      emoji:
-        type: string
-        description: The emoji to set on the status
-      message:
-        type: string
-        description: The status message to set
-      availability:
-        type: string
-        description: The availability of user to set
-      clear_status_after:
-        type: string
-        description: Automatically clear emoji, message and availability fields after
-          a certain time
-        enum:
-        - 30_minutes
-        - 3_hours
-        - 8_hours
-        - 1_day
-        - 3_days
-        - 7_days
-        - 30_days
-    description: Set the status of the current user
-  putApiV4UserAvatar:
-    type: object
-    properties:
-      avatar:
-        type: file
-        description: The avatar file (generated by Multipart middleware)
-    required:
-    - avatar
-    description: Set the avatar of the current user
-  postApiV4UserPersonalAccessTokens:
-    type: object
-    properties:
-      name:
-        type: string
-        description: The name of the personal access token
-      scopes:
-        type: array
-        description: The array of scopes of the personal access token
-        items:
-          type: string
-          enum:
-          - k8s_proxy
-      description:
-        type: string
-        description: The description of the personal access token
-      expires_at:
-        type: string
-        format: date
-        description: The expiration date in the format YEAR-MONTH-DAY of the personal
-          access token
-        default: {}
-    required:
-    - name
-    - scopes
-    description: Create a personal access token with limited scopes for the currently
-      authenticated user
+        example: 10
+      assigned_merge_requests:
+        type: integer
+        format: int32
+        example: 10
+      review_requested_merge_requests:
+        type: integer
+        format: int32
+        example: 10
+      todos:
+        type: integer
+        format: int32
+        example: 10
+    description: API_Entities_UserCounts model
   postApiV4UserRunners:
     type: object
     properties:
@@ -68189,30 +65499,6 @@ definitions:
     - group_id
     - project_id
     description: Create a runner owned by currently authenticated user
-  API_Entities_UserCounts:
-    type: object
-    properties:
-      merge_requests:
-        type: integer
-        format: int32
-        example: 10
-      assigned_issues:
-        type: integer
-        format: int32
-        example: 10
-      assigned_merge_requests:
-        type: integer
-        format: int32
-        example: 10
-      review_requested_merge_requests:
-        type: integer
-        format: int32
-        example: 10
-      todos:
-        type: integer
-        format: int32
-        example: 10
-    description: API_Entities_UserCounts model
   API_Entities_PlanLimit:
     type: object
     properties:

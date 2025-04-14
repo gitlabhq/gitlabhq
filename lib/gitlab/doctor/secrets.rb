@@ -16,6 +16,10 @@ module Gitlab
         models_with_attributes = Hash.new { |h, k| h[k] = [] }
 
         models_with_encrypted_attributes.each do |model|
+          models_with_attributes[model] += model.encrypted_attributes.to_a
+        end
+
+        models_with_attr_encrypted_attributes.each do |model|
           models_with_attributes[model] += model.attr_encrypted_attributes.keys
         end
 
@@ -79,6 +83,10 @@ module Gitlab
       end
 
       def models_with_encrypted_attributes
+        all_models.select { |d| d.encrypted_attributes.present? }
+      end
+
+      def models_with_attr_encrypted_attributes
         all_models.select { |d| d.attr_encrypted_attributes.present? }
       end
 

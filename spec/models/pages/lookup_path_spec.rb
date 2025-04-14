@@ -7,6 +7,8 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
   let(:path_prefix) { nil }
   let(:file_store) { ::ObjectStorage::Store::REMOTE }
   let(:group) { build(:group, path: 'mygroup') }
+  let(:access_control) { false }
+
   let(:deployment) do
     build(
       :pages_deployment,
@@ -25,12 +27,17 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
       pages_https_only: true)
   end
 
-  subject(:lookup_path) { described_class.new(deployment: deployment, trim_prefix: trim_prefix) }
+  subject(:lookup_path) do
+    described_class.new(
+      deployment: deployment,
+      trim_prefix: trim_prefix,
+      access_control: access_control
+    )
+  end
 
   before do
     stub_pages_setting(
       enabled: true,
-      access_control: true,
       external_https: ["1.1.1.1:443"],
       url: 'http://example.com',
       protocol: 'http')
@@ -45,8 +52,20 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
   end
 
   describe '#access_control' do
-    it 'delegates to Project#private_pages?' do
-      expect(lookup_path.access_control).to eq(true)
+    context 'when access control is enabled' do
+      let(:access_control) { true }
+
+      it 'sets access_control to true' do
+        expect(lookup_path.access_control).to eq(true)
+      end
+    end
+
+    context 'when access control is disabled' do
+      let(:access_control) { false }
+
+      it 'sets access_control to true' do
+        expect(lookup_path.access_control).to eq(false)
+      end
     end
   end
 

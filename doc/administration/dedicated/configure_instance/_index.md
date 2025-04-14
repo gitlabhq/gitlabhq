@@ -33,15 +33,15 @@ You can use Switchboard to make limited configuration changes to your GitLab Ded
 
 The following configuration settings are available in Switchboard:
 
-- [IP allowlist](../configure_instance/network_security.md#ip-allowlist)
-- [SAML settings](../configure_instance/saml.md)
-- [Custom certificates](../configure_instance/network_security.md#custom-certificates)
-- [Outbound private links](../configure_instance/network_security.md#outbound-private-link)
-- [Private hosted zones](../configure_instance/network_security.md#private-hosted-zones)
+- [IP allowlist](network_security.md#ip-allowlist)
+- [SAML settings](saml.md)
+- [Custom certificates](network_security.md#custom-certificates)
+- [Outbound private links](network_security.md#outbound-private-link)
+- [Private hosted zones](network_security.md#private-hosted-zones)
 
 Prerequisites:
 
-- You must have the [Admin](../configure_instance/users_notifications.md#add-switchboard-users) role.
+- You must have the [Admin](users_notifications.md#add-switchboard-users) role.
 
 To make a configuration change:
 
@@ -54,16 +54,18 @@ For all other instance configurations, submit a support ticket according to the
 
 ### Apply configuration changes in Switchboard
 
-You can apply configuration changes made in Switchboard immediately or defer them until your next scheduled weekly [maintenance window](../../dedicated/maintenance.md#maintenance-windows).
+You can apply configuration changes made in Switchboard immediately or defer them until your next scheduled weekly [maintenance window](../maintenance.md#maintenance-windows).
 
 When you apply changes immediately:
 
 - Deployment can take up to 90 minutes.
 - Changes are applied in the order they're saved.
 - You can save multiple changes and apply them in one batch.
+- Your GitLab Dedicated instance remains available during the deployment.
+- Changes to private hosted zones can disrupt services that use these records for up to 5 minutes.
 
 After the deployment job is complete, you receive an email notification. Check your spam folder if you do not see a notification in your main inbox.
-All users with access to view or edit your tenant in Switchboard receive a notification for each change. For more information, see [Manage Switchboard notification preferences](../configure_instance/users_notifications.md#manage-notification-preferences).
+All users with access to view or edit your tenant in Switchboard receive a notification for each change. For more information, see [Manage Switchboard notification preferences](users_notifications.md#manage-notification-preferences).
 
 {{< alert type="note" >}}
 

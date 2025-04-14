@@ -59,6 +59,15 @@ module Emails
       mail_answer_note_thread(design, @note, note_thread_options(reason))
     end
 
+    def note_wiki_page_email(recipient_id, note_id, reason = nil)
+      setup_note_mail(note_id, recipient_id)
+
+      @wiki_page = @note.noteable
+      @target_url = Gitlab::UrlBuilder.build(@wiki_page, **note_target_url_query_params)
+
+      mail_answer_note_thread(@wiki_page, @note, note_thread_options(reason))
+    end
+
     private
 
     def note_target_url_options

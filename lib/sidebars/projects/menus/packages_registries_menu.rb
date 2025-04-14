@@ -53,7 +53,7 @@ module Sidebars
           end
 
           ::Sidebars::MenuItem.new(
-            title: _('Container Registry'),
+            title: _('Container registry'),
             link: project_container_registry_index_path(context.project),
             super_sidebar_parent: Sidebars::Projects::SuperSidebarMenus::DeployMenu,
             active_routes: { controller: 'projects/registry/repositories' },

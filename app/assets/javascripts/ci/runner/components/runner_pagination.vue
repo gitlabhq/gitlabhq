@@ -38,7 +38,5 @@ export default {
 </script>
 
 <template>
-  <div v-if="isShown" class="gl-text-center">
-    <gl-keyset-pagination v-bind="paginationProps" @prev="prevPage" @next="nextPage" />
-  </div>
+  <gl-keyset-pagination v-if="isShown" v-bind="paginationProps" @prev="prevPage" @next="nextPage" />
 </template>

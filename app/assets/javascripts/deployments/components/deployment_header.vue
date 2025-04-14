@@ -55,9 +55,6 @@ export default {
     },
   },
   computed: {
-    iid() {
-      return this.deployment.iid;
-    },
     status() {
       return this.deployment.status?.toLowerCase() ?? '';
     },

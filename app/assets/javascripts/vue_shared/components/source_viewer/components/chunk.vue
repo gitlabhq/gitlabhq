@@ -30,11 +30,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    chunkIndex: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     rawContent: {
       type: String,
       required: true,

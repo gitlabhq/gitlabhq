@@ -35,9 +35,6 @@ export default {
     swipeMaxPixelHeight() {
       return pixeliseValue(this.swipeMaxHeight);
     },
-    swipeWrapPixelWidth() {
-      return pixeliseValue(this.swipeWrapWidth);
-    },
     swipeBarPixelPos() {
       return pixeliseValue(this.swipeBarPos);
     },

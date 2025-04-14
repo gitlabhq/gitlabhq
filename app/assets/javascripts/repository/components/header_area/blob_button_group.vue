@@ -1,16 +1,15 @@
 <script>
 import { GlDisclosureDropdownItem, GlDisclosureDropdownGroup } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { showForkSuggestion } from '~/repository/utils/fork_suggestion_utils';
 import { DEFAULT_BLOB_INFO } from '~/repository/constants';
 import getRefMixin from '~/repository/mixins/get_ref';
-import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 
 const REPLACE_BLOB_MODAL_ID = 'modal-replace-blob';
 
 export default {
+  name: 'CEBlobButtonGroup',
   i18n: {
     replace: __('Replace'),
   },
@@ -18,12 +17,9 @@ export default {
   components: {
     GlDisclosureDropdownItem,
     GlDisclosureDropdownGroup,
-    ForkSuggestionModal,
     UploadBlobModal,
-    LockFileDropdownItem: () =>
-      import('ee_component/repository/components/header_area/lock_file_dropdown_item.vue'),
   },
-  mixins: [getRefMixin, glFeatureFlagMixin()],
+  mixins: [getRefMixin],
   inject: {
     selectedBranch: {
       default: '',
@@ -40,10 +36,6 @@ export default {
       type: String,
       required: true,
     },
-    projectPath: {
-      type: String,
-      required: true,
-    },
     isUsingLfs: {
       type: Boolean,
       required: false,
@@ -53,21 +45,10 @@ export default {
       type: Object,
       required: true,
     },
-    isLoading: {
+    isReplaceDisabled: {
       type: Boolean,
-      required: false,
-      default: false,
+      required: true,
     },
-    pathLocks: {
-      type: Object,
-      required: false,
-      default: () => DEFAULT_BLOB_INFO.pathLocks,
-    },
-  },
-  data() {
-    return {
-      isForkSuggestionModalVisible: false,
-    };
   },
   computed: {
     replaceFileItem() {
@@ -75,6 +56,7 @@ export default {
         text: this.$options.i18n.replace,
         extraAttrs: {
           'data-testid': 'replace',
+          disabled: this.isReplaceDisabled,
         },
       };
     },
@@ -88,7 +70,7 @@ export default {
   methods: {
     showModal() {
       if (this.shouldShowForkSuggestion) {
-        this.isForkSuggestionModalVisible = true;
+        this.$emit('showForkSuggestion');
         return;
       }
 
@@ -100,20 +82,11 @@ export default {
 
 <template>
   <gl-disclosure-dropdown-group bordered>
-    <lock-file-dropdown-item
-      v-if="glFeatures.fileLocks"
-      :name="blobInfo.name"
-      :path="blobInfo.path"
-      :project-path="projectPath"
-      :path-locks="pathLocks"
-      :user-permissions="userPermissions"
-      :is-loading="isLoading"
-    />
-    <gl-disclosure-dropdown-item :item="replaceFileItem" @action="showModal" />
-    <fork-suggestion-modal
-      :visible="isForkSuggestionModalVisible"
-      :fork-path="blobInfo.forkAndViewPath"
-      @hide="isForkSuggestionModalVisible = false"
+    <slot name="lock-file-item"></slot>
+    <gl-disclosure-dropdown-item
+      :item="replaceFileItem"
+      data-testid="replace-dropdown-item"
+      @action="showModal"
     />
     <upload-blob-modal
       :ref="$options.replaceBlobModalId"

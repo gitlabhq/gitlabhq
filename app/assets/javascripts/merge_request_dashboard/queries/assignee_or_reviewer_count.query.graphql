@@ -3,6 +3,8 @@ query assigneeOrReviewerCount(
   $assignedReviewStates: [MergeRequestReviewState!]
   $reviewerReviewStates: [MergeRequestReviewState!]
   $mergedAfter: Time
+  $or: UnionedMergeRequestFilterInput
+  $not: MergeRequestsResolverNegatedParams
 ) {
   currentUser {
     id
@@ -11,6 +13,8 @@ query assigneeOrReviewerCount(
       assignedReviewStates: $assignedReviewStates
       reviewerReviewStates: $reviewerReviewStates
       mergedAfter: $mergedAfter
+      or: $or
+      not: $not
     ) {
       count
     }

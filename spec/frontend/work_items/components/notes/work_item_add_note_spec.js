@@ -18,7 +18,7 @@ import {
   createWorkItemNoteResponse,
   workItemByIidResponseFactory,
   workItemQueryResponse,
-} from '../../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 jest.mock('~/lib/utils/autosave');
@@ -299,16 +299,17 @@ describe('Work item add note', () => {
 
     describe('when the work item type is changed to incident', () => {
       it.each`
-        command                   | shouldPerformReload
-        ${'/promote_to_incident'} | ${true}
-        ${'/type Incident'}       | ${true}
-        ${'/type incident'}       | ${true}
-        ${'/promote_to Incident'} | ${true}
-        ${'/promote_to incident'} | ${true}
-        ${'/promote_to Epic'}     | ${false}
-        ${'/type Issue'}          | ${false}
-        ${'/type Task'}           | ${false}
-        ${'No quick action'}      | ${false}
+        command                                  | shouldPerformReload
+        ${'/promote_to_incident'}                | ${true}
+        ${'/type Incident'}                      | ${true}
+        ${'/type incident'}                      | ${true}
+        ${'/promote_to Incident'}                | ${true}
+        ${'/promote_to incident'}                | ${true}
+        ${'/convert_to_ticket user@example.com'} | ${true}
+        ${'/promote_to Epic'}                    | ${false}
+        ${'/type Issue'}                         | ${false}
+        ${'/type Task'}                          | ${false}
+        ${'No quick action'}                     | ${false}
       `(
         'calls visitUrl $shouldPerformReload when note was added with command: $command',
         async ({ command, shouldPerformReload }) => {

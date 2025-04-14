@@ -408,7 +408,7 @@ module Issuable
 
     def order_labels_priority(direction = 'ASC', excluded_labels: [], extra_select_columns: [], with_cte: false)
       highest_priority = highest_label_priority(
-        target_type: name,
+        target_type: name == "WorkItem" ? "Issue" : name,
         target_column: "#{table_name}.id",
         project_column: "#{table_name}.#{project_foreign_key}",
         excluded_labels: excluded_labels

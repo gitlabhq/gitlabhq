@@ -10,33 +10,25 @@ class ApplicationSetting < ApplicationRecord
   ignore_column :pre_receive_secret_detection_enabled, remove_with: '17.9', remove_after: '2025-02-15'
 
   ignore_columns %i[
-    elasticsearch_aws
-    elasticsearch_search
-    elasticsearch_indexing
-    elasticsearch_username
-    elasticsearch_aws_region
-    elasticsearch_aws_access_key
-    elasticsearch_limit_indexing
-    elasticsearch_pause_indexing
-    elasticsearch_requeue_workers
-    elasticsearch_max_bulk_size_mb
-    elasticsearch_retry_on_failure
-    elasticsearch_max_bulk_concurrency
-    elasticsearch_client_request_timeout
-    elasticsearch_worker_number_of_shards
-    elasticsearch_analyzers_smartcn_search
-    elasticsearch_analyzers_kuromoji_search
-    elasticsearch_analyzers_smartcn_enabled
-    elasticsearch_analyzers_kuromoji_enabled
-    elasticsearch_indexed_field_length_limit
-    elasticsearch_indexed_file_size_limit_kb
-    elasticsearch_max_code_indexing_concurrency
     security_policy_scheduled_scans_max_concurrency
   ], remove_with: '17.11', remove_after: '2025-04-17'
-
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
     'Admin area > Settings > Metrics and profiling > Metrics - Grafana'
+
+  ignore_columns %i[
+    package_registry_allow_anyone_to_pull_option
+    package_registry_cleanup_policies_worker_capacity
+    packages_cleanup_package_file_worker_capacity
+    npm_package_requests_forwarding
+    lock_npm_package_requests_forwarding
+    maven_package_requests_forwarding
+    lock_maven_package_requests_forwarding
+    pypi_package_requests_forwarding
+    lock_pypi_package_requests_forwarding
+  ], remove_with: '18.1', remove_after: '2025-05-20'
+
+  ignore_column :duo_nano_features_enabled, remove_with: '18.1', remove_after: '2025-06-19'
 
   KROKI_URL_ERROR_MESSAGE = 'Please check your Kroki URL setting in ' \
     'Admin area > Settings > General > Kroki'
@@ -56,11 +48,11 @@ class ApplicationSetting < ApplicationRecord
   # matches the size set in the database constraint
   DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE = 1.kilobyte
 
-  PACKAGE_REGISTRY_SETTINGS = [:nuget_skip_metadata_url_validation].freeze
-
   USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS = 3
 
   INACTIVE_RESOURCE_ACCESS_TOKENS_DELETE_AFTER_DAYS = 30
+
+  DEFAULT_HELM_MAX_PACKAGES_COUNT = 1000
 
   enum :whats_new_variant, { all_tiers: 0, current_tier: 1, disabled: 2 }, prefix: true
   enum :email_confirmation_setting, { off: 0, soft: 1, hard: 2 }, prefix: true
@@ -470,6 +462,8 @@ class ApplicationSetting < ApplicationRecord
 
   validate :check_valid_runner_registrars
 
+  validate :snowplow_and_product_usage_data_are_mutually_exclusive
+
   validate :terms_exist, if: :enforce_terms?
 
   validates :external_authorization_service_default_label,
@@ -525,6 +519,11 @@ class ApplicationSetting < ApplicationRecord
     pkey: :external_auth_client_key,
     pass: :external_auth_client_key_pass,
     if: ->(setting) { setting.external_auth_client_cert.present? }
+
+  jsonb_accessor :ci_cd_settings,
+    ci_job_live_trace_enabled: [:boolean, { default: false }]
+
+  validate :validate_object_storage_for_live_trace_configuration, if: -> { ci_job_live_trace_enabled? }
 
   validates :default_ci_config_path,
     format: { without: %r{(\.{2}|\A/)}, message: N_('cannot include leading slash or directory traversal.') },
@@ -679,37 +678,14 @@ class ApplicationSetting < ApplicationRecord
   attribute :resource_usage_limits, ::Gitlab::Database::Type::IndifferentJsonb.new, default: -> { {} }
   validates :resource_usage_limits, json_schema: { filename: 'resource_usage_limits' }
 
-  jsonb_accessor :rate_limits,
-    autocomplete_users_limit: [:integer, { default: 300 }],
-    autocomplete_users_unauthenticated_limit: [:integer, { default: 100 }],
-    concurrent_bitbucket_import_jobs_limit: [:integer, { default: 100 }],
-    concurrent_bitbucket_server_import_jobs_limit: [:integer, { default: 100 }],
-    concurrent_github_import_jobs_limit: [:integer, { default: 1000 }],
-    concurrent_relation_batch_export_limit: [:integer, { default: 8 }],
-    downstream_pipeline_trigger_limit_per_project_user_sha: [:integer, { default: 0 }],
-    group_api_limit: [:integer, { default: 400 }],
-    group_invited_groups_api_limit: [:integer, { default: 60 }],
-    group_projects_api_limit: [:integer, { default: 600 }],
-    group_shared_groups_api_limit: [:integer, { default: 60 }],
-    groups_api_limit: [:integer, { default: 200 }],
-    members_delete_limit: [:integer, { default: 60 }],
-    create_organization_api_limit: [:integer, { default: 10 }],
-    project_api_limit: [:integer, { default: 400 }],
-    project_invited_groups_api_limit: [:integer, { default: 60 }],
-    projects_api_limit: [:integer, { default: 2000 }],
-    user_contributed_projects_api_limit: [:integer, { default: 100 }],
-    user_projects_api_limit: [:integer, { default: 300 }],
-    user_starred_projects_api_limit: [:integer, { default: 100 }],
-    users_api_limit_followers: [:integer, { default: 100 }],
-    users_api_limit_following: [:integer, { default: 100 }],
-    users_api_limit_status: [:integer, { default: 240 }],
-    users_api_limit_ssh_keys: [:integer, { default: 120 }],
-    users_api_limit_ssh_key: [:integer, { default: 120 }],
-    users_api_limit_gpg_keys: [:integer, { default: 120 }],
-    users_api_limit_gpg_key: [:integer, { default: 120 }]
+  jsonb_accessor :clickhouse,
+    use_clickhouse_for_analytics: [:boolean, { default: false }]
+
+  validates :clickhouse, json_schema: { filename: "application_setting_clickhouse" }
 
   jsonb_accessor :service_ping_settings,
-    gitlab_environment_toolkit_instance: [:boolean, { default: false }]
+    gitlab_environment_toolkit_instance: [:boolean, { default: false }],
+    gitlab_product_usage_data_enabled: [:boolean, { default: true }]
 
   jsonb_accessor :rate_limits_unauthenticated_git_http,
     throttle_unauthenticated_git_http_enabled: [:boolean, { default: false }],
@@ -722,7 +698,8 @@ class ApplicationSetting < ApplicationRecord
 
   jsonb_accessor :sign_in_restrictions,
     disable_password_authentication_for_users_with_sso_identities: [:boolean, { default: false }],
-    root_moved_permanently_redirection: [:boolean, { default: false }]
+    root_moved_permanently_redirection: [:boolean, { default: false }],
+    session_expire_from_init: [:boolean, { default: false }]
 
   validates :sign_in_restrictions, json_schema: { filename: 'application_setting_sign_in_restrictions' }
 
@@ -730,7 +707,8 @@ class ApplicationSetting < ApplicationRecord
     global_search_issues_enabled: [:boolean, { default: true }],
     global_search_merge_requests_enabled: [:boolean, { default: true }],
     global_search_snippet_titles_enabled: [:boolean, { default: true }],
-    global_search_users_enabled: [:boolean, { default: true }]
+    global_search_users_enabled: [:boolean, { default: true }],
+    global_search_block_anonymous_searches_enabled: [:boolean, { default: false }]
 
   validates :search, json_schema: { filename: 'application_setting_search' }
 
@@ -744,11 +722,18 @@ class ApplicationSetting < ApplicationRecord
 
   validates :importers, json_schema: { filename: "application_setting_importers" }
 
-  DEFAULT_HELM_MAX_PACKAGES_COUNT = 1000
-
   jsonb_accessor :package_registry,
     nuget_skip_metadata_url_validation: [:boolean, { default: false }],
-    helm_max_packages_count: [:integer, { default: DEFAULT_HELM_MAX_PACKAGES_COUNT }]
+    helm_max_packages_count: [:integer, { default: DEFAULT_HELM_MAX_PACKAGES_COUNT }],
+    package_registry_allow_anyone_to_pull_option: [:boolean, { default: true }],
+    package_registry_cleanup_policies_worker_capacity: [:integer, { default: 2 }],
+    packages_cleanup_package_file_worker_capacity: [:integer, { default: 2 }],
+    npm_package_requests_forwarding: [:boolean, { default: true }],
+    lock_npm_package_requests_forwarding: [:boolean, { default: false }],
+    maven_package_requests_forwarding: [:boolean, { default: true }],
+    lock_maven_package_requests_forwarding: [:boolean, { default: false }],
+    pypi_package_requests_forwarding: [:boolean, { default: true }],
+    lock_pypi_package_requests_forwarding: [:boolean, { default: false }]
 
   validates :helm_max_packages_count,
     presence: true,
@@ -828,8 +813,18 @@ class ApplicationSetting < ApplicationRecord
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1,
                     message: N_('must be a value between 0 and 1') }
 
-  validates :package_registry_allow_anyone_to_pull_option,
-    inclusion: { in: [true, false], message: N_('must be a boolean value') }
+  with_options(inclusion: { in: [true, false], message: N_('must be a boolean value') }) do
+    validates(
+      :package_registry_allow_anyone_to_pull_option,
+      :nuget_skip_metadata_url_validation,
+      :npm_package_requests_forwarding,
+      :lock_npm_package_requests_forwarding,
+      :pypi_package_requests_forwarding,
+      :lock_pypi_package_requests_forwarding,
+      :maven_package_requests_forwarding,
+      :lock_maven_package_requests_forwarding
+    )
+  end
 
   validates :security_txt_content,
     length: { maximum: 2_048, message: N_('is too long (maximum is %{count} characters)') },
@@ -864,6 +859,17 @@ class ApplicationSetting < ApplicationRecord
       encode: true
     }
   end
+
+  jsonb_accessor :cluster_agents,
+    organization_cluster_agent_authorization_enabled: [:boolean, { default: false }]
+
+  validates :cluster_agents, json_schema: { filename: 'application_setting_cluster_agents' }
+
+  jsonb_accessor :database_reindexing,
+    reindexing_minimum_index_size: [::Gitlab::Database::Type::JsonbInteger.new, { default: 1.gigabyte }],
+    reindexing_minimum_relative_bloat_size: [:float, { default: 0.2 }]
+
+  validates :database_reindexing, json_schema: { filename: "application_setting_database_reindexing" }
 
   attr_encrypted :external_auth_client_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :external_auth_client_key_pass, encryption_options_base_32_aes_256_gcm
@@ -968,6 +974,13 @@ class ApplicationSetting < ApplicationRecord
   }
   after_commit :reset_deletion_warning_redis_key, if: :should_reset_inactive_project_deletion_warning?
 
+  def validate_object_storage_for_live_trace_configuration
+    return if Gitlab.config.artifacts.object_store.enabled
+
+    errors.add(:ci_job_live_trace_enabled,
+      'Incremental logging cannot be turned on without configuring object storage for artifacts.')
+  end
+
   def validate_grafana_url
     validate_url(parsed_grafana_url, :grafana_url, GRAFANA_URL_ERROR_MESSAGE)
   end
@@ -1059,6 +1072,42 @@ class ApplicationSetting < ApplicationRecord
     HUMANIZED_ATTRIBUTES[attribute.to_sym] || super
   end
 
+  # overriden in EE
+  def self.rate_limits_definition
+    {
+      autocomplete_users_limit: [:integer, { default: 300 }],
+      autocomplete_users_unauthenticated_limit: [:integer, { default: 100 }],
+      concurrent_bitbucket_import_jobs_limit: [:integer, { default: 100 }],
+      concurrent_bitbucket_server_import_jobs_limit: [:integer, { default: 100 }],
+      concurrent_github_import_jobs_limit: [:integer, { default: 1000 }],
+      concurrent_relation_batch_export_limit: [:integer, { default: 8 }],
+      downstream_pipeline_trigger_limit_per_project_user_sha: [:integer, { default: 0 }],
+      group_api_limit: [:integer, { default: 400 }],
+      group_invited_groups_api_limit: [:integer, { default: 60 }],
+      group_projects_api_limit: [:integer, { default: 600 }],
+      group_shared_groups_api_limit: [:integer, { default: 60 }],
+      groups_api_limit: [:integer, { default: 200 }],
+      members_delete_limit: [:integer, { default: 60 }],
+      create_organization_api_limit: [:integer, { default: 10 }],
+      project_api_limit: [:integer, { default: 400 }],
+      project_invited_groups_api_limit: [:integer, { default: 60 }],
+      projects_api_limit: [:integer, { default: 2000 }],
+      user_contributed_projects_api_limit: [:integer, { default: 100 }],
+      user_projects_api_limit: [:integer, { default: 300 }],
+      user_starred_projects_api_limit: [:integer, { default: 100 }],
+      users_api_limit_followers: [:integer, { default: 100 }],
+      users_api_limit_following: [:integer, { default: 100 }],
+      users_api_limit_status: [:integer, { default: 240 }],
+      users_api_limit_ssh_keys: [:integer, { default: 120 }],
+      users_api_limit_ssh_key: [:integer, { default: 120 }],
+      users_api_limit_gpg_keys: [:integer, { default: 120 }],
+      users_api_limit_gpg_key: [:integer, { default: 120 }]
+    }
+  end
+
+  # this statement has to come after the rate_limits_definition function
+  jsonb_accessor :rate_limits, rate_limits_definition
+
   def recaptcha_or_login_protection_enabled
     recaptcha_enabled || login_recaptcha_protection_enabled
   end
@@ -1111,6 +1160,15 @@ class ApplicationSetting < ApplicationRecord
       :kroki_url,
       "is not valid. #{e}"
     )
+  end
+
+  def snowplow_and_product_usage_data_are_mutually_exclusive
+    return unless gitlab_product_usage_data_enabled_changed? || snowplow_enabled_changed?
+    return unless snowplow_enabled && gitlab_product_usage_data_enabled
+
+    message = _('Snowplow tracking and Product event tracking cannot be enabled at the same time. ' \
+      'Please disable one of them.')
+    errors.add(:base, message)
   end
 
   def validate_url(parsed_url, name, error_message)

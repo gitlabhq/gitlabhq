@@ -55,10 +55,6 @@ $design-pin-diameter-sm: 24px;
 .design-list-item {
   height: 160px;
   text-decoration: none;
-
-  &:hover {
-    border-color: var(--gray-400, $gray-400);
-  }
 }
 
 .design-note-pin {
@@ -66,8 +62,8 @@ $design-pin-diameter-sm: 24px;
   height: $design-pin-diameter-sm;
   width: $design-pin-diameter-sm;
   box-sizing: content-box;
-  @apply gl-bg-purple-500 dark:gl-bg-purple-700;
-  color: var(--white, $white);
+  @apply gl-text-neutral-0;
+  background-color: var(--gl-status-brand-icon-color);
   font-weight: $gl-font-weight-bold;
   border-radius: 50%;
   z-index: 1;
@@ -75,16 +71,16 @@ $design-pin-diameter-sm: 24px;
   border: 0;
 
   &.draft {
-    background-color: var(--orange-500, $orange-500);
+    background-color: var(--gl-status-warning-icon-color);
   }
 
   &.resolved {
-    background-color: var(--gray-500, $gray-500);
+    @apply gl-bg-strong gl-text-strong;
   }
 
   &.on-image {
     box-shadow: 0 2px 4px var(--gl-color-alpha-dark-8), 0 0 1px var(--gl-color-alpha-dark-24);
-    border: var(--white, $white) 2px solid;
+    @apply gl-border-2 gl-border-solid gl-border-neutral-0;
     will-change: transform, box-shadow, opacity;
     // NOTE: verbose transition property required for Safari
     transition: transform $general-hover-transition-duration linear, box-shadow $general-hover-transition-duration linear, opacity $general-hover-transition-duration linear;
@@ -110,7 +106,7 @@ $design-pin-diameter-sm: 24px;
 
   &.small {
     position: absolute;
-    border: 1px solid var(--white, $white);
+    @apply gl-border-1 gl-border-solid gl-border-neutral-0;
     height: $design-pin-diameter-sm;
     width: $design-pin-diameter-sm;
   }
@@ -144,8 +140,6 @@ $design-pin-diameter-sm: 24px;
 
   .toggle-comments {
     line-height: 20px;
-    @apply gl-border-t;
-    @apply gl-border-t-subtle;
 
     &[aria-expanded="true"] {
       border-bottom-left-radius: 0;
@@ -167,18 +161,30 @@ $design-pin-diameter-sm: 24px;
 
     &::before {
       content: '';
-      border-left: 1px solid var(--gray-100, $gray-100);
+      @apply gl-border-l;
       position: absolute;
       left: 11px;
       top: -17px;
       height: 17px;
     }
 
+    .design-note:first-child {
+      @apply gl-bg-section gl-border-b gl-border-b-section  gl-rounded-t-base;
+    }
+
+    .design-note:not(:first-child) {
+      @apply gl-bg-subtle;
+    }
+
+    &.active-discussion {
+      .design-note:first-child {
+        background-color: var(--timeline-entry-target-background-color) !important;
+      }
+    }
+
     .design-note {
       padding: $gl-padding-8;
       list-style: none;
-      border-top-left-radius: $gl-border-radius-base;
-      border-top-right-radius: $gl-border-radius-base;
       @apply gl-transition-background;
 
       video {
@@ -186,10 +192,9 @@ $design-pin-diameter-sm: 24px;
       }
     }
 
-    .reply-wrapper {
+    .reply-wrapper, .disabled-comment {
       padding: $gl-padding-8;
-      border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
-      @apply gl-bg-subtle;
+      @apply gl-bg-subtle gl-border-0 gl-rounded-b-base;
     }
   }
 

@@ -13,11 +13,6 @@ export default {
       required: true,
       type: Object,
     },
-    graphql: {
-      required: false,
-      type: Boolean,
-      default: false,
-    },
   },
   ingressOptions: Array(100 / 5 + 1)
     .fill(0)
@@ -51,10 +46,7 @@ export default {
       return uniqueId('canary-weight-');
     },
     weight() {
-      if (this.graphql) {
-        return this.canaryIngress.canaryWeight;
-      }
-      return this.canaryIngress.canary_weight;
+      return this.canaryIngress.canaryWeight;
     },
     stableWeight() {
       return 100 - this.weight;
@@ -76,7 +68,7 @@ export default {
 };
 </script>
 <template>
-  <section class="gl-m-3 gl-flex gl-bg-white">
+  <section class="gl-m-3 gl-flex gl-bg-default">
     <div class="gl-flex gl-flex-col">
       <label :for="stableWeightId" :class="$options.css.label" class="gl-rounded-tl-base">
         {{ $options.translations.stableLabel }}

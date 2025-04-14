@@ -3,7 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe API::Internal::Pages, feature_category: :pages do
-  let_it_be(:group) { create(:group) }
+  using RSpec::Parameterized::TableSyntax
+
+  let_it_be(:namespace_settings) { create(:namespace_settings) }
+  let_it_be(:group) { create(:group, namespace_settings: namespace_settings) }
   let_it_be_with_reload(:project) { create(:project, group: group) }
 
   let(:auth_header) do
@@ -284,18 +287,128 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
             end
           end
 
-          it 'avoids N+1 queries' do
-            control = ActiveRecord::QueryRecorder.new do
-              get api('/internal/pages'), headers: auth_header, params: { host: "#{group.path}.gitlab-pages.io" }
+          describe 'access_control' do
+            let(:project_setting) { create(:project_setting, pages_unique_domain_enabled: false) }
+
+            where(:access_control_is_enabled, :access_control_is_forced, :group_enforcement, :project_setting, :result) do
+              false | false | false | ProjectFeature::PUBLIC   | false
+              false | false | false | ProjectFeature::ENABLED  | false
+              false | false | true  | ProjectFeature::PUBLIC   | false
+              false | false | true  | ProjectFeature::ENABLED  | false
+              false | true  | false | ProjectFeature::PUBLIC   | false
+              false | true  | false | ProjectFeature::ENABLED  | false
+              false | true  | true  | ProjectFeature::PUBLIC   | false
+              false | true  | true  | ProjectFeature::ENABLED  | false
+              true  | false | false | ProjectFeature::PUBLIC   | false
+              true  | false | false | ProjectFeature::ENABLED  | true
+              true  | false | true  | ProjectFeature::PUBLIC   | true
+              true  | false | true  | ProjectFeature::ENABLED  | true
+              true  | true  | false | ProjectFeature::PUBLIC   | true
+              true  | true  | false | ProjectFeature::ENABLED  | true
+              true  | true  | true  | ProjectFeature::PUBLIC   | true
+              true  | true  | true  | ProjectFeature::ENABLED  | true
             end
 
-            3.times do
-              project = create(:project, group: group)
-              create(:pages_deployment, project: project)
+            with_them do
+              before do
+                project.project_setting.update!(pages_unique_domain_enabled: false)
+                stub_pages_setting(host: 'example.com', access_control: access_control_is_enabled)
+                stub_application_setting(force_pages_access_control: access_control_is_forced)
+                group.namespace_settings.update!(force_pages_access_control: group_enforcement)
+                project.project_feature.update!(pages_access_level: project_setting)
+              end
+
+              it 'returns the expected result' do
+                get api('/internal/pages'), headers: auth_header, params: { host: "#{group.path}.example.com" }
+
+                expect(json_response['lookup_paths']).to contain_exactly(
+                  hash_including(
+                    'project_id' => project.id,
+                    'access_control' => result
+                  )
+                )
+              end
             end
 
-            expect { get api('/internal/pages'), headers: auth_header, params: { host: "#{group.path}.gitlab-pages.io" } }
-              .not_to exceed_query_limit(control)
+            context 'when access control is configured on a nested namespace level' do
+              where(:level0, :level1, :level2, :project_setting, :result) do
+                false | false | false | ProjectFeature::PUBLIC  | false
+                false | false | false | ProjectFeature::PRIVATE | true
+                false | false | true  | ProjectFeature::PUBLIC  | true
+                false | false | true  | ProjectFeature::PRIVATE | true
+                false | true  | false | ProjectFeature::PUBLIC  | true
+                false | true  | false | ProjectFeature::PRIVATE | true
+                false | true  | true  | ProjectFeature::PUBLIC  | true
+                false | true  | true  | ProjectFeature::PRIVATE | true
+                true  | false | false | ProjectFeature::PUBLIC  | true
+                true  | false | false | ProjectFeature::PRIVATE | true
+                true  | false | true  | ProjectFeature::PUBLIC  | true
+                true  | false | true  | ProjectFeature::PRIVATE | true
+                true  | true  | false | ProjectFeature::PUBLIC  | true
+                true  | true  | false | ProjectFeature::PRIVATE | true
+                true  | true  | true  | ProjectFeature::PUBLIC  | true
+                true  | true  | true  | ProjectFeature::PRIVATE | true
+              end
+
+              with_them do
+                let(:group0) { create(:group, namespace_settings: create(:namespace_settings, force_pages_access_control: level0)) }
+                let(:group1) { create(:group, parent: group0, namespace_settings: create(:namespace_settings, force_pages_access_control: level1)) }
+                let(:group2) { create(:group, parent: group1, namespace_settings: create(:namespace_settings, force_pages_access_control: level2)) }
+
+                before do
+                  stub_pages_setting(host: 'example.com', access_control: true)
+                  project.project_feature.update!(pages_access_level: project_setting)
+                  project.update!(namespace: group2)
+                end
+
+                it 'returns the expected result' do
+                  get api('/internal/pages'), headers: auth_header, params: { host: "#{group0.path}.example.com" }
+
+                  expect(json_response['lookup_paths']).to contain_exactly(
+                    hash_including(
+                      'project_id' => project.id,
+                      'access_control' => result
+                    )
+                  )
+                end
+              end
+            end
+          end
+
+          describe 'access control performance' do
+            let(:subgroup) { create(:group, parent: group) }
+            let(:subgroup_with_access_control) { create(:group, parent: group, namespace_settings: create(:namespace_settings, force_pages_access_control: true)) }
+            let(:project_setting) { create(:project_setting, pages_unique_domain_enabled: false) }
+
+            before do
+              stub_pages_setting(host: 'example.com', access_control: true)
+              project.project_feature.update!(pages_access_level: ProjectFeature::PUBLIC)
+            end
+
+            it 'avoids N+1 queries' do
+              project.project_setting.update!(pages_unique_domain_enabled: false)
+
+              control = ActiveRecord::QueryRecorder.new do
+                get api('/internal/pages'), headers: auth_header, params: { host: "#{group.path}.example.com" }
+              end
+
+              project1 = create(:project, group: subgroup, project_setting: project_setting, pages_access_level: ProjectFeature::PUBLIC)
+              project1.project_setting.update!(pages_unique_domain_enabled: false)
+              create(:pages_deployment, project: project1)
+
+              project2 = create(:project, group: subgroup_with_access_control, project_setting: project_setting, pages_access_level: ProjectFeature::PUBLIC)
+              project2.project_setting.update!(pages_unique_domain_enabled: false)
+              create(:pages_deployment, project: project2)
+
+              project3 = create(:project, group: subgroup, project_setting: project_setting, pages_access_level: ProjectFeature::PRIVATE)
+              project3.project_setting.update!(pages_unique_domain_enabled: false)
+              create(:pages_deployment, project: project3)
+
+              expect { get api('/internal/pages'), headers: auth_header, params: { host: "#{group.path}.example.com" } }
+                .not_to exceed_query_limit(control)
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
           end
 
           context 'with a group root project' do

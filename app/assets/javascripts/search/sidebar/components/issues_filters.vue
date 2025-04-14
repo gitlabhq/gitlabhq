@@ -1,7 +1,6 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState } from 'vuex';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SEARCH_TYPE_ADVANCED } from '~/search/sidebar/constants';
 import ConfidentialityFilter from './confidentiality_filter/index.vue';
 import LabelFilter from './label_filter/index.vue';
@@ -19,7 +18,6 @@ export default {
     FiltersTemplate,
     ArchivedFilter,
   },
-  mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapGetters(['hasMissingProjectContext']),
     ...mapState(['searchType']),

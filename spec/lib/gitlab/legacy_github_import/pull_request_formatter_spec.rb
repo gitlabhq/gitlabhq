@@ -186,8 +186,8 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
       context 'and it is assigned to a deleted gitea user' do
         let(:raw_data) { base_data.merge(assignee: ghost_user) }
 
-        it 'returns nil for assignee_id' do
-          expect(pull_request.attributes.fetch(:assignee_id)).to be_nil
+        it 'returns gitlab ghost user id for assignee_id' do
+          expect(pull_request.attributes.fetch(:assignee_id)).to eq(Users::Internal.ghost.id)
         end
       end
 
@@ -233,8 +233,8 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, :clean_gitlab_r
       context 'and the author is a deleted gitea user' do
         let(:raw_data) { base_data.merge(user: ghost_user) }
 
-        it 'returns the project creator id' do
-          expect(pull_request.attributes.fetch(:author_id)).to eq(project.creator_id)
+        it 'returns the gitlab ghost user id' do
+          expect(pull_request.attributes.fetch(:author_id)).to eq(Users::Internal.ghost.id)
         end
       end
 

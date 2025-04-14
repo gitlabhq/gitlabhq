@@ -287,6 +287,9 @@ export default {
           v-if="!isRelatedDevelopmentListEmpty"
           :is-modal="isModal"
           :work-item-dev-widget="workItemDevelopment"
+          :work-item-full-path="workItemFullPath"
+          :work-item-iid="workItemIid"
+          :can-create-merge-request="showAddButton"
         />
       </template>
     </crud-component>

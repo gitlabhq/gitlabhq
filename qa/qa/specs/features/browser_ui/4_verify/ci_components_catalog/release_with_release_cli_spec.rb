@@ -18,6 +18,7 @@ module QA
 
       before do
         Runtime::Feature.disable(:ci_release_cli_catalog_publish_option)
+        Runtime::Feature.disable(:ci_glab_for_release)
 
         Flow::Login.sign_in
         Flow::Project.enable_catalog_resource_feature(project)
@@ -32,7 +33,6 @@ module QA
         setup_component(project, gitlab_ci_yaml_for_create_release_with_existing_tag)
         project.create_repository_tag('1.0.0')
 
-        project.visit!
         Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
         project.visit_job('create-release-with-existing-tag')
 
@@ -176,7 +176,7 @@ module QA
             tags: ["#{executor}"]
 
           create-release-with-existing-tag:
-            image: registry.gitlab.com/gitlab-org/release-cli:latest
+            image: registry.gitlab.com/gitlab-org/release-cli:v0.20.0
             script:
               - echo "Creating release $CI_COMMIT_TAG"
             rules:
@@ -197,7 +197,7 @@ module QA
               - if: $CI_COMMIT_TAG != "v9.0.2" # to prevent creating a new pipeline because of the tag created in the test
 
           create-release-with-new-tag-filled-with-information:
-            image: registry.gitlab.com/gitlab-org/release-cli:latest
+            image: registry.gitlab.com/gitlab-org/release-cli:v0.20.0
             script:
               - echo "Creating release $CI_COMMIT_TAG"
             rules:

@@ -14,7 +14,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
   end
 
   def find_new_menu_toggle
-    find_by_testid('base-dropdown-toggle', text: 'Create new...')
+    find_by_testid('base-dropdown-toggle', text: 'Create new…')
   end
 
   context 'with developer user' do
@@ -24,7 +24,6 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
       end
 
       before do
-        stub_feature_flags(blob_overflow_menu: false)
         stub_feature_flags(directory_code_dropdown_updates: true)
       end
 
@@ -36,7 +35,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
           find_new_menu_toggle.click
 
           aggregate_failures 'dropdown links in the navigation bar' do
-            expect(page).to have_link('New issue')
+            expect(page).to have_button('New work item')
             expect(page).to have_link('New merge request')
             expect(page).to have_link('New snippet', href: new_project_snippet_path(project1))
           end
@@ -97,7 +96,6 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
       end
 
       before do
-        stub_feature_flags(blob_overflow_menu: false)
         stub_feature_flags(directory_code_dropdown_updates: false)
       end
 
@@ -109,7 +107,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
           find_new_menu_toggle.click
 
           aggregate_failures 'dropdown links in the navigation bar' do
-            expect(page).to have_link('New issue')
+            expect(page).to have_button('New work item')
             expect(page).to have_link('New merge request')
             expect(page).to have_link('New snippet', href: new_project_snippet_path(project2))
           end

@@ -1,6 +1,19 @@
+import { omit } from 'lodash';
+
 const dataSourceTransformers = {
   issues: (data) => (data.project || data.group).issues,
   mergeRequests: (data) => (data.project || data.group).mergeRequests,
+  workItems: (data) => {
+    const { workItems } = structuredClone(data.project || data.group);
+    for (const workItem of workItems.nodes || []) {
+      for (const widget of workItem.widgets || []) {
+        Object.assign(workItem, omit(widget, ['type', '__typename']));
+      }
+      delete workItem.widgets;
+    }
+
+    return workItems;
+  },
 };
 
 const transformForDataSource = (data) => {
@@ -12,7 +25,11 @@ const transformForDataSource = (data) => {
 };
 
 const transformField = (data, field) => {
-  if (field.transform) return field.transform(data);
+  if (field.transform)
+    return {
+      ...data,
+      nodes: data.nodes.map((node) => field.transform(node)),
+    };
   return data;
 };
 

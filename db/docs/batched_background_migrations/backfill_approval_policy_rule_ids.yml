@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillApprovalPolicyRuleIds
+description:
+  This migration backfills the `approval_policy_rule_id` column in the `scan_result_policies` and its associated tables.
+feature_category: security_policy_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182584
+milestone: '17.11'
+queued_migration_version: 20250319204252
+finalized_by: # version of the migration that finalized this BBM

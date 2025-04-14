@@ -15,7 +15,7 @@ title: Time tracking
 {{< history >}}
 
 - Time tracking for tasks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438577) in GitLab 17.0.
-- Time tracking for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12396) in GitLab 17.5. Your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md).
+- Time tracking for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12396) in GitLab 17.5. [The new look for epics](../group/epics/epic_work_items.md) must be enabled.
 - Minimum role to add, edit, and remove estimate [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
@@ -226,7 +226,7 @@ If you find a bug, let us know in the [feedback issue](https://gitlab.com/gitlab
 To view the global time tracking report:
 
 1. In your browser, enter the global report's URL:
-   - For self-managed, add `/-/timelogs` to your base URL. For example, `https://gitlab.example.com/-/timelogs`.
+   - For GitLab Self-Managed, add `/-/timelogs` to your base URL. For example, `https://gitlab.example.com/-/timelogs`.
    - For GitLab.com, go to <https://gitlab.com/-/timelogs>.
 1. Optional. To filter by a specific user, enter their username without the `@` symbol.
 1. Select start and end dates.

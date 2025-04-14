@@ -8,6 +8,9 @@ module WebIde
           :vscode_extension_marketplace_metadata,
           :vscode_extension_marketplace
         ],
+        vscode_extension_marketplace_metadata: [
+          :vscode_extension_marketplace_home_url
+        ],
         vscode_extension_marketplace_home_url: [
           :vscode_extension_marketplace
         ]

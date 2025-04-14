@@ -11,6 +11,7 @@ module Ci
     expose :started_at, if: ->(job) { job.started? }
     expose :complete?, as: :complete
     expose :archived?, as: :archived
+    expose :source, if: ->(job, options) { job.is_a?(Ci::Build) && options[:enable_source] }
 
     # bridge jobs don't have build details pages
     expose :build_path, if: ->(job) { !job.is_a?(Ci::Bridge) } do |job|
@@ -69,8 +70,6 @@ module Ci
     end
 
     def force_cancelable?
-      return false unless Feature.enabled?(:force_cancel_build, request.current_user)
-
       job.force_cancelable? && authorized_to_force_cancel?
     end
 

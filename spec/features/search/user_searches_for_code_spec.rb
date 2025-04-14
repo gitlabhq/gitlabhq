@@ -136,7 +136,11 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
   end
 
   context 'when signed out' do
-    context 'when block_anonymous_global_searches is enabled' do
+    context 'when global_search_block_anonymous_searches_enabled is enabled' do
+      before do
+        stub_application_setting(global_search_block_anonymous_searches_enabled: true)
+      end
+
       it 'is redirected to login page' do
         visit(search_path)
 

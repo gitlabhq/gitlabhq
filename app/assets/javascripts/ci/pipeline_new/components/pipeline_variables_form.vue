@@ -18,6 +18,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { reportToSentry } from '~/ci/utils';
 import InputsAdoptionBanner from '~/ci/common/pipeline_inputs/inputs_adoption_banner.vue';
 import { fetchPolicies } from '~/lib/graphql';
+import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import filterVariables from '../utils/filter_variables';
 import {
   CI_VARIABLE_TYPE_FILE,
@@ -34,6 +35,7 @@ export default {
   learnMorePath: helpPagePath('ci/variables/_index', {
     anchor: 'cicd-variable-precedence',
   }),
+  userCalloutsFeatureName: 'pipeline_new_inputs_adoption_banner',
   components: {
     GlIcon,
     GlButton,
@@ -45,6 +47,7 @@ export default {
     GlLoadingIcon,
     GlSprintf,
     InputsAdoptionBanner,
+    Markdown,
     VariableValuesListbox,
   },
   mixins: [glFeatureFlagsMixin()],
@@ -125,6 +128,9 @@ export default {
     },
     removeButtonCategory() {
       return this.isMobile ? 'secondary' : 'tertiary';
+    },
+    removeButtonSize() {
+      return this.isMobile ? 'medium' : 'small';
     },
     variables() {
       return this.form[this.refParam]?.variables ?? [];
@@ -290,7 +296,10 @@ export default {
     <h4>{{ s__('Pipeline|Variables') }}</h4>
     <gl-loading-icon v-if="isLoading" class="gl-mb-5" size="md" />
     <div v-else>
-      <inputs-adoption-banner v-if="isPipelineInputsFeatureAvailable" />
+      <inputs-adoption-banner
+        v-if="isPipelineInputsFeatureAvailable"
+        :feature-name="$options.userCalloutsFeatureName"
+      />
       <gl-form-group class="gl-mb-0">
         <div
           v-for="(variable, index) in variables"
@@ -336,9 +345,9 @@ export default {
             <template v-if="variables.length > 1">
               <gl-button
                 v-if="canRemove(index)"
-                size="small"
                 class="gl-shrink-0"
                 data-testid="remove-ci-variable-row"
+                :size="removeButtonSize"
                 :category="removeButtonCategory"
                 :aria-label="s__('CiVariables|Remove variable')"
                 @click="removeVariable(index)"
@@ -354,9 +363,11 @@ export default {
               />
             </template>
           </div>
-          <div v-if="descriptions[variable.key]" class="gl-text-subtle">
-            {{ descriptions[variable.key] }}
-          </div>
+          <markdown
+            v-if="descriptions[variable.key]"
+            class="gl-text-subtle"
+            :markdown="descriptions[variable.key]"
+          />
         </div>
         <template #description>
           <gl-sprintf

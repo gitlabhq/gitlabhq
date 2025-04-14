@@ -28,19 +28,16 @@ describe('New Deploy Token', () => {
     const defaults = {
       containerRegistryEnabled: true,
       packagesRegistryEnabled: true,
+      dependencyProxyEnabled: true,
       tokenType: 'project',
     };
-    const { containerRegistryEnabled, packagesRegistryEnabled, tokenType } = {
-      ...defaults,
-      ...options,
-    };
+
     return shallowMount(NewDeployToken, {
       propsData: {
         deployTokensHelpUrl,
-        containerRegistryEnabled,
-        packagesRegistryEnabled,
         createNewTokenPath,
-        tokenType,
+        ...defaults,
+        ...options,
       },
       stubs: {
         GlAlert,
@@ -60,15 +57,26 @@ describe('New Deploy Token', () => {
     writeRegistryValue = true,
     readPackageRegistryValue = true,
     writePackageRegistryValue = true,
+    writeVirtualRegistryValue = true,
+    readVirtualRegistryValue = true,
   } = {}) => {
-    const [readRepo, readRegistry, writeRegistry, readPackageRegistry, writePackageRegistry] =
-      findAllCheckboxes().wrappers;
+    const [
+      readRepo,
+      readRegistry,
+      writeRegistry,
+      readPackageRegistry,
+      writePackageRegistry,
+      writeVirtualRegistry,
+      readVirtualRegistry,
+    ] = findAllCheckboxes().wrappers;
 
     readRepo.vm.$emit('input', readRepoValue);
     readRegistry.vm.$emit('input', readRegistryValue);
     writeRegistry.vm.$emit('input', writeRegistryValue);
     readPackageRegistry.vm.$emit('input', readPackageRegistryValue);
     writePackageRegistry.vm.$emit('input', writePackageRegistryValue);
+    writeVirtualRegistry.vm.$emit('input', writeVirtualRegistryValue);
+    readVirtualRegistry.vm.$emit('input', readVirtualRegistryValue);
   };
 
   const setTokenName = ({ nameVal = 'test name', usernameVal = 'test username' } = {}) => {
@@ -127,6 +135,38 @@ describe('New Deploy Token', () => {
     });
   });
 
+  describe('with dependency proxy disabled', () => {
+    beforeEach(() => {
+      wrapper = factory({ dependencyProxyEnabled: false });
+    });
+
+    it('should not show the virtual registry scopes', () => {
+      wrapper
+        .findAllComponents(GlFormCheckbox)
+        .wrappers.forEach((checkbox) => expect(checkbox.text()).not.toBe('read_virtual_registry'));
+
+      wrapper
+        .findAllComponents(GlFormCheckbox)
+        .wrappers.forEach((checkbox) => expect(checkbox.text()).not.toBe('write_virtual_registry'));
+    });
+  });
+
+  describe('with dependency proxy enabled', () => {
+    beforeEach(() => {
+      wrapper = factory();
+    });
+
+    it('should show the read virtual registry scope', () => {
+      const checkbox = findAllCheckboxes().at(3);
+      expect(checkbox.text()).toContain('read_virtual_registry');
+    });
+
+    it('should show the write virtual registry scope', () => {
+      const checkbox = findAllCheckboxes().at(4);
+      expect(checkbox.text()).toContain('write_virtual_registry');
+    });
+  });
+
   describe('token submission', () => {
     let mockAxios;
     const defaultTokenPayload = {
@@ -135,6 +175,8 @@ describe('New Deploy Token', () => {
       read_repository: true,
       read_registry: true,
       write_registry: true,
+      read_virtual_registry: true,
+      write_virtual_registry: true,
       read_package_registry: true,
       write_package_registry: true,
     };
@@ -149,7 +191,7 @@ describe('New Deploy Token', () => {
     });
 
     it('should alert error message if token creation fails', async () => {
-      const message = 'Server error while creating a token';
+      const message = 'Failed to create a new deployment token';
       const date = new Date();
 
       setTokenForm({ date });
@@ -245,7 +287,7 @@ describe('New Deploy Token', () => {
   });
 
   describe('help text for write_package_registry scope', () => {
-    const findWriteRegistryScopeCheckbox = () => findAllCheckboxes().at(4);
+    const findWriteRegistryScopeCheckbox = () => findAllCheckboxes().at(6);
 
     describe('with project tokenType', () => {
       beforeEach(() => {

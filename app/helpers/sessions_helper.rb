@@ -13,6 +13,8 @@ module SessionsHelper
   end
 
   def remember_me_enabled?
+    return false if session_expire_from_init_enabled?
+
     Gitlab::CurrentSettings.remember_me_enabled?
   end
 
@@ -34,5 +36,12 @@ module SessionsHelper
       offer_email_reset: user.email_reset_offered_at.nil?.to_s,
       update_email_path: users_update_email_path
     }
+  end
+
+  private
+
+  def session_expire_from_init_enabled?
+    Feature.enabled?(:session_expire_from_init, :instance) &&
+      Gitlab::CurrentSettings.session_expire_from_init
   end
 end

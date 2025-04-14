@@ -28,7 +28,7 @@ be ported to use it.
 
 The merge widget is the component of the merge request where the `merge` button exists:
 
-![merge widget](../img/merge_widget_v14_7.png)
+![merge widget](../img/merge_widget_v17_11.png)
 
 This area of the merge request is where all of the options and commit messages are defined prior to merging. It also contains information about what is in the merge request, what issues are closed, and other information important to the merging process.
 
@@ -38,7 +38,7 @@ Reports are widgets within the merge request that report information about chang
 
 [Design Documentation](https://design.gitlab.com/patterns/merge-request-reports/)
 
-![merge request reports](../img/merge_request_reports_v14_7.png)
+![merge request reports](../img/merge_request_reports_v17_11.png)
 
 ## Merge checks
 

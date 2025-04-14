@@ -42,7 +42,7 @@ describe('PipelineStatusChart', () => {
       customPalette: ['#619025', '#b93d71', '#617ae2'],
       xAxisTitle: 'Time',
       xAxisType: 'category',
-      yAxisTitle: 'Pipelines count',
+      yAxisTitle: 'Number of Pipelines',
       includeLegendAvgMax: false,
     });
   });

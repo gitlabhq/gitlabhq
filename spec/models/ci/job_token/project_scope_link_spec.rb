@@ -91,12 +91,12 @@ RSpec.describe Ci::JobToken::ProjectScopeLink, feature_category: :continuous_int
       using RSpec::Parameterized::TableSyntax
 
       where(:value, :valid) do
-        nil                               | true
-        []                                | true
-        %w[read_containers]               | true
-        %w[read_containers read_packages] | true
-        %w[read_issue]                    | false
-        { project: %w[read_build] }       | false
+        nil                                | true
+        []                                 | true
+        %w[read_deployments]               | true
+        %w[read_deployments read_packages] | true
+        %w[read_issue]                     | false
+        { project: %w[read_build] }        | false
       end
 
       with_them do
@@ -157,6 +157,7 @@ RSpec.describe Ci::JobToken::ProjectScopeLink, feature_category: :continuous_int
 
   context 'loose foreign key on ci_job_token_project_scope_links.source_project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
+      let(:lfk_column) { :source_project_id }
       let!(:parent) { create(:project, namespace: group) }
       let!(:model) { create(:ci_job_token_project_scope_link, source_project: parent) }
     end
@@ -164,6 +165,7 @@ RSpec.describe Ci::JobToken::ProjectScopeLink, feature_category: :continuous_int
 
   context 'loose foreign key on ci_job_token_project_scope_links.target_project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
+      let(:lfk_column) { :target_project_id }
       let!(:parent) { create(:project, namespace: group) }
       let!(:model) { create(:ci_job_token_project_scope_link, target_project: parent) }
     end

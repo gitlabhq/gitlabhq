@@ -20,7 +20,7 @@ title: Group integrations API
 
 Use this API to work with external services that integrate with GitLab.
 
-This API requires an access token with the Maintainer or Owner role.
+This API requires an access token with at least the Maintainer role.
 
 ## List all active integrations
 

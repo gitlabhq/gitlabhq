@@ -155,9 +155,9 @@ RSpec.describe SearchController, feature_category: :global_search do
         using RSpec::Parameterized::TableSyntax
         render_views
 
-        context 'when block_anonymous_global_searches is disabled' do
+        context 'when global_search_block_anonymous_searches_enabled is disabled' do
           before do
-            stub_feature_flags(block_anonymous_global_searches: false)
+            stub_application_setting(global_search_block_anonymous_searches_enabled: false)
           end
 
           it 'omits pipeline status from load' do
@@ -212,7 +212,11 @@ RSpec.describe SearchController, feature_category: :global_search do
           end
         end
 
-        context 'when block_anonymous_global_searches is enabled' do
+        context 'when global_search_block_anonymous_searches_enabled is enabled' do
+          before do
+            stub_application_setting(global_search_block_anonymous_searches_enabled: true)
+          end
+
           context 'for unauthenticated user' do
             before do
               sign_out(user)
@@ -763,7 +767,7 @@ RSpec.describe SearchController, feature_category: :global_search do
         before do
           stub_application_setting(restricted_visibility_levels: restricted_visibility_levels)
           stub_feature_flags(allow_anonymous_searches: allow_anonymous_searches)
-          stub_feature_flags(block_anonymous_global_searches: block_anonymous_global_searches)
+          stub_application_setting(global_search_block_anonymous_searches_enabled: block_anonymous_global_searches)
         end
 
         it 'redirects to the sign in/sign up page when it should' do

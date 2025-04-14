@@ -13,7 +13,8 @@ module Gitlab
           info: :magenta,
           success: :green,
           warn: :yellow,
-          error: :red
+          error: :red,
+          debug: :cyan
         }.freeze
 
         class << self

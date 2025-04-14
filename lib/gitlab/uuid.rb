@@ -12,6 +12,12 @@ module Gitlab
     UUID_V5_PATTERN = /\h{8}-\h{4}-5\h{3}-\h{4}-\h{12}/
 
     class << self
+      def urn
+        uuid = Digest::UUID.uuid_v4
+
+        "urn:uuid:#{uuid}"
+      end
+
       def v5(name, namespace_id: default_namespace_id)
         Digest::UUID.uuid_v5(namespace_id, name)
       end

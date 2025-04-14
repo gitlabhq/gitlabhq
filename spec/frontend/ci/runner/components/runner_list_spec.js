@@ -70,7 +70,7 @@ describe('RunnerList', () => {
     expect(headers[2].findComponent(HelpPopover).exists()).toBe(true);
     expect(headers[2].text()).toBe('Owner');
 
-    expect(headers[3].text()).toBe(''); // actions has no label
+    expect(headers[3].text()).toBe('Actions');
   });
 
   it('Sets runner id as a row key', () => {

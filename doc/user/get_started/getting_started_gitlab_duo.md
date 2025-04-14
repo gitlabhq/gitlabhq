@@ -12,7 +12,7 @@ It can help you troubleshoot your pipeline, write tests, address vulnerabilities
 
 ## Step 1: Ensure you have a subscription
 
-Your organization has purchased a GitLab Duo add-on subscription: either Duo Pro or Duo Enterprise.
+Your organization has purchased a GitLab Duo add-on subscription: either GitLab Duo Pro or Duo Enterprise.
 Each subscription includes a set of AI-powered features to help improve your workflow.
 
 After your organization purchases a subscription, an administrator must assign seats to users.

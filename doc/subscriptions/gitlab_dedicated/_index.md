@@ -111,7 +111,7 @@ You can use your own hostname to access your GitLab Dedicated instance. Instead 
 Add a custom hostname to:
 
 - Increase control over branding
-- Avoid having to migrate away from an existing domain already configured for a self-managed instance
+- Avoid having to migrate away from an existing domain already configured for a GitLab Self-Managed instance
 
 When you add a custom hostname:
 
@@ -218,7 +218,7 @@ The following GitLab application features are not available:
 - Service Desk
 - Some GitLab Duo AI capabilities
   - View the [list of supported AI features](../../user/ai_features.md)
-  - For more information, see the [Supporting AI Features on GitLab Dedicated](https://about.gitlab.com/direction/saas-platforms/dedicated/#supporting-ai-features-on-gitlab-dedicated)
+  - For more information, see the [Supporting AI Features on GitLab Dedicated](https://about.gitlab.com/direction/platforms/dedicated/#supporting-ai-features-on-gitlab-dedicated)
 - Features other than [available features](#available-features) that must be configured outside of the GitLab user interface
 - Any functionality or feature behind a feature flag that is turned `off` by default
 - [Sigstore for keyless signing and verification](../../ci/yaml/signing_examples.md)
@@ -256,7 +256,7 @@ Features behind flags that are disabled by default are not ready for production 
 
 When a feature becomes generally available and the flag is enabled or removed, the feature becomes available in
 GitLab Dedicated in the same GitLab version. GitLab Dedicated follows its own
-[release schedule](../gitlab_dedicated/maintenance.md) for version deployments.
+[release schedule](maintenance.md) for version deployments.
 
 ## Migrate to GitLab Dedicated
 

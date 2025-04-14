@@ -122,7 +122,6 @@ module Gitlab
             merge_requests: count(MergeRequest),
             notes: count(Note)
           }.merge(
-            integrations_usage,
             user_preferences_usage,
             service_desk_counts
           )
@@ -213,29 +212,6 @@ module Gitlab
       def topology_usage_data
         Gitlab::UsageData::Topology.new.topology_usage_data
       end
-
-      # rubocop: disable CodeReuse/ActiveRecord
-      def integrations_usage
-        # rubocop: disable UsageData/LargeTable:
-        available_integrations.each_with_object({}) do |name, response|
-          type = Integration.integration_name_to_type(name)
-
-          response[:"projects_#{name}_active"] = count(Integration.active.where.not(project: nil).where(type: type))
-          response[:"groups_#{name}_active"] = count(Integration.active.where.not(group: nil).where(type: type))
-          response[:"instances_#{name}_active"] = count(Integration.active.where(instance: true, type: type))
-          response[:"projects_inheriting_#{name}_active"] = count(Integration.active.where.not(project: nil).where.not(inherit_from_id: nil).where(type: type))
-          response[:"groups_inheriting_#{name}_active"] = count(Integration.active.where.not(group: nil).where.not(inherit_from_id: nil).where(type: type))
-        end
-      end
-
-      def successful_deployments_with_cluster(scope)
-        scope
-          .joins(cluster: :deployments)
-          .merge(::Clusters::Cluster.enabled)
-          .merge(Deployment.success)
-      end
-      # rubocop: enable UsageData/LargeTable
-      # rubocop: enable CodeReuse/ActiveRecord
 
       # augmented in EE
       def user_preferences_usage

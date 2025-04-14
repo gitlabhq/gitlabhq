@@ -89,6 +89,16 @@ In addition to the [predefined CI/CD variables](../../ci/variables/predefined_va
 each pipeline includes default variables defined in
 [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
 
+### Variable naming
+
+Starting in March 2025, we have begun prefixing new environment variables
+that are exclusively used for the monolith CI pipelines with `GLCI_`.
+
+This allows us to track if an environment variable is intended for CI
+(`GLCI_`), the product (`GITLAB_`), or tools and systems not owned by us.
+That helps us better evaluate the impact of environment variable changes
+in our pipeline configuration.
+
 ## Stages
 
 The current stages are:
@@ -124,18 +134,25 @@ Some of the jobs are using images from Docker Hub, where we also use
 images from our [Dependency Proxy](../../user/packages/dependency_proxy/_index.md).
 By default, this variable is set from the value of `${GITLAB_DEPENDENCY_PROXY}`.
 
-`${GITLAB_DEPENDENCY_PROXY}` is a group CI/CD variable defined in
-[`gitlab-org`](https://gitlab.com/gitlab-org) as
-`${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/`. This means when we use an image
-defined as:
+- `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` is [a GitLab predefined CI/CD variable](../../ci/variables/predefined_variables.md) that gives the top-level group image prefix to pull images through the Dependency Proxy.
+- `GITLAB_DEPENDENCY_PROXY` is a CI/CD variable in the [`gitlab-org`](https://gitlab.com/gitlab-org) and the [`gitlab-com`](https://gitlab.com/gitlab-com) groups. It is defined as `${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/`.
+- `GITLAB_DEPENDENCY_PROXY_ADDRESS` is defined in the `gitlab-org/gitlab` project. It defaults to `"${GITLAB_DEPENDENCY_PROXY}"`, but is overridden in some cases (see the workaround section below).
+
+In `gitlab-org/gitlab`, we'll use `GITLAB_DEPENDENCY_PROXY_ADDRESS` [due to a workaround](#work-around-for-when-a-pipeline-is-started-by-a-project-access-token-user). Everywhere else in the `gitlab-org` and `gitlab-com` groups, we should use `GITLAB_DEPENDENCY_PROXY` to use the Dependency Proxy. For any other project, you can rely on the `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` predefined CI/CD variable to enable the dependency proxy:
 
 ```yaml
+# In the gitlab-org/gitlab project
 image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:edge
+
+# In any other project in gitlab-org and gitlab-com groups
+image: ${GITLAB_DEPENDENCY_PROXY}alpine:edge
+
+# In projects outside of gitlab-org and gitlab-com groups
+image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/alpine:edge
 ```
 
-Projects in the `gitlab-org` group pull from the Dependency Proxy, while
-forks that reside on any other personal namespaces or groups fall back to
-Docker Hub unless `${GITLAB_DEPENDENCY_PROXY}` is also defined there.
+Forks that reside on any other personal namespaces or groups fall back to
+Docker Hub unless `GITLAB_DEPENDENCY_PROXY` is also defined there.
 
 ### Work around for when a pipeline is started by a Project access token user
 
@@ -158,6 +175,14 @@ We don't directly override the `${GITLAB_DEPENDENCY_PROXY}` variable because gro
 variables have higher precedence over `.gitlab-ci.yml` variables.
 
 {{< /alert >}}
+
+## External CI/CD secrets
+
+As part of <https://gitlab.com/groups/gitlab-org/quality/engineering-productivity/-/epics/46>, in February 2024, we
+started to dogfood [the usage of GCP Secret Manager](../../ci/secrets/gcp_secret_manager.md) to
+[store the `ADD_JH_FILES_TOKEN` CI variable](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144228).
+
+As part of this, [the `qual-ci-secret-mgmt-e78c9b95` GCP project was created](https://gitlab.com/gitlab-org/quality/engineering-productivity-infrastructure/-/issues/99#note_1605141484).
 
 ## Common job definitions
 
@@ -185,7 +210,7 @@ that are scoped to a single [configuration keyword](../../ci/yaml/_index.md#job-
 | `.use-pg16-ee` | Same as `.use-pg16` but also use an `elasticsearch` service (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific version of the service). |
 | `.use-pg17` | Allows a job to use the `postgres` 17, `redis`, and `rediscluster` services (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific versions of the services). |
 | `.use-pg17-ee` | Same as `.use-pg17` but also use an `elasticsearch` service (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific version of the service). |
-| `.use-kaniko` | Allows a job to use the `kaniko` tool to build Docker images. |
+| `.use-buildx` | Allows a job to use the `docker buildx` tool to build Docker images. |
 | `.as-if-foss` | Simulate the FOSS project by setting the `FOSS_ONLY='1'` CI/CD variable. |
 | `.use-docker-in-docker` | Allows a job to use Docker in Docker. For more details, see the [handbook about CI/CD configuration](https://handbook.gitlab.com/handbook/engineering/gitlab-repositories/#cicd-configuration). |
 

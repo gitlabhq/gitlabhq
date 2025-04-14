@@ -24,14 +24,6 @@ export default {
       default: false,
     },
   },
-  computed: {
-    title() {
-      return this.hasTerm ? this.$options.i18n.searchingTitle : this.$options.i18n.title;
-    },
-    content() {
-      return this.hasTerm ? this.$options.i18n.searchingContent : this.$options.i18n.content;
-    },
-  },
   i18n: {
     title: s__('Environments|Get started with environments'),
     content: s__(

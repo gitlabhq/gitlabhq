@@ -43,6 +43,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_frontend_feature_flag(:mr_show_reports_immediately, project)
+    push_frontend_feature_flag(:improved_review_experience, current_user)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :rapid_diffs, :discussions]
@@ -111,6 +112,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @reload_stream_url = diffs_stream_url(@merge_request)
     @stream_url = diffs_stream_url(@merge_request, streaming_offset, diff_view)
     @diffs_slice = @merge_request.first_diffs_slice(streaming_offset)
+    @diff_files_endpoint = diff_files_metadata_namespace_project_merge_request_path
+    @diffs_stats_endpoint = diffs_stats_namespace_project_merge_request_path
 
     show_merge_request
   end
@@ -409,7 +412,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       )
     end
 
-    display_max_limit_warning
+    display_limit_warnings
 
     respond_to do |format|
       format.html do
@@ -686,16 +689,31 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     )
   end
 
-  def display_max_limit_warning
-    return unless @merge_request.reached_versions_limit?
+  def display_limit_warnings
+    if @merge_request.reached_versions_limit?
+      flash[:alert] = format(
+        _("This merge request has reached the maximum limit of %{limit} versions and cannot be updated further. " \
+          "Close this merge request and create a new one instead."), limit: MergeRequest::DIFF_VERSION_LIMIT)
+      return
+    end
 
-    flash[:alert] = format(
-      _("This merge request has reached the maximum limit of %{limit} versions and cannot be updated further. " \
-        "Close this merge request and create a new one instead."), limit: MergeRequest::DIFF_VERSION_LIMIT)
+    return unless @merge_request.reached_diff_commits_limit?
+
+    flash[:alert] =
+      _("This merge request has too many diff commits, and can't be updated. " \
+        "Close this merge request and create a new one.")
   end
 
   def diffs_resource
     @merge_request.latest_diffs
+  end
+
+  def complete_diff_path
+    merge_request_path(merge_request, format: :patch)
+  end
+
+  def email_format_path
+    merge_request_path(merge_request, format: :diff)
   end
 end
 

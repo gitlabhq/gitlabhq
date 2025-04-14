@@ -17,14 +17,13 @@ module Packages
 
         ::Packages::Conan::MetadataExtractionService.new(package_file).execute
       rescue StandardError => exception
-        logger.warn(
-          message: "Error processing conaninfo.txt file",
-          error: exception.message,
-          package_file: package_file.id,
+        log_payload = {
+          package_file_id: package_file.id,
           project_id: package_file.project_id,
           package_name: package_file.package.name,
           package_version: package_file.package.version
-        )
+        }
+        Gitlab::ErrorTracking.log_exception(exception, **log_payload)
       end
     end
   end

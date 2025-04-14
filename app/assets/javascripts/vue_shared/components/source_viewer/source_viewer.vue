@@ -161,7 +161,6 @@ export default {
       <chunk
         v-for="(chunk, index) in chunks"
         :key="index"
-        :chunk-index="index"
         :is-highlighted="Boolean(chunk.isHighlighted)"
         :raw-content="chunk.rawContent"
         :highlighted-content="chunk.highlightedContent"

@@ -134,6 +134,10 @@ module Ci
       self.ref = project.repository.expand_ref(ref) || ref
     end
 
+    def inputs_hash
+      inputs.to_h { |input| [input.name, input.value] }
+    end
+
     private
 
     def ambiguous_ref?

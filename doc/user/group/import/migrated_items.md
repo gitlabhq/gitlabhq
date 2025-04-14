@@ -76,6 +76,7 @@ Some group items are excluded from migration because they:
 - Are not supported:
   - Push rules
   - Iteration cadence settings
+  - Pending member invitations
 
 ## Migrated project items
 
@@ -246,3 +247,4 @@ Some project items are excluded from migration because they:
   - Package registry
   - Pages domains
   - Remote mirrors
+  - Pending member invitations

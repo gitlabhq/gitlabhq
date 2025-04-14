@@ -25,7 +25,7 @@ RSpec.describe Projects::DesignManagement::Designs::RawImagesController do
           project_id: project,
           design_id: design_id,
           sha: sha
-      })
+        })
     end
 
     before do

@@ -9,7 +9,7 @@ import {
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_HIERARCHY,
 } from '~/work_items/constants';
-import { createWorkItemQueryResponse } from '../mock_data';
+import { createWorkItemQueryResponse } from 'ee_else_ce_jest/work_items/mock_data';
 
 describe('work items graphql resolvers', () => {
   describe('updateNewWorkItemCache', () => {

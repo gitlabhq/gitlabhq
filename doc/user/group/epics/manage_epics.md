@@ -200,7 +200,7 @@ This truncation makes it easier to find other elements on the page without scrol
 
 Prerequisites:
 
-- Your administrator must have [enabled the new look for epics](epic_work_items.md).
+- [The new look for epics](epic_work_items.md) must be enabled.
 
 To change whether descriptions are truncated:
 
@@ -223,7 +223,7 @@ Epic attributes are shown in a sidebar to the right of the description when spac
 
 Prerequisites:
 
-- Your administrator must have [enabled the new look for epics](epic_work_items.md).
+- [The new look for epics](epic_work_items.md) must be enabled.
 
 To hide the sidebar and increase space for the description:
 
@@ -259,7 +259,7 @@ This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
-If your administrator [enabled the new look for epics](epic_work_items.md),
+If [the new look for epics](epic_work_items.md) is enabled,
 an epic can be assigned to one or more users.
 
 The assignees can be changed as often as needed.
@@ -282,7 +282,7 @@ If you find a bug, use the
 
 Prerequisites:
 
-- Your administrator must have [enabled the new look for epics](epic_work_items.md).
+- [The new look for epics](epic_work_items.md) must be enabled.
 - You must have at least the Planner role for the group.
 
 To change the assignee on an epic:
@@ -462,6 +462,7 @@ than 1000. The cached value is rounded to thousands or millions and updated ever
 {{< history >}}
 
 - Filtering by group was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385191) in GitLab 15.9.
+- Filtering by custom fields was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525462) in GitLab 17.11.
 
 {{< /history >}}
 
@@ -474,6 +475,7 @@ You can filter the list of epics by:
 - Confidentiality
 - Reaction emoji
 - Groups
+- [Custom fields](../../../user/work_items/custom_fields.md) enabled for epics
 
 ![epics filter](img/epics_filter_v14_7.png)
 
@@ -576,7 +578,7 @@ of its parent group.
 <!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
 use the info below in the main body. -->
 
-If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+If [the new look for epics](epic_work_items.md) is enabled, this section is named
 **Child items**.
 You can also see any epics, issues, and tasks inherited by descendant items.
 Only epics, issues, and tasks that you can access show on the list.
@@ -596,7 +598,7 @@ not have permission to view.
 <!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
 use the info below in the main body. -->
 
-If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+If [the new look for epics](epic_work_items.md) is enabled, this section is named
 **Child items**.
 Tasks are not included in these counts.
 
@@ -620,7 +622,7 @@ not have permission to view.
 <!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
 use the info below in the main body. -->
 
-If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+If [the new look for epics](epic_work_items.md) is enabled, this section is named
 **Child items**.
 Tasks are not included in this calculation.
 
@@ -665,7 +667,7 @@ To address risks to timely delivery of your planned work, incorporate a review o
 
 Prerequisites:
 
-- Your administrator must have [enabled the new look for epics](epic_work_items.md).
+- [The new look for epics](epic_work_items.md) must be enabled.
 - You must have at least the Planner role for the group.
 
 To change the health status of an epic:
@@ -728,7 +730,7 @@ To add an existing issue to an epic:
 <!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
 use the info below in the main body. -->
 
-If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+If [the new look for epics](epic_work_items.md) is enabled, this section is named
 **Child items**.
 
 #### Create an issue from an epic
@@ -765,7 +767,7 @@ The new issue is assigned to the epic.
 <!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
 use the info below in the main body. -->
 
-If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+If [the new look for epics](epic_work_items.md) is enabled, this section is named
 **Child items**.
 
 ### Remove an issue from an epic
@@ -814,7 +816,7 @@ To reorder issues assigned to an epic:
 <!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
 use the info below in the main body. -->
 
-If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+If [the new look for epics](epic_work_items.md) is enabled, this section is named
 **Child items**.
 
 ### Move issues between epics
@@ -847,7 +849,7 @@ To move an issue to another epic:
 <!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
 use the info below in the main body. -->
 
-If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+If [the new look for epics](epic_work_items.md) is enabled, this section is named
 **Child items**.
 
 ### Use an epic template for repeating issues
@@ -872,7 +874,7 @@ You can add any epic that belongs to a group or subgroup of the parent epic's gr
 New child epics appear at the top of the list of epics in the **Child issues and epics** section.
 <!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
 use the info below in the main body. -->
-If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+If [the new look for epics](epic_work_items.md) is enabled, this section is named
 **Child items**.
 
 When you add an epic that's already linked to a parent epic, the link to its current parent is removed.
@@ -892,7 +894,7 @@ This helps organize and track related work across multiple epics.
 
 Prerequisites:
 
-- Your administrator must have [enabled the new look for epics](epic_work_items.md).
+- [The new look for epics](epic_work_items.md) must be enabled.
 - You must have at least the Guest role for either the parent epic's group or the child epic's group.
 
 To add a parent epic:
@@ -942,7 +944,7 @@ To view child epics from the parent:
 <!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
 use the info below in the main body. -->
 
-If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+If [the new look for epics](epic_work_items.md) is enabled, this section is named
 **Child items**.
 
 ### Add a child epic to an epic
@@ -969,7 +971,7 @@ To add a new epic as child epic:
 <!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
 use the info below in the main body. -->
 
-If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+If [the new look for epics](epic_work_items.md) is enabled, this section is named
 **Child items**.
 
 #### Existing epic
@@ -987,7 +989,7 @@ To add an existing epic as child epic:
 <!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
 use the info below in the main body. -->
 
-If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+If [the new look for epics](epic_work_items.md) is enabled, this section is named
 **Child items**.
 
 ### Move child epics between epics
@@ -1015,7 +1017,7 @@ To move child epics to another epic:
 <!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
 use the info below in the main body. -->
 
-If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+If [the new look for epics](epic_work_items.md) is enabled, this section is named
 **Child items**.
 
 ### Reorder child epics assigned to an epic
@@ -1041,7 +1043,7 @@ To reorder child epics assigned to an epic:
 <!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
 use the info below in the main body. -->
 
-If your administrator [enabled the new look for epics](epic_work_items.md), this section is named
+If [the new look for epics](epic_work_items.md) is enabled, this section is named
 **Child items**.
 
 ### Remove a child epic from a parent epic

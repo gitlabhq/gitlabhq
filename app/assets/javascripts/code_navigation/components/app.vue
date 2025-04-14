@@ -36,6 +36,7 @@ export default {
       'currentDefinitionPosition',
       'currentBlobPath',
       'definitionPathPrefix',
+      'data',
     ]),
   },
   mounted() {
@@ -50,17 +51,28 @@ export default {
 
     this.body = document.body;
 
-    eventHub.$on('showBlobInteractionZones', this.showBlobInteractionZones);
+    eventHub.$on('showBlobInteractionZones', this.showCodeNavigation);
 
     this.addGlobalEventListeners();
     this.fetchData();
   },
   beforeDestroy() {
-    eventHub.$off('showBlobInteractionZones', this.showBlobInteractionZones);
+    eventHub.$off('showBlobInteractionZones', this.showCodeNavigation);
     this.removeGlobalEventListeners();
   },
   methods: {
     ...mapActions(['fetchData', 'showDefinition', 'showBlobInteractionZones', 'setInitialData']),
+    showCodeNavigation(path) {
+      if (this.data?.[path]) {
+        this.showBlobInteractionZones(path);
+      } else {
+        const unwatchData = this.$watch('data', () => {
+          unwatchData();
+
+          this.showBlobInteractionZones(path);
+        });
+      }
+    },
     addGlobalEventListeners() {
       if (this.body) {
         this.body.addEventListener('click', this.showDefinition);

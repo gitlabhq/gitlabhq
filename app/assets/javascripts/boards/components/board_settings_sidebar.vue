@@ -174,6 +174,8 @@ export default {
         <board-settings-sidebar-wip-limit
           v-if="isWipLimitsOn"
           :max-issue-count="activeList.maxIssueCount"
+          :max-issue-weight="activeList.maxIssueWeight"
+          :current-limit-metric="list.limitMetric"
           :active-list-id="activeListId"
         />
       </template>

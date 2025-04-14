@@ -2,6 +2,8 @@
 
 module Ci
   class CollectPipelineAnalyticsServiceBase
+    include PipelineRefFilterIncludingReservedRefNames
+
     STATUS_GROUP_TO_STATUSES = { success: %w[success], failed: %w[failed], other: %w[canceled skipped] }.freeze
     STATUS_GROUPS = STATUS_GROUP_TO_STATUSES.keys.freeze
     STATUS_TO_STATUS_GROUP = STATUS_GROUP_TO_STATUSES.flat_map { |k, v| v.product([k]) }.to_h
@@ -52,7 +54,7 @@ module Ci
     def base_query
       query = clickhouse_model.for_container(container).within_dates(from_time, to_time)
       query = query.for_source(source) if source
-      query = query.for_ref(ref) if ref
+      query = query.for_ref(ref_and_associated_reserved_refs(container, ref, source)) if ref
 
       query
     end

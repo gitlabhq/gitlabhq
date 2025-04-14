@@ -30,111 +30,24 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
   end
 
   describe '.access_control_is_forced?' do
-    subject { described_class.access_control_is_forced?(group) }
+    subject { described_class.access_control_is_forced? }
 
     let(:group) { build_stubbed(:group) }
 
-    where(:access_control_is_enabled, :access_control_is_forced, :group_enforcement, :result) do
-      false | false | false | false
-      false | true  | false | false
-      true  | false | false | false
-      true  | true  | false | true
-      true  | false | true  | true
-      false | false | true  | false
+    where(:access_control_is_enabled, :access_control_is_forced, :result) do
+      false | false | false
+      false | true  | false
+      true  | false | false
+      true  | true  | true
     end
 
     with_them do
       before do
         stub_pages_setting(access_control: access_control_is_enabled)
         stub_application_setting(force_pages_access_control: access_control_is_forced)
-        allow(described_class).to receive(:group_level_enforcement?).with(group).and_return(group_enforcement)
       end
 
       it { is_expected.to eq(result) }
-    end
-  end
-
-  describe '.group_level_enforcement?' do
-    subject { described_class.group_level_enforcement?(group) }
-
-    let(:access_control_is_enabled) { false }
-
-    before do
-      stub_pages_setting(access_control: access_control_is_enabled)
-    end
-
-    context 'when Pages access control is enabled at instance level' do
-      let(:access_control_is_enabled) { true }
-
-      context 'when group exists' do
-        let(:group) { build_stubbed(:group) }
-        let(:parent_group) { build_stubbed(:group) }
-
-        context 'when group has force_pages_access_control enabled' do
-          before do
-            allow(group).to receive_messages(force_pages_access_control: true, self_and_ancestors: [group])
-          end
-
-          it { is_expected.to be true }
-        end
-
-        context 'when ancestor group has force_pages_access_control enabled' do
-          before do
-            allow(parent_group).to receive(:force_pages_access_control).and_return(true)
-            allow(group).to receive_messages(force_pages_access_control: false,
-              self_and_ancestors: [group, parent_group])
-          end
-
-          it { is_expected.to be true }
-        end
-
-        context 'when no group in hierarchy has force_pages_access_control enabled' do
-          before do
-            allow(group).to receive_messages(force_pages_access_control: false, self_and_ancestors: [group])
-          end
-
-          it { is_expected.to be false }
-        end
-      end
-    end
-
-    context 'when Pages access control is disabled at instance level' do
-      context 'when group is nil' do
-        let(:group) { nil }
-
-        it { is_expected.to be false }
-      end
-
-      context 'when group exists' do
-        let(:group) { build_stubbed(:group) }
-        let(:parent_group) { build_stubbed(:group) }
-
-        context 'when group has force_pages_access_control enabled' do
-          before do
-            allow(group).to receive(:force_pages_access_control).and_return(true)
-          end
-
-          it { is_expected.to be false }
-        end
-
-        context 'when ancestor group has force_pages_access_control enabled' do
-          before do
-            allow(parent_group).to receive(:force_pages_access_control).and_return(true)
-            allow(group).to receive_messages(force_pages_access_control: false,
-              self_and_ancestors: [group, parent_group])
-          end
-
-          it { is_expected.to be false }
-        end
-
-        context 'when no group in hierarchy has force_pages_access_control enabled' do
-          before do
-            allow(group).to receive_messages(force_pages_access_control: false, self_and_ancestors: [group])
-          end
-
-          it { is_expected.to be false }
-        end
-      end
     end
   end
 

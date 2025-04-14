@@ -120,7 +120,7 @@ $diff-file-header: 41px;
       line-height: 0;
 
       img {
-        border: 1px solid $white;
+        border: 1px solid var(--gl-background-color-default);
         background-image: linear-gradient(45deg,
         var(--gl-border-color-default) 25%,
         transparent 25%,
@@ -139,11 +139,11 @@ $diff-file-header: 41px;
       }
 
       &.deleted {
-        border: 1px solid $deleted;
+        border: 1px solid var(--gl-status-danger-icon-color);
       }
 
       &.added {
-        border: 1px solid $added;
+        border: 1px solid var(--gl-status-success-icon-color);
       }
     }
 
@@ -347,12 +347,12 @@ $diff-file-header: 41px;
 
   .diff-file-container {
     .frame.deleted {
-      border: 1px solid $deleted;
+      border: 1px solid var(--gl-status-danger-icon-color);
       background-color: inherit;
     }
 
     .frame.added {
-      border: 1px solid $added;
+      border: 1px solid var(--gl-status-success-icon-color);
       background-color: inherit;
     }
 
@@ -407,13 +407,8 @@ $diff-file-header: 41px;
 }
 
 .code .diff-grid-row.line_holder.diff-tr .diff-td.commented:not(.hll) {
-  --highlight-border-color: #{$blue-300};
-  background-color: $blue-50;
-
-  .gl-dark & {
-    --highlight-border-color: #{$blue-600};
-    background-color: $blue-900;
-  }
+  --highlight-border-color: #{$gl-color-blue-300};
+  background-color: $gl-color-blue-50;
 }
 
 .diff-table.code,

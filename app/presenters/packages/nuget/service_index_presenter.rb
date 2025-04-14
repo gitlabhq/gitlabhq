@@ -79,7 +79,8 @@ module Packages
 
       def scope
         return :project if project_or_group.is_a?(::Project)
-        return :group if project_or_group.is_a?(::Group)
+
+        :group if project_or_group.is_a?(::Group)
       end
 
       def download_service_url

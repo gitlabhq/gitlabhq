@@ -4,8 +4,8 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import {
-  WORK_ITEM_TYPE_VALUE_EPIC,
-  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
   sprintfWorkItem,
 } from '../../constants';
 
@@ -51,11 +51,11 @@ export default {
     },
     getPopoverLink(workItemType) {
       switch (workItemType) {
-        case WORK_ITEM_TYPE_VALUE_EPIC:
+        case WORK_ITEM_TYPE_NAME_EPIC:
           return helpPagePath('/user/group/epics/manage_epics', {
             anchor: 'multi-level-child-epics',
           });
-        case WORK_ITEM_TYPE_VALUE_OBJECTIVE:
+        case WORK_ITEM_TYPE_NAME_OBJECTIVE:
           return helpPagePath('/user/okrs', { anchor: 'child-objectives-and-key-results' });
         default:
           return '';

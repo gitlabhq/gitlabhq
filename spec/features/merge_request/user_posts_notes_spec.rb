@@ -12,7 +12,7 @@ RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_
   end
 
   let!(:note) do
-    create(:note_on_merge_request, :with_attachment, noteable: merge_request, project: project)
+    create(:note_on_merge_request, noteable: merge_request, project: project)
   end
 
   before do
@@ -201,29 +201,6 @@ RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_
           expect(find('.note_edited_ago').text)
             .to match(/just now/)
         end
-      end
-    end
-
-    describe 'deleting attachment on legacy diff note' do
-      before do
-        find('.note').hover
-
-        find('.js-note-edit').click
-      end
-
-      # TODO: https://gitlab.com/gitlab-org/gitlab-foss/issues/48034
-      xit 'shows the delete link' do
-        page.within('.note-attachment') do
-          is_expected.to have_css('.js-note-attachment-delete')
-        end
-      end
-
-      # TODO: https://gitlab.com/gitlab-org/gitlab-foss/issues/48034
-      xit 'removes the attachment div and resets the edit form' do
-        accept_confirm { find('.js-note-attachment-delete').click }
-        is_expected.not_to have_css('.note-attachment')
-        is_expected.not_to have_css('.current-note-edit-form')
-        wait_for_requests
       end
     end
   end

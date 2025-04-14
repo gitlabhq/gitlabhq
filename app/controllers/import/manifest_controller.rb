@@ -23,21 +23,39 @@ class Import::ManifestController < Import::BaseController
     group = Group.find(params[:group_id])
 
     unless can?(current_user, :import_projects, group)
-      @errors = ["You don't have enough permissions to import projects in the selected group"]
-
-      render(:new) && return
+      @errors = [s_("ManifestImport|You don't have enough permissions to import projects in the selected group")]
     end
 
-    manifest = Gitlab::ManifestImport::Manifest.new(params[:manifest].tempfile)
+    unless @errors
+      manifest = Gitlab::ManifestImport::Manifest.new(params[:manifest].tempfile)
 
-    if manifest.valid?
-      manifest_import_metadata.save(manifest.projects, group.id)
+      if manifest.valid?
+        manifest_import_metadata.save(manifest.projects, group.id)
 
-      redirect_to status_import_manifest_path
-    else
+        respond_to do |format|
+          format.json do
+            render json: { success: true }
+          end
+          # HTML support can be removed here when the FF :new_project_creation_form gets removed
+          format.html do
+            redirect_to status_import_manifest_path
+          end
+        end
+
+        return
+      end
+
       @errors = manifest.errors
+    end
 
-      render :new
+    respond_to do |format|
+      format.json do
+        render json: { errors: @errors }, status: :unprocessable_entity
+      end
+      # HTML support can be removed here when the FF :new_project_creation_form gets removed
+      format.html do
+        render(:new)
+      end
     end
   end
 
@@ -117,6 +135,14 @@ class Import::ManifestController < Import::BaseController
       format(s_("ManifestImport|Import manifest files cannot exceed %{size} MB"), size: MAX_MANIFEST_SIZE_IN_MB)
     ]
 
-    render(:new)
+    respond_to do |format|
+      format.json do
+        render json: { errors: @errors }, status: :unprocessable_entity
+      end
+      # HTML support can be removed here when the FF :new_project_creation_form gets removed
+      format.html do
+        render(:new)
+      end
+    end
   end
 end

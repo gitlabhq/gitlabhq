@@ -6,6 +6,8 @@ RSpec.describe FlushCounterIncrementsWorker, :counter_attribute, feature_categor
   let(:project_statistics) { create(:project_statistics) }
   let(:model) { CounterAttributeModel.find(project_statistics.id) }
 
+  it_behaves_like 'worker with data consistency', described_class, data_consistency: :delayed
+
   describe '#perform', :redis do
     let(:attribute) { model.class.counter_attributes.first }
     let(:worker) { described_class.new }

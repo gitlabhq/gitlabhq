@@ -73,5 +73,14 @@ RSpec.describe WorkItems::DataSync::Handlers::Notes::CopyService, feature_catego
       notes_details = target_work_item.reload.notes.pluck(:note, :discussion_id)
       expect(notes_details).to match_array(expected_notes_details)
     end
+
+    it 'sets correct attributes from target', :aggregate_failures do
+      expect { execute_service }.to change { ::DescriptionVersion.count }.by(1)
+
+      expected_description_version = DescriptionVersion.last
+
+      expect(expected_description_version.namespace_id).to eq(target_work_item.namespace_id)
+      expect(expected_description_version.issue_id).to eq(target_work_item.id)
+    end
   end
 end

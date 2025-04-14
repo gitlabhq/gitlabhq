@@ -1,10 +1,10 @@
 - return unless can?(current_user, :remove_project, @project)
 - title = @project.marked_for_deletion_at.present? ? _('Delete project immediately') : _('Delete project')
 
-= render Pajamas::CardComponent.new(body_options: { class: 'gl-bg-red-50' }) do |c|
+= render Pajamas::CardComponent.new(body_options: { class: 'gl-bg-feedback-danger' }) do |c|
   - c.with_header do
     .gl-flex.gl-grow
-      %h4.gl-text-base.gl-leading-24.gl-m-0.gl-text-danger= title
+      %h4.gl-text-base.gl-leading-24.gl-m-0.gl-text-feedback-danger= title
 
   - c.with_body do
     = render 'projects/delete_card_body'

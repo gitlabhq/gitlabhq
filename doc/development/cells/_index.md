@@ -7,21 +7,37 @@ title: GitLab Cells Development Guidelines
 
 For background of GitLab Cells, refer to the [design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/).
 
+## Available Cells / Organization schemas
+
+Below are available schemas related to Cells and Organizations:
+
+| Schema | Description |
+| ------ | ----------- |
+| `gitlab_main_cell`| Use for all tables in the `main:` database that are for an Organization. For example, `projects` and `groups` |
+| `gitlab_main_clusterwide_setting` | All tables in the `main:` database related to Cluster settings. For example, `application_settings`. |
+| `gitlab_main_clusterwide` | All tables in the `main:` database where all rows, or a subset of rows needs to be present across the cluster, in the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. For example, `users`. For the [Cells 1.0 architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.0/), there are no real clusterwide tables as each cell will have its own database. In effect, these tables will still be stored locally in each cell. |
+| `gitlab_main_cell_local` | For tables in the `main:` database that are related to features that is distinct for each cell. For example, `zoekt_nodes`, or `shards`. These cell-local tables should not have any foreign key references from/to organization tables. |
+| `gitlab_ci` | Use for all tables in the `ci:` database that are for an Organization. For example, `ci_pipelines` and `ci_builds` |
+| `gitlab_ci_cell_local` | For tables in the `ci:` database that are related to features that is distinct for each cell. For example, `instance_type_ci_runners`, or `ci_cost_settings`. These cell-local tables should not have any foreign key references from/to organization tables. |
+| `gitlab_main_user` | Upcoming schema, related to Users. For example, `users`. |
+
 ## Choose either the `gitlab_main_cell` or `gitlab_main_clusterwide` schema
 
 Depending on the use case, your feature may be [organization-level, or clusterwide](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/#how-do-i-decide-whether-to-move-my-feature-to-the-cluster-cell-or-organization-level) and hence the tables used for the feature should also use the appropriate schema.
 
-When you choose the appropriate [schema](../database/multiple_databases.md#gitlab-schema) for tables, consider the following guidelines as part of the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture:
+When you choose the appropriate [schema](#available-cells--organization-schemas) for tables, consider the following guidelines as part of the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture:
 
 - Default to `gitlab_main_cell`: We expect most tables to be assigned to the `gitlab_main_cell` schema by default. Choose this schema if the data in the table is related to `projects` or `namespaces`.
 - Consult with the Tenant Scale group: If you believe that the `gitlab_main_clusterwide` schema is more suitable for a table, seek approval from the Tenant Scale group. This is crucial because it has scaling implications and may require reconsideration of the schema choice.
 
-Tables with `gitlab_main_clusterwide` schema will need additional work to be replicated to other / all cells.
-The replication strategy will likely be different for each case, but will involve internal APIs.
-The application may also need to be modified to restrict writes to prevent conflicts.
-We may also ask teams to update tables from `gitlab_main_clusterwide` to `gitlab_main_cell` as required, which also might require adding sharding keys to these tables.
+When proposing new tables with `gitlab_main_clusterwide` schema, be aware of the following:
 
-Do not use cluster-wide database tables to store [static data](#static-data).
+- Do not use cluster-wide database tables to store [static data](#static-data).
+- Must be able to be synchronized independently to other / all cells.
+- Should only have a tiny amount of rows. Larger tables with many rows are not suitable to be cluster-wide tables.
+- Must not have references to / from other tables that will cause data issues when synchronized to other cells.
+
+We may also ask teams to update tables from `gitlab_main_clusterwide` to `gitlab_main_cell` as required, which also might require adding sharding keys to these tables.
 
 To understand how existing tables are classified, you can use [this dashboard](https://manojmj.gitlab.io/tenant-scale-schema-progress/).
 
@@ -252,6 +268,24 @@ Exempted tables must not have foreign key, or loose foreign key references, as
 this may cause the target cell's database to have foreign key violations when data is
 moved.
 See [#471182](https://gitlab.com/gitlab-org/gitlab/-/issues/471182) for examples and possible solutions.
+
+## Ensure sharding key presence on application level
+
+When you define your sharding key you must make sure it's filled on application level.
+Every `ApplicationRecord` model includes a helper `populate_sharding_key`, which
+provides a convenient way of defining sharding key logic,
+and also a corresponding matcher to test your sharding key logic. For example:
+
+```ruby
+# in model.rb
+populate_sharding_key :project_id, source: :merge_request, field: :target_project_id
+
+# in model_spec.rb
+it { is_expected.to populate_sharding_key(:project_id).from(:merge_request, :target_project_id) }
+```
+
+See more [helper examples](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/populates_sharding_key.rb)
+and [RSpec matcher examples](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/matchers/populate_sharding_key_matcher.rb).
 
 ## Static data
 

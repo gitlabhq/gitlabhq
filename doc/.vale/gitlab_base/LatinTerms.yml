@@ -1,10 +1,9 @@
 ---
-# Warning: gitlab_base.LatinTerms
-#
-# Checks for use of Latin terms.
-# Uses https://github.com/errata-ai/Google/blob/master/Google/Latin.yml for ideas.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.LatinTerms
+description: |
+  Checks for use of Latin terms.
+  Uses https://github.com/errata-ai/Google/blob/master/Google/Latin.yml
+  for ideas.
 extends: substitution
 message: "Use '%s' instead of '%s', but consider rewriting the sentence."
 link: https://docs.gitlab.com/development/documentation/styleguide/word_list/

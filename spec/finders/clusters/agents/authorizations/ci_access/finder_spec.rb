@@ -186,5 +186,56 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::Finder, feature_categ
         end
       end
     end
+
+    describe 'authorized organizations' do
+      before do
+        stub_application_setting(organization_cluster_agent_authorization_enabled: setting_enabled)
+      end
+
+      context 'when the organization authorization application setting is enabled' do
+        let(:setting_enabled) { true }
+
+        context 'when multiple agents are authorized' do
+          let!(:staging_auth) { create(:agent_ci_access_organization_authorization, agent: staging_agent) }
+          let!(:production_auth) { create(:agent_ci_access_organization_authorization, agent: production_agent) }
+
+          it 'returns authorizations for all configured agents' do
+            expect(subject).to contain_exactly(production_auth, staging_auth)
+          end
+
+          context 'when a single agent is specified' do
+            let(:finder) { described_class.new(requesting_project, agent: production_agent) }
+
+            it 'returns authorizations for the given agent' do
+              expect(subject).to contain_exactly(production_auth)
+            end
+          end
+        end
+
+        context 'agent configuration project belongs to a different organization' do
+          let(:organization) { create(:organization) }
+          let(:project) { create(:project, organization: organization) }
+          let(:unrelated_agent) { create(:cluster_agent, project: project) }
+
+          before do
+            create(:agent_ci_access_organization_authorization, agent: unrelated_agent, organization: organization)
+          end
+
+          it { is_expected.to be_empty }
+        end
+
+        it_behaves_like 'access_as' do
+          let!(:authorization) { create(:agent_ci_access_organization_authorization, agent: production_agent, config: config) }
+        end
+      end
+
+      context 'when the organization authorization application setting is disabled' do
+        let(:setting_enabled) { false }
+
+        let!(:production_auth) { create(:agent_ci_access_organization_authorization, agent: production_agent) }
+
+        it { is_expected.to be_empty }
+      end
+    end
   end
 end

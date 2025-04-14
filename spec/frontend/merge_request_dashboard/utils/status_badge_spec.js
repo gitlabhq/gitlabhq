@@ -62,6 +62,7 @@ describe('assignedToYouBadge', () => {
       assignedToYouBadge({
         mergeRequest: {
           draft,
+          reviewers: { nodes: [] },
         },
       }),
     ).toEqual(data);

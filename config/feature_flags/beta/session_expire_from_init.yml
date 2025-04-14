@@ -1,0 +1,9 @@
+---
+name: session_expire_from_init
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/395038
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183472
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/471679
+milestone: '17.11'
+group: group::authentication
+type: beta
+default_enabled: false

@@ -1,9 +1,0 @@
----
-name: remind_me_quick_action
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/20490
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149938
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/450706
-milestone: '17.0'
-group: group::personal productivity
-type: experiment
-default_enabled: false

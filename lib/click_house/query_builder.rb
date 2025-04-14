@@ -40,63 +40,57 @@ module ClickHouse
     def where(conditions)
       validate_condition_type!(conditions)
 
-      new_instance = deep_clone
-
-      if conditions.is_a?(Arel::Nodes::Node)
-        new_instance.conditions << conditions
-      else
-        add_conditions_to(new_instance, conditions)
+      deep_clone.tap do |new_instance|
+        if conditions.is_a?(Arel::Nodes::Node)
+          new_instance.conditions << conditions
+        else
+          add_conditions_to(new_instance, conditions)
+        end
       end
-
-      new_instance
     end
 
     def select(*fields)
-      new_instance = deep_clone
+      deep_clone.tap do |new_instance|
+        existing_fields = new_instance.manager.projections.filter_map do |projection|
+          if projection.is_a?(Arel::Attributes::Attribute)
+            projection.name.to_s
+          elsif projection.to_s == '*'
+            nil
+          end
+        end
 
-      existing_fields = new_instance.manager.projections.filter_map do |projection|
-        if projection.is_a?(Arel::Attributes::Attribute)
-          projection.name.to_s
-        elsif projection.to_s == '*'
-          nil
+        new_projections = (existing_fields + fields).map do |field|
+          if field.is_a?(Symbol)
+            field.to_s
+          else
+            field
+          end
+        end
+
+        new_instance.manager.projections = new_projections.uniq.map do |field|
+          if field.is_a?(Arel::Expressions)
+            field
+          else
+            new_instance.table[field.to_s]
+          end
         end
       end
-
-      new_projections = (existing_fields + fields).map do |field|
-        if field.is_a?(Symbol)
-          field.to_s
-        else
-          field
-        end
-      end
-
-      new_instance.manager.projections = new_projections.uniq.map do |field|
-        if field.is_a?(Arel::Expressions)
-          field
-        else
-          new_instance.table[field.to_s]
-        end
-      end
-      new_instance
     end
 
     def order(field, direction = :asc)
       validate_order_direction!(direction)
 
-      new_instance = deep_clone
-
-      new_order = new_instance.table[field].public_send(direction.to_s.downcase) # rubocop:disable GitlabSecurity/PublicSend
-      new_instance.manager.order(new_order)
-
-      new_instance
+      deep_clone.tap do |new_instance|
+        table_field = new_instance.table[field]
+        new_order = direction.to_s.casecmp('desc') == 0 ? table_field.desc : table_field.asc
+        new_instance.manager.order(new_order)
+      end
     end
 
     def group(*columns)
-      new_instance = deep_clone
-
-      new_instance.manager.group(*columns)
-
-      new_instance
+      deep_clone.tap do |new_instance|
+        new_instance.manager.group(*columns)
+      end
     end
 
     def limit(count)
@@ -137,10 +131,10 @@ module ClickHouse
     end
 
     def deep_clone
-      new_instance = self.class.new(table.name)
-      new_instance.manager = manager.clone
-      new_instance.conditions = conditions.map(&:clone)
-      new_instance
+      self.class.new(table.name).tap do |new_instance|
+        new_instance.manager = manager.clone
+        new_instance.conditions = conditions.map(&:clone)
+      end
     end
 
     def apply_conditions!

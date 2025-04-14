@@ -10,6 +10,10 @@ module Mutations
         required: true,
         description: 'Time until which the todos should be snoozed.'
 
+      field :todos, [::Types::TodoType],
+        null: false,
+        description: 'Snoozed to-do items.'
+
       private
 
       def process_todos(todos, snooze_until:)

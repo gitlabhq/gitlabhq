@@ -175,6 +175,15 @@ RSpec.describe Groups::Settings::CiCdController, feature_category: :continuous_i
             .from(false).to(true)
         end
       end
+
+      context 'when updating `job_token_policies_enabled`' do
+        let(:params) { { group_id: group, group: { job_token_policies_enabled: true } } }
+
+        it 'can update `job_token_policies_enabled`' do
+          expect { perform_request }.to change { group.reload.namespace_settings.job_token_policies_enabled }
+            .from(false).to(true)
+        end
+      end
     end
 
     context 'when user is a group maintainer' do
@@ -195,6 +204,16 @@ RSpec.describe Groups::Settings::CiCdController, feature_category: :continuous_i
 
         it 'cannot update jwt_ci_cd_job_token_enabled' do
           expect { perform_request }.not_to change { group.reload.namespace_settings.jwt_ci_cd_job_token_enabled }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when updating `job_token_policies_enabled`' do
+        let(:params) { { group_id: group, group: { job_token_policies_enabled: true } } }
+
+        it 'cannot update `job_token_policies_enabled`' do
+          expect { perform_request }.not_to change { group.reload.namespace_settings.job_token_policies_enabled }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -224,6 +243,15 @@ RSpec.describe Groups::Settings::CiCdController, feature_category: :continuous_i
 
           it 'can update jwt_ci_cd_job_token_enabled' do
             expect { perform_request }.to change { group.reload.namespace_settings.jwt_ci_cd_job_token_enabled }
+              .from(false).to(true)
+          end
+        end
+
+        context 'when updating `job_token_policies_enabled`' do
+          let(:params) { { group_id: group, group: { job_token_policies_enabled: true } } }
+
+          it 'can update `job_token_policies_enabled`' do
+            expect { perform_request }.to change { group.reload.namespace_settings.job_token_policies_enabled }
               .from(false).to(true)
           end
         end

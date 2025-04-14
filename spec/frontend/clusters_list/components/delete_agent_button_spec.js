@@ -17,7 +17,6 @@ import { clusterAgentsResponse } from './mock_data';
 Vue.use(VueApollo);
 
 const fullPath = 'path/to/project';
-const defaultBranchName = 'default';
 const agent = {
   id: 'agent-id',
   name: 'agent-name',
@@ -53,7 +52,6 @@ describe('DeleteAgentButton', () => {
       query: getAgentsQuery,
       variables: {
         fullPath,
-        defaultBranchName,
         isGroup: false,
       },
       data: clusterAgentsResponse.data,
@@ -71,7 +69,6 @@ describe('DeleteAgentButton', () => {
       isGroup: false,
     };
     const propsData = {
-      defaultBranchName,
       agent,
     };
 

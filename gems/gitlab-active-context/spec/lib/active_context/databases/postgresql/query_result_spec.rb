@@ -1,9 +1,15 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveContext::Databases::Postgresql::QueryResult do
+  let(:collection) { double(:collection) }
+  let(:user) { double(:user) }
   let(:pg_result) { instance_double(PG::Result) }
 
-  subject(:query_result) { described_class.new(pg_result) }
+  subject(:query_result) { described_class.new(result: pg_result, collection: collection, user: user) }
+
+  before do
+    allow(collection).to receive_messages(redact_unauthorized_results!: [[], []])
+  end
 
   describe '#each' do
     it 'yields each row' do

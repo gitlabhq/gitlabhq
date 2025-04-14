@@ -161,6 +161,16 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       end
     end
 
+    describe '.for_placeholder_user' do
+      let(:placeholder_user) { source_user_2.placeholder_user }
+
+      it 'only returns source users for the given placeholder user' do
+        expect(described_class.for_placeholder_user(placeholder_user).to_a).to match_array(
+          [source_user_2]
+        )
+      end
+    end
+
     describe '.awaiting_reassignment' do
       it 'only returns source users that await reassignment' do
         namespace = create(:namespace)
@@ -277,13 +287,11 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     let_it_be(:namespace) { create(:namespace) }
 
     let_it_be(:source_user_1) do
-      create(:import_source_user, namespace: namespace, status: 4, source_name: 'd',
-        created_at: '2024-12-03T10:42:20.000Z')
+      create(:import_source_user, namespace: namespace, status: 4, source_name: 'd')
     end
 
     let_it_be(:source_user_2) do
-      create(:import_source_user, namespace: namespace, status: 3, source_name: 'c',
-        created_at: '2024-12-03T22:42:20.000Z')
+      create(:import_source_user, namespace: namespace, status: 3, source_name: 'c')
     end
 
     let_it_be(:source_user_3) do
@@ -293,14 +301,12 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
         namespace: namespace,
         status: 1,
         source_name: 'a',
-        created_at: '2025-01-23T19:42:20.000Z',
         reassignment_token: SecureRandom.hex
       )
     end
 
     let_it_be(:source_user_4) do
-      create(:import_source_user, :with_reassign_to_user, namespace: namespace, status: 2, source_name: 'b',
-        created_at: '2025-01-20T19:42:20.000Z')
+      create(:import_source_user, :with_reassign_to_user, namespace: namespace, status: 2, source_name: 'b')
     end
 
     let(:sort_by_attribute) { described_class.sort_by_attribute(method).pluck(attribute) }

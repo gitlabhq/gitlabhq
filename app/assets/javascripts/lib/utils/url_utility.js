@@ -513,14 +513,20 @@ export const getUrlParamsArray = () => urlParamsToArray(window.location.search);
  * @param {String} query from "document.location.search"
  * @param {Object} options
  * @param {Boolean?} options.gatherArrays - gather array values into an Array
+ * @param {Boolean?} options.specialOperators - handle special operators `or` & `not` with arrays
  * @param {Boolean?} options.legacySpacesDecode - (deprecated) plus symbols (+) are not replaced with spaces, false by default
  * @returns {Object}
  *
  * ex: "?one=1&two=2" into {one: 1, two: 2}
  */
-export function queryToObject(query, { gatherArrays = false, legacySpacesDecode = false } = {}) {
+export function queryToObject(
+  query,
+  { gatherArrays = false, specialOperators = false, legacySpacesDecode = false } = {},
+) {
   const removeQuestionMarkFromQuery = String(query).startsWith('?') ? query.slice(1) : query;
   return removeQuestionMarkFromQuery.split('&').reduce((accumulator, curr) => {
+    if (!curr) return accumulator;
+
     const [key, value] = curr.split('=');
     if (value === undefined) {
       return accumulator;
@@ -529,7 +535,24 @@ export function queryToObject(query, { gatherArrays = false, legacySpacesDecode 
     const decodedValue = legacySpacesDecode ? decodeURIComponent(value) : decodeUrlParameter(value);
     const decodedKey = legacySpacesDecode ? decodeURIComponent(key) : decodeUrlParameter(key);
 
-    if (gatherArrays && decodedKey.endsWith('[]')) {
+    // Handle `or` & `not` operators, eg; or[label_name][] or not[label_name][].
+    // Check if the key ends with square brackets (indicating an array)
+    const isArrayNotation = decodedKey.endsWith('[]');
+    if (specialOperators && decodedKey.includes('[')) {
+      // If it's an array notation and we have already started collecting values
+      if (isArrayNotation && accumulator[decodedKey]) {
+        // Add to existing array
+        accumulator[decodedKey].push(decodedValue);
+      }
+      // If it's array notation but first occurrence, initialize array with first value
+      else if (isArrayNotation) {
+        accumulator[decodedKey] = [decodedValue];
+      }
+      // For non-array bracket notation, just set the value
+      else {
+        accumulator[decodedKey] = decodedValue;
+      }
+    } else if (gatherArrays && decodedKey.endsWith('[]')) {
       const decodedArrayKey = decodedKey.slice(0, -2);
 
       if (!Array.isArray(accumulator[decodedArrayKey])) {

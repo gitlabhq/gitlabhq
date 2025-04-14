@@ -174,7 +174,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActionCable, :request_store, featur
     let(:channel_class) { 'IssuesChannel' }
     let(:payload) do
       {
-          channel_class: channel_class
+        channel_class: channel_class
       }
     end
 

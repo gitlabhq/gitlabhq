@@ -71,9 +71,6 @@ export default {
       const dateTime = new Date(this.deploymentTime);
       return localeDateFormat.asDateTimeFull.format(dateTime);
     },
-    createdAt() {
-      return this.deployment?.createdAt;
-    },
     commit() {
       return this.deployment?.commit;
     },

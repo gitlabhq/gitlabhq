@@ -19,9 +19,9 @@ title: Container registry metadata database
 
 {{< /history >}}
 
-The metadata database enables many new registry features, including
-online garbage collection, and increases the efficiency of many registry operations.
-The work on the self-managed release of the registry metadata database feature
+The metadata database provides several [enhancements](#enhancements) to the container registry
+that improve performance and add new features.
+The work on the GitLab Self-Managed release of the registry metadata database feature
 is tracked in [epic 5521](https://gitlab.com/groups/gitlab-org/-/epics/5521).
 
 By default, the container registry uses object storage to persist metadata
@@ -32,21 +32,40 @@ By using a database to store this data, many new features are possible, includin
 which removes old data automatically with zero downtime.
 
 This database works in conjunction with the object storage already used by the registry, but does not replace object storage.
-You must continue to maintain an object storage solution even after migrating to the metadata database.
+You must continue to maintain an object storage solution even after performing a metadata import to the metadata database.
 
 For Helm Charts installations, see [Manage the container registry metadata database](https://docs.gitlab.com/charts/charts/registry/metadata_database.html#create-the-database)
 in the Helm Charts documentation.
 
-## Known Limitations
+## Enhancements
 
-- No support for online migrations.
+The metadata database architecture supports performance improvements, bug fixes, and new features 
+that are not available with the object storage metadata architecture. These enhancements include:
+
+- Automatic [online garbage collection](../../user/packages/container_registry/delete_container_registry_images.md#garbage-collection)
+- [Storage usage visibility](../../user/packages/container_registry/reduce_container_registry_storage.md#view-container-registry-usage) for repositories, projects, and groups
+- [Image signing](../../user/packages/container_registry/_index.md#container-image-signatures)
+- [Moving and renaming repositories](../../user/packages/container_registry/_index.md#move-or-rename-container-registry-repositories)
+- [Protected tags](../../user/packages/container_registry/protected_container_tags.md)
+- Performance improvements for [cleanup policies](../../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy), enabling successful cleanup of large repositories
+- Performance improvements for listing repository tags
+- Tracking and displaying tag publish timestamps (see [issue 290949](https://gitlab.com/gitlab-org/gitlab/-/issues/290949))
+- Sorting repository tags by additional attributes beyond name
+
+Due to technical constraints of the object storage metadata architecture, new features are only 
+implemented for the metadata database version. Non-security bug fixes might be limited to the 
+metadata database version.
+
+## Known limitations
+
+- Metadata import for existing registries requires a period of read-only time.
 - Geo functionality is limited. Additional features are proposed in [epic 15325](https://gitlab.com/groups/gitlab-org/-/epics/15325).
-- Registry database migrations must be run manually when upgrading versions.
-- No guarantee for registry [zero downtime during upgrades](../../update/zero_downtime.md) on multi-node Omnibus GitLab environments.
+- Registry regular schema and post-deployment database migrations must be run manually when upgrading versions.
+- No guarantee for registry [zero downtime during upgrades](../../update/zero_downtime.md) on multi-node Linux package environments.
 
 ## Metadata database feature support
 
-You can migrate existing registries to the metadata database, and use online garbage collection.
+You can import metadata from existing registries to the metadata database, and use online garbage collection.
 
 Some database-enabled features are only enabled for GitLab.com and automatic database provisioning for
 the registry database is not available. Review the feature support table in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423459#supported-feature-status)
@@ -62,19 +81,23 @@ Prerequisites:
 Follow the instructions that match your situation:
 
 - [New installation](#new-installations) or enabling the container registry for the first time.
-- Migrate existing container images to the metadata database:
-  - [One-step migration](#one-step-migration). Only recommended for relatively small registries or no requirement to avoid downtime.
-  - [Three-step migration](#three-step-migration). Recommended for larger container registries.
+- Import existing container image metadata to the metadata database:
+  - [One-step import](#one-step-import). Only recommended for relatively small registries or no requirement to avoid downtime.
+  - [Three-step import](#three-step-import). Recommended for larger container registries.
 
 ### Before you start
 
+- All database connection values are placeholders. You must create, verify your ability to
+  connect to, and manage a new PostgreSQL database for the registry before completing any step.
+  - See the full [database configuration](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md?ref_type=heads#database).
+  - See [epic 17005](https://gitlab.com/groups/gitlab-org/-/epics/17005) for progress towards automatic registry database provisioning and management.
 - After you enable the database, you must continue to use it. The database is
   now the source of the registry metadata, disabling it after this point
   causes the registry to lose visibility on all images written to it while
   the database was active.
 - Never run [offline garbage collection](container_registry.md#container-registry-garbage-collection) at any point
   after the import step has been completed. That command is not compatible with registries using
-  the metadata database, and it deletes data.
+  the metadata database and may delete data associated with tagged images.
 - Verify you have not automated offline garbage collection.
 - You can first [reduce the storage of your registry](../../user/packages/container_registry/reduce_container_registry_storage.md)
   to speed up the process.
@@ -90,15 +113,15 @@ To enable the database:
    ```ruby
    registry['database'] = {
      'enabled' => false,
-     'host' => 'localhost',
-     'port' => 5432,
-     'user' => 'registry-database-user',
-     'password' => 'registry-database-password',
-     'dbname' => 'registry-database-name',
+     'host' => '<registry_database_host_placeholder_change_me>',
+     'port' => 5432, # Default, but set to the port of your database instance if it differs.
+     'user' => '<registry_database_username_placeholder_change_me>',
+     'password' => '<registry_database_placeholder_change_me>',
+     'dbname' => '<registry_database_name_placeholder_change_me>',
      'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
-     'sslcert' => '/path/to/cert.pem',
-     'sslkey' => '/path/to/private.key',
-     'sslrootcert' => '/path/to/ca.pem'
+     'sslcert' => '</path/to/cert.pem>',
+     'sslkey' => '</path/to/private.key>',
+     'sslrootcert' => '</path/to/ca.pem>'
    }
    ```
 
@@ -109,15 +132,15 @@ To enable the database:
    ```ruby
    registry['database'] = {
      'enabled' => true,
-     'host' => 'localhost',
-     'port' => 5432,
-     'user' => 'registry-database-user',
-     'password' => 'registry-database-password',
-     'dbname' => 'registry-database-name',
+     'host' => '<registry_database_host_placeholder_change_me>',
+     'port' => 5432, # Default, but set to the port of your database instance if it differs.
+     'user' => '<registry_database_username_placeholder_change_me>',
+     'password' => '<registry_database_placeholder_change_me>',
+     'dbname' => '<registry_database_name_placeholder_change_me>',
      'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
-     'sslcert' => '/path/to/cert.pem',
-     'sslkey' => '/path/to/private.key',
-     'sslrootcert' => '/path/to/ca.pem'
+     'sslcert' => '</path/to/cert.pem>',
+     'sslkey' => '</path/to/private.key>',
+     'sslrootcert' => '</path/to/ca.pem>'
    }
    ```
 
@@ -125,8 +148,8 @@ To enable the database:
 
 ### Existing registries
 
-You can migrate your existing container registry data in one step or three steps.
-A few factors affect the duration of the migration:
+You can import your existing container registry metadata in one step or three steps.
+A few factors affect the duration of the import:
 
 - The size of your existing registry data.
 - The specifications of your PostgresSQL instance.
@@ -135,10 +158,10 @@ A few factors affect the duration of the migration:
 
 {{< alert type="note" >}}
 
-The migration only targets tagged images. Untagged and unreferenced manifests, and the layers
+The metadata import only targets tagged images. Untagged and unreferenced manifests, and the layers
 exclusively referenced by them, are left behind and become inaccessible. Untagged images
 were never visible through the GitLab UI or API, but they can become "dangling" and
-left behind in the backend. After migration to the new registry, all images are subject
+left behind in the backend. After import to the new registry, all images are subject
 to continuous online garbage collection, by default deleting any untagged and unreferenced manifests
 and layers that remain for longer than 24 hours.
 
@@ -146,12 +169,12 @@ and layers that remain for longer than 24 hours.
 
 Choose the one or three step method according to your registry installation.
 
-#### One-step migration
+#### One-step import
 
 {{< alert type="warning" >}}
 
-The registry must be shut down or remain in `read-only` mode during the migration.
-Only choose this method if you do not need to write to the registry during the migration
+The registry must be shut down or remain in `read-only` mode during the import.
+Only choose this method if you do not need to write to the registry during the import
 and your registry contains a relatively small amount of data.
 
 {{< /alert >}}
@@ -161,15 +184,15 @@ and your registry contains a relatively small amount of data.
    ```ruby
    registry['database'] = {
      'enabled' => false, # Must be false!
-     'host' => 'localhost',
-     'port' => 5432,
-     'user' => 'registry-database-user',
-     'password' => 'registry-database-password',
-     'dbname' => 'registry-database-name',
+     'host' => '<registry_database_host_placeholder_change_me>',
+     'port' => 5432, # Default, but set to the port of your database instance if it differs.
+     'user' => '<registry_database_username_placeholder_change_me>',
+     'password' => '<registry_database_placeholder_change_me>',
+     'dbname' => '<registry_database_name_placeholder_change_me>',
      'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
-     'sslcert' => '/path/to/cert.pem',
-     'sslkey' => '/path/to/private.key',
-     'sslrootcert' => '/path/to/ca.pem'
+     'sslcert' => '</path/to/cert.pem>',
+     'sslkey' => '</path/to/private.key>',
+     'sslrootcert' => '</path/to/ca.pem>'
    }
    ```
 
@@ -183,7 +206,7 @@ and your registry contains a relatively small amount of data.
    ## Object Storage - Container Registry
    registry['storage'] = {
      'gcs' => {
-       'bucket' => "my-company-container-registry",
+       'bucket' => '<my-company-container-registry>',
        'chunksize' => 5242880
      },
      'maintenance' => {
@@ -209,21 +232,21 @@ and your registry contains a relatively small amount of data.
    ```ruby
    registry['database'] = {
      'enabled' => true, # Must be enabled now!
-     'host' => 'localhost',
-     'port' => 5432,
-     'user' => 'registry-database-user',
-     'password' => 'registry-database-password',
-     'dbname' => 'registry-database-name',
+     'host' => '<registry_database_host_placeholder_change_me>',
+     'port' => 5432, # Default, but set to the port of your database instance if it differs.
+     'user' => '<registry_database_username_placeholder_change_me>',
+     'password' => '<registry_database_placeholder_change_me>',
+     'dbname' => '<registry_database_name_placeholder_change_me>',
      'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
-     'sslcert' => '/path/to/cert.pem',
-     'sslkey' => '/path/to/private.key',
-     'sslrootcert' => '/path/to/ca.pem'
+     'sslcert' => '</path/to/cert.pem>',
+     'sslkey' => '</path/to/private.key>',
+     'sslrootcert' => '</path/to/ca.pem>'
    }
 
    ## Object Storage - Container Registry
    registry['storage'] = {
      'gcs' => {
-       'bucket' => "my-company-container-registry",
+       'bucket' => '<my-company-container-registry>',
        'chunksize' => 5242880
      },
      'maintenance' => {
@@ -238,11 +261,11 @@ and your registry contains a relatively small amount of data.
 
 You can now use the metadata database for all operations!
 
-#### Three-step migration
+#### Three-step import
 
-Follow this guide to migrate your existing container registry data.
-This procedure is recommended for larger sets of data or if you are
-trying to minimize downtime while completing the migration.
+Follow this guide to import your existing container registry metadata.
+This procedure is recommended for larger sets of metadata or if you are
+trying to minimize downtime while completing the import.
 
 {{< alert type="note" >}}
 
@@ -260,7 +283,7 @@ step one is being completed.
 {{< alert type="warning" >}}
 
 It is [not yet possible](https://gitlab.com/gitlab-org/container-registry/-/issues/1162)
-to restart the migration, so it's important to let the migration run to completion.
+to restart the import, so it's important to let the import run to completion.
 If you must halt the operation, you have to restart this step.
 
 {{< /alert >}}
@@ -270,21 +293,21 @@ If you must halt the operation, you have to restart this step.
    ```ruby
    registry['database'] = {
      'enabled' => false, # Must be false!
-     'host' => 'localhost',
-     'port' => 5432,
-     'user' => 'registry-database-user',
-     'password' => 'registry-database-password',
-     'dbname' => 'registry-database-name',
+     'host' => '<registry_database_host_placeholder_change_me>',
+     'port' => 5432, # Default, but set to the port of your database instance if it differs.
+     'user' => '<registry_database_username_placeholder_change_me>',
+     'password' => '<registry_database_placeholder_change_me>',
+     'dbname' => '<registry_database_name_placeholder_change_me>',
      'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
-     'sslcert' => '/path/to/cert.pem',
-     'sslkey' => '/path/to/private.key',
-     'sslrootcert' => '/path/to/ca.pem'
+     'sslcert' => '</path/to/cert.pem>',
+     'sslkey' => '</path/to/private.key>',
+     'sslrootcert' => '</path/to/ca.pem>'
    }
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. [Apply database migrations](#apply-database-migrations) if you have not done so.
-1. Run the first step to begin the migration:
+1. Run the first step to begin the import:
 
    ```shell
    sudo gitlab-ctl registry-database import --step-one
@@ -314,7 +337,7 @@ Allow enough time for downtime while step two is being executed.
    ## Object Storage - Container Registry
    registry['storage'] = {
      'gcs' => {
-       'bucket' => "my-company-container-registry",
+       'bucket' => '<my-company-container-registry>',
        'chunksize' => 5242880
      },
      'maintenance' => {
@@ -326,7 +349,7 @@ Allow enough time for downtime while step two is being executed.
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
-1. Run step two of the migration
+1. Run step two of the import:
 
    ```shell
    sudo gitlab-ctl registry-database import --step-two
@@ -339,21 +362,21 @@ Allow enough time for downtime while step two is being executed.
    ```ruby
    registry['database'] = {
      'enabled' => true, # Must be set to true!
-     'host' => 'localhost',
-     'port' => 5432,
-     'user' => 'registry-database-user',
-     'password' => 'registry-database-password',
-     'dbname' => 'registry-database-name',
+     'host' => '<registry_database_host_placeholder_change_me>',
+     'port' => 5432, # Default, but set to the port of your database instance if it differs.
+     'user' => '<registry_database_username_placeholder_change_me>',
+     'password' => '<registry_database_placeholder_change_me>',
+     'dbname' => '<registry_database_name_placeholder_change_me>',
      'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
-     'sslcert' => '/path/to/cert.pem',
-     'sslkey' => '/path/to/private.key',
-     'sslrootcert' => '/path/to/ca.pem'
+     'sslcert' => '</path/to/cert.pem>',
+     'sslkey' => '</path/to/private.key>',
+     'sslrootcert' => '</path/to/ca.pem>'
    }
 
    ## Object Storage - Container Registry
    registry['storage'] = {
      'gcs' => {
-       'bucket' => "my-company-container-registry",
+       'bucket' => '<my-company-container-registry>',
        'chunksize' => 5242880
      },
      'maintenance' => { # This section can be removed.
@@ -368,10 +391,11 @@ Allow enough time for downtime while step two is being executed.
 
 You can now use the metadata database for all operations!
 
-##### Import the rest of the data (step three)
+##### Import remaining data (step three)
 
 Even though the registry is now fully using the database for its metadata, it
-does not yet have access to any potentially unused layer blobs.
+does not yet have access to any potentially unused layer blobs, preventing these
+blobs from being removed by the online garbage collector.
 
 To complete the process, run the final step of the migration:
 
@@ -379,11 +403,11 @@ To complete the process, run the final step of the migration:
 sudo gitlab-ctl registry-database import --step-three
 ```
 
-After that command exists successfully, the registry is now fully migrated to the database!
+After that command exists successfully, registry metadata is now fully imported to the database.
 
-#### Post Migration
+#### Post import
 
-It may take approximately 48 hours post migration to see your registry storage
+It may take approximately 48 hours post import to see your registry storage
 decrease. This is a normal and expected part of online garbage collection, as this
 delay ensures that online garbage collection does not interfere with image pushes.
 Check out the [monitor online garbage collection](#online-garbage-collection-monitoring) section
@@ -393,11 +417,12 @@ to see how to monitor the progress and health of the online garbage collector.
 
 The container registry supports two types of migrations:
 
-- **Regular schema migrations**: Changes to the database structure that must run before deploying new application code. These should be fast (no more than a few minutes) to avoid deployment delays.
+- **Regular schema migrations**: Changes to the database structure that must run before deploying new application code, also known as pre-deployment migrations. These should be fast (no more than a few minutes) to avoid deployment delays.
 
-- **Post-deployment migrations**: Changes to the database structure that can run while the application is running. Used for longer operations like creating indexes on large tables, avoiding startup delays and extended upgrade downtimes.
+- **Post-deployment migrations**: Changes to the database structure that can run while the application is running. Used for longer operations like creating indexes on large tables, avoiding startup delays and extended upgrade downtime.
 
-By default, the registry applies both regular schema and post-deployment migrations simultaneously. To reduce downtime during upgrades, you can skip post-deployment migrations and apply them manually after the application starts.
+By default, the registry applies both regular schema and post-deployment migrations simultaneously.
+To reduce downtime during upgrades, you can skip post-deployment migrations and apply them manually after the application starts.
 
 ### Apply database migrations
 
@@ -507,7 +532,7 @@ registry['gc'] = {
 }
 ```
 
-After the migration load has been cleared, you should fine-tune these settings for the long term
+After the import load has been cleared, you should fine-tune these settings for the long term
 to avoid unnecessary CPU load on the database and registry instances. You can gradually increase
 the interval to a value that balances performance and resource usage.
 
@@ -528,6 +553,13 @@ to be removed through garbage collection and storage space being recovered.
 
 ## Backup with metadata database
 
+{{< alert type="note" >}}
+
+If you have configured your own database for container registry metadata,
+you must manage backups manually. `gitlab-backup` does not backup the metadata database.
+
+{{< /alert >}}
+
 When the metadata database is enabled, backups must capture both the object storage
 used by the registry, as before, but also the database. Backups of object storage
 and the database should be coordinated to capture the state of the registry as close as possible
@@ -535,7 +567,7 @@ to each other. To restore the registry, you must apply both backups together.
 
 ## Downgrade a registry
 
-To downgrade the registry to a previous version after the migration is complete,
+To downgrade the registry to a previous version after the import is complete,
 you must restore to a backup of the desired version in order to downgrade.
 
 ## Database architecture with Geo
@@ -592,6 +624,30 @@ Use separate database instances on each site because:
 1. This replication cannot be selectively disabled for the registry database.
 1. The container registry requires write access to its database at both sites.
 1. Homogeneous setups ensure the greatest parity between Geo sites.
+
+## Revert to object storage metadata
+
+You can revert your registry to use object storage metadata after completing a metadata import.
+
+{{< alert type="warning" >}}
+
+When you revert to object storage metadata, any container images, tags, or repositories
+added or deleted between the import completion and this revert operation are not available.
+
+{{< /alert >}}
+
+To revert to object storage metadata:
+
+1. Restore a [backup](../backup_restore/backup_gitlab.md#container-registry) taken before the migration.
+1. Add the following configuration to your `/etc/gitlab/gitlab.rb` file:
+
+   ```ruby
+   registry['database'] = {
+     'enabled' => false,
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ## Troubleshooting
 
@@ -670,7 +726,7 @@ If either of these values is set to `on`, you must disable it:
 
 ### Error: `cannot import all repositories while the tags table has entries`
 
-If you try to [migrate existing registries](#existing-registries) and encounter the following error:
+If you try to [import existing registry metadata](#existing-registries) and encounter the following error:
 
 ```shell
 ERRO[0000] cannot import all repositories while the tags table has entries, you must truncate the table manually before retrying,
@@ -681,11 +737,11 @@ common_blobs=true dry_run=false error="tags table is not empty"
 This error happens when there are existing entries in the `tags` table of the registry database,
 which can happen if you:
 
-- Attempted the [one step migration](#one-step-migration) and encountered errors.
-- Attempted the [three-step migration](#three-step-migration) process and encountered errors.
-- Stopped the migration process on purpose.
-- Tried to run the migration again after any of the above.
-- Ran the migration against the wrong configuration file.
+- Attempted the [one step import](#one-step-import) and encountered errors.
+- Attempted the [three-step import](#three-step-import) process and encountered errors.
+- Stopped the import process on purpose.
+- Tried to run the import again after any of the above.
+- Ran the import against the wrong configuration file.
 
 To resolve this issue, you must delete the existing entries in the tags table.
 You must truncate the table manually on your PostgreSQL instance:
@@ -695,15 +751,15 @@ You must truncate the table manually on your PostgreSQL instance:
    ```ruby
    registry['database'] = {
      'enabled' => false,
-     'host' => 'localhost',
-     'port' => 5432,
-     'user' => 'registry-database-user',
-     'password' => 'registry-database-password',
-     'dbname' => 'registry-database-name',
+     'host' => '<registry_database_host_placeholder_change_me>',
+     'port' => 5432, # Default, but set to the port of your database instance if it differs.
+     'user' => '<registry_database_username_placeholder_change_me>',
+     'password' => '<registry_database_placeholder_change_me>',
+     'dbname' => '<registry_database_name_placeholder_change_me>',
      'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
-     'sslcert' => '/path/to/cert.pem',
-     'sslkey' => '/path/to/private.key',
-     'sslrootcert' => '/path/to/ca.pem'
+     'sslcert' => '</path/to/cert.pem>',
+     'sslkey' => '</path/to/private.key>',
+     'sslrootcert' => '</path/to/ca.pem>'
    }
    ```
 
@@ -714,11 +770,11 @@ You must truncate the table manually on your PostgreSQL instance:
    TRUNCATE TABLE tags RESTART IDENTITY CASCADE;
    ```
 
-1. After truncating the `tags` table, try running the migration process again.
+1. After truncating the `tags` table, try running the import process again.
 
 ### Error: `database-in-use lockfile exists`
 
-If you try to [migrate existing registries](#existing-registries) and encounter the following error:
+If you try to [import existing registry metadata](#existing-registries) and encounter the following error:
 
 ```shell
 |  [0s] step two: import tags failed to import metadata: importing all repositories: 1 error occurred:
@@ -753,11 +809,11 @@ The registry could fail to start with of the following errors:
 #### Error: `registry filesystem metadata in use, please import data before enabling the database`
 
 This error happens when the database is enabled in your configuration `registry['database'] = { 'enabled' => true}`
-but you have not [migrated existing data](#existing-registries) to the metadata database yet.
+but you have not [imported existing registry metadata](#existing-registries) to the metadata database yet.
 
 #### Error: `registry metadata database in use, please enable the database`
 
-This error happens when you have completed [migrating existing data](#existing-registries) to the metadata database,
+This error happens when you have completed the [import of existing registry metadata](#existing-registries) to the metadata database,
 but you have not enabled the database in your configuration.
 
 #### Problems checking or creating the lock files
@@ -771,3 +827,10 @@ If you encounter any of the following errors:
 
 The registry cannot access the configured `rootdirectory`. This error is unlikely to happen if you
 had a working registry previously. Review the error logs for any misconfiguration issues.
+
+### Storage usage not decreasing after deleting tags
+
+By default, the online garbage collector will only start deleting unreferenced layers 48 hours from the time
+that all tags they were associated with were deleted. This delay ensures that the garbage collector does
+not interfere with long-running or interrupted image pushes, as layers are pushed to the registry before
+they are associated with an image and tag.

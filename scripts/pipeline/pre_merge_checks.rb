@@ -44,13 +44,18 @@ class PreMergeChecks
   def execute
     check_required_ids!
 
-    # Find the first non merge-train pipeline
+    # Find the first non merge-train pipeline in project with id `project_id`
     latest_pipeline_id = api_client.merge_request_pipelines(project_id, merge_request_iid).auto_paginate do |pipeline|
       next if pipeline.ref.match?(MERGE_TRAIN_REF_REGEX)
+      # We ensure we are comparing strings (not integers and strings)
+      next if pipeline.project_id.to_s != project_id.to_s
 
       break pipeline.id
     end
-    fail_check!("Expected to have a latest pipeline but got none!") unless latest_pipeline_id
+
+    unless latest_pipeline_id
+      fail_check!("Expected to have a latest pipeline that ran in project ##{project_id} but got none!")
+    end
 
     latest_pipeline = api_client.pipeline(project_id, latest_pipeline_id)
 

@@ -20,8 +20,8 @@ function getRoutes() {
       path: `/:type(${generateTypeRegex(WORK_ITEM_BASE_ROUTE_MAP)})/new`,
       name: ROUTES.new,
       component: CreateWorkItem,
-      props: ({ params: { type }, query }) => ({
-        workItemTypeName: query.type || WORK_ITEM_BASE_ROUTE_MAP[type],
+      props: ({ params, query }) => ({
+        workItemTypeEnum: query.type || WORK_ITEM_BASE_ROUTE_MAP[params.type],
       }),
     },
     {
@@ -32,11 +32,21 @@ function getRoutes() {
       children: [
         {
           name: ROUTES.design,
-          path: 'designs/:id',
+          path: 'designs/:id?',
           component: DesignDetail,
-          beforeEnter({ params: { id } }, _, next) {
-            if (typeof id === 'string') {
-              next();
+          beforeEnter(to, _, next) {
+            if (to.params.id) {
+              if (typeof to.params.id === 'string') {
+                next();
+              }
+            } else {
+              // If no ID route to main work item view.
+              // This supports design version notes with format /designs?version=##
+              next({
+                name: ROUTES.workItem,
+                params: to.params,
+                query: to.query,
+              });
             }
           },
           props: ({ params: { id, iid } }) => ({ id, iid }),

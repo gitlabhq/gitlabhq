@@ -20,7 +20,6 @@ describe('~/environments/components/delete_environment_modal.vue', () => {
   const createComponent = ({ props = {}, apolloProvider } = {}) => {
     wrapper = shallowMount(DeleteEnvironmentModal, {
       propsData: {
-        graphql: true,
         environment: resolvedEnvironment,
         ...props,
       },

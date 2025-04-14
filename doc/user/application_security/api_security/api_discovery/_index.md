@@ -179,7 +179,7 @@ Use `~"Category:API Security"` [label](../../../../development/labels/_index.md)
 
 When experiencing a behavior not working as expected, consider providing contextual information:
 
-- GitLab version if using a self-managed instance.
+- GitLab version if using a GitLab Self-Managed instance.
 - `.gitlab-ci.yml` job definition.
 - Full job console output.
 - Framework in use with version (for example Spring Boot v2.3.2).

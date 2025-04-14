@@ -27,7 +27,7 @@ RSpec.describe 'Merge Requests > User filters by source branch', :js, feature_ca
 
   context 'when filtering by source-branch:source1' do
     it 'applies the filter' do
-      select_tokens 'Source Branch', 'source1', search_token: true, submit: true
+      select_tokens 'Source branch', 'source1', search_token: true, submit: true
 
       expect(page).to have_issuable_counts(open: 1, merged: 1, closed: 1, all: 3)
       expect(page).to have_content mr1.title
@@ -37,7 +37,7 @@ RSpec.describe 'Merge Requests > User filters by source branch', :js, feature_ca
 
   context 'when filtering by source-branch:source2' do
     it 'applies the filter' do
-      select_tokens 'Source Branch', 'source2', search_token: true, submit: true
+      select_tokens 'Source branch', 'source2', search_token: true, submit: true
 
       expect(page).to have_issuable_counts(open: 1, merged: 0, closed: 0, all: 1)
       expect(page).not_to have_content mr1.title

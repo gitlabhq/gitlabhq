@@ -8,7 +8,8 @@ title: Troubleshooting Code Suggestions
 
 {{< details >}}
 
-- Tier: Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -25,7 +26,7 @@ You can run a [health check](../../../gitlab_duo/turn_on_off.md) to test if your
 
 For more information on troubleshooting GitLab Duo, see:
 
-- [Troubleshooting GitLab Duo](../../../../user/gitlab_duo/troubleshooting.md).
+- [Troubleshooting GitLab Duo](../../../gitlab_duo/troubleshooting.md).
 - [GitLab Duo Chat troubleshooting](../../../gitlab_duo_chat/troubleshooting.md).
 - [Troubleshooting GitLab Duo Self-Hosted](../../../../administration/gitlab_duo_self_hosted/troubleshooting.md).
 
@@ -34,7 +35,7 @@ For more information on troubleshooting GitLab Duo, see:
 If suggestions are not displayed, ensure that you:
 
 - Have [configured GitLab Duo correctly](../../../gitlab_duo/turn_on_off.md).
-- Are using a [supported language](supported_extensions.md#supported-languages)
+- Are using a [supported language](supported_extensions.md#supported-languages-by-ide)
   and [editor extension](supported_extensions.md#supported-editor-extensions).
 - Have [configured your editor extension correctly](set_up.md#configure-editor-extension).
 

@@ -119,7 +119,7 @@ With this approach, GitLab makes the assumption that all other lower user count 
 
 ### Visibility into latest usage data, and how to identify which of the customer's instances the data is for
 
-Self-managed usage data shared is stored in CustomersDot under `License seat links`. Data is recorded daily for customers on
+GitLab Self-Managed usage data shared is stored in CustomersDot under `License seat links`. Data is recorded daily for customers on
 Cloud Licensing and whenever customers on Offline licenses share their usage data via email (requested monthly).
 To view this data, the customer can search by `Company` name or `Subscription` name. Also recorded with this data is `Hostname` and `Instance identifier` ID,
 which can help to indicate if the data is from a production or development instance.

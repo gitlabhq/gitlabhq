@@ -1,30 +1,31 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlIcon, GlFormCheckbox } from '@gitlab/ui';
+import { GlFormCheckbox, GlLink } from '@gitlab/ui';
 import TodoItem from '~/todos/components/todo_item.vue';
 import TodoItemTitle from '~/todos/components/todo_item_title.vue';
 import TodoItemTitleHiddenBySaml from '~/todos/components/todo_item_title_hidden_by_saml.vue';
 import TodoItemBody from '~/todos/components/todo_item_body.vue';
 import TodoItemTimestamp from '~/todos/components/todo_item_timestamp.vue';
+import TodoSnoozedTimestamp from '~/todos/components/todo_snoozed_timestamp.vue';
 import TodoItemActions from '~/todos/components/todo_item_actions.vue';
 import { TODO_STATE_DONE, TODO_STATE_PENDING } from '~/todos/constants';
 import { useFakeDate } from 'helpers/fake_date';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { SAML_HIDDEN_TODO, MR_REVIEW_REQUEST_TODO } from '../mock_data';
 
 describe('TodoItem', () => {
   let wrapper;
 
   const mockCurrentTime = new Date('2024-12-18T13:24:00');
-  const mockForAnHour = new Date('2024-12-18T14:24:00');
-  const mockUntilLaterToday = new Date('2024-12-18T17:24:00');
-  const mockUntilTomorrow = new Date('2024-12-19T08:00:00');
-  const mockUntilNextWeek = new Date('2024-12-25T08:00:00');
-  const mockYesterday = new Date('2024-12-17T08:00:00');
+  const mockForAnHour = '2024-12-18T14:24:00';
+  const mockUntilTomorrow = '2024-12-19T08:00:00';
+  const mockYesterday = '2024-12-17T08:00:00';
 
   useFakeDate(mockCurrentTime);
 
   const findTodoItemTimestamp = () => wrapper.findComponent(TodoItemTimestamp);
+  const findTodoSnoozedTimestamp = () => wrapper.findComponent(TodoSnoozedTimestamp);
 
-  const createComponent = (props = {}, todosBulkActions = true) => {
+  const createComponent = (props = {}) => {
     wrapper = shallowMount(TodoItem, {
       propsData: {
         currentUserId: '1',
@@ -35,7 +36,6 @@ describe('TodoItem', () => {
       },
       provide: {
         currentTab: 0,
-        glFeatures: { todosBulkActions },
       },
     });
   };
@@ -68,6 +68,21 @@ describe('TodoItem', () => {
   it('renders TodoItemActions component', () => {
     createComponent();
     expect(wrapper.findComponent(TodoItemActions).exists()).toBe(true);
+  });
+
+  describe('should track', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    it('on click', () => {
+      createComponent();
+      const { trackEventSpy, triggerEvent } = bindInternalEventDocument(wrapper.element);
+
+      triggerEvent(wrapper.findComponent(GlLink).element);
+      expect(trackEventSpy).toHaveBeenCalledWith('follow_todo_link', {
+        label: 'MERGEREQUEST',
+        property: 'review_requested',
+      });
+    });
   });
 
   describe('state based style', () => {
@@ -109,36 +124,30 @@ describe('TodoItem', () => {
 
       expect(wrapper.emitted('select-change')[0]).toEqual([MR_REVIEW_REQUEST_TODO.id, true]);
     });
-
-    it('does not render a checkbox with feature flag disabled', () => {
-      createComponent({}, false);
-      expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(false);
-    });
   });
 
   describe('snoozed to-do items', () => {
-    it.each`
-      snoozedUntil           | expectedLabel
-      ${mockForAnHour}       | ${'Snoozed until 2:24 PM'}
-      ${mockUntilLaterToday} | ${'Snoozed until 5:24 PM'}
-      ${mockUntilTomorrow}   | ${'Snoozed until tomorrow, 8:00 AM'}
-      ${mockUntilNextWeek}   | ${'Snoozed until Dec 25, 2024'}
-    `(
-      'renders "$expectedLabel" when the item is snoozed until a future date ($snoozedUntil)',
-      ({ snoozedUntil, expectedLabel }) => {
-        createComponent({
-          todo: {
-            ...MR_REVIEW_REQUEST_TODO,
-            snoozedUntil,
-          },
-        });
+    it('does not render the TodoSnoozedTimestamp component when the item is not snoozed', () => {
+      createComponent();
 
-        expect(findTodoItemTimestamp().exists()).toBe(false);
-        expect(wrapper.text()).toBe(expectedLabel);
-      },
-    );
+      expect(findTodoSnoozedTimestamp().exists()).toBe(false);
+    });
 
-    it('renders the creation date when the item has reached its snooze time', () => {
+    it('renders the TodoSnoozedTimestamp component when the item is snoozed until a future date', () => {
+      createComponent({
+        todo: {
+          ...MR_REVIEW_REQUEST_TODO,
+          snoozedUntil: mockForAnHour,
+        },
+      });
+
+      const component = findTodoSnoozedTimestamp();
+      expect(component.exists()).toBe(true);
+      expect(component.props('snoozedUntil')).toBe(mockForAnHour);
+      expect(component.props('hasReachedSnoozeTimestamp')).toBe(false);
+    });
+
+    it('renders the TodoSnoozedTimestamp component when the item has reached its snooze time', () => {
       createComponent({
         todo: {
           ...MR_REVIEW_REQUEST_TODO,
@@ -146,12 +155,10 @@ describe('TodoItem', () => {
         },
       });
 
-      expect(findTodoItemTimestamp().exists()).toBe(false);
-      expect(wrapper.text()).toBe('First sent 4 months ago');
-
-      const icon = wrapper.findComponent(GlIcon);
-      expect(icon.exists()).toBe(true);
-      expect(icon.props('name')).toBe('clock');
+      const component = findTodoSnoozedTimestamp();
+      expect(component.exists()).toBe(true);
+      expect(component.props('snoozedUntil')).toBe(mockYesterday);
+      expect(component.props('hasReachedSnoozeTimestamp')).toBe(true);
     });
   });
 

@@ -251,12 +251,28 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
 
       context 'when dependency proxy is enabled' do
+        let(:virtual_registry_scopes) { %i[read_virtual_registry write_virtual_registry] }
+
         before do
           stub_config(dependency_proxy: { enabled: true })
         end
 
         it 'contains all virtual registry related scopes' do
-          expect(subject.virtual_registry_scopes).to eq %i[read_virtual_registry write_virtual_registry]
+          expect(subject.virtual_registry_scopes).to eq virtual_registry_scopes
+        end
+
+        context 'for a Project' do
+          it 'does not include virtual registry scopes' do
+            expect(subject.available_scopes_for(build_stubbed(:project))).to not_include(*virtual_registry_scopes)
+          end
+        end
+
+        %i[user group].each do |resource_type|
+          context "for a #{resource_type}" do
+            it 'includes the virtual registry scopes' do
+              expect(subject.available_scopes_for(build_stubbed(resource_type))).to include(*virtual_registry_scopes)
+            end
+          end
         end
       end
     end
@@ -643,6 +659,31 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         expect_results_with_abilities(personal_access_token, %i[assign_runner update_runner delete_runner])
       end
 
+      it 'does not try to authenticate with LDAP when password is an expired token' do
+        pat = create(:personal_access_token, :expired, scopes: ['read_repository'], user: user)
+
+        expect(Gitlab::Auth::Ldap::Authentication).not_to receive(:login)
+        expect(gl_auth.find_for_git_client('ldap_user', pat.token, project: nil, request: request))
+          .to have_attributes(auth_failure)
+      end
+
+      it 'does not try to authenticate with LDAP when password is a revoked token' do
+        pat = create(:personal_access_token, :revoked, scopes: ['read_repository'], user: user)
+
+        expect(Gitlab::Auth::Ldap::Authentication).not_to receive(:login)
+        expect(gl_auth.find_for_git_client('ldap_user', pat.token, project: nil, request: request))
+          .to have_attributes(auth_failure)
+      end
+
+      it 'falls back to LDAP authentication when the feature flag is disabled' do
+        pat = create(:personal_access_token, :revoked, scopes: ['read_repository'], user: user)
+        stub_feature_flags(prevent_token_prefixed_password_fallback_sessionless: false)
+
+        expect(Gitlab::Auth::Ldap::Authentication).to receive(:login)
+        expect(gl_auth.find_for_git_client('ldap_user', pat.token, project: project, request: request))
+          .to have_attributes(auth_failure)
+      end
+
       context 'when registry is enabled' do
         before do
           stub_container_registry_config(enabled: true)
@@ -929,7 +970,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
       context 'when deploy token and user have the same username' do
         let(:username) { 'normal_user' }
-        let(:user) { create(:user, username: username) }
+        let!(:user) { create(:user, username: username) }
         let(:deploy_token) { create(:deploy_token, username: username, read_registry: false, projects: [project]) }
 
         it 'succeeds for the token' do
@@ -944,6 +985,23 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
           expect(gl_auth.find_for_git_client(username, user.password, project: project, request: request))
             .to have_attributes(auth_success)
+        end
+
+        it 'does not fallback to database authentication when token is revoked' do
+          deploy_token.revoke!
+
+          expect_any_instance_of(::Gitlab::Auth::Database::Authentication).not_to receive(:login)
+          expect(gl_auth.find_for_git_client(username, deploy_token.token, project: project, request: request))
+            .to have_attributes(auth_failure)
+        end
+
+        it 'falls back to database authentication when the feature flag is disabled' do
+          stub_feature_flags(prevent_token_prefixed_password_fallback_sessionless: false)
+          deploy_token.revoke!
+
+          expect_any_instance_of(::Gitlab::Auth::Database::Authentication).to receive(:login)
+          expect(gl_auth.find_for_git_client(username, deploy_token.token, project: project, request: request))
+            .to have_attributes(auth_failure)
         end
       end
 
@@ -1266,7 +1324,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         allow(Gitlab::Auth::Ldap::Config).to receive(:enabled?).and_return(true)
       end
 
-      it "tries to autheticate with db before ldap" do
+      it 'does not try to authenticate with LDAP for local users' do
         expect(Gitlab::Auth::Ldap::Authentication).not_to receive(:login)
 
         expect(gl_auth.find_with_user_password(username, user.password)).to eq(user)
@@ -1278,7 +1336,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         expect(gl_auth.find_with_user_password('ldap_user', 'password')).to be_nil
       end
 
-      it "find new user by using ldap as fallback to for authentication" do
+      it "finds a user by using ldap as a fallback for authentication" do
         expect(Gitlab::Auth::Ldap::Authentication).to receive(:login).and_return(user)
 
         expect(gl_auth.find_with_user_password('ldap_user', 'password')).to eq(user)

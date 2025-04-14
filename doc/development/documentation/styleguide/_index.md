@@ -12,7 +12,7 @@ For guidelines on specific words, see [the word list](word_list.md).
 ## The GitLab voice
 
 The GitLab brand guidelines define the
-[voice used by the larger organization](https://design.gitlab.com/brand-overview/introduction/#brand-personality).
+[voice used by the larger organization](https://design.gitlab.com/brand-messaging/brand-voice).
 
 Building on that guidance, the voice in the GitLab documentation strives to be concise,
 direct, and precise. The goal is to provide information that's easy to search and scan.
@@ -792,8 +792,8 @@ page), use these phrases:
 
 | Option | Markdown                 | Displayed result       |
 |--------|--------------------------|------------------------|
-| No     | `{{< icon name="dash-circle" >}} No` | {{< icon name="dash-circle" >}} No |
-| Yes    | `{{< icon name="check-circle-filled" >}} Yes` | {{< icon name="check-circle-filled" >}} Yes |
+| No     | `{{</* icon name="dash-circle" */>}} No` | {{< icon name="dash-circle" >}} No |
+| Yes    | `{{</* icon name="check-circle-filled" */>}} Yes` | {{< icon name="check-circle-filled" >}} Yes |
 
 Do not use these SVG icons in API documentation.
 Instead, follow the [API topic template](../restful_api_styleguide.md#api-topic-template).
@@ -944,7 +944,7 @@ Follow these guidelines for link text.
 
 #### Standard text
 
-As much as possible, use text that follows one of these patterns:
+Use text that follows one of these patterns:
 
 - `For more information, see [link text](link.md)`.
 - `To [DO THIS THING], see [link text](link.md)`
@@ -967,15 +967,21 @@ Do not use the following constructions:
 #### Descriptive text rather than `here`
 
 Use descriptive text for links, rather than words like `here` or `this page.`
+For the name of a topic or page, use lowercase.
+The text does not need to match the topic or page name exactly.
+Edit the text to be descriptive and fit the guidelines.
 
-For example, instead of:
+Do:
+
+- `For more information, see [merge requests](link.md)`.
+- `For more information, see [roles and permissions](link.md)`.
+- `For more information, see [how to configure common settings](link.md)`.
+
+Don't:
 
 - `For more information, see [this page](link.md).`
 - `For more information, go [here](link.md).`
-
-Use:
-
-- `For more information, see [merge requests](link.md)`.
+- `For more information, see [this documentation](link.md).`
 
 #### Links to issues
 
@@ -1035,6 +1041,8 @@ Examples:
   ```
 
 ### Link to specific lines of code
+
+<!-- when blob_overflow_menu is removed, change 'button' to 'dropdown item' -->
 
 When linking to specific lines in a file, link to a commit instead of to the
 branch. Lines of code change over time. Linking to a line by using

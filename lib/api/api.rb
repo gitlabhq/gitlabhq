@@ -43,8 +43,7 @@ module API
         Gitlab::GrapeLogging::Loggers::CorrelationIdLogger.new,
         Gitlab::GrapeLogging::Loggers::ContextLogger.new,
         Gitlab::GrapeLogging::Loggers::ContentLogger.new,
-        Gitlab::GrapeLogging::Loggers::UrgencyLogger.new,
-        Gitlab::GrapeLogging::Loggers::ResponseLogger.new
+        Gitlab::GrapeLogging::Loggers::UrgencyLogger.new
       ]
 
     allow_access_with_scope :api
@@ -239,6 +238,7 @@ module API
         mount ::API::ClusterDiscovery
         mount ::API::Clusters::AgentTokens
         mount ::API::Clusters::Agents
+        mount ::API::CargoProjectPackages
         mount ::API::Commits
         mount ::API::CommitStatuses
         mount ::API::ComposerPackages
@@ -322,7 +322,6 @@ module API
         mount ::API::ProjectJobTokenScope
         mount ::API::ProjectPackages
         mount ::API::ProjectPackagesProtectionRules
-        mount ::API::ProjectRepositoryStorageMoves
         mount ::API::ProjectSnapshots
         mount ::API::ProjectSnippets
         mount ::API::ProjectStatistics
@@ -336,12 +335,10 @@ module API
         mount ::API::RemoteMirrors
         mount ::API::Repositories
         mount ::API::ResourceAccessTokens::SelfRotation
-        mount ::API::ResourceAccessTokens
         mount ::API::ResourceMilestoneEvents
         mount ::API::RpmProjectPackages
         mount ::API::RubygemPackages
         mount ::API::Snippets
-        mount ::API::SnippetRepositoryStorageMoves
         mount ::API::Statistics
         mount ::API::Submodules
         mount ::API::Suggestions
@@ -358,7 +355,6 @@ module API
         mount ::API::UsageDataTrack
         mount ::API::UsageDataNonSqlMetrics
         mount ::API::UsageDataQueries
-        mount ::API::Users
         mount ::API::UserCounts
         mount ::API::UserRunners
         mount ::API::WebCommits
@@ -383,12 +379,15 @@ module API
       mount ::API::NotificationSettings
       mount ::API::ProjectEvents
       mount ::API::ProjectMilestones
+      mount ::API::ProjectRepositoryStorageMoves
       mount ::API::ProtectedTags
+      mount ::API::ResourceAccessTokens
       mount ::API::ResourceLabelEvents
       mount ::API::ResourceStateEvents
       mount ::API::Search
       mount ::API::Settings
       mount ::API::SidekiqMetrics
+      mount ::API::SnippetRepositoryStorageMoves
       mount ::API::Subscriptions
       mount ::API::Tags
       mount ::API::Templates
@@ -397,6 +396,7 @@ module API
       mount ::API::UsageDataServicePing
       mount ::API::UsageDataTrack
       mount ::API::UsageDataNonSqlMetrics
+      mount ::API::Users
       mount ::API::VsCode::Settings::VsCodeSettingsSync
       mount ::API::Ml::Mlflow::Entrypoint
       mount ::API::Ml::MlflowArtifacts::Entrypoint

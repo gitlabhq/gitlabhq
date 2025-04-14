@@ -14,7 +14,7 @@ module Types
     field :container_registry_size,
       GraphQL::Types::Float,
       null: true,
-      description: 'Container Registry size of the project in bytes.'
+      description: 'Container registry size of the project in bytes.'
     field :lfs_objects_size,
       GraphQL::Types::Float,
       null: false,

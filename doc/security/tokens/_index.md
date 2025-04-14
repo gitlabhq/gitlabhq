@@ -197,8 +197,12 @@ You can use the runners API to [rotate or revoke a runner authentication token](
 
 {{< alert type="warning" >}}
 
-The ability to pass a runner registration token has been [deprecated](../../ci/runners/new_creation_workflow.md) and is
-planned for removal in GitLab 18.0, along with support for certain configuration arguments. This change is a breaking change. GitLab has implemented a new
+The option to pass runner registration tokens and support for certain configuration arguments are
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal in GitLab 20.0.
+Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+to generate an authentication token to register runners. This process provides full
+traceability of runner ownership and enhances your runner fleet's security.
+This change is a breaking change. GitLab has implemented a new
 [GitLab Runner token architecture](../../ci/runners/new_creation_workflow.md), which introduces
 a new method for registering runners and eliminates the
 runner registration token.
@@ -345,7 +349,7 @@ The following table shows the prefixes for each type of token.
 | Project access token              | `glpat-`           |
 | Group access token                | `glpat-`           |
 | Deploy token                      | `gldt-` ([Added in GitLab 16.7](https://gitlab.com/gitlab-org/gitlab/-/issues/376752)) |
-| Runner authentication token       | `glrt-`            |
+| Runner authentication token       | `glrt-` or `glrtr-` if created via registration token |
 | CI/CD Job token                   | `glcbt-` <br /> &bull; ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/426137) in GitLab 16.8 behind a feature flag named `prefix_ci_build_tokens`. Disabled by default.) <br /> &bull; ([Generally available](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17299) in GitLab 16.9. Feature flag `prefix_ci_build_tokens` removed.) |
 | Trigger token                     | `glptt-`           |
 | Feed token                        | `glft-`            |

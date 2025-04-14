@@ -62,7 +62,7 @@ export default {
     :hide-footer="true"
     @hidden="$emit('hidden')"
   >
-    <div class="gl-sticky gl-top-0 gl-flex gl-items-center gl-bg-white gl-px-5 gl-py-5">
+    <div class="gl-sticky gl-top-0 gl-flex gl-items-center gl-bg-overlap gl-px-5 gl-py-5">
       <gl-search-box-by-type
         v-model.trim="searchTerm"
         :aria-label="$options.i18n.search"

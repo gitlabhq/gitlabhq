@@ -19,13 +19,13 @@ when the JWT contains an `aud` claim. The `aud` claim can be a single string or 
 
 {{< /alert >}}
 
-This tutorial demonstrates how to convert your existing CI/CD secrets configuration to use [ID Tokens](../secrets/id_token_authentication.md).
+This tutorial demonstrates how to convert your existing CI/CD secrets configuration to use [ID Tokens](id_token_authentication.md).
 
 The `CI_JOB_JWT` variables are deprecated, but updating to ID tokens requires some
 important configuration changes to work with Vault. If you have more than a handful of jobs,
 converting everything at once is a daunting task.
 
-There isn't one standard method to migrate to [ID tokens](../secrets/id_token_authentication.md), so this tutorial
+There isn't one standard method to migrate to [ID tokens](id_token_authentication.md), so this tutorial
 includes two variations for how to convert your existing CI/CD secrets. Choose the method that is most appropriate for
 your use case:
 

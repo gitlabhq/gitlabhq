@@ -11,7 +11,7 @@ through an example of how to deploy an application to Amazon Elastic Kubernetes 
 The tutorial uses the GitLab native Kubernetes integration, so you don't need
 to create a Kubernetes cluster manually using the AWS console.
 
-You can also follow this tutorial on a self-managed instance.
+You can also follow this tutorial on a GitLab Self-Managed instance.
 Ensure your own [runners are configured](../../../ci/runners/_index.md).
 
 To deploy a project to EKS:
@@ -33,7 +33,7 @@ Sign in with an existing Amazon account or create a new one.
 
 ## Create a Kubernetes cluster
 
-To create an new cluster on Amazon EKS:
+To create a new cluster on Amazon EKS:
 
 - Follow the steps in [Create an Amazon EKS cluster](../../../user/infrastructure/clusters/connect/new_eks_cluster.md).
 
@@ -46,7 +46,7 @@ those projects provide a bare-bones application built on some well-known framewo
 
 {{< alert type="warning" >}}
 
-Create the application project in the group hierarchy at the same level or below the project for cluster management. Otherwise, it fails to [authorize the agent](../../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent).
+Create the application project in the group hierarchy at the same level or below the project for cluster management. Otherwise, it fails to [authorize the agent](../../../user/clusters/agent/ci_cd_workflow.md#authorize-agent-access).
 
 {{< /alert >}}
 
@@ -131,7 +131,7 @@ Follow these steps to configure the base domain and other settings required for 
 ## Enable Auto DevOps and run the pipeline
 
 While Auto DevOps is enabled by default, Auto DevOps can be disabled for
-the entire instance (for self-managed instances) and for individual groups. Complete
+the entire instance (for GitLab Self-Managed instances) and for individual groups. Complete
 these steps to enable Auto DevOps if it's disabled:
 
 1. On the left sidebar, select **Search or go to** and find the application project.

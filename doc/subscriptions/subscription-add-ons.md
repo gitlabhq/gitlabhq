@@ -35,7 +35,7 @@ To purchase GitLab Duo Pro seats, you can use the Customers Portal, or you can c
 
 ## Purchase additional GitLab Duo seats
 
-You can purchase additional GitLab Duo Pro or GitLab Duo Enterprise seats for your group namespace or self-managed instance. After you complete the purchase, the seats are added to the total number of GitLab Duo seats in your subscription.
+You can purchase additional GitLab Duo Pro or GitLab Duo Enterprise seats for your group namespace or GitLab Self-Managed instance. After you complete the purchase, the seats are added to the total number of GitLab Duo seats in your subscription.
 
 Prerequisites:
 
@@ -117,7 +117,7 @@ The user is sent a confirmation email.
 
 #### Configure network and proxy settings
 
-For self-managed instances, to enable GitLab Duo features,
+For GitLab Self-Managed instances, to enable GitLab Duo features,
 you must [enable network connectivity](../user/ai_features_enable.md).
 
 ## Assign and remove GitLab Duo seats in bulk
@@ -126,7 +126,7 @@ You can assign or remove seats in bulk for multiple users.
 
 ### SAML Group Sync
 
-GitLab.com groups can use SAML Group Sync to [manage GitLab Duo seat assignments](../user/group/saml_sso/group_sync.md#gitlab-duo-seat-assignment).
+GitLab.com groups can use SAML Group Sync to [manage GitLab Duo seat assignments](../user/group/saml_sso/group_sync.md#manage-gitlab-duo-seat-assignment).
 
 ### For GitLab.com
 
@@ -158,7 +158,7 @@ Prerequisites:
    - To remove users from seats, select **Remove seat**, then **Remove seats** to confirm.
 1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
 
-Administrators of self-managed instances can also use a [Rake task](../administration/raketasks/user_management.md#bulk-assign-users-to-gitlab-duo-pro) to assign or remove seats in bulk.
+Administrators of GitLab Self-Managed instances can also use a [Rake task](../administration/raketasks/user_management.md#bulk-assign-users-to-gitlab-duo-pro) to assign or remove seats in bulk.
 
 #### Managing GitLab Duo seats with LDAP configuration
 
@@ -217,7 +217,7 @@ Prerequisites:
 
 {{< details >}}
 
-- Tier: Premium
+- Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}

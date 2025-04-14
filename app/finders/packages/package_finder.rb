@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Packages
   class PackageFinder
     def initialize(project, package_id)

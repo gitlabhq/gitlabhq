@@ -8,6 +8,7 @@ import './commons';
 import './behaviors';
 
 // lib/utils
+import { setGlTooltipDefaultContainer } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { initRails } from '~/lib/utils/rails_ujs';
 import * as popovers from '~/popovers';
@@ -35,6 +36,9 @@ import initGitlabVersionCheck from './gitlab_version_check';
 
 import 'ee_else_ce/main_ee';
 import 'jh_else_ce/main_jh';
+
+// a custom container helps us avoid performance issues from inserting tooltips as the last element on <body>
+setGlTooltipDefaultContainer('#js-tooltips-container');
 
 logHelloDeferred();
 

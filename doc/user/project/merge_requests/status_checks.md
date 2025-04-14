@@ -35,6 +35,15 @@ You can configure merge request status checks for each individual project. These
 
 Status checks fail if they stay in the pending state for more than two minutes.
 
+## Access permissions
+
+External status check responses can be viewed by:
+
+- Users with Reporter role or higher permissions in the project
+- Any authenticated user who can view the merge request when the project has internal visibility
+
+This means that if you have an internal project, any logged-in user who can access the merge request can view the external status check responses.
+
 For more information about use cases, feature discovery, and development timelines,
 see [epic 3869](https://gitlab.com/groups/gitlab-org/-/epics/3869).
 
@@ -106,9 +115,11 @@ The **Add status check** form is then shown.
 
 Filling in the form and selecting the **Add status check** button creates a new status check.
 
+The status check is applied to all new merge requests, but does not apply retroactively to existing merge requests.
+
 ### Update a status check service
 
-Within the **Status checks** sub-section, select **Edit** ({{< icon name="pencil" >}})
+In the **Status checks** sub-section, select **Edit** ({{< icon name="pencil" >}})
 next to the status check you want to edit.
 The **Update status check** form is then shown.
 
@@ -120,7 +131,9 @@ You cannot see or modify the value of the HMAC shared secret. To change the shar
 
 {{< /alert >}}
 
-Changing the values in the form and selecting the **Update status check** button updates the status check.
+To update the status check, change the values in the form and select **Update status check**.
+
+Status check updates are applied to all new merge requests, but do not apply retroactively to existing merge requests.
 
 ### Form values
 

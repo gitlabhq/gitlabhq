@@ -91,7 +91,7 @@ export default {
       v-if="isNewNote"
       name="image-comment-dark"
       :size="24"
-      class="gl-rounded-full gl-border-2 gl-border-solid gl-border-white gl-bg-white"
+      class="gl-rounded-full gl-border-2 gl-border-solid gl-border-neutral-0 gl-bg-neutral-0 gl-text-neutral-950"
     />
     <template v-else>
       {{ label }}

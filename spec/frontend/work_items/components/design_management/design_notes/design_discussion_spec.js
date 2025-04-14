@@ -357,7 +357,7 @@ describe('Design discussions component', () => {
             },
           });
 
-          expect(findDesignNotesList().classes('gl-bg-blue-50')).toBe(true);
+          expect(findDesignNotesList().classes('active-discussion')).toBe(true);
         },
       );
     });

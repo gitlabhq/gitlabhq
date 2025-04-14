@@ -1522,7 +1522,11 @@ RSpec.shared_examples 'a container registry auth service' do
           project: current_project,
           tag_name_pattern: 'admin-only',
           minimum_access_level_for_push: :admin,
-          minimum_access_level_for_delete: :owner)
+          minimum_access_level_for_delete: :owner),
+        create(:container_registry_protection_tag_rule,
+          :immutable,
+          project: current_project,
+          tag_name_pattern: 'immutable-pattern-not-included')
       ]
     end
 
@@ -1595,6 +1599,149 @@ RSpec.shared_examples 'a container registry auth service' do
           end
         else
           expect(payload['access']).to be_empty
+        end
+      end
+    end
+  end
+
+  describe '.tag_immutable_patterns' do
+    let_it_be(:current_project) { create(:project) }
+    let_it_be(:container_repository_path) { current_project.full_path }
+
+    let(:current_user) { create(:user, developer_of: current_project) }
+    let(:current_params) { { scopes: ["repository:#{container_repository_path}:push"] } }
+
+    shared_examples 'not including tag_immutable_patterns' do
+      it 'does not include tag_immutable_patterns' do
+        is_expected.to include(:token)
+        expect(payload['access']).not_to be_empty
+        expect(payload['access'].first['meta']).not_to include('tag_immutable_patterns')
+      end
+    end
+
+    shared_examples 'including tag_immutable_patterns' do
+      it 'includes tag_immutable_patterns' do
+        is_expected.to include(:token)
+        expect(payload['access']).not_to be_empty
+
+        expect(payload['access'].first['meta']).to include('tag_immutable_patterns')
+
+        actual_patterns = payload['access'].first['meta']['tag_immutable_patterns']
+        expect(actual_patterns).to match_array(%w[immutable1 immutable2])
+      end
+    end
+
+    shared_examples 'returning an empty access field' do
+      it 'returns an empty access field' do
+        is_expected.to include(:token)
+        expect(payload['access']).to be_empty
+      end
+    end
+
+    context 'when there are no tag rules for immutability' do
+      it_behaves_like 'not including tag_immutable_patterns'
+    end
+
+    context 'when there are tag rules for immutability' do
+      using RSpec::Parameterized::TableSyntax
+
+      before_all do
+        create(:container_registry_protection_tag_rule,
+          project: current_project,
+          tag_name_pattern: 'not-included',
+          minimum_access_level_for_push: :maintainer,
+          minimum_access_level_for_delete: :maintainer
+        )
+        create(:container_registry_protection_tag_rule,
+          :immutable,
+          project: current_project,
+          tag_name_pattern: 'immutable1'
+        )
+        create(:container_registry_protection_tag_rule,
+          :immutable,
+          project: current_project,
+          tag_name_pattern: 'immutable2'
+        )
+      end
+
+      context 'when feature container_registry_immutable_tags is disabled' do
+        let(:current_params) { { scopes: ["repository:#{container_repository_path}:push"] } }
+
+        before do
+          stub_feature_flags(container_registry_immutable_tags: false)
+        end
+
+        it_behaves_like 'not including tag_immutable_patterns'
+      end
+
+      context 'when the actions do not include push, delete, or *' do
+        let(:current_params) { { scopes: ["repository:#{container_repository_path}:pull"] } }
+
+        it_behaves_like 'not including tag_immutable_patterns'
+      end
+
+      # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table layout
+      where(:user_role, :requested_scopes, :shared_example_name) do
+        :developer  | lazy { ["repository:#{container_repository_path}:pull"] }             | 'not including tag_immutable_patterns'
+        :developer  | lazy { ["repository:#{container_repository_path}:push"] }             | 'including tag_immutable_patterns'
+        :developer  | lazy { ["repository:#{container_repository_path}:delete"] }           | 'returning an empty access field' # developers can't obtain delete access
+        :developer  | lazy { ["repository:#{container_repository_path}:pull,push"] }        | 'including tag_immutable_patterns'
+        :developer  | lazy { ["repository:#{container_repository_path}:pull,delete"] }      | 'not including tag_immutable_patterns'
+        :developer  | lazy { ["repository:#{container_repository_path}:push,delete"] }      | 'including tag_immutable_patterns'
+        :developer  | lazy { ["repository:#{container_repository_path}:pull,push,delete"] } | 'including tag_immutable_patterns'
+        :developer  | lazy { ["repository:#{container_repository_path}:*"] }                | 'returning an empty access field' # developers can't obtain full access
+        :developer  | lazy { ["repository:#{container_repository_path}:push,push"] }        | 'including tag_immutable_patterns'
+        :developer  | lazy { ["repository:#{container_repository_path}:push,foo"] }         | 'including tag_immutable_patterns'
+        :maintainer | lazy { ["repository:#{container_repository_path}:pull"] }             | 'not including tag_immutable_patterns'
+        :maintainer | lazy { ["repository:#{container_repository_path}:push"] }             | 'including tag_immutable_patterns'
+        :maintainer | lazy { ["repository:#{container_repository_path}:delete"] }           | 'including tag_immutable_patterns'
+        :maintainer | lazy { ["repository:#{container_repository_path}:pull,push"] }        | 'including tag_immutable_patterns'
+        :maintainer | lazy { ["repository:#{container_repository_path}:pull,delete"] }      | 'including tag_immutable_patterns'
+        :maintainer | lazy { ["repository:#{container_repository_path}:push,delete"] }      | 'including tag_immutable_patterns'
+        :maintainer | lazy { ["repository:#{container_repository_path}:pull,push,delete"] } | 'including tag_immutable_patterns'
+        :maintainer | lazy { ["repository:#{container_repository_path}:*"] }                | 'including tag_immutable_patterns'
+        :owner      | lazy { ["repository:#{container_repository_path}:pull"] }             | 'not including tag_immutable_patterns'
+        :owner      | lazy { ["repository:#{container_repository_path}:push"] }             | 'including tag_immutable_patterns'
+        :owner      | lazy { ["repository:#{container_repository_path}:delete"] }           | 'including tag_immutable_patterns'
+        :owner      | lazy { ["repository:#{container_repository_path}:pull,push"] }        | 'including tag_immutable_patterns'
+        :owner      | lazy { ["repository:#{container_repository_path}:pull,delete"] }      | 'including tag_immutable_patterns'
+        :owner      | lazy { ["repository:#{container_repository_path}:push,delete"] }      | 'including tag_immutable_patterns'
+        :owner      | lazy { ["repository:#{container_repository_path}:pull,push,delete"] } | 'including tag_immutable_patterns'
+        :owner      | lazy { ["repository:#{container_repository_path}:*"] }                | 'including tag_immutable_patterns'
+      end
+      # rubocop:enable Layout/LineLength
+
+      with_them do
+        let(:current_params) { { scopes: requested_scopes } }
+
+        before do
+          current_project.send(:"add_#{user_role}", current_user)
+        end
+
+        it_behaves_like params[:shared_example_name]
+      end
+
+      context 'when user is admin', :enable_admin_mode do
+        let(:current_user) { build_stubbed(:admin) }
+
+        where(:requested_scopes, :shared_example_name) do
+          lazy { ["repository:#{container_repository_path}:push"] }             | 'including tag_immutable_patterns'
+          lazy { ["repository:#{container_repository_path}:delete"] }           | 'including tag_immutable_patterns'
+          lazy { ["repository:#{container_repository_path}:pull,push"] }        | 'including tag_immutable_patterns'
+          lazy { ["repository:#{container_repository_path}:pull,delete"] }      | 'including tag_immutable_patterns'
+          lazy { ["repository:#{container_repository_path}:push,delete"] }      | 'including tag_immutable_patterns'
+          lazy { ["repository:#{container_repository_path}:pull,push,delete"] } | 'including tag_immutable_patterns'
+          lazy { ["repository:#{container_repository_path}:*"] }                | 'including tag_immutable_patterns'
+          lazy { ["repository:#{container_repository_path}:push,push"] }        | 'including tag_immutable_patterns'
+          lazy { ["repository:#{container_repository_path}:push,foo"] }         | 'including tag_immutable_patterns'
+          lazy { ["repository:#{container_repository_path}:pull"] }             | 'not including tag_immutable_patterns'
+          lazy { ["repository:#{container_repository_path}:pull,foo"] }         | 'not including tag_immutable_patterns'
+        end
+
+        with_them do
+          let(:current_params) { { scopes: requested_scopes } }
+
+          it_behaves_like params[:shared_example_name]
         end
       end
     end

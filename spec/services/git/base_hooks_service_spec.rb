@@ -152,13 +152,79 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
     end
   end
 
+  describe 'Pipeline push options' do
+    context 'when push options contain inputs' do
+      let(:pipeline_params) do
+        {
+          after: newrev,
+          before: oldrev,
+          checkout_sha: checkout_sha,
+          push_options: an_instance_of(Ci::PipelineCreation::PushOptions),
+          ref: ref,
+          variables_attributes: []
+        }
+      end
+
+      let(:push_options) do
+        {
+          ci: {
+            input: {
+              'deploy_strategy=blue-green': 1,
+              'job_stage=test': 1,
+              'allow_failure=true': 1,
+              'parallel_jobs=3': 1,
+              'test_script=["echo 1", "echo 2"]': 1,
+              'test_rules=[{"if": "$CI_MERGE_REQUEST_ID"}, {"if": "$CI_COMMIT_BRANCH == $CI_COMMIT_BRANCH"}]': 1
+            }
+          }
+        }
+      end
+
+      before_all do
+        project.add_maintainer(user)
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(
+          File.read(Rails.root.join('spec/lib/gitlab/ci/config/yaml/fixtures/complex-included-ci.yml'))
+        )
+
+        params[:push_options] = push_options
+      end
+
+      it 'calls the create pipeline service' do
+        expect(Ci::PipelineCreation::PushOptions).to receive(:new).with(push_options).and_call_original
+
+        expect(Ci::CreatePipelineService)
+          .to receive(:new)
+          .with(project, user, pipeline_params)
+          .and_call_original
+
+        expect { subject.execute }.to change { Ci::Pipeline.count }.by(1)
+
+        pipeline = Ci::Pipeline.last
+
+        my_job_test = pipeline.builds.find { |build| build.name == 'my-job-test' }
+        expect(my_job_test.allow_failure).to be(true)
+
+        expect(pipeline.builds.count { |build| build.name.starts_with?('my-job-build') }).to eq(3)
+
+        my_job_test2 = pipeline.builds.find { |build| build.name == 'my-job-test-2' }
+        expect(my_job_test2.options[:script]).to eq(["echo 1", "echo 2"])
+
+        my_job_deploy = pipeline.builds.find { |build| build.name == 'my-job-deploy' }
+        expect(my_job_deploy.options[:script]).to eq(['echo "Deploying to staging using blue-green strategy"'])
+      end
+    end
+  end
+
   describe 'Generating CI variables from push options' do
     let(:pipeline_params) do
       {
         after: newrev,
         before: oldrev,
         checkout_sha: checkout_sha,
-        push_options: push_options, # defined in each context
+        push_options: an_instance_of(Ci::PipelineCreation::PushOptions), # defined in each context
         ref: ref,
         variables_attributes: variables_attributes # defined in each context
       }
@@ -266,7 +332,7 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
         after: newrev,
         before: oldrev,
         checkout_sha: checkout_sha,
-        push_options: push_options,
+        push_options: an_instance_of(Ci::PipelineCreation::PushOptions),
         ref: ref,
         variables_attributes: variables_attributes
       }

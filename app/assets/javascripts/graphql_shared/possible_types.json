@@ -107,6 +107,10 @@
     "GoogleCloudLoggingConfigurationType",
     "InstanceGoogleCloudLoggingConfigurationType"
   ],
+  "GroupInterface": [
+    "Group",
+    "GroupMinimalAccess"
+  ],
   "Issuable": [
     "Epic",
     "Issue",
@@ -166,6 +170,14 @@
   "PendingMemberInterface": [
     "PendingGroupMember",
     "PendingProjectMember"
+  ],
+  "PipelineInterface": [
+    "Pipeline",
+    "PipelineMinimalAccess"
+  ],
+  "ProjectInterface": [
+    "Project",
+    "ProjectMinimalAccess"
   ],
   "Registrable": [
     "CiSecureFileRegistry",

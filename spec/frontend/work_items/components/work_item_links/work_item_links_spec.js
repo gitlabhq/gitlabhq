@@ -36,7 +36,7 @@ import {
   workItemByIidResponseFactory,
   workItemHierarchyTreeSingleClosedItemResponse,
   mockWorkItemCommentNote,
-} from '../../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/alert');
 

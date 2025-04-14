@@ -75,6 +75,13 @@ module ApplicationSettingsHelper
   def global_search_settings_checkboxes(form)
     [
       form.gitlab_ui_checkbox_component(
+        :global_search_block_anonymous_searches_enabled,
+        _("Enable blocking of anonymous global search requests"),
+        checkbox_options: {
+          checked: @application_setting.global_search_block_anonymous_searches_enabled, multiple: false
+        }
+      ),
+      form.gitlab_ui_checkbox_component(
         :global_search_issues_enabled,
         _("Enable issues tab in global search results"),
         checkbox_options: { checked: @application_setting.global_search_issues_enabled, multiple: false }
@@ -186,7 +193,7 @@ module ApplicationSettingsHelper
   end
 
   def external_authorization_description
-    s_("ExternalAuthorization|Access to projects is validated on an external service "\
+    s_("ExternalAuthorization|Access to projects is validated on an external service " \
       "using their classification label.")
   end
 
@@ -195,39 +202,39 @@ module ApplicationSettingsHelper
   end
 
   def external_authorization_timeout_help_text
-    s_("ExternalAuthorization|Period GitLab waits for a response from the external "\
+    s_("ExternalAuthorization|Period GitLab waits for a response from the external " \
       "service. If there is no response, access is denied. Default: 0.5 seconds.")
   end
 
   def external_authorization_url_help_text
-    s_("ExternalAuthorization|URL to which the projects make authorization requests. If the URL is blank, cross-project "\
-      "features are available and can still specify classification "\
+    s_("ExternalAuthorization|URL to which the projects make authorization requests. If the URL is blank, cross-project " \
+      "features are available and can still specify classification " \
       "labels for projects.")
   end
 
   def external_authorization_client_certificate_help_text
-    s_("ExternalAuthorization|Certificate used to authenticate with the external authorization service. "\
+    s_("ExternalAuthorization|Certificate used to authenticate with the external authorization service. " \
       "If blank, the server certificate is validated when accessing over HTTPS.")
   end
 
   def external_authorization_client_key_help_text
-    s_("ExternalAuthorization|Private key of client authentication certificate. "\
+    s_("ExternalAuthorization|Private key of client authentication certificate. " \
       "Encrypted when stored.")
   end
 
   def external_authorization_client_pass_help_text
-    s_("ExternalAuthorization|Passphrase required to decrypt the private key. "\
+    s_("ExternalAuthorization|Passphrase required to decrypt the private key. " \
       "Encrypted when stored.")
   end
 
   def external_authorization_client_url_help_text
-    s_("ExternalAuthorization|Classification label to use when requesting authorization if no specific "\
+    s_("ExternalAuthorization|Classification label to use when requesting authorization if no specific " \
       "label is defined on the project.")
   end
 
   def sidekiq_job_limiter_mode_help_text
-    _("How the job limiter handles jobs exceeding the thresholds specified below. "\
-      "The 'track' mode only logs the jobs. The 'compress' mode compresses the jobs and "\
+    _("How the job limiter handles jobs exceeding the thresholds specified below. " \
+      "The 'track' mode only logs the jobs. The 'compress' mode compresses the jobs and " \
       "raises an exception if the compressed size exceeds the limit.")
   end
 
@@ -260,6 +267,7 @@ module ApplicationSettingsHelper
       :auto_devops_domain,
       :autocomplete_users_limit,
       :autocomplete_users_unauthenticated_limit,
+      :ci_job_live_trace_enabled,
       :concurrent_github_import_jobs_limit,
       :concurrent_bitbucket_import_jobs_limit,
       :concurrent_bitbucket_server_import_jobs_limit,
@@ -367,6 +375,7 @@ module ApplicationSettingsHelper
       :minimum_password_length,
       :mirror_available,
       :notify_on_unknown_sign_in,
+      :organization_cluster_agent_authorization_enabled,
       :pages_domain_verification_enabled,
       :password_authentication_enabled_for_web,
       :password_authentication_enabled_for_git,
@@ -399,6 +408,7 @@ module ApplicationSettingsHelper
       :restricted_visibility_levels,
       :rsa_key_restriction,
       :session_expire_delay,
+      :session_expire_from_init,
       :shared_runners_enabled,
       :shared_runners_text,
       :sign_in_restrictions,
@@ -466,6 +476,7 @@ module ApplicationSettingsHelper
       :unique_ips_limit_time_window,
       :usage_ping_enabled,
       :usage_ping_features_enabled,
+      :use_clickhouse_for_analytics,
       :user_default_external,
       :user_show_add_ssh_key_message,
       :user_default_internal_regex,
@@ -484,6 +495,7 @@ module ApplicationSettingsHelper
       :snowplow_database_collector_hostname,
       :snowplow_enabled,
       :snowplow_app_id,
+      :gitlab_product_usage_data_enabled,
       :push_event_hooks_limit,
       :push_event_activities_limit,
       :custom_http_clone_url_root,
@@ -587,8 +599,11 @@ module ApplicationSettingsHelper
       :global_search_users_enabled,
       :global_search_issues_enabled,
       :global_search_merge_requests_enabled,
+      :global_search_block_anonymous_searches_enabled,
       :vscode_extension_marketplace,
-      :vscode_extension_marketplace_enabled
+      :vscode_extension_marketplace_enabled,
+      :reindexing_minimum_index_size,
+      :reindexing_minimum_relative_bloat_size
     ].tap do |settings|
       unless Gitlab.com?
         settings << :resource_usage_limits
@@ -707,6 +722,12 @@ module ApplicationSettingsHelper
   def vscode_extension_marketplace_settings_description
     # NOTE: description is overridden in EE
     _('Enable VS Code Extension Marketplace and configure the extensions registry for Web IDE.')
+  end
+
+  def deletion_protection_data
+    {
+      deletion_adjourned_period: @application_setting[:deletion_adjourned_period]
+    }
   end
 end
 

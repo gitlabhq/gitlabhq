@@ -164,13 +164,13 @@ export default {
 
       if (this.todo.action === TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED) {
         name = s__(
-          'Todos|You now have access to AI-powered features. Boost your productivity with Code Suggestions and GitLab Duo Chat',
+          'Todos|You now have access to AI-powered features. Learn how to set up Code Suggestions and Chat in your IDE',
         );
       }
 
       if (this.todo.action === TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED) {
         name = s__(
-          'Todos|You now have access to AI-powered features. Boost your productivity with Code Suggestions, GitLab Duo Chat, Vulnerability Explanation, and more',
+          'Todos|You now have access to AI-powered features. Learn how to set up Code Suggestions and Chat in your IDE',
         );
       }
 

@@ -5,7 +5,7 @@ module QA
     describe 'Merge request suggestions', product_group: :code_review do
       let(:commit_message) { 'Applying suggested change for testing purposes.' }
       let(:project) { create(:project, name: 'mr-suggestions-project') }
-      let(:merge_request) do
+      let!(:merge_request) do
         create(:merge_request,
           project: project,
           title: 'Needs some suggestions',

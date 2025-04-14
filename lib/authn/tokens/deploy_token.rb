@@ -4,7 +4,10 @@ module Authn
   module Tokens
     class DeployToken
       def self.prefix?(plaintext)
-        plaintext.start_with?(::DeployToken::DEPLOY_TOKEN_PREFIX)
+        deploy_token_prefixes = [::DeployToken.prefix_for_deploy_token,
+          Authn::TokenField::PrefixHelper.default_instance_prefix(::DeployToken.prefix_for_deploy_token)]
+
+        plaintext.start_with?(*deploy_token_prefixes)
       end
 
       attr_reader :revocable, :source

@@ -70,7 +70,7 @@ export default {
           <gl-link href="">{{ $options.i18n.viewAll }}</gl-link>
         </div>
         <gl-loading-icon v-if="personalProjectsLoading" class="gl-mt-5" size="md" />
-        <projects-list v-else :projects="personalProjects" />
+        <projects-list v-else :items="personalProjects" />
       </div>
     </div>
   </gl-tab>

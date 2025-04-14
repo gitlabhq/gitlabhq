@@ -19,7 +19,7 @@ class UserStatus < ApplicationRecord
 
   belongs_to :user, inverse_of: :status
 
-  enum availability: { not_set: 0, busy: 1 }
+  enum :availability, { not_set: 0, busy: 1 }
 
   validates :user, presence: true
   validates :emoji, 'gitlab/emoji_name': true

@@ -116,7 +116,7 @@ The endpoints continue to respond with the same fields and accept the same
 arguments, although the underlying feature interaction is no longer operational.
 
 The intended changes must be documented ahead of time
-[following the v4 deprecation guide](../development/documentation/restful_api_styleguide.md#deprecations).
+[following the v4 deprecation guide](documentation/restful_api_styleguide.md#deprecations).
 
 For example, when we removed an application setting, we
 [kept the old API field](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83984)

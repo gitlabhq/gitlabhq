@@ -21,12 +21,13 @@ export const WithButtonVariant = Template.bind({});
 const defaultArgs = {
   isFork: false,
   needsToFork: false,
-  gitpodEnabled: true,
+  isGitpodEnabledForUser: true,
   showEditButton: true,
   showWebIdeButton: true,
-  showGitpodButton: true,
+  isGitpodEnabledForInstance: true,
   showPipelineEditorButton: true,
   disableForkModal: true,
+  gitpodUrl: 'http://example.com',
 };
 
 Default.args = {

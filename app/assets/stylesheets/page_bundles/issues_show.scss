@@ -36,6 +36,10 @@
       inset-inline-start: -0.6rem;
     }
   }
+
+  .glql-actions li {
+    @apply gl-ml-2;
+  }
 }
 
 .is-ghost {

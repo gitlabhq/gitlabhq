@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillIncidentManagementOncallParticipantsProjectId
+description: Backfills sharding key `incident_management_oncall_participants.project_id` from `incident_management_oncall_rotations`.
+feature_category: incident_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184771
+milestone: '17.11'
+queued_migration_version: 20250317114629
+finalized_by: # version of the migration that finalized this BBM

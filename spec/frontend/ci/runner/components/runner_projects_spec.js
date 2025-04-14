@@ -1,13 +1,11 @@
-import { GlSearchBoxByType, GlSkeletonLoader } from '@gitlab/ui';
+import { GlSearchBoxByType } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import { sprintf } from '~/locale';
 import {
-  I18N_ASSIGNED_PROJECTS,
   I18N_CLEAR_FILTER_PROJECTS,
   I18N_FILTER_PROJECTS,
   I18N_NO_PROJECTS_FOUND,
@@ -16,6 +14,7 @@ import {
 import RunnerProjects from '~/ci/runner/components/runner_projects.vue';
 import RunnerAssignedItem from '~/ci/runner/components/runner_assigned_item.vue';
 import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { captureException } from '~/ci/runner/sentry_utils';
 
 import runnerProjectsQuery from '~/ci/runner/graphql/show/runner_projects.query.graphql';
@@ -35,8 +34,7 @@ describe('RunnerProjects', () => {
   let wrapper;
   let mockRunnerProjectsQuery;
 
-  const findHeading = () => wrapper.find('h3');
-  const findGlSkeletonLoading = () => wrapper.findComponent(GlSkeletonLoader);
+  const findCrud = () => wrapper.findComponent(CrudComponent);
   const findGlSearchBoxByType = () => wrapper.findComponent(GlSearchBoxByType);
   const findRunnerAssignedItems = () => wrapper.findAllComponents(RunnerAssignedItem);
   const findRunnerPagination = () => wrapper.findComponent(RunnerPagination);
@@ -46,6 +44,9 @@ describe('RunnerProjects', () => {
       apolloProvider: createMockApollo([[runnerProjectsQuery, mockRunnerProjectsQuery]]),
       propsData: {
         runner: mockRunner,
+      },
+      stubs: {
+        CrudComponent,
       },
     });
   };
@@ -91,9 +92,8 @@ describe('RunnerProjects', () => {
     });
 
     it('Shows a heading', () => {
-      const expected = sprintf(I18N_ASSIGNED_PROJECTS, { projectCount: mockProjects.length });
-
-      expect(findHeading().text()).toBe(expected);
+      expect(findCrud().props('title')).toContain('Assigned Projects');
+      expect(findCrud().props('count')).toBe(2);
     });
 
     it('Shows projects', () => {
@@ -193,12 +193,9 @@ describe('RunnerProjects', () => {
     it('shows loading indicator and no other content', () => {
       createComponent();
 
-      expect(findGlSkeletonLoading().exists()).toBe(true);
-
       expect(wrapper.findByText(I18N_NO_PROJECTS_FOUND).exists()).toBe(false);
       expect(findRunnerAssignedItems().length).toBe(0);
 
-      expect(findRunnerPagination().attributes('disabled')).toBeDefined();
       expect(findGlSearchBoxByType().props('isLoading')).toBe(true);
     });
   });

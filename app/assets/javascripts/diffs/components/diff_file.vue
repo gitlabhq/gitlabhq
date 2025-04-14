@@ -2,7 +2,8 @@
 import { GlButton, GlLoadingIcon, GlSprintf, GlAlert, GlLink } from '@gitlab/ui';
 import { escape } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapGetters as mapVuexGetters } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { IdState } from 'vendor/vue-virtual-scroller';
 import DiffContent from 'jh_else_ce/diffs/components/diff_content.vue';
@@ -19,8 +20,9 @@ import notesEventHub from '~/notes/event_hub';
 import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
 import NoteForm from '~/notes/components/note_form.vue';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
-
 import { fileContentsId } from '~/diffs/components/diff_row_utils';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import {
   DIFF_FILE_AUTOMATIC_COLLAPSE,
   DIFF_FILE_MANUAL_COLLAPSE,
@@ -125,9 +127,16 @@ export default {
     genericError: SOMETHING_WENT_WRONG,
   },
   computed: {
-    ...mapState('diffs', ['currentDiffFileId', 'conflictResolutionPath', 'canMerge']),
-    ...mapGetters(['isLoggedIn', 'isNotesFetched', 'getNoteableData', 'noteableType']),
-    ...mapGetters('diffs', ['getDiffFileDiscussions', 'isVirtualScrollingEnabled', 'linkedFile']),
+    ...mapState(useLegacyDiffs, [
+      'currentDiffFileId',
+      'conflictResolutionPath',
+      'canMerge',
+      'getDiffFileDiscussions',
+      'isVirtualScrollingEnabled',
+      'linkedFile',
+    ]),
+    ...mapState(useMrNotes, ['isLoggedIn']),
+    ...mapVuexGetters(['isNotesFetched', 'getNoteableData', 'noteableType']),
     autosaveKey() {
       if (!this.isLoggedIn) return '';
 
@@ -302,7 +311,7 @@ export default {
     eventHub.$off(EVT_EXPAND_ALL_FILES, this.expandAllListener);
   },
   methods: {
-    ...mapActions('diffs', [
+    ...mapActions(useLegacyDiffs, [
       'loadCollapsedDiff',
       'assignDiscussionsToDiff',
       'prefetchFileNeighbors',

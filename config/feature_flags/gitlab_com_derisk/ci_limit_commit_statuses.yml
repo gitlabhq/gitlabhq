@@ -1,0 +1,9 @@
+---
+name: ci_limit_commit_statuses
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/436361
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185807
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/526901
+milestone: '17.11'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

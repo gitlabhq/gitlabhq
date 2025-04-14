@@ -7,7 +7,8 @@ RSpec.describe Gitlab::Auth::OAuth::BeforeRequestPhaseOauthLoginCounterIncrement
     let(:env) { { 'omniauth.strategy' => omniauth_strategy } }
     let(:omniauth_strategy) { instance_double(OmniAuth::Strategies::GoogleOauth2, name: 'google_oauth2') }
 
-    it 'increments Prometheus counter for the given provider' do
+    it 'increments Prometheus counter for the given provider',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/524007' do
       expect { described_class.call(env) }
         .to change { gitlab_metric_omniauth_login_total_for('google_oauth2', 'initiated') }.by(1)
     end

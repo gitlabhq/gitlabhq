@@ -17,14 +17,14 @@ import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_help
 import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
+  updateWorkItemMutationResponse,
+  workItemResponseFactory,
   projectMembersAutocompleteResponseWithCurrentUser,
   mockAssignees,
   currentUserResponse,
   currentUserNullResponse,
-  updateWorkItemMutationResponse,
   projectMembersAutocompleteResponseWithNoMatchingUsers,
-  workItemResponseFactory,
-} from 'jest/work_items/mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 import { i18n, TRACKING_CATEGORY_SHOW, NEW_WORK_ITEM_IID } from '~/work_items/constants';
 import { ISSUE_MR_CHANGE_ASSIGNEE } from '~/behaviors/shortcuts/keybindings';
 
@@ -207,6 +207,16 @@ describe('WorkItemAssignees component', () => {
         projectMembersAutocompleteResponseWithCurrentUser.data.workspace.users.length,
       );
     });
+
+    it('shows the current user first if they are an assignee', async () => {
+      showDropdown();
+
+      await waitForPromises();
+
+      expect(findSidebarDropdownWidget().props('listItems')[0].options[0]).toMatchObject({
+        text: currentUserResponse.data.currentUser.name,
+      });
+    });
   });
 
   describe('when user is logged in and there are no assignees', () => {
@@ -275,6 +285,22 @@ describe('WorkItemAssignees component', () => {
       await nextTick();
 
       expect(findSidebarDropdownWidget().props('itemValue')).toHaveLength(2);
+    });
+
+    it('shows current user first if they are an assignee', async () => {
+      showDropdown();
+      const { currentUser } = currentUserResponse.data;
+
+      await waitForPromises();
+
+      findSidebarDropdownWidget().vm.$emit('updateValue', [
+        'gid://gitlab/User/5',
+        currentUser.id,
+        'gid://gitlab/User/6',
+      ]);
+      await nextTick();
+
+      expect(findAssigneeList().props('users')[0].id).toBe(currentUser.id);
     });
   });
 

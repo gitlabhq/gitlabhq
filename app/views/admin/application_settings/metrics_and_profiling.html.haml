@@ -43,12 +43,15 @@
     = render 'usage'
 
 - if Feature.enabled?(:product_usage_data, :instance)
-  = render ::Layouts::SettingsBlockComponent.new(_('Product usage data tracking'),
+  = render ::Layouts::SettingsBlockComponent.new(_('Event tracking'),
     id: 'js-product-usage-data-settings',
     testid: 'product-usage-data-settings-content',
     expanded: expanded_by_default?) do |c|
     - c.with_description do
-      = _('Control whether events are sent to GitLab.')
+      - snowplow_link = link_to(_('Snowplow'), 'https://snowplow.io/', target: '_blank', rel: 'noopener noreferrer')
+      - help_link = link_to(_('Learn more.'), help_page_path('development/internal_analytics/internal_event_instrumentation/_index.md'), target: '_blank', rel: 'noopener noreferrer')
+      = safe_format(_('Control whether events are sent to GitLab or your own %{snowplow_link_start}Snowplow%{snowplow_link_end} collector. Only one can be selected at a time and enabling one will disable the other. %{help_link_start}Learn more.%{help_link_end}'),
+        tag_pair(snowplow_link, :snowplow_link_start, :snowplow_link_end), tag_pair(help_link, :help_link_start, :help_link_end))
     - c.with_body do
       = render 'product_usage_data'
 

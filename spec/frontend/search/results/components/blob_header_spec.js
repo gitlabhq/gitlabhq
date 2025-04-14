@@ -16,10 +16,10 @@ describe('BlobHeader', () => {
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
   let wrapper;
 
-  const createComponent = (props) => {
+  const createComponent = (props, { query } = { query: MOCK_QUERY }) => {
     const store = new Vuex.Store({
       state: {
-        query: MOCK_QUERY,
+        query,
       },
     });
 
@@ -50,12 +50,33 @@ describe('BlobHeader', () => {
     it(`renders all parts of header`, () => {
       expect(findClipboardButton().exists()).toBe(true);
       expect(findFileIcon().exists()).toBe(true);
-      expect(findProjectPath().exists()).toBe(true);
+      expect(findProjectPath().props('href')).toBe('Testjs/Test');
       expect(findProjectName().exists()).toBe(true);
     });
   });
 
-  describe('limited component', () => {
+  describe('when there is project filter selected', () => {
+    beforeEach(() => {
+      createComponent(
+        {
+          filePath: 'test/file.js',
+          projectPath: 'Testjs/Test',
+          fileUrl: 'https://gitlab.com/test/file.js',
+          systemColorScheme: 'gl-light',
+        },
+        { query: { ...MOCK_QUERY, project_id: 33 } },
+      );
+    });
+
+    it(`renders without projectPath`, () => {
+      expect(findClipboardButton().exists()).toBe(true);
+      expect(findFileIcon().exists()).toBe(true);
+      expect(findProjectPath().exists()).toBe(false);
+      expect(findProjectName().exists()).toBe(true);
+    });
+  });
+
+  describe('when there is no project path', () => {
     beforeEach(() => {
       createComponent({
         filePath: 'test/file.js',

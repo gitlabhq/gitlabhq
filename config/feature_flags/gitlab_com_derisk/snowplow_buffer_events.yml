@@ -1,8 +1,0 @@
----
-name: snowplow_buffer_events
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179565
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/515835
-milestone: '17.9'
-group: group::analytics instrumentation
-default_enabled: false
-type: gitlab_com_derisk

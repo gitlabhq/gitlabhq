@@ -119,7 +119,6 @@ export default {
   },
   data() {
     return {
-      folderList: {},
       feedbackBannerDismissed: false,
       queryErrored: false,
       sharedAgentsQueryErrored: false,
@@ -292,12 +291,7 @@ export default {
           {{ $options.i18n.error }}
         </gl-alert>
 
-        <agent-table
-          v-else
-          :agents="tab.agents"
-          :default-branch-name="defaultBranchName"
-          :max-agents="limit"
-        />
+        <agent-table v-else :agents="tab.agents" :max-agents="limit" />
       </gl-tab>
 
       <gl-tab v-if="availableConfigs.length" :title="$options.i18n.availableConfigs">

@@ -39,7 +39,7 @@ module System
 
     after_commit :flush_redis_cache
 
-    enum theme: {
+    enum :theme, {
       indigo: 0,
       'light-indigo': 1,
       blue: 2,
@@ -50,9 +50,9 @@ module System
       'light-red': 7,
       dark: 8,
       light: 9
-    }, _default: 0, _prefix: true
+    }, default: 0, prefix: true
 
-    enum broadcast_type: {
+    enum :broadcast_type, {
       banner: 1,
       notification: 2
     }

@@ -7,10 +7,12 @@ module Projects
     include Avatarable
     include CacheMarkdownField
     include Gitlab::SQL::Pattern
+    include SafelyChangeColumnDefault
 
     SLUG_ALLOWED_REGEX = %r{\A[a-zA-Z0-9_\-.]+\z}
 
     cache_markdown_field :description
+    columns_changing_default :organization_id
 
     validates :name, presence: true, length: { maximum: 255 }
     validates :description, length: { maximum: 1024 }

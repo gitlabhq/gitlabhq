@@ -19,6 +19,10 @@ import {
   NEW_WORK_ITEM_IID,
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_HIERARCHY,
+  WIDGET_TYPE_CUSTOM_FIELDS,
+  CUSTOM_FIELDS_TYPE_SINGLE_SELECT,
+  CUSTOM_FIELDS_TYPE_MULTI_SELECT,
+  CUSTOM_FIELDS_TYPE_TEXT,
 } from '../constants';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 
@@ -50,6 +54,39 @@ const updateDatesWidget = (draftData, dates) => {
   });
 };
 
+const updateCustomFieldsWidget = (sourceData, draftData, customField) => {
+  if (!customField) return;
+
+  const widget = findWidget(WIDGET_TYPE_CUSTOM_FIELDS, draftData.workspace.workItem);
+
+  if (!widget) return;
+
+  const currentValues =
+    sourceData?.workspace?.workItem?.widgets?.find((w) => w.type === WIDGET_TYPE_CUSTOM_FIELDS)
+      ?.customFieldValues ?? [];
+
+  const updatedCustomFieldValues = currentValues.map((field) => {
+    if (field?.customField?.id === customField.id) {
+      if (
+        field.customField.fieldType === CUSTOM_FIELDS_TYPE_SINGLE_SELECT ||
+        field.customField.fieldType === CUSTOM_FIELDS_TYPE_MULTI_SELECT
+      ) {
+        return { ...field, selectedOptions: customField.selectedOptions };
+      }
+      if (field.customField.fieldType === CUSTOM_FIELDS_TYPE_TEXT) {
+        return { ...field, value: customField.textValue };
+      }
+      return { ...field, value: customField.numberValue };
+    }
+    return field;
+  });
+
+  Object.assign(widget, {
+    customFieldValues: updatedCustomFieldValues,
+    __typename: 'WorkItemWidgetCustomFields',
+  });
+};
+
 export const updateNewWorkItemCache = (input, cache) => {
   const {
     healthStatus,
@@ -67,6 +104,7 @@ export const updateNewWorkItemCache = (input, cache) => {
     weight,
     milestone,
     parent,
+    customField,
   } = input;
 
   try {
@@ -136,6 +174,7 @@ export const updateNewWorkItemCache = (input, cache) => {
         });
 
         updateDatesWidget(draftData, rolledUpDates);
+        updateCustomFieldsWidget(sourceData, draftData, customField);
 
         // We want to allow users to delete a title for an in-progress work item draft
         // as we check for the title being valid when submitting the form

@@ -6,7 +6,7 @@ RSpec.describe Gitlab::ColorModes, feature_category: :user_profile do
   describe '.by_id' do
     it 'returns a mode by its ID' do
       expect(described_class.by_id(1).name).to eq 'Light'
-      expect(described_class.by_id(2).name).to eq 'Dark (Experiment)'
+      expect(described_class.by_id(2).name).to eq 'Dark (Beta)'
     end
   end
 

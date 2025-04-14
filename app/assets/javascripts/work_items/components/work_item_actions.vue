@@ -15,7 +15,9 @@ import {
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { __, s__ } from '~/locale';
+import { getModifierKey } from '~/constants';
 import Tracking from '~/tracking';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import toast from '~/vue_shared/plugins/global_toast';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -24,12 +26,12 @@ import WorkItemChangeTypeModal from 'ee_else_ce/work_items/components/work_item_
 import {
   sprintfWorkItem,
   BASE_ALLOWED_CREATE_TYPES,
-  WORK_ITEM_TYPE_VALUE_KEY_RESULT,
-  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_KEY_RESULT,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_EPIC,
-  WORK_ITEM_TYPE_VALUE_EPIC,
-  WORK_ITEM_TYPE_VALUE_MAP,
-  WORK_ITEM_TYPE_VALUE_ISSUE,
+  WORK_ITEM_TYPE_NAME_EPIC,
+  NAME_TO_ENUM_MAP,
+  WORK_ITEM_TYPE_NAME_ISSUE,
 } from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemNotificationsMutation from '../graphql/update_work_item_notifications.mutation.graphql';
@@ -254,7 +256,7 @@ export default {
         return data.workspace?.workItemTypes?.nodes;
       },
       skip() {
-        return !this.canUpdateMetadata || this.workItemType !== WORK_ITEM_TYPE_VALUE_KEY_RESULT;
+        return !this.canUpdateMetadata || this.workItemType !== WORK_ITEM_TYPE_NAME_KEY_RESULT;
       },
     },
   },
@@ -287,7 +289,7 @@ export default {
       };
     },
     newRelatedItemLabel() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC
         ? sprintfWorkItem(s__('WorkItem|New related %{workItemType}'), this.workItemType)
         : s__('WorkItem|New related item');
     },
@@ -302,17 +304,24 @@ export default {
       return sprintfWorkItem(message, this.workItemType);
     },
     canPromoteToObjective() {
-      return this.canUpdateMetadata && this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT;
+      return this.canUpdateMetadata && this.workItemType === WORK_ITEM_TYPE_NAME_KEY_RESULT;
     },
     confidentialItem() {
       return {
-        text: this.isConfidential
-          ? this.$options.i18n.disableConfidentiality
-          : this.$options.i18n.enableConfidentiality,
-        extraAttrs: {
-          disabled: this.isParentConfidential,
-        },
+        text: this.confidentialItemText,
+        extraAttrs: { disabled: this.isParentConfidential },
       };
+    },
+    confidentialItemText() {
+      return this.isConfidential
+        ? this.$options.i18n.disableConfidentiality
+        : this.$options.i18n.enableConfidentiality;
+    },
+    confidentialItemIcon() {
+      return this.isConfidential ? 'eye' : 'eye-slash';
+    },
+    confidentialItemIconVariant() {
+      return this.isParentConfidential ? 'current' : 'subtle';
     },
     confidentialTooltip() {
       return this.isParentConfidential ? this.$options.i18n.confidentialParentTooltip : '';
@@ -320,8 +329,11 @@ export default {
     lockDiscussionText() {
       return this.isDiscussionLocked ? __('Unlock discussion') : __('Lock discussion');
     },
+    lockDiscussionIcon() {
+      return this.isDiscussionLocked ? 'lock-open' : 'lock';
+    },
     objectiveWorkItemTypeId() {
-      return this.workItemTypes.find((type) => type.name === WORK_ITEM_TYPE_VALUE_OBJECTIVE).id;
+      return this.workItemTypes.find((type) => type.name === WORK_ITEM_TYPE_NAME_OBJECTIVE).id;
     },
     showDropdownTooltip() {
       return !this.isDropdownVisible ? this.$options.i18n.moreActions : '';
@@ -342,7 +354,7 @@ export default {
       };
     },
     isEpic() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC;
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     confidentialityToggledText() {
       return this.isConfidential
@@ -359,21 +371,25 @@ export default {
 
       if (this.glFeatures.okrsMvc && this.hasOkrsFeature) {
         return BASE_ALLOWED_CREATE_TYPES.concat(
-          WORK_ITEM_TYPE_VALUE_KEY_RESULT,
-          WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+          WORK_ITEM_TYPE_NAME_KEY_RESULT,
+          WORK_ITEM_TYPE_NAME_OBJECTIVE,
         );
       }
 
       return BASE_ALLOWED_CREATE_TYPES;
     },
     workItemTypeNameEnum() {
-      return WORK_ITEM_TYPE_VALUE_MAP[this.workItemType];
+      return NAME_TO_ENUM_MAP[this.workItemType];
     },
     showMoveButton() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_ISSUE && this.canMove;
+      return this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE && this.canMove;
     },
     toggleSidebarLabel() {
       return this.showSidebar ? s__('WorkItem|Hide sidebar') : s__('WorkItem|Show sidebar');
+    },
+    toggleSidebarKeys() {
+      const modifierKey = getModifierKey();
+      return shouldDisableShortcuts() ? null : `${modifierKey}/`;
     },
   },
   methods: {
@@ -535,16 +551,24 @@ export default {
         <gl-disclosure-dropdown-item
           class="gl-flex gl-w-full gl-justify-end"
           data-testid="notifications-toggle-form"
+          @action="toggleNotifications(!subscribedToNotifications)"
         >
           <template #list-item>
             <gl-toggle
               :value="subscribedToNotifications"
-              :label="$options.i18n.notifications"
               label-position="left"
               data-testid="notifications-toggle"
               class="work-item-dropdown-toggle gl-justify-between"
-              @change="toggleNotifications($event)"
-            />
+            >
+              <template #label>
+                <span :title="$options.i18n.notifications" class="gl-flex gl-gap-3 gl-pt-1">
+                  <gl-icon name="notifications" variant="subtle" />
+                  <span class="gl-max-w-[154px] gl-truncate">{{
+                    $options.i18n.notifications
+                  }}</span>
+                </span>
+              </template>
+            </gl-toggle>
           </template>
         </gl-disclosure-dropdown-item>
         <gl-dropdown-divider />
@@ -569,7 +593,10 @@ export default {
         data-testid="new-related-work-item"
         @action="isCreateWorkItemModalVisible = true"
       >
-        <template #list-item>{{ newRelatedItemLabel }}</template>
+        <template #list-item>
+          <gl-icon name="plus" class="gl-mr-2" variant="subtle" />
+          {{ newRelatedItemLabel }}
+        </template>
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
@@ -577,7 +604,10 @@ export default {
         data-testid="promote-action"
         @action="promoteToObjective"
       >
-        <template #list-item>{{ __('Promote to objective') }}</template>
+        <template #list-item>
+          <gl-icon name="level-up" class="gl-mr-2" variant="subtle" />
+          {{ __('Promote to objective') }}
+        </template>
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
@@ -585,7 +615,10 @@ export default {
         data-testid="change-type-action"
         @action="showChangeTypeModal"
       >
-        <template #list-item>{{ $options.i18n.changeWorkItemType }}</template>
+        <template #list-item>
+          <gl-icon name="issue-type-issue" class="gl-mr-2" variant="subtle" />
+          {{ $options.i18n.changeWorkItemType }}
+        </template>
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
@@ -593,7 +626,10 @@ export default {
         data-testid="move-action"
         @action="isMoveWorkItemModalVisible = true"
       >
-        <template #list-item>{{ __('Move') }}</template>
+        <template #list-item>
+          <gl-icon name="long-arrow" class="gl-mr-2" variant="subtle" />
+          {{ __('Move') }}
+        </template>
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
@@ -602,7 +638,8 @@ export default {
         @action="toggleDiscussionLock"
       >
         <template #list-item>
-          <gl-loading-icon v-if="isLockDiscussionUpdating" class="gl-mr-1" inline />
+          <gl-loading-icon v-if="isLockDiscussionUpdating" class="gl-mr-2" inline />
+          <gl-icon :name="lockDiscussionIcon" class="gl-mr-2" variant="subtle" />
           {{ lockDiscussionText }}
         </template>
       </gl-disclosure-dropdown-item>
@@ -613,7 +650,16 @@ export default {
         :item="confidentialItem"
         data-testid="confidentiality-toggle-action"
         @action="handleToggleWorkItemConfidentiality"
-      />
+      >
+        <template #list-item>
+          <gl-icon
+            :name="confidentialItemIcon"
+            class="gl-mr-2"
+            :variant="confidentialItemIconVariant"
+          />
+          {{ confidentialItemText }}
+        </template>
+      </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
         data-testid="copy-reference-action"
@@ -621,7 +667,10 @@ export default {
         class="shortcut-copy-reference"
         @action="copyToClipboard(workItemReference, $options.i18n.referenceCopied)"
       >
-        <template #list-item>{{ $options.i18n.copyReference }}</template>
+        <template #list-item>
+          <gl-icon name="copy-to-clipboard" class="gl-mr-2" variant="subtle" />
+          {{ $options.i18n.copyReference }}
+        </template>
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
@@ -630,7 +679,10 @@ export default {
         :data-clipboard-text="workItemCreateNoteEmail"
         @action="copyToClipboard(workItemCreateNoteEmail, $options.i18n.emailAddressCopied)"
       >
-        <template #list-item>{{ i18n.copyCreateNoteEmail }}</template>
+        <template #list-item>
+          <gl-icon name="copy-to-clipboard" class="gl-mr-2" variant="subtle" />
+          {{ i18n.copyCreateNoteEmail }}
+        </template>
       </gl-disclosure-dropdown-item>
 
       <gl-dropdown-divider />
@@ -640,7 +692,10 @@ export default {
         data-testid="report-abuse-action"
         @action="handleToggleReportAbuseModal"
       >
-        <template #list-item>{{ $options.i18n.reportAbuse }}</template>
+        <template #list-item>
+          <gl-icon name="abuse" class="gl-mr-2" variant="subtle" />
+          {{ $options.i18n.reportAbuse }}
+        </template>
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item
@@ -656,7 +711,10 @@ export default {
           @action="handleDelete"
         >
           <template #list-item>
-            <span class="gl-text-danger">{{ i18n.deleteWorkItem }}</span>
+            <span>
+              <gl-icon name="remove" class="gl-mr-2" variant="current" />
+              {{ i18n.deleteWorkItem }}
+            </span>
           </template>
         </gl-disclosure-dropdown-item>
       </template>
@@ -680,18 +738,37 @@ export default {
           <template #list-item>
             <gl-toggle
               :value="truncationEnabled"
-              :label="s__('WorkItem|Truncate descriptions')"
               label-position="left"
               class="work-item-dropdown-toggle gl-justify-between"
-            />
+            >
+              <template #label>
+                <span
+                  :title="s__('WorkItem|Truncate descriptions')"
+                  class="gl-flex gl-gap-3 gl-pt-1"
+                >
+                  <gl-icon name="text-description" variant="subtle" />
+                  <span class="gl-max-w-[154px] gl-truncate">{{
+                    s__('WorkItem|Truncate descriptions')
+                  }}</span>
+                </span>
+              </template>
+            </gl-toggle>
           </template>
         </gl-disclosure-dropdown-item>
         <gl-disclosure-dropdown-item
           data-testid="sidebar-toggle-action"
-          class="work-item-container-xs-hidden gl-hidden md:gl-block"
+          class="work-item-container-xs-hidden js-sidebar-toggle-action gl-hidden md:gl-block"
           @action="$emit('toggleSidebar')"
         >
-          <template #list-item>{{ toggleSidebarLabel }}</template>
+          <template #list-item>
+            <div class="gl-flex gl-items-center gl-justify-between">
+              <span>
+                <gl-icon name="sidebar-right" class="gl-mr-2" variant="subtle" />
+                {{ toggleSidebarLabel }}
+              </span>
+              <kbd v-if="toggleSidebarKeys" class="flat">{{ toggleSidebarKeys }}</kbd>
+            </div>
+          </template>
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>
     </gl-disclosure-dropdown>
@@ -699,6 +776,7 @@ export default {
     <gl-modal
       ref="modal"
       modal-id="work-item-confirm-delete"
+      data-testid="work-item-confirm-delete"
       :title="i18n.deleteWorkItem"
       :ok-title="i18n.deleteWorkItem"
       ok-variant="danger"
@@ -713,8 +791,9 @@ export default {
       :always-show-work-item-type-select="!isGroup"
       :visible="isCreateWorkItemModalVisible"
       :related-item="relatedItemData"
-      :work-item-type-name="workItemTypeNameEnum"
+      :preselected-work-item-type="workItemTypeNameEnum"
       :show-project-selector="!isEpic"
+      :namespace-full-name="namespaceFullName"
       :is-group="isGroup"
       hide-button
       @workItemCreated="$emit('workItemCreated')"

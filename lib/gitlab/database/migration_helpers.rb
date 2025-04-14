@@ -1060,11 +1060,13 @@ into similar problems in the future (e.g. when new tables are created).
         plan_name_quoted = quote(plan_name)
         limit_value_quoted = quote(limit_value)
 
-        execute <<~SQL
-          INSERT INTO plan_limits (plan_id, #{limit_name_quoted})
-          SELECT id, #{limit_value_quoted} FROM plans WHERE name = #{plan_name_quoted} LIMIT 1
-          ON CONFLICT (plan_id) DO UPDATE SET #{limit_name_quoted} = EXCLUDED.#{limit_name_quoted};
-        SQL
+        ::Gitlab::Database.allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/519892') do
+          execute <<~SQL
+            INSERT INTO plan_limits (plan_id, #{limit_name_quoted})
+            SELECT id, #{limit_value_quoted} FROM plans WHERE name = #{plan_name_quoted} LIMIT 1
+            ON CONFLICT (plan_id) DO UPDATE SET #{limit_name_quoted} = EXCLUDED.#{limit_name_quoted};
+          SQL
+        end
       end
 
       # Note this should only be used with very small tables

@@ -15,11 +15,9 @@ import {
 import Tracking from '~/tracking';
 import {
   TODO_TARGET_TYPE_ISSUE,
-  TODO_TARGET_TYPE_WORK_ITEM,
   TODO_TARGET_TYPE_MERGE_REQUEST,
   TODO_TARGET_TYPE_DESIGN,
   TODO_TARGET_TYPE_ALERT,
-  TODO_TARGET_TYPE_EPIC,
   TODO_TARGET_TYPE_SSH_KEY,
   TODO_TARGET_TYPE_WIKI_PAGE,
   TODO_ACTION_TYPE_ASSIGNED,
@@ -47,7 +45,7 @@ import AuthorToken from './filtered_search_tokens/author_token.vue';
 export const SORT_OPTIONS = [
   {
     value: 'CREATED',
-    text: s__('Todos|Created'),
+    text: s__('Todos|Recommended'),
   },
   {
     value: 'UPDATED',
@@ -68,11 +66,6 @@ export const TARGET_TYPES = [
     title: s__('Todos|Issue'),
   },
   {
-    id: 'WorkItem',
-    value: TODO_TARGET_TYPE_WORK_ITEM,
-    title: s__('Todos|Work item'),
-  },
-  {
     id: 'MergeRequest',
     value: TODO_TARGET_TYPE_MERGE_REQUEST,
     title: s__('Todos|Merge request'),
@@ -86,12 +79,6 @@ export const TARGET_TYPES = [
     id: 'AlertManagement::Alert',
     value: TODO_TARGET_TYPE_ALERT,
     title: s__('Todos|Alert'),
-  },
-  {
-    // eslint-disable-next-line @gitlab/require-i18n-strings
-    id: 'Epic',
-    value: TODO_TARGET_TYPE_EPIC,
-    title: s__('Todos|Epic'),
   },
   {
     // eslint-disable-next-line @gitlab/require-i18n-strings
@@ -117,7 +104,7 @@ export const ACTION_TYPES = [
   },
   {
     id: '2',
-    value: TODO_ACTION_TYPE_MENTIONED,
+    value: `${TODO_ACTION_TYPE_MENTIONED};${TODO_ACTION_TYPE_DIRECTLY_ADDRESSED}`,
     title: s__('Todos|Mentioned'),
   },
   {
@@ -139,11 +126,6 @@ export const ACTION_TYPES = [
     id: '6',
     value: TODO_ACTION_TYPE_UNMERGEABLE,
     title: s__('Todos|Unmergeable'),
-  },
-  {
-    id: '7',
-    value: TODO_ACTION_TYPE_DIRECTLY_ADDRESSED,
-    title: s__('Todos|Directly addressed'),
   },
   {
     id: '8',
@@ -242,7 +224,11 @@ const FILTERS = [
       return value;
     },
     toUrlValueResolver: (value) => {
-      const { id } = ACTION_TYPES.find((option) => option.value === value);
+      const { id } = ACTION_TYPES.find((option) => {
+        // For combined values like "mentioned;directly_addressed" use their first value's id for the URL
+        const optionMainValue = option.value.split(';')[0];
+        return optionMainValue === value;
+      });
       return id;
     },
   },
@@ -341,7 +327,7 @@ export default {
       return Object.fromEntries(
         FILTERS.map(({ apiParam, tokenType }) => {
           const selectedValue = this.filterTokens.find((token) => token.type === tokenType);
-          return [apiParam, selectedValue ? [selectedValue.value.data] : []];
+          return [apiParam, selectedValue ? selectedValue.value.data.split(';') : []];
         }),
       );
     },

@@ -16,6 +16,7 @@ import {
   prepareSearchAggregations,
   addCountOverLimit,
   injectRegexSearch,
+  injectUsersScope,
   scopeCrawler,
   skipBlobESCount,
   buildDocumentTitle,
@@ -367,6 +368,22 @@ describe('Global Search Store Utils', () => {
     });
   });
 
+  describe('injectUsersScope', () => {
+    useMockLocationHelper();
+    it.each([
+      ['/search', `/search?scope=users`],
+      ['/search?search=test', `/search?search=test&scope=users`],
+      ['/search?search=test&scope=users', `/search?search=test&scope=users`],
+      ['/search?search=test&group_id=123', `/search?search=test&group_id=123&scope=users`],
+      ['/search?search=test&scope=projects', `/search?search=test&scope=users`],
+      [`https://gdk.test:3000/search?search=test`, `/search?search=test&scope=users`],
+      ['/groups/my-group/search', `/groups/my-group/search?scope=users`],
+      ['/groups/my-group/search?search=test', `/groups/my-group/search?search=test&scope=users`],
+    ])('transforms %s to %s', (input, expected) => {
+      expect(injectUsersScope(input)).toBe(expected);
+    });
+  });
+
   describe('scopeCrawler', () => {
     it('returns the correct scope when active item is at root level', () => {
       const result = scopeCrawler(rootLevelActive);
@@ -389,6 +406,7 @@ describe('Global Search Store Utils', () => {
       expect(result).toBe(parentScope);
     });
   });
+
   describe('skipBlobESCount', () => {
     const SCOPE_BLOB = 'blobs';
 

@@ -8,7 +8,7 @@ title: Multiple Databases
 To allow GitLab to scale further we
 [decomposed the GitLab application database into multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
 The main databases are `main`, `ci`, and (optionally) `sec`. GitLab supports being run with one, two, or three databases.
-On GitLab.com we are using separate `main` and `ci` databases.
+On GitLab.com we are using separate `main` `ci`, and `sec` databases.
 
 For the purpose of building the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture, we are decomposing
 the databases further, to introduce another database `gitlab_main_clusterwide`.
@@ -25,13 +25,15 @@ that we cannot use PostgreSQL schema due to complex migration procedures. Instea
 the concept of application-level classification.
 Each table of GitLab needs to have a `gitlab_schema` assigned:
 
-| Database | Description | Notes |
+| Schema | Description | Notes |
 | -------- | ----------- | ------- |
-| `gitlab_main`| All tables that are being stored in the `main:` database. | Currently, this is being replaced with `gitlab_main_cell`, for the purpose of building the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. `gitlab_main_cell` schema describes all tables that are local to a cell in a GitLab installation. For example, `projects` and `groups` |
-| `gitlab_main_clusterwide` | All tables where all rows, or a subset of rows needs to be present across the cluster, in the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. For example, `users` and `application_settings`.| For the [Cells 1.0 architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.0/), there are no real clusterwide tables as each cell will have its own database. In effect, these tables will still be stored locally in each cell. |
-| `gitlab_main_cell_local` | For tables in the `main:` database that are related to features that is distinct for each cell. For example, `zoekt_nodes`, or `shards`. | These cell-local tables should not have any foreign key references from/to organization tables. |
+| `gitlab_main`| All tables that are being stored in the `main:` database. | Currently, this is being replaced with `gitlab_main_cell`, for the purpose of building the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. |
+| `gitlab_main_cell` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
+| `gitlab_main_clusterwide_setting` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
+| `gitlab_main_clusterwide` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
+| `gitlab_main_cell_local` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_ci` | All CI tables that are being stored in the `ci:` database (for example, `ci_pipelines`, `ci_builds`) | |
-| `gitlab_ci_cell_local` | For tables in the `ci:` database that are related to features that is distinct for each cell. For example, `instance_type_ci_runners`, or `ci_cost_settings`. | These cell-local tables should not have any foreign key references from/to organization tables. |
+| `gitlab_ci_cell_local` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_geo` | All Geo tables that are being stored in the `geo:` database (for example, like `project_registry`, `secondary_usage_data`) | |
 | `gitlab_shared` | All application tables that contain data across all decomposed databases (for example, `loose_foreign_keys_deleted_records`) for models that inherit from `Gitlab::Database::SharedModel`. | |
 | `gitlab_internal` | All internal tables of Rails and PostgreSQL (for example, `ar_internal_metadata`, `schema_migrations`, `pg_*`) | |
@@ -792,6 +794,14 @@ There are two processes that automatically lock tables:
 - Database migrations. See [`Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/migration_helpers/automatic_lock_writes_on_tables.rb)
 - The `Database::MonitorLockedTablesWorker` locks tables if needed.
   This can be disabled by the `lock_tables_in_monitoring` feature flag.
+
+`Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables` compares the list of tables before and after each database migration runs. Then
+it locks the newly added tables on the relevant database. This does not
+cover all cases. Because some migrations need
+to re-create the tables within the same transactional migration. For example: To convert standard unpartitioned tables into partitioned tables.
+See [this example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184636).
+Such migrations leave the re-created tables unlocked. But the daily cron job of `Database::MonitorLockedTablesWorker` takes care of
+alerting about this on Slack, and then automatically locks these tables for writes.
 
 ### Manually lock tables
 

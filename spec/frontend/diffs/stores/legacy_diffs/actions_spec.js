@@ -1423,7 +1423,7 @@ describe('legacyDiffs actions', () => {
 
   describe('scrollToFile', () => {
     beforeEach(() => {
-      getters = { isVirtualScrollingEnabled: false };
+      store.virtualScrollerDisabled = true;
     });
 
     it('updates location hash', () => {

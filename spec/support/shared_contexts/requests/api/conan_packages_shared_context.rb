@@ -7,7 +7,6 @@ RSpec.shared_context 'with conan api setup' do
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:user) { create(:user, developer_of: [project]) }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
-  let_it_be(:base_secret) { SecureRandom.base64(64) }
   let_it_be(:deploy_token) do
     create(:deploy_token, read_package_registry: true, write_package_registry: true)
   end
@@ -30,17 +29,13 @@ RSpec.shared_context 'with conan api setup' do
   let(:jwt_secret) do
     OpenSSL::HMAC.hexdigest(
       OpenSSL::Digest.new('SHA256'),
-      base_secret,
+      ::Gitlab::Encryption::KeyProvider[:db_key_base].encryption_key.secret,
       Gitlab::ConanToken::HMAC_KEY
     )
   end
 
   let(:snowplow_gitlab_standard_context) do
     { user: user, project: project, namespace: project.namespace, property: 'i_package_conan_user' }
-  end
-
-  before do
-    allow(Settings).to receive(:attr_encrypted_db_key_base).and_return(base_secret)
   end
 end
 

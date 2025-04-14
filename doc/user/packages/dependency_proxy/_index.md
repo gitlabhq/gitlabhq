@@ -77,6 +77,7 @@ Prerequisites:
 
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/276777) the feature flag `dependency_proxy_for_private_groups` in GitLab 15.0.
 - Support for group access tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362991) in GitLab 16.3.
+- Deploy token scopes `read_virtual_registry` and `write_virtual_registry` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336800) in GitLab 17.11 with a flag named `dependency_proxy_read_write_scopes`. Disabled by default.
 
 {{< /history >}}
 
@@ -101,15 +102,23 @@ echo "$CONTAINER_REGISTRY_PASSWORD" | docker login gitlab.example.com --username
 You can authenticate using:
 
 - Your GitLab username and password.
-- A [personal access token](../../profile/personal_access_tokens.md) with the scope set to `read_registry` and `write_registry`, or to `api`.
-- A [group deploy token](../../project/deploy_tokens/_index.md) with the scope set to `read_registry` and `write_registry`.
-- A [group access token](../../group/settings/group_access_tokens.md) for the group, with the scope set to `read_registry` and `write_registry`, or to `api`.
+- A [personal access token](../../profile/personal_access_tokens.md).
+- A [group deploy token](../../project/deploy_tokens/_index.md).
+- A [group access token](../../group/settings/group_access_tokens.md) for the group.
+
+The token should have the scope set to one of the following:
+
+- `api`: Grants full API access.
+- `read_registry`: Grants read-only access to the container registry.
+- `write_registry`: Grants both read and write access to the container registry.
+- `read_virtual_registry`: Grants read-only access (pull) to container images through the dependency proxy.
+- `write_virtual_registry`: Grants read (pull), write (push), and delete access to container images through the dependency proxy.
 
 Users accessing the dependency proxy for container images with a personal access token or username and password must
 have at least the Guest role for the group they pull images from.
 
 The dependency proxy for container images follows the [Docker v2 token authentication flow](https://distribution.github.io/distribution/spec/auth/token/),
-issuing the client a JWT to use for the pull requests. The JWT issued as a result of authenticating
+issuing the client a JWT to use for the pulls. The JWT issued as a result of authenticating
 expires after some time. When the token expires, most Docker clients store your credentials and
 automatically request a new token without further action.
 
@@ -193,11 +202,12 @@ You can also use [custom CI/CD variables](../../../ci/variables/_index.md#for-a-
 {{< history >}}
 
 - Support for Docker Hub credentials [added](https://gitlab.com/gitlab-org/gitlab/-/issues/331741) in GitLab 17.10.
+- UI support [added](https://gitlab.com/gitlab-org/gitlab/-/issues/521954) in GitLab 17.11.
 
 {{< /history >}}
 
 By default, the Dependency Proxy does not use credentials when pulling images from Docker Hub.
-You can configure Docker Hub authentication through the GraphQL API using your Docker Hub credentials or tokens.
+You can configure Docker Hub authentication using your Docker Hub credentials or tokens.
 
 To authenticate with Docker Hub, you can use:
 
@@ -206,7 +216,19 @@ To authenticate with Docker Hub, you can use:
 - A Docker Hub [Personal Access Token](https://docs.docker.com/security/for-developers/access-tokens/).
 - A Docker Hub [Organization Access Token](https://docs.docker.com/security/for-admins/access-tokens/).
 
-UI support for configuring Docker Hub credentials for groups in self-managed instances is proposed in issue [521954](https://gitlab.com/gitlab-org/gitlab/-/issues/521954).
+#### Configure credentials
+
+To set Docker Hub credentials for the dependency proxy for a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Packages and registries**.
+1. Expand the **Dependency Proxy** section.
+1. Turn on **Enable Proxy**.
+1. Under **Docker Hub authentication**, enter your credentials:
+   - **Identity** is your username (for password or Personal Access Token) or organization name (for Organization Access Token).
+   - **Secret** is your password, Personal Access Token, or Organization Access Token.
+
+   You must either complete both fields or leave both empty. If you leave both fields empty, requests to Docker Hub remain unauthenticated.
 
 #### Configure credentials using the GraphQL API
 
@@ -301,10 +323,9 @@ For information on reducing your storage use on the dependency proxy for contain
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch how to [use the dependency proxy to help avoid Docker Hub rate limits](https://youtu.be/Nc4nUo7Pq08).
 
-In November 2020, Docker introduced
-[rate limits on pull requests from Docker Hub](https://docs.docker.com/docker-hub/download-rate-limit/).
+Docker Hub enforces [rate limits on pulls](https://docs.docker.com/docker-hub/usage/pulls/).
 If your GitLab [CI/CD configuration](../../../ci/_index.md) uses
-an image from Docker Hub, each time a job runs, it may count as a pull request.
+an image from Docker Hub, each time a job runs, it may count as a pull.
 To help get around this limit, you can pull your image from the dependency proxy cache instead.
 
 When you pull an image (by using a command like `docker pull` or, in a `.gitlab-ci.yml`
@@ -336,7 +357,7 @@ has become stale, only then is a new image pulled.
 For example, if your pipeline pulls `node:latest` every five
 minutes, the dependency proxy caches the entire image and only updates it if
 `node:latest` changes. So instead of having 360 requests for the image in six hours
-(which exceeds the Docker Hub rate limit), you only have one pull request, unless
+(which exceeds the Docker Hub rate limit), you only have one pull, unless
 the manifest changed during that time.
 
 ### Check your Docker Hub rate limit
@@ -445,7 +466,7 @@ see [issue 354826](https://gitlab.com/gitlab-org/gitlab/-/issues/354826).
 {{< alert type="note" >}}
 
 This issue was [resolved](https://gitlab.com/gitlab-org/gitlab/-/issues/325669) in GitLab 16.3.
-For self managed instances that are 16.2 or earlier, you can update your instance to 16.3
+For GitLab Self-Managed instances that are 16.2 or earlier, you can update your instance to 16.3
 or use the workaround documented below.
 
 {{< /alert >}}

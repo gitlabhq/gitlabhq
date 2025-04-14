@@ -92,7 +92,7 @@ RSpec.describe Gitlab::Database::Reindexing::Coordinator, feature_category: :dat
       end
     end
 
-    context 'when executed during the week', time_travel_to: '2023-01-09T09:44:07Z' do
+    context 'when executed during the week for saas', :saas, time_travel_to: '2023-01-09T09:44:07Z' do
       it 'does not start reindexing' do
         expect(lease).not_to receive(:try_obtain)
         expect(Gitlab::Database::Reindexing::ReindexConcurrently).not_to receive(:new)
@@ -139,7 +139,7 @@ RSpec.describe Gitlab::Database::Reindexing::Coordinator, feature_category: :dat
       end
     end
 
-    context 'when executed during the week', time_travel_to: '2023-01-09T09:44:07Z' do
+    context 'when executed during the week for saas', :saas, time_travel_to: '2023-01-09T09:44:07Z' do
       it 'does not start reindexing' do
         expect(lease).not_to receive(:try_obtain)
         expect(Gitlab::Database::WithLockRetriesOutsideTransaction).not_to receive(:new)

@@ -48,13 +48,14 @@ A running workspace remains accessible to the user even if user permissions are 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125331) in GitLab 16.2.
+- Managing workspaces from the **Code** menu [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178492) in GitLab 17.11.
 
 {{< /history >}}
 
 To manage workspaces from a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. In the upper right, select **Edit**.
+1. In the upper right, select **Code**.
 1. From the dropdown list, under **Your workspaces**, you can:
    - Restart, stop, or terminate an existing workspace.
    - Create a new workspace.
@@ -139,7 +140,7 @@ components:
     attributes:
       gl/inject-editor: true
     container:
-      image: "registry.gitlab.com/gitlab-org/gitlab-build-images/workspaces/ubuntu-24.04:20250303043223-golang-1.23-docker-27.5.1@sha256:98f36ddf5d7ac53d95a270f5791ab7f50132a4cc87676e22f4f632678d8e15e1"
+      image: "registry.gitlab.com/gitlab-org/gitlab-build-images/workspaces/ubuntu-24.04:20250321073701-golang-1.23-node-23.9-yarn-1.22-ruby-3.4.2-rust-1.85-docker-27.5.1@sha256:a059826e65f0bc0ee2f3fdfd62f16a108c5b99b24b4656734cd6b8f4631389ad"
 ```
 
 A GitLab default devfile might not be suitable for all development environments configurations.
@@ -266,11 +267,12 @@ For more information, see [GitLab Workflow extension for VS Code](https://gitlab
 
 {{< /history >}}
 
-You can use the
-[extension marketplace](../project/web_ide/_index.md#extension-marketplace) in workspaces
-when it is [enabled](../profile/preferences.md#integrate-with-the-extension-marketplace).
+The VS Code Extension Marketplace provides you with access to extensions that enhance the
+functionality of your workspace.
 
-The extension marketplace connects to the [Open VSX Registry](https://open-vsx.org/).
+You can use the [extension marketplace](../project/web_ide/_index.md#manage-extensions) in your
+workspace Web IDE. The extension marketplace connects to the [Open VSX Registry](https://open-vsx.org/).
+For more information, see [Configure VS Code Extension Marketplace](../../administration/settings/vscode_extension_marketplace.md).
 
 ## Personal access token
 
@@ -342,7 +344,7 @@ The container runtime used by the Kubernetes cluster must ensure all containers 
 If you have a container image that does not support arbitrary user IDs,
 you cannot create, update, or delete files in a workspace.
 To create a container image that supports arbitrary user IDs,
-see [Create a custom workspace image that supports arbitrary user IDs](../workspace/create_image.md).
+see [Create a custom workspace image that supports arbitrary user IDs](create_image.md).
 
 For more information, see the
 [OpenShift documentation](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).

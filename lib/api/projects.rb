@@ -8,7 +8,10 @@ module API
 
     helpers Helpers::ProjectsHelpers
 
-    before { authenticate_non_get! }
+    before do
+      authenticate_non_get!
+      set_current_organization(user: current_user)
+    end
 
     allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
@@ -82,12 +85,40 @@ module API
         end
       end
 
+      def immediately_delete_project_error(project)
+        if !project.marked_for_deletion_at?
+          'Project must be marked for deletion first.'
+        elsif project.full_path != params[:full_path]
+          '`full_path` is incorrect. You must enter the complete path for the project.'
+        end
+      end
+
       def delete_project(user_project)
-        destroy_conditionally!(user_project) do
-          ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
+        permanently_remove = ::Gitlab::Utils.to_boolean(params[:permanently_remove])
+
+        if permanently_remove && user_project.adjourned_deletion_configured?
+          error = immediately_delete_project_error(user_project)
+
+          return render_api_error!(error, 400) if error
         end
 
-        accepted!
+        if permanently_remove || !user_project.adjourned_deletion_configured?
+          destroy_conditionally!(user_project) do
+            ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
+          end
+
+          return accepted!
+        end
+
+        result = destroy_conditionally!(user_project) do
+          ::Projects::MarkForDeletionService.new(user_project, current_user, {}).execute
+        end
+
+        if result[:status] == :success
+          accepted!
+        else
+          render_api_error!(result[:message], 400)
+        end
       end
 
       def validate_projects_api_rate_limit_for_unauthenticated_users!
@@ -162,7 +193,7 @@ module API
       end
 
       def load_projects
-        project_params = project_finder_params
+        project_params = project_finder_params.merge(current_organization: Current.organization)
         support_order_by_similarity!(project_params)
         verify_project_filters!(project_params)
         ProjectsFinder.new(current_user: current_user, params: project_params).execute
@@ -301,6 +332,21 @@ module API
     resource :projects do
       include CustomAttributesEndpoints
 
+      desc 'Restore a project' do
+        success ::API::Entities::Project
+      end
+      post ':id/restore', feature_category: :system_access do
+        authorize!(:remove_project, user_project)
+        break not_found! unless user_project.adjourned_deletion?
+
+        result = ::Projects::RestoreService.new(user_project, current_user).execute
+        if result[:status] == :success
+          present user_project, with: ::API::Entities::Project, current_user: current_user
+        else
+          render_api_error!(result[:message], 400)
+        end
+      end
+
       desc 'Get a list of visible projects for authenticated user' do
         success code: 200, model: Entities::BasicProjectDetails
         failure [
@@ -318,7 +364,6 @@ module API
       get feature_category: :groups_and_projects, urgency: :low do
         validate_projects_api_rate_limit!
         validate_updated_at_order_and_filter!
-
         present_projects load_projects
       end
 

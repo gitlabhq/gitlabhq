@@ -126,6 +126,22 @@ describe('NamespaceStorageApp', () => {
   });
 
   describe('Namespace project list', () => {
+    describe('when customSortKey is set', () => {
+      it('disables sorting', () => {
+        createComponent({ provide: { customSortKey: 'custom' } });
+
+        expect(findProjectList().props('enableSortableFields')).toBe(false);
+      });
+    });
+
+    describe('when customSortKey is not set', () => {
+      it('enables sorting', () => {
+        createComponent({ provide: { customSortKey: undefined } });
+
+        expect(findProjectList().props('enableSortableFields')).toBe(true);
+      });
+    });
+
     it('renders the 2 projects', async () => {
       createComponent();
       await waitForPromises();
@@ -185,6 +201,47 @@ describe('NamespaceStorageApp', () => {
           expect.objectContaining({ searchTerm: '' }),
         );
       });
+    });
+
+    describe('sorting projects', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      describe.each`
+        sortBy                 | sortDesc | sortKey
+        ${'storage'}           | ${true}  | ${'STORAGE_SIZE_DESC'}
+        ${'storage'}           | ${false} | ${'STORAGE_SIZE_ASC'}
+        ${'repository'}        | ${true}  | ${'REPOSITORY_SIZE_DESC'}
+        ${'repository'}        | ${false} | ${'REPOSITORY_SIZE_ASC'}
+        ${'snippets'}          | ${true}  | ${'SNIPPETS_SIZE_DESC'}
+        ${'snippets'}          | ${false} | ${'SNIPPETS_SIZE_ASC'}
+        ${'buildArtifacts'}    | ${true}  | ${'BUILD_ARTIFACTS_SIZE_DESC'}
+        ${'buildArtifacts'}    | ${false} | ${'BUILD_ARTIFACTS_SIZE_ASC'}
+        ${'lfsObjects'}        | ${true}  | ${'LFS_OBJECTS_SIZE_DESC'}
+        ${'lfsObjects'}        | ${false} | ${'LFS_OBJECTS_SIZE_ASC'}
+        ${'packages'}          | ${true}  | ${'PACKAGES_SIZE_DESC'}
+        ${'packages'}          | ${false} | ${'PACKAGES_SIZE_ASC'}
+        ${'wiki'}              | ${true}  | ${'WIKI_SIZE_DESC'}
+        ${'wiki'}              | ${false} | ${'WIKI_SIZE_ASC'}
+        ${'snippets'}          | ${true}  | ${'SNIPPETS_SIZE_DESC'}
+        ${'snippets'}          | ${false} | ${'SNIPPETS_SIZE_ASC'}
+        ${'containerRegistry'} | ${true}  | ${'CONTAINER_REGISTRY_SIZE_DESC'}
+        ${'containerRegistry'} | ${false} | ${'CONTAINER_REGISTRY_SIZE_ASC'}
+      `(
+        'when sorting changed to $sortBy and sortDesc is $sortDesc',
+        ({ sortBy, sortDesc, sortKey }) => {
+          it('forms correct sorting order string', async () => {
+            findProjectList().vm.$emit('sortChanged', { sortBy, sortDesc });
+
+            await waitForPromises();
+
+            expect(getProjectListStorageHandler).toHaveBeenCalledWith(
+              expect.objectContaining({ sortKey }),
+            );
+          });
+        },
+      );
     });
 
     describe('projects table pagination component', () => {

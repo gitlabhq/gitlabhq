@@ -98,12 +98,14 @@ export const packagesProtectionRulesData = [
     id: `gid://gitlab/Packages::Protection::Rule/${i}`,
     packageNamePattern: `@flight/flight-maintainer-${i}-*`,
     packageType: 'NPM',
+    minimumAccessLevelForDelete: 'OWNER',
     minimumAccessLevelForPush: 'MAINTAINER',
   })),
   {
     id: 'gid://gitlab/Packages::Protection::Rule/16',
     packageNamePattern: '@flight/flight-owner-16-*',
     packageType: 'NPM',
+    minimumAccessLevelForDelete: 'OWNER',
     minimumAccessLevelForPush: 'OWNER',
   },
 ];
@@ -145,6 +147,7 @@ export const createPackagesProtectionRuleMutationPayload = ({ override, errors =
 export const createPackagesProtectionRuleMutationInput = {
   packageNamePattern: `@flight/flight-developer-14-*`,
   packageType: 'NPM',
+  minimumAccessLevelForDelete: 'MAINTAINER',
   minimumAccessLevelForPush: 'MAINTAINER',
 };
 
@@ -183,11 +186,13 @@ export const containerProtectionRepositoryRulesData = [
   ...Array.from(Array(15)).map((_e, i) => ({
     id: `gid://gitlab/ContainerRegistry::Protection::Rule/${i}`,
     repositoryPathPattern: `@flight/flight/maintainer-${i}-*`,
+    minimumAccessLevelForDelete: 'MAINTAINER',
     minimumAccessLevelForPush: 'MAINTAINER',
   })),
   {
     id: 'gid://gitlab/ContainerRegistry::Protection::Rule/16',
     repositoryPathPattern: '@flight/flight/owner-16-*',
+    minimumAccessLevelForDelete: 'OWNER',
     minimumAccessLevelForPush: 'OWNER',
   },
 ];
@@ -231,6 +236,7 @@ export const createContainerProtectionRepositoryRuleMutationPayload = ({
 
 export const createContainerProtectionRepositoryRuleMutationInput = {
   repositoryPathPattern: `@flight/flight-maintainer-14-*`,
+  minimumAccessLevelForDelete: 'MAINTAINER',
   minimumAccessLevelForPush: 'MAINTAINER',
 };
 
@@ -254,6 +260,7 @@ export const deleteContainerProtectionRepositoryRuleMutationPayload = ({
 export const updateContainerProtectionRepositoryRuleMutationPayload = ({
   containerProtectionRepositoryRule = {
     ...containerProtectionRepositoryRulesData[0],
+    minimumAccessLevelForDelete: 'OWNER',
     minimumAccessLevelForPush: 'OWNER',
   },
   errors = [],

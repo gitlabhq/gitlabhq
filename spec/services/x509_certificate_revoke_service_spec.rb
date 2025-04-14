@@ -18,8 +18,8 @@ RSpec.describe X509CertificateRevokeService, feature_category: :system_access do
           x509_signature_1.reload
           x509_signature_2.reload
         end
-          .to change(x509_signature_1, :verification_status).from('verified').to('unverified')
-          .and change(x509_signature_2, :verification_status).from('verified').to('unverified')
+          .to change { x509_signature_1.verification_status }.from('verified').to('unverified')
+          .and change { x509_signature_2.verification_status }.from('verified').to('unverified')
       end
     end
 

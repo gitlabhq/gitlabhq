@@ -304,9 +304,9 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
   end
 
   describe '#change_title' do
-    let(:noteable) { create(:issue, project: project, title: 'Lorem ipsum') }
+    let(:noteable) { create(:issue, project: project, title: '_Lorem_ ipsum') }
 
-    subject { service.change_title('Old title') }
+    subject { service.change_title('Old **title**') }
 
     context 'when noteable responds to `title`' do
       it_behaves_like 'a system note' do
@@ -317,7 +317,7 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
 
       it 'sets the note text' do
         expect(subject.note)
-          .to eq "changed title from **{-Old title-}** to **{+Lorem ipsum+}**"
+          .to eq %q(<div>changed title from <code class="idiff"><span class="idiff left right deletion">Old **title**</span></code> to <code class="idiff"><span class="idiff left right addition">_Lorem_ ipsum</span></code></div>)
       end
     end
   end

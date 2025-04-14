@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Packages::PackageFileFinder
   attr_reader :package, :file_name, :params
 

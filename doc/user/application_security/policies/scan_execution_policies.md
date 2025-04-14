@@ -47,7 +47,8 @@ If any of the following cases are true, use [pipeline execution policies](pipeli
 
 - You can assign a maximum of five rules to each policy.
 - You can assign a maximum of five scan execution policies to each security policy project.
-- Scan execution policies may be [overridden](pipeline_execution_policies.md#interaction-with-scan-execution-policies) by pipeline execution policies when you use `override_ci` strategy.
+- Local project YAML files cannot override scan execution policies. These policies take precedence over any configurations defined for a pipeline, even if you use the same job name in your project's CI/CD configuration.
+- Pipeline execution policies can [override](pipeline_execution_policies.md#interaction-with-scan-execution-policies) scan execution policies when you use the `override_ci` strategy.
 
 ## Jobs
 
@@ -152,6 +153,12 @@ from bypassing the pipeline execution policies.
 | `allowed` | `boolean`   | `true`, `false` | Flag to allow (`true`) or prevent (`false`) the use of the `skip-ci` directive for pipelines with enforced pipeline execution policies. |
 | `allowlist`             | `object` | `users` | Specify users who are always allowed to use `skip-ci` directive, regardless of the `allowed` flag. Use `users:` followed by an array of objects with `id` keys representing user IDs. |
 
+{{< alert type="note" >}}
+
+Scan execution policies that have the rule type `schedule` always ignore the `skip_ci` option. Scheduled scans run at their configured times regardless of whether `[skip ci]` (or any of its variations) appear in the last commit message. This ensures that security scans occur on a predictable schedule even when CI/CD pipelines are otherwise skipped.
+
+{{< /alert >}}
+
 ## `pipeline` rule type
 
 {{< history >}}
@@ -184,6 +191,7 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/451890) the `scan_execution_pipeline_worker` feature flag on GitLab.com in GitLab 17.5.
 - [Feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/451890) `scan_execution_pipeline_worker` removed in GitLab 17.6.
 - [Feature flag](https://gitlab.com/gitlab-org/gitlab/-/issues/463802) `scan_execution_pipeline_concurrency_control` removed in GitLab 17.9.
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178892) a new application setting `security_policy_scheduled_scans_max_concurrency` in GitLab 17.11
 
 {{< /history >}}
 
@@ -231,7 +239,7 @@ uses [cron syntax](../../../topics/cron/_index.md), but with some restrictions:
 Consider the following when choosing a value for the `cadence` field:
 
 - Timing is based on UTC for GitLab SaaS and on the GitLab host's system time for GitLab
-  self-managed. When testing new policies, it may appear pipelines are not running properly when in
+  Self-Managed. When testing new policies, it may appear pipelines are not running properly when in
   fact they are scheduled in your server's time zone.
 - A scheduled pipeline starts around the time mentioned in the policy, when the resources become
   available to create it. In other words, the pipeline may not begin precisely at the timing
@@ -376,7 +384,7 @@ Some scanners behave differently in a `scan` action than they do in a regular CI
 scan.
 
 - Static Application Security Testing (SAST): Runs only if the repository contains
-  [files supported by SAST)](../sast/_index.md#supported-languages-and-frameworks).
+  [files supported by SAST](../sast/_index.md#supported-languages-and-frameworks).
 - Secret detection:
   - Only rules with the default ruleset are supported.
     [Replacing](../secret_detection/pipeline/configure.md#replace-the-default-ruleset) or [extending](../secret_detection/pipeline/configure.md#extend-the-default-ruleset)
@@ -388,7 +396,7 @@ scan.
     mode with `SECRET_DETECTION_LOG_OPTIONS` set to the commit range between last run and current
     SHA. You can override this behavior by specifying CI/CD variables in the scan
     execution policy. For more information, see
-    [Full history pipeline secret detection](../secret_detection/pipeline/_index.md#full-history-pipeline-secret-detection).
+    [Full history pipeline secret detection](../secret_detection/pipeline/_index.md#run-a-historic-scan).
   - For `triggered` scan execution policies, secret detection works just like regular scan
     [configured manually in the `.gitlab-ci.yml`](../secret_detection/pipeline/_index.md#edit-the-gitlab-ciyml-file-manually).
 - Container scanning: A scan that is configured for the `pipeline` rule type ignores the agent

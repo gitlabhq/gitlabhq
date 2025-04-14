@@ -21,12 +21,7 @@
 }
 
 .board-swimlanes-headers {
-  background-color: $white;
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-dark & {
-    background-color: var(--gray-10);
-  }
+  @apply gl-bg-default;
 }
 
 .boards-list,

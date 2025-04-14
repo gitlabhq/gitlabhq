@@ -12,11 +12,12 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
   let_it_be(:group_label) { create(:group_label, group: group) }
 
   let_it_be_with_reload(:merge_request_a) do
-    create(:labeled_merge_request, :unique_branches, source_project: project, labels: [label, group_label])
+    create(:labeled_merge_request, :unique_branches, source_project: project, labels: [label, group_label],
+      reviewers: [current_user])
   end
 
   let_it_be(:merge_request_b) do
-    create(:merge_request, :closed, :unique_branches, source_project: project)
+    create(:merge_request, :closed, :unique_branches, source_project: project, reviewers: [current_user, create(:user)])
   end
 
   let_it_be(:merge_request_c) do
@@ -249,6 +250,28 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
 
       it_behaves_like 'when searching with parameters'
     end
+  end
+
+  context 'when requesting not the only assigned reviewer' do
+    let(:search_params) do
+      {
+        iids: [merge_request_a.iid.to_s, merge_request_b.iid.to_s],
+        not: { reviewer_username: current_user.username, only_reviewer: true }
+      }
+    end
+
+    let(:extra_iid_for_second_query) { merge_request_c.iid.to_s }
+    let(:requested_fields) { [:iid] }
+    let(:mrs) { [merge_request_b] }
+
+    def execute_query
+      query = query_merge_requests(requested_fields)
+      post_graphql(query, current_user: current_user)
+    end
+
+    it_behaves_like 'when searching with parameters'
+
+    include_examples 'N+1 query check'
   end
 
   context 'when requesting `approved_by`' do

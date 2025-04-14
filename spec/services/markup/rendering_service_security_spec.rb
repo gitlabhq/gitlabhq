@@ -351,7 +351,7 @@ RSpec.describe Markup::RenderingService, feature_category: :markdown do
         output = render(input, file_name, context)
         expect(output).to eq(
           '<p data-sourcepos="1:1-1:33" dir="auto">' \
-            '::include{file=<a href="file:///etc/hosts">file:///etc/hosts</a>' \
+            '::include{file=<a data-sourcepos="1:16-1:32" href="file:///etc/hosts">file:///etc/hosts</a>' \
             '}</p>'
         )
       end

@@ -52,7 +52,6 @@ RSpec/VerifiedDoubles:
     - 'ee/spec/lib/gitlab/code_owners/groups_loader_spec.rb'
     - 'ee/spec/lib/gitlab/code_owners/users_loader_spec.rb'
     - 'ee/spec/lib/gitlab/custom_file_templates_spec.rb'
-    - 'ee/spec/lib/gitlab/elastic/client_spec.rb'
     - 'ee/spec/lib/gitlab/expiring_subscription_message_spec.rb'
     - 'ee/spec/lib/gitlab/geo/git_ssh_proxy_spec.rb'
     - 'ee/spec/lib/gitlab/geo/log_cursor/lease_spec.rb'

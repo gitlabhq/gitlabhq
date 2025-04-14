@@ -36,11 +36,6 @@ export default {
       type: Object,
       validator: (value) => ['id', 'name'].every((prop) => value[prop]),
     },
-    defaultBranchName: {
-      default: '.noBranch',
-      required: false,
-      type: String,
-    },
   },
   data() {
     return {

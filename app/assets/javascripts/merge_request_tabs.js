@@ -191,7 +191,7 @@ export const pageBundles = {
 };
 
 export default class MergeRequestTabs {
-  constructor({ action, setUrl, stubLocation } = {}) {
+  constructor({ action, setUrl, stubLocation, createRapidDiffsApp } = {}) {
     const containers = document.querySelectorAll('.content-wrapper .container-fluid');
     this.contentWrapper = containers[containers.length - 1];
     this.mergeRequestTabs = document.querySelector('.merge-request-tabs-container');
@@ -221,6 +221,8 @@ export default class MergeRequestTabs {
     this.diffsClass = null;
     this.commitsLoaded = false;
     this.isFixedLayoutPreferred = this.contentWrapper.classList.contains('container-limited');
+    this.createRapidDiffsApp = createRapidDiffsApp;
+    this.rapidDiffsApp = null;
     this.eventHub = createEventHub();
     this.loadedPages = { [action]: true };
 
@@ -357,7 +359,7 @@ export default class MergeRequestTabs {
             in practice, this only occurs when comparing commits in
             the new merge request form page.
           */
-          this.loadDiff({ endpoint: href, strip: true });
+          this.startDiffs({ endpoint: href, strip: true });
         }
         // this.hideSidebar();
         this.expandViewContainer();
@@ -528,7 +530,19 @@ export default class MergeRequestTabs {
     this.mergeRequestPipelinesTable = mountPipelines();
   }
 
-  // load the diff tab content from the backend
+  // Initialize the Changes tab
+  async startDiffs(options = {}) {
+    if (this.createRapidDiffsApp) {
+      if (!this.rapidDiffsApp) {
+        this.rapidDiffsApp = this.createRapidDiffsApp();
+        this.rapidDiffsApp.reloadDiffs();
+        this.rapidDiffsApp.init();
+      }
+    } else {
+      this.loadDiff(options);
+    }
+  }
+  // load the legacy diff tab content from the backend
   loadDiff({ endpoint, strip = true }) {
     if (this.diffsLoaded) {
       document.dispatchEvent(new CustomEvent('scroll'));

@@ -3,14 +3,14 @@
 module Ci
   module Partitions
     class CreateService
-      HEADROOM_PARTITIONS = 3
+      HEADROOM_PARTITIONS = 2
 
       def initialize(partition)
         @partition = partition
       end
 
       def execute
-        return unless Feature.enabled?(:ci_partitioning_automation, :instance)
+        return unless Feature.enabled?(:ci_create_dynamic_partitions, :instance)
         return unless partition
 
         Ci::Partition.create_next! if should_create_next?
@@ -25,7 +25,10 @@ module Ci
       end
 
       def above_threshold?
-        partition.above_threshold?(Ci::Partition::MAX_PARTITION_SIZE)
+        threshold = Ci::Partition::MAX_PARTITION_SIZE
+        threshold = Ci::Partition::GSTG_PARTITION_SIZE if Gitlab.staging?
+
+        partition.above_threshold?(threshold)
       end
 
       def headroom_available?

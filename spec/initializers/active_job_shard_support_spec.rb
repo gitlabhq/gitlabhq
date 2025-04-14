@@ -25,9 +25,12 @@ RSpec.describe 'ActionMailer::MailDeliveryJob', :sidekiq_mailers, feature_catego
     end
 
     it 'does not check for shard instance' do
-      expect(ActionMailer::MailDeliveryJob).not_to receive(:sidekiq_options)
+      expect(Gitlab::SidekiqSharding::Router)
+        .to receive(:route).with(ActionMailer::MailDeliveryJob).and_call_original
+      expect(Sidekiq::Client).not_to receive(:via)
 
-      mailer_class.test_mail.deliver_later
+      mailer_job_args = [ActionMailer::MailDeliveryJob.new(mailer_class.name, "", "deliver_now", [])]
+      ActiveJob::QueueAdapters::SidekiqAdapter.new.enqueue_all(mailer_job_args)
     end
   end
 
@@ -41,7 +44,8 @@ RSpec.describe 'ActionMailer::MailDeliveryJob', :sidekiq_mailers, feature_catego
         .to receive(:route).with(ActionMailer::MailDeliveryJob).ordered.and_call_original
       expect(Sidekiq::Client).to receive(:via).ordered.and_call_original
 
-      mailer_class.test_mail.deliver_later
+      mailer_job_args = [ActionMailer::MailDeliveryJob.new(mailer_class.name, "", "deliver_now", [])]
+      ActiveJob::QueueAdapters::SidekiqAdapter.new.enqueue_all(mailer_job_args)
     end
   end
 end

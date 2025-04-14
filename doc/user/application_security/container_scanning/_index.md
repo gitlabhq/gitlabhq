@@ -285,6 +285,7 @@ positives.
 | `CS_REGISTRY_USER`                  | `$CI_REGISTRY_USER` | Username for accessing a Docker registry requiring authentication. The default is only set if `$CS_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_gitlab.md#enable-fips-mode) is enabled. |
 | `CS_SEVERITY_THRESHOLD`        | `UNKNOWN`     | Severity level threshold. The scanner outputs vulnerabilities with severity level higher than or equal to this threshold. Supported levels are `UNKNOWN`, `LOW`, `MEDIUM`, `HIGH`, and `CRITICAL`. {{< icon name="warning" >}} **[Default value changed to `MEDIUM`](https://gitlab.com/gitlab-org/gitlab/-/issues/439782)** in GitLab 17.8. |
 | `CS_TRIVY_JAVA_DB`             | `"registry.gitlab.com/gitlab-org/security-products/dependencies/trivy-java-db"` | Specify an alternate location for the [trivy-java-db](https://github.com/aquasecurity/trivy-java-db) vulnerability database. |
+| `CS_TRIVY_DETECTION_PRIORITY` | `"precise"` | Scan using the defined Trivy [detection priority](https://trivy.dev/latest/docs/scanner/vulnerability/#detection-priority). The following values are allowed: `precise` or `comprehensive`. |
 | `SECURE_LOG_LEVEL`             | `info`        | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. |
 | `TRIVY_TIMEOUT`                | `5m0s`        | Set the timeout for the scan. |
 
@@ -554,7 +555,7 @@ registry.gitlab.com/security-products/container-scanning/trivy:7
 The process for importing Docker images into a local offline Docker registry depends on
 **your network security policy**. Consult your IT staff to find an accepted and approved
 process by which you can import or temporarily access external resources. These scanners
-are [periodically updated](../_index.md#vulnerability-scanner-maintenance),
+are [periodically updated](../detect/vulnerability_scanner_maintenance.md),
 and you may be able to make occasional updates on your own.
 
 For more information, see [the specific steps on how to update an image with a pipeline](#automating-container-scanning-vulnerability-database-updates-with-a-pipeline).
@@ -802,7 +803,7 @@ In addition to the sources provided by these scanners, GitLab maintains the foll
 In the GitLab Ultimate tier, the data from the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is merged in to augment the data from the external sources. In the GitLab Premium and Free tiers, the data from the [GitLab Advisory Database (Open Source Edition)](https://gitlab.com/gitlab-org/advisories-community) is merged in to augment the data from the external sources. This augmentation currently only applies to the analyzer images for the Trivy scanner.
 
 Database update information for other analyzers is available in the
-[maintenance table](../_index.md#vulnerability-scanner-maintenance).
+[maintenance table](../detect/vulnerability_scanner_maintenance.md).
 
 ## Solutions for vulnerabilities (auto-remediation)
 

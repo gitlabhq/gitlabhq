@@ -61,10 +61,10 @@ strategies may also help.
 
 Prioritize vulnerabilities according to their risk.
 
-- Vulnerabilities in the CISA Known Exploited Vulnerabilities (KEV) catalog should have high
-  priority because these are known to have been exploited. To identify these vulnerabilities, and
-  other high-priority vulnerabilities, use the
-  [Vulnerability Prioritizer CI/CD component](../vulnerabilities/risk_assessment_data.md#vulnerability-prioritizer).
+- Use the [Vulnerability Prioritizer CI/CD component](../vulnerabilities/risk_assessment_data.md#vulnerability-prioritizer)
+  to help prioritize vulnerabilities. For example, vulnerabilities in the CISA Known Exploited
+  Vulnerabilities (KEV) catalogue should be analyzed and remediated as highest priority because
+  these are known to have been exploited.
 - For each group, go to the **Security dashboard** and view the **Project security status** panel. This groups
   projects by their highest-severity vulnerability. Use this grouping to prioritize triaging
   vulnerabilities in each project.
@@ -72,8 +72,6 @@ Prioritize vulnerabilities according to their risk.
   deployed to customers.
 - For each project, view the vulnerability report. Group the vulnerabilities by severity and change
   the status of all vulnerabilities of critical and high severity to "Confirmed".
-- Use the [Vulnerability Prioritizer CI/CD component](../vulnerabilities/risk_assessment_data.md#vulnerability-prioritizer)
-  to help prioritize vulnerabilities. For example, vulnerabilities in the CISA Known Exploited Vulnerabilities (KEV) catalogue should be analyzed and remediated as highest priority because these are known to have been exploited.
 
 ### Dismiss vulnerabilities of low risk
 

@@ -114,6 +114,11 @@ RSpec.describe 'Clusterable > Show page', feature_category: :deployment_manageme
         expect(page).to have_button('Create agent and migrate')
       end
 
+      it 'shows the issue URL field and button as disabled when no agent exists' do
+        expect(page).to have_button('Save migration issue', disabled: true)
+        expect(page).to have_field('Migration issue URL', disabled: true)
+      end
+
       context 'when agent exists' do
         let!(:agent) { create(:cluster_agent) }
         let!(:cluster_migration) do
@@ -129,6 +134,50 @@ RSpec.describe 'Clusterable > Show page', feature_category: :deployment_manageme
           expect(page).to have_content('The agent connection is set up')
           expect(page).to have_content("#{agent.name}##{agent.id}")
           expect(page).to have_content(cluster_migration.project.full_name)
+        end
+
+        it 'shows the issue URL field' do
+          expect(page).to have_field('Migration issue URL')
+        end
+
+        it 'can update the migration issue URL', :js do
+          issue = create(:issue, project: configuration_project)
+          issue_url = project_issue_url(configuration_project, issue)
+
+          extractor_double = instance_double(Gitlab::ReferenceExtractor)
+          allow(Gitlab::ReferenceExtractor).to receive(:new).and_return(extractor_double)
+          allow(extractor_double).to receive(:analyze)
+          allow(extractor_double).to receive(:issues).and_return([issue])
+
+          fill_in 'Migration issue URL', with: issue_url
+          click_button 'Save migration issue'
+
+          expect(page).to have_content('Migration issue updated successfully')
+        end
+      end
+
+      context 'when agent exists and issue is linked' do
+        let!(:agent) { create(:cluster_agent) }
+        let!(:issue) { create(:issue, project: configuration_project) }
+        let!(:cluster_migration) do
+          create(:cluster_agent_migration,
+            cluster: cluster,
+            agent: agent,
+            agent_install_status: :success,
+            issue: issue)
+        end
+
+        before do
+          visit cluster_path
+          click_link 'Migrate'
+        end
+
+        it 'shows the linked issue information' do
+          expect(page).to have_content('Migration issue')
+          expect(page).to have_link("#{issue.title} (##{issue.id})",
+            href: project_issue_path(configuration_project, issue))
+          expect(page).not_to have_field('Migration issue URL')
+          expect(page).not_to have_button('Save migration issue')
         end
       end
 

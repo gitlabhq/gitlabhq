@@ -2,6 +2,7 @@
 stage: Verify
 group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn how to run your CI/CD jobs in Docker containers hosted on dedicated CI/CD build servers or your local machine.
 title: Run your CI/CD jobs in Docker containers
 ---
 
@@ -147,7 +148,7 @@ When a CI job runs in a Docker container, the `before_script`, `script`, and `af
 
 {{< history >}}
 
-- Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended configuration options](../docker/using_docker_images.md#extended-docker-configuration-options).
+- Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended configuration options](using_docker_images.md#extended-docker-configuration-options).
 
 {{< /history >}}
 
@@ -248,8 +249,6 @@ To define which option should be used, the runner process reads the configuratio
 
 ### Requirements and limitations
 
-- Available for [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/)
-  in GitLab Runner 13.1 and later.
 - [Credentials Store](#use-a-credentials-store) and [Credential Helpers](#use-credential-helpers)
   require binaries to be added to the GitLab Runner `$PATH`, and require access to do so. Therefore,
   these features are not available on instance runners, or any other runner where the user does not
@@ -428,12 +427,6 @@ If you use both images from a private registry and public images from Docker Hub
 pulling from Docker Hub fails. Docker daemon tries to use the same credentials for **all** the registries.
 
 ### Use Credential Helpers
-
-{{< history >}}
-
-- Introduced in GitLab Runner 12.0.
-
-{{< /history >}}
 
 As an example, let's assume that you want to use the `<aws_account_id>.dkr.ecr.<region>.amazonaws.com/private/image:latest`
 image. This image is private and requires you to sign in to a private container registry.

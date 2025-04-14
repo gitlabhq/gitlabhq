@@ -21,11 +21,14 @@ module ActiveContext
           setup_connection_pool
         end
 
-        def search(_query)
-          with_connection do |conn|
-            res = conn.execute('SELECT * FROM pg_stat_activity')
-            QueryResult.new(res)
+        def search(user:, collection:, query:)
+          sql = Processor.transform(collection.collection_name, query)
+
+          result = with_connection do |conn|
+            conn.execute(sql)
           end
+
+          QueryResult.new(result: result, collection: collection, user: user).authorized_results
         end
 
         def bulk_process(operations)
@@ -163,7 +166,17 @@ module ActiveContext
               end
             end
           when :delete
-            model.where(id: data).delete_all
+            prepare_delete_data(data).each do |group|
+              ref_ids = group[:ref_ids]
+              ref_version = group[:ref_version]
+
+              next if ref_ids.empty?
+
+              query = model.where(ref_id: ref_ids)
+              query = query.where.not(ref_version: ref_version) if ref_version.present?
+
+              query.delete_all
+            end
           end
 
           []
@@ -179,6 +192,16 @@ module ActiveContext
               unique_by: [:id, :partition_id],
               update_only_columns: columns - [:id, :partition_id],
               data: grouped_data
+            }
+          end
+        end
+
+        def prepare_delete_data(data)
+          data_by_version = data.group_by { |record| record[:ref_version] }
+          data_by_version.map do |ref_version, records|
+            {
+              ref_version: ref_version,
+              ref_ids: records.pluck(:ref_id)
             }
           end
         end

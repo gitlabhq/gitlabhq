@@ -1,0 +1,13 @@
+---
+table_name: agent_organization_authorizations
+classes:
+- Clusters::Agents::Authorizations::CiAccess::OrganizationAuthorization
+feature_categories:
+- deployment_management
+description: Configuration for an organization that is authorized to use a particular cluster agent
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184259
+milestone: '17.11'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  organization_id: organizations
+table_size: small

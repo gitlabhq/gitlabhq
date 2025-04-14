@@ -85,7 +85,7 @@ clients are also on `192.168.1.0/24`, restrict access to ports `80` and `443` to
 `192.168.1.0/24` only (as a safety restriction), even if access is restricted
 elsewhere with another firewall.
 
-Ideally, if you're installing a self-managed instance, you should implement the firewall rules before the installation begins with access restricted to the admins and installers, and only add additional ranges of IP addresses for
+Ideally, if you're installing a GitLab Self-Managed instance, you should implement the firewall rules before the installation begins with access restricted to the admins and installers, and only add additional ranges of IP addresses for
 users after the instance is installed and properly hardened.
 
 Usage of `iptables` or `ufw` is acceptable to implement and enforce port `80` and `443`

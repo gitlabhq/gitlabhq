@@ -33,13 +33,15 @@
   - 1
 - - analytics_code_review_metrics
   - 1
+- - analytics_code_suggestions_events_backfill
+  - 1
 - - analytics_devops_adoption_create_snapshot
+  - 1
+- - analytics_duo_chat_events_backfill
   - 1
 - - analytics_usage_trends_counter_job
   - 1
 - - anti_abuse_ban_duplicate_users
-  - 1
-- - anti_abuse_banned_user_project_deletion
   - 1
 - - anti_abuse_new_abuse_report
   - 1
@@ -247,6 +249,10 @@
   - 1
 - - compliance_management_chain_of_custody_report
   - 1
+- - compliance_management_compliance_framework_project_compliance_statuses_removal
+  - 1
+- - compliance_management_compliance_framework_project_requirement_statuses_export_mailer
+  - 1
 - - compliance_management_framework_export_mailer
   - 1
 - - compliance_management_merge_requests_compliance_violations
@@ -256,6 +262,8 @@
 - - compliance_management_pipl_update_user_country_access_logs
   - 1
 - - compliance_management_pipl_user_paid_status_check
+  - 1
+- - compliance_management_project_compliance_evaluator
   - 1
 - - compliance_management_project_framework_export_mailer
   - 1
@@ -471,6 +479,8 @@
   - 1
 - - groups_update_two_factor_requirement_for_members
   - 1
+- - import_bulk_imports_configuration_purge
+  - 1
 - - import_bulk_imports_source_users_attributes
   - 1
 - - import_delete_placeholder_user
@@ -517,8 +527,6 @@
   - 1
 - - invalid_gpg_signature_update
   - 2
-- - issuable_create_reminder
-  - 1
 - - issuable_export_csv
   - 1
 - - issuable_label_links_destroy
@@ -549,6 +557,8 @@
   - 2
 - - mailers
   - 2
+- - members_delete_pending_members
+  - 1
 - - members_destroyer_clean_up_group_protected_branch_rules
   - 1
 - - members_expiring_email_notification
@@ -823,6 +833,8 @@
   - 1
 - - search_zoekt_delete_project_event
   - 1
+- - search_zoekt_force_update_overprovisioned_index_event
+  - 1
 - - search_zoekt_index_mark_as_pending_eviction_event
   - 1
 - - search_zoekt_index_marked_as_ready_event
@@ -899,6 +911,8 @@
   - 1
 - - security_scan_result_policies_add_approvers_to_rules
   - 1
+- - security_scan_result_policies_cleanup_merge_request_violations
+  - 1
 - - security_scan_result_policies_delete_scan_result_policy_reads
   - 1
 - - security_scan_result_policies_fallback_behavior_tracking
@@ -911,9 +925,13 @@
   - 1
 - - security_scan_result_policies_unblock_fail_open_approval_rules
   - 1
+- - security_scan_result_policies_unblock_pending_merge_request_violations
+  - 1
 - - security_scans
   - 2
 - - security_scans_purge_by_job_id
+  - 1
+- - security_secret_detection_update_token_status
   - 1
 - - security_sync_linked_pipeline_execution_policy_configs
   - 1
@@ -990,6 +1008,8 @@
 - - vulnerabilities_namespace_historical_statistics_process_transfer_events
   - 1
 - - vulnerabilities_namespace_historical_statistics_update_traversal_ids
+  - 1
+- - vulnerabilities_namespace_statistics_adjustment
   - 1
 - - vulnerabilities_process_archived_events
   - 1

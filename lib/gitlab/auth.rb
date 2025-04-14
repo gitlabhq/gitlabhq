@@ -227,6 +227,12 @@ module Gitlab
       end
 
       def user_with_password_for_git(login, password)
+        if Feature.enabled?(:prevent_token_prefixed_password_fallback_sessionless, :instance) &&
+            password.present? &&
+            Authn::AgnosticTokenIdentifier.token?(password)
+          return
+        end
+
         user = find_with_user_password(login, password)
         return unless user
 
@@ -483,7 +489,8 @@ module Gitlab
 
       def unavailable_scopes_for_resource(resource)
         unavailable_ai_features_scopes +
-          unavailable_observability_scopes_for_resource(resource)
+          unavailable_observability_scopes_for_resource(resource) +
+          unavailable_virtual_registry_scopes_for_resource(resource)
       end
 
       def unavailable_ai_features_scopes
@@ -495,6 +502,12 @@ module Gitlab
           Gitlab::Observability.should_enable_observability_auth_scopes?(resource)
 
         OBSERVABILITY_SCOPES
+      end
+
+      def unavailable_virtual_registry_scopes_for_resource(resource)
+        return VIRTUAL_REGISTRY_SCOPES if resource.is_a?(Project)
+
+        []
       end
 
       def non_admin_available_scopes

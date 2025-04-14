@@ -110,7 +110,7 @@ RSpec.describe ContainerRegistry::Protection::Rule, type: :model, feature_catego
           it 'is invalid' do
             expect(container_registry_protection_rule).not_to be_valid
             expect(container_registry_protection_rule.errors[:base]).to include(
-              'A rule must have at least a minimum access role for push or delete.'
+              'A rule requires at least the Maintainer role for either push or delete.'
             )
           end
         end

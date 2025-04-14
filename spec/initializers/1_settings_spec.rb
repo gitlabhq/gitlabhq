@@ -55,6 +55,26 @@ RSpec.describe '1_settings', feature_category: :shared do
     end
   end
 
+  describe 'initial_gitlab_product_usage_data' do
+    it 'is enabled by default' do
+      Settings.gitlab['initial_gitlab_product_usage_data'] = nil
+      load_settings
+
+      expect(Settings.gitlab.initial_gitlab_product_usage_data).to be(true)
+    end
+
+    context 'when explicitly set' do
+      before do
+        Settings.gitlab['initial_gitlab_product_usage_data'] = false
+        load_settings
+      end
+
+      it 'uses the configured value' do
+        expect(Settings.gitlab.initial_gitlab_product_usage_data).to be(false)
+      end
+    end
+  end
+
   describe 'cell configuration' do
     let(:config) do
       {

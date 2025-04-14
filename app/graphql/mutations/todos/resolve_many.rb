@@ -5,6 +5,10 @@ module Mutations
     class ResolveMany < BaseMany
       graphql_name 'TodoResolveMany'
 
+      field :todos, [::Types::TodoType],
+        null: false,
+        description: 'Resolved to-do items.'
+
       private
 
       def process_todos(todos)

@@ -1,9 +1,8 @@
 ---
-# Warning: gitlab_base.FutureTense
-#
-# Checks for use of future tense in sentences. Present tense is strongly preferred.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.FutureTense
+description: |
+  Checks for use of future tense in sentences.
+  Present tense is strongly preferred.
 extends: existence
 message: "Instead of future tense '%s', use present tense."
 ignorecase: true

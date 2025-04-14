@@ -106,23 +106,38 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
     end
 
     context 'with inbound and outbound scopes enabled' do
+      let_it_be(:different_root_group) { create(:group) }
+      let_it_be(:project_with_different_root_ancestor) { build_stubbed(:project, namespace: different_root_group) }
+
       context 'when inbound and outbound access setup' do
         include_context 'with accessible and inaccessible projects'
 
-        where(:accessed_project, :result) do
-          ref(:current_project)            | true
-          ref(:inbound_allowlist_project)  | false
-          ref(:unscoped_project1)          | false
-          ref(:unscoped_project2)          | false
-          ref(:outbound_allowlist_project) | false
-          ref(:inbound_accessible_project) | false
-          ref(:fully_accessible_project)   | true
-          ref(:unscoped_public_project)    | false
+        where(:accessed_project, :result, :same_root_ancestor) do
+          ref(:current_project)                      | true  | true
+          ref(:inbound_allowlist_project)            | false | true
+          ref(:unscoped_project1)                    | false | true
+          ref(:unscoped_project2)                    | false | true
+          ref(:outbound_allowlist_project)           | false | true
+          ref(:inbound_accessible_project)           | false | true
+          ref(:fully_accessible_project)             | true  | true
+          ref(:unscoped_public_project)              | false | true
+          ref(:project_with_different_root_ancestor) | false | false
         end
 
         with_them do
           it 'allows self and projects allowed from both directions' do
             is_expected.to eq(result)
+          end
+
+          it 'increments the job_token_authorization_failures_counter metric ONLY for failed authorizations' do
+            if result
+              expect(Gitlab::Ci::Pipeline::Metrics.job_token_authorization_failures_counter).not_to receive(:increment)
+            else
+              expect(Gitlab::Ci::Pipeline::Metrics.job_token_authorization_failures_counter).to receive(:increment)
+              .with(same_root_ancestor: same_root_ancestor)
+            end
+
+            subject
           end
         end
       end
@@ -237,6 +252,10 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
     let_it_be(:allowed_policy) { ::Ci::JobToken::Policies::POLICIES.first }
     let(:accessed_project) { create_inbound_accessible_project_for_policies(target_project, [allowed_policy]) }
 
+    before do
+      allow(accessed_project).to receive(:job_token_policies_enabled?).and_return(true)
+    end
+
     shared_examples 'capturing job token policies' do
       it 'captures job token policies' do
         expect(::Ci::JobToken::Authorization).to receive(:capture_job_token_policies).with(policies)
@@ -311,9 +330,9 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
         it_behaves_like 'capturing job token policies'
       end
 
-      context 'when the `add_policies_to_ci_job_token` flag is disabled' do
+      context 'when job token policies are disabled' do
         before do
-          stub_feature_flags(add_policies_to_ci_job_token: false)
+          allow(accessed_project).to receive(:job_token_policies_enabled?).and_return(false)
         end
 
         it { is_expected.to be(true) }

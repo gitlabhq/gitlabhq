@@ -28,7 +28,7 @@ module Groups
       handle_changes
       handle_namespace_settings
       handle_hierarchy_cache_update
-      group.assign_attributes(params)
+      group.assign_attributes(params.except(*non_assignable_group_params))
 
       return false if group.errors.present?
 
@@ -105,7 +105,7 @@ module Groups
     end
 
     def container_images_error
-      s_("GroupSettings|Cannot update the path because there are projects under this group that contain Docker images in their Container Registry. Please remove the images from your projects first and try again.")
+      s_("GroupSettings|Cannot update the path because there are projects under this group that contain Docker images in their container registry. Please remove the images from your projects first and try again.")
     end
 
     def after_update
@@ -224,6 +224,10 @@ module Groups
       )
 
       Gitlab::EventStore.publish(event)
+    end
+
+    def non_assignable_group_params
+      []
     end
   end
 end

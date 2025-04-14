@@ -241,7 +241,7 @@ find a way to limit it to only us.**
 ### Helpful command-line tools
 
 - [K9s](https://github.com/derailed/k9s) - enables CLI dashboard across pods and enabling filtering by labels
-- [Stern](https://github.com/wercker/stern) - enables cross pod log tailing based on label/field selectors
+- [Stern](https://github.com/stern/stern) - enables cross pod log tailing based on label/field selectors
 
 ---
 

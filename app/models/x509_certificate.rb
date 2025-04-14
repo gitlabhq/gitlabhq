@@ -6,7 +6,7 @@ class X509Certificate < ApplicationRecord
 
   x509_serial_number_attribute :serial_number
 
-  enum certificate_status: {
+  enum :certificate_status, {
     good: 0,
     revoked: 1
   }

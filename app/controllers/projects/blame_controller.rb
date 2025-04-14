@@ -81,8 +81,6 @@ class Projects::BlameController < Projects::ApplicationController
   end
 
   def ignore_revs
-    return false unless Feature.enabled?(:blame_ignore_revs, project)
-
     Gitlab::Utils.to_boolean(blame_params[:ignore_revs], default: false)
   end
 

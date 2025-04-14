@@ -68,10 +68,10 @@ export default {
       this.isExpanded = !this.isExpanded;
     },
     lineNum(line) {
-      return line[0];
+      return line[0] ?? line.lineNumber;
     },
     lineCode(line) {
-      return line[1];
+      return line[1] ?? line.line;
     },
   },
   userColorScheme: window.gon.user_color_scheme,
@@ -124,18 +124,16 @@ export default {
 
     <table v-if="isExpanded" :class="$options.userColorScheme" class="code js-syntax-highlight">
       <tbody>
-        <template v-for="(line, index) in lines">
-          <tr :key="`stacktrace-line-${index}`" class="line_holder">
-            <td class="diff-line-num" :class="{ old: isHighlighted(lineNum(line)) }">
-              {{ lineNum(line) }}
-            </td>
-            <td
-              v-safe-html="lineCode(line)"
-              class="line_content"
-              :class="{ old: isHighlighted(lineNum(line)) }"
-            ></td>
-          </tr>
-        </template>
+        <tr v-for="(line, index) in lines" :key="`stacktrace-line-${index}`" class="line_holder">
+          <td class="diff-line-num" :class="{ old: isHighlighted(lineNum(line)) }">
+            {{ lineNum(line) }}
+          </td>
+          <td
+            v-safe-html="lineCode(line)"
+            class="line_content"
+            :class="{ old: isHighlighted(lineNum(line)) }"
+          ></td>
+        </tr>
       </tbody>
     </table>
   </div>

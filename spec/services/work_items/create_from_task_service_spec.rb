@@ -53,8 +53,8 @@ RSpec.describe WorkItems::CreateFromTaskService, feature_category: :team_plannin
       it 'creates a work item and creates parent link to the original work item' do
         expect do
           service_result
-        end.to change(WorkItem, :count).by(1).and(
-          change(WorkItems::ParentLink, :count).by(1)
+        end.to change { WorkItem.count }.by(1).and(
+          change { WorkItems::ParentLink.count }.by(1)
         )
 
         expect(work_item_to_update.reload.work_item_children).not_to be_empty
@@ -76,8 +76,8 @@ RSpec.describe WorkItems::CreateFromTaskService, feature_category: :team_plannin
         it 'creates a work item and creates parent link to the original work item' do
           expect do
             service_result
-          end.to change(WorkItem, :count).by(1).and(
-            change(WorkItems::ParentLink, :count).by(1)
+          end.to change { WorkItem.count }.by(1).and(
+            change { WorkItems::ParentLink.count }.by(1)
           )
         end
       end
@@ -90,8 +90,8 @@ RSpec.describe WorkItems::CreateFromTaskService, feature_category: :team_plannin
         it 'takes ID value over the work item type object' do
           expect do
             service_result
-          end.to change(WorkItem, :count).by(1).and(
-            change(WorkItems::ParentLink, :count).by(1)
+          end.to change { WorkItem.count }.by(1).and(
+            change { WorkItems::ParentLink.count }.by(1)
           )
           created_work_item = WorkItem.last
           expect(created_work_item.work_item_type).to eq(task_type)

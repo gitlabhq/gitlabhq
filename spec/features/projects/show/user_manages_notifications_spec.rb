@@ -14,17 +14,21 @@ RSpec.describe 'Projects > Show > User manages notifications', :js, feature_cate
     first('[data-testid="notification-dropdown"]').click
   end
 
+  def click_notification_item(value)
+    first("[data-testid='listbox-item-#{value}']").click
+  end
+
   it 'changes the notification setting' do
     visit project_path(project)
     click_notifications_button
-    click_button 'On mention'
+    click_notification_item(:mention)
 
     wait_for_requests
 
     click_notifications_button
 
     page.within first('[data-testid="notification-dropdown"]') do
-      expect(page.find('.gl-dropdown-item.is-active')).to have_content('On mention')
+      expect(page.find('.gl-new-dropdown-item[aria-selected]')).to have_content('On mention')
       expect(page).to have_css('[data-testid="notifications-icon"]')
     end
   end
@@ -32,7 +36,7 @@ RSpec.describe 'Projects > Show > User manages notifications', :js, feature_cate
   it 'changes the notification setting to disabled' do
     visit project_path(project)
     click_notifications_button
-    click_button 'Disabled'
+    click_notification_item(:disabled)
 
     page.within first('[data-testid="notification-dropdown"]') do
       expect(page).to have_css('[data-testid="notifications-off-icon"]')
@@ -64,7 +68,7 @@ RSpec.describe 'Projects > Show > User manages notifications', :js, feature_cate
     it 'shows notification settings checkbox' do
       visit project_path(project)
       click_notifications_button
-      click_button 'Custom'
+      click_notification_item(:custom)
 
       wait_for_requests
 

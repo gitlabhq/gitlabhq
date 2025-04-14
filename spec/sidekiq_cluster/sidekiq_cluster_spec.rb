@@ -15,7 +15,8 @@ RSpec.describe Gitlab::SidekiqCluster do # rubocop:disable RSpec/SpecFilePathFor
 
       expect(Bundler).to receive(:with_original_env).and_call_original.twice
 
-      expect(Process).to receive(:spawn).ordered.with({
+      expect(Process).to receive(:spawn).ordered.with(
+        {
           "ENABLE_SIDEKIQ_CLUSTER" => "1",
           "SIDEKIQ_WORKER_ID" => "0"
         },
@@ -23,9 +24,10 @@ RSpec.describe Gitlab::SidekiqCluster do # rubocop:disable RSpec/SpecFilePathFor
       ).and_return(1)
       expect(Process).to receive(:detach).ordered.with(1)
 
-      expect(Process).to receive(:spawn).ordered.with({
-        "ENABLE_SIDEKIQ_CLUSTER" => "1",
-        "SIDEKIQ_WORKER_ID" => "1"
+      expect(Process).to receive(:spawn).ordered.with(
+        {
+          "ENABLE_SIDEKIQ_CLUSTER" => "1",
+          "SIDEKIQ_WORKER_ID" => "1"
         },
         "bundle", "exec", "sidekiq", "-c20", "-eproduction", "-t25", "-gqueues:bar,baz", "-rfoo/bar", "-qbar,1", "-qbaz,1", process_options
       ).and_return(2)

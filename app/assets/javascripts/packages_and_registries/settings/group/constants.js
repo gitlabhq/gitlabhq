@@ -47,7 +47,7 @@ export const PACKAGE_FORWARDING_FORM_BUTTON = __('Save changes');
 
 export const DEPENDENCY_PROXY_HEADER = s__('DependencyProxy|Dependency Proxy');
 export const DEPENDENCY_PROXY_DESCRIPTION = s__(
-  'DependencyProxy|Enable the Dependency Proxy to cache container images from Docker Hub and automatically clear the cache.',
+  'DependencyProxy|Cache container images from Docker Hub to speed up builds and reduce external bandwidth usage.',
 );
 
 export const PACKAGE_FORWARDING_FIELDS = [

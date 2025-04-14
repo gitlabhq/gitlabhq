@@ -23,7 +23,7 @@ You can use any version of DAST in an offline environment. To do this, you need:
 
 - GitLab Runner with the [`docker` or `kubernetes` executor](requirements.md).
   The runner must have network access to the target application.
-- Docker Container Registry with a locally available copy of the DAST
+- Docker container registry with a locally available copy of the DAST
   [container image](https://gitlab.com/security-products/dast), found in the
   [DAST container registry](https://gitlab.com/security-products/dast/container_registry).
   See [Loading Docker images onto your offline host](../../../offline_deployments/_index.md#loading-docker-images-onto-your-offline-host).
@@ -44,7 +44,7 @@ For DAST, import the following default DAST analyzer image from `registry.gitlab
 The process for importing Docker images into a local offline Docker registry depends on
 **your network security policy**. Consult your IT staff to find an accepted and approved
 process by which external resources can be imported or temporarily accessed.
-These scanners are [periodically updated](../../../_index.md#vulnerability-scanner-maintenance)
+These scanners are [periodically updated](../../../detect/vulnerability_scanner_maintenance.md)
 with new definitions, and you may be able to make occasional updates on your own.
 
 For details on saving and transporting Docker images as a file, see the Docker documentation on

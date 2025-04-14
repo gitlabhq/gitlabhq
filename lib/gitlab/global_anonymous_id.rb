@@ -15,6 +15,11 @@ module Gitlab
       Gitlab::CryptoHelper.sha256("#{instance_id}#{user_id}")
     end
 
+    def self.instance_uuid
+      instance_id = Gitlab::CryptoHelper.sha256('instance')
+      Gitlab::UUID.v5(instance_id)
+    end
+
     def self.instance_id
       ::Gitlab::CurrentSettings.uuid.presence || GITLAB_INSTANCE_UUID_NOT_SET
     end

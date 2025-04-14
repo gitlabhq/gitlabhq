@@ -29,7 +29,7 @@ module Gitlab
       def execute(shas, source:)
         return if disabled?
 
-        labels = project_labels.merge(source: source)
+        labels = { source: source }
 
         shas.uniq.each do |sha|
           next unless sha.present? && commit_by(oid: sha)
@@ -60,17 +60,6 @@ module Gitlab
       private :commit_by, :raw_repository, :ref_exists?, :disk_path
 
       private
-
-      def project_labels
-        return { full_path: '' } unless add_project_labels?
-
-        { full_path: @repository.full_path }
-      end
-
-      def add_project_labels?
-        Feature.enabled?(:label_keep_around_ref_metrics, @repository, type: :ops) ||
-          (@repository.project && Feature.enabled?(:label_keep_around_ref_metrics, @repository.project, type: :ops))
-      end
 
       def disabled?
         Feature.enabled?(:disable_keep_around_refs, @repository, type: :ops) ||

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { defaultClient } from '~/graphql_shared/issuable_client';
-import { handleIssuablePopoverMount } from 'ee_else_ce/issuable/popover';
+import { handleIssuablePopoverMount } from '~/issuable/popover';
 
 /**
  * This method is based on default function of app/assets/javascripts/issuable/popover/index.js

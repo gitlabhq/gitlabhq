@@ -27,9 +27,9 @@ For a video overview, see [Design Management](https://www.youtube.com/watch?v=CC
 
 - [Git Large File Storage (LFS)](../../../topics/git/lfs/_index.md) must be enabled:
   - On GitLab.com, LFS is already enabled.
-  - On self-managed instances, a GitLab administrator must
+  - On GitLab Self-Managed instances, a GitLab administrator must
     [enable LFS globally](../../../administration/lfs/_index.md).
-  - On both GitLab.com and self-managed instances, LFS must be
+  - On both GitLab.com and GitLab Self-Managed instances, LFS must be
     [enabled for the project itself](../settings/_index.md#configure-project-features-and-permissions).
     If enabled globally, LFS is enabled by default for all projects. If you have
     disabled it for your project, you must enable it again.
@@ -290,18 +290,22 @@ To add a [to-do item](../../todos.md) for a design, select **Add a to-do item** 
 
 ## Refer to a design in Markdown
 
-To refer to a design in a [Markdown](../../markdown.md) text box in GitLab, for example, in
-a comment or description, paste its URL. It's then displayed as a short reference.
+You can refer to a design in a [Markdown](../../markdown.md) text box.
+Paste the raw URL of the design in a comment or description.
+It's then displayed as a short reference.
 
-For example, if you refer to a design somewhere with:
+For example, if you refer to a design as:
 
 ```markdown
 See https://gitlab.com/gitlab-org/gitlab/-/issues/13195/designs/Group_view.png.
 ```
 
-It's rendered as:
+GitLab automatically renders raw URLs as an abbreviated [reference](../../markdown.md#gitlab-specific-references):
 
 > See [#13195[Group_view.png]](https://gitlab.com/gitlab-org/gitlab/-/issues/13195/designs/Group_view.png).
+
+Note that linking to an image differs from [embedding the image](../../markdown.md#images) in a comment or description.
+It's not possible to embed a design this way.
 
 ## Design activity records
 

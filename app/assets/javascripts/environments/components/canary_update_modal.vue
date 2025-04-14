@@ -48,7 +48,7 @@ export default {
     static: true,
   },
   data() {
-    return { error: '', dismissed: true };
+    return { error: '' };
   },
   computed: {
     stableWeight() {

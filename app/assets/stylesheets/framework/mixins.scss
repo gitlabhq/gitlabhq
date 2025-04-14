@@ -421,3 +421,19 @@
     filter: invert(0.8) hue-rotate(180deg);
   }
 }
+
+/**
+* CI/CD Job item failed status background
+*
+* Sets background color of items to visually
+* highlight failed jobs in the UI.
+*/
+@mixin ci-job-item-failed-status-bg {
+  --ci-job-item-failed: var(--gl-color-red-50);
+
+  .gl-dark & {
+    --ci-job-item-failed: var(--gl-action-danger-background-color-active);
+  }
+
+  background: var(--ci-job-item-failed);
+}

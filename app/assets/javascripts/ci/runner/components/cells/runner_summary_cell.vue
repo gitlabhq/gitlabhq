@@ -68,25 +68,24 @@ export default {
 </script>
 
 <template>
-  <div>
-    <div class="gl-mb-3">
+  <div class="gl-flex gl-flex-col gl-gap-3">
+    <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-2">
       <slot :runner="runner" name="runner-name">
         <runner-name :runner="runner" />
       </slot>
 
-      <runner-managers-badge :count="managersCount" class="gl-align-middle" />
+      <runner-managers-badge :count="managersCount" />
       <gl-icon
         v-if="runner.locked"
         v-gl-tooltip
         :title="$options.i18n.I18N_LOCKED_RUNNER_DESCRIPTION"
         name="lock"
       />
-      <runner-type-badge :type="runner.runnerType" class="gl-align-middle" />
+      <runner-type-badge :type="runner.runnerType" />
     </div>
-
     <div
       v-if="runner.version || runner.description"
-      class="gl-mb-3 gl-ml-auto gl-inline-flex gl-max-w-full gl-items-center gl-text-sm"
+      class="gl-mb-2 gl-inline-flex gl-text-subtle md:gl-mb-0"
     >
       <template v-if="firstVersion">
         <div class="gl-shrink-0">
@@ -99,7 +98,7 @@ export default {
       </template>
       <tooltip-on-truncate
         v-if="runner.description"
-        class="gl-block gl-truncate"
+        class="gl-block gl-truncate gl-text-left"
         :class="{ 'gl-text-subtle': !runner.description }"
         :title="runner.description"
       >
@@ -107,7 +106,11 @@ export default {
       </tooltip-on-truncate>
     </div>
 
-    <div class="gl-text-sm">
+    <div class="gl-flex gl-flex-wrap gl-gap-x-4 gl-gap-y-2 gl-text-sm">
+      <runner-summary-field icon="pipeline" data-testid="job-count" :tooltip="__('Jobs')">
+        <runner-job-count :runner="runner" />
+      </runner-summary-field>
+
       <runner-summary-field icon="clock" icon-size="sm">
         <gl-sprintf :message="$options.i18n.I18N_LAST_CONTACT_LABEL">
           <template #timeAgo>
@@ -124,15 +127,11 @@ export default {
         >
       </runner-summary-field>
 
-      <runner-summary-field icon="pipeline" data-testid="job-count" :tooltip="__('Jobs')">
-        <runner-job-count :runner="runner" />
-      </runner-summary-field>
-
       <runner-summary-field icon="calendar">
         <runner-created-at :runner="runner" />
       </runner-summary-field>
     </div>
 
-    <runner-tags class="gl-block" :tag-list="runner.tagList" />
+    <runner-tags class="gl-flex gl-flex-wrap gl-gap-2" :tag-list="runner.tagList" />
   </div>
 </template>

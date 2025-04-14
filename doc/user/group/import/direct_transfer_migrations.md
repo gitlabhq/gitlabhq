@@ -67,10 +67,12 @@ GitLab 16.8.
     have the `api` scope.
   - For GitLab 15.0 and earlier source instances, the personal access token must
     have both the `api` and `read_repository` scopes.
-- You must have the Owner role on the source group to migrate from.
-- You must have a role in the destination namespace that enables you to
-  [create a subgroup](../subgroups/_index.md#create-a-subgroup) in that
-  namespace.
+- You must have the required permissions on the source and destination instances. For:
+  - Most users, you need:
+    - The Owner role on the source group to migrate from.
+    - A role in the destination namespace that allows you to [create a subgroup](../subgroups/_index.md#create-a-subgroup) in that namespace.
+  - Administrators of both instances without the required roles, you can instead start the import by using
+    [the API](../../../api/bulk_imports.md#start-a-new-group-or-project-migration).
 - To import project snippets, ensure snippets are
   [enabled in the source project](../../snippets.md#change-default-visibility-of-snippets).
 - To import items stored in object storage, you must either:
@@ -130,7 +132,7 @@ There is a [known issue](_index.md#known-issues) affecting the mapping of shared
 
 To ensure GitLab maps users and their contributions correctly between the source and destination instances:
 
-1. Create the required users on the destination GitLab instance. You can create users with the API only on self-managed instances because it requires
+1. Create the required users on the destination GitLab instance. You can create users with the API only on GitLab Self-Managed instances because it requires
    administrator access. When migrating to GitLab.com or GitLab Self-Managed you can:
    - Create users manually.
    - Set up or use your existing [SAML SSO provider](../saml_sso/_index.md) and leverage user synchronization of SAML SSO groups supported through

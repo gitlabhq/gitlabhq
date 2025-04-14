@@ -62,9 +62,6 @@ export default {
       if (length === MR_FILTER_OPTIONS.length) {
         return __('All activity');
       }
-      if (length > 1) {
-        return `%{strongStart}${firstSelected.text}%{strongEnd} +${length - 1} more`;
-      }
 
       return firstSelected.text;
     },
@@ -73,6 +70,13 @@ export default {
     },
     sortDirectionData() {
       return this.isSortAsc ? SORT_DIRECTION_UI.asc : SORT_DIRECTION_UI.desc;
+    },
+    firstSelected() {
+      return MR_FILTER_OPTIONS.find(({ value }) => this.mergeRequestFilters[0] === value);
+    },
+    multipleSelected() {
+      const { length } = this.mergeRequestFilters;
+      return length > 1 && length !== MR_FILTER_OPTIONS.length;
     },
   },
   methods: {
@@ -125,6 +129,7 @@ export default {
     },
   },
   MR_FILTER_OPTIONS,
+  multipleSelectedPhrase: __('%{strongStart}%{firstSelected}%{strongEnd} +%{length} more'),
 };
 </script>
 
@@ -157,8 +162,14 @@ export default {
         @select="select"
       >
         <template #toggle>
-          <gl-button class="!gl-rounded-br-none !gl-rounded-tr-none">
-            <gl-sprintf :message="selectedFilterText">
+          <gl-button class="!gl-rounded-br-none !gl-rounded-tr-none !gl-border-r-0">
+            <gl-sprintf v-if="multipleSelected" :message="$options.multipleSelectedPhrase">
+              <template #length>{{ mergeRequestFilters.length - 1 }}</template>
+              <template #strong>
+                <strong>{{ firstSelected.text }}</strong>
+              </template>
+            </gl-sprintf>
+            <gl-sprintf v-else :message="selectedFilterText">
               <template #strong="{ content }">
                 <strong>{{ content }}</strong>
               </template>

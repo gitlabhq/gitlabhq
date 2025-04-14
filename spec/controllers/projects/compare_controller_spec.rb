@@ -798,5 +798,52 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
         include_examples 'missing diff files metadata'
       end
     end
+
+    describe 'GET #diffs_stats' do
+      let(:params) do
+        {
+          namespace_id: project.namespace,
+          project_id: project,
+          from: from,
+          to: to
+        }
+      end
+
+      let(:send_request) { get :diffs_stats, params: params }
+
+      context 'with valid params' do
+        let(:from) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
+        let(:to) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
+
+        include_examples 'diffs stats' do
+          let(:expected_stats) do
+            {
+              added_lines: 15,
+              removed_lines: 6,
+              diffs_count: 4
+            }
+          end
+        end
+
+        context 'when diffs overflow' do
+          include_examples 'overflow' do
+            let(:expected_stats) do
+              {
+                visible_count: 4,
+                email_path: nil,
+                diff_path: nil
+              }
+            end
+          end
+        end
+      end
+
+      context 'with invalid params' do
+        let(:from) { '0123456789' }
+        let(:to) { '987654321' }
+
+        include_examples 'missing diffs stats'
+      end
+    end
   end
 end

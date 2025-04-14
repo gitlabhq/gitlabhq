@@ -1,8 +1,7 @@
 <script>
 import { GlAlert, GlButton } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapState } from 'vuex';
-
+import { mapState } from 'pinia';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { EVT_EXPAND_ALL_FILES } from '../constants';
 import eventHub from '../event_hub';
 
@@ -24,7 +23,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('diffs', ['diffFiles']),
+    ...mapState(useLegacyDiffs, ['diffFiles']),
     shouldDisplay() {
       return !this.isDismissed && this.diffFiles.length > 1;
     },

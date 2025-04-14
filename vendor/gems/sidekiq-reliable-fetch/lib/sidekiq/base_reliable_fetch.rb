@@ -125,8 +125,10 @@ module Sidekiq
       @cleanup_interval = config.fetch(:cleanup_interval, DEFAULT_CLEANUP_INTERVAL)
       @lease_interval = config.fetch(:lease_interval, DEFAULT_LEASE_INTERVAL)
       @last_try_to_take_lease_at = 0
-      @strictly_ordered_queues = !!config[:strict]
+      # If the config has a :strict key, use that value. Otherwise, should respect capsule mode
+      @strictly_ordered_queues = config.has_key?(:strict) ? !!config[:strict] : capsule.mode == :strict
       @queues = config.queues.map { |q| "queue:#{q}" }
+      @queues.uniq! if @strictly_ordered_queues
     end
 
     def retrieve_work
@@ -154,6 +156,23 @@ module Sidekiq
       end
     rescue => e
       Sidekiq.logger.warn("Failed to requeue #{inprogress.size} jobs: #{e.message}")
+    end
+
+    # This method was copied from https://github.com/sidekiq/sidekiq/blob/v8.0.1/lib/sidekiq/fetch.rb#L73-L86
+    #
+    # Creating the Redis#brpop command takes into account any
+    # configured queue weights. By default Redis#brpop returns
+    # data from the first queue that has pending elements. We
+    # recreate the queue command each time we invoke Redis#brpop
+    # to honor weights and avoid queue starvation.
+    def queues_cmd
+      if @strictly_ordered_queues
+        @queues
+      else
+        permute = @queues.shuffle
+        permute.uniq!
+        permute
+      end
     end
 
     private

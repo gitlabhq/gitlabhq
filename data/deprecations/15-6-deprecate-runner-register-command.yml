@@ -1,7 +1,6 @@
 - title: "Registration tokens and server-side runner arguments in `gitlab-runner register` command"  # (required) The name of the feature to be deprecated
   announcement_milestone: "15.6"  # (required) The milestone when this feature was first announced as deprecated.
-  removal_milestone: "18.0"  # (required) The milestone when this feature is planned to be removed
-  removal_date: "2025-04-22"
+  removal_milestone: "20.0"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   reporter: pedropombeiro  # (required) GitLab username of the person reporting the deprecation
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
@@ -14,7 +13,7 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     Registration tokens and certain configuration arguments in the command `gitlab-runner register` that [registers](https://docs.gitlab.com/runner/register/) a runner, are deprecated.
     Authentication tokens will be used to register runners instead. Registration tokens, and support for certain configuration arguments,
-    will be removed in GitLab 18.0. For more information, see [Migrating to the new runner registration workflow](https://docs.gitlab.com/ci/runners/new_creation_workflow/).
+    will be removed in a future GitLab release. For more information, see [Migrating to the new runner registration workflow](https://docs.gitlab.com/ci/runners/new_creation_workflow/).
     The configuration arguments disabled for authentication tokens are:
 
     - `--locked`

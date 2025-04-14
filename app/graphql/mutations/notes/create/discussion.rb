@@ -9,7 +9,7 @@ module Mutations
         private
 
         def create_note_params(noteable, args)
-          super(noteable, args).merge({ type: 'DiscussionNote' })
+          super.merge({ type: 'DiscussionNote' })
         end
       end
     end

@@ -5,6 +5,7 @@
 - show_empty_state = @topics.empty? && !search
 
 = render_dashboard_ultimate_trial(current_user)
+= render_product_usage_data_collection_changes(current_user)
 
 - if show_empty_state
   = render 'shared/empty_states/topics'

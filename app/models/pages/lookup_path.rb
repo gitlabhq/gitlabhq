@@ -4,22 +4,20 @@ module Pages
   class LookupPath
     include Gitlab::Utils::StrongMemoize
 
-    def initialize(deployment:, domain: nil, trim_prefix: nil)
+    def initialize(deployment:, domain: nil, trim_prefix: nil, access_control: false)
       @deployment = deployment
       @project = deployment.project
       @domain = domain
       @trim_prefix = trim_prefix || @project.full_path
+      @access_control = access_control
     end
+
+    attr_accessor :access_control
 
     def project_id
       project.id
     end
     strong_memoize_attr :project_id
-
-    def access_control
-      project.private_pages?
-    end
-    strong_memoize_attr :access_control
 
     def https_only
       domain_https = domain ? domain.https? : true

@@ -140,7 +140,7 @@ export default {
       <gl-loading-icon
         v-if="isSwitcherLoading"
         data-testid="switcher-loading-state"
-        class="gl-absolute gl-z-2 gl-w-full gl-bg-white gl-opacity-5"
+        class="gl-absolute gl-z-2 gl-w-full gl-bg-default gl-opacity-5"
         size="lg"
       />
       <span class="gl-font-bold">{{ $options.i18n.viewLabelText }}</span>

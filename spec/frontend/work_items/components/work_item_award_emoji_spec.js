@@ -14,12 +14,12 @@ import { DEFAULT_PAGE_SIZE_EMOJIS } from '~/work_items/constants';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 
 import {
-  workItemByIidResponseFactory,
   mockAwardsWidget,
   mockAwardEmojiThumbsUp,
   getAwardEmojiResponse,
   mockMoreThanDefaultAwardEmojisWidget,
-} from '../mock_data';
+  workItemByIidResponseFactory,
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/work_items/constants', () => ({

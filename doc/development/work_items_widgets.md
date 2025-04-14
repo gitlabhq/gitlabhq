@@ -121,7 +121,7 @@ We also have a [reusable base dropdown widget wrapper](https://gitlab.com/gitlab
 1. Depending on the input field i.e a dropdown, input text or any other custom design we should make sure that we use an [existing wrapper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/shared/work_item_sidebar_dropdown_widget.vue) or completely new component
 1. Ideally any new widget should be behind an FF to make sure we have room for testing unless there is a priority for the widget.
 1. Create the new widget in the [folder](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/assets/javascripts/work_items/components)
-1. If it is an editable widget in the sidebar , you should include it in [work_item_attributes_wrapper](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/assets/javascripts/work_items/components/work_item_attributes_wrapper.vue)
+1. If it is an editable widget in the sidebar, you should include it in [work_item_attributes_wrapper](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/assets/javascripts/work_items/components/work_item_attributes_wrapper.vue)
 
 ### Steps
 
@@ -174,9 +174,9 @@ To resolve this, update the mocked `Gitlab::QueryLimiting::Transaction.threshold
 
 Since create view is almost identical to detail view, and we wanted to store in the draft data of each widget, each new work item for a specific type has a new cache entry apollo.
 
-For example , when we initialise the create view , we have a function `setNewWorkItemCache` [in work items cache utils](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/graphql/cache_utils) which is called in both [create view work item modal](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/create_work_item_modal.vue) and also [create work item component](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/create_work_item.vue)
+For example, when we initialise the create view, we have a function `setNewWorkItemCache` [in work items cache utils](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/graphql/cache_utils) which is called in both [create view work item modal](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/create_work_item_modal.vue) and also [create work item component](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/components/create_work_item.vue)
 
-You can include the create work item view in any vue file depending on usage. If you pass the `workItemType` of the create view , it will only include the applicable work item widgets which are fetched from [work item types query](../api/graphql/reference/_index.md#workitemtype) and only showing the ones in [widget definitions](../api/graphql/reference/_index.md#workitemwidgetdefinition)
+You can include the create work item view in any vue file depending on usage. If you pass the `workItemType` of the create view, it will only include the applicable work item widgets which are fetched from [work item types query](../api/graphql/reference/_index.md#workitemtype) and only showing the ones in [widget definitions](../api/graphql/reference/_index.md#workitemwidgetdefinition)
 
 We have a [local mutation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/graphql/update_new_work_item.mutation.graphql) to update the work item draft data in create view
 
@@ -202,7 +202,7 @@ if (this.workItemId === newWorkItemId(this.workItemType)) {
 
 ### Support new work item widget in local mutation
 
-1. Add the input type in [work item local mutation typedefs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/graphql/typedefs.graphql#L55). It can be anything , a custom object or a primitive value.
+1. Add the input type in [work item local mutation typedefs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/work_items/graphql/typedefs.graphql#L55). It can be anything, a custom object or a primitive value.
 
 Example if you want add `parent` which has the name and ID of the parent of the work item
 

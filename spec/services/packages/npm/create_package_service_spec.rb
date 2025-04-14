@@ -299,6 +299,14 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
     end
 
+    context 'with empty name' do
+      let(:params) { super().merge({ name: '' }) }
+
+      it_behaves_like 'returning an error service response', message: 'Name is empty.' do
+        it { is_expected.to have_attributes reason: :invalid_parameter }
+      end
+    end
+
     context 'with empty versions' do
       let(:params) { super().merge!({ versions: {} }) }
 

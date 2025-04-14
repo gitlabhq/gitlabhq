@@ -40,7 +40,9 @@ module Gitlab
 
         ::Pages::VirtualDomain.new(
           trim_prefix: namespace.full_path,
-          projects: namespace.all_projects_with_pages)
+          projects: namespace.all_projects_with_pages,
+          namespace: namespace
+        )
       end
 
       def by_custom_domain(host)

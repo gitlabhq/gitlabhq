@@ -6,7 +6,7 @@ class WorkItem < Issue
   COMMON_QUICK_ACTIONS_COMMANDS = [
     :title, :reopen, :close, :cc, :tableflip, :shrug, :type, :promote_to, :checkin_reminder,
     :subscribe, :unsubscribe, :confidential, :award, :react, :move, :clone, :copy_metadata,
-    :duplicate, :promote_to_incident
+    :duplicate, :promote_to_incident, :board_move, :convert_to_ticket
   ].freeze
 
   self.table_name = 'issues'
@@ -28,7 +28,9 @@ class WorkItem < Issue
     foreign_key: :work_item_id, source: :work_item
 
   scope :inc_relations_for_permission_check, -> {
-    includes(:author, :work_item_type, project: :project_feature)
+    includes(
+      :author, :work_item_type, { project: [:project_feature, { namespace: :route }, :group] }, { namespace: [:route] }
+    )
   }
 
   scope :within_timeframe, ->(start_date, due_date) do
@@ -43,6 +45,11 @@ class WorkItem < Issue
                                 .where('due_date IS NULL OR due_date >= ?', start_date)
 
     joins("INNER JOIN (#{date_filtered_issue_ids.to_sql}) AS filtered_dates ON issues.id = filtered_dates.issue_id")
+  end
+
+  scope :with_enabled_widget_definition, ->(type) do
+    joins(work_item_type: :enabled_widget_definitions)
+      .merge(::WorkItems::WidgetDefinition.by_enabled_widget_type(type))
   end
 
   class << self
@@ -135,7 +142,7 @@ class WorkItem < Issue
     end
 
     def non_widgets
-      [:related_vulnerabilities, :pending_escalations]
+      [:pending_escalations]
     end
   end
 
@@ -152,6 +159,13 @@ class WorkItem < Issue
 
   def noteable_target_type_name
     'issue'
+  end
+
+  def custom_notification_target_name
+    # This is needed so we match the issue events NotificationSetting::EMAIL_EVENTS
+    return 'issue' if work_item_type.issue?
+
+    'work_item'
   end
 
   # Todo: remove method after target_type cleanup

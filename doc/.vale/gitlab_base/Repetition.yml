@@ -1,9 +1,7 @@
 ---
-# Error: gitlab_base.Repetition
-#
-# Checks for duplicate words, like `the the` or `and and`.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.Repetition
+description: |
+  Checks for duplicate words, like `the the` or `and and`.
 extends: repetition
 message: "Remove this duplicate word: '%s'."
 vocab: false

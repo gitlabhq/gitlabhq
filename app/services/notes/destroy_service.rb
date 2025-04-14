@@ -11,6 +11,7 @@ module Notes
       track_note_removal_usage_for_issues(note) if note.for_issue?
       track_note_removal_usage_for_merge_requests(note) if note.for_merge_request?
       track_note_removal_usage_for_design(note) if note.for_design?
+      track_note_removal_usage_for_wiki(note) if note.for_wiki_page?
     end
 
     private
@@ -30,6 +31,15 @@ module Notes
       Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_design_comment_removed_action(
         author: note.author,
         project: project
+      )
+    end
+
+    def track_note_removal_usage_for_wiki(note)
+      track_internal_event(
+        'delete_wiki_page_note',
+        project: project,
+        namespace: note.noteable.namespace,
+        user: current_user
       )
     end
   end

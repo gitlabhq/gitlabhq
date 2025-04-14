@@ -180,31 +180,31 @@ describe('vue_shared/components/web_ide_link', () => {
     {
       props: {
         showWebIdeButton: false,
-        showGitpodButton: true,
-        gitpodEnabled: true,
+        isGitpodEnabledForInstance: true,
+        isGitpodEnabledForUser: true,
       },
       expectedActions: [ACTION_EDIT, ACTION_GITPOD],
     },
     {
       props: {
         showWebIdeButton: false,
-        showGitpodButton: true,
-        gitpodEnabled: false,
+        isGitpodEnabledForInstance: true,
+        isGitpodEnabledForUser: false,
       },
       expectedActions: [ACTION_EDIT],
     },
     {
       props: {
-        showGitpodButton: true,
-        gitpodEnabled: false,
+        isGitpodEnabledForInstance: true,
+        isGitpodEnabledForUser: false,
       },
       expectedActions: [ACTION_WEB_IDE, ACTION_EDIT],
     },
     {
       props: {
         showEditButton: false,
-        showGitpodButton: true,
-        gitpodEnabled: true,
+        isGitpodEnabledForInstance: true,
+        isGitpodEnabledForUser: true,
         gitpodText: 'Test Gitpod',
       },
       expectedActions: [ACTION_WEB_IDE, { ...ACTION_GITPOD, text: 'Test Gitpod' }],
@@ -216,8 +216,8 @@ describe('vue_shared/components/web_ide_link', () => {
     {
       props: {
         showWebIdeButton: true,
-        showGitpodButton: true,
-        gitpodEnabled: true,
+        isGitpodEnabledForInstance: true,
+        isGitpodEnabledForUser: true,
         isBlob: true,
       },
       expectedActions: [
@@ -230,8 +230,8 @@ describe('vue_shared/components/web_ide_link', () => {
     {
       props: {
         showWebIdeButton: true,
-        showGitpodButton: true,
-        gitpodEnabled: true,
+        isGitpodEnabledForInstance: true,
+        isGitpodEnabledForUser: true,
         isBlob: false,
       },
       expectedActions: [ACTION_EDIT],
@@ -286,9 +286,9 @@ describe('vue_shared/components/web_ide_link', () => {
       createComponent({
         showEditButton: false,
         showWebIdeButton: true,
-        showGitpodButton: true,
+        isGitpodEnabledForInstance: true,
         showPipelineEditorButton: true,
-        gitpodEnabled: true,
+        isGitpodEnabledForUser: true,
       });
     });
 
@@ -312,9 +312,9 @@ describe('vue_shared/components/web_ide_link', () => {
       createComponent({
         showEditButton: false,
         showWebIdeButton: false,
-        showGitpodButton: true,
+        isGitpodEnabledForInstance: true,
         showPipelineEditorButton: false,
-        gitpodEnabled: true,
+        isGitpodEnabledForUser: true,
         gitpodUrl: GITPOD_URL,
       });
     });

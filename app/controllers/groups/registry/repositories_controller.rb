@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Groups
   module Registry
     class RepositoriesController < Groups::ApplicationController

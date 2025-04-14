@@ -140,7 +140,11 @@ class SearchController < ApplicationController
   def authenticate?
     return false if action_name == 'opensearch'
     return true if public_visibility_restricted?
-    return true if search_service.global_search? && ::Feature.enabled?(:block_anonymous_global_searches, type: :ops)
+
+    if search_service.global_search? && ::Gitlab::CurrentSettings.global_search_block_anonymous_searches_enabled?
+      return true
+    end
+
     return true if ::Feature.disabled?(:allow_anonymous_searches, type: :ops)
 
     false

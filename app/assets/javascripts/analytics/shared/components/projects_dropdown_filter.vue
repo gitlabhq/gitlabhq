@@ -189,6 +189,7 @@ export default {
         this.isDirty = true;
       }
       this.selectedProjects = [];
+      this.handleUpdatedSelectedProjects();
     },
     fetchData() {
       this.loading = true;
@@ -239,7 +240,6 @@ export default {
     :header-text="__('Projects')"
     :items="listBoxItems"
     :reset-button-label="__('Clear All')"
-    :loading="loadingDefaultProjects"
     :multiple="multiSelect"
     :no-results-text="__('No matching results')"
     :selected="selectedListBoxItems"
@@ -252,6 +252,7 @@ export default {
   >
     <template #toggle>
       <gl-button
+        :loading="loadingDefaultProjects"
         button-text-classes="gl-w-full gl-justify-between gl-flex gl-shadow-none gl-mb-0"
         :class="['dropdown-projects', toggleClasses]"
       >

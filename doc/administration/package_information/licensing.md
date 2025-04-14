@@ -63,7 +63,7 @@ This list is sourced from the [GitLab development documentation on licensing](ht
 However, due to the nature of the Linux package, the licenses may not apply
 in the same way. Such as with `git` and `rsync`. See the [GNU License FAQ](https://www.gnu.org/licenses/gpl-faq.en.html#MereAggregation)
 
-## License acknowledgements
+## License acknowledgments
 
 ### libjpeg-turbo - BSD 3-clause license
 

@@ -28,5 +28,40 @@ namespace :gitlab do
 
       puts "Password successfully updated for user with username #{username}."
     end
+
+    desc "GitLab | Password | Check status of password salts on FIPS systems"
+    task :fips_check_salts, [:print_usernames] => :environment do |_, args|
+      abort Rainbow('This command is only available on FIPS instances').red unless Gitlab::FIPS.enabled?
+
+      message = "Active users with unmigrated salts:"
+      batch_size = 50
+      min_salt_len = 64
+      count_total = 0
+      count_unmigrated = 0
+
+      puts Rainbow(message) if args.print_usernames
+
+      User.active.each_batch(of: batch_size) do |user_batch|
+        user_batch.each do |user|
+          count_total += 1
+
+          begin
+            hash = user.encrypted_password
+            salt_len = Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512
+              .split_digest(hash)[:salt].length
+          rescue StandardError => e
+            puts("Error getting salt for user #{user.username}: #{e.message}")
+            next
+          end
+
+          if salt_len < min_salt_len
+            puts user.username if args.print_usernames
+            count_unmigrated += 1
+          end
+        end
+      end
+
+      puts Rainbow("#{message} #{count_unmigrated} out of #{count_total} total users")
+    end
   end
 end

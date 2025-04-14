@@ -45,7 +45,7 @@ Check these aspects both when _designing_ and _reviewing_ UI changes.
   as the secondary.
 - Use clear and consistent terminology.
 - Check grammar and spelling.
-- Consider help content and follow its [guidelines](https://design.gitlab.com/usability/contextual-help).
+- Consider help content and follow its [guidelines](https://design.gitlab.com/patterns/contextual-help).
 - Request review from the [appropriate Technical Writer](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments),
   indicating any specific files or lines they should review, and how to preview
   or understand the location/context of the text from the user's perspective.
@@ -69,11 +69,11 @@ Check visual design properties using your browser's elements inspector ([Chrome]
   or propose new ones according to [iconography](https://design.gitlab.com/product-foundations/iconography/)
   and [illustration](https://design.gitlab.com/product-foundations/illustration/)
   guidelines.
-- Optional: Consider dark mode. For more information, see [Change the syntax highlighting theme](../../user/profile/preferences.md#change-the-syntax-highlighting-theme).
+- Optional: Consider dark mode. For more information, see [Change the appearance](../../user/profile/preferences.md#change-the-appearance).
 
 ### Dark Mode
 
-You're not required to design for dark mode while the feature is an [experiment](../../policy/development_stages_support.md#experiment). The [Design System team](https://about.gitlab.com/direction/foundations/design_system/) plans to improve the dark mode in the future. Until we integrate [Pajamas](https://design.gitlab.com/) components into the product and the underlying design strategy is in place to support dark mode, we cannot guarantee that we won't introduce bugs and debt to this mode. At your discretion, evaluate the need to create dark mode patches.
+When you create a design, review [how to use design tokens](https://design.gitlab.com/product-foundations/design-tokens-using#in-design) and start applying color based on [semantic meaning](https://design.gitlab.com/product-foundations/design-tokens#semantic-design-tokens). This will ensure your design works well in both light mode and dark mode. The [Design System group](https://about.gitlab.com/direction/foundations/design_system/) is working to expand on this guidance ahead of upcoming general availability.
 
 ### States
 

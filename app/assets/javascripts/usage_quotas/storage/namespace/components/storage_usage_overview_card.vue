@@ -42,7 +42,7 @@ export default {
       <p>
         {{
           s__(
-            'UsageQuota|Namespace total storage represents the sum of storage consumed by all projects, Container Registry, and Dependency Proxy.',
+            'UsageQuota|Namespace total storage represents the sum of storage consumed by all projects, container registry, and Dependency Proxy.',
           )
         }}
       </p>

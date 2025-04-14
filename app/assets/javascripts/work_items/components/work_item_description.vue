@@ -1,5 +1,6 @@
 <script>
 import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormTextarea } from '@gitlab/ui';
+import { generateDescriptionAction } from 'ee_else_ce/ai/editor_actions/generate_description';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
@@ -11,6 +12,7 @@ import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
+  findDescriptionWidget,
   newWorkItemId,
   newWorkItemFullPath,
   autocompleteDataSources,
@@ -18,13 +20,7 @@ import {
 } from '~/work_items/utils';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import workItemDescriptionTemplateQuery from '../graphql/work_item_description_template.query.graphql';
-import {
-  i18n,
-  NEW_WORK_ITEM_IID,
-  TRACKING_CATEGORY_SHOW,
-  WIDGET_TYPE_DESCRIPTION,
-  ROUTES,
-} from '../constants';
+import { i18n, NEW_WORK_ITEM_IID, TRACKING_CATEGORY_SHOW, ROUTES } from '../constants';
 import WorkItemDescriptionRendered from './work_item_description_rendered.vue';
 import WorkItemDescriptionTemplateListbox from './work_item_description_template_listbox.vue';
 
@@ -44,6 +40,11 @@ export default {
     WorkItemDescriptionTemplateListbox,
   },
   mixins: [Tracking.mixin(), glFeatureFlagMixin()],
+  provide: {
+    editorAiActions: window.gon?.licensed_features?.generateDescription
+      ? [generateDescriptionAction()]
+      : [],
+  },
   inject: ['isGroup'],
   props: {
     description: {
@@ -160,9 +161,7 @@ export default {
       };
     },
     workItemDescription() {
-      const descriptionWidget = this.workItem?.widgets?.find(
-        (widget) => widget.type === WIDGET_TYPE_DESCRIPTION,
-      );
+      const descriptionWidget = findDescriptionWidget(this.workItem);
       return {
         ...descriptionWidget,
         description: descriptionWidget?.description || '',

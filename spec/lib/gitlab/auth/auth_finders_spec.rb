@@ -1151,6 +1151,14 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         allow_any_instance_of(described_class).to receive(:access_token).and_return(oauth_access_token)
       end
 
+      it 'includes the OAuth application ID in the token info' do
+        validate_and_save_access_token!(reset_token: true)
+
+        expect(::Current.token_info).to match(a_hash_including({
+          token_application_id: oauth_access_token.application_id
+        }))
+      end
+
       context 'when reset_token is true' do
         it 'reloads the access token before validation' do
           expect(oauth_access_token).to receive(:reload)

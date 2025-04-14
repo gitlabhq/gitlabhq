@@ -36,7 +36,7 @@ RSpec.shared_examples 'invalid params error response' do
 
     aggregate_failures do
       expect(response).to be_error
-      expect(response.http_status).to eq 422
+      expect(response.reason).to eq(described_class::INVALID_PARAMS_ERROR)
     end
   end
 end

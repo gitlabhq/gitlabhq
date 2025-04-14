@@ -27,10 +27,14 @@ export default () => {
 
   if ($projectName || $projectPath) {
     // get the project name from the URL and set it as input value
-    $projectName.value = name;
+    if (name) {
+      $projectName.value = name;
+    }
 
     // get the path url and append it in the input
-    $projectPath.value = path;
+    if (path) {
+      $projectPath.value = path;
+    }
 
     // generate slug when project name changes
     $projectName.addEventListener('keyup', () => {

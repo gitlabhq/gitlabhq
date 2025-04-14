@@ -40,7 +40,7 @@ The container registry, package registry, and build artifacts are not included i
 
 You can view the following statistics for storage usage in projects and namespaces:
 
-- Storage usage that exceeds the GitLab.com storage limit or [self-managed storage limits](../administration/settings/account_and_limit_settings.md#repository-size-limit).
+- Storage usage that exceeds the GitLab.com storage limit or [GitLab Self-Managed storage limits](../administration/settings/account_and_limit_settings.md#repository-size-limit).
 - Available purchased storage for GitLab.com.
 
 Prerequisites:

@@ -85,6 +85,15 @@ export const typePolicies = {
   OrganizationUserConnection: {
     merge: true,
   },
+  RepositoryBlob: {
+    keyFields: ({ id, path }) => {
+      if (path) {
+        return `${id}${encodeURIComponent(path)}`;
+      }
+
+      return id;
+    },
+  },
 };
 
 export const stripWhitespaceFromQuery = (url, path) => {

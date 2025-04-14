@@ -65,9 +65,6 @@ export default {
         items: this.draggableItems,
       };
     },
-    itemIds() {
-      return this.draggableItems.map((item) => item.id);
-    },
   },
   watch: {
     expanded(newExpanded) {

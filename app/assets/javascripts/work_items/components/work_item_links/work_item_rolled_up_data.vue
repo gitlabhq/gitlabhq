@@ -6,7 +6,7 @@ import { findWidget } from '~/issues/list/utils';
 import {
   i18n,
   WIDGET_TYPE_WEIGHT,
-  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_NAME_EPIC,
   WIDGET_TYPE_HEALTH_STATUS,
 } from '../../constants';
 
@@ -96,7 +96,7 @@ export default {
       return Math.round((this.rolledUpCompletedWeight / this.rolledUpWeight) * 100);
     },
     weightTooltip() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC ? __('Issue weight') : __('Weight');
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC ? __('Issue weight') : __('Weight');
     },
     rolledUpHealthStatus() {
       return this.workItemHealthStatus?.rolledUpHealthStatus;

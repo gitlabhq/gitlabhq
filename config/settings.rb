@@ -162,10 +162,6 @@ Settings = GitlabSettings.load(file, Rails.env) do
     end
   end
 
-  def attr_encrypted_db_key_base_12
-    Gitlab::Utils.ensure_utf8_size(db_key_base_keys.first, bytes: 12.bytes)
-  end
-
   # FIXME: Deprecated in favor of Gitlab::Encryption::KeyProvider
   def attr_encrypted_db_key_base
     db_key_base_keys.first
@@ -201,8 +197,8 @@ Settings = GitlabSettings.load(file, Rails.env) do
     [[Gitlab::SidekiqConfig::WorkerMatcher::WILDCARD_MATCH, 'default']]
   end
 
-  def topology_service_settings
-    %w[address ca_file certificate_file private_key_file]
+  def required_topology_service_settings
+    %w[address]
   end
 
   private

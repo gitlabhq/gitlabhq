@@ -2,14 +2,18 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Batch comments in merge request', :smoke, product_group: :code_review do
+    # admin required to check if feature flag is enabled
+    describe 'Batch comments in merge request', :smoke, :requires_admin, product_group: :code_review do
       let(:project) { create(:project, name: 'project-with-merge-request') }
       let(:merge_request) do
         create(:merge_request, title: 'This is a merge request', description: 'Great feature', project: project)
       end
 
       it 'user submits a non-diff review',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347777' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347777',
+        feature_flag: { name: :improved_review_experience } do
+        skip('improved_review_experience FF is WIP') if Runtime::Feature.enabled?('improved_review_experience')
+
         Flow::Login.sign_in
 
         merge_request.visit!
@@ -25,7 +29,11 @@ module QA
         end
       end
 
-      it 'user submits a diff review', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347778' do
+      it 'user submits a diff review',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347778',
+        feature_flag: { name: :improved_review_experience } do
+        skip('improved_review_experience FF is WIP') if Runtime::Feature.enabled?('improved_review_experience')
+
         Flow::Login.sign_in
 
         merge_request.visit!

@@ -7,6 +7,7 @@ module API
       expose :title, documentation: { type: 'string', example: 'Sample key 25' }
       expose :created_at, documentation: { type: 'dateTime', example: '2015-09-03T07:24:44.627Z' }
       expose :expires_at, documentation: { type: 'dateTime', example: '2020-09-03T07:24:44.627Z' }
+      expose :last_used_at, documentation: { type: 'dateTime', example: '2020-09-03T07:24:44.627Z' }
       expose :publishable_key, as: :key, documentation:
         { type: 'string',
           example: 'ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt1256k6Yjz\

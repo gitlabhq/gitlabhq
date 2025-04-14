@@ -1,25 +1,23 @@
-import { GlForm, GlCollapsibleListbox, GlLoadingIcon } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { groupIterationsResponse } from 'jest/work_items/mock_data';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { keysFor } from '~/behaviors/shortcuts/keybindings';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
+import WorkItemSidebarWidget from '~/work_items/components/shared/work_item_sidebar_widget.vue';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 jest.mock('~/behaviors/shortcuts/keybindings');
+jest.mock('~/lib/mousetrap');
 
 describe('WorkItemSidebarDropdownWidget component', () => {
   let wrapper;
 
-  const findHeader = () => wrapper.find('h3');
   const findEditButton = () => wrapper.findByTestId('edit-button');
   const findApplyButton = () => wrapper.findByTestId('apply-button');
-
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findLabel = () => wrapper.find('label');
-  const findForm = () => wrapper.findComponent(GlForm);
   const findCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findWorkItemSidebarWidget = () => wrapper.findComponent(WorkItemSidebarWidget);
 
   const createComponent = ({
     itemValue = null,
@@ -59,34 +57,7 @@ describe('WorkItemSidebarDropdownWidget component', () => {
     }
   };
 
-  describe('label', () => {
-    it('shows header when not editing', () => {
-      createComponent();
-
-      expect(findHeader().exists()).toBe(true);
-      expect(findHeader().classes('gl-sr-only')).toBe(false);
-      expect(findLabel().exists()).toBe(false);
-    });
-
-    it('shows label and hides header while editing', async () => {
-      createComponent();
-
-      findEditButton().vm.$emit('click');
-
-      await nextTick();
-
-      expect(findLabel().exists()).toBe(true);
-      expect(findHeader().classes('gl-sr-only')).toBe(true);
-    });
-  });
-
   describe('edit button', () => {
-    it('is not shown if user cannot edit', () => {
-      createComponent({ canUpdate: false });
-
-      expect(findEditButton().exists()).toBe(false);
-    });
-
     it('is shown if user can edit', () => {
       createComponent({ canUpdate: true });
 
@@ -97,18 +68,15 @@ describe('WorkItemSidebarDropdownWidget component', () => {
       createComponent();
 
       findEditButton().vm.$emit('click');
-
       await nextTick();
 
-      expect(findLabel().exists()).toBe(true);
-      expect(findForm().exists()).toBe(true);
+      expect(findCollapsibleListbox().exists()).toBe(true);
     });
 
     it('is replaced by Apply button while editing', async () => {
       createComponent();
 
       findEditButton().vm.$emit('click');
-
       await nextTick();
 
       expect(findEditButton().exists()).toBe(false);
@@ -119,10 +87,9 @@ describe('WorkItemSidebarDropdownWidget component', () => {
   describe('loading icon', () => {
     it('shows loading icon while update is in progress', async () => {
       createComponent({ updateInProgress: true });
-
       await nextTick();
 
-      expect(findLoadingIcon().exists()).toBe(true);
+      expect(findWorkItemSidebarWidget().props('isUpdating')).toBe(true);
     });
   });
 
@@ -131,21 +98,6 @@ describe('WorkItemSidebarDropdownWidget component', () => {
       createComponent({ itemValue: null });
 
       expect(wrapper.text()).toContain('None');
-    });
-  });
-
-  describe('form', () => {
-    it('is not shown while not editing', () => {
-      createComponent();
-
-      expect(findForm().exists()).toBe(false);
-    });
-
-    it('is shown while editing', async () => {
-      createComponent({ isEditing: true });
-      await nextTick();
-
-      expect(findForm().exists()).toBe(true);
     });
   });
 
@@ -158,10 +110,8 @@ describe('WorkItemSidebarDropdownWidget component', () => {
 
     it('renders the collapsible listbox with required props', async () => {
       createComponent({ isEditing: true });
-
       await nextTick();
 
-      expect(findCollapsibleListbox().exists()).toBe(true);
       expect(findCollapsibleListbox().props()).toMatchObject({
         items: [],
         headerText: 'Select iteration',
@@ -180,14 +130,13 @@ describe('WorkItemSidebarDropdownWidget component', () => {
     it('renders the footer when enabled', async () => {
       const FOOTER_SLOT_HTML = 'Test message';
       createComponent({ isEditing: true, showFooter: true, slots: { footer: FOOTER_SLOT_HTML } });
-
       await nextTick();
+
       expect(wrapper.text()).toContain(FOOTER_SLOT_HTML);
     });
 
     it('supports multiselect', async () => {
       createComponent({ isEditing: true, multiSelect: true });
-
       await nextTick();
 
       expect(findCollapsibleListbox().props('multiple')).toBe(true);
@@ -204,11 +153,9 @@ describe('WorkItemSidebarDropdownWidget component', () => {
         listItems,
         multiSelect: true,
       });
-
       await nextTick();
 
       findCollapsibleListbox().vm.$emit('select', listItems[0].id);
-
       await nextTick();
 
       expect(wrapper.emitted('searchStarted')).toEqual([[''], ['']]);
@@ -216,7 +163,6 @@ describe('WorkItemSidebarDropdownWidget component', () => {
 
     it('supports infinite scrolling', async () => {
       createComponent({ isEditing: true, infiniteScroll: true });
-
       await nextTick();
 
       expect(findCollapsibleListbox().props('infiniteScroll')).toBe(true);
@@ -224,7 +170,6 @@ describe('WorkItemSidebarDropdownWidget component', () => {
 
     it('shows loader when bottom reached', async () => {
       createComponent({ isEditing: true, infiniteScroll: true, infiniteScrollLoading: true });
-
       await nextTick();
 
       expect(findCollapsibleListbox().props('infiniteScrollLoading')).toBe(true);
@@ -232,7 +177,6 @@ describe('WorkItemSidebarDropdownWidget component', () => {
 
     it('displays default dropdown label when no value is selected', async () => {
       createComponent({ isEditing: true });
-
       await nextTick();
 
       expect(findCollapsibleListbox().props('toggleText')).toBe('No iteration');
@@ -264,6 +208,7 @@ describe('WorkItemSidebarDropdownWidget component', () => {
       });
     });
   });
+
   describe('shortcut tooltip', () => {
     const shortcut = {
       description: 'Edit dropdown',
@@ -279,19 +224,14 @@ describe('WorkItemSidebarDropdownWidget component', () => {
     });
 
     it('shows tooltip with key when shortcut is provided', () => {
-      createComponent({
-        canUpdate: true,
-        shortcut,
-      });
+      createComponent({ canUpdate: true, shortcut });
       const expectedTooltip = 'Edit dropdown <kbd aria-hidden="true" class="flat gl-ml-1">e</kbd>';
 
       expect(findEditButton().attributes('title')).toContain(expectedTooltip);
     });
 
     it('does not show tooltip when shortcut is not provided', () => {
-      createComponent({
-        canUpdate: true,
-      });
+      createComponent({ canUpdate: true });
 
       expect(findEditButton().attributes('title')).toBeUndefined();
     });
@@ -299,10 +239,7 @@ describe('WorkItemSidebarDropdownWidget component', () => {
     it('does not show tooltip when shortcuts are disabled', () => {
       shouldDisableShortcuts.mockReturnValue(true);
 
-      createComponent({
-        canUpdate: true,
-        shortcut,
-      });
+      createComponent({ canUpdate: true, shortcut });
 
       expect(findEditButton().attributes('title')).toBeUndefined();
     });

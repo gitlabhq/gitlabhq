@@ -2,7 +2,7 @@
 stage: Growth
 group: Acquisition
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Experiments API (GitLab team only)
+title: Experiments API
 ---
 
 {{< details >}}
@@ -12,9 +12,11 @@ title: Experiments API (GitLab team only)
 
 {{< /details >}}
 
-This API is for listing A/B experiments [defined in GitLab](../development/experiment_guide/_index.md).
+Use this API to interact with A/B experiments. For more information, see the [experiment guide](../development/experiment_guide/_index.md).
 
-The user must be a [GitLab team member](https://gitlab.com/groups/gitlab-com/-/group_members) to access the API.
+Prerequisites:
+
+- You must be a [GitLab team member](https://gitlab.com/groups/gitlab-com/-/group_members).
 
 ## List all experiments
 

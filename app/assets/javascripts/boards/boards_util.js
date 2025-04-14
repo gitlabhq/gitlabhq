@@ -1,6 +1,8 @@
 import { sortBy, cloneDeep, find, inRange } from 'lodash';
 import {
   TYPENAME_BOARD,
+  TYPENAME_CUSTOM_FIELD,
+  TYPENAME_CUSTOM_FIELD_SELECT_OPTION,
   TYPENAME_ITERATION,
   TYPENAME_MILESTONE,
   TYPENAME_USER,
@@ -311,8 +313,10 @@ const parseFilters = (filters) => {
  * @param {Object} objParam.filterInfo - data on filters such as how to transform filter value, if filter can be negated, etc.
  * @param {Object} objParam.filterFields - data on what filters are available for given issuableType (based on GraphQL schema)
  */
-export const filterVariables = ({ filters, issuableType, filterInfo, filterFields }) =>
-  parseFilters(filters)
+export const filterVariables = ({ filters, issuableType, filterInfo, filterFields, options }) => {
+  const customFieldRegex = /^custom-field\[(\d*)\]$/;
+
+  return parseFilters(filters)
     .map(([k, v, negated]) => {
       // for legacy reasons, some filters need to be renamed to correct GraphQL fields.
       const remapAvailable = filterInfo[k]?.remap;
@@ -321,6 +325,10 @@ export const filterVariables = ({ filters, issuableType, filterInfo, filterField
       return [remappedKey, v, negated];
     })
     .filter(([k, , negated]) => {
+      if (k.match(customFieldRegex) && options.hasCustomFieldsFeature) {
+        return true;
+      }
+
       // remove unsupported filters (+ check if the filters support negation)
       const supported = filterFields[issuableType].includes(k);
       if (supported) {
@@ -335,6 +343,27 @@ export const filterVariables = ({ filters, issuableType, filterInfo, filterField
       const newVal = transform ? transform(v) : v;
 
       return [k, newVal, negated];
+    })
+    .map(([k, v, negated]) => {
+      let newK = k;
+      let newV = v;
+      if (k.match(customFieldRegex) && options.hasCustomFieldsFeature) {
+        const [, customFieldId] = customFieldRegex.exec(k);
+        newV = [
+          {
+            customFieldId: convertToGraphQLId(TYPENAME_CUSTOM_FIELD, customFieldId),
+            selectedOptionIds: [
+              convertToGraphQLId(
+                TYPENAME_CUSTOM_FIELD_SELECT_OPTION,
+                Array.isArray(v) ? v[v.length - 1] : v,
+              ),
+            ],
+          },
+        ];
+        newK = 'customField';
+      }
+
+      return [newK, newV, negated];
     })
     .reduce(
       (acc, [k, v, negated]) => {
@@ -353,6 +382,7 @@ export const filterVariables = ({ filters, issuableType, filterInfo, filterField
       },
       { not: {} },
     );
+};
 
 // EE-specific feature. Find the implementation in the `ee/`-folder
 export function transformBoardConfig() {

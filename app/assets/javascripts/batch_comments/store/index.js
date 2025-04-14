@@ -7,7 +7,8 @@ import * as getters from './getters';
 export const useBatchComments = defineStore('batchComments', {
   syncWith: {
     store: mrNotes,
-    namespace: 'batchComments',
+    name: 'batchComments',
+    namespaced: true,
   },
   state() {
     return {
@@ -18,6 +19,9 @@ export const useBatchComments = defineStore('batchComments', {
       shouldAnimateReviewButton: false,
       reviewBarRendered: false,
       isMergeRequest: false,
+      drawerOpened: false,
+      // TODO: this gets populated from the sidebar_reviewers.vue, we should have a separate store for this
+      isReviewer: false,
     };
   },
   actions: {

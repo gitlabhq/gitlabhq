@@ -34,10 +34,10 @@ RSpec.describe Projects::ContainerRepository::DeleteTagsService, feature_categor
   shared_examples 'logging an error response' do |message: 'could not delete tags', extra_log: {}|
     it 'logs an error message' do
       log_data = {
-          service_class: 'Projects::ContainerRepository::DeleteTagsService',
-          message: message,
-          container_repository_id: repository.id,
-          project_id: repository.project_id
+        service_class: 'Projects::ContainerRepository::DeleteTagsService',
+        message: message,
+        container_repository_id: repository.id,
+        project_id: repository.project_id
       }
 
       log_data.merge!(extra_log) if extra_log.any?

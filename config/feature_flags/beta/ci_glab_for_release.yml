@@ -1,0 +1,9 @@
+---
+name: ci_glab_for_release
+feature_issue_url: https://gitlab.com/gitlab-org/cli/-/issues/7450
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185109
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/524346
+milestone: '17.11'
+group: group::pipeline authoring
+type: beta
+default_enabled: false

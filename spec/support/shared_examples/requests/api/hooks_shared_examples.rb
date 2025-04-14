@@ -223,7 +223,7 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
 
       context 'the hook is disabled' do
         before do
-          hook.update!(recent_failures: hook.class::EXCEEDED_FAILURE_THRESHOLD)
+          hook.update!(recent_failures: hook.class::TEMPORARILY_DISABLED_FAILURE_THRESHOLD + 1)
         end
 
         it "has the correct alert status", :aggregate_failures do
@@ -237,7 +237,7 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
 
       context 'the hook is backed-off' do
         before do
-          WebHooks::AutoDisabling::FAILURE_THRESHOLD.times { hook.backoff! }
+          WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD.times { hook.backoff! }
           hook.backoff!
         end
 

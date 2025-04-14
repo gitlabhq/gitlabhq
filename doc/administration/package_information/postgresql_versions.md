@@ -40,7 +40,9 @@ Read more about update policies and warnings in the PostgreSQL
 
 | First GitLab version | PostgreSQL versions | Default version for fresh installs | Default version for upgrades | Notes |
 | -------------- | ------------------- | ---------------------------------- | ---------------------------- | ----- |
-| 17.10.0 | 14.15, 16.6 | 16.6 | 16.6 | |
+| 17.11.0 | 14.17, 16.8 | 16.8 | 16.8 | Package upgrades automatically perform an upgrade to PostgreSQL 16 for nodes that are not part of a Geo or HA cluster, unless [opted out](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades). |
+| 17.10.0 | 14.17, 16.8 | 16.8 | 16.8 | Fresh installs now default to PostgreSQL 16. |
+| 17.9.2, 17.8.5, 17.7.7 | 14.17, 16.8 | 14.17 | 16.8 | |
 | 17.8.0 | 14.15, 16.6 | 14.15 | 16.6 | |
 | 17.5.0 | 14.11, 16.4 | 14.11 | 16.4 | Single node upgrades from PostgreSQL 14 to PostgreSQL 16 are now supported. Starting with GitLab 17.5.0, PostgreSQL 16 is fully supported for both new installations and upgrades in Geo deployments (the restriction from 17.4.0 no longer applies). |
 | 17.4.0 | 14.11, 16.4 | 14.11 | 14.11 | PostgreSQL 16 is available for new installations if not using [Geo](../geo/_index.md#requirements-for-running-geo) or [Patroni](../postgresql/_index.md#postgresql-replication-and-failover-for-linux-package-installations). |

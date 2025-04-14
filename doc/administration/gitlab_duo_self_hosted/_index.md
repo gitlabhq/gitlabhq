@@ -8,7 +8,8 @@ title: GitLab Duo Self-Hosted
 
 {{< details >}}
 
-- Tier: Ultimate with GitLab Duo Enterprise - [Start a GitLab Duo Enterprise trial on a paid Ultimate subscription](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Tier: Ultimate
+- Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
@@ -38,7 +39,7 @@ For an overview, see [GitLab Duo Self-Hosted: AI in your private environment](ht
 
 With GitLab Duo Self-Hosted, you can:
 
-- Choose any GitLab-approved LLM.
+- Choose any GitLab-supported LLM.
 - Retain full control over data by keeping all request/response logs in your domain, ensuring complete privacy and security with no external API calls.
 - Isolate the GitLab instance, AI gateway, and models in your own environment.
 - Select specific GitLab Duo features tailored to your users.
@@ -59,12 +60,16 @@ The following table lists the GitLab Duo features, and whether they are availabl
 | [Refactor Code](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                                       | {{< icon name="check-circle-filled" >}} Yes    | GitLab 17.9 and later |
 | [Fix Code](../../user/gitlab_duo_chat/examples.md#fix-code-in-the-ide)                                                                 | {{< icon name="check-circle-filled" >}} Yes    | GitLab 17.9 and later |
 | [AI Impact Dashboard](../../user/analytics/ai_impact_analytics.md)                                                                     | {{< icon name="check-circle-dashed" >}} Beta | GitLab 17.9 and later |
-| [Discussion Summary](../../user/discussions/_index.md#summarize-issue-discussions-with-duo-chat)                                       | {{< icon name="dash-circle" >}} No      | Not applicable |
-| [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/_index.md#gitlab-duo-for-the-cli)                                          | {{< icon name="dash-circle" >}} No      | Not applicable |
-| [Merge Commit Message Generation](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message)          | {{< icon name="dash-circle" >}} No      | Not applicable |
-| [Root Cause Analysis](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)                   | {{< icon name="dash-circle" >}} No      | Not applicable |
-| [Vulnerability Explanation](../../user/application_security/vulnerabilities/_index.md#explaining-a-vulnerability)                      | {{< icon name="dash-circle" >}} No      | Not applicable |
-| [Vulnerability Resolution](../../user/application_security/vulnerabilities/_index.md#vulnerability-resolution)                         | {{< icon name="dash-circle" >}} No      | Not applicable |
+| [Root Cause Analysis](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)                   | {{< icon name="check-circle-dashed" >}} Beta      | GitLab 17.10 and later |
+| [Vulnerability Explanation](../../user/application_security/vulnerabilities/_index.md#explaining-a-vulnerability)                      | {{< icon name="check-circle-dashed" >}} Beta      | GitLab 17.11 and later |
+| [Vulnerability Resolution](../../user/application_security/vulnerabilities/_index.md#vulnerability-resolution)                         | {{< icon name="check-circle-dashed" >}} Beta      | GitLab 17.11 and later |
+| [Discussion Summary](../../user/discussions/_index.md#summarize-issue-discussions-with-duo-chat)                                       | {{< icon name="check-circle-dashed" >}} Beta      | GitLab 17.11 and later |
+| [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/_index.md#gitlab-duo-for-the-cli)                                          | {{< icon name="check-circle-dashed" >}} Beta      | GitLab 17.11 and later |
+| [Summarize a Code Review](../../user/project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review)                          | {{< icon name="check-circle-dashed" >}} Experiment      | GitLab 17.11 and later |
+| [Code Review](../../user/project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code)                               | {{< icon name="dash-circle" >}} No      | Not applicable |
+| [Merge Commit Message Generation](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message)          | {{< icon name="check-circle-dashed" >}} Beta      | GitLab 17.11 and later |
+| [Summarize New Merge Request](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes)          | {{< icon name="check-circle-dashed" >}} Beta      | GitLab 17.11 and later |
+| [Issue Description Generation](../../user/project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation)              | {{< icon name="dash-circle" >}} No      | Not applicable |
 
 #### Supported Duo Chat features
 
@@ -80,15 +85,15 @@ You can use the following GitLab Duo Chat features with GitLab Duo Self-Hosted:
 - [Ask about or generate code](../../user/gitlab_duo_chat/examples.md#ask-about-or-generate-code)
 - [Ask follow up questions](../../user/gitlab_duo_chat/examples.md#ask-follow-up-questions)
 - [Ask about errors](../../user/gitlab_duo_chat/examples.md#ask-about-errors)
-- [Ask about specific files](../../user/gitlab_duo_chat/examples.md#ask-about-specific-files)
+- [Ask about specific files](../../user/gitlab_duo_chat/examples.md#ask-about-specific-files-in-the-ide)
 - [Ask about CI/CD](../../user/gitlab_duo_chat/examples.md#ask-about-cicd)
 
 ### Prerequisites
 
 Before setting up the GitLab Duo Self-Hosted infrastructure, you must have:
 
-- A [supported model](../gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md) (either cloud-based or on-premises).
-- A [supported serving platform](../gitlab_duo_self_hosted/supported_llm_serving_platforms.md) (either cloud-based or on-premises).
+- A [supported model](supported_models_and_hardware_requirements.md) (either cloud-based or on-premises).
+- A [supported serving platform](supported_llm_serving_platforms.md) (either cloud-based or on-premises).
 - A [locally hosted AI gateway](../../install/install_ai_gateway.md).
 - [Ultimate with GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?toggle=gitlab-duo-pro).
 - GitLab 17.9 or later.
@@ -105,7 +110,7 @@ The differences between these options are:
 | Feature | Self-hosted AI gateway | GitLab.com AI gateway |
 |---------|------------------------|------------------------|
 | Infrastructure requirements | Requires hosting your own AI gateway and models | No additional infrastructure needed |
-| Model options | Choose from [supported models](../gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md) | Uses the default GitLab external vendor LLMs |
+| Model options | Choose from [supported models](supported_models_and_hardware_requirements.md) | Uses the default GitLab external vendor LLMs |
 | Network requirements | Can operate in fully isolated networks | Requires internet connectivity |
 | Responsibilities | You set up your infrastructure, and do your own maintenance | GitLab does the set up and maintenance |
 
@@ -153,19 +158,19 @@ To set up a fully isolated GitLab Duo Self-Hosted infrastructure:
 
 1. **Install a Large Language Model (LLM) Serving Infrastructure**
 
-   - We support various platforms for serving and hosting your LLMs, such as vLLM, AWS Bedrock, and Azure OpenAI. To help you choose the most suitable option for effectively deploying your models, see the [supported LLM platforms documentation](../gitlab_duo_self_hosted/supported_llm_serving_platforms.md) for more information on each platform's features.
+   - We support various platforms for serving and hosting your LLMs, such as vLLM, AWS Bedrock, and Azure OpenAI. To help you choose the most suitable option for effectively deploying your models, see the [supported LLM platforms documentation](supported_llm_serving_platforms.md) for more information on each platform's features.
 
-   - We provide a comprehensive matrix of supported models along with their specific features and hardware requirements. To help select models that best align with your infrastructure needs for optimal performance, see the [supported models and hardware requirements documentation](../gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md).
+   - We provide a comprehensive matrix of supported models along with their specific features and hardware requirements. To help select models that best align with your infrastructure needs for optimal performance, see the [supported models and hardware requirements documentation](supported_models_and_hardware_requirements.md).
 
 1. **Install the GitLab AI gateway**
    [Install the AI gateway](../../install/install_ai_gateway.md) to efficiently configure your AI infrastructure.
 
 1. **Configure GitLab Duo features**
-   See the [Configure GitLab Duo features documentation](../gitlab_duo_self_hosted/configure_duo_features.md) for instructions on how to customize your environment to effectively meet your operational needs.
+   See the [Configure GitLab Duo features documentation](configure_duo_features.md) for instructions on how to customize your environment to effectively meet your operational needs.
 
 1. **Enable logging**
-   You can find configuration details for enabling logging in your environment. For help in using logs to track and manage your system's performance effectively, see the [logging documentation](../gitlab_duo_self_hosted/logging.md).
+   You can find configuration details for enabling logging in your environment. For help in using logs to track and manage your system's performance effectively, see the [logging documentation](logging.md).
 
 ## Related topics
 
-- [Troubleshooting](../gitlab_duo_self_hosted/troubleshooting.md)
+- [Troubleshooting](troubleshooting.md)

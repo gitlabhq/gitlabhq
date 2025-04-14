@@ -31,7 +31,7 @@ This guide explains how to upgrade your deployments with newer or different majo
 The process to check the current versions differs depending on which template you
 are using. First verify which template is in use:
 
-- For self-managed instances, the [stable Auto Deploy template bundled with the GitLab package](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml)
+- For GitLab Self-Managed instances, the [stable Auto Deploy template bundled with the GitLab package](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml)
   is being used.
 - [The GitLab.com stable Auto Deploy template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml)
   is being used if **one** of the following is true:

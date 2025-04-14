@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Application Setting Duo Chat",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "duo_chat_expiration_days": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 30,
+      "description": "Number of days thread should count as expired"
+    },
+    "duo_chat_expiration_column": {
+      "type": "string",
+      "description": "Column used to determine expired thread"
+    }
+  }
+}

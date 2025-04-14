@@ -20,10 +20,7 @@ resource :dashboard, controller: 'dashboard', only: [] do
 
     resources :projects, only: [:index] do
       collection do
-        ## TODO: Migrate `starred` route to 'projects#index'
-        ## Tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/523698
-        get :starred
-        get :contributed, :personal, :member, :inactive, to: 'projects#index'
+        get :contributed, :starred, :personal, :member, :inactive, to: 'projects#index'
       end
     end
   end

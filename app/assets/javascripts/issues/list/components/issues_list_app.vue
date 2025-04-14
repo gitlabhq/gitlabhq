@@ -183,6 +183,7 @@ export default {
     'hasAnyIssues',
     'hasAnyProjects',
     'hasBlockedIssuesFeature',
+    'hasCustomFieldsFeature',
     'hasIssuableHealthStatusFeature',
     'hasIssueDateFilterFeature',
     'hasIssueWeightsFeature',
@@ -347,10 +348,14 @@ export default {
       return !this.isProject && this.hasAnyProjects;
     },
     apiFilterParams() {
-      return convertToApiParams(this.filterTokens);
+      return convertToApiParams(this.filterTokens, {
+        hasCustomFieldsFeature: this.hasCustomFieldsFeature,
+      });
     },
     urlFilterParams() {
-      return convertToUrlParams(this.filterTokens);
+      return convertToUrlParams(this.filterTokens, {
+        hasCustomFieldsFeature: this.hasCustomFieldsFeature,
+      });
     },
     searchQuery() {
       return convertToSearchQuery(this.filterTokens);
@@ -620,7 +625,11 @@ export default {
       return !isEmpty(this.activeIssuable);
     },
     issuesDrawerEnabled() {
-      return this.glFeatures?.issuesListDrawer || gon.current_user_use_work_items_view;
+      return (
+        this.glFeatures?.issuesListDrawer ||
+        this.glFeatures?.workItemViewForIssues ||
+        gon.current_user_use_work_items_view
+      );
     },
   },
   watch: {
@@ -636,14 +645,16 @@ export default {
     },
   },
   created() {
-    this.updateData(this.initialSort);
+    this.updateData(getParameterByName(PARAM_SORT) || this.initialSort);
     this.cache = {};
+    window.addEventListener('popstate', this.checkDrawerParams);
   },
   mounted() {
     eventHub.$on('issuables:toggleBulkEdit', this.toggleBulkEditSidebar);
   },
   beforeDestroy() {
     eventHub.$off('issuables:toggleBulkEdit', this.toggleBulkEditSidebar);
+    window.removeEventListener('popstate', this.checkDrawerParams);
   },
   methods: {
     // eslint-disable-next-line max-params
@@ -853,7 +864,9 @@ export default {
         sortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
       }
 
-      const tokens = getFilterTokens(window.location.search);
+      const tokens = getFilterTokens(window.location.search, {
+        hasCustomFieldsFeature: this.hasCustomFieldsFeature,
+      });
       this.filterTokens = groupMultiSelectFilterTokens(tokens, this.searchTokens);
 
       if (this.apiFilterParams) {
@@ -967,7 +980,8 @@ export default {
     checkDrawerParams() {
       const queryParam = getParameterByName(DETAIL_VIEW_QUERY_PARAM_NAME);
 
-      if (this.activeIssuable || !queryParam) {
+      if (!queryParam) {
+        this.activeIssuable = null;
         return;
       }
 

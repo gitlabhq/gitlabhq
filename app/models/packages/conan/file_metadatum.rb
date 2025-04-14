@@ -13,9 +13,9 @@ class Packages::Conan::FileMetadatum < ApplicationRecord
   validates :package_file, presence: true
   validates :package_reference, absence: true, if: :recipe_file?
   validates :package_reference, presence: true, if: :package_file?
+  validates :package_revision, absence: true, if: :recipe_file?
   validate :conan_package_type
-  # package_revision is not supported yet
-  validates :package_revision, absence: true
+  validate :ensure_recipe_revision_with_package_revision
 
   enum conan_file_type: { recipe_file: 1, package_file: 2 }
 
@@ -32,7 +32,7 @@ class Packages::Conan::FileMetadatum < ApplicationRecord
   def package_revision_value
     return unless package_file?
 
-    DEFAULT_REVISION
+    package_revision&.revision || DEFAULT_REVISION
   end
 
   def package_reference_value
@@ -44,6 +44,16 @@ class Packages::Conan::FileMetadatum < ApplicationRecord
   def conan_package_type
     unless package_file&.package&.conan?
       errors.add(:base, _('Package type must be Conan'))
+    end
+  end
+
+  def ensure_recipe_revision_with_package_revision
+    return unless package_file?
+
+    if package_revision.present? && !recipe_revision.present?
+      errors.add(:recipe_revision, _('must be present when package revision exists'))
+    elsif recipe_revision.present? && !package_revision.present?
+      errors.add(:package_revision, _('must be present when recipe revision exists'))
     end
   end
 end

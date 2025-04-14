@@ -84,14 +84,14 @@ Notification scope is applied from the broadest to most specific levels:
 
 For each project and group you can select one of the following levels:
 
-| Level       | Description                                                 |
-| ----------- | ----------------------------------------------------------- |
-| Global      | Your global settings apply.                                 |
-| Watch       | Receive notifications for any activity.                     |
+| Level       | Description |
+| ----------- | ----------- |
+| Global      | Your global settings apply. |
+| Watch       | Receive notifications for [most activity](#events-not-included-in-the-watch-level). |
 | Participate | Receive notifications for threads you have participated in. |
 | On mention  | Receive notifications when you are [mentioned](../discussions/_index.md#mentions) in a comment. |
-| Disabled    | Receive no notifications.                                   |
-| Custom      | Receive notifications for selected events and threads you have participated in.                  |
+| Disabled    | Receive no notifications. |
+| Custom      | Receive notifications for selected events and threads you have participated in. |
 
 ### Global notification settings
 
@@ -189,6 +189,8 @@ Users are notified of the following events:
 | User added to project                    | User            | Sent when user is added to project.                                                                                                     |
 | Group access expired                     | Group members   | Sent when user's access to a group expires in seven days. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3._                                                                                 |
 | Project access expired                   | Project members | Sent when user's access to a project expires in seven days. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3._                                                                                                   |
+| Group scheduled for deletion             | Group Owners    | Sent when group is scheduled for deletion. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/522883) in GitLab 17.11_         |
+| Project scheduled for deletion           | Project Owners  | Sent when project is scheduled for deletion. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/522883) in GitLab 17.11_          |
 
 ## Notifications on issues, merge requests, and epics
 
@@ -205,13 +207,28 @@ In issues, merge requests, and epics, for most events, the notification is sent 
   - Anyone [mentioned](../discussions/_index.md#mentions) by username in the title
     or description.
   - Anyone mentioned by username in a comment if their notification level is "Participating" or higher.
-- Watchers: users with notification level "Watch".
+- Watchers: users with notification level "Watch" ([with some exceptions](#events-not-included-in-the-watch-level)).
 - Subscribers: anyone who manually subscribed to notifications.
 - Custom: users with notification level "Custom" who turned on notifications for a fitting type of events.
 
 To minimize the number of notifications that do not require any action, eligible
-approvers are not notified for all the activities in their projects. To turn on such notifications, they have
-to change their user notification settings to **Watch** instead.
+approvers are not notified for all the activities in their projects.
+
+To get notified about all events, change your user notification settings to **Custom** and select
+all the options.
+
+#### Events not included in the Watch level
+
+If you set the notification level to **Watch**, you get notified about _almost all_ events, with
+these exceptions:
+
+- Somebody pushes to a merge request.
+- Issue is due the next day.
+- Pipeline succeeds.
+- Merge request that you're eligible to approve is created.
+
+Issue [501083](https://gitlab.com/gitlab-org/gitlab/-/issues/501083) tracks adding these events to
+the **Watch** level.
 
 ### Edit notification settings for issues, merge requests, and epics
 
@@ -252,6 +269,8 @@ Learn how to [opt out of all emails from GitLab](#opt-out-of-all-gitlab-emails).
 The following table presents the events that generate notifications for issues, merge requests, and
 epics:
 
+<!-- For issue due timing source, see 'issue_due_scheduler_worker' in https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/1_settings.rb -->
+
 | Type | Event | Sent to |
 |------|-------|---------|
 | Epic | Closed | Subscribers and participants. |
@@ -259,7 +278,7 @@ epics:
 | Epic | New note | Participants, Watchers, Subscribers, and Custom notification level with this event selected. Also anyone mentioned by username in the comment, with notification level "Mention" or higher. |
 | Epic | Reopened | Subscribers and participants. |
 | Issue | Closed | Subscribers and participants. |
-| Issue | Due | Participants and Custom notification level with this event selected. |
+| Issue | Due tomorrow. The notification is sent at 00:50 in the server's time zone (for GitLab.com this is UTC) for open issues with a due date of the next calendar day. | Participants and Custom notification level with this event selected. |
 | Issue | Milestone changed | Subscribers and participants. |
 | Issue | Milestone removed | Subscribers and participants. |
 | Issue | New | Anyone mentioned by username in the description, with notification level "Mention" or higher. |
@@ -301,7 +320,7 @@ To always receive notifications on your own issues, merge requests, and so on, t
 
 {{< alert type="note" >}}
 
-This feature is enabled by default for self-managed instances. Administrators may disable this feature
+This feature is enabled by default for GitLab Self-Managed instances. Administrators may disable this feature
 through the [Sign-in restrictions](../../administration/settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins) section of the UI.
 The feature is always enabled on GitLab.com.
 

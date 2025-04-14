@@ -288,6 +288,9 @@ RSpec.describe API::Helpers, feature_category: :shared do
           allow(helper).to receive(:route_authentication_setting).and_return({})
           allow(helper).to receive(:route_setting).with(:authorization).and_return(job_token_policies: job_token_policy)
           allow(user).to receive(:ci_job_token_scope).and_return(user.set_ci_job_token_scope!(job))
+          allow_next_found_instance_of(Project) do |project|
+            allow(project).to receive(:job_token_policies_enabled?).and_return(true)
+          end
         end
 
         subject(:find_project!) { helper.find_project!(project.id) }
@@ -347,9 +350,11 @@ RSpec.describe API::Helpers, feature_category: :shared do
             find_project!
           end
 
-          context 'when the `add_policies_to_ci_job_token` feature flag is disabled' do
+          context 'when job token policies are disabled' do
             before do
-              stub_feature_flags(add_policies_to_ci_job_token: false)
+              allow_next_found_instance_of(Project) do |project|
+                allow(project).to receive(:job_token_policies_enabled?).and_return(false)
+              end
             end
 
             it { is_expected.to eq project }
@@ -1527,12 +1532,13 @@ RSpec.describe API::Helpers, feature_category: :shared do
       end
 
       it 'redirects to a CDN-fronted URL' do
-        expect(helper).to receive(:redirect)
         expect_next_instance_of(ObjectStorage::CDN::FileUrl) do |instance|
           expect(instance).to receive(:url).and_call_original
         end
+
         expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: artifact.file.model).and_call_original
         expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: false).and_call_original
+        expect(helper).to receive(:redirect)
 
         subject
       end
@@ -1541,9 +1547,9 @@ RSpec.describe API::Helpers, feature_category: :shared do
         let(:is_head_request) { true }
 
         it 'redirects to a CDN-fronted URL' do
-          expect(helper).to receive(:redirect)
           expect(ObjectStorage::S3).to receive(:signed_head_url).and_call_original
           expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: artifact.file.model).and_call_original
+          expect(helper).to receive(:redirect)
 
           subject
         end

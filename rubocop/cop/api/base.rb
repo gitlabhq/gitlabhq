@@ -3,29 +3,29 @@
 module RuboCop
   module Cop
     module API
+      # This cop checks that APIs subclass API::Base.
+      #
+      # @example
+      #
+      #   # bad
+      #   module API
+      #     class Projects < Grape::API
+      #     end
+      #   end
+      #
+      #   module API
+      #     class Projects < Grape::API::Instance
+      #     end
+      #   end
+      #
+      #   # good
+      #   module API
+      #     class Projects < ::API::Base
+      #     end
+      #   end
       class Base < RuboCop::Cop::Base
         extend RuboCop::Cop::AutoCorrector
 
-        # This cop checks that APIs subclass API::Base.
-        #
-        # @example
-        #
-        # # bad
-        # module API
-        #   class Projects < Grape::API
-        #   end
-        # end
-        #
-        # module API
-        #   class Projects < Grape::API::Instance
-        #   end
-        # end
-        #
-        # # good
-        # module API
-        #   class Projects < ::API::Base
-        #   end
-        # end
         MSG = 'Inherit from ::API::Base instead of Grape::API::Instance or Grape::API. ' \
               'For more details check https://gitlab.com/gitlab-org/gitlab/-/issues/215230.'
 

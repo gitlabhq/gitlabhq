@@ -247,4 +247,71 @@ RSpec.describe Gitlab::Config::Entry::Validators, feature_category: :pipeline_co
       end
     end
   end
+
+  describe described_class::DurationValidator do
+    using RSpec::Parameterized::TableSyntax
+
+    describe '#validate_each' do
+      context 'when variable is allowed' do
+        before do
+          klass.instance_eval do
+            validates :config, duration: { variable: true }
+          end
+
+          allow(instance).to receive(:config).and_return(config)
+        end
+
+        where(:config, :valid_result) do
+          '30s'                 | true
+          '42'                  | true
+          '42 seconds'          | true
+          '3 mins 4 sec'        | true
+          '2 hrs 20 min'        | true
+          '2h20min'             | true
+          '6 mos 1 day'         | true
+          '47 yrs 6 mos and 4d' | true
+          '3 weeks and 2 days'  | true
+          '$DURATION'           | true
+          '${DURATION}'         | true
+          '%DURATION%'          | true
+          '1$DURATION'          | true
+          'invalid'             | false
+          ''                    | false
+        end
+
+        with_them do
+          it 'validates the duration with variables' do
+            expect(instance.valid?).to eq(valid_result)
+
+            expect(instance.errors.messages_for(:config)).to include(/should be a duration/) unless valid_result
+          end
+        end
+      end
+
+      context 'when variable is not allowed and limit is set' do
+        before do
+          klass.instance_eval do
+            validates :config, duration: { limit: '1h' }
+          end
+
+          allow(instance).to receive(:config).and_return(config)
+        end
+
+        where(:config, :valid_result, :error_message) do
+          '30m'       | true  | nil
+          '2h'        | false | 'should not exceed the limit'
+          'invalid'   | false | 'should be a duration'
+          '$DURATION' | false | 'should be a duration'
+        end
+
+        with_them do
+          it 'validates duration and applies limit' do
+            expect(instance.valid?).to eq(valid_result)
+
+            expect(instance.errors.messages_for(:config)).to include(/#{error_message}/) unless valid_result
+          end
+        end
+      end
+    end
+  end
 end

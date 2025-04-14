@@ -14,6 +14,7 @@ RSpec.describe GitlabSchema.types['Discussion'] do
       resolved_at
       resolved_by
       noteable
+      user_permissions
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

@@ -1,26 +1,46 @@
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
-import { Mousetrap } from '~/lib/mousetrap';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 import TreeList from '~/diffs/components/tree_list.vue';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import { getCookie, removeCookie, setCookie } from '~/lib/utils/common_utils';
 import { TREE_LIST_WIDTH_STORAGE_KEY } from '~/diffs/constants';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import * as types from '~/diffs/store/mutation_types';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+
+Vue.use(PiniaVuePlugin);
 
 describe('DiffsFileTree', () => {
-  useLocalStorageSpy();
-
+  let pinia;
   let wrapper;
 
-  const createComponent = ({ visible = true, ...rest } = {}) => {
-    wrapper = shallowMount(DiffsFileTree, {
-      propsData: {
-        visible,
-        ...rest,
-      },
-    });
+  useLocalStorageSpy();
+
+  const createComponent = (propsData = {}) => {
+    wrapper = extendedWrapper(
+      shallowMount(DiffsFileTree, {
+        pinia,
+        propsData,
+      }),
+    );
   };
+
+  beforeAll(() => {
+    global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = 100;
+  });
+
+  afterAll(() => {
+    global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = undefined;
+  });
+
+  beforeEach(() => {
+    pinia = createTestingPinia();
+    useLegacyDiffs();
+  });
 
   it('re-emits clickFile event', () => {
     const obj = {};
@@ -29,33 +49,11 @@ describe('DiffsFileTree', () => {
     expect(wrapper.emitted('clickFile')).toStrictEqual([[obj]]);
   });
 
-  describe('visibility', () => {
-    describe('when renderDiffFiles and showTreeList are true', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      it('tree list is visible', () => {
-        expect(wrapper.findComponent(TreeList).exists()).toBe(true);
-      });
-    });
-
-    describe('when renderDiffFiles and showTreeList are false', () => {
-      beforeEach(() => {
-        createComponent({ visible: false });
-      });
-
-      it('tree list is hidden', () => {
-        expect(wrapper.findComponent(TreeList).exists()).toBe(false);
-      });
-    });
-  });
-
-  it('toggles when "f" hotkey is pressed', async () => {
+  it('sets current file on click', () => {
+    const file = { fileHash: 'foo' };
     createComponent();
-    Mousetrap.trigger('f');
-    await nextTick();
-    expect(wrapper.emitted('toggled')).toStrictEqual([[]]);
+    wrapper.findComponent(TreeList).vm.$emit('clickFile', file);
+    expect(useLegacyDiffs()[types.SET_CURRENT_DIFF_FILE]).toHaveBeenCalledWith(file.fileHash);
   });
 
   describe('size', () => {
@@ -133,9 +131,74 @@ describe('DiffsFileTree', () => {
     });
   });
 
-  it('passes down loadedFiles table to tree list', () => {
+  describe('floating resize', () => {
+    const getRootStyle = () =>
+      window.getComputedStyle(wrapper.findByTestId('file-browser-tree').element);
+    const getWrapperStyle = () =>
+      window.getComputedStyle(wrapper.findByTestId('file-browser-floating-wrapper').element);
+
+    it('applies cached sizings on resize start', async () => {
+      jest.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(() => ({
+        height: 200,
+        top: 100,
+      }));
+      createComponent({ floatingResize: true });
+      wrapper.findComponent(PanelResizer).vm.$emit('resize-start');
+      await nextTick();
+      const rootStyle = getRootStyle();
+      const style = getWrapperStyle();
+      expect(rootStyle.height).toBe('200px');
+      expect(style.width).toBe('350px');
+      expect(style.top).toBe('100px');
+    });
+
+    it('resizes wrapper element', async () => {
+      createComponent({ floatingResize: true });
+      wrapper.findComponent(PanelResizer).vm.$emit('resize-start');
+      await nextTick();
+      wrapper.findComponent(PanelResizer).vm.$emit('update:size', 140);
+      await nextTick();
+      const rootStyle = getRootStyle();
+      const style = getWrapperStyle();
+      expect(rootStyle.width).toBe('350px');
+      expect(style.width).toBe('140px');
+    });
+
+    it('sets sizings on resize end', async () => {
+      createComponent({ floatingResize: true });
+      wrapper.findComponent(PanelResizer).vm.$emit('resize-start');
+      await nextTick();
+      wrapper.findComponent(PanelResizer).vm.$emit('update:size', 140);
+      await nextTick();
+      wrapper.findComponent(PanelResizer).vm.$emit('resize-end', 140);
+      await nextTick();
+      const rootStyle = getRootStyle();
+      const style = getWrapperStyle();
+      expect(rootStyle.width).toBe('140px');
+      expect(style.width).toBe('');
+      expect(style.top).toBe('');
+    });
+
+    it('sets sizings after timeout', async () => {
+      createComponent({ floatingResize: true });
+      wrapper.findComponent(PanelResizer).vm.$emit('resize-start');
+      await nextTick();
+      wrapper.findComponent(PanelResizer).vm.$emit('update:size', 140);
+      await nextTick();
+      jest.advanceTimersByTime(100);
+      await nextTick();
+      const rootStyle = getRootStyle();
+      const style = getWrapperStyle();
+      expect(rootStyle.width).toBe('140px');
+      expect(style.width).toBe('140px');
+    });
+  });
+
+  it('passes down props to tree list', () => {
     const loadedFiles = { foo: true };
-    createComponent({ loadedFiles });
+    const totalFilesCount = '20';
+    createComponent({ loadedFiles, totalFilesCount });
     expect(wrapper.findComponent(TreeList).props('loadedFiles')).toBe(loadedFiles);
+    expect(wrapper.findComponent(TreeList).props('totalFilesCount')).toBe(totalFilesCount);
   });
 });

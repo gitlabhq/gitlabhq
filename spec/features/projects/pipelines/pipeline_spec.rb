@@ -1276,7 +1276,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
         within_testid('pipeline-header') do
           expect(page).to have_selector(
-            %(span[title="#{pipeline.error_messages.first.content}"]))
+            %(button[title="#{pipeline.error_messages.first.content}"]))
         end
       end
 
@@ -1289,7 +1289,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
         within_testid('pipeline-header') do
           expect(page).to have_selector(
-            %(span[title="#{pipeline.present.failure_reason}"]))
+            %(button[title="#{pipeline.present.failure_reason}"]))
         end
       end
     end

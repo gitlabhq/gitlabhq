@@ -214,6 +214,29 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
     end
   end
 
+  describe 'PUT update_migration' do
+    let(:cluster) { create(:cluster, :group, groups: [group]) }
+    let(:redirect_path) { group_cluster_path(group, cluster, tab: 'migrate') }
+
+    def go
+      put :update_migration, params: params.merge(group_id: group, id: cluster)
+    end
+
+    include_examples 'cluster update migration', :group, :user
+
+    describe 'security' do
+      it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { expect { go }.to be_allowed_for(:admin) }
+      it('is denied for admin when admin mode is disabled') { expect { go }.to be_denied_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(group) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(group) }
+      it { expect { go }.to be_denied_for(:developer).of(group) }
+      it { expect { go }.to be_denied_for(:reporter).of(group) }
+      it { expect { go }.to be_denied_for(:guest).of(group) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+  end
+
   describe 'DELETE clear cluster cache' do
     let_it_be(:cluster) { create(:cluster, :group, groups: [group]) }
     let_it_be(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster, project: create(:project)) }

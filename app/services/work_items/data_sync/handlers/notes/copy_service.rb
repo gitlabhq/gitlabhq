@@ -118,6 +118,7 @@ module WorkItems
               description_version.attributes.tap do |attrs|
                 attrs['id'] = description_version_ids_map[description_version.id]
                 attrs['issue_id'] = target_noteable.id
+                attrs['namespace_id'] = target_noteable.namespace_id
               end
             end
           end

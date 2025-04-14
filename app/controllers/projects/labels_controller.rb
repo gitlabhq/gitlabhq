@@ -148,7 +148,8 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def flash_notice_for(label, group)
-    ''.html_safe + "#{label.title} promoted to " + view_context.link_to('<u>group label</u>'.html_safe, group_labels_path(group)) + '.'
+    safe_link = view_context.link_to('<u>group label</u>'.html_safe, group_labels_path(group))
+    view_context.safe_join([ERB::Util.html_escape(label.title), " promoted to ", safe_link, "."])
   end
 
   protected

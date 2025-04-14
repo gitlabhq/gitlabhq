@@ -52,6 +52,7 @@ describe('WorkItemRelationships', () => {
     workItemLinkedItemsHandler = workItemLinkedItemsSuccessHandler,
     removeLinkedWorkItemMutationHandler = removeLinkedWorkItemSuccessMutationHandler,
     canAdminWorkItemLink = true,
+    hasBlockedWorkItemsFeature = true,
   } = {}) => {
     const mockApollo = createMockApollo([
       [workItemLinkedItemsQuery, workItemLinkedItemsHandler],
@@ -66,6 +67,7 @@ describe('WorkItemRelationships', () => {
         workItemFullPath: 'gitlab-org/gitlab-test',
         canAdminWorkItemLink,
         workItemType,
+        hasBlockedWorkItemsFeature,
       },
       mocks: {
         $toast,
@@ -118,6 +120,23 @@ describe('WorkItemRelationships', () => {
     expect(findWorkItemRelationshipForm().exists()).toBe(false);
   });
 
+  it.each`
+    hasBlockedWorkItemsFeature | emptyStateMessage
+    ${true}                    | ${"Link items together to show that they're related or that one is blocking others."}
+    ${false}                   | ${"Link items together to show that they're related."}
+  `(
+    'renders the component with correct empty state message when hasBlockedWorkItemsFeature is $hasBlockedWorkItemsFeature',
+    async ({ hasBlockedWorkItemsFeature, emptyStateMessage }) => {
+      await createComponent({
+        workItemLinkedItemsHandler: jest.fn().mockResolvedValue(workItemEmptyLinkedItemsResponse),
+        hasBlockedWorkItemsFeature,
+      });
+
+      expect(findEmptyRelatedMessageContainer().exists()).toBe(true);
+      expect(findEmptyRelatedMessageContainer().text()).toBe(emptyStateMessage);
+    },
+  );
+
   it('renders blocking, blocked by and related to linked item lists with proper count', async () => {
     await createComponent();
 
@@ -148,6 +167,7 @@ describe('WorkItemRelationships', () => {
 
     await findAddButton().vm.$emit('click');
     expect(findWorkItemRelationshipForm().exists()).toBe(true);
+    expect(findWorkItemRelationshipForm().props('hasBlockedWorkItemsFeature')).toBe(true);
 
     await findWorkItemRelationshipForm().vm.$emit('cancel');
     expect(findWorkItemRelationshipForm().exists()).toBe(false);

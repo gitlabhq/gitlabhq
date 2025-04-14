@@ -1,28 +1,27 @@
 # frozen_string_literal: true
 
-# This cop checks for missing GraphQL type annotations on resolvers
-#
-# @example
-#
-#   # bad
-#   module Resolvers
-#     class NoTypeResolver < BaseResolver
-#       field :some_field, GraphQL::Types::String
-#     end
-#   end
-#
-#   # good
-#   module Resolvers
-#     class WithTypeResolver < BaseResolver
-#       type MyType, null: true
-#
-#       field :some_field, GraphQL::Types::String
-#     end
-#   end
-
 module RuboCop
   module Cop
     module Graphql
+      # This cop checks for missing GraphQL type annotations on resolvers
+      #
+      # @example
+      #
+      #   # bad
+      #   module Resolvers
+      #     class NoTypeResolver < BaseResolver
+      #       field :some_field, GraphQL::Types::String
+      #     end
+      #   end
+      #
+      #   # good
+      #   module Resolvers
+      #     class WithTypeResolver < BaseResolver
+      #       type MyType, null: true
+      #
+      #       field :some_field, GraphQL::Types::String
+      #     end
+      #   end
       class ResolverType < RuboCop::Cop::Base
         MSG = 'Missing type annotation: Please add `type` DSL method call. ' \
           'e.g: type UserType.connection_type, null: true'

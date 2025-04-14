@@ -7,7 +7,9 @@ class AddNullProjectIdIndexToZoektRepos < Gitlab::Database::Migration[2.2]
   INDEX_NAME = "index_zoekt_repos_with_missing_project_id"
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- large tables
     add_concurrent_index :zoekt_repositories, :project_id, name: INDEX_NAME, where: "project_id IS NULL"
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

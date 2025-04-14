@@ -8,7 +8,8 @@ title: Configure GitLab to access GitLab Duo Self-Hosted
 
 {{< details >}}
 
-- Tier: Ultimate with GitLab Duo Enterprise - [Start a GitLab Duo Enterprise trial on a paid Ultimate subscription](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Tier: Ultimate
+- Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
@@ -39,9 +40,15 @@ To configure your GitLab instance to access the available self-hosted models in 
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
-1. In the **GitLab Duo** section, select **Change configuration**.
+1. Select **Change configuration**.
 1. Under **Local AI Gateway URL**, enter your AI Gateway URL.
 1. Select **Save changes**.
+
+{{< alert type="note" >}}
+
+If your AI gateway URL points to a local network or private IP address (for example, `172.31.x.x` or internal hostnames like `ip-172-xx-xx-xx.region.compute.internal`), GitLab might block the request for security reasons. To allow requests to this address, [add the address to the IP allowlist](../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
+
+{{< /alert >}}
 
 ## Configure the self-hosted model
 
@@ -49,7 +56,7 @@ Prerequisites:
 
 - You must be an administrator.
 - You must have an Ultimate license.
-- You must have a Duo Enterprise license add-on.
+- You must have a GitLab Duo Enterprise license add-on.
 
 To configure a self-hosted model:
 
@@ -63,7 +70,7 @@ To configure a self-hosted model:
 1. Select **Add self-hosted model**.
 1. Complete the fields:
    - **Deployment name**: Enter a name to uniquely identify the model deployment, for example, `Mixtral-8x7B-it-v0.1 on GCP`.
-   - **Model family**: Select the model family the deployment belongs to. Only GitLab-approved models
+   - **Model family**: Select the model family the deployment belongs to. Only GitLab-supported models
      are in this list.
    - **Endpoint**: Enter the URL where the model is hosted.
      - For more information about configuring the endpoint for models deployed through vLLM, see the [vLLM documentation](supported_llm_serving_platforms.md#endpoint-configuration).
@@ -86,14 +93,14 @@ Prerequisites:
 
 - You must be an administrator.
 - You must have an Ultimate license.
-- You must have a Duo Enterprise license add-on.
+- You must have a GitLab Duo Enterprise license add-on.
 
 To enable self-hosted [beta](../../policy/development_stages_support.md#beta) models and features:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
-1. In the **GitLab Duo** section, select **Change configuration**.
-1. Under **Self-hosted AI models**, select the **Use beta models and features in GitLab Duo Self-Hosted** checkbox.
+1. Select **Change configuration**.
+1. Under **Self-hosted beta models and features**, select the **Use beta models and features in GitLab Duo Self-Hosted** checkbox.
 1. Select **Save changes**.
 
 {{< alert type="note" >}}
@@ -102,7 +109,7 @@ Turning on beta self-hosted models and features also accepts the [GitLab Testing
 
 {{< /alert >}}
 
-For more information, see the [list of available beta models](supported_models_and_hardware_requirements.md) under evaluation.
+For more information, see the [list of available beta models](supported_models_and_hardware_requirements.md#experimental-and-beta-models) under evaluation.
 
 ## Configure GitLab Duo features to use self-hosted models
 
@@ -110,7 +117,7 @@ Prerequisites:
 
 - You must be an administrator.
 - You must have an Ultimate license.
-- You must have a Duo Enterprise license add-on.
+- You must have a GitLab Duo Enterprise license add-on.
 
 ### View configured features
 
@@ -125,9 +132,39 @@ Prerequisites:
 
 ### Configure the feature to use a self-hosted model
 
-Configure the GitLab Duo feature to send queries to the configured self-hosted model:
+Configure the GitLab Duo feature and sub-feature to send queries to the configured self-hosted model:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo Self-Hosted**.
 1. Select the **AI-powered features** tab.
-1. For the feature you want to configure, from the dropdown list, choose the self-hosted model you want to use. For example, `Mistral`.
+1. For the feature and sub-feature you want to configure, from the dropdown list, choose the self-hosted model you want to use.
+
+   For example, for the code generation sub-feature under GitLab Duo Code Suggestions, you can select **claude sonnet on bedrock (Claude 3)**.
+
+   ![GitLab Duo Self-Hosted Feature Configuration](../img/gitlab_duo_self_hosted_feature_configuration_v17_11.png)
+
+#### GitLab Duo Chat sub-feature fall back configuration
+
+When configuring GitLab Duo Chat sub-features, if you do not select a specific self-hosted model for a sub-feature, that sub-feature automatically falls back to using the self-hosted model configured for **General Chat**. This ensures all Chat functionality works even if you have not explicitly configured each sub-feature with its own self-hosted model.
+
+### Self-host the GitLab documentation
+
+If your setup of GitLab Duo Self-Hosted stops you from accessing the GitLab documentation at `docs.gitlab.com`, you can self-host the documentation instead. For more information, see how to [host the GitLab product documentation](../docs_self_host.md).
+
+### Disable GitLab Duo features
+
+To disable a feature, you must explicitly select **Disabled** when configuring a feature or sub-feature.
+
+- Not choosing a model for a sub-feature is insufficient.
+- For Chat sub-features, not selecting a model causes that sub-feature to [fall back to using the model configured for **General Chat**](#gitlab-duo-chat-sub-feature-fall-back-configuration).
+
+To disable a GitLab Duo feature or sub-feature:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **GitLab Duo Self-Hosted**.
+1. Select the **AI-powered features** tab.
+1. For the feature or sub-feature you want to disable, from the dropdown list, select **Disabled**.
+
+   For example, to specifically disable the `Write Test` and `Refactor Code` features, select **Disabled**:
+
+   ![Disabling GitLab Duo Feature](../img/gitlab_duo_self_hosted_disable_feature_v17_11.png)

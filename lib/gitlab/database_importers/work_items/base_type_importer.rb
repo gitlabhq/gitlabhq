@@ -211,7 +211,7 @@ module Gitlab
           base_types = ::WorkItems::Type::BASE_TYPES.map do |type, attributes|
             attributes
               .slice(:name, :icon_name, :id)
-              .merge(created_at: current_time, updated_at: current_time, base_type: type, correct_id: attributes[:id])
+              .merge(created_at: current_time, updated_at: current_time, base_type: type)
           end
 
           ::WorkItems::Type.upsert_all(

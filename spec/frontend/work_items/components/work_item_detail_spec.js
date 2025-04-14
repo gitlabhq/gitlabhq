@@ -2,6 +2,7 @@ import { GlAlert, GlEmptyState, GlIntersectionObserver } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -37,9 +38,9 @@ import workspacePermissionsQuery from '~/work_items/graphql/workspace_permission
 import workItemLinkedItemsQuery from '~/work_items/graphql/work_item_linked_items.query.graphql';
 
 import {
-  mockParent,
   workItemByIidResponseFactory,
   workItemQueryResponse,
+  mockParent,
   workItemLinkedItemsResponse,
   objectiveType,
   epicType,
@@ -49,7 +50,7 @@ import {
   mockUploadDesignMutationResponse,
   mockUploadSkippedDesignMutationResponse,
   mockUploadErrorDesignMutationResponse,
-} from '../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/work_items/components/design_management/cache_updates');
@@ -193,7 +194,6 @@ describe('WorkItemDetail component', () => {
         hasSubepicsFeature,
         fullPath: 'group/project',
         groupPath: 'group',
-        reportAbusePath: '/report/abuse/path',
         hasLinkedItemsEpicsFeature,
       },
       stubs: {
@@ -201,6 +201,7 @@ describe('WorkItemDetail component', () => {
         WorkItemWeight: true,
         WorkItemIteration: true,
         WorkItemHealthStatus: true,
+        WorkItemErrorTracking,
       },
       mocks: {
         $router: router,
@@ -297,7 +298,7 @@ describe('WorkItemDetail component', () => {
     it('renders error tracking widget', () => {
       expect(findErrorTrackingWidget().props()).toEqual({
         fullPath: 'group/project',
-        identifier: '1',
+        iid: '1',
       });
     });
   });
@@ -693,6 +694,30 @@ describe('WorkItemDetail component', () => {
         findHierarchyTree().vm.$emit('show-modal', {
           event,
           modalWorkItem,
+        });
+        await waitForPromises();
+
+        expect(findDrawer().props('activeItem')).toEqual(null);
+      });
+
+      it('closes the drawer when `show-modal` is emitted with `null`', async () => {
+        createComponent({ handler: objectiveHandler, workItemsAlphaEnabled: true });
+        await waitForPromises();
+        const event = {
+          preventDefault: jest.fn(),
+        };
+        const modalWorkItem = { id: 'childWorkItemId' };
+        findHierarchyTree().vm.$emit('show-modal', {
+          event,
+          modalWorkItem,
+        });
+        await waitForPromises();
+
+        expect(findDrawer().props('activeItem')).toEqual(modalWorkItem);
+
+        findHierarchyTree().vm.$emit('show-modal', {
+          event,
+          modalWorkItem: null,
         });
         await waitForPromises();
 
@@ -1253,6 +1278,89 @@ describe('WorkItemDetail component', () => {
       await waitForPromises();
       findShowSidebarButton().vm.$emit('click');
       expect(findRightSidebar().isVisible()).toBe(true);
+    });
+  });
+
+  describe('tracking', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    describe('sidebar visibility tracking', () => {
+      it('tracks when sidebar is toggled', async () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        findWorkItemActions().vm.$emit('toggleSidebar');
+        await nextTick();
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'change_work_item_sidebar_visibility',
+          {
+            label: 'false',
+          },
+          undefined,
+        );
+
+        findWorkItemActions().vm.$emit('toggleSidebar');
+        await nextTick();
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'change_work_item_sidebar_visibility',
+          {
+            label: 'true',
+          },
+          undefined,
+        );
+      });
+
+      it('tracks when show sidebar button is clicked', async () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        createComponent({ showSidebar: false });
+        await waitForPromises();
+
+        findShowSidebarButton().vm.$emit('click');
+        await nextTick();
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'change_work_item_sidebar_visibility',
+          {
+            label: 'true',
+          },
+          undefined,
+        );
+      });
+    });
+
+    describe('description truncation tracking', () => {
+      it('tracks when truncation setting is toggled', async () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        findWorkItemActions().vm.$emit('toggleTruncationEnabled');
+        await nextTick();
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'change_work_item_description_truncation',
+          {
+            label: 'false',
+          },
+          undefined,
+        );
+
+        findWorkItemActions().vm.$emit('toggleTruncationEnabled');
+        await nextTick();
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'change_work_item_description_truncation',
+          {
+            label: 'true',
+          },
+          undefined,
+        );
+      });
     });
   });
 });

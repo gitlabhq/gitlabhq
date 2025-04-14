@@ -114,8 +114,8 @@ if you can't upgrade to 15.11.12 and later.
   - Elasticsearch does not need to be enabled for this to occur.
   - To resolve this issue, upgrade to 15.11 or use the workaround in the issue.
 - A [bug with zero-downtime reindexing](https://gitlab.com/gitlab-org/gitlab/-/issues/422938) can cause a `Couldn't load task status` error when you reindex. You might also get a `sliceId must be greater than 0 but was [-1]` error on the Elasticsearch host. As a workaround, consider [reindexing from scratch](../../integration/elasticsearch/troubleshooting/indexing.md#last-resort-to-recreate-an-index) or upgrading to GitLab 16.3.
-- Gitaly configuration changes significantly in Omnibus GitLab 16.0. You can begin migrating to the new structure in Omnibus GitLab 15.10 while backwards compatibility is
-  maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](gitlab_16_changes.md#gitaly-configuration-structure-change).
+- Gitaly configuration changes significantly for Linux package instances in GitLab 16.0. You can begin migrating to the new structure in GitLab 15.10 while backwards compatibility is
+  maintained in the lead up to GitLab 16.0. [Read more about this change](gitlab_16_changes.md#gitaly-configuration-structure-change).
 - You might encounter the following error while upgrading to GitLab 15.10 or later:
 
   ```shell
@@ -217,8 +217,8 @@ if you can't upgrade to 15.11.12 and later.
   the repository using `praefect remove-repository` to remove the repository's remaining records.
 
   You can find repositories with invalid metadata records prior in GitLab 15.0 and later by searching for the log records outputted by the verifier. [Read more about repository verification, and to see an example log entry](../../administration/gitaly/praefect.md#repository-verification).
-- Praefect configuration changes significantly in Omnibus GitLab 16.0. You can begin migrating to the new structure in Omnibus GitLab 15.9 while backwards compatibility is
-  maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](gitlab_16_changes.md#praefect-configuration-structure-change).
+- Praefect configuration changes significantly for Linux package instances in GitLab 16.0. You can begin migrating to the new structure in GitLab 15.9 while backwards compatibility is
+  maintained in the lead up to GitLab 16.0. [Read more about this change](gitlab_16_changes.md#praefect-configuration-structure-change).
 
 ### Self-compiled installations
 
@@ -914,7 +914,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
   configuration change in Rails that can result in inconsistent ETag key
   generation.
 - Some Sidekiq workers were renamed in this release. To avoid any disruption, [run the Rake tasks to migrate any pending jobs](../../administration/sidekiq/sidekiq_job_migration.md#migrate-queued-and-future-jobs) before starting the upgrade to GitLab 15.2.0.
-- Gitaly now executes its binaries in a [runtime location](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4670). By default on Omnibus GitLab,
+- Gitaly now executes its binaries in a [runtime location](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4670). By default on Linux package instances,
   this path is `/var/opt/gitlab/gitaly/run/`. If this location is mounted with `noexec`, merge requests generate the following error:
 
   ```plaintext
@@ -1016,7 +1016,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
   Gitaly. The previous implementation in GitLab Shell was removed in GitLab 15.0. With this change, global server hooks are stored only inside a subdirectory named after the
   hook type. Global server hooks can no longer be a single hook file in the root of the custom hooks directory. For example, you must use `<custom_hooks_dir>/<hook_name>.d/*` rather
   than `<custom_hooks_dir>/<hook_name>`.
-  - Use `gitaly['custom_hooks_dir']` in `gitlab.rb` for Omnibus GitLab. This replaces `gitlab_shell['custom_hooks_dir']`.
+  - Use `gitaly['custom_hooks_dir']` in `gitlab.rb` for Linux package instances. This replaces `gitlab_shell['custom_hooks_dir']`.
 - PostgreSQL 13.6 is being shipped as the default version for fresh installs and
   12.10 for upgrades. You can manually upgrade to PostgreSQL 13.6 following the
   [upgrade docs](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) with:

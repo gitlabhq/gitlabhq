@@ -12,6 +12,7 @@ RSpec.describe 'Merge request > User sees merge request file tree sidebar', :js,
   let(:sidebar_scroller) { sidebar.find('.vue-recycle-scroller') }
 
   before do
+    stub_feature_flags(improved_review_experience: false)
     sign_in(user)
     visit diffs_project_merge_request_path(project, merge_request)
     wait_for_requests

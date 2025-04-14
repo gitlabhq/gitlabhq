@@ -3,7 +3,7 @@ import { GlTooltipDirective, GlIcon, GlLink } from '@gitlab/ui';
 import GlSafeHtmlDirective from '~/vue_shared/directives/safe_html';
 import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
-import { initLineHighlight, isUnsupportedLanguage } from '~/search/results/utils';
+import { initLineHighlight } from '~/search/results/utils';
 import {
   EVENT_CLICK_BLOB_RESULT_LINE,
   EVENT_CLICK_BLOB_RESULT_BLAME_LINE,
@@ -76,10 +76,6 @@ export default {
       });
     },
     async processLine(line, index) {
-      if (isUnsupportedLanguage(this.language.toLowerCase())) {
-        this.lines[index].text = await this.codeHighlighting(line);
-        return;
-      }
       this.lines[index].richText = await this.codeHighlighting(line);
     },
     trackLineClick(lineNumber) {
@@ -121,8 +117,8 @@ export default {
                 class="js-navigation-open"
                 data-testid="search-blob-line-blame-link"
                 @click="trackBlameClick(line.lineNumber)"
-                ><gl-icon name="git"
-              /></gl-link>
+                ><gl-icon name="git" />
+              </gl-link>
             </span>
             <span class="diff-line-num gl-grow gl-pr-3">
               <gl-link
@@ -132,28 +128,19 @@ export default {
                 class="!gl-flex gl-items-center gl-justify-end"
                 data-testid="search-blob-line-link"
                 @click="trackLineClick(line.lineNumber)"
-                >{{ line.lineNumber }}</gl-link
-              >
+                >{{ line.lineNumber }}
+              </gl-link>
             </span>
           </div>
         </div>
         <pre
           v-if="line.richText"
           class="code highlight gl-flex gl-grow"
-          data-testid="search-blob-line-code-highlighted"
+          data-testid="search-blob-line-code"
         >
           <code
             v-safe-html="line.richText"
             class="gl-leading-normal gl-shrink">
-          </code>
-        </pre>
-        <pre
-          v-else
-          class="code gl-flex gl-grow"
-          data-testid="search-blob-line-code-non-highlighted"
-        >
-          <code class="gl-leading-normal gl-shrink">
-            <span v-safe-html="line.text" class="line"></span>
           </code>
         </pre>
       </div>

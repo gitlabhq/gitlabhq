@@ -1,0 +1,14 @@
+= gitlab_ui_form_for @application_setting, url: ci_cd_admin_application_settings_path(anchor: 'js-job-logs-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting, custom_message: [:ci_job_live_trace_enabled])
+
+  %fieldset
+    .form-group.gl-mb-0
+      %h5
+        = s_('CICD| Incremental logging configuration')
+      %span.form-text.gl-mb-3.gl-mt-0
+        - enable_ci_job_live_trace_text = s_('CICD|Turn on incremental logging')
+        - learn_more_link = link_to('', help_page_path('administration/cicd/job_logs.md', anchor: 'incremental-logging'), target: '_blank', rel: 'noopener noreferrer')
+        - help_text = safe_format(s_('CICD|When turned on, archived job logs are incrementally uploaded to object storage. %{link_start}Learn more.%{link_end}'), tag_pair(learn_more_link, :link_start, :link_end))
+        = f.gitlab_ui_checkbox_component :ci_job_live_trace_enabled, enable_ci_job_live_trace_text, help_text: help_text
+
+  = f.submit _('Save changes'), pajamas_button: true

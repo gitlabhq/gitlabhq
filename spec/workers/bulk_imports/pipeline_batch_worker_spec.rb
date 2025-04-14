@@ -157,6 +157,18 @@ RSpec.describe BulkImports::PipelineBatchWorker, feature_category: :importers do
           expect(batch.reload).to be_canceled
         end
       end
+
+      context 'when batch status is failed' do
+        let(:batch) { create(:bulk_import_batch_tracker, :failed, tracker: tracker) }
+
+        it 'stays failed and does not execute' do
+          expect(batch).not_to receive(:start!)
+
+          worker.perform(batch.id)
+
+          expect(batch.reload).to be_failed
+        end
+      end
     end
 
     context 'when exclusive lease cannot be obtained' do

@@ -92,7 +92,7 @@ module API
               # to determine which client files need to be uploaded if no recipe exists the snapshot is empty
               desc 'Package Snapshot' do
                 detail 'This feature was introduced in GitLab 12.5'
-                success code: 200, model: ::API::Entities::ConanPackage::ConanPackageSnapshot
+                success code: 200, model: ::API::Entities::Packages::Conan::PackageSnapshot
                 failure [
                   { code: 400, message: 'Bad Request' },
                   { code: 403, message: 'Forbidden' },
@@ -120,12 +120,12 @@ module API
                   conan_package_reference: params[:conan_package_reference]
                 )
 
-                present presenter, with: ::API::Entities::ConanPackage::ConanPackageSnapshot
+                present presenter, with: ::API::Entities::Packages::Conan::PackageSnapshot
               end
 
               desc 'Recipe Snapshot' do
                 detail 'This feature was introduced in GitLab 12.5'
-                success code: 200, model: ::API::Entities::ConanPackage::ConanRecipeSnapshot
+                success code: 200, model: ::API::Entities::Packages::Conan::RecipeSnapshot
                 failure [
                   { code: 400, message: 'Bad Request' },
                   { code: 403, message: 'Forbidden' },
@@ -143,7 +143,7 @@ module API
 
                 presenter = ::Packages::Conan::PackagePresenter.new(package, current_user, project)
 
-                present presenter, with: ::API::Entities::ConanPackage::ConanRecipeSnapshot
+                present presenter, with: ::API::Entities::Packages::Conan::RecipeSnapshot
               end
 
               # Get the manifest
@@ -153,7 +153,7 @@ module API
               # where the url is the download url for the file
               desc 'Package Digest' do
                 detail 'This feature was introduced in GitLab 12.5'
-                success code: 200, model: ::API::Entities::ConanPackage::ConanPackageManifest
+                success code: 200, model: ::API::Entities::Packages::Conan::PackageManifest
                 failure [
                   { code: 400, message: 'Bad Request' },
                   { code: 403, message: 'Forbidden' },
@@ -176,7 +176,7 @@ module API
 
               desc 'Recipe Digest' do
                 detail 'This feature was introduced in GitLab 12.5'
-                success code: 200, model: ::API::Entities::ConanPackage::ConanRecipeManifest
+                success code: 200, model: ::API::Entities::Packages::Conan::RecipeManifest
                 failure [
                   { code: 400, message: 'Bad Request' },
                   { code: 403, message: 'Forbidden' },
@@ -201,7 +201,7 @@ module API
               # where the url is the download url for the file
               desc 'Package Download Urls' do
                 detail 'This feature was introduced in GitLab 12.5'
-                success code: 200, model: ::API::Entities::ConanPackage::ConanPackageManifest
+                success code: 200, model: ::API::Entities::Packages::Conan::PackageManifest
                 failure [
                   { code: 400, message: 'Bad Request' },
                   { code: 403, message: 'Forbidden' },
@@ -225,7 +225,7 @@ module API
 
               desc 'Recipe Download Urls' do
                 detail 'This feature was introduced in GitLab 12.5'
-                success code: 200, model: ::API::Entities::ConanPackage::ConanRecipeManifest
+                success code: 200, model: ::API::Entities::Packages::Conan::RecipeManifest
                 failure [
                   { code: 400, message: 'Bad Request' },
                   { code: 403, message: 'Forbidden' },
@@ -251,7 +251,7 @@ module API
               # where the url is the upload url for the file that the conan client will use
               desc 'Package Upload Urls' do
                 detail 'This feature was introduced in GitLab 12.4'
-                success code: 200, model: ::API::Entities::ConanPackage::ConanUploadUrls
+                success code: 200, model: ::API::Entities::Packages::Conan::UploadUrls
                 failure [
                   { code: 400, message: 'Bad Request' },
                   { code: 403, message: 'Forbidden' },
@@ -273,12 +273,12 @@ module API
                 authorize_read_package!(project)
 
                 status 200
-                present package_upload_urls, with: ::API::Entities::ConanPackage::ConanUploadUrls
+                present package_upload_urls, with: ::API::Entities::Packages::Conan::UploadUrls
               end
 
               desc 'Recipe Upload Urls' do
                 detail 'This feature was introduced in GitLab 12.4'
-                success code: 200, model: ::API::Entities::ConanPackage::ConanUploadUrls
+                success code: 200, model: ::API::Entities::Packages::Conan::UploadUrls
                 failure [
                   { code: 400, message: 'Bad Request' },
                   { code: 403, message: 'Forbidden' },
@@ -295,7 +295,7 @@ module API
                 authorize_read_package!(project)
 
                 status 200
-                present recipe_upload_urls, with: ::API::Entities::ConanPackage::ConanUploadUrls
+                present recipe_upload_urls, with: ::API::Entities::Packages::Conan::UploadUrls
               end
 
               desc 'Delete Package' do

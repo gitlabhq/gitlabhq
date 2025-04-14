@@ -1,13 +1,12 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
-import { joinPaths, PATH_SEPARATOR } from '~/lib/utils/url_utility';
+import { PATH_SEPARATOR } from '~/lib/utils/url_utility';
 import { MINIMUM_SEARCH_LENGTH } from '~/graphql_shared/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import Tracking from '~/tracking';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
 import { __, s__, n__ } from '~/locale';
 import searchNamespacesWhereUserCanCreateProjectsQuery from '~/projects/new/queries/search_namespaces_where_user_can_create_projects.query.graphql';
-import eventHub from '../event_hub';
 
 export default {
   components: {
@@ -30,7 +29,7 @@ export default {
       debounce: DEBOUNCE_DELAY,
     },
   },
-  inject: ['userNamespaceId', 'canCreateProject'],
+  inject: ['userNamespaceId', 'userNamespaceFullPath', 'canCreateProject'],
   props: {
     namespaceFullPath: {
       type: String,
@@ -48,6 +47,11 @@ export default {
       default: '',
     },
     toggleAriaLabelledBy: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    toggleId: {
       type: String,
       required: false,
       default: '',
@@ -160,15 +164,13 @@ export default {
     },
     handleDropdownItemClick(namespaceId) {
       const namespace = this.allItems.find((item) => item.id === namespaceId);
+      this.$emit('onSelectNamespace', {
+        id: namespace.id,
+        visibility: namespace.visibility,
+        fullPath: namespace.fullPath,
+        isPersonal: namespace.fullPath === this.userNamespaceFullPath,
+      });
 
-      if (namespace) {
-        eventHub.$emit('update-visibility', {
-          name: namespace.name,
-          visibility: namespace.visibility,
-          showPath: namespace.webUrl,
-          editPath: joinPaths(namespace.webUrl, '-', 'edit'),
-        });
-      }
       this.setNamespace(namespace);
     },
     handleSelectTemplate(id, fullPath) {
@@ -211,6 +213,7 @@ export default {
       :items="items"
       :toggle-text="dropdownText"
       toggle-class="gl-w-full"
+      :toggle-id="toggleId"
       :toggle-aria-labelled-by="toggleAriaLabelledBy"
       :no-results-text="$options.i18n.emptySearchResult"
       class="project-destination-select gl-w-full gl-max-w-full"
@@ -229,7 +232,7 @@ export default {
     <input
       id="project[namespace_id]"
       type="hidden"
-      name="namespace_id"
+      name="project[namespace_id]"
       :value="selectedNamespace.id || userNamespaceUniqueId"
     />
   </div>

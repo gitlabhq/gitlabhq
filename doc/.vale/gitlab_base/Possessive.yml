@@ -1,9 +1,7 @@
 ---
-# Error: gitlab_base.Possessive
-#
-# The word GitLab should not be used in the possessive form.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.Possessive
+description: |
+  The word GitLab should not be used in the possessive form.
 extends: existence
 message: "Remove 's from %s."
 level: error

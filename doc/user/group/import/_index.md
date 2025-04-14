@@ -22,10 +22,10 @@ title: Migrating GitLab by using direct transfer
 
 You can migrate GitLab groups:
 
-- From GitLab Self-Managed to GitLab.com.
-- From GitLab.com to GitLab Self-Managed.
-- From one GitLab Self-Managed instance to another.
-- Between groups in the same GitLab instance.
+- From GitLab Self-Managed and GitLab Dedicated to GitLab.com
+- From GitLab.com to GitLab Self-Managed and GitLab Dedicated
+- From one GitLab Self-Managed or GitLab Dedicated instance to another
+- On the same GitLab instance
 
 Migration by direct transfer creates a new copy of the group. If you want to move groups instead of copying groups, you
 can [transfer groups](../manage.md#transfer-a-group) if the groups are in the same GitLab instance. Transferring groups
@@ -36,9 +36,9 @@ You can migrate groups in two ways:
 - By direct transfer (recommended).
 - By [uploading an export file](../../project/settings/import_export.md).
 
-If you migrate from GitLab.com to a GitLab Self-Managed instance, an administrator can create users on the instance.
+If you migrate from GitLab.com to a GitLab Self-Managed or GitLab Dedicated instance, an administrator can create users on the instance.
 
-On GitLab Self-Managed, by default [migrating group items](migrated_items.md#migrated-group-items) is not available. To show the
+On GitLab Self-Managed and GitLab Dedicated, by default [migrating group items](migrated_items.md#migrated-group-items) is not available. To show the
 feature, an administrator can [enable it in application settings](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer).
 
 Migrating groups by direct transfer copies the groups from one place to another. You can:

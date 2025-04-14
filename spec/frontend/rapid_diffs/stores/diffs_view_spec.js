@@ -14,7 +14,6 @@ import {
 import { queueRedisHllEvents } from '~/diffs/utils/queue_events';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import vuexStore from '~/mr_notes/stores';
 
 const defaultState = {
   updateUserEndpoint: '/update',
@@ -40,39 +39,52 @@ describe('Diffs view store', () => {
     setActivePinia(pinia);
     store = useDiffsView();
     useDiffsList().reloadDiffs.mockResolvedValue();
-    jest.spyOn(vuexStore, 'dispatch').mockResolvedValue();
   });
 
-  describe('#loadMetadata', () => {
-    it('uses Vuex store to load metadata', () => {
-      const spy = jest.spyOn(vuexStore, 'dispatch');
-      store.metadataEndpoint = '/metadata';
-      store.loadMetadata();
-      expect(vuexStore.state.diffs.endpointMetadata).toBe('/metadata');
-      expect(vuexStore.state.diffs.diffViewType).toBe('inline');
-      expect(vuexStore.state.diffs.showWhitespace).toBe(true);
-      expect(spy).toHaveBeenCalledWith('diffs/fetchDiffFilesMeta');
+  describe('#loadDiffsStats', () => {
+    const endpoint = '/stats';
+
+    beforeEach(() => {
+      store.diffsStatsEndpoint = endpoint;
     });
 
-    it('copies values from Vuex store for diff stats', async () => {
-      vuexStore.state.diffs.addedLines = 1;
-      vuexStore.state.diffs.removedLines = 2;
-      vuexStore.state.diffs.realSize = '3';
-      vuexStore.state.diffs.size = 2;
-      vuexStore.state.diffs.plainDiffPath = 'plain/diffs';
-      vuexStore.state.diffs.emailPatchPath = 'email/patch';
-      vuexStore.state.diffs.renderOverflowWarning = true;
-      await store.loadMetadata();
-      expect(store.diffStats).toStrictEqual({
-        addedLines: 1,
-        removedLines: 2,
-        diffsCount: 3,
-        realSize: '3',
-        size: 2,
-        plainDiffPath: 'plain/diffs',
-        emailPatchPath: 'email/patch',
-        renderOverflowWarning: true,
+    it('loads diff stats', async () => {
+      const addedLines = 10;
+      const removedLines = 20;
+      const diffsCount = 5;
+      mockAxios.onGet(endpoint).reply(HTTP_STATUS_OK, {
+        diffs_stats: {
+          added_lines: addedLines,
+          removed_lines: removedLines,
+          diffs_count: diffsCount,
+        },
       });
+      await store.loadDiffsStats();
+      expect(store.diffsStats).toEqual({ addedLines, removedLines, diffsCount });
+      expect(store.overflow).toBe(null);
+    });
+
+    it('sets overflow', async () => {
+      const addedLines = 10;
+      const removedLines = 20;
+      const diffsCount = 500;
+      const visibleCount = 50;
+      const emailPath = '/email';
+      const diffPath = '/diff';
+      mockAxios.onGet(endpoint).reply(HTTP_STATUS_OK, {
+        diffs_stats: {
+          added_lines: addedLines,
+          removed_lines: removedLines,
+          diffs_count: diffsCount,
+        },
+        overflow: {
+          visible_count: visibleCount,
+          email_path: emailPath,
+          diff_path: diffPath,
+        },
+      });
+      await store.loadDiffsStats();
+      expect(store.overflow).toEqual({ visibleCount, emailPath, diffPath });
     });
   });
 
@@ -80,7 +92,7 @@ describe('Diffs view store', () => {
     it('calls reloadDiffs on diffsList store', () => {
       const spy = useDiffsList().reloadDiffs.mockResolvedValue();
       store.updateDiffView();
-      expect(spy).toHaveBeenCalledWith(`${defaultState.streamUrl}?view=inline&w=1`);
+      expect(spy).toHaveBeenCalledWith(`${defaultState.streamUrl}?view=inline&w=0`);
     });
   });
 
@@ -88,7 +100,7 @@ describe('Diffs view store', () => {
     it('handles switch to parallel view', () => {
       store.updateViewType('parallel');
       expect(useDiffsList().reloadDiffs).toHaveBeenCalledWith(
-        `${defaultState.streamUrl}?view=parallel&w=1`,
+        `${defaultState.streamUrl}?view=parallel&w=0`,
       );
       expect(setCookie).toHaveBeenCalledWith(DIFF_VIEW_COOKIE_NAME, 'parallel');
       expect(queueRedisHllEvents).toHaveBeenCalledWith([
@@ -101,7 +113,7 @@ describe('Diffs view store', () => {
     it('handles switch to inline view', () => {
       store.updateViewType('inline');
       expect(useDiffsList().reloadDiffs).toHaveBeenCalledWith(
-        `${defaultState.streamUrl}?view=inline&w=1`,
+        `${defaultState.streamUrl}?view=inline&w=0`,
       );
       expect(setCookie).toHaveBeenCalledWith(DIFF_VIEW_COOKIE_NAME, 'inline');
       expect(queueRedisHllEvents).toHaveBeenCalledWith([
@@ -116,7 +128,7 @@ describe('Diffs view store', () => {
     it('handles switch to hide whitespace', () => {
       store.updateShowWhitespace(false);
       expect(useDiffsList().reloadDiffs).toHaveBeenCalledWith(
-        `${defaultState.streamUrl}?view=inline&w=0`,
+        `${defaultState.streamUrl}?view=inline&w=1`,
       );
       expect(store.showWhitespace).toEqual(false);
     });
@@ -124,7 +136,7 @@ describe('Diffs view store', () => {
     it('handles switch to show whitespace', () => {
       store.updateShowWhitespace(true);
       expect(useDiffsList().reloadDiffs).toHaveBeenCalledWith(
-        `${defaultState.streamUrl}?view=inline&w=1`,
+        `${defaultState.streamUrl}?view=inline&w=0`,
       );
       expect(store.showWhitespace).toEqual(true);
     });
@@ -137,6 +149,13 @@ describe('Diffs view store', () => {
           (item) => JSON.parse(item.data).show_whitespace_in_diffs === true,
         ),
       ).toBe(true);
+    });
+  });
+
+  describe('#totalFilesCount', () => {
+    it('returns diffs count', () => {
+      store.diffsStats = { diffsCount: 10 };
+      expect(store.totalFilesCount).toBe(10);
     });
   });
 });

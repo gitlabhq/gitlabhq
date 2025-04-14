@@ -57,9 +57,9 @@ RSpec.shared_examples '#prometheus_client shared' do
       expect(Gitlab::PrometheusClient)
         .to(receive(:new))
         .with(a_valid_url, kube_client.rest_client.options.merge({
-        headers: kube_client.headers,
-        timeout: PrometheusAdapter::DEFAULT_PROMETHEUS_REQUEST_TIMEOUT_SEC
-      }))
+          headers: kube_client.headers,
+          timeout: PrometheusAdapter::DEFAULT_PROMETHEUS_REQUEST_TIMEOUT_SEC
+        }))
       subject.prometheus_client
     end
 

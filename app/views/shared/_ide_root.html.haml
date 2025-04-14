@@ -1,6 +1,11 @@
 - data = local_assigns.fetch(:data)
 - loading_text = local_assigns.fetch(:loading_text)
 
+-# This value is required for the following E2E spec:
+-# https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/browser_ui/3_create/web_ide/settings_sync_web_ide_spec.rb
+
+#settings-context-hash.hidden{ data: { settings_context_hash: data["settings-context-hash"] } }
+
 -# Fix for iOS 13+, the height of the page is actually less than
 -# 100vh because of the presence of the bottom bar
 

@@ -196,12 +196,13 @@ RSpec.describe UploadsController, feature_category: :groups_and_projects do
 
   describe "GET show" do
     context 'Content-Disposition security measures' do
-      let(:expected_disposition) { 'inline;' }
-      let(:project) { create(:project, :public) }
+      let_it_be(:snippet) { create(:personal_snippet, :public) }
+
+      let(:upload) { create(:upload, :personal_snippet_upload, :with_file, model: snippet, filename: filename) }
 
       shared_examples_for 'uploaded file with disposition' do
         it 'returns correct Content-Disposition' do
-          get :show, params: { model: 'note', mounted_as: 'attachment', id: note.id, filename: filename }
+          get :show, params: { model: 'personal_snippet', id: snippet.id, secret: upload.secret, filename: filename }
 
           expect(response['Content-Disposition']).to start_with(expected_disposition)
         end
@@ -210,7 +211,6 @@ RSpec.describe UploadsController, feature_category: :groups_and_projects do
       context 'for PNG files' do
         let(:filename) { 'dk.png' }
         let(:expected_disposition) { 'inline;' }
-        let(:note) { create(:note, :with_attachment, project: project) }
 
         it_behaves_like 'uploaded file with disposition'
       end
@@ -218,7 +218,6 @@ RSpec.describe UploadsController, feature_category: :groups_and_projects do
       context 'for PDF files' do
         let(:filename) { 'sample.pdf' }
         let(:expected_disposition) { 'inline;' }
-        let(:note) { create(:note, :with_pdf_attachment, project: project) }
 
         it_behaves_like 'uploaded file with disposition'
       end
@@ -226,7 +225,6 @@ RSpec.describe UploadsController, feature_category: :groups_and_projects do
       context 'for SVG files' do
         let(:filename) { 'unsanitized.svg' }
         let(:expected_disposition) { 'attachment;' }
-        let(:note) { create(:note, :with_svg_attachment, project: project) }
 
         it_behaves_like 'uploaded file with disposition'
       end
@@ -499,116 +497,6 @@ RSpec.describe UploadsController, feature_category: :groups_and_projects do
           context "when the user doesn't have access to the project" do
             it "responds with status 404" do
               get :show, params: { model: "group", mounted_as: "avatar", id: group.id, filename: "dk.png" }
-
-              expect(response).to have_gitlab_http_status(:not_found)
-            end
-          end
-        end
-      end
-    end
-
-    context "when viewing a note attachment" do
-      let!(:note) { create(:note, :with_attachment) }
-      let(:project) { note.project }
-
-      context "when the project is public" do
-        before do
-          project.update_attribute(:visibility_level, Project::PUBLIC)
-        end
-
-        context "when not signed in" do
-          it "responds with status 200" do
-            get :show, params: { model: "note", mounted_as: "attachment", id: note.id, filename: "dk.png" }
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-
-          it_behaves_like 'content not cached' do
-            subject do
-              get :show, params: { model: 'note', mounted_as: 'attachment', id: note.id, filename: 'dk.png' }
-
-              response
-            end
-          end
-        end
-
-        context "when signed in" do
-          before do
-            sign_in(user)
-          end
-
-          it "responds with status 200" do
-            get :show, params: { model: "note", mounted_as: "attachment", id: note.id, filename: "dk.png" }
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-
-          it_behaves_like 'content not cached' do
-            subject do
-              get :show, params: { model: 'note', mounted_as: 'attachment', id: note.id, filename: 'dk.png' }
-
-              response
-            end
-          end
-        end
-      end
-
-      context "when the project is private" do
-        before do
-          project.update_attribute(:visibility_level, Project::PRIVATE)
-        end
-
-        context "when not signed in" do
-          it "responds with status 401" do
-            get :show, params: { model: "note", mounted_as: "attachment", id: note.id, filename: "dk.png" }
-
-            expect(response).to have_gitlab_http_status(:unauthorized)
-          end
-        end
-
-        context "when signed in" do
-          before do
-            sign_in(user)
-          end
-
-          context "when the user has access to the project" do
-            before do
-              project.add_maintainer(user)
-            end
-
-            context "when the user is blocked" do
-              before do
-                user.block
-                project.add_maintainer(user)
-              end
-
-              it "responds with status 401" do
-                get :show, params: { model: "note", mounted_as: "attachment", id: note.id, filename: "dk.png" }
-
-                expect(response).to have_gitlab_http_status(:unauthorized)
-              end
-            end
-
-            context "when the user isn't blocked" do
-              it "responds with status 200" do
-                get :show, params: { model: "note", mounted_as: "attachment", id: note.id, filename: "dk.png" }
-
-                expect(response).to have_gitlab_http_status(:ok)
-              end
-
-              it_behaves_like 'content not cached' do
-                subject do
-                  get :show, params: { model: 'note', mounted_as: 'attachment', id: note.id, filename: 'dk.png' }
-
-                  response
-                end
-              end
-            end
-          end
-
-          context "when the user doesn't have access to the project" do
-            it "responds with status 404" do
-              get :show, params: { model: "note", mounted_as: "attachment", id: note.id, filename: "dk.png" }
 
               expect(response).to have_gitlab_http_status(:not_found)
             end

@@ -1,5 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import waitForPromises from 'helpers/wait_for_promises';
 import { sprintf } from '~/locale';
 import { createAlert } from '~/alert';
@@ -11,6 +13,11 @@ import { clearDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { noteableDataMock } from 'jest/notes/mock_data';
 import { SOMETHING_WENT_WRONG, SAVING_THE_COMMENT_FAILED } from '~/diffs/i18n';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useBatchComments } from '~/batch_comments/store';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { getDiffFileMock } from '../mock_data/diff_file';
 
 jest.mock('~/lib/utils/autosave');
@@ -18,22 +25,13 @@ jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 jest.mock('~/mr_notes/stores', () => jest.requireActual('helpers/mocks/mr_notes/stores'));
 jest.mock('~/alert');
 
+Vue.use(PiniaVuePlugin);
+
 describe('DiffLineNoteForm', () => {
   let wrapper;
+  let pinia;
   let diffFile;
   let diffLines;
-
-  beforeEach(() => {
-    store.reset();
-
-    diffFile = getDiffFileMock();
-    diffLines = diffFile.highlighted_diff_lines;
-
-    store.state.notes.noteableData = noteableDataMock;
-
-    store.getters.isLoggedIn = jest.fn().mockReturnValue(true);
-    store.getters['diffs/getDiffFileByHash'] = jest.fn().mockReturnValue(diffFile);
-  });
 
   const createComponent = ({ props } = {}) => {
     wrapper?.destroy();
@@ -52,6 +50,7 @@ describe('DiffLineNoteForm', () => {
         $store: store,
       },
       propsData,
+      pinia,
     });
   };
 
@@ -59,6 +58,20 @@ describe('DiffLineNoteForm', () => {
   const findCommentForm = () => wrapper.findComponent(MultilineCommentForm);
 
   beforeEach(() => {
+    diffFile = getDiffFileMock();
+    diffLines = diffFile.highlighted_diff_lines;
+
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs().diffFiles = [diffFile];
+    useLegacyDiffs().saveDiffDiscussion.mockResolvedValue();
+    useNotes().userData = { id: 1 };
+    useBatchComments().saveDraft.mockResolvedValue();
+    useMrNotes();
+
+    store.reset();
+
+    store.state.notes.noteableData = noteableDataMock;
+
     createComponent();
   });
 
@@ -113,7 +126,7 @@ describe('DiffLineNoteForm', () => {
         expect(confirmAction).toHaveBeenCalled();
         await nextTick();
 
-        expect(store.dispatch).toHaveBeenCalledWith('diffs/cancelCommentForm', {
+        expect(useLegacyDiffs().cancelCommentForm).toHaveBeenCalledWith({
           lineCode: diffLines[1].line_code,
           fileHash: diffFile.file_hash,
         });
@@ -178,7 +191,7 @@ describe('DiffLineNoteForm', () => {
       const noteBody = 'note body';
       await findNoteForm().vm.$emit('handleFormUpdate', noteBody);
 
-      expect(store.dispatch).toHaveBeenCalledWith('diffs/saveDiffDiscussion', {
+      expect(useLegacyDiffs().saveDiffDiscussion).toHaveBeenCalledWith({
         note: noteBody,
         formData: {
           noteableData: noteableDataMock,
@@ -190,7 +203,7 @@ describe('DiffLineNoteForm', () => {
           lineRange,
         },
       });
-      expect(store.dispatch).toHaveBeenCalledWith('diffs/cancelCommentForm', {
+      expect(useLegacyDiffs().cancelCommentForm).toHaveBeenCalledWith({
         lineCode: diffLines[1].line_code,
         fileHash: diffFile.file_hash,
       });
@@ -204,7 +217,7 @@ describe('DiffLineNoteForm', () => {
 
       await findNoteForm().vm.$emit('handleFormUpdate', noteBody);
 
-      expect(store.dispatch).toHaveBeenCalledWith('diffs/saveDiffDiscussion', {
+      expect(useLegacyDiffs().saveDiffDiscussion).toHaveBeenCalledWith({
         note: noteBody,
         formData: {
           noteableData: noteableDataMock,
@@ -229,7 +242,7 @@ describe('DiffLineNoteForm', () => {
           },
         },
       });
-      expect(store.dispatch).toHaveBeenCalledWith('diffs/cancelCommentForm', {
+      expect(useLegacyDiffs().cancelCommentForm).toHaveBeenCalledWith({
         lineCode: diffLines[1].line_code,
         fileHash: diffFile.file_hash,
       });
@@ -246,7 +259,7 @@ describe('DiffLineNoteForm', () => {
         ${'without server error'} | ${null}                          | ${SOMETHING_WENT_WRONG}
       `('$scenario', ({ serverError, message }) => {
         beforeEach(async () => {
-          store.dispatch.mockRejectedValue({ response: serverError });
+          useLegacyDiffs().saveDiffDiscussion.mockRejectedValue({ response: serverError });
 
           createComponent();
 

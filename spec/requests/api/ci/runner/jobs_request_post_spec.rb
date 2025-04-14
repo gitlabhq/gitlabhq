@@ -20,8 +20,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
     let_it_be(:user) { create(:user) }
 
     let(:project) do
-      create(:project, :empty_repo, namespace: group, shared_runners_enabled: false).tap(&:track_project_repository)
+      create(:project, *project_traits, namespace: group, shared_runners_enabled: false).tap(&:track_project_repository)
     end
+
+    let(:project_traits) { :empty_repo }
 
     let(:runner) { create(:ci_runner, :project, projects: [project]) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
@@ -429,7 +431,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
                 expect(response).to have_gitlab_http_status(:created)
                 expect(response.headers).not_to have_key('X-GitLab-Last-Update')
-                expect(json_response['steps']).to eq(
+                expect(json_response['steps']).to match_array(
                   [
                     {
                       "name" => "script",
@@ -440,13 +442,42 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                     },
                     {
                       "name" => "release",
-                      "script" =>
-                      ["release-cli create --name \"Release $CI_COMMIT_SHA\" --description \"Created using the release-cli $EXTRA_DESCRIPTION\" --tag-name \"release-$CI_COMMIT_SHA\" --ref \"$CI_COMMIT_SHA\" --assets-link \"{\\\"name\\\":\\\"asset1\\\",\\\"url\\\":\\\"https://example.com/assets/1\\\"}\""],
+                      "script" => [a_string_including("glab -R $CI_PROJECT_PATH release create")],
                       "timeout" => 3600,
                       "when" => "on_success",
                       "allow_failure" => false
                     }
                   ])
+              end
+
+              context 'when the FF ci_glab_for_release is disabled' do
+                before do
+                  stub_feature_flags(ci_glab_for_release: false)
+                end
+
+                it 'exposes release info' do
+                  request_job info: { features: { multi_build_steps: true } }
+
+                  expect(response).to have_gitlab_http_status(:created)
+                  expect(response.headers).not_to have_key('X-GitLab-Last-Update')
+                  expect(json_response['steps']).to match_array(
+                    [
+                      {
+                        "name" => "script",
+                        "script" => ["make changelog | tee release_changelog.txt"],
+                        "timeout" => 3600,
+                        "when" => "on_success",
+                        "allow_failure" => false
+                      },
+                      {
+                        "name" => "release",
+                        "script" => [a_string_including("release-cli create --name ")],
+                        "timeout" => 3600,
+                        "when" => "on_success",
+                        "allow_failure" => false
+                      }
+                    ])
+                end
               end
             end
 
@@ -460,6 +491,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           end
 
           context 'when job is made for merge request' do
+            let(:project_traits) { :repository }
             let(:pipeline) { create(:ci_pipeline, source: :merge_request_event, project: project, ref: 'feature', merge_request: merge_request) }
             let!(:job) { create(:ci_build, :pending, :queued, pipeline: pipeline, name: 'spinach', ref: 'feature', stage: 'test', stage_idx: 0) }
 
@@ -630,6 +662,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             end
 
             describe 'preloading job_artifacts_archive' do
+              let(:project_traits) { :repository }
+
               it 'queries the ci_job_artifacts table once only' do
                 expect { request_job }.not_to exceed_all_query_limit(1).for_model(::Ci::JobArtifact)
               end
@@ -1168,7 +1202,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               let(:expected_params) { { root_namespace: group.full_path_components.first, client_id: "runner/#{runner.id}" } }
             end
 
-            it_behaves_like 'not executing any extra queries for the application context', 2 do
+            it_behaves_like 'not executing any extra queries for the application context', 3 do
               # Extra queries: Group, Route
               let(:subject_proc) { proc { request_job } }
             end

@@ -335,6 +335,7 @@ export default {
 <template>
   <div
     class="detail-page-header-actions gl-mt-1 gl-flex gl-w-full gl-self-start sm:gl-gap-3 md:gl-w-auto"
+    data-testid="issue-header"
   >
     <div class="gl-w-full md:!gl-hidden">
       <gl-disclosure-dropdown
@@ -408,11 +409,10 @@ export default {
           <gl-dropdown-divider />
           <gl-disclosure-dropdown-item
             v-gl-modal="$options.deleteModalId"
+            variant="danger"
             @action="track('click_dropdown')"
           >
-            <template #list-item>
-              <span class="gl-text-red-500">{{ deleteButtonText }}</span>
-            </template>
+            <template #list-item>{{ deleteButtonText }}</template>
           </gl-disclosure-dropdown-item>
         </template>
         <gl-disclosure-dropdown-item

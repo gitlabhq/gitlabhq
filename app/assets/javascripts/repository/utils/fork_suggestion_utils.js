@@ -46,3 +46,31 @@ export const showForkSuggestion = (userPermissions, isUsingLfs, blobInfo) => {
     showWebIdeForkSuggestion(userPermissions, isUsingLfs, blobInfo.canModifyBlobWithWebIde)
   );
 };
+
+/**
+ * Checks if the target is the Web IDE
+ * @param {string} target - The target editor ('ide' or 'simple')
+ * @returns {boolean} - Whether the target is the Web IDE
+ */
+export const isIdeTarget = (target) => {
+  return target === 'ide';
+};
+
+/**
+ * Determines which fork suggestion to show based on the selected editor
+ * Single file editor shows fork suggestion when the ref is not on top of the branch.
+ * WebIDE does not have this limitation.
+ * @param {string} target - The target editor ('ide' or 'simple')
+ * @param {boolean} shouldShowWebIdeForkSuggestion - Whether to show fork suggestion for Web IDE
+ * @param {boolean} shouldShowSingleFileEditorForkSuggestion - Whether to show fork suggestion for single file editor
+ * @returns {boolean} - Whether to show fork suggestion for the selected editor
+ */
+export const forkSuggestionForSelectedEditor = (
+  target,
+  shouldShowWebIdeForkSuggestion,
+  shouldShowSingleFileEditorForkSuggestion,
+) => {
+  return isIdeTarget(target)
+    ? shouldShowWebIdeForkSuggestion
+    : shouldShowSingleFileEditorForkSuggestion;
+};

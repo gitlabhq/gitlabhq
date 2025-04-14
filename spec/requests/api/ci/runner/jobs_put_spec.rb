@@ -18,7 +18,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
     let_it_be(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
     let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
     let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
-    let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner) }
+    let_it_be_with_reload(:runner_manager) { create(:ci_runner_machine, runner: runner) }
     let_it_be(:user) { create(:user) }
 
     describe 'PUT /api/v4/jobs/:id' do
@@ -257,7 +257,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
       context 'when job is canceling' do
         before do
-          job.set_cancel_gracefully
+          attributes = attributes_for(:ci_runner_machine, :cancel_gracefully_feature).slice(:runtime_features)
+          runner_manager.update!(attributes)
+
           job.cancel!
         end
 

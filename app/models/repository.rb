@@ -1349,7 +1349,6 @@ class Repository
   end
 
   def ignore_revs_file_blob
-    return unless Feature.enabled?(:blame_ignore_revs, project)
     return unless project&.default_branch
 
     blob_at(project.default_branch, Gitlab::Blame::IGNORE_REVS_FILE_NAME, limit: 0)

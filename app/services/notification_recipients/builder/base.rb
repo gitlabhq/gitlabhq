@@ -39,6 +39,9 @@ module NotificationRecipients
       strong_memoize_attr :project
 
       def group
+        namespace = target.try(:namespace)
+        return namespace if namespace.is_a?(Group)
+
         project&.group || target.try(:group)
       end
       strong_memoize_attr :group

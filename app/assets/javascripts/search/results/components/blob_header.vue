@@ -72,7 +72,8 @@ export default {
       const regex = new RegExp(`(${this.query.search})`, 'g');
       return this.filePath.replace(
         regex,
-        (match, p1) => `<span class="highlight_word ${this.systemMatchCodeTheme}">${p1}</span>`,
+        (match, p1) =>
+          `<span class="highlight-search-term ${this.systemMatchCodeTheme}">${p1}</span>`,
       );
     },
     systemMatchCodeTheme() {
@@ -80,6 +81,9 @@ export default {
     },
     codeTheme() {
       return gon?.user_color_scheme || CODE_THEME_DEFAULT;
+    },
+    showSecondLine() {
+      return !this.query.project_id && this.projectPath;
     },
   },
   methods: {
@@ -94,40 +98,46 @@ export default {
 };
 </script>
 <template>
-  <div class="file-header-content gl-flex gl-items-center gl-leading-1">
-    <file-icon :file-name="filePath" :size="16" aria-hidden="true" css-classes="gl-mr-3" />
+  <div>
+    <div class="gl-flex gl-items-center gl-leading-1">
+      <file-icon :file-name="filePath" :size="16" aria-hidden="true" css-classes="gl-mr-3" />
 
-    <gl-link
-      :href="fileUrl"
-      :title="$options.i18n.fileLink"
-      :class="codeTheme"
-      @click="trackHeaderClick"
-    >
-      <template v-if="projectPath">
-        <strong class="project-path-content" data-testid="project-path-content"
-          >{{ projectPath }}:
-        </strong>
-      </template>
-
-      <strong
-        v-safe-html="highlightedFilePath"
-        class="file-name-content"
-        data-testid="file-name-content"
-      ></strong>
-    </gl-link>
-    <clipboard-button
-      :text="filePath"
-      :gfm="gfmCopyText"
-      :title="__('Copy file path')"
-      category="tertiary"
-      css-class="gl-mr-2"
-      @click="trackClipboardClick"
-    />
-    <gl-label
-      v-if="isHeaderOnly"
-      :background-color="$options.DEFAULT_HEADER_LABEL_COLOR"
-      :title="$options.i18n.isHeaderOnly"
-      class="gl-self-center"
-    />
+      <gl-link
+        :href="fileUrl"
+        :title="$options.i18n.fileLink"
+        class="gl-font-bold !gl-text-link"
+        :class="codeTheme"
+        @click="trackHeaderClick"
+      >
+        <strong
+          v-safe-html="highlightedFilePath"
+          class="file-name-content"
+          data-testid="file-name-content"
+        ></strong>
+      </gl-link>
+      <clipboard-button
+        :text="filePath"
+        :gfm="gfmCopyText"
+        :title="__('Copy file path')"
+        size="small"
+        category="tertiary"
+        css-class="gl-mr-2"
+        @click="trackClipboardClick"
+      />
+      <gl-label
+        v-if="isHeaderOnly"
+        :background-color="$options.DEFAULT_HEADER_LABEL_COLOR"
+        :title="$options.i18n.isHeaderOnly"
+        class="gl-self-center"
+      />
+    </div>
+    <div v-if="showSecondLine">
+      <gl-link
+        :href="projectPath"
+        class="gl-text-sm !gl-text-subtle"
+        data-testid="project-path-content"
+        >{{ projectPath }}
+      </gl-link>
+    </div>
   </div>
 </template>

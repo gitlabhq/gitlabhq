@@ -175,7 +175,7 @@ export default {
         v-if="node.attrs.showPreview"
         :contenteditable="false"
         data-testid="sandbox-preview"
-        class="!-gl-ml-4 !-gl-mr-4 !-gl-mt-3 gl-mb-3 gl-border-b-1 gl-border-b-default !gl-bg-white gl-p-4 gl-border-b-solid"
+        class="!-gl-ml-4 !-gl-mr-4 !-gl-mt-3 gl-mb-3 gl-border-b-1 gl-border-b-default !gl-bg-default gl-p-4 gl-border-b-solid"
       >
         <sandboxed-mermaid v-if="node.attrs.language === 'mermaid'" :source="diagramSource" />
         <img v-else ref="diagramContainer" :src="diagramUrl" />

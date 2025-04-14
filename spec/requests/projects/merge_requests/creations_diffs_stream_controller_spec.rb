@@ -72,7 +72,8 @@ RSpec.describe 'Merge Request Creations diffs stream', feature_category: :code_r
       it 'no diffs are streamed' do
         go
 
-        expect(response.body).to be_empty
+        expect(response.body).to not_include('diff-file')
+        expect(response.body).to include('server-timings')
       end
     end
   end

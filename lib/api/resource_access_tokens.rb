@@ -51,9 +51,7 @@ module API
 
           token = find_token(resource, params[:token_id])
 
-          if token.nil?
-            next not_found!("Could not find #{source_type} access token with token_id: #{params[:token_id]}")
-          end
+          next not_found!("#{source_type} Access Token") if token.nil?
 
           resource.members.load
           present token, with: Entities::ResourceAccessToken, resource: resource
@@ -76,9 +74,7 @@ module API
           resource = find_source(source_type, params[:id])
           token = find_token(resource, params[:token_id])
 
-          if token.nil?
-            next not_found!("Could not find #{source_type} access token with token_id: #{params[:token_id]}")
-          end
+          next not_found!("#{source_type} Access Token") if token.nil?
 
           service = ::ResourceAccessTokens::RevokeService.new(
             current_user,
@@ -109,7 +105,10 @@ module API
             type: Date,
             desc: "The expiration date of the token",
             default: PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now,
-            documentation: { example: '"2021-01-31' }
+            documentation: {
+              example: '2026-02-14T17:26:19.810Z',
+              default: "As default, the current time + #{PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS} days will be calculated"
+            }
           optional :access_level,
             type: Integer,
             values: ALLOWED_RESOURCE_ACCESS_LEVELS.values,

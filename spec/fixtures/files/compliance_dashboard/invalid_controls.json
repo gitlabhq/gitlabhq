@@ -1,0 +1,33 @@
+{
+  "name": "SOC 2",
+  "description": "SOC 2 Template",
+  "color": "#808080",
+  "requirements": [
+    {
+      "name": "CC1.1.1 - Control Environment - Integrity and Ethical Values",
+      "description": "The organization demonstrates a commitment to integrity and ethical values",
+      "controls": [
+        {
+          "name": "hello world",
+          "control_type": "internal",
+          "expression": "{ 'invalid, json' }"
+        }
+      ]
+    },
+    {
+      "name": "CC1.1.2 - Control Environment - Integrity and Ethical Values",
+      "description": "Established standards of conduct are communicated and enforced",
+      "controls": [
+        {
+          "name": "minimum_approvals_required_2",
+          "control_type": "blah",
+          "expression": {
+            "operator": "=",
+            "field": "minimum_approvals_required",
+            "value": 2
+          }
+        }
+      ]
+    }
+  ]
+}

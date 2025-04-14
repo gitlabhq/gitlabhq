@@ -29,6 +29,11 @@ export default {
       required: false,
       default: false,
     },
+    fluidWidth: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     label: {
       type: String,
       required: false,
@@ -141,6 +146,7 @@ export default {
     :fetch-items="fetchGroups"
     :fetch-initial-selection="fetchInitialGroup"
     :block="block"
+    :fluid-width="fluidWidth"
     v-on="$listeners"
   >
     <template #error>

@@ -224,3 +224,15 @@ function fixtures_directory_exists() {
 function upload_fixtures_package() {
   upload_package "${FIXTURES_PACKAGE}" "${FIXTURES_PACKAGE_URL}"
 }
+
+# Dump auto-explain logs fingerprints
+export FINGERPRINTS_PACKAGE="query-fingerprints.tar.gz"
+export FINGERPRINTS_FILE="query_fingerprints.txt"
+export FINGERPRINTS_PACKAGE_URL="${API_PACKAGES_BASE_URL}/auto-explain-logs/master/${FINGERPRINTS_PACKAGE}"
+
+function extract_and_upload_fingerprints() {
+  echo "Extracting SQL query fingerprints from ${RSPEC_AUTO_EXPLAIN_LOG_PATH}"
+  ruby scripts/extract_fingerprints "${RSPEC_AUTO_EXPLAIN_LOG_PATH}" "${FINGERPRINTS_FILE}"
+  create_package "${FINGERPRINTS_PACKAGE}" "${FINGERPRINTS_FILE}"
+  upload_package "${FINGERPRINTS_PACKAGE}" "${FINGERPRINTS_PACKAGE_URL}"
+}

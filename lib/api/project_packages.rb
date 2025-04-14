@@ -106,7 +106,7 @@ module API
           values: 1..20
       end
       route_setting :authentication, job_token_allowed: true
-      route_setting :authorization, job_token_policies: :read_packages,
+      route_setting :authorization, job_token_policies: :read_pipelines,
         allow_public_access_for_enabled_project_features: :package_registry
       get ':id/packages/:package_id/pipelines' do
         not_found!('Package not found') unless package.detailed_info?

@@ -12,7 +12,7 @@ module Gitlab
 
           def initialize(config, args, variables)
             @config = config
-            @args = args.to_h
+            @args = args.nil? ? {} : args
             @variables = variables
             @errors = []
             @interpolated = false
@@ -38,6 +38,7 @@ module Gitlab
 
           def interpolate!
             return @errors.push(config.error) unless config.valid?
+            return @errors.push(_('Given inputs must be a hash')) unless args.is_a?(Hash)
 
             if inputs_without_header?
               return @errors.push(

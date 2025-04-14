@@ -207,12 +207,12 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
     context 'access expiry date' do
       subject do
         put :update, xhr: true, params: {
-                                          group_member: {
-                                            expires_at: expires_at
-                                          },
-                                          group_id: group,
-                                          id: requester
-                                        }
+          group_member: {
+            expires_at: expires_at
+          },
+          group_id: group,
+          id: requester
+        }
       end
 
       context 'when set to a date in the past' do

@@ -22,4 +22,6 @@ export const ELEMENT_IDS = Object.freeze({
   USAGE_PING_FEATURES_ENABLED: 'application_setting_usage_ping_features_enabled',
   USAGE_PING_ENABLED: 'application_setting_usage_ping_enabled',
   OPTIONAL_METRICS_IN_SERVICE_PING: 'application_setting_include_optional_metrics_in_service_ping',
+  PRODUCT_USAGE_DATA: 'application_setting_gitlab_product_usage_data_enabled',
+  SNOWPLOW_ENABLED: 'application_setting_snowplow_enabled',
 });

@@ -238,7 +238,7 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
         post :revert, params: { namespace_id: project.namespace, project_id: project, start_branch: 'master', id: commit.id }
 
         expect(response).to redirect_to project_commit_path(project, commit.id)
-        expect(flash[:alert]).to match('Commit revert failed:')
+        expect(flash[:alert][:message]).to match('Commit revert failed:')
       end
     end
 
@@ -275,7 +275,7 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
           post :revert, params: { namespace_id: project.namespace, project_id: project, start_branch: 'master', id: merge_request.merge_commit_sha }
 
           expect(response).to redirect_to project_merge_request_path(project, merge_request)
-          expect(flash[:alert]).to match('Merge request revert failed:')
+          expect(flash[:alert][:message]).to match('Merge request revert failed:')
         end
       end
     end

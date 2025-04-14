@@ -3,6 +3,7 @@
 module Snippets
   class RepositoryValidationService
     INVALID_REPOSITORY = :invalid_snippet_repository
+    SNIPPET_NOT_FOUND = :snippet_not_found
 
     attr_reader :current_user, :snippet, :repository
 
@@ -11,13 +12,12 @@ module Snippets
     def initialize(user, snippet)
       @current_user = user
       @snippet = snippet
-      @repository = snippet.repository
+
+      @repository = snippet&.repository
     end
 
     def execute
-      if snippet.nil?
-        return service_response_error('No snippet found.', 404)
-      end
+      return ServiceResponse.error(message: 'No snippet found.', reason: SNIPPET_NOT_FOUND) unless snippet
 
       check_branch_count!
       check_branch_name_default!

@@ -55,6 +55,7 @@ export default {
     this.observer.disconnect();
   },
   methods: {
+    // eslint-disable-next-line vue/no-unused-properties -- addTooltips is part of the component's public API for adding tooltips dynamically.
     addTooltips(elements, config) {
       const newTooltips = elements
         .filter((element) => !this.tooltipExists(element))
@@ -81,6 +82,7 @@ export default {
         }
       }
     },
+    // eslint-disable-next-line vue/no-unused-properties -- fixTitle is part of the component's public API for updating tooltip titles.
     fixTitle(target) {
       const tooltip = this.findTooltipByTarget(target);
 
@@ -88,6 +90,7 @@ export default {
         tooltip.title = target.getAttribute('title');
       }
     },
+    // eslint-disable-next-line vue/no-unused-properties -- triggerEvent is part of the component's public API for triggering tooltip events.
     triggerEvent(target, event) {
       const tooltip = this.findTooltipByTarget(target);
       const tooltipRef = this.$refs[tooltip?.id];

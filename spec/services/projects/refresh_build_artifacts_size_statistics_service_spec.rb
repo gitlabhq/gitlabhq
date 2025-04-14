@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitlab_redis_buffered_counter, feature_category: :job_artifacts do
+RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitlab_redis_shared_state, feature_category: :job_artifacts do
   let(:service) { described_class.new }
 
   describe '#execute' do
@@ -79,7 +79,7 @@ RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitl
       end
 
       before do
-        allow(Gitlab::Redis::BufferedCounter).to receive(:with).and_raise(StandardError, 'error')
+        allow(Gitlab::Redis::SharedState).to receive(:with).and_raise(StandardError, 'error')
 
         expect { service.execute }.to raise_error(StandardError)
       end

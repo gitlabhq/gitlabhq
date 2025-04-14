@@ -41,6 +41,6 @@ See [the general developer security guidelines](https://gitlab.com/gitlab-org/re
 [Code reviews and Approvals]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/engineer.md#code-reviews-and-approvals
 [Approval Guidelines]: https://docs.gitlab.com/development/code_review/#approval-guidelines
 [Canonical repository]: https://gitlab.com/gitlab-org/gitlab
-[`e2e:test-on-omnibus` job]: https://docs.gitlab.com/ee/development/testing_guide/end_to_end/#using-the-test-on-omnibus-job
+[`e2e:test-on-omnibus-ee` job]: https://docs.gitlab.com/ee/development/testing_guide/end_to_end/#using-the-test-on-omnibus-job
 [Release Manager]: https://about.gitlab.com/community/release-managers/
 [security implementation issue]: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md#security-implementation-issue

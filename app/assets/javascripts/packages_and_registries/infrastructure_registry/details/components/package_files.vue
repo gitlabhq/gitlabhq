@@ -144,10 +144,11 @@ export default {
         <gl-disclosure-dropdown category="tertiary" right no-caret icon="ellipsis_v">
           <gl-disclosure-dropdown-item
             data-testid="delete-file"
+            variant="danger"
             @action="$emit('delete-file', item)"
           >
             <template #list-item>
-              <span class="gl-text-red-500">{{ $options.i18n.deleteFile }}</span>
+              {{ $options.i18n.deleteFile }}
             </template>
           </gl-disclosure-dropdown-item>
         </gl-disclosure-dropdown>

@@ -1,7 +1,0 @@
-.gl-ml-2
-  - if runner.instance_type?
-    = gl_badge_tag s_('Runners|shared'), variant: :success
-  - elsif runner.group_type?
-    = gl_badge_tag s_('Runners|group'), variant: :success
-  - else
-    = gl_badge_tag s_('Runners|project'), variant: :info

@@ -1,5 +1,7 @@
 <script>
+import { clamp } from 'lodash';
 import { QUERIES } from '../constants';
+import eventHub from '../event_hub';
 
 const PER_PAGE = 20;
 
@@ -14,13 +16,31 @@ export default {
       },
       variables() {
         return {
-          ...this.variables,
-          includeMergeabilityChecks: this.showMergeChecksSuccess,
           perPage: PER_PAGE,
+          ...this.variables,
         };
       },
       error() {
         this.error = true;
+      },
+      result({ data }) {
+        if (this.fromSubscription) {
+          this.newMergeRequestIds = data?.currentUser?.mergeRequests?.nodes.reduce(
+            (acc, mergeRequest) => {
+              if (!this.currentMergeRequestIds.includes(mergeRequest.id)) {
+                acc.push(mergeRequest.id);
+              }
+
+              return acc;
+            },
+            this.isVisible ? [] : this.newMergeRequestIds,
+          );
+          this.fromSubscription = false;
+        } else {
+          this.updateCurrentMergeRequestIds();
+        }
+
+        this.loading = false;
       },
     },
     count: {
@@ -44,7 +64,6 @@ export default {
       },
     },
   },
-  inject: { showMergeChecksSuccess: { default: false } },
   props: {
     query: {
       type: String,
@@ -52,9 +71,15 @@ export default {
     },
     variables: {
       type: Object,
-      required: true,
+      required: false,
+      default: () => ({}),
     },
     hideCount: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isVisible: {
       type: Boolean,
       required: false,
       default: false,
@@ -62,21 +87,58 @@ export default {
   },
   data() {
     return {
+      loading: true,
       mergeRequests: null,
       count: null,
       error: false,
+      currentMergeRequestIds: [],
+      newMergeRequestIds: [],
+      fromSubscription: false,
     };
   },
   computed: {
-    isLoading() {
-      return this.$apollo.queries.mergeRequests.loading;
-    },
     hasNextPage() {
       return this.mergeRequests?.pageInfo?.hasNextPage;
     },
   },
+  watch: {
+    isVisible(newVal) {
+      if (newVal) {
+        this.updateCurrentMergeRequestIds();
+      }
+    },
+  },
+  mounted() {
+    eventHub.$on('refetch.mergeRequests', this.refetchMergeRequests);
+  },
+  beforeDestroy() {
+    eventHub.$off('refetch.mergeRequests', this.refetchMergeRequests);
+  },
   methods: {
+    refetchMergeRequests(type) {
+      if (type !== this.query || !this.mergeRequests.nodes) return;
+
+      this.fromSubscription = true;
+
+      if (this.isVisible) {
+        this.updateCurrentMergeRequestIds();
+      }
+
+      this.$apollo.queries.mergeRequests.refetch({
+        perPage: clamp(
+          Math.ceil(this.mergeRequests.nodes.length / PER_PAGE) * PER_PAGE,
+          PER_PAGE,
+          100,
+        ),
+      });
+
+      if (!this.hideCount) {
+        this.$apollo.queries.count.refetch();
+      }
+    },
     async loadMore() {
+      this.loading = true;
+
       await this.$apollo.queries.mergeRequests.fetchMore({
         variables: {
           ...this.variables,
@@ -85,15 +147,25 @@ export default {
         },
       });
     },
+    updateCurrentMergeRequestIds() {
+      this.currentMergeRequestIds =
+        this.mergeRequests?.nodes?.map((mergeRequest) => mergeRequest.id) ?? [];
+    },
+    resetNewMergeRequestIds() {
+      this.updateCurrentMergeRequestIds();
+      this.newMergeRequestIds = [];
+    },
   },
   render() {
     return this.$scopedSlots.default({
       mergeRequests: this.mergeRequests?.nodes || [],
+      newMergeRequestIds: this.newMergeRequestIds || [],
       count: this.count,
       hasNextPage: this.hasNextPage,
       loadMore: this.loadMore,
-      loading: this.isLoading,
+      loading: this.loading,
       error: this.error,
+      resetNewMergeRequestIds: this.resetNewMergeRequestIds,
     });
   },
 };

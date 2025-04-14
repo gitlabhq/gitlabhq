@@ -65,10 +65,18 @@ export default {
 
     if (el.closest('.js-code-navigation') && !isCurrentElementPopoverOpen) {
       const { lineIndex, charIndex } = el.dataset;
+      const blobViewer = el.closest('.file-holder')?.querySelector('.blob-viewer');
+
+      let offsetLeft = 0;
+      const blobContent = document.querySelector('.line-numbers')?.nextElementSibling;
+
+      if (blobContent?.classList.contains('blob-content')) {
+        offsetLeft = blobContent.offsetLeft;
+      }
 
       position = {
-        x: el.offsetLeft || 0,
-        y: el.offsetTop + (el.closest('pre.code')?.offsetTop || 0) || 0,
+        x: (el.offsetLeft || 0) + offsetLeft,
+        y: el.offsetTop + (blobViewer?.offsetTop || 0) || 0,
         height: el.offsetHeight,
         lineIndex: parseInt(lineIndex, 10),
       };

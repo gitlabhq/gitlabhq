@@ -131,7 +131,7 @@ module API
           build = find_build!(params[:job_id])
           authorize!(:cancel_build, build)
 
-          if params[:force] && Feature.enabled?(:force_cancel_build, current_user)
+          if params[:force]
             authorize!(:maintainer_access, build)
             build.force_cancel
           else

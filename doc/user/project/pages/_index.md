@@ -72,9 +72,10 @@ For more information, see:
 To use GitLab Pages, you must create a project in GitLab to upload your website's
 files to. These projects can be either public, internal, or private.
 
-GitLab always deploys your website from a specific folder called `public` in your
-repository. When you create a new project in GitLab, a [repository](../repository/_index.md)
-becomes available automatically.
+By default, GitLab deploys your website from a specific folder called `public` in your
+repository.
+You can also [set a custom folder to be deployed with Pages](introduction.md#customize-the-default-folder).
+When you create a new project in GitLab, a [repository](../repository/_index.md) becomes available automatically.
 
 To deploy your site, GitLab uses its built-in tool called [GitLab CI/CD](../../../ci/_index.md)
 to build your site and publish it to the GitLab Pages server. The sequence of
@@ -100,7 +101,7 @@ domain, you can optionally secure it with SSL/TLS certificates.
 If you're using GitLab.com, your website is publicly available to the internet.
 To restrict access to your website, enable [GitLab Pages Access Control](pages_access_control.md).
 
-If you're using a self-managed instance, your websites are published on your
+If you're using a GitLab Self-Managed instance, your websites are published on your
 own server, according to the [Pages settings](../../../administration/pages/_index.md)
 chosen by your sysadmin, who can make them public or internal.
 
@@ -115,9 +116,9 @@ and adapt for your own needs:
 - [Building a new GitLab docs site with Nanoc, GitLab CI, and GitLab Pages](https://about.gitlab.com/blog/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/).
 - [Publish code coverage reports with GitLab Pages](https://about.gitlab.com/blog/2016/11/03/publish-code-coverage-report-with-gitlab-pages/).
 
-## Administer GitLab Pages for self-managed instances
+## Administer GitLab Pages for GitLab Self-Managed instances
 
-If you are running a self-managed instance of GitLab,
+If you are running a GitLab Self-Managed instance,
 [follow the administration steps](../../../administration/pages/_index.md) to configure Pages.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a [video tutorial](https://www.youtube.com/watch?v=dD8c7WNcc6s) about how to get started with GitLab Pages administration.
@@ -208,14 +209,15 @@ Prerequisites:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162826) in GitLab 17.4.
+- Support for variables [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/492289) in GitLab 17.11.
 
 {{< /history >}}
 
 You can configure your Pages deployments to be automatically deleted after
-a period of time has passed by specifying a duration at [`pages.expire_in`](../../../ci/yaml/_index.md#pagespagesexpire_in):
+a period of time has passed by specifying a duration at [`pages.expire_in`](../../../ci/yaml/_index.md#pagesexpire_in):
 
 ```yaml
-deploy-pages:
+create-pages:
   stage: deploy
   script:
     - ...
@@ -305,6 +307,13 @@ deployment is triggered:
 pages:
   pages: false
 ```
+
+{{< alert type="warning" >}}
+
+If you have multiple Pages jobs in your pipeline with the same value for
+`path_prefix`, the last one to be completed will be deployed with Pages.
+
+{{< /alert >}}
 
 ## Parallel deployments
 

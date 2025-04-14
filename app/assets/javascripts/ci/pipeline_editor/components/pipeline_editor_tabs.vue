@@ -3,6 +3,8 @@ import { GlAlert, GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import PipelineGraph from '~/ci/pipeline_editor/components/graph/pipeline_graph.vue';
 import { getParameterValues, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import InputsAnnouncementBanner from '~/ci/common/pipeline_inputs/inputs_announcement_banner.vue';
 import {
   CREATE_TAB,
   EDITOR_APP_STATUS_EMPTY,
@@ -65,10 +67,12 @@ export default {
     GlAlert,
     GlLoadingIcon,
     GlTabs,
+    InputsAnnouncementBanner,
     PipelineGraph,
     TextEditor,
     WalkthroughPopover,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     ciConfigData: {
       type: Object,
@@ -115,9 +119,6 @@ export default {
     };
   },
   computed: {
-    isMergedYamlAvailable() {
-      return this.ciConfigData?.mergedYaml;
-    },
     isEmpty() {
       return this.appStatus === EDITOR_APP_STATUS_EMPTY;
     },
@@ -127,11 +128,17 @@ export default {
     isLintUnavailable() {
       return this.appStatus === EDITOR_APP_STATUS_LINT_UNAVAILABLE;
     },
-    isValid() {
-      return this.appStatus === EDITOR_APP_STATUS_VALID;
-    },
     isLoading() {
       return this.appStatus === EDITOR_APP_STATUS_LOADING;
+    },
+    isMergedYamlAvailable() {
+      return this.ciConfigData?.mergedYaml;
+    },
+    isPipelineInputsFeatureAvailable() {
+      return this.glFeatures.ciInputsForPipelines;
+    },
+    isValid() {
+      return this.appStatus === EDITOR_APP_STATUS_VALID;
     },
     validateTabBadgeTitle() {
       if (this.showValidateNewBadge) {
@@ -191,6 +198,7 @@ export default {
       data-testid="editor-tab"
       @click="setCurrentTab($options.tabConstants.CREATE_TAB)"
     >
+      <inputs-announcement-banner v-if="isPipelineInputsFeatureAvailable" />
       <walkthrough-popover v-if="isNewCiConfigFile" v-on="$listeners" />
       <ci-editor-header
         :show-help-drawer="showHelpDrawer"

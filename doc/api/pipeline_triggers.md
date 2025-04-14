@@ -159,7 +159,8 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 {{< history >}}
 
 - `inputs` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519958) in GitLab 17.10
-[with a flag](../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Disabled by default.
+  [with a flag](../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/525504) in GitLab 17.11.
 
 {{< /history >}}
 
@@ -184,7 +185,7 @@ Supported attributes:
 | `ref`       | string         | Yes      | The branch or tag to run the pipeline on. |
 | `token`     | string         | Yes      | The trigger token or CI/CD job token. |
 | `variables` | hash           | No       | A map of key-valued strings containing the pipeline variables. For example: `{ VAR1: "value1", VAR2: "value2" }`. |
-| `inputs`    | hash           | No       | A map of inputs, as key-value pairs, to use when creating the pipeline. Required feature flag: `ci_inputs_for_pipelines` |
+| `inputs`    | hash           | No       | A map of inputs, as key-value pairs, to use when creating the pipeline. |
 
 Example request with [variables](../ci/variables/_index.md):
 
@@ -195,9 +196,7 @@ curl --request POST \
   "https://gitlab.example.com/api/v4/projects/123/trigger/pipeline?token=2cb1840fb9dfc9fb0b7b1609cd29cb&ref=main"
 ```
 
-Example request with [inputs](../ci/yaml/inputs.md):
-
-_Required [feature flag](feature_flags.md): `ci_inputs_for_pipelines`_
+Example request with [inputs](../ci/inputs/_index.md):
 
 ```shell
 curl --request POST \

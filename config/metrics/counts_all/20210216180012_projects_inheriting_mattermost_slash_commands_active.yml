@@ -10,6 +10,9 @@ value_type: number
 status: active
 time_frame: all
 data_source: database
+instrumentation_class: ActiveProjectsInheritingIntegrationsMetric
+options:
+  type: mattermost_slash_commands
 tiers:
 - free
 - premium

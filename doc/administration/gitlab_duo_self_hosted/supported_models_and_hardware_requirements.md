@@ -8,7 +8,8 @@ title: Supported GitLab Duo Self-Hosted models and hardware requirements
 
 {{< details >}}
 
-- Tier: Ultimate with GitLab Duo Enterprise - [Start a GitLab Duo Enterprise trial on a paid Ultimate subscription](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Tier: Ultimate
+- Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
@@ -30,7 +31,7 @@ needs and use cases.
 
 ## Supported models
 
-Support for the following GitLab-supported large language models (LLMs) is generally available.
+Support for the following GitLab-supported large language models (LLMs) is generally available. If the model you want to use is not in this documentation, provide feedback in the [model request issue (issue 526751)](https://gitlab.com/gitlab-org/gitlab/-/issues/526751).
 
 - Fully compatible: The model can likely handle the feature without any loss of quality.
 - Largely compatible: The model supports the feature, but there might be compromises or limitations.
@@ -49,24 +50,25 @@ Support for the following GitLab-supported large language models (LLMs) is gener
 | GPT | [GPT-4 Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4) | [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-dashed" >}} Largely compatible |
 | GPT | [GPT-4o](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo) | [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
 | GPT | [GPT-4o-mini](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo) | [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-dashed" >}} Largely compatible |
-| Llama | [Llama 3 8B](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments), [AWS Bedrock](https://aws.amazon.com/bedrock/llama/) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | Under evaluation. For more information, see [epic 14486](https://gitlab.com/groups/gitlab-org/-/epics/14486) |
-| Llama | [Llama 3.1 8B](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments), [AWS Bedrock](https://aws.amazon.com/bedrock/llama/) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | Under evaluation. For more information, see [epic 14486](https://gitlab.com/groups/gitlab-org/-/epics/14486) |
-| Llama | [Llama 3 70B](https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments), [AWS Bedrock](https://aws.amazon.com/bedrock/llama/) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | Under evaluation. For more information, see [epic 14486](https://gitlab.com/groups/gitlab-org/-/epics/14486) |
-| Llama | [Llama 3.1 70B](https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments), [AWS Bedrock](https://aws.amazon.com/bedrock/llama/) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | Under evaluation. For more information, see [epic 14486](https://gitlab.com/groups/gitlab-org/-/epics/14486) |
+| Llama | [Llama 3 8B](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="dash-circle" >}} Not compatible |
+| Llama | [Llama 3.1 8B](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-dashed" >}} Largely compatible |
+| Llama | [Llama 3 70B](https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="dash-circle" >}} Not compatible |
+| Llama | [Llama 3.1 70B](https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
+| Llama | [Llama 3.3 70B](https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
 
 ### Experimental and beta models
 
-The following models are configurable for the functionalities marked below, but are currently in experimental or beta status, under evaluation, and are excluded from the "Customer Integrated Models" definition in the [AI Functionality Terms](https://handbook.gitlab.com/handbook/legal/ai-functionality-terms/):
+The following models are configurable for the functionalities marked below, but are currently in beta or experimental status, under evaluation, and are excluded from the "Customer Integrated Models" definition in the [AI Functionality Terms](https://handbook.gitlab.com/handbook/legal/ai-functionality-terms/):
 
 | Model family   | Model | Supported platforms | Status | Code completion | Code generation | GitLab Duo Chat |
 |--------------- |-------|---------------------|--------|-----------------|-----------------|-----------------|
-| CodeGemma      | [CodeGemma 2b](https://huggingface.co/google/codegemma-2b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Beta | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
-| CodeGemma      | [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Beta | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
-| CodeGemma      | [CodeGemma 7b-code](https://huggingface.co/google/codegemma-7b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Beta | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
-| Code Llama     | [Code-Llama 13b](https://huggingface.co/meta-llama/CodeLlama-13b-Instruct-hf) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Beta | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
-| DeepSeek Coder | [DeepSeek Coder 33b Instruct](https://huggingface.co/deepseek-ai/deepseek-coder-33b-instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Beta | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
-| DeepSeek Coder | [DeepSeek Coder 33b Base](https://huggingface.co/deepseek-ai/deepseek-coder-33b-base) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Beta | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
-| Mistral        | [Mistral 7B-it v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) <br> [AWS Bedrock](https://aws.amazon.com/bedrock/mistral/) | Beta | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| CodeGemma      | [CodeGemma 2b](https://huggingface.co/google/codegemma-2b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Experimental | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| CodeGemma      | [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Experimental | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
+| CodeGemma      | [CodeGemma 7b-code](https://huggingface.co/google/codegemma-7b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Experimental | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| Code Llama     | [Code-Llama 13b](https://huggingface.co/meta-llama/CodeLlama-13b-Instruct-hf) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Experimental | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
+| DeepSeek Coder | [DeepSeek Coder 33b Instruct](https://huggingface.co/deepseek-ai/deepseek-coder-33b-instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Experimental | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
+| DeepSeek Coder | [DeepSeek Coder 33b Base](https://huggingface.co/deepseek-ai/deepseek-coder-33b-base) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Experimental | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
+| Mistral        | [Mistral 7B-it v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) <br> [AWS Bedrock](https://aws.amazon.com/bedrock/mistral/) | Experimental | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
 
 <!-- vale gitlab_base.Spelling = YES -->
 

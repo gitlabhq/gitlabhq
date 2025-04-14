@@ -93,7 +93,7 @@ provide an example of a complex testing strategy with many components involved.
 
 ### `needs` dependency visualization
 
-Viewing the `needs` dependencies in the [full pipeline graph](../pipelines/_index.md#group-jobs-by-stage-or-needs-configuration)
+Viewing the `needs` dependencies in the [full pipeline graph](_index.md#group-jobs-by-stage-or-needs-configuration)
 can help analyze the critical path in the pipeline and understand possible blockers.
 
 ### Pipeline Monitoring

@@ -1,9 +1,7 @@
 ---
-# Error: gitlab_docs.RelativeLinks
-#
-# Checks for the presence of absolute hyperlinks that should be relative.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_docs.RelativeLinks
+description: |
+  Checks for the presence of absolute hyperlinks that should be relative.
 extends: existence
 message: "Use a relative link instead of a URL, and ensure the file name ends in .md and not .html."
 link: https://docs.gitlab.com/development/documentation/styleguide/#links

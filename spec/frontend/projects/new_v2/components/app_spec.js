@@ -1,4 +1,5 @@
 import { GlAlert } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { getLocationHash, setLocationHash } from '~/lib/utils/url_utility';
 import App from '~/projects/new_v2/components/app.vue';
@@ -16,7 +17,6 @@ describe('New project creation app', () => {
       provide: {
         userNamespaceId: '1',
         canCreateProject: true,
-        rootPath: '/',
         projectsUrl: '/dashboard/projects',
         userProjectLimit: 10000,
         canSelectNamespace: true,
@@ -114,7 +114,7 @@ describe('New project creation app', () => {
 
       expect(findSingleChoiceSelector().exists()).toBe(false);
       expect(findAlert().text()).toBe(
-        "You've reached your limit of 10000 projects created. Contact your GitLab administrator.",
+        "You've reached your limit of 10,000 projects created. Contact your GitLab administrator.",
       );
     });
 
@@ -124,6 +124,34 @@ describe('New project creation app', () => {
       expect(findSingleChoiceSelector().exists()).toBe(false);
       expect(findAlert().text()).toBe(
         'You cannot create projects in your personal namespace. Contact your GitLab administrator.',
+      );
+    });
+  });
+
+  describe('group namespace project', () => {
+    it('starts with group namespace when namespaceId provided', () => {
+      createComponent({ namespaceId: '2' });
+
+      expect(wrapper.findByTestId('personal-namespace-button').props('selected')).toBe(false);
+      expect(wrapper.findByTestId('group-namespace-button').props('selected')).toBe(true);
+    });
+
+    it('renders a group select', () => {
+      createComponent({ namespaceId: '2' });
+
+      expect(wrapper.findByTestId('group-selector').exists()).toBe(true);
+    });
+
+    it('renders error when user click next button with no namespace provided', async () => {
+      createComponent();
+
+      wrapper.findByTestId('group-namespace-button').vm.$emit('click');
+      findNextButton().trigger('click');
+      await nextTick();
+
+      const formGroup = wrapper.findByTestId('group-selector-form-group');
+      expect(formGroup.vm.$attrs['invalid-feedback']).toBe(
+        'Pick a group or namespace where you want to create this project.',
       );
     });
   });

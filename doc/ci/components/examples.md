@@ -260,11 +260,11 @@ The CI/CD template migration involves the following steps:
    - The `compile` job runs `go build` and should be renamed to `build`.
 1. Define optimization strategies for better pipeline efficiency.
    - The `stage` job attribute should be configurable to allow different CI/CD pipeline consumers.
-   - The `image` key uses a hardcoded image tag `latest`. Add [`golang_version` as input](../yaml/inputs.md)
+   - The `image` key uses a hardcoded image tag `latest`. Add [`golang_version` as input](../inputs/_index.md)
      with `latest` as default value for more flexible and reusable pipelines. The input must match
      the Docker Hub image tag values.
    - The `compile` job builds the binaries into a hard-coded target directory `mybinaries`,
-     which can be enhanced with a dynamic [input](../yaml/inputs.md) and default value `mybinaries`.
+     which can be enhanced with a dynamic [input](../inputs/_index.md) and default value `mybinaries`.
 1. Create a template [directory structure](_index.md#directory-structure) for the new component,
    based on one template for each job.
 

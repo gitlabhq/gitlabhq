@@ -19,23 +19,23 @@ module Gitlab
     MAX_INCLUDE_DEPTH = 3
     RENDER_TIMEOUT = 10.seconds
     DEFAULT_ADOC_ATTRS = {
-        'showtitle' => true,
-        'sectanchors' => true,
-        'idprefix' => Banzai::Renderer::USER_CONTENT_ID_PREFIX,
-        'idseparator' => '-',
-        'env' => 'gitlab',
-        'env-gitlab' => '',
-        'source-highlighter' => 'gitlab-html-pipeline',
-        'icons' => 'font',
-        'outfilesuffix' => '.adoc',
-        'max-include-depth' => MAX_INCLUDE_DEPTH,
-        # This feature is disabled because it relies on File#read to read the file.
-        # If we want to enable this feature we will need to provide a "GitLab compatible" implementation.
-        # This attribute is typically used to share common config (skinparam...) across all PlantUML diagrams.
-        # The value can be a path or a URL.
-        'kroki-plantuml-include!' => '',
-        # This feature is disabled because it relies on the local file system to save diagrams retrieved from the Kroki server.
-        'kroki-fetch-diagram!' => ''
+      'showtitle' => true,
+      'sectanchors' => true,
+      'idprefix' => Banzai::Renderer::USER_CONTENT_ID_PREFIX,
+      'idseparator' => '-',
+      'env' => 'gitlab',
+      'env-gitlab' => '',
+      'source-highlighter' => 'gitlab-html-pipeline',
+      'icons' => 'font',
+      'outfilesuffix' => '.adoc',
+      'max-include-depth' => MAX_INCLUDE_DEPTH,
+      # This feature is disabled because it relies on File#read to read the file.
+      # If we want to enable this feature we will need to provide a "GitLab compatible" implementation.
+      # This attribute is typically used to share common config (skinparam...) across all PlantUML diagrams.
+      # The value can be a path or a URL.
+      'kroki-plantuml-include!' => '',
+      # This feature is disabled because it relies on the local file system to save diagrams retrieved from the Kroki server.
+      'kroki-fetch-diagram!' => ''
     }.freeze
 
     def self.path_attrs(path)
@@ -71,11 +71,11 @@ module Gitlab
                         attributes: DEFAULT_ADOC_ATTRS
                                         .merge(extra_attrs)
                                         .merge({
-                                                   # Define the Kroki server URL from the settings.
-                                                   # This attribute cannot be overridden from the AsciiDoc document.
-                                                   'kroki-server-url' => Gitlab::CurrentSettings.kroki_url,
-                                                   'allow-uri-read' => Gitlab::CurrentSettings.wiki_asciidoc_allow_uri_includes
-                                               }),
+                                          # Define the Kroki server URL from the settings.
+                                          # This attribute cannot be overridden from the AsciiDoc document.
+                                          'kroki-server-url' => Gitlab::CurrentSettings.kroki_url,
+                                          'allow-uri-read' => Gitlab::CurrentSettings.wiki_asciidoc_allow_uri_includes
+                                        }),
                         extensions: extensions }
 
       context[:pipeline] = :ascii_doc

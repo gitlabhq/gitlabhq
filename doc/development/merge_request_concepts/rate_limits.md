@@ -25,3 +25,5 @@ Limits are applicable for:
 - Existing [GitLab application limits](../../administration/instance_limits.md)
 - Product processes: [introducing application limits](https://handbook.gitlab.com/handbook/product/product-processes/#introducing-application-limits)
 - Development documentation: [guide for adding application limits](../application_limits.md)
+- Infrastructure guide to rate limits: [rate limit architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure/rate-limiting/)
+- A guide for when, where, and how to configure rate limits: [managing rate limits](https://handbook.gitlab.com/handbook/engineering/infrastructure/rate-limiting/managing-limits/)

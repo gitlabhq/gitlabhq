@@ -281,7 +281,7 @@ GET /projects/:id/snippets/:snippet_id/discussions
 | Attribute           | Type             | Required   | Description |
 | ------------------- | ---------------- | ---------- | ------------|
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `snippet_id`        | integer          | yes        | The ID of an snippet. |
+| `snippet_id`        | integer          | yes        | The ID of a snippet. |
 
 ```json
 [
@@ -384,7 +384,7 @@ Parameters:
 | --------------- | -------------- | -------- | ----------- |
 | `discussion_id` | integer        | yes      | The ID of a discussion item. |
 | `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `snippet_id`    | integer        | yes      | The ID of an snippet. |
+| `snippet_id`    | integer        | yes      | The ID of a snippet. |
 
 ```shell
 curl --request POST \
@@ -407,7 +407,7 @@ Parameters:
 | --------------- | -------------- | -------- | ----------- |
 | `body`          | string         | yes      | The content of a discussion. |
 | `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `snippet_id`    | integer        | yes      | The ID of an snippet. |
+| `snippet_id`    | integer        | yes      | The ID of a snippet. |
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
 
 ```shell
@@ -432,7 +432,7 @@ Parameters:
 | `discussion_id` | integer        | yes      | The ID of a thread. |
 | `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `note_id`       | integer        | yes      | The ID of a thread note. |
-| `snippet_id`    | integer        | yes      | The ID of an snippet. |
+| `snippet_id`    | integer        | yes      | The ID of a snippet. |
 | `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
 
 ```shell
@@ -457,7 +457,7 @@ Parameters:
 | `discussion_id` | integer        | yes      | The ID of a thread. |
 | `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `note_id`       | integer        | yes      | The ID of a thread note. |
-| `snippet_id`    | integer        | yes      | The ID of an snippet. |
+| `snippet_id`    | integer        | yes      | The ID of a snippet. |
 
 ```shell
 curl --request PUT \
@@ -480,7 +480,7 @@ Parameters:
 | `discussion_id` | integer        | yes      | The ID of a discussion. |
 | `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `note_id`       | integer        | yes      | The ID of a discussion note. |
-| `snippet_id`    | integer        | yes      | The ID of an snippet. |
+| `snippet_id`    | integer        | yes      | The ID of a snippet. |
 
 ```shell
 curl --request DELETE \
@@ -501,7 +501,7 @@ curl --request DELETE \
 
 The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
 and is planned for removal in v5 of the API.
-In GitLab 17.4 or later, if your administrator [enabled the new look for epics](../user/group/epics/epic_work_items.md), use the
+In GitLab 17.4 or later, if [the new look for epics](../user/group/epics/epic_work_items.md) is enabled, use the
 [Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead. For more information, see the [guide how to migrate your existing APIs](graphql/epic_work_items_api_migration_guide.md).
 This change is a breaking change.
 
@@ -873,11 +873,15 @@ Diff comments also contain position:
           "line_range": {
             "start": {
               "line_code": "588440f66559714280628a4f9799f0c4eb880a4a_10_10",
-              "type": "new"
+              "type": "new",
+              "old_line": null,
+              "new_line": 10
             },
             "end": {
               "line_code": "588440f66559714280628a4f9799f0c4eb880a4a_11_11",
-              "type": "old"
+              "type": "old",
+              "old_line": 11,
+              "new_line": 11
             }
           }
         },
@@ -972,7 +976,7 @@ curl --request POST \
   changes in the file changed the line number. For the discussion about a fix, see
   [issue 32516](https://gitlab.com/gitlab-org/gitlab/-/issues/325161).
 - If you specify incorrect `base`, `head`, `start`, or `SHA` parameters, you might run
-  into the bug described in [issue #296829)](https://gitlab.com/gitlab-org/gitlab/-/issues/296829).
+  into the bug described in [issue #296829](https://gitlab.com/gitlab-org/gitlab/-/issues/296829).
 
 To create a new thread:
 
@@ -1025,10 +1029,17 @@ Parameters for multiline comments only:
 | ---------------------------------------- | -------------- | -------- | ----------- |
 | `position[line_range][end][line_code]`   | string         | yes      | [Line code](#line-code) for the end line. |
 | `position[line_range][end][type]`        | string         | yes      | Use `new` for lines added by this commit, otherwise `old`. |
+| `position[line_range][end][old_line]`    | integer        | no       | Old line number of the end line. |
+| `position[line_range][end][new_line]`    | integer        | no       | New line number of the end line. |
 | `position[line_range][start][line_code]` | string         | yes      | [Line code](#line-code) for the start line. |
 | `position[line_range][start][type]`      | string         | yes      | Use `new` for lines added by this commit, otherwise `old`. |
+| `position[line_range][start][old_line]`  | integer        | no       | Old line number of the start line. |
+| `position[line_range][start][new_line]`  | integer        | no       | New line number of the start line. |
 | `position[line_range][end]`              | hash           | no       | Multiline note ending line. |
 | `position[line_range][start]`            | hash           | no       | Multiline note starting line. |
+
+The `old_line` and `new_line` parameters inside the `line_range` attribute display the range for
+multi-line comments. For example, "Comment on lines +296 to +297".
 
 #### Line code
 
@@ -1364,15 +1375,14 @@ Parameters:
 | `position[position_type]` | string         | yes (if `position*` is supplied) | Type of the position reference. Allowed values: `text`, `image`, or `file`. `file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046) in GitLab 16.4. |
 | `created_at`              | string         | no                               | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
 | `position`                | hash           | no                               | Position when creating a diff note. |
-
-| `position[new_path]`      | string         | no       | File path after change. |
-| `position[new_line]`      | integer        | no       | Line number after change. |
-| `position[old_path]`      | string         | no       | File path before change. |
-| `position[old_line]`      | integer        | no       | Line number before change. |
-| `position[height]`        | integer        | no       | For `image` diff notes, image height. |
-| `position[width]`         | integer        | no       | For `image` diff notes, image width. |
-| `position[x]`             | integer        | no       | For `image` diff notes, X coordinate. |
-| `position[y]`             | integer        | no       | For `image` diff notes, Y coordinate. |
+| `position[new_path]`      | string         | no                               | File path after change. |
+| `position[new_line]`      | integer        | no                               | Line number after change. |
+| `position[old_path]`      | string         | no                               | File path before change. |
+| `position[old_line]`      | integer        | no                               | Line number before change. |
+| `position[height]`        | integer        | no                               | For `image` diff notes, image height. |
+| `position[width]`         | integer        | no                               | For `image` diff notes, image width. |
+| `position[x]`             | integer        | no                               | For `image` diff notes, X coordinate. |
+| `position[y]`             | integer        | no                               | For `image` diff notes, Y coordinate. |
 
 ```shell
 curl --request POST \

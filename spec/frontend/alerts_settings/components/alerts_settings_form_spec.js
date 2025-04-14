@@ -1,17 +1,7 @@
-import {
-  GlForm,
-  GlFormSelect,
-  GlFormInput,
-  GlToggle,
-  GlFormTextarea,
-  GlTab,
-  GlLink,
-  GlModal,
-} from '@gitlab/ui';
-import { mount, shallowMount } from '@vue/test-utils';
+import { GlForm, GlToggle, GlFormTextarea, GlTab, GlLink, GlModal } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import MappingBuilder from '~/alerts_settings/components/alert_mapping_builder.vue';
 import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form.vue';
@@ -40,7 +30,6 @@ describe('AlertsSettingsForm', () => {
   });
 
   const createComponent = async ({
-    mountFn = mount,
     props = {},
     multiIntegrations = true,
     currentIntegration = null,
@@ -59,31 +48,29 @@ describe('AlertsSettingsForm', () => {
       mockResolvers,
     );
 
-    wrapper = extendedWrapper(
-      mountFn(AlertsSettingsForm, {
-        apolloProvider,
-        propsData: {
-          loading: false,
-          canAddIntegration: true,
-          ...props,
+    wrapper = mountExtended(AlertsSettingsForm, {
+      apolloProvider,
+      propsData: {
+        loading: false,
+        canAddIntegration: true,
+        ...props,
+      },
+      provide: {
+        multiIntegrations,
+      },
+      mocks: {
+        $toast: {
+          show: mockToastShow,
         },
-        provide: {
-          multiIntegrations,
-        },
-        mocks: {
-          $toast: {
-            show: mockToastShow,
-          },
-        },
-      }),
-    );
+      },
+    });
 
     await waitForPromises();
   };
 
   const findForm = () => wrapper.findComponent(GlForm);
-  const findSelect = () => wrapper.findComponent(GlFormSelect);
-  const findFormFields = () => wrapper.findAllComponents(GlFormInput);
+  const findSelect = () => wrapper.find('select');
+  const findNameField = () => wrapper.findByTestId('integration-name-field');
   const findFormToggle = () => wrapper.findComponent(GlToggle);
   const findSamplePayloadSection = () => wrapper.findByTestId('sample-payload-section');
   const findResetPayloadModal = () => wrapper.findComponent(GlModal);
@@ -102,7 +89,7 @@ describe('AlertsSettingsForm', () => {
 
   const enableIntegration = (index, value = '') => {
     if (value !== '') {
-      findFormFields().at(index).setValue(value);
+      findNameField().setValue(value);
     }
 
     findFormToggle().vm.$emit('change', true);
@@ -121,19 +108,19 @@ describe('AlertsSettingsForm', () => {
       expect(findForm().exists()).toBe(true);
       expect(findSelect().exists()).toBe(true);
       expect(findMultiSupportText().exists()).toBe(false);
-      expect(findFormFields()).toHaveLength(0);
+      expect(findNameField().exists()).toBe(false);
     });
 
     it('shows the rest of the form when the dropdown is used', async () => {
       await selectOptionAtIndex(1);
 
-      expect(findFormFields().at(0).isVisible()).toBe(true);
+      expect(findNameField().exists()).toBe(true);
     });
 
     it('disables the dropdown and shows help text when multi integrations are not supported', async () => {
-      await createComponent({ mountFn: shallowMount, props: { canAddIntegration: false } });
+      await createComponent({ props: { canAddIntegration: false } });
 
-      expect(findSelect().attributes('disabled')).toBeDefined();
+      expect(findSelect().attributes('disabled')).toBe('disabled');
       expect(findMultiSupportText().exists()).toBe(true);
     });
 
@@ -141,7 +128,7 @@ describe('AlertsSettingsForm', () => {
       await createComponent();
       await selectOptionAtIndex(2);
 
-      expect(findFormFields()).toHaveLength(0);
+      expect(findNameField().exists()).toBe(false);
     });
 
     it('verify pricing link url', async () => {
@@ -459,13 +446,13 @@ describe('AlertsSettingsForm', () => {
 
     it('should not be able to submit when HTTP integration form is invalid', async () => {
       await selectOptionAtIndex(1);
-      await findFormFields().at(0).vm.$emit('input', '');
+      await findNameField().vm.$emit('input', '');
       expect(findSubmitButton().attributes('disabled')).toBeDefined();
     });
 
     it('should be able to submit when HTTP integration  form is valid', async () => {
       await selectOptionAtIndex(1);
-      await findFormFields().at(0).vm.$emit('input', 'Name');
+      await findNameField().vm.$emit('input', 'Name');
       expect(findSubmitButton().attributes('disabled')).toBe(undefined);
     });
 
@@ -479,7 +466,7 @@ describe('AlertsSettingsForm', () => {
       const currentIntegration = { type: typeSet.http, name: 'Existing integration' };
       await createComponent({ currentIntegration });
 
-      await findFormFields().at(0).vm.$emit('input', 'Updated name');
+      await findNameField().vm.$emit('input', 'Updated name');
       expect(findSubmitButton().attributes('disabled')).toBe(undefined);
     });
 

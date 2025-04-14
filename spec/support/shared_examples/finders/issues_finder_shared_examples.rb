@@ -1389,7 +1389,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
       end
     end
 
-    context 'when the force_cte param is falsey' do
+    context 'when the search optimization params are falsey' do
       let(:params) { { search: '日本語' } }
 
       it 'returns false' do

@@ -76,7 +76,7 @@ To be eligible for the GitLab Open Source Program, projects must be publicly vis
 1. Select the **Users can request access** checkbox.
 1. Take a screenshot of this view. Include as much of the publicly visible settings as possible. Make sure to include your project's name in the upper-left of the screenshot.
 
-![Publicly visible setting](img/publicly-visible_v14_0.png)
+![Project settings page showing enabled visibility settings for a public project](img/publicly-visible_v14_0.png)
 
 {{< alert type="note" >}}
 

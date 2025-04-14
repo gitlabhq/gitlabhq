@@ -56,12 +56,12 @@ const deployBoardMockData = {
     { status: 'waiting', tooltip: 'tanuki-2355 Waiting', pod_name: 'production-tanuki-1' },
     { status: 'waiting', tooltip: 'tanuki-2356 Waiting', pod_name: 'production-tanuki-1' },
   ],
-  abort_url: 'url',
-  rollback_url: 'url',
+  abortUrl: 'url',
+  rollbackUrl: 'url',
   completion: 100,
   status: 'found',
-  canary_ingress: {
-    canary_weight: 50,
+  canaryIngress: {
+    canaryWeight: 50,
   },
 };
 

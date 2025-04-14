@@ -16,7 +16,6 @@ RSpec.describe 'rubocop rake tasks', :silence_stdout, feature_category: :tooling
   include NextInstanceOf
 
   before do
-    stub_const('Rails', double(:rails_env))
     allow(Rails).to receive(:env).and_return(double(production?: false))
 
     stub_const('ENV', ENV.to_hash.dup)
@@ -187,6 +186,31 @@ RSpec.describe 'rubocop rake tasks', :silence_stdout, feature_category: :tooling
       yield
     ensure
       ActiveSupport::Inflector::Inflections.instance_variable_set(:@__instance__, en: original)
+    end
+  end
+
+  describe 'docs' do
+    subject(:run_task) { run_rake_task('rubocop:docs') }
+
+    before do
+      FileUtils.rm_rf('rubocop/docs-hugo/content/doc/')
+    end
+
+    it 'generates markdown files for the GitLab cops and not upstream cops' do
+      rspec_cops_file = 'rubocop/docs-hugo/content/doc/cops_rspec.md'
+      expect { run_task }.to change { File.exist?(rspec_cops_file) }.from(false).to(true)
+      rspec_cops_data = File.read(rspec_cops_file)
+
+      expect(rspec_cops_data).to include("---\ntitle: RSpec RuboCop docs\n---")
+
+      # Cop defined in GitLab repo
+      expect(rspec_cops_data).to include('## RSpec/AnyInstanceOf')
+
+      # Cop defined in gitlab-styles
+      expect(rspec_cops_data).to include('## RSpec/SingleLineHook')
+
+      # Exists upstream, so shouldn't be included
+      expect(rspec_cops_data).not_to include('## RSpec/AlignLeftLetBrace')
     end
   end
 end

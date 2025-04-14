@@ -1,19 +1,18 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapState, mapGetters } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { getCookie, parseBoolean, removeCookie } from '~/lib/utils/common_utils';
-import notesStore from '~/mr_notes/stores';
-import { pinia as piniaStore } from '~/pinia/instance';
-
+import store from '~/mr_notes/stores';
+import { pinia } from '~/pinia/instance';
+import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import eventHub from '../notes/event_hub';
 import DiffsApp from './components/app.vue';
-
 import { TREE_LIST_STORAGE_KEY, DIFF_WHITESPACE_COOKIE_NAME } from './constants';
 
-export default function initDiffsApp(store = notesStore, pinia = piniaStore) {
+export default function initDiffsApp() {
   const el = document.getElementById('js-diffs-app');
   const { dataset } = el;
 
@@ -47,9 +46,7 @@ export default function initDiffsApp(store = notesStore, pinia = piniaStore) {
       };
     },
     computed: {
-      ...mapState({
-        activeTab: (state) => state.page.activeTab,
-      }),
+      ...mapState(useMrNotes, ['activeTab']),
     },
     created() {
       const treeListStored = localStorage.getItem(TREE_LIST_STORAGE_KEY);
@@ -70,7 +67,7 @@ export default function initDiffsApp(store = notesStore, pinia = piniaStore) {
         });
         removeCookie(DIFF_WHITESPACE_COOKIE_NAME);
       } else {
-        // This is only to set the the user preference in Vuex for use later
+        // This is only to set the user preference in Vuex for use later
         this.setShowWhitespace({
           showWhitespace: this.showWhitespaceDefault,
           updateDatabase: false,
@@ -79,7 +76,7 @@ export default function initDiffsApp(store = notesStore, pinia = piniaStore) {
       }
     },
     methods: {
-      ...mapActions('diffs', ['setRenderTreeList', 'setShowWhitespace']),
+      ...mapActions(useLegacyDiffs, ['setRenderTreeList', 'setShowWhitespace']),
     },
     render(createElement) {
       return createElement('diffs-app', {
@@ -111,8 +108,7 @@ export default function initDiffsApp(store = notesStore, pinia = piniaStore) {
         FindFile: () => import('~/vue_shared/components/file_finder/index.vue'),
       },
       computed: {
-        ...mapState('diffs', ['fileFinderVisible', 'isLoading']),
-        ...mapGetters('diffs', ['flatBlobsList']),
+        ...mapState(useLegacyDiffs, ['fileFinderVisible', 'isLoading', 'flatBlobsList']),
       },
       watch: {
         fileFinderVisible(newVal, oldVal) {
@@ -122,7 +118,7 @@ export default function initDiffsApp(store = notesStore, pinia = piniaStore) {
         },
       },
       methods: {
-        ...mapActions('diffs', ['toggleFileFinder', 'scrollToFile']),
+        ...mapActions(useLegacyDiffs, ['toggleFileFinder', 'scrollToFile']),
         openFile(file) {
           window.mrTabs.tabShown('diffs');
           this.scrollToFile({ path: file.path });

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    gitlab-sidekiq-fetcher (0.12.0)
+    gitlab-sidekiq-fetcher (0.12.1)
       json (>= 2.5)
       sidekiq (~> 7.0)
 

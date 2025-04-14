@@ -95,7 +95,7 @@ See [Elasticsearch Index Scopes](../../advanced_search/elasticsearch.md#advanced
 
 ## No search results after switching Elasticsearch servers
 
-To reindex the database, repositories, and wikis, run all Rake tasks again.
+To reindex the database, repositories, and wikis, [index the instance](../../advanced_search/elasticsearch.md#index-the-instance).
 
 ## Indexing fails with `error: elastic: Error 429 (Too Many Requests)`
 

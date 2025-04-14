@@ -1,6 +1,7 @@
 import produce from 'immer';
 import VueApollo from 'vue-apollo';
 import { concatPagination } from '@apollo/client/utilities';
+import { makeVar } from '@apollo/client/core';
 import errorQuery from '~/boards/graphql/client/error.query.graphql';
 import selectedBoardItemsQuery from '~/boards/graphql/client/selected_board_items.query.graphql';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
@@ -12,6 +13,7 @@ import {
   WIDGET_TYPE_AWARD_EMOJI,
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_LINKED_ITEMS,
+  WIDGET_TYPE_ASSIGNEES,
 } from '~/work_items/constants';
 
 import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
@@ -19,6 +21,9 @@ import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_
 import activeDiscussionQuery from '~/work_items/components/design_management/graphql/client/active_design_discussion.query.graphql';
 import { updateNewWorkItemCache, workItemBulkEdit } from '~/work_items/graphql/resolvers';
 import { preserveDetailsState } from '~/work_items/utils';
+
+export const linkedItems = makeVar({});
+export const currentAssignees = makeVar({});
 
 export const config = {
   typeDefs,
@@ -130,6 +135,10 @@ export const config = {
       },
       WorkItem: {
         fields: {
+          // Prevent `reference` from being transformed into `reference({"fullPath":true})`
+          reference: {
+            keyArgs: false,
+          },
           // widgets policy because otherwise the subscriptions invalidate the cache
           widgets: {
             merge(existing = [], incoming, context) {
@@ -193,14 +202,30 @@ export const config = {
                     return existingWidget;
                   }
 
-                  const incomindNodes = incomingWidget.linkedItems?.nodes || [];
+                  const incomingNodes = incomingWidget.linkedItems?.nodes || [];
                   const existingNodes = existingWidget.linkedItems?.nodes || [];
 
-                  const resultNodes = incomindNodes.map((incomingNode) => {
+                  const resultNodes = incomingNodes.map((incomingNode) => {
                     const existingNode =
                       existingNodes.find((n) => n.linkId === incomingNode.linkId) ?? {};
                     return { ...existingNode, ...incomingNode };
                   });
+
+                  // we only set up linked items when the widget is present and has `workItem` property
+                  if (context.variables.iid) {
+                    const items = resultNodes
+                      .filter((node) => node.workItem)
+                      // normally we would only get a `__ref` for nested properties but we need to extract the full work item
+                      // eslint-disable-next-line no-underscore-dangle
+                      .map((node) => context.cache.extract()[node.workItem.__ref]);
+
+                    // Ensure that any existing linked items are retained
+                    const existingLinkedItems = linkedItems();
+                    linkedItems({
+                      ...existingLinkedItems,
+                      [`${context.variables.fullPath}:${context.variables.iid}`]: items,
+                    });
+                  }
 
                   return {
                     ...incomingWidget,
@@ -209,6 +234,20 @@ export const config = {
                       nodes: resultNodes,
                     },
                   };
+                }
+
+                if (existingWidget?.type === WIDGET_TYPE_ASSIGNEES && context.variables.id) {
+                  const workItemAssignees = existingWidget.assignees?.nodes || [];
+                  const users = workItemAssignees.map(
+                    // eslint-disable-next-line no-underscore-dangle
+                    (user) => context.cache.extract()[user.__ref],
+                  );
+
+                  const existingAssignees = currentAssignees();
+                  currentAssignees({
+                    ...existingAssignees,
+                    [`${context.variables.id}`]: users,
+                  });
                 }
 
                 return { ...existingWidget, ...incomingWidget };

@@ -88,8 +88,8 @@ module Gitlab
             next if hash.nil?
 
             # There are 2 layers of JSON encoding
-            # 1. when a job is pushed into the queue -- https://github.com/sidekiq/sidekiq/blob/v7.2.4/lib/sidekiq/client.rb#L261
-            # 2. When the workstate is written into the pid:work hash -- https://github.com/sidekiq/sidekiq/blob/v7.2.4/lib/sidekiq/launcher.rb#L148
+            # 1. when a job is pushed into the queue -- https://github.com/sidekiq/sidekiq/blob/v7.3.9/lib/sidekiq/client.rb#L281
+            # 2. When the workstate is written into the pid:work hash -- https://github.com/sidekiq/sidekiq/blob/v7.3.9/lib/sidekiq/launcher.rb#L148
             job_hash = ::Gitlab::Json.parse(::Gitlab::Json.parse(hash)&.dig('payload'))
           end
 

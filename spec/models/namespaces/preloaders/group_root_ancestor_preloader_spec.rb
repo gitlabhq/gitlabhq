@@ -18,13 +18,7 @@ RSpec.describe Namespaces::Preloaders::GroupRootAncestorPreloader, feature_categ
     create(:group, :private, name: 'a public maintainer', path: 'a-public-maintainer', parent: root_parent2)
   end
 
-  let(:root_query_regex) do
-    if Feature.enabled?(:use_sql_functions_for_primary_key_lookups, Feature.current_request)
-      /\ASELECT.+ FROM find_namespaces_by_id\(\d+\)/
-    else
-      /\ASELECT.+FROM "namespaces" WHERE "namespaces"."id" = \d+/
-    end
-  end
+  let(:root_query_regex) { /\ASELECT.+ FROM find_namespaces_by_id\(\d+\)/ }
 
   let(:additional_preloads) { [] }
   let(:groups) { [guest_group, private_maintainer_group, private_developer_group, public_maintainer_group] }

@@ -205,40 +205,6 @@ RSpec.describe SystemNoteService, feature_category: :shared do
     end
   end
 
-  describe '.merge_when_pipeline_succeeds' do
-    it 'calls MergeRequestsService' do
-      sha = double
-
-      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
-        expect(service).to receive(:merge_when_pipeline_succeeds).with(sha)
-      end
-
-      described_class.merge_when_pipeline_succeeds(noteable, project, author, sha)
-    end
-  end
-
-  describe '.cancel_merge_when_pipeline_succeeds' do
-    it 'calls MergeRequestsService' do
-      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
-        expect(service).to receive(:cancel_merge_when_pipeline_succeeds)
-      end
-
-      described_class.cancel_merge_when_pipeline_succeeds(noteable, project, author)
-    end
-  end
-
-  describe '.abort_merge_when_pipeline_succeeds' do
-    it 'calls MergeRequestsService' do
-      reason = double
-
-      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
-        expect(service).to receive(:abort_merge_when_pipeline_succeeds).with(reason)
-      end
-
-      described_class.abort_merge_when_pipeline_succeeds(noteable, project, author, reason)
-    end
-  end
-
   describe '.change_title' do
     let(:title) { double }
 

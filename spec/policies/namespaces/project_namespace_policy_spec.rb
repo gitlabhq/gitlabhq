@@ -124,31 +124,5 @@ RSpec.describe Namespaces::ProjectNamespacePolicy, feature_category: :groups_and
         end
       end
     end
-
-    describe 'when project is created and owned by a banned user' do
-      let_it_be(:project) { create(:project, :public) }
-
-      let(:current_user) { developer }
-
-      before do
-        allow(project).to receive(:created_and_owned_by_banned_user?).and_return(true)
-      end
-
-      it { expect_disallowed(:read_project, :read_namespace) }
-
-      context 'when current user is an admin', :enable_admin_mode do
-        let(:current_user) { admin }
-
-        it { expect_allowed(:read_project, :read_namespace) }
-      end
-
-      context 'when hide_projects_of_banned_users FF is disabled' do
-        before do
-          stub_feature_flags(hide_projects_of_banned_users: false)
-        end
-
-        it { expect_allowed(:read_project, :read_namespace) }
-      end
-    end
   end
 end

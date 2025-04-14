@@ -22,14 +22,12 @@ module Projects
       end
 
       def filter_out_protected!(tags)
-        return if Feature.disabled?(:container_registry_protected_tags, project)
-
         tag_rules = ::ContainerRegistry::Protection::TagRule.tag_name_patterns_for_project(project.id)
 
         if current_user
           return if current_user.can_admin_all_resources?
 
-          user_access_level = current_user.max_member_access_for_project(project.id)
+          user_access_level = project.team.max_member_access(current_user.id)
           tag_rules = tag_rules.for_delete_and_access(user_access_level)
         end
 

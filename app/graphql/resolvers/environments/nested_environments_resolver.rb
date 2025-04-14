@@ -11,7 +11,7 @@ module Resolvers
       authorize :read_environment
 
       def resolve(**args)
-        offset_pagination(super(**args).nested)
+        offset_pagination(super.nested)
       end
     end
   end

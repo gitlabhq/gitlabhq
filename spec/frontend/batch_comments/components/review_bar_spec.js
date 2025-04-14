@@ -2,6 +2,7 @@ import { nextTick } from 'vue';
 import { createTestingPinia } from '@pinia/testing';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ReviewBar from '~/batch_comments/components/review_bar.vue';
+import SubmitReviewButton from '~/batch_comments/components/submit_review_button.vue';
 import { REVIEW_BAR_VISIBLE_CLASS_NAME } from '~/batch_comments/constants';
 import toast from '~/vue_shared/plugins/global_toast';
 import { globalAccessorPlugin } from '~/pinia/plugins';
@@ -83,5 +84,11 @@ describe('Batch comments review bar component', () => {
 
       expect(toast).toHaveBeenCalledWith('Review discarded');
     });
+  });
+
+  it('does not render submit drawer when improvedReviewExperience is false', () => {
+    createComponent({}, false);
+
+    expect(wrapper.findComponent(SubmitReviewButton).exists()).toBe(false);
   });
 });

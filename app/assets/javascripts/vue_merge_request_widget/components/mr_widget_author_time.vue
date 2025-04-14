@@ -31,7 +31,7 @@ export default {
 };
 </script>
 <template>
-  <h4 class="js-mr-widget-author gl-grow">
+  <h4 class="js-mr-widget-author gl-z-1 gl-grow">
     {{ actionText }}
     <mr-widget-author :author="author" />
     <span class="sr-only">{{ dateReadable }} ({{ dateTitle }})</span>

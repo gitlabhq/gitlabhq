@@ -217,7 +217,8 @@ module Ci
     end
 
     def chunks_migration_enabled?
-      ::Feature.enabled?(:ci_enable_live_trace, build.project)
+      ::Feature.enabled?(:ci_enable_live_trace,
+        build.project) || Gitlab::CurrentSettings.ci_job_live_trace_enabled
     end
 
     def log_invalid_chunks?

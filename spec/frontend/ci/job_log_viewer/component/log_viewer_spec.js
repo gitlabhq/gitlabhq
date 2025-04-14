@@ -72,7 +72,7 @@ describe('LogViewer', () => {
     });
 
     expect(wrapper.attributes('aria-busy')).toBe('true');
-    expect(wrapper.text()).toBe('Loading...');
+    expect(wrapper.text()).toBe('Loading…');
   });
 
   describe('when displaying a section', () => {

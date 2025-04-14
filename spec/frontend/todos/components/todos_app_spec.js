@@ -9,14 +9,18 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import TodosApp from '~/todos/components/todos_app.vue';
 import TodoItem from '~/todos/components/todo_item.vue';
 import TodosFilterBar from '~/todos/components/todos_filter_bar.vue';
-import TodosMarkAllDoneButton from '~/todos/components/todos_mark_all_done_button.vue';
 import TodosBulkBar from '~/todos/components/todos_bulk_bar.vue';
 import TodosPagination, { CURSOR_CHANGED_EVENT } from '~/todos/components/todos_pagination.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
 import { INSTRUMENT_TAB_LABELS, STATUS_BY_TAB, TODO_WAIT_BEFORE_RELOAD } from '~/todos/constants';
 import { mockTracking, unmockTracking } from 'jest/__helpers__/tracking_helper';
 import getPendingTodosCount from '~/todos/components/queries/get_pending_todos_count.query.graphql';
-import { todosResponse, getPendingTodosCountResponse } from '../mock_data';
+import {
+  todosResponse,
+  todosResponseEmptyLastPage,
+  todosResponseNonFullFirstPage,
+  getPendingTodosCountResponse,
+} from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -29,7 +33,6 @@ describe('TodosApp', () => {
   const createComponent = ({
     todosQueryHandler = todosQuerySuccessHandler,
     todosCountsQueryHandler = todosCountsQuerySuccessHandler,
-    featureFlags = { todosBulkActions: false },
   } = {}) => {
     const mockApollo = createMockApollo();
     mockApollo.defaultClient.setRequestHandler(getTodosQuery, todosQueryHandler);
@@ -37,9 +40,6 @@ describe('TodosApp', () => {
 
     wrapper = shallowMountExtended(TodosApp, {
       apolloProvider: mockApollo,
-      provide: {
-        glFeatures: featureFlags,
-      },
     });
   };
 
@@ -47,7 +47,6 @@ describe('TodosApp', () => {
   const findFirstTodoItem = () => wrapper.findComponent(TodoItem);
   const findGlTabs = () => wrapper.findComponent(GlTabs);
   const findFilterBar = () => wrapper.findComponent(TodosFilterBar);
-  const findMarkAllDoneButton = () => wrapper.findComponent(TodosMarkAllDoneButton);
   const findRefreshButton = () => wrapper.findByTestId('refresh-todos');
   const findPendingTodosCount = () => wrapper.findByTestId('pending-todos-count');
   const findTodoItemListContainer = () => wrapper.findByTestId('todo-item-list-container');
@@ -96,35 +95,44 @@ describe('TodosApp', () => {
     );
   });
 
-  it('resets cursor to first page when receiving empty todos on non-first page', async () => {
+  it('resets cursor to "full last page" when seeing an empty list while not being on page 1', async () => {
     createComponent();
 
-    const newCursor = { first: 50, after: 'cursor-1' };
+    const newCursor = { first: 20, after: 'id-39' };
     findPagination().vm.$emit(CURSOR_CHANGED_EVENT, newCursor);
     await waitForPromises();
-    expect(wrapper.vm.cursor.after).toBe('cursor-1');
+    expect(wrapper.vm.cursor.after).toBe('id-39');
 
-    // Modify response to be empty with hasPreviousPage true
-    const emptyResponse = {
-      data: {
-        currentUser: {
-          ...todosResponse.data.currentUser,
-          todos: {
-            nodes: [],
-            pageInfo: {
-              ...todosResponse.data.currentUser.todos.pageInfo,
-              hasPreviousPage: true,
-            },
-          },
-        },
-      },
-    };
-
-    todosQuerySuccessHandler.mockResolvedValueOnce(emptyResponse);
+    todosQuerySuccessHandler.mockResolvedValueOnce(todosResponseEmptyLastPage);
     wrapper.vm.$apollo.queries.todos.refetch();
     await waitForPromises();
 
-    expect(wrapper.vm.cursor.after).toBe(null);
+    expect(wrapper.vm.cursor).toEqual({
+      first: null,
+      last: 20,
+      after: null,
+      before: null,
+    });
+  });
+
+  it('resets cursor to "full first page" when seeing a non-full list while being on page 1', async () => {
+    createComponent();
+
+    const newCursor = { last: 20, before: 'id-7' };
+    findPagination().vm.$emit(CURSOR_CHANGED_EVENT, newCursor);
+    await waitForPromises();
+    expect(wrapper.vm.cursor.before).toBe('id-7');
+
+    todosQuerySuccessHandler.mockResolvedValueOnce(todosResponseNonFullFirstPage);
+    wrapper.vm.$apollo.queries.todos.refetch();
+    await waitForPromises();
+
+    expect(wrapper.vm.cursor).toEqual({
+      first: 20,
+      last: null,
+      after: null,
+      before: null,
+    });
   });
 
   it('fetches the todos and counts when filters change', async () => {
@@ -152,15 +160,31 @@ describe('TodosApp', () => {
     expect(todosCountsQuerySuccessHandler).toHaveBeenLastCalledWith(filters);
   });
 
-  it('re-fetches the pending todos count when mark all done button is clicked', async () => {
+  it('resets the pagination when filters change', async () => {
     createComponent();
+
+    const filters = {
+      groupId: ['1'],
+    };
+
+    const newCursor = { first: 50, after: 'cursor-1' };
+    findPagination().vm.$emit(CURSOR_CHANGED_EVENT, newCursor);
     await waitForPromises();
 
-    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(1);
+    expect(todosQuerySuccessHandler).toHaveBeenLastCalledWith(expect.objectContaining(newCursor));
 
-    findMarkAllDoneButton().vm.$emit('change');
+    findFilterBar().vm.$emit('filters-changed', filters);
+    await waitForPromises();
 
-    expect(todosCountsQuerySuccessHandler).toHaveBeenCalledTimes(2);
+    expect(todosQuerySuccessHandler).toHaveBeenLastCalledWith({
+      ...filters,
+      state: ['pending'],
+      first: newCursor.first,
+      last: null,
+      after: null,
+      before: null,
+    });
+    expect(todosCountsQuerySuccessHandler).toHaveBeenLastCalledWith(filters);
   });
 
   it('refreshes count and list', async () => {
@@ -328,26 +352,16 @@ describe('TodosApp', () => {
 
   describe('bulk selection', () => {
     beforeEach(async () => {
-      createComponent({
-        featureFlags: { todosBulkActions: true },
-      });
+      createComponent();
       await waitForPromises();
     });
 
     const findSelectedTodoItems = () => findTodoItems().filter((item) => item.props('selected'));
     const findSelectAllCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+    const findTodosBulkBarContainer = () => wrapper.findByTestId('todos-bulk-bar-container');
     const findBulkBar = () => wrapper.findComponent(TodosBulkBar);
 
     describe('select all checkbox', () => {
-      it('is not visible when bulk actions feature flag is disabled', async () => {
-        createComponent({
-          featureFlags: { todosBulkActions: false },
-        });
-        await waitForPromises();
-
-        expect(findSelectAllCheckbox().isVisible()).toBe(false);
-      });
-
       it('is not visible on "All" tab', async () => {
         findGlTabs().vm.$emit('input', 3); // All tab
         await nextTick();
@@ -370,6 +384,21 @@ describe('TodosApp', () => {
         expect(findSelectAllCheckbox().attributes()).toMatchObject({
           indeterminate: 'true',
         });
+      });
+
+      it('becomes sticky when items are selected', async () => {
+        const classIsSticky = 'is-sticky';
+
+        expect(findTodosBulkBarContainer().classes()).not.toContain(classIsSticky);
+
+        findFirstTodoItem().vm.$emit(
+          'select-change',
+          todosResponse.data.currentUser.todos.nodes[0].id,
+          true,
+        );
+        await nextTick();
+
+        expect(findTodosBulkBarContainer().classes()).toContain(classIsSticky);
       });
     });
 

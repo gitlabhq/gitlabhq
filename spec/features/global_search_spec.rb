@@ -17,7 +17,7 @@ RSpec.describe 'Global search', :js, feature_category: :global_search do
 
   shared_examples 'header search' do
     it 'renders search button' do
-      expect(page).to have_button('Search or go to…')
+      expect(page).to have_selector('[data-testid="super-sidebar-search-button"]')
     end
 
     it 'opens search modal when shortcut "s" is pressed' do

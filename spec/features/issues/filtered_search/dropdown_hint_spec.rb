@@ -21,7 +21,7 @@ RSpec.describe 'Dropdown hint', :js, feature_category: :team_planning do
     it 'does not exist my-reaction dropdown item' do
       click_filtered_search_bar
 
-      expect(page).not_to have_link 'My-reaction'
+      expect(page).not_to have_link 'My reaction'
     end
   end
 

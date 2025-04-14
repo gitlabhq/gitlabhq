@@ -84,7 +84,7 @@ export default {
         :tooltip-text="getTooltipText(note)"
         pseudo
         class="diff-comment-avatar js-diff-comment-avatar"
-        css-classes="gl-bg-white"
+        css-classes="gl-bg-default"
         @click.native="$emit('toggleLineDiscussions')"
       />
       <span

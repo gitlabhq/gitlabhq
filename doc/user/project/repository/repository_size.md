@@ -16,12 +16,6 @@ title: Repository size
 The size of a Git repository can significantly impact performance and storage costs.
 It can differ slightly from one instance to another due to compression, housekeeping, and other factors.
 
-This page explains:
-
-- [How repository size is calculated](#size-calculation).
-- [Size and storage limits](#size-and-storage-limits).
-- [Methods to reduce repository size](#methods-to-reduce-repository-size).
-
 ## Size calculation
 
 The **Project overview** page shows the size of all files in the repository, including repository files,
@@ -159,6 +153,9 @@ Prerequisites:
 
 - You must have the Owner role for the project
 - [A list of object IDs](#get-a-list-of-object-ids) to remove.
+- Your project must not be:
+  - A fork of a public upstream project.
+  - A public upstream project with downstream forks.
 
 To remove blobs from your repository:
 

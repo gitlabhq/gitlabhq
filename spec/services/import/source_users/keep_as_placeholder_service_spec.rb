@@ -4,12 +4,16 @@ require 'spec_helper'
 
 RSpec.describe Import::SourceUsers::KeepAsPlaceholderService, feature_category: :importers do
   let(:import_source_user) { create(:import_source_user) }
-  let(:user) { import_source_user.namespace.owner }
+  let(:user) { create(:user) }
   let(:current_user) { user }
   let(:service) { described_class.new(import_source_user, current_user: current_user) }
   let(:result) { service.execute }
 
   describe '#execute' do
+    before do
+      import_source_user.namespace.add_owner(user)
+    end
+
     context 'when reassignment is successful' do
       it 'returns success' do
         expect { result }

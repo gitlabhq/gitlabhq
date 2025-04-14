@@ -54,7 +54,8 @@ class RegistrationsController < Devise::RegistrationsController
 
   def destroy
     if current_user.required_terms_not_accepted?
-      redirect_to profile_account_path, status: :see_other, alert: s_('Profiles|You must accept the Terms of Service in order to perform this action.')
+      redirect_to profile_account_path, status: :see_other,
+        alert: s_('Profiles|You must accept the Terms of Service in order to perform this action.')
       return
     end
 
@@ -170,9 +171,9 @@ class RegistrationsController < Devise::RegistrationsController
 
   def ensure_destroy_prerequisites_met
     if current_user.solo_owned_groups.present?
-      redirect_to profile_account_path,
-        status: :see_other,
-        alert: s_('Profiles|You must transfer ownership or delete groups you are an owner of before you can delete your account')
+      redirect_to profile_account_path, status: :see_other,
+        alert: s_('Profiles|You must transfer ownership or delete groups ' \
+          'you are an owner of before you can delete your account')
     end
   end
 
@@ -238,7 +239,7 @@ class RegistrationsController < Devise::RegistrationsController
     @resource ||= Users::RegistrationsBuildService
                     .new(current_user, sign_up_params.merge({ skip_confirmation: skip_confirmation?,
                                                               preferred_language: preferred_language,
-                                                              organization_id: Current.organization_id }))
+                                                              organization_id: Current.organization&.id }))
                     .execute
   end
 

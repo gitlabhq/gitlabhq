@@ -1,7 +1,7 @@
 import { GlIntersectionObserver } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
 import { nextTick } from 'vue';
-import { DraggableItemTypes, ListType } from 'ee_else_ce/boards/constants';
+import { DraggableItemTypes, ListType, WIP_ITEMS, WIP_WEIGHT } from 'ee_else_ce/boards/constants';
 import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -29,7 +29,7 @@ describe('Board list component', () => {
   const findBoardListCount = () => wrapper.find('.board-list-count');
   const findBoardCardButtons = () => wrapper.findAll('button.board-card-button');
 
-  const maxIssueCountWarningClass = '.gl-bg-red-50';
+  const maxIssueWeightOrCountWarningClass = '.gl-bg-red-50';
 
   const triggerInfiniteScroll = () => findIntersectionObserver().vm.$emit('appear');
 
@@ -157,7 +157,7 @@ describe('Board list component', () => {
         await waitForPromises();
       });
       it('sets background to warning color', () => {
-        const block = wrapper.find(maxIssueCountWarningClass);
+        const block = wrapper.find(maxIssueWeightOrCountWarningClass);
 
         expect(block.exists()).toBe(true);
         expect(block.attributes('class').split(' ')).toEqual(
@@ -167,7 +167,7 @@ describe('Board list component', () => {
       it('shows cut line', () => {
         const cutline = wrapper.findComponent(BoardCutLine);
         expect(cutline.exists()).toBe(true);
-        expect(cutline.props('cutLineText')).toEqual('Work in progress limit: 2');
+        expect(cutline.props('cutLineText')).toEqual('Work in progress limit: 2 items');
       });
     });
 
@@ -177,7 +177,7 @@ describe('Board list component', () => {
         await waitForPromises();
       });
       it('does not sets background to warning color', () => {
-        expect(wrapper.find(maxIssueCountWarningClass).exists()).toBe(false);
+        expect(wrapper.find(maxIssueWeightOrCountWarningClass).exists()).toBe(false);
       });
       it('does not show cut line', () => {
         expect(wrapper.findComponent(BoardCutLine).exists()).toBe(false);
@@ -190,14 +190,13 @@ describe('Board list component', () => {
         await waitForPromises();
       });
       it('does not sets background to warning color', () => {
-        expect(wrapper.find(maxIssueCountWarningClass).exists()).toBe(false);
+        expect(wrapper.find(maxIssueWeightOrCountWarningClass).exists()).toBe(false);
       });
       it('does not show cut line', () => {
         expect(wrapper.findComponent(BoardCutLine).exists()).toBe(false);
       });
     });
   });
-
   describe('drag & drop issue', () => {
     describe('when dragging is allowed', () => {
       beforeEach(() => {
@@ -350,7 +349,10 @@ describe('Board list component', () => {
     const mutationHandler = jest.fn();
     const listResolver = jest.fn().mockResolvedValue(mockGroupIssuesResponse());
     const { id, iid, referencePath } = mockIssues[0];
-    const mountForShowParamTests = async (showParams = { id, iid, full_path: referencePath }) => {
+    const mountForShowParamTests = async ({
+      showParams = { id, iid, full_path: referencePath },
+      drawerEnabled = false,
+    } = {}) => {
       const show = btoa(JSON.stringify(showParams));
       setWindowLocation(`?${DETAIL_VIEW_QUERY_PARAM_NAME}=${show}`);
 
@@ -363,17 +365,26 @@ describe('Board list component', () => {
             setActiveBoardItem: mutationHandler,
           },
         },
+        provide: {
+          glFeatures: { issuesListDrawer: drawerEnabled },
+        },
       });
       await waitForPromises();
     };
-    it('calls `getParameterByName` to get the `show` parameter', async () => {
+
+    it('does not call `getParameterByName` if the drawer is disabled', async () => {
       await mountForShowParamTests();
+      expect(getParameterByName).not.toHaveBeenCalled();
+    });
+
+    it('calls `getParameterByName` to get the `show` parameter', async () => {
+      await mountForShowParamTests({ drawerEnabled: true });
       expect(getParameterByName).toHaveBeenCalledWith(DETAIL_VIEW_QUERY_PARAM_NAME);
     });
 
     describe('when the item is found in the list', () => {
       it('calls the `setActiveWorkItem` mutation', async () => {
-        await mountForShowParamTests();
+        await mountForShowParamTests({ drawerEnabled: true });
         expect(mutationHandler).toHaveBeenCalled();
       });
     });
@@ -381,9 +392,12 @@ describe('Board list component', () => {
     describe('when the item is not found in the list', () => {
       it('emits `cannot-find-active-item`', async () => {
         await mountForShowParamTests({
-          id: 'gid://gitlab/Issue/9999',
-          iid: '9999',
-          full_path: 'does-not-match/at-all',
+          showParams: {
+            id: 'gid://gitlab/Issue/9999',
+            iid: '9999',
+            full_path: 'does-not-match/at-all',
+          },
+          drawerEnabled: true,
         });
         expect(wrapper.emitted('cannot-find-active-item')).toHaveLength(1);
       });
@@ -392,14 +406,50 @@ describe('Board list component', () => {
     describe('when the list component has already tried to find the show parameter item in the list', () => {
       it('does not call `getParameterName` to get the `show` parameter', async () => {
         await mountForShowParamTests({
-          id: 'gid://gitlab/Issue/9999',
-          iid: '9999',
-          full_path: 'does-not-match/at-all',
+          showParams: {
+            id: 'gid://gitlab/Issue/9999',
+            iid: '9999',
+            full_path: 'does-not-match/at-all',
+          },
+          drawerEnabled: true,
         });
         await wrapper.setProps({ filterParams: { first: 50 } });
         expect(listResolver).toHaveBeenCalledTimes(2);
         expect(getParameterByName).toHaveBeenCalledTimes(1);
       });
+    });
+
+    describe('on window `popstate` event', () => {
+      it('calls `getParameterByName` to get the `show` parameter', async () => {
+        await mountForShowParamTests({ drawerEnabled: true });
+        window.dispatchEvent(new Event('popstate'));
+        expect(getParameterByName).toHaveBeenCalledWith(DETAIL_VIEW_QUERY_PARAM_NAME);
+      });
+    });
+  });
+  describe('when handling Weight vs Items in the wipLimitText', () => {
+    it('displays weight-based WIP limit when limitMetric is WIP_WEIGHT', () => {
+      wrapper = createComponent({
+        listProps: {
+          maxIssueWeight: 5,
+          maxIssueCount: 0,
+          limitMetric: WIP_WEIGHT,
+        },
+      });
+
+      expect(wrapper.vm.wipLimitText).toBe('Work in progress limit: 5 weight');
+    });
+
+    it('displays item-based WIP limit when limitMetric is WIP_ITEMS', () => {
+      wrapper = createComponent({
+        listProps: {
+          maxIssueWeight: 0,
+          maxIssueCount: 3,
+          limitMetric: WIP_ITEMS,
+        },
+      });
+
+      expect(wrapper.vm.wipLimitText).toBe('Work in progress limit: 3 items');
     });
   });
 });

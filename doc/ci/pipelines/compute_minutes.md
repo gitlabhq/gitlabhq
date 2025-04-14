@@ -138,7 +138,7 @@ can be higher than the end-to-end duration of a pipeline.
 
 [Trigger jobs](../yaml/_index.md#trigger) do not execute on runners, so they do not
 consume compute minutes, even when using [`strategy:depend`](../yaml/_index.md#triggerstrategy)
-to wait for the [downstream pipeline](../pipelines/downstream_pipelines.md) status.
+to wait for the [downstream pipeline](downstream_pipelines.md) status.
 The triggered downstream pipeline consumes compute minutes the same as other pipelines.
 
 ### Cost factor

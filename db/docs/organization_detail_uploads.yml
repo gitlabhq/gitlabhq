@@ -1,0 +1,14 @@
+---
+table_name: organization_detail_uploads
+classes:
+- Organizations::OrganizationDetail
+- Upload
+feature_categories:
+- cell
+description: Stores uploads for Organizations::OrganizationDetail model
+introduced_by_url:
+milestone: '17.11'
+table_size: small
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  organization_id: organizations

@@ -114,7 +114,7 @@ AND app_id='gitlab' -- use gitlab for production events and gitlab-staging for e
 GROUP BY 1 ORDER BY 1 desc
 ```
 
-For a list of other metrics tables refer to the [Data Models Cheat Sheet](https://handbook.gitlab.com/handbook/product/product-analysis/data-model-cheat-sheet/#commonly-used-data-models).
+For a list of other metrics tables refer to the [Data Models Cheat Sheet](https://handbook.gitlab.com/handbook/product/groups/product-analysis/data-model-cheat-sheet/#commonly-used-data-models).
 
 #### Querying metrics
 
@@ -130,7 +130,7 @@ WHERE metrics_path = 'counts.users_visiting_dashboard_weekly' --set to metric of
 ORDER BY ping_created_at DESC
 ```
 
-For a list of other metrics tables refer to the [Data Models Cheat Sheet](https://handbook.gitlab.com/handbook/product/product-analysis/data-model-cheat-sheet/#commonly-used-data-models).
+For a list of other metrics tables refer to the [Data Models Cheat Sheet](https://handbook.gitlab.com/handbook/product/groups/product-analysis/data-model-cheat-sheet/#commonly-used-data-models).
 
 ### Product Analytics
 
@@ -143,7 +143,7 @@ The [Product Analytics group's dashboard](https://gitlab.com/gitlab-org/analytic
 
 ## Data availability
 
-For GitLab there is an essential difference in analytics setup between GitLab.com and self-managed or GitLab Dedicated instances.
+For GitLab there is an essential difference in analytics setup between GitLab.com and GitLab Self-Managed or GitLab Dedicated instances.
 
 ### Self-Managed and Dedicated
 
@@ -180,7 +180,7 @@ The following diagram illustrates the process:
 ## Data flow
 
 On SaaS event records are directly sent to a collection system, called Snowplow, and imported into our data warehouse.
-Self-managed and GitLab Dedicated instances record event counts locally. Every week, a process called Service Ping sends the current
+GitLab Self-Managed and GitLab Dedicated instances record event counts locally. Every week, a process called Service Ping sends the current
 values for all pre-defined and active metrics to our data warehouse. For GitLab.com, metrics are calculated directly in the data warehouse.
 
 The following chart aims to illustrate this data flow:

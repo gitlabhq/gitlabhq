@@ -15,7 +15,7 @@ export const i18n = {
   notificationDescriptions: {
     participating: __('You will only receive notifications for items you have participated in'),
     mention: __('You will receive notifications only for comments in which you were @mentioned'),
-    watch: __('You will receive notifications for any activity'),
+    watch: __('You will receive notifications for most activity'),
     disabled: __('You will not get any notifications via email'),
     global: __('Use your global notification setting'),
     custom: __(
@@ -42,7 +42,7 @@ export const i18n = {
     close_merge_request: s__('NotificationEvent|Merge request is closed'),
     failed_pipeline: s__('NotificationEvent|Pipeline fails'),
     fixed_pipeline: s__('NotificationEvent|Pipeline is fixed'),
-    issue_due: s__('NotificationEvent|Issue is due soon'),
+    issue_due: s__('NotificationEvent|Issue is due tomorrow'),
     merge_merge_request: s__('NotificationEvent|Merge request is merged'),
     moved_project: s__('NotificationEvent|Project is moved'),
     new_epic: s__('NotificationEvent|Epic is created'),
@@ -55,7 +55,6 @@ export const i18n = {
     reassign_merge_request: s__('NotificationEvent|Merge request is reassigned'),
     reopen_issue: s__('NotificationEvent|Issue is reopened'),
     reopen_merge_request: s__('NotificationEvent|Merge request is reopened'),
-    merge_when_pipeline_succeeds: s__('NotificationEvent|Merge request is set to auto-merge'),
     success_pipeline: s__('NotificationEvent|Pipeline is successful'),
     approver: s__('NotificationEvent|You are added as an approver on a merge request'),
   },

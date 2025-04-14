@@ -29,6 +29,7 @@ class UserPreference < ApplicationRecord
   validates :pinned_nav_items, json_schema: { filename: 'pinned_nav_items' }
 
   validates :time_display_format, inclusion: { in: TIME_DISPLAY_FORMATS.values }, presence: true
+  validates :extensions_marketplace_opt_in_url, length: { maximum: 512 }
 
   validate :user_belongs_to_home_organization, if: :home_organization_changed?
 
@@ -42,9 +43,11 @@ class UserPreference < ApplicationRecord
 
   enum :visibility_pipeline_id_type, { id: 0, iid: 1 }, scopes: false
 
-  enum text_editor_type: { not_set: 0, plain_text_editor: 1, rich_text_editor: 2 }
-  enum extensions_marketplace_opt_in_status: Enums::WebIde::ExtensionsMarketplaceOptInStatus.statuses
-  enum organization_groups_projects_display: { projects: 0, groups: 1 }
+  enum :text_editor_type, { not_set: 0, plain_text_editor: 1, rich_text_editor: 2 }
+  enum :extensions_marketplace_opt_in_status, Enums::WebIde::ExtensionsMarketplaceOptInStatus.statuses
+  enum :organization_groups_projects_display, { projects: 0, groups: 1 }
+
+  enum :merge_request_dashboard_list_type, { action_based: 0, role_based: 1 }
 
   class << self
     def notes_filters
@@ -88,16 +91,9 @@ class UserPreference < ApplicationRecord
     early_access_program_participant? && early_access_program_tracking?
   end
 
-  # NOTE: Despite this returning a boolean, it does not end in `?` out of
-  #       symmetry with the other integration fields like `gitpod_enabled`
-  def extensions_marketplace_enabled
-    extensions_marketplace_opt_in_status == "enabled"
-  end
-
-  def extensions_marketplace_enabled=(value)
-    status = ActiveRecord::Type::Boolean.new.cast(value) ? 'enabled' : 'disabled'
-
-    self.extensions_marketplace_opt_in_status = status
+  def extensions_marketplace_opt_in_url
+    # To support existing records, this can be `nil` and it defaults to `https://open-vsx.org`
+    super || 'https://open-vsx.org'
   end
 
   def dpop_enabled=(value)

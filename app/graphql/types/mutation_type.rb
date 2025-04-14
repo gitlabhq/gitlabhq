@@ -152,6 +152,7 @@ module Types
     mount_mutation Mutations::Todos::UnSnooze, experiment: { milestone: '17.4' }
     mount_mutation Mutations::Todos::SnoozeMany, experiment: { milestone: '17.9' }
     mount_mutation Mutations::Todos::UnsnoozeMany, experiment: { milestone: '17.9' }
+    mount_mutation Mutations::Todos::DeleteMany, experiment: { milestone: '17.11' }
     mount_mutation Mutations::Snippets::Destroy
     mount_mutation Mutations::Snippets::Update
     mount_mutation Mutations::Snippets::Create
@@ -202,6 +203,7 @@ module Types
     mount_mutation Mutations::Ci::PipelineTrigger::Update, experiment: { milestone: '16.3' }
     mount_mutation Mutations::Ci::ProjectCiCdSettingsUpdate
     mount_mutation Mutations::Ci::Runner::BulkDelete, experiment: { milestone: '15.3' }
+    mount_mutation Mutations::Ci::Runner::BulkPause, experiment: { milestone: '17.11' }
     mount_mutation Mutations::Ci::Runner::Cache::Clear
     mount_mutation Mutations::Ci::Runner::Create, experiment: { milestone: '15.10' }
     mount_mutation Mutations::Ci::Runner::Delete

@@ -28,7 +28,7 @@ be used in production. You can use the examples to design and test your own scri
 
 ## API requirements
 
-To automate storage management, your GitLab.com SaaS or self-managed instance must have access to the [GitLab REST API](../api/api_resources.md).
+To automate storage management, your GitLab.com SaaS or GitLab Self-Managed instance must have access to the [GitLab REST API](../api/api_resources.md).
 
 ### API authentication scope
 

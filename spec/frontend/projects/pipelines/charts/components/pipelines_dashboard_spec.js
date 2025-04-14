@@ -5,6 +5,8 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PipelinesDashboard from '~/projects/pipelines/charts/components/pipelines_dashboard.vue';
+import DashboardHeader from '~/projects/pipelines/charts/components/dashboard_header.vue';
+import ClickhouseHelpPopover from '~/projects/pipelines/charts/components/clickhouse_help_popover.vue';
 import StatisticsList from '~/projects/pipelines/charts/components/statistics_list.vue';
 import getPipelineCountByStatus from '~/projects/pipelines/charts/graphql/queries/get_pipeline_count_by_status.query.graphql';
 import getProjectPipelineStatistics from '~/projects/pipelines/charts/graphql/queries/get_project_pipeline_statistics.query.graphql';
@@ -26,6 +28,8 @@ describe('PipelinesDashboard', () => {
     return createMockApollo(requestHandlers);
   }
 
+  const findDashboardHeader = () => wrapper.findComponent(DashboardHeader);
+
   beforeEach(async () => {
     wrapper = shallowMount(PipelinesDashboard, {
       provide: {
@@ -35,6 +39,16 @@ describe('PipelinesDashboard', () => {
     });
 
     await waitForPromises();
+  });
+
+  describe('dashboard header', () => {
+    it('shows header', () => {
+      expect(findDashboardHeader().text()).toBe('Pipelines');
+    });
+
+    it('shows popover in header', () => {
+      expect(findDashboardHeader().findComponent(ClickhouseHelpPopover).exists()).toBe(true);
+    });
   });
 
   describe('overall statistics', () => {

@@ -254,6 +254,10 @@ role as Code Owners for `file.md`:
 You can set **direct members** of a group or subgroup as a Code Owner.
 For more information about group membership, see [Membership types](../members/_index.md#membership-types).
 
+Prerequisites:
+
+- The group must be [invited to the project](../members/sharing_projects_groups.md#invite-a-group-to-a-project).
+
 To set direct members of a group or subgroup as a Code Owner:
 
 1. Open the `CODEOWNERS` file.
@@ -376,6 +380,12 @@ Use `**` to match zero or more directories recursively:
 ```
 
 ### Exclusion patterns
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180162) in GitLab 17.10.
+
+{{< /history >}}
 
 Prefix files or paths with `!` to exempt or exclude them from requiring code owner approval.
 Exclusions apply in their section. In the following example:

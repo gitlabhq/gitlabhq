@@ -212,6 +212,7 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
         'LICENSE',
         'Pipfile.lock',
         'storybook/.env.template',
+        'storybook/.babelrc.json',
         'yarn-error.log'
       ] +
       Dir.glob('.bundle/**/*') +

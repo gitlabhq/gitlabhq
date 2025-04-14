@@ -17,5 +17,5 @@ desired_sharding_key:
         table: approval_merge_request_rules
         sharding_key: project_id
         belongs_to: approval_merge_request_rule
-table_size: small
+table_size: over_limit
 desired_sharding_key_migration_job_name: BackfillApprovalMergeRequestRulesUsersProjectId

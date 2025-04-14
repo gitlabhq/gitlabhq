@@ -29,8 +29,7 @@ module Packages
       attr_reader :package, :package_reference_value, :recipe_revision_id
 
       def package_reference
-        ::Packages::Conan::PackageReference.new(
-          package_id: package.id,
+        package.conan_package_references.build(
           reference: package_reference_value,
           project_id: package.project_id,
           recipe_revision_id: recipe_revision_id

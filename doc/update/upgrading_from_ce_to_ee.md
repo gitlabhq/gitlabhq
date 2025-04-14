@@ -133,3 +133,6 @@ If you encounter problems converting to EE and want to revert back to CE:
    cd /home/git/gitlab
    sudo -u git -H bundle exec rake gitlab:backup:restore RAILS_ENV=production
    ```
+
+For information on reverting an EE instance to CE, see
+[how to revert from EE to CE](../downgrade_ee_to_ce/_index.md).

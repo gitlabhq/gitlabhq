@@ -95,7 +95,7 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
     end
 
     it 'returns nil if the key was not present in the current context' do
-      expect(described_class.current_context_attribute(:caller_id)).to be(nil)
+      expect(described_class.current_context_attribute(:caller_id)).to be_nil
     end
   end
 

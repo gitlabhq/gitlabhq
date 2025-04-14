@@ -9,6 +9,10 @@ RSpec.describe GitlabSchema.types['ContainerProtectionTagRule'], feature_categor
 
   specify { expect(described_class).to require_graphql_authorizations(:admin_container_image) }
 
+  specify do
+    expect(described_class).to expose_permissions_using(Types::PermissionTypes::ContainerRegistry::Protection::TagRule)
+  end
+
   describe 'id' do
     subject { described_class.fields['id'] }
 
@@ -31,5 +35,11 @@ RSpec.describe GitlabSchema.types['ContainerProtectionTagRule'], feature_categor
     subject { described_class.fields['minimumAccessLevelForDelete'] }
 
     it { is_expected.to have_nullable_graphql_type(Types::ContainerRegistry::Protection::TagRuleAccessLevelEnum) }
+  end
+
+  describe 'immutable' do
+    subject { described_class.fields['immutable'] }
+
+    it { is_expected.to have_non_null_graphql_type(GraphQL::Types::Boolean) }
   end
 end

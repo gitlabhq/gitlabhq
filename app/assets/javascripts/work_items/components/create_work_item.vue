@@ -10,6 +10,7 @@ import {
   GlSprintf,
   GlIcon,
 } from '@gitlab/ui';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { createAlert } from '~/alert';
 import { clearDraft } from '~/lib/utils/autosave';
 import { isMetaEnterKeyPair } from '~/lib/utils/common_utils';
@@ -22,7 +23,9 @@ import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cac
 import { findWidget } from '~/issues/list/utils';
 import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
+import ZenMode from '~/zen_mode';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
+import WorkItemDates from 'ee_else_ce/work_items/components/work_item_dates.vue';
 import {
   getDisplayReference,
   getNewWorkItemAutoSaveKey,
@@ -51,9 +54,12 @@ import {
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_TYPE_NAME_LOWERCASE_MAP,
   WORK_ITEM_TYPE_NAME_MAP,
-  WORK_ITEM_TYPE_VALUE_MAP,
-  WORK_ITEM_TYPE_VALUE_INCIDENT,
-  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_NAME_INCIDENT,
+  WORK_ITEM_TYPE_NAME_EPIC,
+  WIDGET_TYPE_CUSTOM_FIELDS,
+  CUSTOM_FIELDS_TYPE_NUMBER,
+  CUSTOM_FIELDS_TYPE_TEXT,
+  WORK_ITEM_TYPE_NAME_ISSUE,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
@@ -68,7 +74,6 @@ import WorkItemMilestone from './work_item_milestone.vue';
 import WorkItemParent from './work_item_parent.vue';
 import WorkItemLoading from './work_item_loading.vue';
 import WorkItemCrmContacts from './work_item_crm_contacts.vue';
-import WorkItemDueDates from './work_item_due_dates.vue';
 
 export default {
   components: {
@@ -91,13 +96,16 @@ export default {
     WorkItemProjectsListbox,
     TitleSuggestions,
     WorkItemParent,
-    WorkItemDueDates,
+    WorkItemDates,
     WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemHealthStatus: () =>
       import('ee_component/work_items/components/work_item_health_status.vue'),
     WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
+    WorkItemCustomFields: () =>
+      import('ee_component/work_items/components/work_item_custom_fields.vue'),
   },
+  mixins: [glFeatureFlagMixin()],
   inject: ['fullPath', 'groupPath'],
   i18n: {
     suggestionTitle: s__('WorkItem|Similar items'),
@@ -150,7 +158,7 @@ export default {
       required: false,
       default: '',
     },
-    workItemTypeName: {
+    preselectedWorkItemType: {
       type: String,
       required: false,
       default: null,
@@ -170,6 +178,16 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    isModal: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    namespaceFullName: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -269,7 +287,7 @@ export default {
         }
 
         const selectedWorkItemType = this.workItemTypes?.find(
-          (workItemType) => WORK_ITEM_TYPE_VALUE_MAP[workItemType.name] === this.workItemTypeName,
+          (workItemType) => workItemType.name === this.preselectedWorkItemType,
         );
 
         if (selectedWorkItemType) {
@@ -336,8 +354,16 @@ export default {
       // detail view instead. Since the legacy view doesn't support setting a parent
       // we need to hide this attribute here until the migration has been finished.
       // https://gitlab.com/gitlab-org/gitlab/-/issues/502823
-      if (this.selectedWorkItemTypeName === WORK_ITEM_TYPE_VALUE_INCIDENT) {
+      if (this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_INCIDENT) {
         return false;
+      }
+
+      // Hide Parent widget on Epic or Issue creation according to license permissions
+      if (
+        this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_ISSUE ||
+        this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_EPIC
+      ) {
+        if (!this.validateAllowedParentTypes(this.selectedWorkItemTypeName).length) return false;
       }
 
       return Boolean(this.workItemHierarchy);
@@ -368,12 +394,9 @@ export default {
     selectedWorkItemTypeIconName() {
       return this.selectedWorkItemType?.iconName;
     },
-    selectedWorkItemTypeEnum() {
-      return WORK_ITEM_TYPE_VALUE_MAP[this.selectedWorkItemTypeName];
-    },
     formOptions() {
       const options = [...this.workItemTypesForSelect];
-      if (!this.workItemTypeName) {
+      if (!this.preselectedWorkItemType) {
         options.unshift({ value: null, text: s__('WorkItem|Select type') });
       }
       return options;
@@ -481,6 +504,11 @@ export default {
       const isTitleFilled = Boolean(this.workItemTitle.trim());
       const isDescriptionFilled = Boolean(this.workItemDescription.trim());
       const defaultColorValue = DEFAULT_EPIC_COLORS;
+      const isCustomFieldsFilled = Boolean(
+        this.workItemCustomFields?.find(
+          (field) => field.value != null || field.selectedOptions?.length > 0,
+        ),
+      );
 
       return (
         isTitleFilled ||
@@ -494,11 +522,18 @@ export default {
         Boolean(this.workItemStartDateFixed) ||
         Boolean(this.workItemDueDateIsFixed) ||
         Boolean(this.workItemStartDateIsFixed) ||
-        Boolean(this.workItemIterationId)
+        Boolean(this.workItemIterationId) ||
+        (this.glFeatures.customFieldsFeature && isCustomFieldsFilled)
       );
     },
     shouldDatesRollup() {
-      return this.selectedWorkItemTypeName === WORK_ITEM_TYPE_VALUE_EPIC;
+      return this.selectedWorkItemTypeName === WORK_ITEM_TYPE_NAME_EPIC;
+    },
+    workItemCustomFields() {
+      return findWidget(WIDGET_TYPE_CUSTOM_FIELDS, this.workItem)?.customFieldValues ?? null;
+    },
+    showWorkItemCustomFields() {
+      return this.glFeatures.customFieldsFeature && this.workItemCustomFields;
     },
   },
   watch: {
@@ -529,6 +564,7 @@ export default {
 
     this.setNumberOfDiscussionsResolved();
     addShortcutsExtension(ShortcutsWorkItems);
+    new ZenMode(); // eslint-disable-line no-new
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleKeydown);
@@ -551,6 +587,14 @@ export default {
     },
     updateTitle(newValue) {
       this.workItemTitle = newValue;
+    },
+    validateAllowedParentTypes(selectedWorkItemType) {
+      return (
+        this.workItemTypes
+          ?.find((type) => type.name === selectedWorkItemType)
+          ?.widgetDefinitions.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)
+          .allowedParentTypes?.nodes || []
+      );
     },
     isWidgetSupported(widgetType) {
       const widgetDefinitions =
@@ -577,7 +621,7 @@ export default {
           variables: {
             input: {
               fullPath: this.fullPath,
-              workItemType: this.selectedWorkItemTypeName || this.workItemTypeName,
+              workItemType: this.selectedWorkItemTypeName,
               [type]: value,
             },
           },
@@ -696,6 +740,32 @@ export default {
         };
       }
 
+      if (this.isWidgetSupported(WIDGET_TYPE_CUSTOM_FIELDS)) {
+        const customFieldsMutationInput = this.workItemCustomFields?.map((field) => {
+          if (field.customField.fieldType === CUSTOM_FIELDS_TYPE_NUMBER) {
+            return {
+              customFieldId: field.customField.id,
+              numberValue: field.value,
+            };
+          }
+
+          if (field.customField.fieldType === CUSTOM_FIELDS_TYPE_TEXT) {
+            return {
+              customFieldId: field.customField.id,
+              textValue: field.value,
+            };
+          }
+
+          const selectedOptionsIds = field.selectedOptions?.map(({ id }) => id);
+          return {
+            customFieldId: field.customField.id,
+            selectedOptionIds: selectedOptionsIds,
+          };
+        });
+
+        workItemCreateInput.customFieldsWidget = customFieldsMutationInput;
+      }
+
       try {
         const { data } = await this.$apollo.mutate({
           mutation: createWorkItemMutation,
@@ -735,8 +805,7 @@ export default {
           numberOfDiscussionsResolved: this.numberOfDiscussionsResolved,
         });
 
-        const workItemTypeName = this.selectedWorkItemTypeName || this.workItemTypeName;
-        const autosaveKey = getNewWorkItemAutoSaveKey(this.fullPath, workItemTypeName);
+        const autosaveKey = getNewWorkItemAutoSaveKey(this.fullPath, this.selectedWorkItemTypeName);
         clearDraft(autosaveKey);
       } catch {
         this.error = this.createErrorText;
@@ -756,8 +825,7 @@ export default {
       }
     },
     handleDiscardDraft() {
-      const workItemTypeName = this.selectedWorkItemTypeName || this.workItemTypeName;
-      const autosaveKey = getNewWorkItemAutoSaveKey(this.fullPath, workItemTypeName);
+      const autosaveKey = getNewWorkItemAutoSaveKey(this.fullPath, this.selectedWorkItemTypeName);
       clearDraft(autosaveKey);
 
       const selectedWorkItemWidgets = this.selectedWorkItemType?.widgetDefinitions || [];
@@ -778,7 +846,7 @@ export default {
 
 <template>
   <form @submit.prevent="createWorkItem">
-    <work-item-loading v-if="isLoading" />
+    <work-item-loading v-if="isLoading" class="gl-mt-5" />
     <template v-else>
       <gl-alert v-if="error" class="gl-mb-3" variant="danger" @dismiss="error = null">
         {{ error }}
@@ -794,6 +862,7 @@ export default {
             v-model="selectedProjectFullPath"
             :full-path="fullPath"
             :is-group="isGroup"
+            :current-project-name="namespaceFullName"
           />
         </gl-form-group>
 
@@ -809,7 +878,7 @@ export default {
             v-model="selectedWorkItemTypeId"
             data-testid="work-item-types-select"
             :options="formOptions"
-            @change="$emit('changeType', selectedWorkItemTypeEnum)"
+            @change="$emit('changeType', selectedWorkItemTypeName)"
           />
         </gl-form-group>
       </div>
@@ -837,6 +906,7 @@ export default {
               :description="description"
               :full-path="fullPath"
               :show-buttons-below-field="false"
+              :hide-fullscreen-markdown-button="isModal"
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
               :work-item-type-name="selectedWorkItemTypeName"
@@ -946,7 +1016,7 @@ export default {
               :work-item-type="selectedWorkItemTypeName"
               @error="$emit('error', $event)"
             />
-            <work-item-due-dates
+            <work-item-dates
               v-if="workItemStartAndDueDate"
               class="work-item-attributes-item"
               :can-update="canUpdate"
@@ -973,6 +1043,16 @@ export default {
               class="work-item-attributes-item"
               :work-item="workItem"
               :full-path="fullPath"
+              :can-update="canUpdate"
+              @error="$emit('error', $event)"
+            />
+            <work-item-custom-fields
+              v-if="showWorkItemCustomFields"
+              :work-item-id="workItemId"
+              :work-item-type="selectedWorkItemTypeName"
+              :custom-fields="workItemCustomFields"
+              :full-path="fullPath"
+              :is-group="isGroup"
               :can-update="canUpdate"
               @error="$emit('error', $event)"
             />

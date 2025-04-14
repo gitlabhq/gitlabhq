@@ -7,3 +7,6 @@ export const SORT_LABEL_STARS = __('Stars');
 
 export const FILTERED_SEARCH_TOKEN_LANGUAGE = 'language';
 export const FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL = 'min_access_level';
+
+export const SORT_DIRECTION_ASC = 'asc';
+export const SORT_DIRECTION_DESC = 'desc';

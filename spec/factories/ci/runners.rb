@@ -128,6 +128,7 @@ FactoryBot.define do
 
       after(:create) do |runner, evaluator|
         runner.runner_projects.delete_all
+        runner.clear_memoization(:owner)
       end
     end
 

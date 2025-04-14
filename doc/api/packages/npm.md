@@ -146,10 +146,6 @@ The examples in this document all use the project-level prefix.
 /packages/npm
 ```
 
-| Attribute | Type   | Required | Description |
-| --------- | ------ | -------- | ----------- |
-| `id`      | string | yes      | The group ID or full group path. |
-
 ### Project-level
 
 ```plaintext

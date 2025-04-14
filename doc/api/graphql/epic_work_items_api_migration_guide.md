@@ -15,7 +15,7 @@ title: Migrate epic APIs to work items
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2 [with a flag](../../administration/feature_flags.md) named `work_item_epics`. Disabled by default. Your administrator must have [enabled the new look for epics](../../user/group/epics/epic_work_items.md). This feature is in [beta](../../policy/development_stages_support.md#beta).
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2 [with a flag](../../administration/feature_flags.md) named `work_item_epics`. Disabled by default. [The new look for epics](../../user/group/epics/epic_work_items.md) must be enabled. This feature is in [beta](../../policy/development_stages_support.md#beta).
 - Listing epics using the [GraphQL API](reference/_index.md) [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12852) in GitLab 17.4.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/470685) in GitLab 17.6.
 - [Enabled by default on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 17.7.

@@ -1,8 +1,13 @@
 <script>
-import { GlSkeletonLoader } from '@gitlab/ui';
 import { createAlert } from '~/alert';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import runnerJobsQuery from '../graphql/show/runner_jobs.query.graphql';
-import { I18N_FETCH_ERROR, I18N_NO_JOBS_FOUND, RUNNER_DETAILS_JOBS_PAGE_SIZE } from '../constants';
+import {
+  I18N_FETCH_ERROR,
+  I18N_JOBS,
+  I18N_NO_JOBS_FOUND,
+  RUNNER_DETAILS_JOBS_PAGE_SIZE,
+} from '../constants';
 import { captureException } from '../sentry_utils';
 import { getPaginationVariables } from '../utils';
 import RunnerJobsTable from './runner_jobs_table.vue';
@@ -12,12 +17,11 @@ import RunnerJobsEmptyState from './runner_jobs_empty_state.vue';
 export default {
   name: 'RunnerJobs',
   components: {
-    GlSkeletonLoader,
+    CrudComponent,
     RunnerJobsTable,
     RunnerPagination,
     RunnerJobsEmptyState,
   },
-
   props: {
     runner: {
       type: Object,
@@ -68,18 +72,28 @@ export default {
       this.pagination = value;
     },
   },
+  I18N_JOBS,
   I18N_NO_JOBS_FOUND,
 };
 </script>
 
 <template>
-  <div class="gl-pt-3">
-    <div v-if="loading" class="gl-py-5">
-      <gl-skeleton-loader />
-    </div>
-    <runner-jobs-table v-else-if="jobs.items.length" :jobs="jobs.items" />
+  <crud-component
+    :title="$options.I18N_JOBS"
+    icon="pipeline"
+    :count="runner.jobCount"
+    :is-loading="loading"
+    class="gl-mt-5"
+  >
+    <runner-jobs-table v-if="jobs.items.length" :jobs="jobs.items" />
     <runner-jobs-empty-state v-else />
 
-    <runner-pagination :disabled="loading" :page-info="jobs.pageInfo" @input="onPaginationInput" />
-  </div>
+    <template #pagination>
+      <runner-pagination
+        :disabled="loading"
+        :page-info="jobs.pageInfo"
+        @input="onPaginationInput"
+      />
+    </template>
+  </crud-component>
 </template>

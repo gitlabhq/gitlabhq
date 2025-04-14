@@ -2,53 +2,32 @@
 import { GlTabs, GlTab, GlBadge, GlFilteredSearchToken } from '@gitlab/ui';
 import { isEqual, pick } from 'lodash';
 import { __ } from '~/locale';
-import {
-  TIMESTAMP_TYPE_CREATED_AT,
-  TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
-} from '~/vue_shared/components/resource_lists/constants';
 import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '~/graphql_shared/constants';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { createAlert } from '~/alert';
 import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import { calculateGraphQLPaginationQueryParams } from '~/graphql_shared/utils';
-import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import { ACCESS_LEVEL_OWNER_INTEGER } from '~/access_level/constants';
-import {
-  SORT_OPTIONS,
-  SORT_DIRECTION_ASC,
-  SORT_DIRECTION_DESC,
-  SORT_OPTION_UPDATED,
-  SORT_OPTION_CREATED,
-  FILTERED_SEARCH_TERM_KEY,
-  FILTERED_SEARCH_NAMESPACE,
-} from '~/projects/filtered_search_and_sort/constants';
-import {
-  CONTRIBUTED_TAB,
-  CUSTOM_DASHBOARD_ROUTE_NAMES,
-  PROJECT_DASHBOARD_TABS,
-} from '~/projects/your_work/constants';
 import projectCountsQuery from '~/projects/your_work/graphql/queries/project_counts.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { InternalEvents } from '~/tracking';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+  SORT_DIRECTION_ASC,
+  SORT_DIRECTION_DESC,
 } from '../constants';
 import userPreferencesUpdateMutation from '../graphql/mutations/user_preferences_update.mutation.graphql';
 import TabView from './tab_view.vue';
 
+const trackingMixin = InternalEvents.mixin();
+
 // Will be made more generic to work with groups and projects in future commits
 export default {
   name: 'TabsWithList',
-  PROJECT_DASHBOARD_TABS,
   i18n: {
     projectCountError: __('An error occurred loading the project counts.'),
-  },
-  filteredSearchAndSort: {
-    sortOptions: SORT_OPTIONS,
-    namespace: FILTERED_SEARCH_NAMESPACE,
-    recentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_PROJECTS,
-    searchTermKey: FILTERED_SEARCH_TERM_KEY,
   },
   components: {
     GlTabs,
@@ -57,11 +36,73 @@ export default {
     TabView,
     FilteredSearchAndSort,
   },
-  inject: ['initialSort', 'programmingLanguages'],
+  mixins: [trackingMixin],
+  props: {
+    tabs: {
+      type: Array,
+      required: true,
+    },
+    filteredSearchSupportedTokens: {
+      type: Array,
+      required: false,
+      default() {
+        return [];
+      },
+    },
+    filteredSearchTermKey: {
+      type: String,
+      required: true,
+    },
+    filteredSearchNamespace: {
+      type: String,
+      required: true,
+    },
+    filteredSearchRecentSearchesStorageKey: {
+      type: String,
+      required: true,
+    },
+    sortOptions: {
+      type: Array,
+      required: true,
+    },
+    defaultSortOption: {
+      type: Object,
+      required: true,
+    },
+    timestampTypeMap: {
+      type: Object,
+      required: true,
+    },
+    firstTabRouteNames: {
+      type: Array,
+      required: false,
+      default() {
+        return [];
+      },
+    },
+    initialSort: {
+      type: String,
+      required: true,
+    },
+    programmingLanguages: {
+      type: Array,
+      required: false,
+      default() {
+        return [];
+      },
+    },
+    eventTracking: {
+      type: Object,
+      required: false,
+      default() {
+        return {};
+      },
+    },
+  },
   data() {
     return {
       activeTabIndex: this.initActiveTabIndex(),
-      counts: PROJECT_DASHBOARD_TABS.reduce((accumulator, tab) => {
+      counts: this.tabs.reduce((accumulator, tab) => {
         return {
           ...accumulator,
           [tab.value]: undefined,
@@ -96,6 +137,9 @@ export default {
     },
   },
   computed: {
+    activeTab() {
+      return this.tabs[this.activeTabIndex];
+    },
     filteredSearchTokens() {
       return [
         {
@@ -126,13 +170,15 @@ export default {
             },
           ],
         },
-      ];
+      ].filter((filteredSearchToken) =>
+        this.filteredSearchSupportedTokens.includes(filteredSearchToken.type),
+      );
     },
     sortQuery() {
       return this.$route.query.sort;
     },
     sort() {
-      const sortOptionValues = SORT_OPTIONS.flatMap(({ value }) => [
+      const sortOptionValues = this.sortOptions.flatMap(({ value }) => [
         `${value}_${SORT_DIRECTION_ASC}`,
         `${value}_${SORT_DIRECTION_DESC}`,
       ]);
@@ -145,10 +191,10 @@ export default {
         return this.initialSort;
       }
 
-      return `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_ASC}`;
+      return `${this.defaultSortOption.value}_${SORT_DIRECTION_ASC}`;
     },
     activeSortOption() {
-      return SORT_OPTIONS.find((sortItem) => this.sort.includes(sortItem.value));
+      return this.sortOptions.find((sortItem) => this.sort.includes(sortItem.value));
     },
     isAscending() {
       return this.sort.endsWith(SORT_DIRECTION_ASC);
@@ -172,7 +218,7 @@ export default {
       const filters = pick(this.routeQueryWithoutPagination, [
         FILTERED_SEARCH_TOKEN_LANGUAGE,
         FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
-        FILTERED_SEARCH_TERM_KEY,
+        this.filteredSearchTermKey,
       ]);
 
       // Normalize the property to Number since Vue Router 4 will
@@ -184,12 +230,7 @@ export default {
       return filters;
     },
     timestampType() {
-      const SORT_MAP = {
-        [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
-        [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
-      };
-
-      return SORT_MAP[this.activeSortOption.value] || TIMESTAMP_TYPE_CREATED_AT;
+      return this.timestampTypeMap[this.activeSortOption.value];
     },
   },
   methods: {
@@ -205,9 +246,9 @@ export default {
       this.$router.push({ query });
     },
     initActiveTabIndex() {
-      return CUSTOM_DASHBOARD_ROUTE_NAMES.includes(this.$route.name)
+      return this.firstTabRouteNames.includes(this.$route.name)
         ? 0
-        : PROJECT_DASHBOARD_TABS.findIndex((tab) => tab.value === this.$route.name);
+        : this.tabs.findIndex((tab) => tab.value === this.$route.name);
     },
     onTabUpdate(index) {
       // This return will prevent us overwriting the root `/` and `/dashboard/projects` paths
@@ -216,8 +257,14 @@ export default {
 
       this.activeTabIndex = index;
 
-      const tab = PROJECT_DASHBOARD_TABS[index] || CONTRIBUTED_TAB;
+      const tab = this.tabs[index] || this.tabs[0];
       this.$router.push({ name: tab.value });
+
+      if (!this.eventTracking?.tabs) {
+        return;
+      }
+
+      this.trackEvent(this.eventTracking.tabs, { label: tab.text });
     },
     tabCount(tab) {
       return this.counts[tab.value];
@@ -238,16 +285,80 @@ export default {
     updateSort(sort) {
       this.pushQuery({ ...this.routeQueryWithoutPagination, sort });
       this.userPreferencesUpdateMutate(sort);
+
+      if (!this.eventTracking?.sort) {
+        return;
+      }
+
+      this.trackEvent(this.eventTracking.sort, { label: this.activeTab.text, property: sort });
     },
     onFilter(filters) {
       const { sort } = this.$route.query;
 
       this.pushQuery({ sort, ...filters });
+
+      if (!this.eventTracking?.filteredSearch) {
+        return;
+      }
+
+      Object.entries(this.eventTracking.filteredSearch).forEach(([filter, event]) => {
+        const filterValues = filters[filter];
+
+        if (!filterValues) {
+          return;
+        }
+
+        // Don't record the value when using text search.
+        // Only record with pre-set values (e.g language or access level).
+        if (filter === this.filteredSearchTermKey) {
+          this.trackEvent(event, { label: this.activeTab.text });
+
+          return;
+        }
+
+        const filteredSearchToken = this.filteredSearchTokens.find(
+          (token) => token.type === filter,
+        );
+
+        if (!filteredSearchToken) {
+          return;
+        }
+
+        const optionTitles = filterValues.flatMap((filterValue) => {
+          const optionTitle = filteredSearchToken.options.find(
+            ({ value }) => filterValue === value,
+          )?.title;
+
+          if (!optionTitle) {
+            return [];
+          }
+
+          return [optionTitle];
+        });
+
+        if (!optionTitles.length) {
+          return;
+        }
+
+        this.trackEvent(event, {
+          label: this.activeTab.text,
+          property: optionTitles.join(','),
+        });
+      });
     },
     onPageChange(pagination) {
       this.pushQuery(
         calculateGraphQLPaginationQueryParams({ ...pagination, routeQuery: this.$route.query }),
       );
+
+      if (!this.eventTracking?.pagination) {
+        return;
+      }
+
+      this.trackEvent(this.eventTracking.pagination, {
+        label: this.activeTab.text,
+        property: pagination.startCursor === null ? 'next' : 'previous',
+      });
     },
     async userPreferencesUpdateMutate(sort) {
       try {
@@ -270,7 +381,7 @@ export default {
 
 <template>
   <gl-tabs :value="activeTabIndex" @input="onTabUpdate">
-    <gl-tab v-for="tab in $options.PROJECT_DASHBOARD_TABS" :key="tab.text" lazy>
+    <gl-tab v-for="tab in tabs" :key="tab.text" lazy>
       <template #title>
         <div class="gl-flex gl-items-center gl-gap-2" data-testid="projects-dashboard-tab-title">
           <span>{{ tab.text }}</span>
@@ -292,6 +403,8 @@ export default {
         :sort="sort"
         :filters="filters"
         :timestamp-type="timestampType"
+        :programming-languages="programmingLanguages"
+        :filtered-search-term-key="filteredSearchTermKey"
         @page-change="onPageChange"
       />
       <template v-else>{{ tab.text }}</template>
@@ -301,15 +414,13 @@ export default {
       <li class="gl-w-full">
         <filtered-search-and-sort
           class="gl-border-b-0"
-          :filtered-search-namespace="$options.filteredSearchAndSort.namespace"
+          :filtered-search-namespace="filteredSearchNamespace"
           :filtered-search-tokens="filteredSearchTokens"
-          :filtered-search-term-key="$options.filteredSearchAndSort.searchTermKey"
-          :filtered-search-recent-searches-storage-key="
-            $options.filteredSearchAndSort.recentSearchesStorageKey
-          "
+          :filtered-search-term-key="filteredSearchTermKey"
+          :filtered-search-recent-searches-storage-key="filteredSearchRecentSearchesStorageKey"
           :filtered-search-query="$route.query"
           :is-ascending="isAscending"
-          :sort-options="$options.filteredSearchAndSort.sortOptions"
+          :sort-options="sortOptions"
           :active-sort-option="activeSortOption"
           @filter="onFilter"
           @sort-direction-change="onSortDirectionChange"

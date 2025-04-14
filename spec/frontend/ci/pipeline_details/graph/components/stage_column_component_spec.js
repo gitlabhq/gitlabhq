@@ -49,6 +49,9 @@ describe('stage column component', () => {
   const findStageColumnTitle = () => wrapper.find('[data-testid="stage-column-title"]');
   const findStageColumnGroup = () => wrapper.find('[data-testid="stage-column-group"]');
   const findAllStageColumnGroups = () => wrapper.findAll('[data-testid="stage-column-group"]');
+  const findAllStageColumnFailedTitle = () => wrapper.find('[data-testid="failed-jobs-title"]');
+  const findAllStageColumnFailedGroups = () =>
+    wrapper.findAll('[data-testid="stage-column-group-failed"]');
   const findJobItem = () => wrapper.findComponent(JobItem);
   const findActionComponent = () => wrapper.findComponent(ActionComponent);
 
@@ -103,6 +106,39 @@ describe('stage column component', () => {
 
     it('emits refreshPipelineGraph', () => {
       expect(wrapper.emitted().refreshPipelineGraph).toHaveLength(1);
+    });
+  });
+
+  describe('when has failed jobs', () => {
+    beforeEach(() => {
+      createComponent({
+        method: shallowMount,
+        props: {
+          groups: [
+            {
+              jobs: [mockJob],
+              name: 'test2',
+              size: 1,
+              title: 'Bird',
+              status: {
+                group: 'failed',
+              },
+            },
+            {
+              jobs: [mockJob],
+              name: 'test',
+              size: 1,
+              title: 'Fish',
+            },
+          ],
+        },
+      });
+    });
+
+    it('shows failed jobs grouped', () => {
+      expect(findAllStageColumnFailedGroups().length).toBe(1);
+      expect(findAllStageColumnFailedTitle().text()).toEqual('Failed jobs');
+      expect(findAllStageColumnGroups().length).toBe(1);
     });
   });
 

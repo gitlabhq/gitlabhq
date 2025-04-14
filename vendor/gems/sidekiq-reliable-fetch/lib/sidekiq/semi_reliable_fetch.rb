@@ -7,12 +7,6 @@ module Sidekiq
     # for semi-reliable fetch.
     DEFAULT_SEMI_RELIABLE_FETCH_TIMEOUT = 5 # seconds
 
-    def initialize(capsule)
-      super
-
-      @queues = @queues.uniq
-    end
-
     private
 
     def retrieve_unit_of_work
@@ -37,14 +31,6 @@ module Sidekiq
           *queues_cmd,
           semi_reliable_fetch_timeout
         )
-      end
-    end
-
-    def queues_cmd
-      if strictly_ordered_queues
-        @queues
-      else
-        @queues.shuffle
       end
     end
 

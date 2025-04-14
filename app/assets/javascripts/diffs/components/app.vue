@@ -28,6 +28,7 @@ import notesEventHub from '~/notes/event_hub';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import getMRCodequalityAndSecurityReports from 'ee_else_ce/diffs/components/graphql/get_mr_codequality_and_security_reports.query.graphql';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { sortFindingsByFile } from '../utils/sort_findings_by_file';
 import {
   ALERT_OVERFLOW_HIDDEN,
@@ -218,12 +219,12 @@ export default {
     },
   },
   computed: {
-    ...mapState('diffs', {
+    ...mapPiniaState(useLegacyDiffs, {
       numTotalFiles: 'realSize',
       numVisibleFiles: 'size',
     }),
     ...mapState('findingsDrawer', ['activeDrawer']),
-    ...mapState('diffs', [
+    ...mapPiniaState(useLegacyDiffs, [
       'isLoading',
       'diffViewType',
       'commit',
@@ -246,8 +247,6 @@ export default {
       'branchName',
       'addedLines',
       'removedLines',
-    ]),
-    ...mapGetters('diffs', [
       'whichCollapsedTypes',
       'isParallelView',
       'currentDiffIndex',
@@ -442,7 +441,7 @@ export default {
   },
   methods: {
     ...mapActions(['startTaskList']),
-    ...mapActions('diffs', [
+    ...mapPiniaActions(useLegacyDiffs, [
       'moveToNeighboringCommit',
       'fetchDiffFilesMeta',
       'fetchDiffFilesBatch',
@@ -467,7 +466,7 @@ export default {
       'goToFile',
     ]),
     ...mapActions('findingsDrawer', ['setDrawer']),
-    ...mapPiniaActions(useFileBrowser, ['setFileBrowserVisibility', 'toggleFileBrowserVisibility']),
+    ...mapPiniaActions(useFileBrowser, ['setFileBrowserVisibility']),
     closeDrawer() {
       this.setDrawer({});
     },
@@ -737,10 +736,6 @@ export default {
         this.trackEvent(types[event.name]);
       }
     },
-    fileTreeToggled() {
-      this.toggleFileBrowserVisibility();
-      this.adjustView();
-    },
     isDiffViewActive(item) {
       return this.virtualScrollCurrentIndex >= 0 && this.currentDiffFileId === item.file_hash;
     },
@@ -790,8 +785,9 @@ export default {
         class="files gl-mt-2 gl-flex"
       >
         <diffs-file-tree
-          :visible="renderFileTree"
-          @toggled="fileTreeToggled"
+          v-if="renderFileTree"
+          class="gl-px-5"
+          :total-files-count="numTotalFiles"
           @clickFile="goToFile({ path: $event.path })"
         />
         <div class="col-12 col-md-auto diff-files-holder">

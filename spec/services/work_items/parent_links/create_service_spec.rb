@@ -39,7 +39,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
       end
 
       it 'no relationship is created' do
-        expect { subject }.not_to change(parent_link_class, :count)
+        expect { subject }.not_to change { parent_link_class.count }
       end
     end
 
@@ -69,7 +69,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
       let(:params) { { issuable_references: [work_item] } }
 
       it 'no relationship is created' do
-        expect { subject }.not_to change(parent_link_class, :count)
+        expect { subject }.not_to change { parent_link_class.count }
       end
     end
 
@@ -101,7 +101,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
         end
 
         it 'sets relative positions' do
-          expect { subject }.to change(parent_link_class, :count).by(1)
+          expect { subject }.to change { parent_link_class.count }.by(1)
           expect(parent_item.work_item_children_by_relative_position).to eq(expected_order)
         end
       end
@@ -117,7 +117,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
       end
 
       it 'creates relationships', :aggregate_failures do
-        expect { subject }.to change(parent_link_class, :count).by(2)
+        expect { subject }.to change { parent_link_class.count }.by(2)
 
         tasks_parent = parent_link_class.where(work_item: [task1, task2]).map(&:work_item_parent).uniq
         expect(tasks_parent).to match_array([work_item])
@@ -189,7 +189,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
       end
 
       it 'creates notes and records the events', :aggregate_failures do
-        expect { subject }.to change(WorkItems::ResourceLinkEvent, :count).by(2)
+        expect { subject }.to change { WorkItems::ResourceLinkEvent.count }.by(2)
 
         work_item_notes = work_item.notes.last(2)
         resource_link_events = WorkItems::ResourceLinkEvent.last(2)
@@ -223,7 +223,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
             end
 
             expect { subject }
-              .to change(WorkItems::ResourceLinkEvent, :count).by(1)
+              .to change { WorkItems::ResourceLinkEvent.count }.by(1)
               .and not_change(Note, :count)
 
             expect(WorkItems::ResourceLinkEvent.last).to have_attributes(
@@ -246,8 +246,8 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
 
         it 'creates links only for non related tasks', :aggregate_failures do
           expect { subject }
-            .to change(parent_link_class, :count).by(1)
-            .and change(WorkItems::ResourceLinkEvent, :count).by(1)
+            .to change { parent_link_class.count }.by(1)
+            .and change { WorkItems::ResourceLinkEvent.count }.by(1)
 
           expect(subject[:created_references].map(&:work_item_id)).to match_array([task2.id])
           expect(work_item.notes.last.note).to eq("added #{task2.to_reference} as child task")
@@ -320,7 +320,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
         let(:params) { { issuable_references: [task1, invalid_task] } }
 
         it 'creates links only for valid IDs' do
-          expect { subject }.to change(parent_link_class, :count).by(1)
+          expect { subject }.to change { parent_link_class.count }.by(1)
         end
       end
 

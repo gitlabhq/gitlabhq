@@ -12,8 +12,8 @@ import {
   stringifyTime,
 } from '~/lib/utils/datetime_utility';
 import { __, s__ } from '~/locale';
-import { WIDGET_TYPE_TIME_TRACKING } from '~/work_items/constants';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import { findTimeTrackingWidget } from '~/work_items/utils';
 import { timelogQueries } from '../../queries/constants';
 import deleteTimelogMutation from '../../queries/delete_timelog.mutation.graphql';
 
@@ -155,9 +155,7 @@ export default {
               },
               (sourceData) =>
                 produce(sourceData, (draftState) => {
-                  const timeTrackingWidget = draftState.workspace.workItem.widgets.find(
-                    (widget) => widget.type === WIDGET_TYPE_TIME_TRACKING,
-                  );
+                  const timeTrackingWidget = findTimeTrackingWidget(draftState.workspace.workItem);
                   const timelogs = timeTrackingWidget.timelogs.nodes;
                   const index = timelogs.findIndex((timelog) => timelog.id === timelogId);
 

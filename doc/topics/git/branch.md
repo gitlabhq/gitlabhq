@@ -25,7 +25,7 @@ git checkout -b <name-of-branch>
 
 GitLab enforces [branch naming rules](../../user/project/repository/branches/_index.md#name-your-branch)
 to prevent problems, and provides
-[branch naming patterns](../../user/project/repository/branches/_index.md#prefix-branch-names-with-issue-numbers)
+[branch naming patterns](../../user/project/repository/branches/_index.md#prefix-branch-names-with-a-number)
 to streamline merge request creation.
 
 ## Switch to a branch

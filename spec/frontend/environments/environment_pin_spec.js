@@ -5,9 +5,11 @@ import { shallowMount } from '@vue/test-utils';
 import cancelAutoStopMutation from '~/environments/graphql/mutations/cancel_auto_stop.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import PinComponent from '~/environments/components/environment_pin.vue';
-import eventHub from '~/environments/event_hub';
 
 describe('Pin Component', () => {
+  Vue.use(VueApollo);
+
+  let mockApollo;
   let wrapper;
 
   const factory = (options = {}) => {
@@ -20,56 +22,28 @@ describe('Pin Component', () => {
 
   const findDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
 
-  describe('without graphql', () => {
-    beforeEach(() => {
-      factory({
-        propsData: {
-          autoStopUrl,
-        },
-      });
-    });
-
-    it('should render the component with descriptive text', () => {
-      expect(findDropdownItem().props('item').text).toBe('Prevent auto-stopping');
-    });
-
-    it('should emit onPinClick when clicked', () => {
-      const eventHubSpy = jest.spyOn(eventHub, '$emit');
-
-      findDropdownItem().vm.$emit('action');
-
-      expect(eventHubSpy).toHaveBeenCalledWith('cancelAutoStop', autoStopUrl);
+  beforeEach(() => {
+    mockApollo = createMockApollo();
+    factory({
+      propsData: {
+        autoStopUrl,
+      },
+      apolloProvider: mockApollo,
     });
   });
 
-  describe('with graphql', () => {
-    Vue.use(VueApollo);
-    let mockApollo;
+  it('should render the component with descriptive text', () => {
+    expect(findDropdownItem().props('item').text).toBe('Prevent auto-stopping');
+  });
 
-    beforeEach(() => {
-      mockApollo = createMockApollo();
-      factory({
-        propsData: {
-          autoStopUrl,
-          graphql: true,
-        },
-        apolloProvider: mockApollo,
-      });
-    });
+  it('should emit onPinClick when clicked', () => {
+    jest.spyOn(mockApollo.defaultClient, 'mutate');
 
-    it('should render the component with descriptive text', () => {
-      expect(findDropdownItem().props('item').text).toBe('Prevent auto-stopping');
-    });
+    findDropdownItem().vm.$emit('action');
 
-    it('should emit onPinClick when clicked', () => {
-      jest.spyOn(mockApollo.defaultClient, 'mutate');
-
-      findDropdownItem().vm.$emit('action');
-
-      expect(mockApollo.defaultClient.mutate).toHaveBeenCalledWith({
-        mutation: cancelAutoStopMutation,
-        variables: { autoStopUrl },
-      });
+    expect(mockApollo.defaultClient.mutate).toHaveBeenCalledWith({
+      mutation: cancelAutoStopMutation,
+      variables: { autoStopUrl },
     });
   });
 });

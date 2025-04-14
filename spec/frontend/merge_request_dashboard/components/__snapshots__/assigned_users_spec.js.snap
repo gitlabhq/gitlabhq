@@ -2,7 +2,7 @@
 
 exports[`Merge request dashboard assigned users component as reviewer list renders review state icon 1`] = `
 <span
-  class="-gl-bottom-2 -gl-right-2 gl-absolute gl-bg-status-danger gl-flex gl-h-5 gl-items-center gl-justify-center gl-p-1 gl-rounded-full gl-w-5"
+  class="-gl-bottom-2 -gl-left-2 gl-absolute gl-bg-status-danger gl-flex gl-h-5 gl-items-center gl-justify-center gl-p-1 gl-rounded-full gl-w-5"
   data-testid="review-state-icon"
 >
   <svg

@@ -22,6 +22,7 @@ class Group < Namespace
   include Importable
   include IdInOrdered
   include Members::Enumerable
+  include Namespaces::AdjournedDeletable
 
   extend ::Gitlab::Utils::Override
 
@@ -133,6 +134,19 @@ class Group < Namespace
   has_one :dependency_proxy_image_ttl_policy, class_name: 'DependencyProxy::ImageTtlGroupPolicy'
   has_many :dependency_proxy_blobs, class_name: 'DependencyProxy::Blob'
   has_many :dependency_proxy_manifests, class_name: 'DependencyProxy::Manifest'
+
+  has_one :deletion_schedule, class_name: 'GroupDeletionSchedule'
+  delegate :deleting_user, :marked_for_deletion_on, to: :deletion_schedule, allow_nil: true
+
+  scope :aimed_for_deletion, ->(date) { joins(:deletion_schedule).where('group_deletion_schedules.marked_for_deletion_on <= ?', date) }
+  scope :not_aimed_for_deletion, -> { where.missing(:deletion_schedule) }
+  scope :with_deletion_schedule, -> { preload(deletion_schedule: :deleting_user) }
+  scope :with_deletion_schedule_only, -> { preload(:deletion_schedule) }
+
+  scope :by_marked_for_deletion_on, ->(marked_for_deletion_on) do
+    joins(:deletion_schedule)
+      .where(group_deletion_schedules: { marked_for_deletion_on: marked_for_deletion_on })
+  end
 
   has_one :harbor_integration, class_name: 'Integrations::Harbor'
 
@@ -296,6 +310,36 @@ class Group < Namespace
     else
       public_to_user
     end
+  end
+
+  # .sorted_by_similarity_desc can generate poorly performing queries.
+  # Only apply this scope in combination with other filters, ideally on sets of
+  # less than 100,000 records.
+  scope :sorted_by_similarity_desc, ->(search) do
+    order_expression = Gitlab::Database::SimilarityScore.build_expression(
+      search: search,
+      rules: [
+        { column: arel_table["path"], multiplier: 1 },
+        { column: arel_table["name"], multiplier: 0.7 }
+      ])
+
+    order = Gitlab::Pagination::Keyset::Order.build(
+      [
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'similarity',
+          column_expression: order_expression,
+          order_expression: order_expression.desc,
+          order_direction: :desc,
+          add_to_projections: true
+        ),
+        # Tie-breaker for if two results have the same similarity score.
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'id',
+          order_expression: Namespace.arel_table['id'].asc
+        )
+      ])
+
+    order.apply_cursor_conditions(reorder(order))
   end
 
   scope :order_path_asc, -> { reorder(self.arel_table['path'].asc) }
@@ -892,10 +936,6 @@ class Group < Namespace
     import_export_upload_by_user(user)&.export_archive_exists?
   end
 
-  def adjourned_deletion?
-    false
-  end
-
   def execute_hooks(data, hooks_scope)
     # NOOP
     # TODO: group hooks https://gitlab.com/gitlab-org/gitlab/-/issues/216904
@@ -993,6 +1033,10 @@ class Group < Namespace
       Gitlab::CurrentSettings.group_runner_token_expiration_interval&.seconds,
       group_interval
     ].compact.min
+  end
+
+  def work_item_move_and_clone_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_item_move_and_clone, type: :beta)
   end
 
   def work_items_feature_flag_enabled?

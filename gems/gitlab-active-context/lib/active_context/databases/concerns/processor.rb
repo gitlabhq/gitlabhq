@@ -29,7 +29,7 @@ module ActiveContext
 
         class_methods do
           # @abstract Implement .transform in subclass to handle query transformation
-          def transform(_node)
+          def transform(_collection, _node)
             raise NotImplementedError, "#{name} must implement .transform"
           end
         end

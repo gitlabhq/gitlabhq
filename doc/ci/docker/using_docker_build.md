@@ -277,11 +277,6 @@ variables:
   # The 'docker' hostname is the alias of the service container as described at
   # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services
   #
-  # If you're using GitLab Runner 12.7 or earlier with the Kubernetes executor and Kubernetes 1.6 or earlier,
-  # the variable must be set to tcp://localhost:2375 because of how the
-  # Kubernetes executor connects services to the job container
-  # DOCKER_HOST: tcp://localhost:2375
-  #
   DOCKER_HOST: tcp://docker:2375
   #
   # This instructs Docker not to start over TLS.
@@ -348,10 +343,6 @@ To use Docker-in-Docker with TLS enabled in Kubernetes:
      #
      # The 'docker' hostname is the alias of the service container as described at
      # https://docs.gitlab.com/ee/ci/services/#accessing-the-services.
-     # If you're using GitLab Runner 12.7 or earlier with the Kubernetes executor and Kubernetes 1.6 or earlier,
-     # the variable must be set to tcp://localhost:2376 because of how the
-     # Kubernetes executor connects services to the job container
-     # DOCKER_HOST: tcp://localhost:2376
      #
      # Specify to Docker where to create the certificates. Docker
      # creates them automatically on boot, and creates
@@ -416,10 +407,6 @@ For example:
      #
      # The 'docker' hostname is the alias of the service container as described at
      # https://docs.gitlab.com/ee/ci/services/#accessing-the-services.
-     # If you're using GitLab Runner 12.7 or earlier with the Kubernetes executor and Kubernetes 1.6 or earlier,
-     # the variable must be set to tcp://localhost:2376 because of how the
-     # Kubernetes executor connects services to the job container
-     # DOCKER_HOST: tcp://localhost:2376
      #
      # This instructs Docker not to start over TLS.
      DOCKER_TLS_CERTDIR: ""

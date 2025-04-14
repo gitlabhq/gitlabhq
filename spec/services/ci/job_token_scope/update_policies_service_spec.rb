@@ -12,6 +12,10 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
     described_class.new(project, current_user).execute(target, default_permissions, policies)
   end
 
+  before do
+    allow(project).to receive(:job_token_policies_enabled?).and_return(true)
+  end
+
   describe '#execute' do
     shared_examples 'when user is not logged in' do
       let(:current_user) { nil }
@@ -79,13 +83,13 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
           source_project: project,
           target_project: target_project,
           default_permissions: true,
-          job_token_policies: %w[read_containers],
+          job_token_policies: %w[read_deployments],
           direction: :inbound
         )
       end
 
       let(:default_permissions) { false }
-      let(:policies) { %w[read_containers read_packages] }
+      let(:policies) { %w[read_deployments read_packages] }
 
       it_behaves_like 'when user is not logged in'
 
@@ -109,18 +113,18 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
             expect(project_link.source_project).to eq(project)
             expect(project_link.target_project).to eq(target_project)
             expect(project_link.default_permissions).to be(false)
-            expect(project_link.job_token_policies).to eq(%w[read_containers read_packages])
+            expect(project_link.job_token_policies).to eq(%w[read_deployments read_packages])
           end
 
-          context 'when feature-flag `add_policies_to_ci_job_token` is disabled' do
+          context 'when job token policies are disabled' do
             before do
-              stub_feature_flags(add_policies_to_ci_job_token: false)
+              allow(project).to receive(:job_token_policies_enabled?).and_return(false)
             end
 
             it 'does not update the policies' do
               project_link = Ci::JobToken::ProjectScopeLink.last
 
-              expect(project_link.job_token_policies).to eq(%w[read_containers])
+              expect(project_link.job_token_policies).to eq(%w[read_deployments])
             end
           end
         end
@@ -136,12 +140,12 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
           source_project: project,
           target_group: target_group,
           default_permissions: true,
-          job_token_policies: %w[read_containers]
+          job_token_policies: %w[read_deployments]
         )
       end
 
       let(:default_permissions) { false }
-      let(:policies) { %w[read_containers read_packages] }
+      let(:policies) { %w[read_deployments read_packages] }
 
       it_behaves_like 'when user is not logged in'
 
@@ -165,18 +169,18 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
             expect(group_link.source_project).to eq(project)
             expect(group_link.target_group).to eq(target_group)
             expect(group_link.default_permissions).to be(false)
-            expect(group_link.job_token_policies).to eq(%w[read_containers read_packages])
+            expect(group_link.job_token_policies).to eq(%w[read_deployments read_packages])
           end
 
-          context 'when feature-flag `add_policies_to_ci_job_token` is disabled' do
+          context 'when job token policies are disabled' do
             before do
-              stub_feature_flags(add_policies_to_ci_job_token: false)
+              allow(project).to receive(:job_token_policies_enabled?).and_return(false)
             end
 
             it 'does not update the policies' do
               group_link = Ci::JobToken::GroupScopeLink.last
 
-              expect(group_link.job_token_policies).to eq(%w[read_containers])
+              expect(group_link.job_token_policies).to eq(%w[read_deployments])
             end
           end
         end

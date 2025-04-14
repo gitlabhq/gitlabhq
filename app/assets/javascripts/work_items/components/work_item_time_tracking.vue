@@ -18,8 +18,6 @@ import CreateTimelogForm from '~/sidebar/components/time_tracking/create_timelog
 import SetTimeEstimateForm from '~/sidebar/components/time_tracking/set_time_estimate_form.vue';
 import TimeTrackingReport from '~/sidebar/components/time_tracking/time_tracking_report.vue';
 
-const options = { hoursPerDay: 8, daysPerMonth: 20, format: 'short' };
-
 export default {
   i18n: {
     addTimeTrackingMessage: s__(
@@ -39,6 +37,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
+  inject: ['timeTrackingLimitToHours'],
   props: {
     canUpdate: {
       type: Boolean,
@@ -75,14 +74,14 @@ export default {
   },
   computed: {
     humanTimeEstimate() {
-      return outputChronicDuration(this.timeEstimate, options);
+      return outputChronicDuration(this.timeEstimate, this.options);
     },
     humanTotalTimeSpent() {
-      return outputChronicDuration(this.totalTimeSpent, options) ?? '0h';
+      return outputChronicDuration(this.totalTimeSpent, this.options) ?? '0h';
     },
     progressBarTooltipText() {
       const timeDifference = this.totalTimeSpent - this.timeEstimate;
-      const time = outputChronicDuration(Math.abs(timeDifference), options) ?? '0h';
+      const time = outputChronicDuration(Math.abs(timeDifference), this.options) ?? '0h';
       return isPositiveInteger(timeDifference)
         ? sprintf(s__('TimeTracking|%{time} over'), { time })
         : sprintf(s__('TimeTracking|%{time} remaining'), { time });
@@ -108,6 +107,17 @@ export default {
     timeTrackingModalId() {
       return `time-tracking-modal-${this.workItemId}`;
     },
+    limitToHours() {
+      return this.timeTrackingLimitToHours || false;
+    },
+    options() {
+      return {
+        hoursPerDay: 8,
+        daysPerMonth: 20,
+        format: 'short',
+        hoursOnly: this.limitToHours,
+      };
+    },
   },
 };
 </script>
@@ -131,7 +141,7 @@ export default {
       />
     </div>
 
-    <div class="gl-flex gl-items-center gl-gap-2 gl-text-sm" data-testid="time-tracking-body">
+    <div class="gl-flex gl-items-center gl-gap-2" data-testid="time-tracking-body">
       <template v-if="totalTimeSpent || timeEstimate">
         <span class="gl-text-subtle">{{ s__('TimeTracking|Spent') }}</span>
         <gl-button
@@ -139,7 +149,6 @@ export default {
           v-gl-modal="timeTrackingModalId"
           v-gl-tooltip="s__('TimeTracking|View time tracking report')"
           variant="link"
-          class="!gl-text-sm"
           data-testid="view-time-spent-button"
         >
           {{ humanTotalTimeSpent }}
@@ -160,7 +169,6 @@ export default {
             v-gl-modal="setTimeEstimateModalId"
             v-gl-tooltip="s__('TimeTracking|Set estimate')"
             variant="link"
-            class="!gl-text-sm"
             data-testid="set-estimate-button"
           >
             {{ humanTimeEstimate }}
@@ -172,7 +180,7 @@ export default {
         <gl-button
           v-else-if="canUpdate"
           v-gl-modal="setTimeEstimateModalId"
-          class="gl-ml-auto !gl-text-sm"
+          class="gl-ml-auto"
           variant="link"
           data-testid="add-estimate-button"
         >
@@ -184,7 +192,7 @@ export default {
           <template #estimate="{ content }">
             <gl-button
               v-gl-modal="setTimeEstimateModalId"
-              class="gl-align-baseline !gl-text-sm"
+              class="gl-align-baseline"
               variant="link"
               data-testid="add-estimate-button"
             >
@@ -194,7 +202,7 @@ export default {
           <template #timeSpent="{ content }">
             <gl-button
               v-gl-modal="createTimelogModalId"
-              class="gl-align-baseline !gl-text-sm"
+              class="gl-align-baseline"
               variant="link"
               data-testid="add-time-spent-button"
             >
@@ -223,7 +231,11 @@ export default {
       size="lg"
       :title="__('Time tracking report')"
     >
-      <time-tracking-report :timelogs="timelogs" :work-item-iid="workItemIid" />
+      <time-tracking-report
+        :limit-to-hours="limitToHours"
+        :timelogs="timelogs"
+        :work-item-iid="workItemIid"
+      />
     </gl-modal>
   </div>
 </template>

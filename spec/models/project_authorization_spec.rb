@@ -127,16 +127,6 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
       end
     end
 
-    describe '.owned_by' do
-      let_it_be(:project_owner_authorization) { project.owner.project_authorizations.first }
-
-      it 'returns all records owned by particular users' do
-        expect(described_class.owned_by([user.id]).map(&:attributes)).to contain_exactly(
-          project_owner_authorization.attributes
-        )
-      end
-    end
-
     describe '.for_project' do
       let_it_be(:project_2) { create(:project, namespace: user.namespace) }
       let_it_be(:project_3) { create(:project, namespace: user.namespace) }
@@ -185,6 +175,44 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
     it_behaves_like 'cleanup by a loose foreign key' do
       let_it_be(:parent) { create(:user) }
       let_it_be(:model) { create(:project_authorization, user: parent) }
+    end
+  end
+
+  describe '.find_or_create_authorization_for' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:user_id) { user.id }
+    let_it_be(:project_id) { project.id }
+    let(:access_level) { Gitlab::Access::OWNER }
+
+    subject(:create_project_authorization_record) do
+      described_class.find_or_create_authorization_for(user_id, project_id, access_level)
+    end
+
+    context 'when record already exists' do
+      before_all do
+        create(:project_authorization, :owner, project: project, user: user)
+      end
+
+      it 'returns existing record' do
+        expect { create_project_authorization_record }.not_to change { described_class.count }
+      end
+
+      context 'with race condition handling of already existing record' do
+        it 'performs the upsert without error' do
+          expect(described_class).to receive(:find_by).and_return(nil)
+
+          expect { create_project_authorization_record }.not_to change { described_class.count }
+        end
+      end
+    end
+
+    context 'when no existing record exists' do
+      it 'creates a new record with default access_level' do
+        expect { create_project_authorization_record }.to change { described_class.count }.by(1)
+        expect(user.project_authorizations)
+          .to contain_exactly(have_attributes(access_level: access_level, is_unique: true))
+      end
     end
   end
 end

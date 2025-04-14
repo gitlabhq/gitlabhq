@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LooseForeignKeys do
+RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :cell do
   describe 'verify all definitions' do
     subject(:definitions) { described_class.definitions }
 
@@ -38,6 +38,62 @@ RSpec.describe Gitlab::Database::LooseForeignKeys do
         mapping = parsed.children.first
         table_names = mapping.children.select(&:scalar?).map(&:value)
         expect(table_names).to eq(table_names.sort), "expected sorted table names in the YAML file"
+      end
+    end
+
+    context 'ensure no partitions are included' do
+      let(:all_source_tables) do
+        YAML
+        .load_file(described_class.loose_foreign_keys_yaml_path)
+        .values.flat_map { |sources| sources.pluck(:table) }
+        .uniq
+      end
+
+      let(:included_partitioned_tables) do
+        Gitlab::Database::PostgresPartition.where(name: all_source_tables)
+      end
+
+      it 'does not include partitions as source tables' do
+        expect(included_partitioned_tables).to be_blank, <<~END
+          Please remove these partitions #{included_partitioned_tables.map(&:name).join(', ')}.
+          And include their partitioned tables #{included_partitioned_tables.map(&:parent_identifier)} instead
+          if you haven't done so.
+        END
+      end
+    end
+
+    context 'for all partitioned tables' do
+      let(:tables_with_trigger) do
+        Gitlab::Database::PostgresPartitionedTable
+          .connection.select_values(<<~SQL)
+            SELECT event_object_table
+            FROM information_schema.triggers
+            WHERE action_statement LIKE '%insert_into_loose_foreign_keys_deleted_records_override_table%'
+          SQL
+      end
+
+      let(:partitioned_tables_without_trigger) do
+        partitioned_tables
+        .pluck(:name)
+        .reject { |table| tables_with_trigger.include?(table) }
+      end
+
+      let(:partitioned_tables) do
+        Gitlab::Database::PostgresPartitionedTable.where(name: all_source_tables)
+      end
+
+      let(:all_source_tables) do
+        YAML
+        .load_file(described_class.loose_foreign_keys_yaml_path)
+        .values.flat_map { |sources| sources.pluck(:table) }
+        .uniq
+      end
+
+      it 'has installed trigger for all partitioned tables' do
+        expect(partitioned_tables_without_trigger).to be_blank, <<~END
+          #{partitioned_tables_without_trigger.join(',')} need(s) LFK trigger.
+          Please create migration using `track_record_deletions_override_table_name` to install the trigger.
+        END
       end
     end
 

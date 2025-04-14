@@ -51,6 +51,11 @@ module Ci
         rescue RegexpError
           error('invalid regular expression')
         end
+
+        override :coerced_value
+        def coerced_value(value)
+          super.to_s
+        end
       end
     end
   end

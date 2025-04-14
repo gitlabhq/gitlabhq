@@ -97,7 +97,7 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsPipeline, feature_categ
       # object, then parse it right away. We expected that some attrs like Datetimes be
       # converted to Strings.
       let(:exported_snippet) { Gitlab::Json.parse(note.noteable.attributes.merge('notes' => notes).to_json) }
-      let(:note) { create(:note_on_project_snippet, :with_attachment) }
+      let(:note) { create(:note_on_project_snippet) }
       let(:notes) { [note.attributes.merge('author' => { 'name' => note.author.name })] }
 
       it 'restores the notes' do

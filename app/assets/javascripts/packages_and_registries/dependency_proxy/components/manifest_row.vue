@@ -65,7 +65,7 @@ export default {
 </script>
 
 <template>
-  <list-item :disabled="isErrorStatus">
+  <list-item>
     <template #left-primary>
       <span :class="disabledRowStyle">{{ name }}</span>
       <clipboard-button

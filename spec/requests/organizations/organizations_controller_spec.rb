@@ -226,12 +226,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
           resource_parent_path = json_response['events'].first["resource_parent"]["full_path"]
 
           expect(json_response['events'].size).to eq(1)
-          expect(resource_parent_path).to eq(recently_updated_project.full_path), <<~ERROR.squish
-            Expected project with path #{recently_updated_project.full_path}
-            (last_activity_at: #{recently_updated_project.last_activity_at}),
-            but got #{resource_parent_path || 'nil'}.
-            Stale project: #{stale_project.full_path} last_activity_at: #{stale_project.last_activity_at}).
-          ERROR
+          expect(resource_parent_path).to eq(recently_updated_project.full_path)
         end
       end
 

@@ -18,7 +18,6 @@ import { __, s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   WIKI_CONTENT_EDITOR_TRACKING_LABEL,
   WIKI_FORMAT_LABEL,
@@ -133,7 +132,7 @@ export default {
     WikiTemplate,
     DeleteWikiModal,
   },
-  mixins: [trackingMixin, glFeatureFlagsMixin()],
+  mixins: [trackingMixin],
   inject: [
     'isEditingPath',
     'formatOptions',

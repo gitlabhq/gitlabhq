@@ -98,7 +98,7 @@ export default {
 <template>
   <div>
     <header
-      class="jira-connect-header gl-flex gl-items-center gl-justify-center gl-border-b-1 gl-border-b-default gl-bg-white gl-px-5 gl-border-b-solid"
+      class="jira-connect-header gl-flex gl-items-center gl-justify-center gl-border-b-1 gl-border-b-default gl-bg-default gl-px-5 gl-border-b-solid"
     >
       <gl-link :href="gitlabUrl" target="_blank">
         <img :src="gitlabLogo" class="gl-h-6" :alt="__('GitLab')" />

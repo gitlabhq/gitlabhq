@@ -8,14 +8,6 @@ description: Persists error event data for the Error Tracking's GitLab backend
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64712
 milestone: '14.1'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: error_id
-        table: error_tracking_errors
-        sharding_key: project_id
-        belongs_to: error
-desired_sharding_key_migration_job_name: BackfillErrorTrackingErrorEventsProjectId
 table_size: small
+sharding_key:
+  project_id: projects

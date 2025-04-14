@@ -148,7 +148,7 @@ I, [2018-07-27T12:08:33.755624 #89817]  INFO -- : Did fix /opt/gitlab/embedded/s
 I, [2018-07-27T12:08:33.760257 #89817]  INFO -- : Did move to lost and found /opt/gitlab/embedded/service/gitlab-rails/public/uploads/foo/bar/1dd6f0f7eefd2acc4c2233f89a0f7b0b/image.png -> /opt/gitlab/embedded/service/gitlab-rails/public/uploads/-/project-lost-found/foo/bar/1dd6f0f7eefd2acc4c2233f89a0f7b0b/image.png
 ```
 
-If using object storage, run the [All-in-one Rake task](../raketasks/uploads/migrate.md#all-in-one-rake-task) to ensure
+If using object storage, run the [All-in-one Rake task](uploads/migrate.md#all-in-one-rake-task) to ensure
 all uploads are migrated to object storage and there are no files on disk in the uploads folder.
 
 ### Clean up project upload files from object storage

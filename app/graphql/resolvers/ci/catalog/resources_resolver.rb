@@ -25,11 +25,21 @@ module Resolvers
           required: false,
           description: 'Filter catalog resources by verification level.'
 
-        def resolve_with_lookahead(scope:, search: nil, sort: nil, verification_level: nil)
+        argument :topics, [GraphQL::Types::String],
+          required: false,
+          description: 'Filter catalog resources by project topic names.'
+
+        def resolve_with_lookahead(scope:, search: nil, sort: nil, verification_level: nil, topics: nil)
           apply_lookahead(
             ::Ci::Catalog::Listing
               .new(context[:current_user])
-              .resources(sort: sort, search: search, scope: scope, verification_level: verification_level)
+              .resources(
+                sort: sort,
+                search: search,
+                scope: scope,
+                verification_level: verification_level,
+                topics: topics
+              )
           )
         end
 

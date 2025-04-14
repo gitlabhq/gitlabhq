@@ -25,12 +25,14 @@ including:
 - Severity
 
 For vulnerabilities in the [Common Vulnerabilities and Exposures (CVE)](https://www.cve.org/)
-catalog you can also retrieve the following by using the GraphQL API:
+catalog, these details also include:
 
+- CVSS score
 - EPSS score
 - KEV status
+- [Reachability status](../dependency_scanning/static_reachability.md) (Beta)
 
-For details on how to retrieve this additional data, see [vulnerability risk assessment data](risk_assessment_data.md).
+For further details on this additional data, see [vulnerability risk assessment data](risk_assessment_data.md).
 
 If the scanner determined the vulnerability to be a false positive, an alert message is included at
 the top of the vulnerability's page.
@@ -39,9 +41,11 @@ the top of the vulnerability's page.
 
 {{< details >}}
 
-- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Tier: Ultimate
+- Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - LLM: Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
+- LLM for Amazon Q: Amazon Q Developer
 
 {{< /details >}}
 
@@ -106,10 +110,12 @@ The following data is shared with third-party AI APIs:
 
 {{< details >}}
 
-- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Tier: Ultimate
+- Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - LLM for GitLab.com: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- LLM for Amazon Q: Amazon Q Developer
 
 {{< /details >}}
 
@@ -245,7 +251,8 @@ The following data is shared with third-party AI APIs:
 
 {{< details >}}
 
-- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Tier: Ultimate
+- Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}

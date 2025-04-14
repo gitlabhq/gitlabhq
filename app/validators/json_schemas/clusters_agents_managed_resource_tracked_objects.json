@@ -1,0 +1,9 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "List of Kubernetes objects currently managed by KAS",
+  "type": "array",
+  "items": {
+    "type": "object"
+  },
+  "additionalProperties": false
+}

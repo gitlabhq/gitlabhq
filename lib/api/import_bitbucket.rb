@@ -34,7 +34,7 @@ module API
     post 'import/bitbucket' do
       result = Import::BitbucketService.new(
         current_user,
-        params.merge(organization_id: Current.organization_id)
+        params.merge(organization_id: Current.organization&.id)
       ).execute
 
       if result[:status] == :success

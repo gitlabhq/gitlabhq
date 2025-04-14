@@ -28,7 +28,7 @@ describe('MetricPopover', () => {
   };
 
   const findMetricLabel = () => wrapper.findByTestId('metric-label');
-  const findMetricLink = () => wrapper.find('[data-testid="metric-link"]');
+  const findMetricLink = () => wrapper.findByTestId('metric-link');
   const findMetricDescription = () => wrapper.findByTestId('metric-description');
   const findMetricDocsLink = () => wrapper.findByTestId('metric-docs-link');
   const findMetricDocsLinkIcon = () => findMetricDocsLink().findComponent(GlIcon);

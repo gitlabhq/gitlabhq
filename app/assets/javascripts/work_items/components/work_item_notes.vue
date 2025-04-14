@@ -20,7 +20,7 @@ import {
   NEW_WORK_ITEM_IID,
 } from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
-import { autocompleteDataSources, markdownPreviewPath } from '~/work_items/utils';
+import { autocompleteDataSources, findNotesWidget, markdownPreviewPath } from '~/work_items/utils';
 import {
   updateCacheAfterCreatingNote,
   updateCacheAfterDeletingNote,
@@ -92,10 +92,6 @@ export default {
       required: false,
       default: false,
     },
-    reportAbusePath: {
-      type: String,
-      required: true,
-    },
     isDiscussionLocked: {
       type: Boolean,
       required: false,
@@ -152,9 +148,6 @@ export default {
     },
     someNotesLoaded() {
       return !this.initialLoading || this.previewNote;
-    },
-    avatarUrl() {
-      return window.gon.current_user_avatar_url;
     },
     pageInfo() {
       return this.workItemNotes?.pageInfo;
@@ -310,8 +303,7 @@ export default {
         };
       },
       update(data) {
-        const widgets = data.workspace?.workItem?.widgets;
-        return widgets?.find((widget) => widget.type === 'NOTES')?.discussions || [];
+        return findNotesWidget(data.workspace?.workItem)?.discussions || [];
       },
       skip() {
         return !this.workItemIid;
@@ -380,10 +372,10 @@ export default {
     isSystemNote(note) {
       return note.notes.nodes[0].system;
     },
-    changeNotesSortOrder(direction) {
+    setSort(direction) {
       this.sortOrder = direction;
     },
-    filterDiscussions(filterValue) {
+    setFilter(filterValue) {
       this.discussionFilter = filterValue;
     },
     reportAbuse(isOpen, reply = {}) {
@@ -470,8 +462,8 @@ export default {
       :discussion-filter="discussionFilter"
       :use-h2="useH2"
       :small-header-style="smallHeaderStyle"
-      @changeSort="changeNotesSortOrder"
-      @changeFilter="filterDiscussions"
+      @changeSort="setSort"
+      @changeFilter="setFilter"
     />
     <work-item-notes-loading v-if="initialLoading" class="gl-mt-5" />
     <div v-if="someNotesLoaded" class="issuable-discussion gl-mb-5 !gl-clearfix">
@@ -523,10 +515,7 @@ export default {
           </template>
         </template>
 
-        <work-item-history-only-filter-note
-          v-if="commentsDisabled"
-          @changeFilter="filterDiscussions"
-        />
+        <work-item-history-only-filter-note v-if="commentsDisabled" @changeFilter="setFilter" />
       </ul>
       <work-item-notes-loading v-if="!formAtTop && isLoadingMore" />
       <div v-if="!formAtTop && !commentsDisabled" class="js-comment-form">

@@ -284,9 +284,9 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
 
     let(:call_metadata) do
       features.merge({
-                       'user_id' => params[:GL_ID],
-                       'username' => params[:GL_USERNAME]
-                     })
+        'user_id' => params[:GL_ID],
+        'username' => params[:GL_USERNAME]
+      })
     end
 
     subject { described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action) }

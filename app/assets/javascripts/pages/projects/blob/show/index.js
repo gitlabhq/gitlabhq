@@ -25,6 +25,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
 import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
 import { InternalEvents } from '~/tracking';
+import { HISTORY_BUTTON_CLICK } from '~/tracking/constants';
 import { initFindFileShortcut } from '~/projects/behaviors';
 import initHeaderApp from '~/repository/init_header_app';
 import createRouter from '~/repository/router';
@@ -229,6 +230,7 @@ const initTreeHistoryLinkApp = (el) => {
         {
           attrs: {
             href: url.href,
+            'data-event-tracking': HISTORY_BUTTON_CLICK,
           },
         },
         [__('History')],

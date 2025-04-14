@@ -5,7 +5,7 @@ import {
   GlButton,
   GlIcon,
 } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import { TEXT_STYLE_DROPDOWN_ITEMS } from '../constants';
 import EditorStateObserver from './editor_state_observer.vue';
 
@@ -69,7 +69,8 @@ export default {
   },
   items: TEXT_STYLE_DROPDOWN_ITEMS,
   i18n: {
-    placeholder: __('Text style'),
+    placeholder: s__('ContentEditor|Text style'),
+    ariaLabel: (active) => sprintf(s__('ContentEditor|Text style %{active}'), { active }),
   },
 };
 </script>
@@ -90,7 +91,7 @@ export default {
           size="small"
           category="tertiary"
           variant="default"
-          :aria-label="`${$options.i18n.placeholder} ${activeItemLabel}`"
+          :aria-label="$options.i18n.ariaLabel(activeItemLabel)"
           :title="$options.i18n.placeholder"
           class="gl-w-full"
           button-text-classes="gl-mr-[-2px] !gl-flex !gl-justify-between gl-w-full"

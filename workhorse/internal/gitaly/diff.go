@@ -34,6 +34,8 @@ func (client *DiffClient) SendRawDiff(ctx context.Context, w http.ResponseWriter
 		return fmt.Errorf("rpc failed: %v", err)
 	}
 
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+
 	return client.sendStream(w, func() ([]byte, error) {
 		resp, err := c.Recv()
 		return resp.GetData(), err
@@ -46,6 +48,8 @@ func (client *DiffClient) SendRawPatch(ctx context.Context, w http.ResponseWrite
 	if err != nil {
 		return fmt.Errorf("rpc failed: %v", err)
 	}
+
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 
 	return client.sendStream(w, func() ([]byte, error) {
 		resp, err := c.Recv()

@@ -25,17 +25,13 @@ module Ci
       expires_at: :compute_token_expiration,
       format_with_prefix: :prefix_for_new_and_legacy_runner,
       routable_token: {
-        if: ->(token_owner_record) {
-          (token_owner_record.group_type? || token_owner_record.project_type?) &&
-            token_owner_record.owner &&
-            Feature.enabled?(:routable_runner_token, token_owner_record.owner)
-        },
+        if: ->(token_owner_record) { token_owner_record.owner },
         payload: {
-          # Will only be set when `runner_type == :group_type` or `runner_type == :project_type`
-          o: ->(token_owner_record) { token_owner_record.owner.organization_id },
+          o: ->(token_owner_record) { token_owner_record.owner.try(:organization_id) },
           g: ->(token_owner_record) { token_owner_record.group_type? ? token_owner_record.sharding_key_id : nil },
           p: ->(token_owner_record) { token_owner_record.project_type? ? token_owner_record.sharding_key_id : nil },
-          u: ->(token_owner_record) { token_owner_record.creator_id }
+          u: ->(token_owner_record) { token_owner_record.creator_id },
+          t: ->(token_owner_record) { token_owner_record.partition_id }
         }
       }
 
@@ -62,6 +58,7 @@ module Ci
 
     # Prefix assigned to runners created from the UI, instead of registered via the command line
     CREATED_RUNNER_TOKEN_PREFIX = 'glrt-'
+    REGISTRATION_RUNNER_TOKEN_PREFIX = 'glrtr-'
 
     RUNNER_SHORT_SHA_LENGTH = 8
 
@@ -262,7 +259,7 @@ module Ci
       where(runner_type: runner_type)
     end
 
-    cached_attr_reader :contacted_at
+    cached_attr_reader :contacted_at, :creation_state
 
     chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout,
       error_message: 'Maximum job timeout has a value which could not be accepted'
@@ -418,11 +415,11 @@ module Ci
       when 'instance_type'
         ::User.find_by_id(creator_id)
       when 'group_type'
-        ::Group.find_by_id(sharding_key_id)
+        runner_namespaces.first&.namespace
       when 'project_type'
-        owner_project = ::Project.find_by_id(sharding_key_id)
-
-        owner_project || fallback_owner_project
+        # If runner projects are not yet saved (e.g. when calculating `routable_token`), use in-memory collection
+        candidates = persisted? ? runner_projects.order(:id) : runner_projects
+        candidates.first&.project
       end
     end
     strong_memoize_attr :owner
@@ -446,11 +443,19 @@ module Ci
     def short_sha
       return unless token
 
-      # We want to show the first characters of the hash, so we need to bypass any fixed components of the token,
-      # such as CREATED_RUNNER_TOKEN_PREFIX or partition_id_prefix_in_16_bit_encode
-      partition_prefix = partition_id_prefix_in_16_bit_encode
-      start_index = authenticated_user_registration_type? ? CREATED_RUNNER_TOKEN_PREFIX.length : 0
-      start_index += partition_prefix.length if token[start_index..].start_with?(partition_prefix)
+      # We want to show the first characters of the hash, so we need to bypass any fixed components of the token, such
+      # as CREATED_RUNNER_TOKEN_PREFIX, REGISTRATION_RUNNER_TOKEN_PREFIX or legacy_partition_id_prefix_in_16_bit_encode
+      legacy_partition_prefix = legacy_partition_id_prefix_in_16_bit_encode
+      start_index = if authenticated_user_registration_type?
+                      CREATED_RUNNER_TOKEN_PREFIX.length
+                    elsif token.start_with?(REGISTRATION_RUNNER_TOKEN_PREFIX)
+                      REGISTRATION_RUNNER_TOKEN_PREFIX.length
+                    else
+                      0
+                    end
+
+      start_index += legacy_partition_prefix.length if token[start_index..].start_with?(legacy_partition_prefix)
+
       token[start_index..start_index + RUNNER_SHORT_SHA_LENGTH - 1]
     end
 
@@ -490,27 +495,21 @@ module Ci
       ensure_runner_queue_value == value if value.present?
     end
 
-    def heartbeat
+    def heartbeat(creation_state: nil)
       ##
       # We can safely ignore writes performed by a runner heartbeat. We do
       # not want to upgrade database connection proxy to use the primary
       # database after heartbeat write happens.
       #
       ::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).without_sticky_writes do
-        values = { contacted_at: Time.current, creation_state: :finished }
+        values = { contacted_at: Time.current }
+        values[:creation_state] = creation_state if creation_state.present?
 
         merge_cache_attributes(values)
 
         # We save data without validation, it will always change due to `contacted_at`
         update_columns(values) if persist_cached_data?
       end
-    end
-
-    def clear_heartbeat
-      cleared_attributes = { contacted_at: nil }
-
-      merge_cache_attributes(cleared_attributes)
-      update_columns(cleared_attributes)
     end
 
     def pick_build!(build)
@@ -553,7 +552,7 @@ module Ci
     def registration_available?
       authenticated_user_registration_type? &&
         created_at > REGISTRATION_AVAILABILITY_TIME.ago &&
-        started_creation_state?
+        creation_state == 'started' # NOTE: We can't use started_creation_state? here as we need to check cached value
     end
 
     # CI_JOB_JWT_V2 that uses this method is deprecated
@@ -566,6 +565,10 @@ module Ci
     # false in FOSS
     def dedicated_gitlab_hosted?
       false
+    end
+
+    def partition_id
+      self.class.runner_types[runner_type]
     end
 
     private
@@ -667,17 +670,17 @@ module Ci
       errors.add(:runner, 'cannot have allowed plans assigned') unless allowed_plan_ids.empty?
     end
 
-    def partition_id_prefix_in_16_bit_encode
+    def legacy_partition_id_prefix_in_16_bit_encode
       # Prefix with t1 / t2 / t3 (`t` as in runner type, to allow us to easily detect how a token got prefixed).
       # This is needed in order to ensure that tokens have unique values across partitions
       # in the new ci_runners partitioned table.
-      "t#{self.class.runner_types[runner_type].to_s(16)}_"
+      "t#{partition_id.to_s(16)}_"
     end
 
     def prefix_for_new_and_legacy_runner
-      return partition_id_prefix_in_16_bit_encode if registration_token_registration_type?
+      return REGISTRATION_RUNNER_TOKEN_PREFIX if registration_token_registration_type?
 
-      "#{CREATED_RUNNER_TOKEN_PREFIX}#{partition_id_prefix_in_16_bit_encode}"
+      CREATED_RUNNER_TOKEN_PREFIX
     end
   end
 end

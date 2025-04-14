@@ -160,7 +160,7 @@ Before proceeding, review the [requirements](_index.md#requirements) for the ref
 
 ## Testing methodology
 
-The 100 RPS / 5k user reference architecture is designed to accommodate most common workflows. The [Framework](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/framework/) team regularly conducts smoke and performance testing against the following endpoint throughput targets:
+The 100 RPS / 5k user reference architecture is designed to accommodate most common workflows. The [GitLab Delivery: Framework](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/framework/) team regularly conducts smoke and performance testing against the following endpoint throughput targets:
 
 | Endpoint Type | Target Throughput |
 | ------------- | ----------------- |
@@ -171,6 +171,8 @@ The 100 RPS / 5k user reference architecture is designed to accommodate most com
 
 These targets are based on actual customer data reflecting total environmental loads for the specified user count, including CI pipelines and other workloads.
 
+For more information about our testing methodology, see the [validation and test results](_index.md#validation-and-test-results) section.
+
 ### Performance considerations
 
 You may need additional adjustments if your environment has:
@@ -180,10 +182,6 @@ You may need additional adjustments if your environment has:
 - Significant [additional workloads](_index.md#additional-workloads)
 
 In these cases, refer to [scaling an environment](_index.md#scaling-an-environment) for more information. If you believe these considerations may apply to you, contact us for additional guidance as required.
-
-### Testing tools and results
-
-We use the [GitLab Performance Tool (GPT)](https://gitlab.com/gitlab-org/quality/performance) for testing, which includes a publicly available dataset. You can view detailed test results on the [GPT wiki](https://gitlab.com/gitlab-org/quality/performance/-/wikis/Benchmarks/Latest). For more information about our testing methodology, see the [validation and test results](_index.md#validation-and-test-results) section.
 
 ### Load Balancer configuration
 
@@ -2147,7 +2145,7 @@ in the future.
 
 GitLab Runner returns job logs in chunks which the Linux package caches temporarily on disk in `/var/opt/gitlab/gitlab-ci/builds` by default, even when using consolidated object storage. With default configuration, this directory needs to be shared through NFS on any GitLab Rails and Sidekiq nodes.
 
-While sharing the job logs through NFS is supported, it's recommended to avoid the need to use NFS by enabling [incremental logging](../cicd/job_logs.md#incremental-logging-architecture) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
+While sharing the job logs through NFS is supported, it's recommended to avoid the need to use NFS by enabling [incremental logging](../cicd/job_logs.md#incremental-logging) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
 
 ## Configure advanced search
 

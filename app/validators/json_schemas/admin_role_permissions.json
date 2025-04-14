@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Permissions on admin roles",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "read_admin_cicd": {
+      "type": "boolean"
+    },
+    "read_admin_dashboard": {
+      "type": "boolean"
+    },
+    "read_admin_monitoring": {
+      "type": "boolean"
+    },
+    "read_admin_subscription": {
+      "type": "boolean"
+    },
+    "read_admin_users": {
+      "type": "boolean"
+    }
+  }
+}

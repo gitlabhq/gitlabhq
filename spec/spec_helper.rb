@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-if $LOADED_FEATURES.include?(File.expand_path('fast_spec_helper.rb', __dir__))
-  warn 'Detected fast_spec_helper is loaded first than spec_helper.'
+if defined?(FastSpecHelper)
+  warn 'Detected that fast_spec_helper was already loaded before spec_helper.'
   warn 'If running test files using both spec_helper and fast_spec_helper,'
   warn 'make sure spec_helper is loaded first, or run rspec with `-r spec_helper`.'
   abort 'Aborting...'
@@ -108,7 +108,8 @@ RSpec.configure do |config|
     # We fail early if we detect a PG::QueryCanceled error
     #
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/402915
-    if example.exception && example.exception.message.include?('PG::QueryCanceled')
+    exception = example.exception
+    if exception && exception.message.include?('PG::QueryCanceled')
       ENV['RSPEC_BYPASS_SYSTEM_EXIT_PROTECTION'] = 'true'
 
       warn
@@ -124,6 +125,11 @@ RSpec.configure do |config|
       warn "********************************************************************************************"
       warn "********************************************************************************************"
       warn "********************************************************************************************"
+      warn
+      warn exception.message
+      warn Gitlab::ExceptionLogFormatter.find_sql(exception)
+      warn
+      warn exception.backtrace.join("\n")
       warn
 
       exit 3
@@ -220,6 +226,7 @@ RSpec.configure do |config|
   config.include WorkItems::DataSync::AssociationsHelpers
 
   config.include_context 'when rendered has no HTML escapes', type: :view
+  config.include_context 'with STI disabled', type: :model
 
   include StubFeatureFlags
   include StubSnowplow
@@ -348,6 +355,14 @@ RSpec.configure do |config|
       # Since we are very early in the Vue migration, there isn't much value in testing when the feature flag is enabled
       # Please see https://gitlab.com/gitlab-org/gitlab/-/issues/523493 for tracking revisiting this.
       stub_feature_flags(your_work_groups_vue: false)
+
+      # New issue page can cause tests to fail if they link to issue or issue list page
+      # Default false while we make it compatible
+      stub_feature_flags(work_item_view_for_issues: false)
+
+      # New approval rules cause tests to fail
+      # Default false while we make them compatible
+      stub_feature_flags(v2_approval_rules: false)
     else
       unstub_all_feature_flags
     end

@@ -228,11 +228,7 @@ label {
 
 .add-issuable-form-input-wrapper {
   &.focus {
-    border-color: var(--gray-700, $gray-700);
-
-    input {
-      box-shadow: none;
-    }
+    border-color: var(--gl-control-border-color-focus);
   }
 
   .gl-show-field-errors &.form-control:not(textarea) {

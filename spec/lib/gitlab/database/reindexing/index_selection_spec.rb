@@ -77,7 +77,7 @@ RSpec.describe Gitlab::Database::Reindexing::IndexSelection, feature_category: :
     end
   end
 
-  context 'with restricted tables' do
+  context 'with restricted tables for saas', :saas do
     let!(:ci_builds) do
       create(
         :postgres_index_bloat_estimate,

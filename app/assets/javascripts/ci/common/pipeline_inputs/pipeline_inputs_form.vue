@@ -3,9 +3,11 @@ import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { reportToSentry } from '~/ci/utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import InputsTableSkeletonLoader from './inputs_table_skeleton_loader.vue';
-import PipelineInputsTable from './pipeline_inputs_table.vue';
+import InputsTableSkeletonLoader from './pipeline_inputs_table/inputs_table_skeleton_loader.vue';
+import PipelineInputsTable from './pipeline_inputs_table/pipeline_inputs_table.vue';
 import getPipelineInputsQuery from './graphql/queries/pipeline_creation_inputs.query.graphql';
+
+const ARRAY_TYPE = 'ARRAY';
 
 export default {
   name: 'PipelineInputsForm',
@@ -19,6 +21,11 @@ export default {
     queryRef: {
       type: String,
       required: true,
+    },
+    savedInputs: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
   },
   emits: ['update-inputs'],
@@ -36,8 +43,20 @@ export default {
           ref: this.queryRef,
         };
       },
+      skip() {
+        return !this.projectPath;
+      },
       update({ project }) {
-        return project?.ciPipelineCreationInputs || [];
+        const queryInputs = project?.ciPipelineCreationInputs || [];
+        const savedInputsMap = Object.fromEntries(
+          this.savedInputs.map(({ name, value }) => [name, value]),
+        );
+
+        // if there are any saved inputs, overwrite the values
+        return queryInputs.map((input) => ({
+          ...input,
+          default: savedInputsMap[input.name] ?? input.default,
+        }));
       },
       error(error) {
         createAlert({
@@ -61,10 +80,21 @@ export default {
         input.name === updatedInput.name ? updatedInput : input,
       );
 
-      const nameValuePairs = this.inputs.map((input) => ({
-        name: input.name,
-        value: input.default,
-      }));
+      const nameValuePairs = this.inputs.map((input) => {
+        let value = input.default;
+
+        // Convert string to array for ARRAY type inputs
+        if (input.type === ARRAY_TYPE && typeof value === 'string' && value) {
+          try {
+            value = JSON.parse(value);
+            if (!Array.isArray(value)) value = [value];
+          } catch (e) {
+            value = value.split(',').map((item) => item.trim());
+          }
+        }
+
+        return { name: input.name, value };
+      });
 
       this.$emit('update-inputs', nameValuePairs);
     },
@@ -83,7 +113,7 @@ export default {
     <template v-else>
       <pipeline-inputs-table v-if="hasInputs" :inputs="inputs" @update="handleInputsUpdated" />
       <div v-else class="gl-flex gl-justify-center gl-text-subtle">
-        {{ __('There are no inputs for this configuration.') }}
+        {{ s__('Pipelines|There are no inputs for this configuration.') }}
       </div>
     </template>
   </crud-component>

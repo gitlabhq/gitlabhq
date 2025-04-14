@@ -1,11 +1,14 @@
 <script>
 import { GlTooltipDirective, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
+import { InternalEvents } from '~/tracking';
+import { HISTORY_BUTTON_CLICK } from '~/tracking/constants';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
-import { sprintf, s__ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import SignatureBadge from '~/commit/components/signature_badge.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import pipelineCiStatusUpdatedSubscription from '~/graphql_shared/subscriptions/pipeline_ci_status_updated.subscription.graphql';
 import getRefMixin from '../mixins/get_ref';
 import { getRefType } from '../utils/ref_type';
 import projectPathQuery from '../queries/project_path.query.graphql';
@@ -14,13 +17,16 @@ import { FORK_UPDATED_EVENT } from '../constants';
 import CommitInfo from './commit_info.vue';
 import CollapsibleCommitInfo from './collapsible_commit_info.vue';
 
+const trackingMixin = InternalEvents.mixin();
+const POLL_INTERVAL = 30000;
+
 export default {
   components: {
+    CiIcon,
     CommitInfo,
     CollapsibleCommitInfo,
     ClipboardButton,
     SignatureBadge,
-    CiIcon,
     GlButtonGroup,
     GlButton,
     GlLoadingIcon,
@@ -29,7 +35,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [getRefMixin],
+  mixins: [getRefMixin, glFeatureFlagMixin(), trackingMixin],
   apollo: {
     projectPath: {
       query: projectPathQuery,
@@ -45,7 +51,7 @@ export default {
         };
       },
       update: (data) => {
-        const lastCommit = data.project?.repository?.paginatedTree?.nodes[0]?.lastCommit;
+        const lastCommit = data.project?.repository?.lastCommit ?? {};
         const pipelines = lastCommit?.pipelines?.edges;
 
         return {
@@ -55,6 +61,41 @@ export default {
       },
       error(error) {
         throw error;
+      },
+      pollInterval: POLL_INTERVAL,
+      subscribeToMore: {
+        document() {
+          return pipelineCiStatusUpdatedSubscription;
+        },
+        variables() {
+          return {
+            pipelineId: this.commit?.pipeline?.id,
+          };
+        },
+        skip() {
+          return !this.showRealTimePipelineStatus || !this.commit?.pipeline?.id;
+        },
+        updateQuery(
+          previousData,
+          {
+            subscriptionData: {
+              data: { ciPipelineStatusUpdated },
+            },
+          },
+        ) {
+          if (ciPipelineStatusUpdated) {
+            const updatedData = structuredClone(previousData);
+            const pipeline =
+              updatedData.project?.repository?.paginatedTree?.nodes[0]?.lastCommit?.pipelines
+                ?.edges[0]?.node || {};
+
+            pipeline.detailedStatus = ciPipelineStatusUpdated.detailedStatus;
+
+            return updatedData;
+          }
+
+          return previousData;
+        },
       },
     },
   },
@@ -82,16 +123,14 @@ export default {
     };
   },
   computed: {
-    statusTitle() {
-      return sprintf(s__('PipelineStatusTooltip|Pipeline: %{ciStatus}'), {
-        ciStatus: this.commit?.pipeline?.detailedStatus?.text,
-      });
-    },
     isLoading() {
       return this.$apollo.queries.commit.loading;
     },
     showCommitId() {
       return this.commit?.sha?.substr(0, 8);
+    },
+    showRealTimePipelineStatus() {
+      return this.glFeatures.ciPipelineStatusRealtime;
     },
   },
   watch: {
@@ -109,6 +148,9 @@ export default {
     refetchLastCommit() {
       this.$apollo.queries.commit.refetch();
     },
+    handleHistoryClick() {
+      this.trackEvent(HISTORY_BUTTON_CLICK);
+    },
   },
 };
 </script>
@@ -120,12 +162,8 @@ export default {
     <commit-info :commit="commit" class="gl-hidden sm:gl-flex">
       <div class="commit-actions gl-my-2 gl-flex gl-items-start gl-gap-3">
         <signature-badge v-if="commit.signature" :signature="commit.signature" class="gl-h-7" />
-        <div v-if="commit.pipeline" class="gl-ml-5 gl-flex gl-h-7 gl-items-center">
-          <ci-icon
-            :status="commit.pipeline.detailedStatus"
-            :aria-label="statusTitle"
-            class="js-commit-pipeline gl-mr-2"
-          />
+        <div v-if="commit.pipeline.id" class="gl-ml-5 gl-flex gl-h-7 gl-items-center">
+          <ci-icon :status="commit.pipeline.detailedStatus" class="gl-mr-2" />
         </div>
         <gl-button-group class="js-commit-sha-group gl-ml-4 gl-flex gl-items-center">
           <gl-button
@@ -145,6 +183,7 @@ export default {
           data-testid="last-commit-history"
           :href="historyUrl"
           class="!gl-ml-0"
+          @click="handleHistoryClick"
         >
           {{ __('History') }}
         </gl-button>

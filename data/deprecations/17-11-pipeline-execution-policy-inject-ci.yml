@@ -1,0 +1,19 @@
+- title: "Pipeline execution policies `inject_ci` strategy replaced by `inject_policy`"
+  announcement_milestone: "17.11"
+  end_of_support_milestone: "19.0"
+  removal_milestone: "19.0"
+  breaking_change: true
+  reporter: g.hickman
+  stage: security_risk_management
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/475152
+  scope: group, project
+  impact: low
+  resolution_role: Owner, Maintainer
+  manual_task: true
+  tiers: [ultimate]
+  body: |
+    With the introduction of [custom stages](https://gitlab.com/gitlab-org/gitlab/-/issues/475152) in pipeline execution policies (available in GitLab 17.9), we've introduced the configuration option `inject_policy` to replace the deprecated `inject_ci`.
+
+    This new strategy allows for a graceful rollout of the custom stages functionality for users with existing pipeline execution policies that use the `inject_ci` strategy.
+
+    To prepare for the 19.0 removal, update all pipeline execution policies that use `inject_ci` to use `inject_policy` instead.

@@ -324,7 +324,7 @@ To create a thread:
 - Resolvable threads for issues [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.4.
 - Resolvable threads for issues [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.7. Feature flag `resolvable_issue_threads` removed.
 - Resolvable threads for tasks, objectives, and key results [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/458818) in GitLab 17.3.
-- Resolvable threads for epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458818) in GitLab 17.5. Your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md).
+- Resolvable threads for epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458818) in GitLab 17.5. [The new look for epics](../group/epics/epic_work_items.md) must be enabled.
 
 {{< /history >}}
 
@@ -332,7 +332,7 @@ You can resolve a thread when you want to finish a conversation.
 
 Prerequisites:
 
-- You must be in an epic, issue, task, objective, key result, or merge request. For epics, your administrator must have [enabled the new look for epics](../group/epics/epic_work_items.md).
+- You must be in an epic, issue, task, objective, key result, or merge request. For epics, [the new look for epics](../group/epics/epic_work_items.md) must be enabled.
 - You must have at least the Developer role or be the author of the issue or merge request.
 
 To resolve a thread:
@@ -353,10 +353,12 @@ such as:
 
 {{< details >}}
 
-- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Tier: Ultimate
+- Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - LLM for GitLab.com: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- LLM for Amazon Q: Amazon Q Developer
 
 {{< /details >}}
 

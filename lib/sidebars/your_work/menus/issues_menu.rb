@@ -33,14 +33,13 @@ module Sidebars
 
         override :has_pill?
         def has_pill?
-          pill_count > 0
+          true
         end
 
-        override :pill_count
-        def pill_count
-          context.current_user.assigned_open_issues_count
+        override :pill_count_field
+        def pill_count_field
+          "assigned_issues"
         end
-        strong_memoize_attr :pill_count
       end
     end
   end

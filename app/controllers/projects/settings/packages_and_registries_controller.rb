@@ -8,7 +8,7 @@ module Projects
       before_action :authorize_admin_project!
       before_action :packages_and_registries_settings_enabled!
       before_action :set_feature_flag_packages_protected_packages, only: :show
-      before_action :set_feature_flag_container_registry_protected_tags, only: :show
+      before_action :set_feature_flag_container_registry_protected_containers_delete, only: :show
 
       feature_category :package_registry
       urgency :low
@@ -34,11 +34,11 @@ module Projects
 
       def set_feature_flag_packages_protected_packages
         push_frontend_feature_flag(:packages_protected_packages_conan, project)
-        push_frontend_feature_flag(:packages_protected_packages_maven, project)
+        push_frontend_feature_flag(:packages_protected_packages_delete, project)
       end
 
-      def set_feature_flag_container_registry_protected_tags
-        push_frontend_feature_flag(:container_registry_protected_tags, project)
+      def set_feature_flag_container_registry_protected_containers_delete
+        push_frontend_feature_flag(:container_registry_protected_containers_delete, project)
       end
     end
   end

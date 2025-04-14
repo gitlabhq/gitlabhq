@@ -10,13 +10,18 @@ module Ci
     before_validation :assign_project_id, on: :create
 
     validates :name, presence: true, length: { maximum: 255 }, uniqueness: { scope: :pipeline_schedule_id }
-    validates :value, presence: true
 
     # We validate the size of the serialized value because encryption is expensive.
     # The maximum permitted size is equivalent to the maximum size permitted for an interpolated input value.
     validate :value_does_not_exceed_max_size
 
     encrypts :value
+
+    def self.pluck_identifiers(pipeline_schedule_id, inputs_names)
+      where(pipeline_schedule_id: pipeline_schedule_id, name: inputs_names)
+        .limit(PipelineSchedule::MAX_INPUTS)
+        .pluck(:id, :name)
+    end
 
     private
 

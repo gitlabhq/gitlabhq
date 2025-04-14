@@ -1,0 +1,4 @@
+<%= _('Hi %{username}!') % { username: sanitize_name(@user.name) } %>
+<%= _('Your group %{group_name} has been marked for deletion and will be removed in %{days}.') % { group_name: @group.full_name, days: pluralize((@deletion_due_in_days / 1.day).to_i, _('day')) } %>
+<%= _('View your group: %{group_url}') % { group_url: group_url(@group) } %>
+<%= _('If this was a mistake, you can retain the group before %{deletion_date}: %{retention_url}') % { retention_url: url_for(controller: 'groups', action: 'edit', id: @group.full_path, anchor: 'js-advanced-settings', only_path: false), deletion_date: @deletion_date } %>

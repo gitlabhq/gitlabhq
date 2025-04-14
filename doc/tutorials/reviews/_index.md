@@ -48,7 +48,7 @@ To review a merge request:
 Merge requests have a secondary menu with four options. You use these areas of a
 merge request at different times during your review:
 
-![Screenshot of the top area of a merge request, with four main tabs](img/top_bar_v17_0.png)
+![Merge request with the Overview tab selected, showing title, requester, and status, alongside the Commits, Pipelines, and Changes tabs](img/top_bar_v17_0.png)
 
 - **Overview**: The merge request's description, a report on its current mergeability,
   an **Activity** area with comments, and a sidebar with more information.
@@ -89,7 +89,7 @@ Below the description, check the merge request widget to understand the
 current status of this work. This example shows a merge widget for a merge request
 that is missing approvals, is still in draft mode, and has unresolved discussion threads:
 
-![Merge widget that has multiple problems preventing merge](img/widget_v17_0.png)
+![Merge widget showing blocked status with three failed checks: missing approvals, draft mode, and unresolved discussions](img/widget_v17_0.png)
 
 - **Does it cross-link to an issue?** Check the description and merge widget
   for links to other issues. Some merge requests are straightforward, but
@@ -122,7 +122,7 @@ more information, scan through the issue descriptions.
 
   In this example, even if the exact labels are unfamiliar to you, you can determine this merge request is about a database bug:
 
-  ![Example of database-related labels in a merge request](img/labels_v17_0.png)
+  ![The Labels section of a merge request, showing 10 labels in different colors, including "database" and "type: bug"](img/labels_v17_0.png)
 
 - **Who are the reviewers?** Scan the names in the reviewer list. Do they match
   the type of work you'd expect, based on the description and (optionally) the labels?
@@ -134,7 +134,7 @@ more information, scan through the issue descriptions.
   In this example, both Thomas and Nick are reviewers. Thomas has not yet reviewed
   ({{< icon name="dotted-circle" >}}) the merge request. Nick has reviewed and approved ({{< icon name="check-circle" >}}):
 
-  ![f](img/reviewer_list_v17_0.png)
+  ![The Reviewers section of a merge request, listing 2 reviewers](img/reviewer_list_v17_0.png)
 
 ### Check the comments
 
@@ -167,7 +167,7 @@ When you first open the **Changes** page, focus on the broader details first:
   the list of changed files. Are you familiar with these files? What part of the
   codebase are these files in?
 
-  ![Example of a file tree showing two changed files](img/file_tree_v17_0.png)
+  ![File browser showing 2 changed files with their locations and line change indicators](img/file_tree_v17_0.png)
 
 - **Does the file list match your expectations?** You've already read the description of
   the merge request. Are these the files you'd expect to see changed for this kind
@@ -248,7 +248,7 @@ Go to the **Pipelines** tab of the merge request, and verify the pipeline status
 Approve the merge request only if the pipeline has succeeded.
 In this example, multiple jobs have failed:
 
-![Widget showing a failed pipeline, with passing jobs in green and failed jobs in red](img/failed_pipeline_v17_0.png)
+![Pipeline status widget displaying successful and failed jobs in a merge result pipeline](img/failed_pipeline_v17_0.png)
 
 - **Did all the expected tests run?** Make sure the pipeline isn't just green, but complete.
 - **Did any tests fail?** Expand **Failed jobs** to see which tests, if any, failed.
@@ -317,7 +317,7 @@ First, write your comments you want to attach to specific lines or files:
    [select multiple lines](../../user/project/merge_requests/reviews/suggestions.md#multi-line-suggestions),
    or select an entire file to comment on:
 
-   ![Comment on a single line, or multiple lines](../../user/project/merge_requests/reviews/img/comment_on_any_diff_line_v16_6.png)
+   ![Code diff interface showing a speech bubble button next to a line number with a tooltip for adding a comment to one or multiple lines](../../user/project/merge_requests/reviews/img/comment_on_any_diff_line_v16_6.png)
 
 1. In the text area, write your first comment. To keep your comments private until
    the end of your review, select **Start a review** below your comment.

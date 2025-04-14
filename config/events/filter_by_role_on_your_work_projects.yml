@@ -1,0 +1,20 @@
+---
+description: Use role filter on Your work > Projects
+internal_events: true
+action: filter_by_role_on_your_work_projects
+identifiers:
+- user
+additional_properties:
+  label:
+    description: Tab name (e.g. "Contributed")
+  property:
+    description: Role
+product_group: organizations
+product_categories:
+- groups_and_projects
+milestone: '17.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186021
+tiers:
+- free
+- premium
+- ultimate

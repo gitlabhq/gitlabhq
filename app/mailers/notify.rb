@@ -94,35 +94,6 @@ class Notify < ApplicationMailer
     address.format
   end
 
-  # Formats arguments into a String suitable for use as an email subject
-  #
-  # extra - Extra Strings to be inserted into the subject
-  #
-  # Examples
-  #
-  #   >> subject('Lorem ipsum')
-  #   => "Lorem ipsum"
-  #
-  #   # Automatically inserts Project name when @project is set
-  #   >> @project = Project.last
-  #   => #<Project id: 1, name: "Ruby on Rails", path: "ruby_on_rails", ...>
-  #   >> subject('Lorem ipsum')
-  #   => "Ruby on Rails | Lorem ipsum "
-  #
-  #   # Accepts multiple arguments
-  #   >> subject('Lorem ipsum', 'Dolor sit amet')
-  #   => "Lorem ipsum | Dolor sit amet"
-  def subject(*extra)
-    subject = []
-
-    subject << @project.name if @project
-    subject << @group.name if @group
-    subject << @namespace.name if @namespace && !@project
-    subject.concat(extra) if extra.present?
-
-    subject_with_suffix(subject)
-  end
-
   # Return a string suitable for inclusion in the 'Message-Id' mail header.
   #
   # The message-id is generated from the unique URL to a model object.

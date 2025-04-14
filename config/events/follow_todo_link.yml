@@ -7,6 +7,8 @@ identifiers:
 additional_properties:
   label:
     description: Type of the todo interacted with (e.g. Merge Request, Issue, etc.)
+  property:
+    description: Type of todo action (e.g. ssh_key_expired, review_submitted, etc.)
 product_group: personal_productivity
 milestone: '17.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170590

@@ -25,6 +25,10 @@ module Types
       description: 'Use work item view instead of legacy issue view.',
       null: true
 
+    field :merge_request_dashboard_list_type, Types::MergeRequests::DashboardListTypeEnum,
+      description: 'Merge request dashboard list rendering type.',
+      null: true
+
     field :projects_sort,
       Types::Projects::ProjectSortEnum,
       description: 'Sort order for projects.',
@@ -59,6 +63,15 @@ module Types
 
     def organization_groups_projects_sort
       user_preference.organization_groups_projects_sort&.to_sym
+    end
+
+    def extensions_marketplace_opt_in_status
+      user = user_preference.user
+
+      ::WebIde::ExtensionMarketplaceOptIn.opt_in_status(
+        user: user,
+        marketplace_home_url: ::WebIde::ExtensionMarketplace.marketplace_home_url(user: user)
+      )
     end
   end
 end

@@ -26,7 +26,7 @@ const initSettingsApp = (el, pinia) => {
         'viewType',
         'fileByFileMode',
         'singleFileMode',
-        'diffStats',
+        'diffsStats',
       ]),
     },
     methods: {
@@ -40,9 +40,9 @@ const initSettingsApp = (el, pinia) => {
           diffViewType: this.viewType,
           viewDiffsFileByFile: this.singleFileMode,
           isLoading: this.isLoading,
-          addedLines: this.diffStats?.addedLines,
-          removedLines: this.diffStats?.removedLines,
-          diffsCount: this.diffStats?.diffsCount,
+          addedLines: this.diffsStats?.addedLines,
+          removedLines: this.diffsStats?.removedLines,
+          diffsCount: this.diffsStats?.diffsCount,
         },
         on: {
           updateDiffViewType: this.updateViewType,

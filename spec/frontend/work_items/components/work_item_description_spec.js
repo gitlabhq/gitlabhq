@@ -21,7 +21,7 @@ import {
   updateWorkItemMutationResponse,
   workItemByIidResponseFactory,
   workItemQueryResponse,
-} from '../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 jest.mock('~/lib/utils/autosave');

@@ -6,7 +6,9 @@ class AddAncestorsColumnToSbomOccurrences < Gitlab::Database::Migration[2.2]
   enable_lock_retries!
 
   def up
+    # rubocop:disable Migration/PreventAddingColumns -- large tables
     add_column :sbom_occurrences, :ancestors, :jsonb, default: [], null: false
+    # rubocop:enable Migration/PreventAddingColumns
   end
 
   def down

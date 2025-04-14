@@ -1,18 +1,17 @@
+spec:
+  inputs:
+    pipeline-type:
+      type: string
+      default: external
+      options: ['internal', 'external']
+      description: Pipeline type, where 'external' represents pipeline directly included in other project pipelines without access to repo code
+---
+
 include:
   - local: .gitlab/ci/qa-common/rules.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/omnibus.gitlab-ci.yml
-  # Variable $GITLAB_PROJECT_PIPELINE is set to a literal value by dynamically generated pipeline due to an issue
-  # where include is not supporting variables in dynamically generated pipelines: https://gitlab.com/gitlab-org/gitlab/-/issues/378717
-  - local: .gitlab/ci/test-on-omnibus/internal.gitlab-ci.yml
-    rules:
-      - if: '$GITLAB_PROJECT_PIPELINE'
-  # External e2e test job definitions are required for project including omnibus tests directly without access to gitlab repo code
-  - local: .gitlab/ci/test-on-omnibus/external.gitlab-ci.yml
-    rules:
-      - if: '$GITLAB_PROJECT_PIPELINE'
-        when: never
-      - when: always
+  - local: .gitlab/ci/test-on-omnibus/$[[ inputs.pipeline-type ]].gitlab-ci.yml
 
 variables:
   QA_PARALLEL_PROCESSES: 6

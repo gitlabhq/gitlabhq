@@ -5,6 +5,8 @@ module Ci
     extend ActiveSupport::Concern
 
     included do
+      include Gitlab::EncryptedAttribute
+
       enum variable_type: {
         env_var: 1,
         file: 2
@@ -23,7 +25,7 @@ module Ci
       attr_encrypted :value,
         mode: :per_attribute_iv_and_salt,
         insecure_mode: true,
-        key: Settings.attr_encrypted_db_key_base,
+        key: :db_key_base,
         algorithm: 'aes-256-cbc'
 
       def key=(new_key)

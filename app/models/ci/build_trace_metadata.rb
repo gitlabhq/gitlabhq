@@ -68,6 +68,12 @@ module Ci
         checksum == remote_checksum
     end
 
+    def successfully_archived?
+      return false unless archived_at
+
+      remote_checksum.nil? || remote_checksum_valid?
+    end
+
     private
 
     def backoff

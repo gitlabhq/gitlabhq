@@ -364,7 +364,7 @@ describe('CE ServiceDeskListApp', () => {
         return waitForPromises();
       });
 
-      it('does not render My-Reaction or Confidential tokens', () => {
+      it('does not render My reaction or Confidential tokens', () => {
         expect(findIssuableList().props('searchTokens')).not.toMatchObject([
           { type: TOKEN_TYPE_AUTHOR, preloadedUsers: [mockCurrentUser] },
           { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers: [mockCurrentUser] },

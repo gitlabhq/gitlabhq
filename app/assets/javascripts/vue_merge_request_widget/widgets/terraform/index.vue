@@ -85,23 +85,14 @@ export default {
         .then((res) => {
           const reports = Object.keys(res.data).map((key) => {
             const report = res.data[key];
-            const creates = Number(report.create);
-            const updates = Number(report.update);
-            const deletes = Number(report.delete);
 
-            // The sum of NaN plus anything is NaN, so if any of these
-            // didn't parse via the Number() calls above, we'll get
-            // infinity here, indicating a failed report which we want
-            // to sort to the top to maximise visibility.
-            const sortIndex = creates + updates + deletes || Number.POSITIVE_INFINITY;
+            const isValid =
+              report.create + report.update + report.delete >= 0 && !report.tf_report_error;
+            const sortIndex = Number(report.create) + Number(report.update) + Number(report.delete);
 
-            // Replace the string versions of the create/update/delete
-            // fields to avoid another case later
             return {
               ...report,
-              create: creates,
-              update: updates,
-              delete: deletes,
+              isValid,
               sortIndex,
             };
           });
@@ -130,8 +121,6 @@ export default {
         });
     },
     createReportRow(report, iconName) {
-      const validPlanValues = report.create + report.update + report.delete >= 0;
-
       const actions = [];
 
       let title;
@@ -147,7 +136,7 @@ export default {
         actions.push(action);
       }
 
-      if (validPlanValues) {
+      if (report.isValid) {
         if (report.job_name) {
           title = sprintf(
             this.$options.i18n.namedReportGenerated,
@@ -193,10 +182,10 @@ export default {
       const invalid = [];
 
       reports.forEach((report) => {
-        if (report.tf_report_error) {
-          invalid.push(this.createReportRow(report, EXTENSION_ICONS.error));
-        } else {
+        if (report.isValid) {
           valid.push(this.createReportRow(report, EXTENSION_ICONS.success));
+        } else {
+          invalid.push(this.createReportRow(report, EXTENSION_ICONS.error));
         }
       });
 

@@ -8,11 +8,11 @@ RSpec.describe Projects::PagesHelper do
 
   before do
     stub_config(pages: {
-                  access_control: true,
-                  external_http: true,
-                  external_https: true,
-                  host: "new.domain.com"
-                })
+      access_control: true,
+      external_http: true,
+      external_https: true,
+      host: "new.domain.com"
+    })
   end
 
   context 'when the user have permission' do

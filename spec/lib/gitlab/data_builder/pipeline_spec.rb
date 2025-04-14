@@ -51,7 +51,7 @@ RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_inte
         username: user.username,
         avatar_url: user.avatar_url(only_path: false),
         email: user.public_email
-        })
+      })
       expect(data[:source_pipeline]).to be_nil
     end
 

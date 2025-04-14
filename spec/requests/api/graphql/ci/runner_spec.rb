@@ -549,17 +549,15 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
 
   describe 'for group runner request' do
     let(:query) do
-      %(
-        query {
-          runner(id: "#{active_group_runner.to_global_id}") {
-            groups {
-              nodes {
-                id
-              }
-            }
-          }
-        }
-      )
+      group_path = query_graphql_path(%i[groups nodes], all_graphql_fields_for('GroupInterface'))
+
+      wrap_fields(query_graphql_path(query_path, group_path))
+    end
+
+    let(:query_path) do
+      [
+        [:runner, { id: active_group_runner.to_global_id }]
+      ]
     end
 
     it 'retrieves groups field with expected value' do

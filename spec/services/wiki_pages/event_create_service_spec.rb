@@ -32,7 +32,7 @@ RSpec.describe WikiPages::EventCreateService, feature_category: :wiki do
       end
 
       it 'does not create an event' do
-        expect { response }.not_to change(Event, :count)
+        expect { response }.not_to change { Event.count }
       end
     end
 
@@ -53,7 +53,7 @@ RSpec.describe WikiPages::EventCreateService, feature_category: :wiki do
     end
 
     it 'creates a wiki page event' do
-      expect { response }.to change(Event, :count).by(1)
+      expect { response }.to change { Event.count }.by(1)
     end
 
     it 'returns an event in the payload' do

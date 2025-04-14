@@ -29,7 +29,7 @@ Administrators can monitor usage of these API clients by
 
 ## Go
 
-- [`go-gitlab`](https://github.com/xanzy/go-gitlab)
+- GitLab [`client-go`](https://gitlab.com/gitlab-org/api/client-go)
 
 ## Haskell
 

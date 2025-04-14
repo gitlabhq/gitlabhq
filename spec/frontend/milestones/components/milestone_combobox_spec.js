@@ -230,7 +230,7 @@ describe('Milestone combobox component', () => {
           const dropdownItems = findDropdownItems();
 
           projectMilestones.forEach((milestone) => {
-            expect(dropdownItems.filter((x) => x.text() === milestone.title).exists()).toBe(true);
+            expect(dropdownItems.filter((x) => x.text() === milestone.title)).toHaveLength(1);
           });
         });
       });
@@ -319,7 +319,7 @@ describe('Milestone combobox component', () => {
           const dropdownItems = findDropdownItems();
 
           groupMilestones.forEach((milestone) => {
-            expect(dropdownItems.filter((x) => x.text() === milestone.title).exists()).toBe(true);
+            expect(dropdownItems.filter((x) => x.text() === milestone.title)).toHaveLength(1);
           });
         });
       });

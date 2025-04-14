@@ -8,6 +8,7 @@ module Types
       authorize :read_note
 
       implements Types::Notes::BaseDiscussionInterface
+      expose_permissions ::Types::PermissionTypes::Notes::Discussion
 
       field :noteable, Types::NoteableType, null: true,
         description: 'Object which the discussion belongs to.'

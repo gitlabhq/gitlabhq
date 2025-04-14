@@ -46,8 +46,8 @@ RSpec.describe WorkItems::DataSync::Widgets::Hierarchy, feature_category: :team_
 
           # these are the newly copied child records
           new_children = target_work_item.reload.work_item_children.where(moved_to_id: nil)
-          # these are the originally re-linked child records from source work item that are closed upon move.
-          moved_children = target_work_item.reload.work_item_children.where.not(moved_to_id: nil)
+          # these are the originally linked child records on source work item that are closed upon move.
+          moved_children = work_item.reload.work_item_children.where.not(moved_to_id: nil)
 
           expect(new_children.size).to eq(2)
           expect(new_children.map(&:title)).to match_array(expected_child_items_titles)
@@ -62,9 +62,6 @@ RSpec.describe WorkItems::DataSync::Widgets::Hierarchy, feature_category: :team_
           expect(moved_children.map(&:moved_to_id)).to match_array(new_children.map(&:id))
           # new target work item and its 2 child tasks are located within new namespace
           expect(target_work_item.namespace.work_items.count).to eq(3)
-
-          # child items are relinked in `after_save_commit`
-          expect(work_item.reload.work_item_children).to be_empty
         end
       end
 

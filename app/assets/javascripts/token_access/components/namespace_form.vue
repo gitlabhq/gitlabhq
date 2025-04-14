@@ -1,15 +1,13 @@
 <script>
 import { GlFormGroup, GlButton, GlFormInput } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import addNamespaceMutation from '../graphql/mutations/inbound_add_group_or_project_ci_job_token_scope.mutation.graphql';
 import editNamespaceMutation from '../graphql/mutations/edit_namespace_job_token_scope.mutation.graphql';
 import PoliciesSelector from './policies_selector.vue';
 
 export default {
   components: { GlFormGroup, GlButton, GlFormInput, PoliciesSelector },
-  mixins: [glFeatureFlagsMixin()],
-  inject: ['fullPath'],
+  inject: ['fullPath', 'isJobTokenPoliciesEnabled'],
   props: {
     namespace: {
       type: Object,
@@ -55,7 +53,7 @@ export default {
 
         const variables = { projectPath: this.fullPath, targetPath: this.targetPath };
 
-        if (this.glFeatures.addPoliciesToCiJobToken) {
+        if (this.isJobTokenPoliciesEnabled) {
           variables.defaultPermissions = this.defaultPermissions;
           variables.jobTokenPolicies = this.defaultPermissions ? [] : this.jobTokenPolicies;
         }
@@ -106,7 +104,7 @@ export default {
     </gl-form-group>
 
     <policies-selector
-      v-if="glFeatures.addPoliciesToCiJobToken"
+      v-if="isJobTokenPoliciesEnabled"
       :is-default-permissions-selected="defaultPermissions"
       :job-token-policies="jobTokenPolicies"
       :disabled="isSaving"

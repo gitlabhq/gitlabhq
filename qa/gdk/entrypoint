@@ -33,6 +33,19 @@ else
     tail -f "$logfile" &>"${CI_BUILDS_DIR}"/$(basename "$logfile") &
   done
 
+  # Set the host IP as a trusted proxy, because we can be running
+  # HTTP router on the same host, which is acting as a reverse proxy,
+  # and if we're not trusting it it would be considered the client IP,
+  # which will be wrong. See:
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/499657
+  HOST_IP=$(getent hosts gdk.test | cut -d' ' -f1)
+  ruby -ryaml -e "
+    config_file = '${HOME}/gitlab-development-kit/gitlab/config/gitlab.yml'
+    config = YAML.load_file(config_file, aliases: true)
+    (config['development']['gitlab']['trusted_proxies'] ||= []) << '${HOST_IP}'
+    File.write(config_file, YAML.dump(config))
+  "
+
   gdk start
 
   exec "$@"

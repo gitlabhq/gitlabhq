@@ -1,4 +1,4 @@
-- page_title _('DevOps Reports')
+- page_title _('DevOps adoption')
 - add_page_specific_style 'page_bundles/dev_ops_reports'
 
 %div{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_dev_ops_reports_pageload' } }
@@ -6,4 +6,3 @@
     = render_if_exists 'admin/dev_ops_report/devops_tabs'
   - else
     = render 'score'
-

@@ -11,7 +11,6 @@ InternalAffairs/NodeTypePredicate:
     - 'rubocop/cop/migration/add_reference.rb'
     - 'rubocop/cop/migration/background_migration_missing_active_concern.rb'
     - 'rubocop/cop/migration/datetime.rb'
-    - 'rubocop/cop/migration/prevent_adding_attr_encrypted_columns.rb'
     - 'rubocop/cop/migration/prevent_adding_columns.rb'
     - 'rubocop/cop/migration/prevent_strings.rb'
     - 'rubocop/cop/migration/refer_to_index_by_name.rb'

@@ -176,7 +176,7 @@ describe('GlobalSearchSidebarLabelFilter', () => {
       it('sends tracking information when checkbox is selected', () => {
         expect(trackingSpy).toHaveBeenCalledWith(
           'search:agreggations:label:select',
-          'Label Checkbox',
+          'LabelCheckbox',
           {
             label: 'Label Key',
             property: mockValueForSelecting,

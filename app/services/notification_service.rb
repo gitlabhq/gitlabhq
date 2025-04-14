@@ -788,6 +788,32 @@ class NotificationService
     mailer.new_achievement_email(user, achievement)
   end
 
+  def project_scheduled_for_deletion(project)
+    return if project.emails_disabled?
+
+    recipients = owners_without_invites(project)
+
+    recipients.each do |recipient|
+      mailer.project_scheduled_for_deletion(
+        recipient.id,
+        project.id
+      ).deliver_later
+    end
+  end
+
+  def group_scheduled_for_deletion(group)
+    return if group.emails_disabled?
+
+    recipients = group.members.active_without_invites_and_requests.owners.map(&:user)
+
+    recipients.each do |recipient|
+      mailer.group_scheduled_for_deletion(
+        recipient.id,
+        group.id
+      ).deliver_later
+    end
+  end
+
   protected
 
   def new_resource_email(target, current_user, method)
@@ -868,6 +894,16 @@ class NotificationService
   end
 
   private
+
+  def owners_without_invites(project)
+    recipients = project.members.active_without_invites_and_requests.owners
+
+    if recipients.empty? && project.group
+      recipients = project.group.members.active_without_invites_and_requests.owners
+    end
+
+    recipients.map(&:user)
+  end
 
   def log_info(message_text, user)
     Gitlab::AppLogger.info(
@@ -971,11 +1007,9 @@ class NotificationService
   end
 
   def send_bot_rat_expiry_to_inherited?(group_or_project)
-    root_ancestor = group_or_project.root_ancestor
     namespace = group_or_project.is_a?(Namespace) ? group_or_project : group_or_project.namespace
 
-    Feature.enabled?(:pat_expiry_inherited_members_notification, root_ancestor) &&
-      namespace.resource_access_token_notify_inherited?
+    namespace.resource_access_token_notify_inherited?
   end
 
   def notifiable?(...)

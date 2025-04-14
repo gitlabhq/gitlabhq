@@ -28,8 +28,6 @@ Custom roles allow an organization to create user roles with the precise privile
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of the custom roles feature, see [[Demo] Ultimate Guest can view code on private repositories via custom role](https://www.youtube.com/watch?v=46cp_-Rtxps).
 
-You can discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
-
 {{< alert type="note" >}}
 
 Most custom roles are considered [billable users that use a seat](#billing-and-seat-usage). When you add a user to your group with a custom role and you are about to incur additional charges for having more seats than are included in your subscription, a warning is displayed.
@@ -82,7 +80,7 @@ In **Settings > Roles and permissions**, the list of all custom roles displays t
 
 Prerequisites:
 
-- You must be an administrator for the self-managed instance.
+- You must be an administrator for the GitLab Self-Managed instance.
 
 After you create a custom role for your GitLab Self-Managed instance, you can assign that custom role to a user in any group or subgroup in that instance.
 
@@ -133,7 +131,7 @@ Prerequisites:
 
 Prerequisites:
 
-- You must be an administrator for the self-managed instance.
+- You must be an administrator for the GitLab Self-Managed instance.
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Roles and permissions**.
@@ -153,7 +151,7 @@ Prerequisites:
 You can't remove a custom role from a group if there are members assigned that role. See [unassign a custom role from a group or project member](#unassign-a-custom-role-from-a-group-or-project-member).
 
 1. On the left sidebar:
-   - For self-managed, at the bottom, select **Admin**.
+   - For GitLab Self-Managed, at the bottom, select **Admin**.
    - For SaaS, select **Search or go to** and find your group.
 1. Select **Settings > Roles and permissions**.
 1. Select **Custom Roles**.
@@ -354,7 +352,7 @@ You can sync users to custom roles with following authentication providers:
 
 Prerequisites:
 
-- You must be an administrator for the self-managed instance.
+- You must be an administrator for the GitLab Self-Managed instance.
 
 You can use the API to [create](../../api/graphql/reference/_index.md#mutationmemberroleadmincreate) and [assign](../../api/graphql/reference/_index.md#mutationmemberroletouserassign) custom admin roles. These roles allow you to grant limited access to administrator resources.
 
@@ -362,10 +360,9 @@ For information on available permissions, see [custom permissions](abilities.md)
 
 ## Contribute new permissions
 
-If a permission doesn't exist, you can:
-
 If a permission does not exist, you can:
 
+- Discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
 - Create an issue to request the permission with the [permission proposal issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Permission%2520Proposal).
 - Contribute to GitLab and [add the permission](../../development/permissions/custom_roles.md).
 

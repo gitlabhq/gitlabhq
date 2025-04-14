@@ -1,8 +1,8 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import { GlAlert, GlLink, GlLoadingIcon } from '@gitlab/ui';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import waitForPromises from 'helpers/wait_for_promises';
 import * as transitionModule from '~/vue_shared/components/diff_viewer/utils';
 import {
@@ -14,25 +14,13 @@ import {
   STATE_LOADING,
 } from '~/diffs/constants';
 import Renamed from '~/vue_shared/components/diff_viewer/viewers/renamed.vue';
-
-Vue.use(Vuex);
-
-let wrapper;
-let store;
-let event;
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 
 const DIFF_FILE_COMMIT_SHA = 'commitsha';
 const DIFF_FILE_SHORT_SHA = 'commitsh';
 const DIFF_FILE_VIEW_PATH = `blob/${DIFF_FILE_COMMIT_SHA}/filename.ext`;
 
-const defaultStore = {
-  modules: {
-    diffs: {
-      namespaced: true,
-      actions: { switchToFullDiffFromRenamedFile: jest.fn().mockResolvedValue() },
-    },
-  },
-};
 const diffFile = {
   content_sha: DIFF_FILE_COMMIT_SHA,
   view_path: DIFF_FILE_VIEW_PATH,
@@ -42,23 +30,30 @@ const diffFile = {
 };
 const defaultProps = { diffFile };
 
-function createRenamedComponent({ props = {}, storeArg = defaultStore, deep = false } = {}) {
-  store = new Vuex.Store(storeArg);
-  const mnt = deep ? mount : shallowMount;
-
-  wrapper = mnt(Renamed, {
-    propsData: { ...defaultProps, ...props },
-    store,
-  });
-}
-
-const findErrorAlert = () => wrapper.findComponent(GlAlert);
-const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-const findShowFullDiffBtn = () => wrapper.findComponent(GlLink);
-const findPlainText = () => wrapper.find('[test-id="plaintext"]');
+Vue.use(PiniaVuePlugin);
 
 describe('Renamed Diff Viewer', () => {
+  let wrapper;
+  let event;
+  let pinia;
+
+  function createRenamedComponent({ props = {}, deep = false } = {}) {
+    const mnt = deep ? mount : shallowMount;
+
+    wrapper = mnt(Renamed, {
+      propsData: { ...defaultProps, ...props },
+      pinia,
+    });
+  }
+
+  const findErrorAlert = () => wrapper.findComponent(GlAlert);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findShowFullDiffBtn = () => wrapper.findComponent(GlLink);
+  const findPlainText = () => wrapper.find('[test-id="plaintext"]');
+
   beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs().switchToFullDiffFromRenamedFile.mockResolvedValue();
     event = {
       preventDefault: jest.fn(),
     };
@@ -78,11 +73,9 @@ describe('Renamed Diff Viewer', () => {
     });
 
     it('calls the switchToFullDiffFromRenamedFile action when the method is triggered', () => {
-      jest.spyOn(store, 'dispatch');
-
       findShowFullDiffBtn().vm.$emit('click', event);
 
-      expect(store.dispatch).toHaveBeenCalledWith('diffs/switchToFullDiffFromRenamedFile', {
+      expect(useLegacyDiffs().switchToFullDiffFromRenamedFile).toHaveBeenCalledWith({
         diffFile,
       });
     });
@@ -95,7 +88,7 @@ describe('Renamed Diff Viewer', () => {
       'moves through the correct states during a $resolution request',
       async ({ after, resolvePromise }) => {
         jest.spyOn(transitionModule, 'transition');
-        store.dispatch = jest.fn()[resolvePromise]();
+        useLegacyDiffs().switchToFullDiffFromRenamedFile[resolvePromise]();
 
         expect(transitionModule.transition).not.toHaveBeenCalled();
 
@@ -133,19 +126,14 @@ describe('Renamed Diff Viewer', () => {
           props,
         });
 
-        store.dispatch = jest.fn().mockResolvedValue();
-
         findShowFullDiffBtn().vm.$emit('click', event);
 
         if (stops) {
           expect(event.preventDefault).toHaveBeenCalled();
-          expect(store.dispatch).toHaveBeenCalledWith(
-            'diffs/switchToFullDiffFromRenamedFile',
-            props,
-          );
+          expect(useLegacyDiffs().switchToFullDiffFromRenamedFile).toHaveBeenCalledWith(props);
         } else {
           expect(event.preventDefault).not.toHaveBeenCalled();
-          expect(store.dispatch).not.toHaveBeenCalled();
+          expect(useLegacyDiffs().switchToFullDiffFromRenamedFile).not.toHaveBeenCalled();
         }
       },
     );

@@ -325,6 +325,12 @@ describe('outputChronicDuration', () => {
     ).toBe('6 months 1 day 1 hour');
   });
 
+  it('returns hours only if hoursOnly option specified, rounded to nearest hour', () => {
+    expect(outputChronicDuration(60 * 60 * 24 * 3 + 60 * 60 * 3, { hoursOnly: true })).toBe('75h');
+    expect(outputChronicDuration(4 * 3600 + 60 + 1, { hoursOnly: true })).toBe('4h');
+    expect(outputChronicDuration(5 * 3600, { hoursOnly: true })).toBe('5h');
+  });
+
   describe('when the format is not specified', () => {
     it('uses the default format', () => {
       expect(outputChronicDuration(2 * 3600 + 20 * 60)).toBe('2 hrs 20 mins');

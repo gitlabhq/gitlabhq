@@ -6,11 +6,15 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
   let_it_be(:project) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }
   let_it_be(:target_group) { create(:group, :private) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:policies) { %w[read_containers read_packages] }
+  let_it_be(:policies) { %w[read_deployments read_packages] }
 
   let(:service) { described_class.new(project, current_user) }
 
   shared_examples 'adds group' do |_context|
+    before do
+      allow(project).to receive(:job_token_policies_enabled?).and_return(true)
+    end
+
     it 'adds the group to the scope', :aggregate_failures do
       expect { result }.to change { Ci::JobToken::GroupScopeLink.count }.by(1)
 
@@ -25,9 +29,9 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
       expect(group_link.job_token_policies).to eq(policies)
     end
 
-    context 'when feature-flag `add_policies_to_ci_job_token` is disabled' do
+    context 'when job token policies are disabled' do
       before do
-        stub_feature_flags(add_policies_to_ci_job_token: false)
+        allow(project).to receive(:job_token_policies_enabled?).and_return(false)
       end
 
       it 'adds the group to the scope without the policies', :aggregate_failures do

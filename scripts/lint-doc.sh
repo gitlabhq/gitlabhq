@@ -26,16 +26,6 @@ then
   ((ERRORCODE++))
 fi
 
-# Documentation pages need front matter for tracking purposes.
-# shellcheck disable=2059
-printf "${COLOR_GREEN}INFO: Checking documentation for front matter...${COLOR_RESET}\n"
-if ! scripts/lint-docs-metadata.sh
-then
-  # shellcheck disable=2059
-  printf "${COLOR_RED}ERROR: These documentation pages need front matter!${COLOR_RESET}"
-  ((ERRORCODE++))
-fi
-
 # Ensure that the CHANGELOG.md does not contain duplicate versions
 DUPLICATE_CHANGELOG_VERSIONS=$(grep --extended-regexp '^## .+' CHANGELOG.md | sed -E 's| \(.+\)||' | sort -r | uniq -d)
 # shellcheck disable=2059
@@ -71,7 +61,7 @@ then
   # shellcheck disable=2059
   printf "${COLOR_RED}ERROR: The number of README.md files has changed!${COLOR_RESET} Use index.md instead of README.md.\n" >&2
   printf "If removing a README.md file, update NUMBER_READMES in lint-doc.sh.\n" >&2
-  printf "https://docs.gitlab.com/ee/development/documentation/site_architecture/folder_structure.html#work-with-directories-and-files\n"
+  printf "https://docs.gitlab.com/development/documentation/site_architecture/folder_structure/#work-with-directories-and-files\n"
   ((ERRORCODE++))
 fi
 
@@ -86,7 +76,7 @@ then
   # shellcheck disable=2059
   printf "${COLOR_RED}ERROR: The number of directory names containing dashes has changed!${COLOR_RESET} Use underscores instead of dashes for the directory names.\n" >&2
   printf "If removing a directory containing dashes, update NUMBER_DASHES in lint-doc.sh.\n" >&2
-  printf "https://docs.gitlab.com/ee/development/documentation/site_architecture/folder_structure.html#work-with-directories-and-files\n"
+  printf "https://docs.gitlab.com/development/documentation/site_architecture/folder_structure/#work-with-directories-and-files\n"
    ((ERRORCODE++))
 fi
 
@@ -101,7 +91,7 @@ then
   # shellcheck disable=2059
   printf "${COLOR_RED}ERROR: The number of filenames containing dashes has changed!${COLOR_RESET} Use underscores instead of dashes for the filenames.\n" >&2
   printf "If removing a file containing dashes, update the filename NUMBER_DASHES in lint-doc.sh.\n" >&2
-  printf "https://docs.gitlab.com/ee/development/documentation/site_architecture/folder_structure.html#work-with-directories-and-files\n"
+  printf "https://docs.gitlab.com/development/documentation/site_architecture/folder_structure/#work-with-directories-and-files\n"
    ((ERRORCODE++))
 fi
 
@@ -114,8 +104,25 @@ if echo "${FIND_UPPERCASE_DIRS}" | grep . &>/dev/null
 then
   # shellcheck disable=2059
   printf "${COLOR_RED}ERROR: Found one or more directories with an uppercase letter in their name!${COLOR_RESET} Use lowercase instead of uppercase for the directory names.\n" >&2
-  printf "https://docs.gitlab.com/ee/development/documentation/site_architecture/folder_structure.html#work-with-directories-and-files\n" >&2
+  printf "https://docs.gitlab.com/development/documentation/site_architecture/folder_structure/#work-with-directories-and-files\n" >&2
   echo "${FIND_UPPERCASE_DIRS}"
+  ((ERRORCODE++))
+fi
+
+# Images in documentation must contain a milestone number in
+# the name.
+VERSIONLESS_IMAGES=$(find doc -name "*.png" | grep -Ev '_v[0-9][0-9]?_.+\.png$')
+
+# shellcheck disable=2059
+printf "${COLOR_GREEN}INFO: Checking for images without a milestone in the name...${COLOR_RESET}\n"
+if [ -n "${VERSIONLESS_IMAGES}" ]
+then
+  # shellcheck disable=2059
+  printf "${COLOR_RED}ERROR: Image names must include a milestone!\n" >&2
+  printf "${COLOR_RESET}Append a milestone to the image filename\n\n" >&2
+  printf "  in the format '_vXX_Y'. For example, 'sample_image_v18_5.png'.\n" >&2
+  printf "${COLOR_RED}${VERSIONLESS_IMAGES}${COLOR_RESET}\n\n"
+  printf "For help, see https://docs.gitlab.com/development/documentation/styleguide/#image-requirements\n"
   ((ERRORCODE++))
 fi
 
@@ -126,22 +133,10 @@ if echo "${FIND_UPPERCASE_FILES}" | grep . &>/dev/null
 then
   # shellcheck disable=2059
   printf "${COLOR_RED}ERROR: Found one or more file names with an uppercase letter in their name!${COLOR_RESET} Use lowercase instead of uppercase for the file names.\n" >&2
-  printf "https://docs.gitlab.com/ee/development/documentation/site_architecture/folder_structure.html#work-with-directories-and-files\n" >&2
+  printf "https://docs.gitlab.com/development/documentation/site_architecture/folder_structure/#work-with-directories-and-files\n" >&2
   echo "${FIND_UPPERCASE_FILES}"
   ((ERRORCODE++))
 fi
-
-FIND_ALL_DOCS_DIRECTORIES=$(find doc -type d)
-# shellcheck disable=2059
-printf "${COLOR_GREEN}INFO: Checking for documentation path clashes...${COLOR_RESET}\n"
-for directory in $FIND_ALL_DOCS_DIRECTORIES; do
-  # Markdown files should not have the same path as a directory with an index.md file in it
-  if [[ -f "${directory}.md" ]] && [[ -f "${directory}/index.md" ]]; then
-    # shellcheck disable=2059
-    printf "${COLOR_YELLOW}WARNING: File ${directory}.md clashes with file ${directory}/index.md!${COLOR_RESET} "
-    printf "For more information, see https://gitlab.com/gitlab-org/gitlab-docs/-/issues/1792.\n"
-  fi
-done
 
 # Run Vale and Markdownlint only on changed files. Only works on merged results
 # pipelines, so first checks if a merged results CI variable is present. If not present,
@@ -188,7 +183,7 @@ function run_locally_or_in_container() {
   local cmd=$1
   local args=$2
   local files=$3
-  local registry_url="registry.gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/lint-markdown:alpine-3.21-vale-3.9.3-markdownlint2-0.17.1-lychee-0.18.0"
+  local registry_url="registry.gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/lint-markdown:alpine-3.21-vale-3.11.2-markdownlint2-0.17.2-lychee-0.18.1"
 
   if hash "${cmd}" 2>/dev/null
   then

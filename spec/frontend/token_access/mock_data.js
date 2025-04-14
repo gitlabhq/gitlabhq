@@ -77,7 +77,7 @@ export const mockGroups = [
     fullPath: 'some-group',
     webUrl: 'http://localhost/some-group',
     defaultPermissions: false,
-    jobTokenPolicies: ['READ_JOBS', 'ADMIN_CONTAINERS'],
+    jobTokenPolicies: ['READ_JOBS', 'ADMIN_DEPLOYMENTS'],
     autopopulated: true,
     __typename: 'Group',
   },

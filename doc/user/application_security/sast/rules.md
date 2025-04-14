@@ -64,7 +64,7 @@ GitLab updates rules regularly based on customer feedback and internal research.
 Rules are released as part of the container image for each analyzer.
 You automatically receive updated analyzers and rules unless you [manually pin analyzers to a specific version](_index.md#pinning-to-minor-image-version).
 
-Analyzers and their rules are updated [at least monthly](../_index.md#vulnerability-scanner-maintenance) if relevant updates are available.
+Analyzers and their rules are updated [at least monthly](../detect/vulnerability_scanner_maintenance.md) if relevant updates are available.
 
 ### Rule update policies
 

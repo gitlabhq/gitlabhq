@@ -14,6 +14,24 @@ title: Profile preferences
 
 You can update your preferences to change the look and feel of GitLab.
 
+## Change the appearance
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/524846) from experiment to beta in GitLab 17.11.
+
+{{< /history >}}
+
+You can change the visual appearance of the interface to be light, dark, or automatically update based on device preferences.
+
+To change the appearance:
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. In the **Appearance** section, select an option.
+1. Select **Save changes**.
+
 ## Change the color theme
 
 You can change the color theme of the GitLab UI. These colors are displayed on the left sidebar.
@@ -25,20 +43,6 @@ To change the color theme:
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. In the **Color theme** section, select a theme.
-
-### Dark mode
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an [experiment](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252).
-
-{{< /history >}}
-
-Dark mode makes elements on the GitLab UI stand out on a dark background.
-
-- To turn on Dark mode, Select **Preferences > Color theme > Dark Mode**.
-
-You can use dark mode with any syntax highlighting theme. You can report and view issues, send feedback, and track progress in [epic 2092](https://gitlab.com/groups/gitlab-org/-/epics/2902).
 
 ## Change the syntax highlighting theme
 
@@ -474,10 +478,13 @@ You must be the administrator of the GitLab instance to configure GitLab with So
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
-- Feature flag `web_ide_oauth` [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) and feature flag `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
-- Feature flag `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161819) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+- `web_ide_oauth` [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) in GitLab 17.4.
+- `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
+- `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
 - Enabled by default for [workspaces](../workspace/_index.md) in GitLab 17.6. Workspaces do not require any feature flags for the extension marketplace to be available.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/508996) the `vscode_extension_marketplace_settings` [feature flag](../../administration/feature_flags.md) in GitLab 17.10. Disabled by default.
+- `web_ide_extensions_marketplace` and `vscode_extension_marketplace_settings` [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.11.
 
 {{< /history >}}
 
@@ -488,9 +495,14 @@ For more information, see the history.
 
 {{< /alert >}}
 
-You can use the [extension marketplace](../project/web_ide/_index.md#extension-marketplace) to search and
-manage extensions for the [Web IDE](../project/web_ide/_index.md) and [workspaces](../workspace/_index.md).
+You can use the extension marketplace to search and
+[manage extensions](../project/web_ide/_index.md#manage-extensions) for the [Web IDE](../project/web_ide/_index.md) and [workspaces](../workspace/_index.md).
 For third-party extensions, you must enable the marketplace in user preferences.
+
+Prerequisites:
+
+- In the **Admin** area, a GitLab administrator must
+  [enable the extension marketplace](../../administration/settings/vscode_extension_marketplace.md).
 
 To enable the extension marketplace for the Web IDE and workspaces:
 
@@ -498,14 +510,8 @@ To enable the extension marketplace for the Web IDE and workspaces:
 1. Select **Preferences**.
 1. Go to the **Integrations** section.
 1. Select the **Enable extension marketplace** checkbox.
-1. In the third-party extension acknowledgement, select **I understand**.
+1. In the third-party extension acknowledgment, select **I understand**.
 1. Select **Save changes**.
-
-{{< alert type="note" >}}
-
-This preferences checkbox will always be available, even if the feature flags are disabled.
-
-{{< /alert >}}
 
 <!-- ## Troubleshooting
 

@@ -10,6 +10,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import CreateWorkItemCancelConfirmationModal from '~/work_items/components/create_work_item_cancel_confirmation_modal.vue';
+import { WORK_ITEM_TYPE_ENUM_ISSUE, WORK_ITEM_TYPE_NAME_ISSUE } from '~/work_items/constants';
 
 Vue.use(VueApollo);
 
@@ -48,7 +49,7 @@ describe('Create work item page component', () => {
   const createComponent = ($router = undefined, isGroup = true, $route) => {
     wrapper = shallowMount(CreateWorkItemPage, {
       propsData: {
-        workItemTypeName: 'issue',
+        workItemTypeEnum: WORK_ITEM_TYPE_ENUM_ISSUE,
       },
       apolloProvider: createMockApollo([[workItemRelatedItemQuery, relatedItemQueryHandler]]),
       mocks: {
@@ -75,7 +76,7 @@ describe('Create work item page component', () => {
 
     expect(findCreateWorkItem().props()).toMatchObject({
       isGroup: false,
-      workItemTypeName: 'issue',
+      preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE,
     });
   });
 

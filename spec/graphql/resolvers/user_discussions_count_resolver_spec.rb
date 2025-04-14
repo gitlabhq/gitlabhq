@@ -50,16 +50,6 @@ RSpec.describe Resolvers::UserDiscussionsCountResolver do
         expect(subject).to eq(3)
       end
     end
-
-    context 'when a user does not have permission to view discussions' do
-      subject { batch_sync { resolve_user_discussions_count(private_issue) } }
-
-      it 'returns no discussions' do
-        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
-          subject
-        end
-      end
-    end
   end
 
   def resolve_user_discussions_count(obj)

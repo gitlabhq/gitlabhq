@@ -347,6 +347,35 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
       it { is_expected.to contain_exactly(*expected_package_files) }
     end
 
+    describe '.order_by' do
+      let_it_be(:package) { create(:generic_package, project:) }
+      let_it_be(:older_file) { create(:package_file, package: package, file_name: 'beta.txt', created_at: 2.days.ago) }
+      let_it_be(:newer_file) { create(:package_file, package: package, file_name: 'alpha.txt', created_at: 1.day.ago) }
+
+      where(:column_name, :order, :expected_order) do
+        'id'         | 'asc'     | ->(older, newer) { [older, newer] }
+        'id'         | 'desc'    | ->(older, newer) { [newer, older] }
+        'file_name'  | 'asc'     | ->(older, newer) { [newer, older] }
+        'file_name'  | 'desc'    | ->(older, newer) { [older, newer] }
+        'created_at' | 'asc'     | ->(older, newer) { [older, newer] }
+        'created_at' | 'desc'    | ->(older, newer) { [newer, older] }
+        'invalid'    | 'asc'     | nil
+        'id'         | 'invalid' | nil
+      end
+
+      with_them do
+        subject { described_class.where(package:).order_by(column_name, order) }
+
+        it 'returns the package files in the expected order' do
+          if expected_order
+            expect(subject.first(2)).to eq(expected_order.call(older_file, newer_file))
+          else
+            expect(subject.order_values).to be_empty
+          end
+        end
+      end
+    end
+
     context 'extra join and extra where' do
       let_it_be(:helm_package) { create(:helm_package, without_package_files: true) }
       let_it_be(:helm_package_file1) { create(:helm_package_file, channel: 'alpha') }

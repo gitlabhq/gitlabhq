@@ -59,10 +59,12 @@ module Gitlab
         payload['concurrency_limit_buffering_duration_s'] = buffering_duration_s if buffering_duration_s
 
         queue_duration_s = ::Gitlab::InstrumentationHelper.queue_duration_for_job(payload)
+        scheduling_duration_s = ::Gitlab::InstrumentationHelper.queue_duration_for_job(job,
+          with_buffering_duration: false)
 
         if queue_duration_s
           payload['queue_duration_s'] = queue_duration_s
-          payload['scheduling_latency_s'] = queue_duration_s + buffering_duration_s.to_f
+          payload['scheduling_latency_s'] = scheduling_duration_s
         end
 
         enqueue_latency_s = ::Gitlab::InstrumentationHelper.enqueue_latency_for_scheduled_job(payload)

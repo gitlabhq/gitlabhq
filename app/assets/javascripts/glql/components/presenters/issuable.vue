@@ -1,9 +1,10 @@
 <script>
 import { GlLink, GlIntersperse } from '@gitlab/ui';
-import initIssuablePopovers from 'ee_else_ce/issuable/popover';
+import initIssuablePopovers from '~/issuable/popover';
 import { extractGroupOrProject } from '../../utils/common';
 
 const types = {
+  WorkItem: 'issue',
   Issue: 'issue',
   Epic: 'epic',
   MergeRequest: 'merge_request',
@@ -48,7 +49,7 @@ export default {
     ref="reference"
     class="gl-text-strong"
     :class="`gfm gfm-${type}`"
-    :data-original="`${data.reference}+`"
+    :data-original="`${project || group}${data.reference}+`"
     :data-reference-type="type"
     :title="data.title"
     :href="data.webUrl"

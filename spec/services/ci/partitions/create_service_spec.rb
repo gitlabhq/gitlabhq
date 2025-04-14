@@ -17,9 +17,9 @@ RSpec.describe Ci::Partitions::CreateService, feature_category: :ci_scaling do
       end
     end
 
-    context 'when ci_partitioning_automation is disabled' do
+    context 'when ci_create_dynamic_partitions is disabled' do
       before do
-        stub_feature_flags(ci_partitioning_automation: false)
+        stub_feature_flags(ci_create_dynamic_partitions: false)
       end
 
       it_behaves_like 'ci_partition not created'
@@ -57,6 +57,30 @@ RSpec.describe Ci::Partitions::CreateService, feature_category: :ci_scaling do
         end
 
         it_behaves_like 'ci_partition not created'
+      end
+    end
+
+    context 'with default partition threshold' do
+      it 'uses partition threshold' do
+        expect(ci_partition)
+          .to receive(:above_threshold?)
+          .with(Ci::Partition::MAX_PARTITION_SIZE)
+          .and_call_original
+
+        expect { execute_service }.not_to change { Ci::Partition.count }
+      end
+    end
+
+    context 'when executed on staging' do
+      it 'uses smaller threshold' do
+        expect(Gitlab).to receive(:staging?).and_return(true)
+
+        expect(ci_partition)
+          .to receive(:above_threshold?)
+          .with(Ci::Partition::GSTG_PARTITION_SIZE)
+          .and_call_original
+
+        expect { execute_service }.not_to change { Ci::Partition.count }
       end
     end
   end

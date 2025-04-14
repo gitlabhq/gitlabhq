@@ -34,7 +34,7 @@ module ActiveContext
           'queue' => queue,
           'message' => 'bulk_indexing_start',
           'meta.indexing.redis_set' => set_key,
-          'meta.indexing.records_count' => specs.count,
+          'meta.indexing.refs_count' => specs.count,
           'meta.indexing.first_score' => first_score,
           'meta.indexing.last_score' => last_score
         )
@@ -73,7 +73,7 @@ module ActiveContext
           'class' => self.class.name,
           'message' => 'bulk_indexing_end',
           'meta.indexing.redis_set' => set_key,
-          'meta.indexing.records_count' => count,
+          'meta.indexing.refs_count' => count,
           'meta.indexing.first_score' => first_score,
           'meta.indexing.last_score' => last_score,
           'meta.indexing.failures_count' => @failures.count,

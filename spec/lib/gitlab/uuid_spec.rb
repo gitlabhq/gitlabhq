@@ -5,6 +5,14 @@ require 'spec_helper'
 RSpec.describe Gitlab::UUID do
   let_it_be(:name) { "GitLab" }
 
+  describe '.urn' do
+    subject(:urn) { described_class.urn }
+
+    it 'outputs RFC 4122 conformant URN' do
+      expect(urn).to match(/^urn:uuid:\h{8}-\h{4}-\h{4}-\h{4}-\h{12}$/)
+    end
+  end
+
   describe '.v5' do
     subject { described_class.v5(name) }
 

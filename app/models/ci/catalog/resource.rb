@@ -52,6 +52,15 @@ module Ci
         )
       end
 
+      scope :with_topics, ->(topic_names) do
+        joins(:project)
+          .where(project_id: Projects::ProjectTopic
+            .joins(:topic)
+            .where(topics: { name: topic_names })
+            .select(:project_id))
+          .distinct
+      end
+
       # The usage counts are updated daily by Ci::Catalog::Resources::AggregateLast30DayUsageWorker
       scope :order_by_last_30_day_usage_count_desc, -> { reorder(last_30_day_usage_count: :desc) }
       scope :order_by_last_30_day_usage_count_asc, -> { reorder(last_30_day_usage_count: :asc) }

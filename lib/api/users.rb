@@ -1092,7 +1092,7 @@ module API
           end
           post feature_category: :system_access do
             response = ::PersonalAccessTokens::CreateService.new(
-              current_user: current_user, target_user: target_user, organization_id: Current.organization_id, params: declared_params(include_missing: false)
+              current_user: current_user, target_user: target_user, organization_id: Current.organization&.id, params: declared_params(include_missing: false)
             ).execute
 
             if response.success?
@@ -1458,7 +1458,16 @@ module API
 
       desc 'Get a list of user activities'
       params do
-        optional :from, type: DateTime, default: 6.months.ago, desc: 'Date string in the format YEAR-MONTH-DAY'
+        optional(
+          :from,
+          type: DateTime,
+          default: 6.months.ago,
+          desc: 'Date string in the format YEAR-MONTH-DAY',
+          documentation: {
+            default: 'As default, the current time - 6 month will be calculated',
+            example: '2024-08-14T17:26:19.883Z'
+          }
+        )
         use :pagination
       end
       # rubocop: disable CodeReuse/ActiveRecord
@@ -1544,7 +1553,7 @@ module API
         end
         post feature_category: :system_access do
           response = ::PersonalAccessTokens::CreateService.new(
-            current_user: current_user, target_user: current_user, params: declared_params(include_missing: false), organization_id: Current.organization_id
+            current_user: current_user, target_user: current_user, params: declared_params(include_missing: false), organization_id: Current.organization&.id
           ).execute
 
           if response.success?

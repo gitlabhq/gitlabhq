@@ -226,6 +226,26 @@
   :tags:
   - :cronjob_child
   :queue_namespace: :container_repository_delete
+- :name: cronjob:adjourned_group_deletion
+  :worker_name: AdjournedGroupDeletionWorker
+  :feature_category: :groups_and_projects
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:adjourned_projects_deletion_cron
+  :worker_name: AdjournedProjectsDeletionCronWorker
+  :feature_category: :compliance_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:admin_email
   :worker_name: AdminEmailWorker
   :feature_category: :source_code_management
@@ -239,16 +259,6 @@
 - :name: cronjob:analytics_usage_trends_count_job_trigger
   :worker_name: Analytics::UsageTrends::CountJobTriggerWorker
   :feature_category: :devops_reports
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace: :cronjob
-- :name: cronjob:anti_abuse_banned_user_project_deletion_cron
-  :worker_name: AntiAbuse::BannedUserProjectDeletionCronWorker
-  :feature_category: :instance_resiliency
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1238,17 +1248,6 @@
   :tags:
   - :cronjob_child
   :queue_namespace: :dependency_proxy_blob
-- :name: dependency_proxy_blob:virtual_registries_packages_destroy_orphan_cached_responses
-  :worker_name: VirtualRegistries::Packages::DestroyOrphanCachedResponsesWorker
-  :feature_category: :virtual_registry
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags:
-  - :cronjob_child
-  :queue_namespace: :dependency_proxy_blob
 - :name: dependency_proxy_manifest:dependency_proxy_cleanup_manifest
   :worker_name: DependencyProxy::CleanupManifestWorker
   :feature_category: :virtual_registry
@@ -1448,6 +1447,16 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+  :queue_namespace: :gcp_cluster
+- :name: gcp_cluster:clusters_migration_install_agent
+  :worker_name: Clusters::Migration::InstallAgentWorker
+  :feature_category: :deployment_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
   :queue_namespace: :gcp_cluster
 - :name: gcp_cluster:wait_for_cluster_creation
@@ -2775,6 +2784,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :update_namespace_statistics
+- :name: adjourned_project_deletion
+  :worker_name: AdjournedProjectDeletionWorker
+  :feature_category: :groups_and_projects
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+  :queue_namespace:
 - :name: analytics_usage_trends_counter_job
   :worker_name: Analytics::UsageTrends::CounterJobWorker
   :feature_category: :devops_reports
@@ -2795,17 +2814,6 @@
   :weight: 1
   :idempotent: true
   :tags: []
-  :queue_namespace:
-- :name: anti_abuse_banned_user_project_deletion
-  :worker_name: AntiAbuse::BannedUserProjectDeletionWorker
-  :feature_category: :instance_resiliency
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags:
-  - :cronjob_child
   :queue_namespace:
 - :name: anti_abuse_spam_abuse_events
   :worker_name: AntiAbuse::SpamAbuseEventsWorker
@@ -3800,6 +3808,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: import_bulk_imports_configuration_purge
+  :worker_name: Import::BulkImports::ConfigurationPurgeWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: import_bulk_imports_source_users_attributes
   :worker_name: Import::BulkImports::SourceUsersAttributesWorker
   :feature_category: :importers
@@ -3958,16 +3976,6 @@
   :resource_boundary: :unknown
   :weight: 2
   :idempotent: false
-  :tags: []
-  :queue_namespace:
-- :name: issuable_create_reminder
-  :worker_name: Issuable::CreateReminderWorker
-  :feature_category: :code_review_workflow
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
   :tags: []
   :queue_namespace:
 - :name: issuable_export_csv

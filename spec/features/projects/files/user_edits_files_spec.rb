@@ -99,6 +99,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       wait_for_requests
 
       expect(page).to have_content('*.rbca')
+      expect(page).to have_content('New commit message')
     end
 
     it 'displays a flash message with a link when an edited file was committed' do

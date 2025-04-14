@@ -171,7 +171,7 @@ $ide-commit-header-height: 48px;
   }
 
   &:not([disabled]):hover {
-    background-color: var(--ide-input-border, $gray-100);
+    background-color: var(--ide-input-border, var(--gl-border-color-default));
   }
 
   &:not([disabled]):focus {

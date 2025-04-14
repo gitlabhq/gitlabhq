@@ -2,9 +2,9 @@
 
 FactoryBot.define do
   factory :conan_package_reference, class: 'Packages::Conan::PackageReference' do
-    package { association(:conan_package) }
-    project { association(:project) }
-    recipe_revision { association(:conan_recipe_revision, package: package, project: project) }
+    package { association(:conan_package, without_package_references: true, without_package_files: true) }
+    project { package.project }
+    recipe_revision { package.conan_recipe_revisions.first }
     info do
       {
         settings: { os: 'Linux', arch: 'x86_64' },

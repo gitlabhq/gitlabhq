@@ -8,7 +8,7 @@ import { renderJSONTable, renderJSONTableHTML } from './render_json_table';
 
 function initPopovers(elements) {
   if (!elements.length) return;
-  import(/* webpackChunkName: 'IssuablePopoverBundle' */ 'ee_else_ce/issuable/popover')
+  import(/* webpackChunkName: 'IssuablePopoverBundle' */ '~/issuable/popover')
     .then(({ default: initIssuablePopovers }) => {
       initIssuablePopovers(elements);
     })

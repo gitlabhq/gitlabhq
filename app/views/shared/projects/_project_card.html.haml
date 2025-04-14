@@ -69,11 +69,11 @@
               = sprite_icon('fork', size: 14, css_class: 'gl-mr-2')
               = badge_count(project.forks_count)
           - if show_count?(disabled: !merge_requests, compact_mode: compact_mode)
-            = link_to project_merge_requests_path(project), class: "#{css_metadata_classes} merge-requests", title: _('Merge requests'), data: { container: 'body', placement: 'top' }, aria: { label: format(n_('%{project} has %{number} merge request', '%{project} has %{number} merge requests', project.open_merge_requests_count), number: project.open_merge_requests_count, project: project.name) } do
+            = link_to project_merge_requests_path(project), class: "#{css_metadata_classes} merge-requests", title: _('Merge requests'), data: { container: 'body', placement: 'top' }, aria: { label: format(n_('%{project} has %{number} open merge request', '%{project} has %{number} open merge requests', project.open_merge_requests_count), number: project.open_merge_requests_count, project: project.name) } do
               = sprite_icon('merge-request', size: 14, css_class: 'gl-mr-2')
               = badge_count(project.open_merge_requests_count)
           - if show_count?(disabled: !issues, compact_mode: compact_mode)
-            = link_to project_issues_path(project), class: "#{css_metadata_classes} issues", title: _('Issues'), data: { container: 'body', placement: 'top' }, aria: { label: format(n_('%{project} has %{number} open issues', '%{project} has %{number} open issues', project.open_issues_count), number: project.open_issues_count, project: project.name) } do
+            = link_to project_issues_path(project), class: "#{css_metadata_classes} issues", title: _('Issues'), data: { container: 'body', placement: 'top' }, aria: { label: format(n_('%{project} has %{number} open issue', '%{project} has %{number} open issues', project.open_issues_count), number: project.open_issues_count, project: project.name) } do
               = sprite_icon('issues', size: 14, css_class: 'gl-mr-2')
               = badge_count(project.open_issues_count)
 
@@ -83,7 +83,7 @@
             %span.icon-wrapper.pipeline-status
               = render 'ci/status/icon', status: last_pipeline.detailed_status(current_user), tooltip_placement: 'top', path: pipeline_path
 
-          = render_if_exists 'shared/projects/badges', project: project
+          = render 'shared/projects/badges', project: project
       .updated-note.gl-text-sm.gl-whitespace-nowrap.gl-justify-start.gl-text-subtle
         %span
           = _('Updated')

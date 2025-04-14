@@ -190,11 +190,67 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
     end
 
-    context 'with a verification_level parameter' do
-      let(:params) { { verification_level: :gitlab_maintained } }
+    context 'when filtering by topics' do
+      let_it_be(:topic_ruby) { create(:topic, name: 'ruby') }
+      let_it_be(:topic_rails) { create(:topic, name: 'rails') }
+      let_it_be(:topic_gitlab) { create(:topic, name: 'gitlab') }
 
-      it 'returns the resources with matching verification level' do
-        is_expected.to contain_exactly(public_resource_a, public_resource_b)
+      let(:params) { { topics: topic_names } }
+
+      before_all do
+        create(:project_topic, project: public_namespace_project, topic: topic_ruby)
+        create(:project_topic, project: public_namespace_project, topic: topic_rails)
+        create(:project_topic, project: public_project, topic: topic_gitlab)
+      end
+
+      context 'with multiple topics' do
+        let(:topic_names) { %w[ruby gitlab] }
+
+        it 'returns resources with projects matching any of the given topic names' do
+          is_expected.to contain_exactly(public_resource_a, public_resource_b)
+        end
+      end
+
+      context 'with overlapping topics' do
+        let(:topic_names) { %w[ruby rails] }
+
+        it 'returns a resource only once even if it matches multiple topics' do
+          is_expected.to contain_exactly(public_resource_a)
+        end
+      end
+
+      context 'when combining topic filter with other filters' do
+        context 'with search parameter' do
+          let(:params) { { topics: %w[ruby], search: 'public' } }
+
+          it 'returns resources matching both filters' do
+            is_expected.to contain_exactly(public_resource_a)
+          end
+        end
+
+        context 'with verification level' do
+          let(:params) { { topics: %w[ruby], verification_level: :gitlab_maintained } }
+
+          it 'returns resources matching both filters' do
+            is_expected.to contain_exactly(public_resource_a)
+          end
+        end
+
+        context 'with scope parameter' do
+          let(:params) { { topics: %w[ruby], scope: :namespaces } }
+
+          it 'returns resources matching both filters' do
+            is_expected.to contain_exactly(public_resource_a)
+          end
+        end
+      end
+
+      context 'with a verification_level parameter' do
+        let(:params) { { verification_level: :gitlab_maintained } }
+
+        it 'returns the resources with matching verification level' do
+          is_expected.to contain_exactly(public_resource_a, public_resource_b)
+        end
       end
     end
   end

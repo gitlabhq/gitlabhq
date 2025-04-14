@@ -303,7 +303,7 @@ approval_policy:
     - X.Net License
     - XPP License
     - zlib License
-    - zlib/libpng License with Acknowledgement
+    - zlib/libpng License with Acknowledgment
     - Zope Public License 2.0
     - Zope Public License 2.1
     license_states:

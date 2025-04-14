@@ -460,7 +460,7 @@ must disable the **primary** site:
 
 {{< alert type="warning" >}}
 
-If the secondary site [has been paused](../../geo/_index.md#pausing-and-resuming-replication), this performs
+If the secondary site [has been paused](../_index.md#pausing-and-resuming-replication), this performs
 a point-in-time recovery to the last known state.
 Data that was created on the primary while the secondary was paused is lost.
 

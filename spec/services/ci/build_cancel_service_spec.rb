@@ -70,19 +70,6 @@ RSpec.describe Ci::BuildCancelService, feature_category: :continuous_integration
               expect(response).to be_success
               expect(response.payload.reload).to be_canceled
             end
-
-            context 'with :force_cancel_build flag disabled' do
-              before do
-                stub_feature_flags(force_cancel_build: false)
-              end
-
-              it 'responds with unprocessable entity', :aggregate_failures do
-                response = force_execute
-
-                expect(response).to be_error
-                expect(response.http_status).to eq(:unprocessable_entity)
-              end
-            end
           end
         end
       end

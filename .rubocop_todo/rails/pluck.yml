@@ -201,7 +201,6 @@ Rails/Pluck:
     - 'spec/requests/api/members_spec.rb'
     - 'spec/requests/api/merge_requests_spec.rb'
     - 'spec/requests/api/namespaces_spec.rb'
-    - 'spec/requests/api/package_files_spec.rb'
     - 'spec/requests/api/pages_domains_spec.rb'
     - 'spec/requests/api/personal_access_tokens_spec.rb'
     - 'spec/requests/api/project_clusters_spec.rb'

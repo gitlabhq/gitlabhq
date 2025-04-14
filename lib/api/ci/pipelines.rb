@@ -47,6 +47,10 @@ module API
             documentation: { example: '2015-12-24T15:51:21.880Z' }
           optional :updated_after, type: DateTime, desc: 'Return pipelines updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
             documentation: { example: '2015-12-24T15:51:21.880Z' }
+          optional :created_before, type: DateTime, desc: 'Return pipelines created before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
+            documentation: { example: '2015-12-24T15:51:21.880Z' }
+          optional :created_after, type: DateTime, desc: 'Return pipelines created after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
+            documentation: { example: '2015-12-24T15:51:21.880Z' }
           optional :order_by, type: String, values: ::Ci::PipelinesFinder::ALLOWED_INDEXED_COLUMNS, default: 'id',
             desc: 'Order pipelines',
             documentation: { example: 'status' }
@@ -287,7 +291,7 @@ module API
           requires :name, type: String, desc: 'The name of the pipeline', documentation: { example: 'Deployment to production' }
         end
         route_setting :authentication, job_token_allowed: true
-        route_setting :authorization, job_token_policies: :admin_jobs
+        route_setting :authorization, job_token_policies: :admin_pipelines
         put ':id/pipelines/:pipeline_id/metadata', urgency: :low, feature_category: :continuous_integration do
           authorize! :update_pipeline, pipeline
 
@@ -342,6 +346,7 @@ module API
           authorize! :cancel_pipeline, pipeline
 
           # TODO: inconsistent behavior: when pipeline is not cancelable we should return an error
+          # Set to be fixed on V5 to avoid breaking changes: https://gitlab.com/gitlab-org/gitlab/-/issues/519143
           ::Ci::CancelPipelineService.new(pipeline: pipeline, current_user: current_user).execute
 
           status 200

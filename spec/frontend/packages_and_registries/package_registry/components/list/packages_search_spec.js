@@ -1,6 +1,7 @@
 import { nextTick } from 'vue';
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { sortableFields } from '~/packages_and_registries/package_registry/utils';
 import PackageSearch from '~/packages_and_registries/package_registry/components/list/package_search.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
@@ -42,7 +43,7 @@ describe('Package Search', () => {
   it('has a registry search component', async () => {
     mountComponent();
 
-    await nextTick();
+    await waitForPromises();
 
     expect(findPersistedSearch().exists()).toBe(true);
   });
@@ -84,7 +85,7 @@ describe('Package Search', () => {
   `('in a $page page binds the right props', async ({ isGroupPage }) => {
     mountComponent(isGroupPage);
 
-    await nextTick();
+    await waitForPromises();
 
     expect(findPersistedSearch().props()).toMatchObject({
       tokens: expect.arrayContaining([
@@ -124,7 +125,7 @@ describe('Package Search', () => {
 
     mountComponent();
 
-    await nextTick();
+    await waitForPromises();
 
     findPersistedSearch().vm.$emit('update', payload);
 
@@ -156,7 +157,7 @@ describe('Package Search', () => {
 
     mountComponent();
 
-    await nextTick();
+    await waitForPromises();
 
     findPersistedSearch().vm.$emit('update', payload);
 

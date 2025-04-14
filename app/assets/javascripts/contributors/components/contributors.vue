@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
-import { debounce, uniq } from 'lodash';
+import { debounce } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -54,13 +54,12 @@ export default {
   data() {
     return {
       masterChart: null,
-      individualCharts: [],
       individualChartZoom: {},
       selectedBranch: this.branch,
     };
   },
   computed: {
-    ...mapState(['chartData', 'loading']),
+    ...mapState(['loading']),
     ...mapGetters(['showChart', 'parsedData']),
     masterChartData() {
       const data = {};
@@ -143,9 +142,6 @@ export default {
     },
     lastContributionDate() {
       return this.xAxisRange[this.xAxisRange.length - 1];
-    },
-    charts() {
-      return uniq(this.individualCharts);
     },
   },
   mounted() {

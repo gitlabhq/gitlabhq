@@ -8,10 +8,10 @@ exports[`ZoektBlobResults when component loads normally renders component proper
     class="gl-relative"
   >
     <div
-      class="file-holder file-result-holder gl-card gl-my-5"
+      class="gl-card gl-my-5"
     >
       <div
-        class="file-title gl-card-header"
+        class="gl-card-header"
       >
         <blob-header-stub
           filepath="test/test-main.js"
@@ -31,10 +31,10 @@ exports[`ZoektBlobResults when component loads normally renders component proper
       </div>
     </div>
     <div
-      class="file-holder file-result-holder gl-card gl-my-5"
+      class="gl-card gl-my-5"
     >
       <div
-        class="file-title gl-card-header"
+        class="gl-card-header"
       >
         <blob-header-stub
           filepath="test/spec/fn_spec.js"
@@ -62,10 +62,10 @@ exports[`ZoektBlobResults when component loads normally renders component proper
       </div>
     </div>
     <div
-      class="file-holder file-result-holder gl-card gl-my-5"
+      class="gl-card gl-my-5"
     >
       <div
-        class="!gl-border-b-0 file-title gl-card-header"
+        class="!gl-border-b-0 gl-card-header"
       >
         <blob-header-stub
           filepath="test/spec/test_utils_spec.js"

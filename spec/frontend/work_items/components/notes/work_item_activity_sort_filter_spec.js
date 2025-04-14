@@ -24,24 +24,22 @@ describe('Work Item Activity/Discussions Filtering', () => {
   const createComponent = ({
     loading = false,
     workItemType = 'Task',
-    sortFilterProp = ASC,
+    sortFilter = ASC,
     items = WORK_ITEM_ACTIVITY_SORT_OPTIONS,
     trackingLabel = 'item_track_notes_sorting',
     trackingAction = 'work_item_notes_sort_order_changed',
-    filterEvent = 'changeSort',
-    defaultSortFilterProp = ASC,
+    defaultSortFilter = ASC,
     storageKey = WORK_ITEM_NOTES_SORT_ORDER_KEY,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemActivitySortFilter, {
       propsData: {
         loading,
         workItemType,
-        sortFilterProp,
+        sortFilter,
         items,
         trackingLabel,
         trackingAction,
-        filterEvent,
-        defaultSortFilterProp,
+        defaultSortFilter,
         storageKey,
       },
     });
@@ -85,10 +83,10 @@ describe('Work Item Activity/Discussions Filtering', () => {
         expect(findLocalStorageSync().props('storageKey')).toBe(storageKey);
       });
 
-      it(`emits ${filterEvent} event when local storage input is emitted`, () => {
+      it(`emits "select" event when local storage input is emitted`, () => {
         findLocalStorageSync().vm.$emit('input', newInputOption);
 
-        expect(wrapper.emitted(filterEvent)).toEqual([[newInputOption]]);
+        expect(wrapper.emitted('select')).toEqual([[newInputOption]]);
       });
 
       it('emits tracking event when the a non default dropdown item is clicked', () => {

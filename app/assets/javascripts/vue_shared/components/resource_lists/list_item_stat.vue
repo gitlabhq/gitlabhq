@@ -12,6 +12,11 @@ export default {
       required: false,
       default: null,
     },
+    a11yText: {
+      type: String,
+      required: false,
+      default: null,
+    },
     iconName: {
       type: String,
       required: true,
@@ -38,7 +43,7 @@ export default {
   <component
     :is="component"
     v-gl-tooltip="tooltipText"
-    :aria-label="tooltipText"
+    :aria-label="a11yText || tooltipText"
     :href="href"
     class="gl-flex gl-items-center gl-gap-x-2 gl-text-subtle"
   >

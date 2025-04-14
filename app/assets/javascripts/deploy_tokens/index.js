@@ -10,6 +10,7 @@ export default function initDeployTokens() {
     createNewTokenPath,
     deployTokensHelpUrl,
     containerRegistryEnabled,
+    dependencyProxyEnabled,
     packagesRegistryEnabled,
     tokenType,
   } = el.dataset;
@@ -24,6 +25,7 @@ export default function initDeployTokens() {
           createNewTokenPath,
           deployTokensHelpUrl,
           containerRegistryEnabled: containerRegistryEnabled !== undefined,
+          dependencyProxyEnabled: dependencyProxyEnabled !== undefined,
           packagesRegistryEnabled: packagesRegistryEnabled !== undefined,
           tokenType,
         },

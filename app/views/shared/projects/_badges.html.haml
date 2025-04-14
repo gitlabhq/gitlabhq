@@ -1,4 +1,6 @@
 - css_class = local_assigns.fetch(:css_class, '')
 
-- if project.archived
+- if project.self_or_ancestor_marked_for_deletion
+  = render Pajamas::BadgeComponent.new(_('Pending deletion'), variant: 'warning', class: css_class)
+- elsif project.archived
   = render Pajamas::BadgeComponent.new(_('Archived'), variant: 'info', class: css_class)

@@ -8,9 +8,9 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedStageRecords,
   let(:stages_table) { table(:p_ci_stages, database: :ci, primary_key: :id) }
 
   let(:default_attributes) { { project_id: 600, partition_id: 100 } }
-  let!(:regular_pipeline) { pipelines_table.create!(id: 1, **default_attributes) }
-  let!(:deleted_pipeline) { pipelines_table.create!(id: 2, **default_attributes) }
-  let!(:other_pipeline) { pipelines_table.create!(id: 3, **default_attributes) }
+  let!(:regular_pipeline) { pipelines_table.create!(default_attributes) }
+  let!(:deleted_pipeline) { pipelines_table.create!(default_attributes) }
+  let!(:other_pipeline) { pipelines_table.create!(default_attributes) }
 
   let!(:regular_build) do
     stages_table.create!(pipeline_id: regular_pipeline.id, **default_attributes)
@@ -21,20 +21,6 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedStageRecords,
   end
 
   let(:connection) { Ci::ApplicationRecord.connection }
-
-  around do |example|
-    connection.transaction do
-      connection.execute(<<~SQL)
-        ALTER TABLE ci_pipelines DISABLE TRIGGER ALL;
-      SQL
-
-      example.run
-
-      connection.execute(<<~SQL)
-        ALTER TABLE ci_pipelines ENABLE TRIGGER ALL;
-      SQL
-    end
-  end
 
   describe '#perform' do
     subject(:migration) do
@@ -50,12 +36,21 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedStageRecords,
     end
 
     it 'deletes from p_ci_stages where pipeline_id has no related record at p_ci_pipelines.id', :aggregate_failures do
-      expect { deleted_pipeline.delete }.to not_change { stages_table.count }
+      expect { without_referential_integrity { deleted_pipeline.delete } }.to not_change { stages_table.count }
 
       expect { migration.perform }.to change { stages_table.count }.from(2).to(1)
 
       expect(regular_build.reload).to be_persisted
       expect { orphaned_build.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    def without_referential_integrity
+      connection.transaction do
+        connection.execute('ALTER TABLE ci_pipelines DISABLE TRIGGER ALL;')
+        result = yield
+        connection.execute('ALTER TABLE ci_pipelines ENABLE TRIGGER ALL;')
+        result
+      end
     end
   end
 end

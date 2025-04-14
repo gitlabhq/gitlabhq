@@ -24,7 +24,7 @@ common Git operations can generate many Git HTTP requests.
 Some of these Git HTTP requests do not contain authentication parameter and
 are considered unauthenticated. You can enforce rate limits on Git HTTP requests.
 This can improve the security and durability of your web application.
-[General user and IP rate limits](../settings/user_and_ip_rate_limits.md) aren't applied
+[General user and IP rate limits](user_and_ip_rate_limits.md) aren't applied
 to Git HTTP requests.
 
 ## Configure Git HTTP rate limits
@@ -45,4 +45,4 @@ To configure Git HTTP rate limits:
 ## Related topics
 
 - [Rate limiting](../../security/rate_limits.md)
-- [User and IP rate limits](../settings/user_and_ip_rate_limits.md)
+- [User and IP rate limits](user_and_ip_rate_limits.md)

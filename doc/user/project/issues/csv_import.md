@@ -96,5 +96,5 @@ An issue with milestone,"My milestone is created",,v1.0
 
 The limit depends on how your GitLab instance is hosted:
 
-- Self-managed: Set by the configuration value of `Max Attachment Size` for the GitLab instance.
+- GitLab Self-Managed: Set by the configuration value of `Max Attachment Size` for the GitLab instance.
 - GitLab SaaS: On GitLab.com, it's set to 10 MB.

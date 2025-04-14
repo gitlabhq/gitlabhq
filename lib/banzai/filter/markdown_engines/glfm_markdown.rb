@@ -24,7 +24,6 @@ module Banzai
           multiline_block_quotes: true,
           relaxed_autolinks: true,
           sourcepos: true,
-          experimental_inline_sourcepos: true,
           smart: false,
           strikethrough: true,
           table: true,
@@ -45,7 +44,6 @@ module Banzai
 
           OPTIONS.merge(
             sourcepos: !sourcepos_disabled?,
-            experimental_inline_sourcepos: sourcepos_disabled? ? false : OPTIONS[:experimental_inline_sourcepos],
             header_ids: headers_disabled? ? nil : OPTIONS[:header_ids],
             autolink: !autolink_disabled?,
             relaxed_autolinks: !autolink_disabled?,

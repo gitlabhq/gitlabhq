@@ -22,12 +22,19 @@ module Enums
       wolfi: 13,
       cargo: 14,
       swift: 15,
-      conda: 16
+      conda: 16,
+      pub: 17
     }.with_indifferent_access.freeze
 
+    UNKNOWN = :unknown
+    IN_USE = :in_use
+    NOT_FOUND = :not_found
+
     REACHABILITY_TYPES = {
-      unknown: 0,
-      in_use: 1 # In case package imported and being used in code.
+      UNKNOWN => 0, # reachability analysis was not available for this component
+      # (this attribute can't be renamed as it would be a breaking change)
+      IN_USE => 1, # component is known to be in use
+      NOT_FOUND => 2 # component was not found to be in use
     }.with_indifferent_access.freeze
 
     DEPENDENCY_SCANNING_PURL_TYPES = %w[
@@ -42,6 +49,7 @@ module Enums
       cargo
       swift
       conda
+      pub
     ].freeze
 
     CONTAINER_SCANNING_PURL_TYPES = %w[

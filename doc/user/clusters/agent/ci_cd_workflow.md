@@ -48,22 +48,23 @@ If you have multiple GitLab projects that contain Kubernetes manifests:
 
 1. [Install the GitLab agent](install/_index.md) in its own project, or in one of the
    GitLab projects where you keep Kubernetes manifests.
-1. [Authorize the agent](#authorize-the-agent) to access your GitLab projects.
+1. [Authorize agent access](#authorize-agent-access) in your GitLab projects.
 1. Optional. For added security, [use impersonation](#restrict-project-and-group-access-by-using-impersonation).
 1. [Update your `.gitlab-ci.yml` file](#update-your-gitlab-ciyml-file-to-run-kubectl-commands) to
    select the agent's Kubernetes context and run the Kubernetes API commands.
 1. Run your pipeline to deploy to or update the cluster.
 
-## Authorize the agent
+## Authorize agent access
 
-If you have multiple GitLab projects, you must authorize the agent to access the project where you keep your Kubernetes manifests.
-You can authorize the agent to access individual projects, or authorize a group or subgroup,
-so all projects within have access. For added security, you can also
+If you have multiple projects with Kubernetes manifests, you must authorize 
+these projects to access the agent. You can authorize agent access for individual 
+projects, groups, or subgroups so all projects have access.  
+For added security, you can also
 [use impersonation](#restrict-project-and-group-access-by-using-impersonation).
 
 Authorization configuration can take one or two minutes to propagate.
 
-### Authorize the agent to access your projects
+### Authorize your projects to access the agent
 
 {{< history >}}
 
@@ -72,7 +73,7 @@ Authorization configuration can take one or two minutes to propagate.
 
 {{< /history >}}
 
-To authorize the agent to access the GitLab project where you keep Kubernetes manifests:
+To authorize the GitLab project where you keep Kubernetes manifests to access the agent:
 
 1. On the left sidebar, select **Search or go to** and find the project that contains the [agent configuration file](install/_index.md#create-an-agent-configuration-file) (`config.yaml`).
 1. Edit the `config.yaml` file. Under the `ci_access` keyword, add the `projects` attribute.
@@ -88,11 +89,13 @@ To authorize the agent to access the GitLab project where you keep Kubernetes ma
    - You can install additional agents into the same cluster to accommodate additional hierarchies.
    - You can authorize up to 500 projects.
 
-All CI/CD jobs now include a `kubeconfig` file with contexts for every shared agent connection.
-The `kubeconfig` path is available in the environment variable `$KUBECONFIG`.
-Choose the context to run `kubectl` commands from your CI/CD scripts.
+After making these changes:
 
-### Authorize the agent to access projects in your groups
+- All CI/CD jobs now include a `kubeconfig` file with contexts for every shared agent connection.
+- The `kubeconfig` path is available in the `$KUBECONFIG` environment variable.
+- You can choose the context to run `kubectl` commands from your CI/CD scripts.
+
+### Authorize projects in your groups to access the agent
 
 {{< history >}}
 
@@ -100,7 +103,7 @@ Choose the context to run `kubectl` commands from your CI/CD scripts.
 
 {{< /history >}}
 
-To authorize the agent to access all of the GitLab projects in a group or subgroup:
+To authorize all of the GitLab projects in a group or subgroup to access the agent:
 
 1. On the left sidebar, select **Search or go to** and find the project that contains the [agent configuration file](install/_index.md#create-an-agent-configuration-file) (`config.yaml`).
 1. Edit the `config.yaml` file. Under the `ci_access` keyword, add the `groups` attribute.
@@ -117,10 +120,68 @@ To authorize the agent to access all of the GitLab projects in a group or subgro
    - All of the subgroups of an authorized group also have access to the same agent (without being specified individually).
    - You can authorize up to 500 groups.
 
-All the projects that belong to the group and its subgroups are now authorized to access the agent.
-All CI/CD jobs now include a `kubeconfig` file with contexts for every shared agent connection.
-The `kubeconfig` path is available in an environment variable `$KUBECONFIG`.
-Choose the context to run `kubectl` commands from your CI/CD scripts.
+After making these changes:
+
+- All the projects that belong to the group and its subgroups are now authorized to access the agent.
+- All CI/CD jobs now include a `kubeconfig` file with contexts for every shared agent connection.
+- The `kubeconfig` path is available in the `$KUBECONFIG` environment variable.
+- You can choose the context to run `kubectl` commands from your CI/CD scripts.
+
+### Authorize all projects in your GitLab instance to access the agent
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357516) in GitLab 17.11.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must be an administrator.
+
+To allow agents to be configured to authorize all projects in your GitLab instance:
+
+{{< tabs >}}
+
+{{< tab title="Using the UI" >}}
+
+1. In the **Admin** area, select **Settings > General**, and expand the **GitLab agent for Kubernetes** section.
+1. Select **Enable instance level authorization**.
+1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< tab title="Using the API" >}}
+
+1. [Update the application setting](../../../api/settings.md#update-application-settings) `organization_cluster_agent_authorization_enabled` to `true`.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+To authorize the agent to access all of the GitLab projects:
+
+1. On the left sidebar, select **Search or go to** and find the project that contains the [agent configuration file](install/_index.md#create-an-agent-configuration-file) (`config.yaml`).
+1. Edit the `config.yaml` file. Under the `ci_access` keyword, add the `instance` attribute:
+
+   ```yaml
+   ci_access:
+     instance: {}
+   ```
+
+After making these changes to the agent configuration file: 
+
+- The agent is authorized to access all projects in your instance.
+- All CI/CD jobs include a `kubeconfig` file with contexts for every shared agent connection.
+- The `kubeconfig` path is available in the `$KUBECONFIG` environment variable.
+- You can choose the context to run `kubectl` commands from your CI/CD scripts.
 
 ## Update your `.gitlab-ci.yml` file to run `kubectl` commands
 
@@ -334,7 +395,7 @@ See the [official Kubernetes documentation for details](https://kubernetes.io/do
 
 {{< /history >}}
 
-By default, if your agent is [available to a project](#authorize-the-agent), all of the project's CI/CD jobs can use that agent.
+By default, if your agent is [available to a project](#authorize-agent-access), all of the project's CI/CD jobs can use that agent.
 
 To restrict access to the agent to only jobs with specific environments, add `environments` to `ci_access.projects` or `ci_access.groups`. For example:
 

@@ -39,7 +39,7 @@ module Mutations
       def check_feature_availability!(issue)
         return if issue.supports_escalation?
 
-        raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Feature unavailable for provided issue'
+        raise_resource_not_available_error! 'Feature unavailable for provided issue'
       end
     end
   end

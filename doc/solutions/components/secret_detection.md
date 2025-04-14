@@ -100,7 +100,7 @@ To run secret detection automatically in the pipeline as the enforced global pol
 1. Select **Scan execution policy**.
 1. Configure the policy: Give the policy name `Secret Detection Policy` and enter a description and select `Secret Detection` scan
 1. Set the **Policy scope** by selecting either "All projects in this group" (and optionally set exceptions) or "Specific projects" (and select the projects from the dropdown).
-1. Under the **Actions** section, select "Dependency scanning" instead of "Secret Detection" (default).
+1. Under the **Actions** section, "Secret Detection" is shown as default.
 1. Under the **Conditions** section, you can optionally change "Triggers:" to "Schedules:" if you want to run the scan on a schedule instead of at every commit.
 1. Setup access to the custom ruleset: add CI variables with the value of the bot user, group variable and the URL of the custom ruleset project.
 

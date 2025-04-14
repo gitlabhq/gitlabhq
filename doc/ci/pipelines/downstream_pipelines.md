@@ -24,6 +24,9 @@ that triggered them.
 You can sometimes use parent-child pipelines and multi-project pipelines for similar purposes,
 but there are [key differences](pipeline_architectures.md).
 
+A pipeline hierarchy can contain up to 1000 downstream pipelines by default.
+For more information about this limit and how to change it, see [Limit pipeline hierarchy size](../../administration/instance_limits.md#limit-pipeline-hierarchy-size).
+
 ## Parent-child pipelines
 
 A parent pipeline is a pipeline that triggers a downstream pipeline in the same project.
@@ -624,6 +627,59 @@ pass `CI_MERGE_REQUEST_REF_PATH` to the downstream pipeline using [variable inhe
 You can use this method to fetch artifacts from upstream merge request pipelines,
 but not from [merged results pipelines](merged_results_pipelines.md).
 
+## Pass inputs to a downstream pipeline
+
+You can use the [`inputs`](../yaml/inputs.md) keyword to pass input values to downstream pipelines.
+Inputs provide advantages over variables including type checking, validation through options,
+descriptions, and default values.
+
+First, define input parameters in the target configuration file using `spec:inputs`:
+
+```yaml
+# Target pipeline configuration
+spec:
+  inputs:
+    environment:
+      description: "Deployment environment"
+      options: [staging, production]
+    version:
+      type: string
+      description: "Application version"
+```
+
+Then provide values when triggering the pipeline:
+
+{{< tabs >}}
+
+{{< tab title="Parent-child pipeline" >}}
+
+```yaml
+staging:
+  trigger:
+    include:
+      - local: path/to/child-pipeline.yml
+        inputs:
+          environment: staging
+          version: "1.0.0"
+```
+
+{{< /tab >}}
+
+{{< tab title="Multi-project pipeline" >}}
+
+```yaml
+staging:
+  trigger:
+    project: my-group/my-deployment-project
+    inputs:
+      environment: staging
+      version: "1.0.0"
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ## Pass CI/CD variables to a downstream pipeline
 
 You can pass [CI/CD variables](../variables/_index.md) to a downstream pipeline with
@@ -631,8 +687,10 @@ a few different methods, based on where the variable is created or defined.
 
 ### Pass YAML-defined CI/CD variables
 
+_Note: Inputs are recommended for pipeline configuration instead of variables as they offer improved security and flexibility._
+
 You can use the `variables` keyword to pass CI/CD variables to a downstream pipeline.
-These variables are "trigger variables" for [variable precedence](../variables/_index.md#cicd-variable-precedence).
+These variables are pipeline variables for [variable precedence](../variables/_index.md#cicd-variable-precedence).
 
 For example:
 

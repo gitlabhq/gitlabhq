@@ -131,9 +131,14 @@ Set up cronjobs to perform Gitaly server-side backups:
 
 {{< tab title="Linux package (Omnibus)" >}}
 
-1. [Configure a server-side backup destination in all Gitaly nodes](../gitaly/configure_gitaly.md#configure-server-side-backups).
-1. Configure [Upload backups to a remote (cloud) storage](backup_gitlab.md#upload-backups-to-a-remote-cloud-storage). Even though Gitaly backs up all Git data to its own object storage bucket, the `gitlab-backup` command also creates a `tar` file containing backup metadata. This `tar` file is required by the restore command.
-1. Make sure to add both buckets to [backups of object storage data](#configure-backup-of-object-storage-data).
+1. Configure Gitaly server-side backup destination on all Gitaly nodes by following [Configure server-side backups](../gitaly/configure_gitaly.md#configure-server-side-backups).
+   This bucket is used exclusively by Gitaly to store repository data.
+1. While Gitaly backs up all Git repository data in its designated object storage bucket configured above,
+   the backup utility tool (`gitlab-backup`) uploads additional backup data to a separate bucket. This data includes a `tar` file containing essential metadata for restores.
+   Ensure this backup data is properly uploaded to remote (cloud) storage by following
+   [Upload backups to a remote (cloud) storage](backup_gitlab.md#upload-backups-to-a-remote-cloud-storage) to set up the upload bucket.
+1. (Optional) To solidify the durability of this backup data, back up both buckets configured above with their respective object store provider by adding them to
+   [backups of object storage data](#configure-backup-of-object-storage-data).
 1. SSH into a GitLab Rails node, which is a node that runs Puma or Sidekiq.
 1. Take a full backup of your Git data. Use the `REPOSITORIES_SERVER_SIDE` variable, and skip PostgreSQL data:
 
@@ -173,10 +178,18 @@ Set up cronjobs to perform Gitaly server-side backups:
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-1. [Configure a server-side backup destination in all Gitaly nodes](../gitaly/configure_gitaly.md#configure-server-side-backups).
-1. [Configure Object storage buckets for backup-utility](https://docs.gitlab.com/charts/backup-restore/#object-storage). Even though Gitaly backs up all Git data to its own object storage bucket, the `backup-utility` command also creates a `tar` file containing backup metadata. This `tar` file is required by the restore command.
-1. Make sure to add both buckets to [backups of object storage data](#configure-backup-of-object-storage-data).
-1. Take a full backup of your Git data. Use the `--repositories-server-side` option, and skip all other data:
+1. Configure Gitaly server-side backup destination on all Gitaly nodes by following
+   [Configure server-side backups](../gitaly/configure_gitaly.md#configure-server-side-backups). This bucket is used exclusively by Gitaly to store repository data.
+1. While Gitaly backs up all Git repository data in its designated object storage bucket configured above,
+   the backup utility tool (`gitlab-backup`) uploads additional backup data to a separate bucket. This data includes a `tar` file containing essential metadata for restores.
+   Ensure this backup data is properly uploaded to remote (cloud) storage by following
+   [Upload backups to a remote (cloud) storage](backup_gitlab.md#upload-backups-to-a-remote-cloud-storage) to set up the upload bucket.
+1. (Optional) To solidify the durability of this backup data, both buckets configured above can be backed up by their respective object store provider by adding them
+   to [backups of object storage data](#configure-backup-of-object-storage-data).
+1. Ensure backup of both buckets by following [Configure backup of object storage data](#configure-backup-of-object-storage-data). Both storage buckets configured above
+   should also be backed up by their respective object storage provider.
+1. SSH into a GitLab Rails node, which is a node that runs Puma or Sidekiq.
+1. Take a full backup of your Git data. Use the `REPOSITORIES_SERVER_SIDE` variable and skip all other data:
 
    ```shell
    kubectl exec <Toolbox pod name> -it -- backup-utility --repositories-server-side --skip db,builds,pages,registry,uploads,artifacts,lfs,packages,external_diffs,terraform_state,pages,ci_secure_files

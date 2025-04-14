@@ -4,11 +4,12 @@ import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import { localeDateFormat, toISODateFormat } from '~/lib/utils/datetime_utility';
 import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
 
-const createComponent = (dueDate = new Date(), closed = false) =>
+const createComponent = ({ date = new Date(), startDate, closed = false } = {}) =>
   shallowMount(IssueDueDate, {
     propsData: {
       closed,
-      date: toISODateFormat(dueDate),
+      startDate,
+      date: toISODateFormat(date),
     },
     stubs: { WorkItemAttribute },
   });
@@ -32,28 +33,28 @@ describe('Issue Due Date component', () => {
 
   it('should render "Yesterday" if the due date is yesterday', () => {
     date.setDate(date.getDate() - 1);
-    wrapper = createComponent(date);
+    wrapper = createComponent({ date });
 
     expect(findTime(wrapper).text()).toBe('Yesterday');
   });
 
   it('should render "Tomorrow" if the due date is one day from now', () => {
     date.setDate(date.getDate() + 1);
-    wrapper = createComponent(date);
+    wrapper = createComponent({ date });
 
     expect(findTime(wrapper).text()).toBe('Tomorrow');
   });
 
   it('should render day of the week if due date is one week away', () => {
     date.setDate(date.getDate() + 5);
-    wrapper = createComponent(date);
+    wrapper = createComponent({ date });
 
     expect(findTime(wrapper).text()).toBe('Saturday');
   });
 
   it('should render month and day for other dates', () => {
     date.setDate(date.getDate() + 17);
-    wrapper = createComponent(date);
+    wrapper = createComponent({ date });
     const today = new Date();
     const expected =
       today.getFullYear() === date.getFullYear()
@@ -65,7 +66,7 @@ describe('Issue Due Date component', () => {
 
   it('should contain the correct icon for overdue issue that is open', () => {
     date.setDate(date.getDate() - 17);
-    wrapper = createComponent(date);
+    wrapper = createComponent({ date });
 
     expect(findIcon(wrapper).props()).toMatchObject({
       variant: 'danger',
@@ -76,11 +77,17 @@ describe('Issue Due Date component', () => {
   it('should not contain the overdue icon for overdue issue that is closed', () => {
     date.setDate(date.getDate() - 17);
     const closed = true;
-    wrapper = createComponent(date, closed);
+    wrapper = createComponent({ date, closed });
 
     expect(findIcon(wrapper).props()).toMatchObject({
       variant: 'subtle',
       name: 'calendar',
     });
+  });
+
+  it('renders date range when start date is provided', () => {
+    wrapper = createComponent({ date, startDate: '2020-02-02' });
+
+    expect(wrapper.text()).toContain('Feb 2 – Jul 6, 2020');
   });
 });

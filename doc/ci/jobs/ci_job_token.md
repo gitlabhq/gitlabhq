@@ -144,14 +144,6 @@ You can also add a group or project to the allowlist [with the API](../../api/gr
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
-
 You can populate a project's allowlist using the data from the [job token authentication log](#job-token-authentication-log)
 with the UI or a Rake task.
 
@@ -388,7 +380,7 @@ parameter in the `projects` REST API endpoint.
 
 ## Fine-grained permissions for job tokens
 
-Fine-grained permissions for job tokens are an [experiment](../../policy/development_stages_support.md#experiment). For information on this feature and the available resources, see [Fine-grained permissions for CI/CD job tokens](fine_grained_permissions.md). Feedback is welcome on this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519575).
+Fine-grained permissions for job tokens are an [experiment](../../policy/development_stages_support.md#experiment). For information on this feature and the available resources, see [fine-grained permissions for CI/CD job tokens](fine_grained_permissions.md). Feedback is welcome on this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519575).
 
 ## Use a job token
 
@@ -494,7 +486,7 @@ New authentications to a project can take up to 5 minutes to appear in the authe
 
 {{< /history >}}
 
-Beginning in GitLab 18.0, CI/CD job tokens use the JWT standard by default. All new projects created after February 21, 2025 on GitLab.com or from 17.10 on GitLab Self-Managed use this standard. Existing projects can continue to use the legacy format by configuring the top-level group for their project. This setting is only available until the GitLab 18.3 release.
+Beginning in GitLab 18.0, CI/CD job tokens use the JWT standard by default. All new projects created after February 21, 2025 on GitLab.com or from 17.10 on GitLab Self-Managed use this standard. Existing projects can continue to use the legacy format by configuring the top-level group for their project. This setting is only available until the GitLab 19.0 release.
 
 To use the legacy format for your CI/CD tokens:
 
@@ -553,3 +545,26 @@ While troubleshooting CI/CD job token authentication issues, be aware that:
   - To remove project access.
 - The CI job token becomes invalid if the job is no longer running, has been erased,
   or if the project is in the process of being deleted.
+
+### JWT format job token errors
+
+There are some known issues with the JWT format for CI/CD job tokens.
+
+#### `Error when persisting the task ARN.` error with EC2 Fargate Runner custom executor
+
+There is [a bug](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/fargate/-/issues/86)
+in version `0.5.0` and earlier of the EC2 Fargate custom executor. This issue causes this error:
+
+- `Error when persisting the task ARN. Will stop the task for cleanup`
+
+To fix this issue, upgrade to version `0.5.1` or later of the Fargate custom executor.
+
+#### `invalid character '\n' in string literal` error with `base64` encoding
+
+If you use `base64` to encode job tokens, you could receive an `invalid character '\n'` error.
+
+The default behavior of the `base64` command wraps strings that are longer than 79 characters.
+When `base64` encoding JWT format job tokens during job execution, for example with
+`echo $CI_JOB_TOKEN | base64`, the token is rendered invalid.
+
+To fix this issue, use `base64 -w0` to disable automatically wrapping the token.

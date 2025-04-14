@@ -6,6 +6,8 @@
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{current_user.name} issues")
 
 = render_dashboard_ultimate_trial(current_user)
+= render_product_usage_data_collection_changes(current_user)
+
 = render_if_exists 'shared/dashboard/saml_reauth_notice',
   groups_requiring_saml_reauth: user_groups_requiring_reauth
 

@@ -100,9 +100,18 @@ Elastic::ProcessBookkeepingService.track!(*MergeRequest.all)
 Elastic::ProcessBookkeepingService.new.execute
 ```
 
-## Testing migrations
+## Testing
 
-### Testing a migration that changes a mapping of an index
+{{< alert type="warning" >}}
+
+Elasticsearch tests do not run on every merge request. Add `~pipeline:run-search-tests` or `~group::global search` labels to the merge
+request to run tests with the production versions of Elasticsearch and PostgreSQL. 
+
+{{< /alert >}}
+
+### Advanced search migrations
+
+#### Testing a migration that changes a mapping of an index
 
 1. Make sure the index doesn't already have the changes applied. Remember the migration cron worker runs in the background so it's possible the migration was already applied.
    - You can consider disabling the migration worker to have more control: `Feature.disable(:elastic_migration_worker)`.

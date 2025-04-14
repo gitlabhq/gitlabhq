@@ -9,8 +9,10 @@ class AddIndexApprovalMergeRequestRulesOnConfigAndApprovalPolicyRule < Gitlab::D
   TABLE_NAME = :approval_merge_request_rules
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- large tables
     add_concurrent_index(TABLE_NAME, %i[security_orchestration_policy_configuration_id approval_policy_rule_id],
       name: INDEX_NAME)
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

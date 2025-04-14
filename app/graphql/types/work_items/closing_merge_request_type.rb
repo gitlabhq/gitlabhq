@@ -5,6 +5,8 @@ module Types
     class ClosingMergeRequestType < BaseObject
       graphql_name 'WorkItemClosingMergeRequest'
 
+      connection_type_class Types::WorkItems::Widgets::Connections::ClosingMergeRequestsConnectionType
+
       authorize :read_merge_request_closing_issue
 
       field :from_mr_description, GraphQL::Types::Boolean,

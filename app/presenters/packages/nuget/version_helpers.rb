@@ -68,7 +68,8 @@ module Packages
 
       def select_numeric_before_alphanumeric(a_num, a_pre_part, b_num, b_pre_part)
         return -1 if a_num != b_num && numeric?(a_pre_part) && !numeric?(b_pre_part)
-        return 1 if a_num != b_num && !numeric?(a_pre_part) && numeric?(b_pre_part)
+
+        1 if a_num != b_num && !numeric?(a_pre_part) && numeric?(b_pre_part)
       end
 
       def numeric?(pre_part)
@@ -81,7 +82,8 @@ module Packages
 
       def pick_non_nil(var_a, var_b)
         return -1 if var_a && !var_b
-        return 1 if !var_a && var_b
+
+        1 if !var_a && var_b
       end
     end
   end

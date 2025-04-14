@@ -125,43 +125,15 @@ RSpec.describe MergeRequests::CreatePipelineService, :clean_gitlab_redis_cache, 
             expect(response.payload.project).to eq(source_project)
             expect(response.payload.ref).to eq(merge_request.source_branch)
           end
-
-          context 'when FF allow_merge_request_pipelines_from_fork is disabled' do
-            before do
-              stub_feature_flags(allow_merge_request_pipelines_from_fork: false)
-            end
-
-            it 'creates a pipeline on the source_branch in the source_project' do
-              expect(response.payload.project).to eq(source_project)
-              expect(response.payload.ref).to eq(merge_request.source_branch)
-            end
-          end
         end
 
         context 'when source branch is protected' do
           context 'when actor does not have permission to update the protected branch in target project' do
             let!(:protected_branch) { create(:protected_branch, name: merge_request.source_branch, project: merge_request.target_project) }
 
-            context 'when FF allow_merge_request_pipelines_from_fork is enabled' do
-              before do
-                stub_feature_flags(allow_merge_request_pipelines_from_fork: true)
-              end
-
-              it 'creates a detached pipeline in the target project' do
-                expect(response).to be_success
-                expect(response.payload.project).to eq(merge_request.target_project)
-              end
-            end
-
-            context 'when FF allow_merge_request_pipelines_from_fork is disabled' do
-              before do
-                stub_feature_flags(allow_merge_request_pipelines_from_fork: false)
-              end
-
-              it 'creates a pipeline on the source_branch in the source_project' do
-                expect(response.payload.project).to eq(source_project)
-                expect(response.payload.ref).to eq(merge_request.source_branch)
-              end
+            it 'creates a detached pipeline in the target project' do
+              expect(response).to be_success
+              expect(response.payload.project).to eq(merge_request.target_project)
             end
           end
 

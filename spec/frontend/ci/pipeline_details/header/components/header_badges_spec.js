@@ -36,10 +36,10 @@ describe('Header badges', () => {
   it('displays tooltips for badges', () => {
     createComponent();
 
-    expect(wrapper.findByText('merged results').attributes('title')).toBe(
+    expect(wrapper.findByTestId('badges-merged-results').attributes('title')).toBe(
       'This pipeline ran on the contents of the merge request combined with the contents of the target branch.',
     );
-    expect(wrapper.findByText('Scheduled').attributes('title')).toBe(
+    expect(wrapper.findByTestId('badges-scheduled').attributes('title')).toBe(
       'This pipeline was created by a schedule',
     );
   });
@@ -80,7 +80,9 @@ describe('Header badges', () => {
 
       expect(wrapper.findByText('merged results').exists()).toBe(false);
       expect(wrapper.findByText('branch').exists()).toBe(false);
-      expect(wrapper.findByText('tag').attributes('title')).toBe('This pipeline ran for a tag.');
+      expect(wrapper.findByTestId('badges-tag').attributes('title')).toBe(
+        'This pipeline ran for a tag.',
+      );
     });
   });
 
@@ -94,7 +96,7 @@ describe('Header badges', () => {
 
       expect(wrapper.findByText('merged results').exists()).toBe(false);
       expect(wrapper.findByText('tag').exists()).toBe(false);
-      expect(wrapper.findByText('branch').attributes('title')).toBe(
+      expect(wrapper.findByTestId('badges-branch').attributes('title')).toBe(
         'This pipeline ran for a branch.',
       );
     });

@@ -230,6 +230,29 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     end
   end
 
+  context 'when pipeline is created' do
+    let(:pipeline_tracker) do
+      create(
+        :bulk_import_tracker,
+        :created,
+        entity: entity,
+        pipeline_name: 'FakePipeline'
+      )
+    end
+
+    it 'no-ops and returns' do
+      expect(described_class).not_to receive(:run)
+
+      expect(Gitlab::ErrorTracking).to receive(:log_exception)
+      .with(
+        instance_of(BulkImports::Pipeline::FailedError),
+        a_hash_including(tracker_state: 'created')
+      ).and_call_original
+
+      worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+    end
+  end
+
   context 'when pipeline is finished' do
     let(:pipeline_tracker) do
       create(
@@ -242,6 +265,13 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
     it 'no-ops and returns' do
       expect(described_class).not_to receive(:run)
+
+      expect_next_instance_of(BulkImports::Logger) do |logger|
+        expect(logger).to receive(:warn).with(a_hash_including(
+          message: 'Pipeline in invalid status',
+          tracker_state: 'finished'
+        )).and_call_original
+      end
 
       worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
     end
@@ -260,6 +290,13 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
     it 'no-ops and returns' do
       expect(described_class).not_to receive(:run)
 
+      expect_next_instance_of(BulkImports::Logger) do |logger|
+        expect(logger).to receive(:warn).with(a_hash_including(
+          message: 'Pipeline in invalid status',
+          tracker_state: 'skipped'
+        )).and_call_original
+      end
+
       worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
     end
   end
@@ -276,6 +313,13 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
     it 'no-ops and returns' do
       expect(described_class).not_to receive(:run)
+
+      expect_next_instance_of(BulkImports::Logger) do |logger|
+        expect(logger).to receive(:warn).with(a_hash_including(
+          message: 'Pipeline in invalid status',
+          tracker_state: 'canceled'
+        )).and_call_original
+      end
 
       worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
     end
@@ -564,6 +608,17 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
 
     context 'when export is batched', :aggregate_failures do
       let(:batches_count) { 3 }
+      let(:batches) do
+        [
+          {
+            'status' => 1,
+            'batch_number' => 1,
+            'objects_count' => 10,
+            'error' => "",
+            'updated_at' => 2.minutes.ago
+          }
+        ]
+      end
 
       before do
         allow_next_instance_of(BulkImports::ExportStatus) do |status|
@@ -572,6 +627,10 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
           allow(status).to receive(:started?).and_return(false)
           allow(status).to receive(:empty?).and_return(false)
           allow(status).to receive(:failed?).and_return(false)
+          allow(status).to receive(:batches).and_return(batches)
+          allow(status).to receive(:batch) do |batch_number|
+            batches[batch_number - 1]
+          end
         end
         allow(worker).to receive(:log_extra_metadata_on_done).and_call_original
       end
@@ -606,6 +665,62 @@ RSpec.describe BulkImports::PipelineWorker, feature_category: :importers do
         expect(pipeline_tracker.batched).to eq(true)
         expect(pipeline_tracker.batches.pluck_batch_numbers).to contain_exactly(1, 2, 3)
         expect(described_class.jobs).to be_empty
+      end
+
+      context 'when corresponding export batch failed' do
+        let(:batches_count) { 2 }
+        let(:batches) do
+          [
+            {
+              'status' => 1,
+              'batch_number' => 1,
+              'objects_count' => 10,
+              'error' => "",
+              'updated_at' => 2.minutes.ago
+            },
+            {
+              'status' => -1,
+              'batch_number' => 2,
+              'objects_count' => 0,
+              'error' => "Failed",
+              'updated_at' => 5.minutes.ago
+            }
+          ]
+        end
+
+        it 'mark corresponding tracker batch to failed' do
+          expect(BulkImports::Failure)
+          .to receive(:create)
+          .with(
+            a_hash_including(
+              bulk_import_entity_id: entity.id,
+              pipeline_class: pipeline_tracker.pipeline_name,
+              pipeline_step: 'pipeline_worker_run',
+              exception_class: '',
+              exception_message: 'Batch export 2 from source instance failed: Failed',
+              correlation_id_value: anything
+            )
+          )
+          worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+
+          pipeline_tracker.reload
+
+          expect(pipeline_tracker.status_name).to eq(:started)
+          expect(pipeline_tracker.batches.find_by(batch_number: 1).failed?).to eq(false)
+          expect(pipeline_tracker.batches.find_by(batch_number: 2).failed?).to eq(true)
+        end
+
+        it 'enqueue BulkImports::PipelineBatchWorker for all tracker batches' do
+          expect(BulkImports::PipelineBatchWorker).to receive(:perform_async).twice
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_batch_numbers_enqueued, [1, 2])
+          expect(worker).to receive(:log_extra_metadata_on_done).with(:tracker_final_batch_was_enqueued, true)
+
+          worker.perform(pipeline_tracker.id, pipeline_tracker.stage, entity.id)
+
+          pipeline_tracker.reload
+
+          expect(pipeline_tracker.status_name).to eq(:started)
+        end
       end
 
       context 'when batches count is less than 1' do

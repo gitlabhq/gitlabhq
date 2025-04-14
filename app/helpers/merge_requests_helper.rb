@@ -184,6 +184,10 @@ module MergeRequestsHelper
     Feature.enabled?(:notifications_todos_buttons, current_user)
   end
 
+  def can_use_description_composer(_user, _merge_request)
+    false
+  end
+
   def diffs_tab_pane_data(project, merge_request, params)
     {
       "is-locked": merge_request.discussion_locked?,
@@ -285,17 +289,6 @@ module MergeRequestsHelper
       initial_email: can?(current_user, :create_merge_request_in, project) &&
         project.new_issuable_address(current_user, 'merge_request')
     })
-  end
-
-  def project_merge_requests_list_more_actions_data(project, current_user)
-    {
-      is_signed_in: current_user.present?.to_s,
-      issuable_type: :merge_request,
-      issuable_count: issuables_count_for_state(:merge_request, params[:state]),
-      email: current_user.present? ? current_user.notification_email_or_default : nil,
-      export_csv_path: export_csv_project_merge_requests_path(project, request.query_parameters),
-      rss_url: url_for(safe_params.merge(rss_url_options))
-    }
   end
 
   def group_merge_requests_list_data(group, current_user)
@@ -485,7 +478,105 @@ module MergeRequestsHelper
     { new_comment_template_paths: new_comment_template_paths(@project.group, @project).to_json }
   end
 
+  def merge_request_dashboard_role_based_data
+    is_author_or_assignee = ::Feature.enabled?(:merge_request_dashboard_author_or_assignee, current_user,
+      type: :gitlab_com_derisk)
+
+    {
+      tabs: [
+        {
+          title: s_('MergeRequestsTab|Active'),
+          key: '',
+          lists: [
+            [
+              {
+                id: 'reviews',
+                title: _('Reviewer (Active)'),
+                helpContent: _(''),
+                query: 'reviewRequestedMergeRequests',
+                variables: {
+                  reviewStates: %w[UNREVIEWED REVIEW_STARTED UNAPPROVED],
+                  perPage: 10
+                }
+              },
+              {
+                id: 'reviews_inactive',
+                title: _('Reviewer (Inactive)'),
+                hideCount: true,
+                helpContent: _(''),
+                query: 'reviewRequestedMergeRequests',
+                variables: {
+                  reviewStates: %w[APPROVED REQUESTED_CHANGES REVIEWED],
+                  perPage: 10
+                }
+              },
+              {
+                id: 'assigned',
+                title: _('Assigned (Active)'),
+                helpContent: _(''),
+                query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
+                variables: {
+                  reviewStates: %w[REQUESTED_CHANGES REVIEWED],
+                  perPage: 10
+                }
+              },
+              {
+                id: 'assigned_inactive',
+                title: _('Assigned (Inactive)'),
+                hideCount: true,
+                helpContent: _(''),
+                query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
+                variables: {
+                  reviewStates: %w[APPROVED UNAPPROVED UNREVIEWED REVIEW_STARTED],
+                  perPage: 10
+                }
+              }
+            ]
+          ]
+        },
+        {
+          title: s_('MergeRequestsTab|Merged'),
+          key: 'merged',
+          lists: [
+            [
+              {
+                id: 'merged_recently_reviews',
+                title: _('Reviews'),
+                helpContent: _(''),
+                query: 'reviewRequestedMergeRequests',
+                variables: {
+                  state: 'merged',
+                  mergedAfter: 2.weeks.ago.to_time.iso8601,
+                  sort: 'MERGED_AT_DESC'
+                }
+              },
+              {
+                id: 'merged_recently_assigned',
+                title: _('Assigned'),
+                helpContent: _(''),
+                query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
+                variables: {
+                  state: 'merged',
+                  mergedAfter: 2.weeks.ago.to_time.iso8601,
+                  sort: 'MERGED_AT_DESC'
+                }
+              }
+            ]
+          ]
+        }
+      ]
+    }
+  end
+
   def merge_request_dashboard_data
+    is_author_or_assignee = ::Feature.enabled?(:merge_request_dashboard_author_or_assignee, current_user,
+      type: :gitlab_com_derisk)
+
+    if Feature.enabled?(:mr_dashboard_list_type_toggle, current_user, type: :beta) &&
+        current_user.merge_request_dashboard_list_type == 'role_based'
+      return merge_request_dashboard_role_based_data
+    end
+
     {
       tabs: [
         {
@@ -497,9 +588,13 @@ module MergeRequestsHelper
                 id: 'returned_to_you',
                 title: _('Returned to you'),
                 helpContent: _('Reviewers left feedback, or requested changes from you, on these merge requests.'),
-                query: 'assignedMergeRequests',
+                query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
-                  reviewStates: %w[REVIEWED REQUESTED_CHANGES]
+                  reviewStates: %w[REVIEWED REQUESTED_CHANGES],
+                  not: {
+                    onlyReviewer: true,
+                    reviewerUsername: 'GitlabDuo'
+                  }
                 }
               },
               {
@@ -513,22 +608,32 @@ module MergeRequestsHelper
               },
               {
                 id: 'assigned_to_you',
-                title: _('Assigned to you'),
-                helpContent: _("You're assigned to these merge requests, but they don't have reviewers yet."),
-                query: 'assignedMergeRequests',
+                title: is_author_or_assignee ? _('Your merge requests') : _('Assigned to you'),
+
+                helpContent: if is_author_or_assignee
+                               _("Merge requests you authored or are assigned to, " \
+                                 "without reviewers.")
+                             else
+                               _("You're assigned to these merge requests, but they don't have reviewers yet.")
+                             end,
+
+                query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
-                  reviewerWildcardId: 'NONE'
+                  or: {
+                    reviewerWildcard: 'NONE',
+                    onlyReviewerUsername: 'GitlabDuo'
+                  }
                 }
               }
             ],
             [
               {
                 id: 'waiting_for_assignee',
-                title: _('Waiting for assignee'),
+                title: is_author_or_assignee ? _('Waiting for author or assignee') : _('Waiting for assignee'),
                 hideCount: true,
                 helpContent: _(
-                  'Your assigned merge requests that are waiting for approvals, ' \
-                    'and reviews you have requested changes for.'
+                  "Your reviews you've requested changes for " \
+                    "or commented on."
                 ),
                 query: 'reviewRequestedMergeRequests',
                 variables: {
@@ -539,11 +644,8 @@ module MergeRequestsHelper
                 id: 'waiting_for_approvals',
                 title: _('Waiting for approvals'),
                 hideCount: true,
-                helpContent: _(
-                  'Your assigned merge requests that are waiting for approvals, ' \
-                    'and reviews you have requested changes for.'
-                ),
-                query: 'assignedMergeRequests',
+                helpContent: _('Your merge requests that are waiting for approvals.'),
+                query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
                   reviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED],
                   not: {
@@ -565,8 +667,8 @@ module MergeRequestsHelper
                 id: 'approved_by_others',
                 title: _('Approved by others'),
                 hideCount: true,
-                helpContent: _('Includes all merge requests you are assigned to and a reviewer has approved.'),
-                query: 'assignedMergeRequests',
+                helpContent: _('Your merge requests with approvals by all assigned reviewers.'),
+                query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
                   reviewState: 'APPROVED',
                   not: {
@@ -585,7 +687,7 @@ module MergeRequestsHelper
               id: 'merged_recently',
               title: _('Merged recently'),
               helpContent: _('These merge requests merged after %{date}. You were an assignee or a reviewer.') % {
-                date: 2.weeks.ago.to_date.to_formatted_s(:long)
+                date: l(2.weeks.ago.to_date, format: :long)
               },
               query: 'assigneeOrReviewerMergeRequests',
               variables: {

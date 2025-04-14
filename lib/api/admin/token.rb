@@ -6,12 +6,22 @@ module API
       feature_category :system_access
       AUDIT_SOURCE = :api_admin_token
 
+      helpers Gitlab::InternalEventsTracking
+
       helpers do
         def identify_token(plaintext)
           token = ::Authn::AgnosticTokenIdentifier.token_for(plaintext, AUDIT_SOURCE)
           raise ArgumentError, 'Token type not supported.' if token.blank?
 
           token
+        end
+
+        def track_admin_api_usage_event
+          track_internal_event(
+            'use_admin_token_api',
+            user: current_user,
+            namespace: current_user.namespace
+          )
         end
       end
 
@@ -42,6 +52,8 @@ module API
           identified_token = identify_token(params[:token])
           render_api_error!({ error: 'Not found' }, :not_found) if identified_token.revocable.nil?
 
+          track_admin_api_usage_event
+
           status :ok
 
           present identified_token.revocable, with: identified_token.present_with, current_user: current_user
@@ -69,7 +81,12 @@ module API
 
           response = identified_token.revoke!(current_user)
 
-          response.success? ? no_content! : render_api_error!({ error: response.message }, :bad_request)
+          if response.success?
+            track_admin_api_usage_event
+            no_content!
+          else
+            render_api_error!({ error: response.message }, :bad_request)
+          end
         end
       end
     end

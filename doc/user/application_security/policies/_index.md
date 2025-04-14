@@ -44,8 +44,9 @@ The following policy types are available:
 A security policy project is a special type of project used only to contain policies. The
 policies are stored in the `.gitlab/security-policies/policy.yml` YAML file.
 
-To enforce the policies contained in an security policy project you link it to a project, subgroup,
-group, or multiples of each. A security policy project can contain multiple policies but they are
+To enforce the policies contained in a security policy project, link the security policy
+project to the projects, subgroups, or groups you want to enforce the policies on.
+A security policy project can contain multiple policies but they are
 enforced together. A security policy project enforced on a group or subgroup applies to everything
 below in the hierarchy, including all subgroups and their projects.
 
@@ -411,7 +412,7 @@ To unlink a security policy project, follow the same steps but instead select th
 the dialog.
 You can link to a security policy project from a different subgroup in the same top-level group, or from an entirely different top-level group.
 However, when you enforce a
-[pipeline execution policy](../policies/pipeline_execution_policies.md#pipeline-execution-policy-schema), users must have at least read-only access to the project that contains the CI/CD configuration referenced in the policy to trigger the pipeline.
+[pipeline execution policy](pipeline_execution_policies.md#pipeline-execution-policy-schema), users must have at least read-only access to the project that contains the CI/CD configuration referenced in the policy to trigger the pipeline.
 
 ### Viewing the linked security policy project
 
@@ -503,7 +504,7 @@ When working with security policies, consider these troubleshooting tips:
   subgroup the development project belongs to. Linking this way results in approval
   rules from the merge request approval policies not being applied to merge requests in the development project.
 - When creating a merge request approval policy, neither the array `severity_levels` nor the array
-  `vulnerability_states` in the [`scan_finding` rule](../policies/merge_request_approval_policies.md#scan_finding-rule-type)
+  `vulnerability_states` in the [`scan_finding` rule](merge_request_approval_policies.md#scan_finding-rule-type)
   can be left empty. For a working rule, at least one entry must exist for each array.
 - The owner of a project can enforce policies for that project, provided they also have permissions to create projects in the group.
   Project owners who are not group members may face limitations in adding or editing policies. If you're unable to manage policies for your project,

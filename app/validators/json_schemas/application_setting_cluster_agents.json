@@ -6,6 +6,9 @@
   "properties": {
     "receptive_cluster_agents_enabled": {
       "type": "boolean"
+    },
+    "organization_cluster_agent_authorization_enabled": {
+      "type": "boolean"
     }
   }
 }

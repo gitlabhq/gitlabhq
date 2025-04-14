@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Project starring API
 ---
 
-You can get information about [projects and stars](../user/project/working_with_projects.md) by using the REST API.
+Use this API to interact with starred projects. For more information, see [projects and stars](../user/project/working_with_projects.md).
 
 ## List projects starred by a user
 

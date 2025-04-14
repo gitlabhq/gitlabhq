@@ -1,20 +1,35 @@
-query issue($projectPath: ID!, $iid: String!) {
-  project(fullPath: $projectPath) {
+query workItemPopover($fullPath: ID!, $iid: String!) {
+  namespace(fullPath: $fullPath) {
     id
-    issue(iid: $iid) {
+    workItem(iid: $iid) {
       id
-      title
-      createdAt
-      state
+      iid
       confidential
-      dueDate
-      milestone {
+      createdAt
+      fullReference: reference(full: true)
+      state
+      title
+      workItemType {
         id
-        title
-        startDate
-        dueDate
+        name
+        iconName
       }
-      type
+      widgets {
+        ... on WorkItemWidgetMilestone {
+          type
+          milestone {
+            id
+            dueDate
+            startDate
+            title
+          }
+        }
+        ... on WorkItemWidgetStartAndDueDate {
+          type
+          dueDate
+          startDate
+        }
+      }
     }
   }
 }

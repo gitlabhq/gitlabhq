@@ -36,7 +36,8 @@ describe('PipelineDurationChart', () => {
       includeLegendAvgMax: false,
       option: {
         yAxis: {
-          name: 'Seconds',
+          name: 'Minutes',
+          type: 'value',
         },
         xAxis: {
           name: 'Time',
@@ -48,6 +49,17 @@ describe('PipelineDurationChart', () => {
         { data: [], name: '95th percentile' },
       ],
     });
+  });
+
+  it('formats seconds in y axis labels as minutes', () => {
+    const { formatter } = findLineChart().props('option').yAxis.axisLabel;
+
+    expect(formatter(0)).toBe('0');
+    expect(formatter(1)).toBe('0.02');
+    expect(formatter(60)).toBe('1');
+    expect(formatter(3600)).toBe('60');
+    expect(formatter(60 * 10 ** 3)).toBe('1k');
+    expect(formatter(3600 * 10 ** 4)).toBe('600k');
   });
 
   it('displays chart with data', () => {

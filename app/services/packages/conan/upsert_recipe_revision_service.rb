@@ -27,8 +27,7 @@ module Packages
       attr_reader :package, :revision
 
       def recipe_revision
-        ::Packages::Conan::RecipeRevision.new(
-          package_id: package.id,
+        package.conan_recipe_revisions.build(
           revision: revision,
           project_id: package.project_id
         )

@@ -18,7 +18,7 @@ module Mutations
         target_project = resolve_project(full_path: target_project_path).sync
 
         begin
-          moved_issue = if Feature.enabled?(:work_item_move_and_clone, source_project)
+          moved_issue = if source_project.work_item_move_and_clone_flag_enabled?
                           response = ::WorkItems::DataSync::MoveService.new(
                             work_item: issue, current_user: current_user,
                             target_namespace: target_project.project_namespace

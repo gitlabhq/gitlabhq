@@ -167,9 +167,7 @@ module Projects
         )
 
         if group_access_level > GroupMember::NO_ACCESS
-          current_user.project_authorizations.safe_find_or_create_by!(
-            project: @project,
-            access_level: group_access_level)
+          ProjectAuthorization.find_or_create_authorization_for(current_user.id, @project.id, group_access_level)
         end
 
         AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(@project.id)
@@ -178,13 +176,7 @@ module Projects
         # compare the inconsistency rates of both approaches, we still run
         # AuthorizedProjectsWorker but with some delay and lower urgency as a
         # safety net.
-        if Feature.enabled?(:project_authorizations_update_in_background, @project.group.root_ancestor)
-          AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker.perform_async(@project.group.id)
-        else
-          @project.group.refresh_members_authorized_projects(
-            priority: UserProjectAccessChangedService::LOW_PRIORITY
-          )
-        end
+        AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker.perform_async(@project.group.id)
       else
         owner_user = @project.namespace.owner
         owner_member = @project.add_owner(owner_user, current_user: current_user)
@@ -193,10 +185,7 @@ module Projects
         # isn't picked up (or finished) by the time the user is redirected to the newly created project's page.
         # If that happens, the user will hit a 404. To avoid that scenario, we manually create a `project_authorizations` record for the user here.
         if owner_member.persisted?
-          owner_user.project_authorizations.safe_find_or_create_by(
-            project: @project,
-            access_level: ProjectMember::OWNER
-          )
+          ProjectAuthorization.find_or_create_authorization_for(owner_user.id, @project.id, ProjectMember::OWNER)
         end
         # During the process of adding a project owner, a check on permissions is made on the user which caches
         # the max member access for that user on this project.

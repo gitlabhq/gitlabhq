@@ -13,6 +13,7 @@ import {
   DASHBOARD_ROUTE_NAME,
   PROJECTS_DASHBOARD_ROUTE_NAME,
   PROJECT_DASHBOARD_TABS,
+  FIRST_TAB_ROUTE_NAMES,
   CONTRIBUTED_TAB,
   STARRED_TAB,
   PERSONAL_TAB,
@@ -22,18 +23,17 @@ import {
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+  SORT_DIRECTION_DESC,
+  SORT_DIRECTION_ASC,
 } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
   SORT_OPTIONS,
   SORT_OPTION_CREATED,
   SORT_OPTION_UPDATED,
-  SORT_DIRECTION_DESC,
-  SORT_DIRECTION_ASC,
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
 } from '~/projects/filtered_search_and_sort/constants';
-import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import projectCountsQuery from '~/projects/your_work/graphql/queries/project_counts.query.graphql';
 import userPreferencesUpdateMutation from '~/groups_projects/graphql/mutations/user_preferences_update.mutation.graphql';
@@ -47,6 +47,7 @@ import {
 } from '~/vue_shared/components/resource_lists/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { programmingLanguages } from './mock_data';
 
 jest.mock('~/alert');
@@ -59,10 +60,37 @@ const defaultRoute = {
   name: ROOT_ROUTE_NAME,
 };
 
-const defaultProvide = {
+const defaultPropsData = {
+  tabs: PROJECT_DASHBOARD_TABS,
+  filteredSearchSupportedTokens: [
+    FILTERED_SEARCH_TOKEN_LANGUAGE,
+    FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+  ],
+  filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
+  filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
+  filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_PROJECTS,
+  sortOptions: SORT_OPTIONS,
+  defaultSortOption: SORT_OPTION_UPDATED,
+  timestampTypeMap: {
+    [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
+    [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
+  },
+  firstTabRouteNames: FIRST_TAB_ROUTE_NAMES,
   initialSort: 'created_desc',
   programmingLanguages,
+  eventTracking: {
+    filteredSearch: {
+      [FILTERED_SEARCH_TERM_KEY]: 'search_on_your_work_projects',
+      [FILTERED_SEARCH_TOKEN_LANGUAGE]: 'filter_by_language_on_your_work_projects',
+      [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: 'filter_by_role_on_your_work_projects',
+    },
+    pagination: 'click_pagination_on_your_work_projects',
+    tabs: 'click_tab_on_your_work_projects',
+    sort: 'click_sort_on_your_work_projects',
+  },
 };
+
+const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
 const searchTerm = 'foo bar';
 const mockEndCursor = 'mockEndCursor';
@@ -85,7 +113,7 @@ describe('TabsWithList', () => {
   });
 
   const createComponent = async ({
-    provide = {},
+    propsData = {},
     projectsCountHandler = successHandler,
     userPreferencesUpdateHandler = userPreferencesUpdateSuccessHandler,
     route = defaultRoute,
@@ -103,7 +131,7 @@ describe('TabsWithList', () => {
       stubs: {
         TabView: stubComponent(TabView),
       },
-      provide: { ...defaultProvide, ...provide },
+      propsData: { ...defaultPropsData, ...propsData },
     });
   };
 
@@ -170,7 +198,11 @@ describe('TabsWithList', () => {
     });
 
     it('renders filtered search bar with correct props', async () => {
-      await createComponent();
+      await createComponent({
+        propsData: {
+          filteredSearchSupportedTokens: [FILTERED_SEARCH_TOKEN_LANGUAGE],
+        },
+      });
 
       expect(findFilteredSearchAndSort().props()).toMatchObject({
         filteredSearchTokens: [
@@ -186,26 +218,13 @@ describe('TabsWithList', () => {
               { value: '8', title: 'CoffeeScript' },
             ],
           },
-          {
-            type: FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
-            icon: 'user',
-            title: 'Role',
-            token: GlFilteredSearchToken,
-            unique: true,
-            operators: OPERATORS_IS,
-            options: [
-              {
-                value: '50',
-                title: 'Owner',
-              },
-            ],
-          },
         ],
         filteredSearchQuery: {},
-        filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
-        filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
-        filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_PROJECTS,
-        sortOptions: SORT_OPTIONS,
+        filteredSearchTermKey: defaultPropsData.filteredSearchTermKey,
+        filteredSearchNamespace: defaultPropsData.filteredSearchNamespace,
+        filteredSearchRecentSearchesStorageKey:
+          defaultPropsData.filteredSearchRecentSearchesStorageKey,
+        sortOptions: defaultPropsData.sortOptions,
         activeSortOption: SORT_OPTION_CREATED,
         isAscending: false,
       });
@@ -214,29 +233,75 @@ describe('TabsWithList', () => {
     describe('when filtered search bar is submitted', () => {
       beforeEach(async () => {
         await createComponent();
-
-        findFilteredSearchAndSort().vm.$emit('filter', {
-          [FILTERED_SEARCH_TERM_KEY]: searchTerm,
-        });
-        await waitForPromises();
       });
 
-      it('updates query string', () => {
-        expect(router.currentRoute.query).toEqual({ [FILTERED_SEARCH_TERM_KEY]: searchTerm });
+      it('updates query string', async () => {
+        findFilteredSearchAndSort().vm.$emit('filter', {
+          [defaultPropsData.filteredSearchTermKey]: searchTerm,
+        });
+        await waitForPromises();
+
+        expect(router.currentRoute.query).toEqual({
+          [defaultPropsData.filteredSearchTermKey]: searchTerm,
+        });
+      });
+
+      it('tracks all filter events when multiple filters are applied', async () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        findFilteredSearchAndSort().vm.$emit('filter', {
+          [defaultPropsData.filteredSearchTermKey]: searchTerm,
+          [FILTERED_SEARCH_TOKEN_LANGUAGE]: ['5'],
+          [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ['50'],
+        });
+        await waitForPromises();
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'search_on_your_work_projects',
+          { label: 'Contributed' },
+          undefined,
+        );
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'filter_by_language_on_your_work_projects',
+          { label: 'Contributed', property: 'CSS' },
+          undefined,
+        );
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'filter_by_role_on_your_work_projects',
+          { label: 'Contributed', property: 'Owner' },
+          undefined,
+        );
+      });
+
+      describe('when invalid filter option is used', () => {
+        it('does not track events', async () => {
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+          findFilteredSearchAndSort().vm.$emit('filter', {
+            [FILTERED_SEARCH_TOKEN_LANGUAGE]: ['51'],
+          });
+          await waitForPromises();
+
+          expect(trackEventSpy).not.toHaveBeenCalled();
+        });
       });
     });
 
     describe('when sort is changed', () => {
+      let trackEventSpy;
+
       beforeEach(async () => {
         await createComponent({
           route: {
             ...defaultRoute,
             query: {
-              [FILTERED_SEARCH_TERM_KEY]: searchTerm,
+              [defaultPropsData.filteredSearchTermKey]: searchTerm,
               [QUERY_PARAM_END_CURSOR]: mockEndCursor,
             },
           },
         });
+
+        trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
 
         findFilteredSearchAndSort().vm.$emit('sort-by-change', SORT_OPTION_UPDATED.value);
         await waitForPromises();
@@ -244,7 +309,7 @@ describe('TabsWithList', () => {
 
       it('updates query string', () => {
         expect(router.currentRoute.query).toEqual({
-          [FILTERED_SEARCH_TERM_KEY]: searchTerm,
+          [defaultPropsData.filteredSearchTermKey]: searchTerm,
           sort: `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_DESC}`,
         });
       });
@@ -258,19 +323,31 @@ describe('TabsWithList', () => {
       it('does not call Sentry.captureException', () => {
         expect(Sentry.captureException).not.toHaveBeenCalled();
       });
+
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'click_sort_on_your_work_projects',
+          { label: 'Contributed', property: `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_DESC}` },
+          undefined,
+        );
+      });
     });
 
     describe('when sort direction is changed', () => {
+      let trackEventSpy;
+
       beforeEach(async () => {
         await createComponent({
           route: {
             ...defaultRoute,
             query: {
-              [FILTERED_SEARCH_TERM_KEY]: searchTerm,
+              [defaultPropsData.filteredSearchTermKey]: searchTerm,
               [QUERY_PARAM_END_CURSOR]: mockEndCursor,
             },
           },
         });
+
+        trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
 
         findFilteredSearchAndSort().vm.$emit('sort-direction-change', true);
         await waitForPromises();
@@ -278,7 +355,7 @@ describe('TabsWithList', () => {
 
       it('updates query string', () => {
         expect(router.currentRoute.query).toEqual({
-          [FILTERED_SEARCH_TERM_KEY]: searchTerm,
+          [defaultPropsData.filteredSearchTermKey]: searchTerm,
           sort: `${SORT_OPTION_CREATED.value}_${SORT_DIRECTION_ASC}`,
         });
       });
@@ -291,6 +368,14 @@ describe('TabsWithList', () => {
 
       it('does not call Sentry.captureException', () => {
         expect(Sentry.captureException).not.toHaveBeenCalled();
+      });
+
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'click_sort_on_your_work_projects',
+          { label: 'Contributed', property: `${SORT_OPTION_CREATED.value}_${SORT_DIRECTION_ASC}` },
+          undefined,
+        );
       });
     });
   });
@@ -323,7 +408,7 @@ describe('TabsWithList', () => {
   `('onMount when route name is $name', ({ name, expectedTab }) => {
     const query = {
       sort: 'name_desc',
-      [FILTERED_SEARCH_TERM_KEY]: 'foo',
+      [defaultPropsData.filteredSearchTermKey]: 'foo',
       [FILTERED_SEARCH_TOKEN_LANGUAGE]: '8',
       [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ACCESS_LEVEL_OWNER_INTEGER,
       [QUERY_PARAM_END_CURSOR]: mockEndCursor,
@@ -348,10 +433,11 @@ describe('TabsWithList', () => {
       expect(findTabView().props()).toMatchObject({
         sort: query.sort,
         filters: {
-          [FILTERED_SEARCH_TERM_KEY]: query[FILTERED_SEARCH_TERM_KEY],
+          [defaultPropsData.filteredSearchTermKey]: query[defaultPropsData.filteredSearchTermKey],
           [FILTERED_SEARCH_TOKEN_LANGUAGE]: query[FILTERED_SEARCH_TOKEN_LANGUAGE],
           [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: query[FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL],
         },
+        filteredSearchTermKey: defaultPropsData.filteredSearchTermKey,
         endCursor: mockEndCursor,
         startCursor: mockStartCursor,
       });
@@ -380,7 +466,7 @@ describe('TabsWithList', () => {
   describe('when sort query param and initial sort are invalid', () => {
     beforeEach(async () => {
       await createComponent({
-        provide: { initialSort: 'foo_bar' },
+        propsData: { initialSort: 'foo_bar' },
         route: {
           ...defaultRoute,
           query: {
@@ -390,9 +476,9 @@ describe('TabsWithList', () => {
       });
     });
 
-    it('falls back to updated in ascending order', () => {
+    it('falls back to defaultSortOption prop ascending order', () => {
       expect(findTabView().props()).toMatchObject({
-        sort: `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_ASC}`,
+        sort: `${defaultPropsData.defaultSortOption.value}_${SORT_DIRECTION_ASC}`,
       });
     });
   });
@@ -425,6 +511,18 @@ describe('TabsWithList', () => {
         await nextTick();
 
         expect(router.push).toHaveBeenCalledWith({ name: PROJECT_DASHBOARD_TABS[2].value });
+      });
+
+      it('tracks event', () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        findGlTabs().vm.$emit('input', 2);
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'click_tab_on_your_work_projects',
+          { label: PERSONAL_TAB.text },
+          undefined,
+        );
       });
     });
 
@@ -469,6 +567,8 @@ describe('TabsWithList', () => {
   });
 
   describe('when page is changed', () => {
+    let trackEventSpy;
+
     describe('when going to next page', () => {
       beforeEach(async () => {
         await createComponent({
@@ -476,6 +576,8 @@ describe('TabsWithList', () => {
         });
 
         await nextTick();
+
+        trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
 
         findTabView().vm.$emit('page-change', {
           endCursor: mockEndCursor,
@@ -490,6 +592,14 @@ describe('TabsWithList', () => {
         expect(router.currentRoute.query).toMatchObject({
           end_cursor: mockEndCursor,
         });
+      });
+
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'click_pagination_on_your_work_projects',
+          { label: 'Contributed', property: 'next' },
+          undefined,
+        );
       });
     });
 
@@ -507,6 +617,8 @@ describe('TabsWithList', () => {
 
         await nextTick();
 
+        trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
+
         findTabView().vm.$emit('page-change', {
           endCursor: null,
           startCursor: mockStartCursor,
@@ -519,19 +631,27 @@ describe('TabsWithList', () => {
           start_cursor: mockStartCursor,
         });
       });
+
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'click_pagination_on_your_work_projects',
+          { label: 'Contributed', property: 'previous' },
+          undefined,
+        );
+      });
     });
   });
 
   describe.each`
     sort                      | expectedTimestampType
-    ${'name_asc'}             | ${TIMESTAMP_TYPE_CREATED_AT}
-    ${'name_desc'}            | ${TIMESTAMP_TYPE_CREATED_AT}
+    ${'name_asc'}             | ${undefined}
+    ${'name_desc'}            | ${undefined}
     ${'created_asc'}          | ${TIMESTAMP_TYPE_CREATED_AT}
     ${'created_desc'}         | ${TIMESTAMP_TYPE_CREATED_AT}
     ${'latest_activity_asc'}  | ${TIMESTAMP_TYPE_LAST_ACTIVITY_AT}
     ${'latest_activity_desc'} | ${TIMESTAMP_TYPE_LAST_ACTIVITY_AT}
-    ${'stars_asc'}            | ${TIMESTAMP_TYPE_CREATED_AT}
-    ${'stars_desc'}           | ${TIMESTAMP_TYPE_CREATED_AT}
+    ${'stars_asc'}            | ${undefined}
+    ${'stars_desc'}           | ${undefined}
   `('when sort is $sort', ({ sort, expectedTimestampType }) => {
     beforeEach(async () => {
       await createComponent({

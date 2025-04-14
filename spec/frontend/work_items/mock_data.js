@@ -998,6 +998,7 @@ export const workItemDevelopmentMRNodes = [
       project: {
         name: 'Flight',
         id: 'gid://gitlab/Project/1',
+        path: 'flight',
         namespace: {
           path: 'flightjs',
           __typename: 'Namespace',
@@ -1038,6 +1039,7 @@ export const workItemDevelopmentMRNodes = [
       project: {
         id: 'gid://gitlab/Project/1',
         name: 'Flight',
+        path: 'flight',
         namespace: {
           path: 'flightjs',
           __typename: 'Namespace',
@@ -1068,6 +1070,7 @@ export const workItemDevelopmentMRNodes = [
       project: {
         id: 'gid://gitlab/Project/1',
         name: 'Flight',
+        path: 'flight',
         namespace: {
           path: 'flightjs',
           __typename: 'Namespace',
@@ -1098,6 +1101,7 @@ export const workItemDevelopmentMRNodes = [
       project: {
         id: 'gid://gitlab/Project/1',
         name: 'Flight',
+        path: 'flight',
         namespace: {
           path: 'flightjs',
           __typename: 'Namespace',
@@ -1138,6 +1142,7 @@ export const workItemDevelopmentMRNodes = [
       project: {
         id: 'gid://gitlab/Project/1',
         name: 'Flight',
+        path: 'flight',
         namespace: {
           path: 'flightjs',
           __typename: 'Namespace',
@@ -5440,6 +5445,60 @@ export const groupWorkItemsQueryResponse = {
               name: 'Issue',
             },
           },
+          {
+            id: 'gid://gitlab/WorkItem/51',
+            iid: '21',
+            author: {
+              id: 'gid://gitlab/User/9',
+              avatarUrl: 'author/avatar/url',
+              name: 'Arthur',
+              username: 'arthur',
+              webUrl: 'author/web/url',
+              webPath: 'author/web/url',
+            },
+            closedAt: '',
+            confidential: true,
+            createdAt: '2020-01-23T12:34:56Z',
+            namespace: {
+              id: 'full-path-epic-id',
+              fullPath: 'full-path',
+            },
+            reference: 'javascriptjs/js#23',
+            state: 'OPEN',
+            title: 'a group level work item',
+            updatedAt: '',
+            webUrl: 'web/url',
+            userDiscussionsCount: 0,
+            widgets: [
+              {
+                __typename: 'WorkItemWidgetAssignees',
+                assignees: {
+                  nodes: mockAssignees,
+                },
+                type: 'ASSIGNEES',
+              },
+              {
+                __typename: 'WorkItemWidgetLabels',
+                allowsScopedLabels: false,
+                labels: {
+                  nodes: [
+                    {
+                      __typename: 'Label',
+                      id: 'gid://gitlab/Label/7',
+                      color: '#f00',
+                      description: '',
+                      title: 'Label 7',
+                    },
+                  ],
+                },
+                type: 'LABELS',
+              },
+            ],
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/5',
+              name: 'Issue',
+            },
+          },
         ],
       },
     },
@@ -5885,6 +5944,7 @@ export const createWorkItemQueryResponse = {
             },
             __typename: 'WorkItemWidgetWeight',
           },
+          customFieldsWidgetResponseFactory(),
         ],
         __typename: 'WorkItem',
       },
@@ -6282,3 +6342,71 @@ export const workItemEmailParticipantsEmptyResponse = {
     },
   },
 };
+
+export const getErrorTrackingQueryResponse = ({ nodes = [], status = 'SUCCESS' }) => ({
+  data: {
+    namespace: {
+      __typename: 'Namespace',
+      id: 'gid://gitlab/Project/1',
+      workItem: {
+        __typename: 'WorkItem',
+        id: 'gid://gitlab/WorkItem/10',
+        widgets: [
+          {
+            __typename: 'WorkItemWidgetErrorTracking',
+            type: 'ERROR_TRACKING',
+            identifier: '1',
+            stackTrace: {
+              nodes,
+            },
+            status,
+          },
+        ],
+      },
+    },
+  },
+});
+
+export const errorTrackingQueryResponseWithStackTrace = getErrorTrackingQueryResponse({
+  nodes: [
+    {
+      absolutePath: 'test.rb',
+      columnNumber: null,
+      context: [
+        {
+          line: '<span id="LC1" class="line" lang="ruby"><span class="k">end</span></span>',
+          lineNumber: 13,
+        },
+        {
+          line: '<span id="LC1" class="line" lang="ruby"></span>',
+          lineNumber: 14,
+        },
+        {
+          line: '<span id="LC1" class="line" lang="ruby"><span class="k">begin</span></span>',
+          lineNumber: 15,
+        },
+        {
+          line: '<span id="LC1" class="line" lang="ruby">  <span class="mi">1</span> <span class="o">/</span> <span class="mi">0</span></span>',
+          lineNumber: 16,
+        },
+        {
+          line: '<span id="LC1" class="line" lang="ruby"><span class="k">rescue</span> <span class="no">ZeroDivisionError</span> <span class="o">=&gt;</span> <span class="n">exception</span></span>',
+          lineNumber: 17,
+        },
+        {
+          line: '<span id="LC1" class="line" lang="ruby">  <span class="no">Sentry</span><span class="p">.</span><span class="nf">capture_exception</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span></span>',
+          lineNumber: 18,
+        },
+        {
+          line: '<span id="LC1" class="line" lang="ruby"><span class="k">end</span></span>',
+          lineNumber: 19,
+        },
+      ],
+      filename: 'test.rb',
+      function: '<main>',
+      lineNumber: 16,
+    },
+  ],
+});
+
+export const mockRolledUpHealthStatus = [];

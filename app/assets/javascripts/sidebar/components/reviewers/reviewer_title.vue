@@ -52,6 +52,7 @@ export default {
     <template v-if="editable">
       <reviewer-dropdown
         class="gl-ml-auto"
+        usage="simple"
         :selected-reviewers="reviewers"
         :visible-reviewers="reviewers"
       />

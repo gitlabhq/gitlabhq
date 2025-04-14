@@ -3,7 +3,7 @@ table_name: p_ci_pipeline_variables
 classes:
 - Ci::PipelineVariable
 feature_categories:
-- continuous_integration
+- secrets_management
 description: Routing table for ci_pipeline_variables
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141270
 milestone: '16.9'

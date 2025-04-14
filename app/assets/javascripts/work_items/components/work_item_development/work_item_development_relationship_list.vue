@@ -30,6 +30,19 @@ export default {
       required: false,
       default: false,
     },
+    canCreateMergeRequest: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    workItemFullPath: {
+      type: String,
+      required: true,
+    },
+    workItemIid: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     list() {
@@ -114,16 +127,19 @@ export default {
   <div>
     <ul
       ref="list-body"
-      class="gl-m-0 gl-list-none gl-p-0"
+      class="content-list"
       data-testid="work-item-dev-items-list"
       :data-list-length="list.length"
     >
-      <li
-        v-for="item in list"
-        :key="itemId(item)"
-        class="gl-border-b gl-py-4 first:!gl-pt-0 last:gl-border-none last:!gl-pb-0"
-      >
-        <component :is="itemComponent(item)" :item-content="item" :is-modal="isModal" />
+      <li v-for="item in list" :key="itemId(item)">
+        <component
+          :is="itemComponent(item)"
+          :item-content="item"
+          :is-modal="isModal"
+          :work-item-full-path="workItemFullPath"
+          :work-item-iid="workItemIid"
+          :can-create-merge-request="canCreateMergeRequest"
+        />
       </li>
     </ul>
   </div>

@@ -35,6 +35,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         get project_merge_request_path(project, merge_request)
 
         expect(flash[:alert]).to include('This merge request has reached the maximum limit')
+        expect(flash[:alert]).not_to include("This merge request has too many diff commits, and can't be updated")
       end
 
       context 'when "merge_requests_diffs_limit" feature flag is disabled' do
@@ -46,6 +47,46 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
           get project_merge_request_path(project, merge_request)
 
           expect(flash[:alert]).to be_blank
+        end
+      end
+    end
+
+    context 'when diff commits limit is reached' do
+      before do
+        stub_const('MergeRequest::DIFF_COMMITS_LIMIT', 1)
+        # merge_request_diff model has a after_save callback that nullifies commits counts
+        # using #update_column to override this behavior
+        merge_request.merge_request_diff.update_column(:commits_count, 2)
+      end
+
+      it 'displays a warning' do
+        get project_merge_request_path(project, merge_request)
+
+        expect(flash[:alert]).to include("This merge request has too many diff commits, and can't be updated")
+      end
+
+      context 'when "merge_requests_diff_commits_limit" feature flag is disabled' do
+        before do
+          stub_feature_flags(merge_requests_diff_commits_limit: false)
+        end
+
+        it 'does not display a warning' do
+          get project_merge_request_path(project, merge_request)
+
+          expect(flash[:alert]).to be_blank
+        end
+      end
+
+      context 'when diff version limit is also reached' do
+        before do
+          stub_const('MergeRequest::DIFF_VERSION_LIMIT', 1)
+        end
+
+        it 'displays only one warning' do
+          get project_merge_request_path(project, merge_request)
+
+          expect(flash[:alert]).to include('This merge request has reached the maximum limit')
+          expect(flash[:alert]).not_to include("This merge request has too many diff commits, and can't be updated")
         end
       end
     end
@@ -304,6 +345,49 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         send_request
 
         expect(json_response['diff_files']).to be_empty
+      end
+    end
+  end
+
+  describe 'GET #diffs_stats' do
+    before do
+      project.add_developer(user)
+      login_as(user)
+    end
+
+    let(:additional_params) { {} }
+    let(:send_request) { get diffs_stats_project_merge_request_path(project, merge_request, params: additional_params) }
+
+    include_examples 'diffs stats' do
+      let(:expected_stats) do
+        {
+          added_lines: 118,
+          removed_lines: 9,
+          diffs_count: 20
+        }
+      end
+    end
+
+    context 'when diffs overflow' do
+      include_examples 'overflow' do
+        let(:expected_stats) do
+          {
+            visible_count: 20,
+            email_path: "/#{project.full_path}/-/merge_requests/1.diff",
+            diff_path: "/#{project.full_path}/-/merge_requests/1.patch"
+          }
+        end
+      end
+    end
+
+    context 'when merge_request_diff does not exist' do
+      let(:merge_request) { create(:merge_request, :skip_diff_creation, author: user) }
+      let(:project) { merge_request.project }
+
+      it 'returns an empty array' do
+        send_request
+
+        expect(json_response['diffs_stats']).to eq({ "added_lines" => 0, "removed_lines" => 0, "diffs_count" => 0 })
       end
     end
   end

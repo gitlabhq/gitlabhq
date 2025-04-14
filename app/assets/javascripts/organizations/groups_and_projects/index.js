@@ -30,7 +30,6 @@ export const initOrganizationsGroupsAndProjects = () => {
   const {
     organizationGid,
     newGroupPath,
-    groupsPath,
     newProjectPath,
     canCreateGroup,
     canCreateProject,
@@ -53,7 +52,6 @@ export const initOrganizationsGroupsAndProjects = () => {
     provide: {
       organizationGid,
       newGroupPath,
-      groupsPath,
       newProjectPath,
       canCreateGroup,
       canCreateProject,

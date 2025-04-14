@@ -70,7 +70,7 @@ those projects provide a bare-bones application built on some well-known framewo
 
 {{< alert type="warning" >}}
 
-Create the application project in the group hierarchy at the same level or below the project for cluster management. Otherwise, it fails to [authorize the agent](../../../user/clusters/agent/ci_cd_workflow.md#authorize-the-agent).
+Create the application project in the group hierarchy at the same level or below the project for cluster management. Otherwise, it fails to [authorize the agent](../../../user/clusters/agent/ci_cd_workflow.md#authorize-agent-access).
 
 {{< /alert >}}
 
@@ -145,7 +145,7 @@ Follow these steps to configure the base domain and other settings required for 
 ## Enable Auto DevOps and run the pipeline
 
 While Auto DevOps is enabled by default, Auto DevOps can be disabled for both
-the instance (for self-managed instances) and the group. Complete
+the instance (for GitLab Self-Managed instances) and the group. Complete
 these steps to enable Auto DevOps if it's disabled:
 
 1. On the left sidebar, select **Search or go to** and find the application project.

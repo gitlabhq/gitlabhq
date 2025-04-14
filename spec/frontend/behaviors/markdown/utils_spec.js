@@ -1,6 +1,6 @@
-import { toggleMarkCheckboxes } from '~/behaviors/markdown/utils';
+import { toggleCheckbox } from '~/behaviors/markdown/utils';
 
-describe('toggleMarkCheckboxes', () => {
+describe('toggleCheckbox', () => {
   const rawMarkdown = `- [x] todo 1\n- [ ] todo 2`;
 
   it.each`
@@ -10,9 +10,7 @@ describe('toggleMarkCheckboxes', () => {
   `(
     '$assertionName the checkbox at correct position',
     ({ sourcepos, checkboxChecked, expectedMarkdown }) => {
-      expect(toggleMarkCheckboxes({ rawMarkdown, sourcepos, checkboxChecked })).toEqual(
-        expectedMarkdown,
-      );
+      expect(toggleCheckbox({ rawMarkdown, sourcepos, checkboxChecked })).toEqual(expectedMarkdown);
     },
   );
 });

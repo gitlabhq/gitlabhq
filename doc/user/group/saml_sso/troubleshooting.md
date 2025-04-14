@@ -15,15 +15,12 @@ title: Troubleshooting SAML
 This page contains possible solutions for problems you might encounter when using:
 
 - [SAML SSO for GitLab.com groups](_index.md).
-- The self-managed instance-level [SAML OmniAuth Provider](../../../integration/saml.md).
-- [Switchboard](../../../administration/dedicated/configure_instance/saml.md#activate-saml-with-switchboard) to configure SAML for GitLab Dedicated instances.
+- The GitLab Self-Managed instance-level [SAML OmniAuth Provider](../../../integration/saml.md).
+- [Switchboard](../../../administration/dedicated/configure_instance/saml.md#add-a-saml-provider-with-switchboard) to configure SAML for GitLab Dedicated instances.
 
 ## SAML debugging tools
 
-SAML responses are base64 encoded, so we recommend the following browser plugins to decode them on the fly:
-
-- [SAML-tracer](https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/) for Firefox.
-- [SAML Message Decoder](https://chromewebstore.google.com/detail/mpabchoaimgbdbbjjieoaeiibojelbhm?hl=en) for Chrome.
+SAML responses are base64 encoded. To decode them on the fly you can use the **SAML-tracer** browser extension ([Firefox](https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/), [Chrome](https://chromewebstore.google.com/detail/saml-tracer/mpdajninpobndbfcldcmbpnnbhibjmch?hl=en)).
 
 If you cannot install a browser plugin, you can [manually generate and capture a SAML response](#manually-generate-a-saml-response) instead.
 
@@ -49,7 +46,7 @@ To generate a SAML Response:
 1. For GitLab.com Groups:
    - Go to the GitLab single sign-on URL for the group.
    - Select **Authorize** or attempt to sign
-1. For Self Managed Instance:
+1. For GitLab Self-Managed instance:
    - Go to the instance home page
    - Click on the `SAML Login` button to sign in
 1. A SAML response is displayed in the tracer console that resembles this
@@ -222,13 +219,13 @@ For convenience, we've included some [example resources](example_saml_config.md)
 
 ### Calculate the fingerprint
 
-If you use a `idp_cert_fingerprint`, it must be a SHA1 fingerprint. To calculate a SHA1 fingerprint, download the certificate file and run:
+When configuring the `idp_cert_fingerprint` you should use a SHA256 fingerprint whenever possible. SHA1 is also supported, but is not recommended. You can calculate the fingerprint by running the following command on the certificate file:
 
 ```shell
-openssl x509 -in <filename.crt> -noout -fingerprint -sha1
+openssl x509 -in <certificate.crt> -noout -fingerprint -sha256
 ```
 
-Replace `filename.crt` with the name of the certificate file.
+Replace `<certificate.crt>` with the name of the certificate file.
 
 ## SSO Certificate updates
 
@@ -251,8 +248,7 @@ must be validated using either a fingerprint, a certificate, or a validator.
 
 For this requirement, be sure to take the following into account:
 
-- If you use a fingerprint, it must be the correct SHA1 fingerprint. To confirm that you are using
-  the correct SHA1 fingerprint:
+- If you use a fingerprint, confirm your SHA256 fingerprint:
   1. Re-download the certificate file.
   1. [Calculate the fingerprint](#calculate-the-fingerprint).
   1. Compare the fingerprint to the value provided in `idp_cert_fingerprint`. The values should be the same.
@@ -404,7 +400,7 @@ For more information, see the documentation on [additional configuration for SAM
 
 In troubleshooting, any authenticated user can use the API to verify the `NameID` GitLab already has linked to their user by visiting [`https://gitlab.com/api/v4/user`](https://gitlab.com/api/v4/user) and checking the `extern_uid` under identities.
 
-For self-managed, administrators can use the [users API](../../../api/users.md) to see the same information.
+For GitLab Self-Managed, administrators can use the [users API](../../../api/users.md) to see the same information.
 
 When using SAML for groups, group members of a role with the appropriate permissions can make use of the [members API](../../../api/members.md) to view group SAML identity information for members of the group.
 
@@ -412,7 +408,7 @@ This can then be compared to the `NameID` being sent by the identity provider by
 
 ### Stuck in a login "loop"
 
-Ensure that the **GitLab single sign-on URL** (for GitLab.com) or the instance URL (for self-managed) has been configured as "Login URL" (or similarly named field) in the identity provider's SAML app.
+Ensure that the **GitLab single sign-on URL** (for GitLab.com) or the instance URL (for GitLab Self-Managed) has been configured as "Login URL" (or similarly named field) in the identity provider's SAML app.
 
 For GitLab.com, alternatively, when users need to [link SAML to their existing GitLab.com account](_index.md#link-saml-to-your-existing-gitlabcom-account), provide the **GitLab single sign-on URL** and instruct users not to use the SAML app on first sign in.
 
@@ -455,9 +451,11 @@ If all users are receiving a `404` after signing in to the identity provider (Id
   - In the GitLab configuration by [matching it to the HTTPS endpoint of GitLab](../../../integration/saml.md#configure-saml-support-in-gitlab).
   - As the `Assertion Consumer Service URL` or equivalent when setting up the SAML app on your IdP.
 
-- Verify if the `404` is related to [the user having too many groups assigned to them in their Azure IdP](group_sync.md#user-that-belongs-to-many-saml-groups-automatically-removed-from-gitlab-group).
+- Verify if the `404` is related to [the user having too many groups assigned to them in their Azure IdP](group_sync.md#microsoft-azure-active-directory-integration).
 
-If a subset of users are receiving a `404` after signing in to the IdP, first verify audit events if the user gets added to the group and then immediately removed. Alternatively, if the user can successfully sign in, but they do not show as [a member of the top-level group](../_index.md#search-a-group):
+- Verify the clocks on the IdP server and GitLab are synced to the same time.
+
+If a subset of users recieve a `404` error after they sign in to the IdP, first verify what audit events are returned if the user is added to the group and then immediately removed. Alternatively, if the user can successfully sign in, but they do not show as [a member of the top-level group](../_index.md#search-a-group):
 
 - Ensure the user has been [added to the SAML identity provider](_index.md#user-access-and-management), and [SCIM](scim_setup.md) if configured.
 - Ensure the user's SCIM identity's `active` attribute is `true` using the [SCIM API](../../../api/scim.md).
@@ -512,7 +510,7 @@ Troubleshooting sections.
 
 #### 422 error with non-allowed email
 
-You might get an 422 error that states "Email is not allowed for sign-up. Please use your regular email address."
+You might get a 422 error that states "Email is not allowed for sign-up. Please use your regular email address."
 
 This message might indicate that you must add or remove a domain from your domain allowlist or denylist settings.
 

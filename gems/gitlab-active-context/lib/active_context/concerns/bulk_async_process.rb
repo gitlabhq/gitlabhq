@@ -11,10 +11,7 @@ module ActiveContext
       extend ActiveSupport::Concern
 
       def perform(*args)
-        unless ActiveContext::Config.indexing_enabled?
-          log "#{self.class} indexing disabled. Execution is skipped."
-          return false
-        end
+        return false unless ActiveContext::Config.indexing_enabled?
 
         if args.empty?
           enqueue_all_shards

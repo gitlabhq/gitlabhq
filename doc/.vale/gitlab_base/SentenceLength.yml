@@ -1,9 +1,7 @@
 ---
-# Suggestion: gitlab_base.SentenceLength
-#
-# Counts words in a sentence and alerts if a sentence exceeds 25 words.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.SentenceLength
+description: |
+  Counts words in a sentence and alerts if a sentence exceeds 25 words.
 extends: occurrence
 message: "Improve readability by using fewer than 25 words in this sentence."
 scope: sentence

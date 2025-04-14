@@ -196,7 +196,7 @@ separate Redis clusters helps for two reasons:
 - Each has different persistence requirements.
 - Load isolation.
 
-For example, the cache instance can behave like an least-recently used
+For example, the cache instance can behave like a least-recently used
 (LRU) cache by setting the `maxmemory` configuration option. That option
 should not be set for the queues or persistent clusters because data
 would be evicted from memory at random times. This would cause jobs to

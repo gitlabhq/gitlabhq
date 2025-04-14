@@ -18,13 +18,13 @@
 
 %ul
   %li
-    %span= safe_format(s_('BulkImport|%{count} placeholder users matched to users.'), count: @success_count)
+    %span= safe_format(ns_('BulkImport|%{count} placeholder user matched to user.', 'BulkImport|%{count} placeholder users matched to users.', @success_count), count: @success_count)
   - if @has_errors
     %li{ style: error_style }
-      %strong= safe_format(s_('BulkImport|%{count} placeholder users not matched to users.'), count: @failed_count)
+      %strong= safe_format(ns_('BulkImport|%{count} placeholder user not matched to user.', 'BulkImport|%{count} placeholder users not matched to users.', @failed_count), count: @failed_count)
   - if @skipped_count > 0
     %li{ style: emphasis_style }
-      = safe_format(s_('BulkImport|%{count} placeholder users skipped.'), count: @skipped_count)
+      = safe_format(ns_('BulkImport|%{count} placeholder user skipped.', 'BulkImport|%{count} placeholder users skipped.', @skipped_count), count: @skipped_count)
 
 - if @has_errors
   %p{ style: text_style }

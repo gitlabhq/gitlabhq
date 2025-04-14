@@ -1,0 +1,17 @@
+---
+description: Wiki page notes created
+internal_events: true
+action: create_wiki_page_note
+identifiers:
+- project
+- namespace
+- user
+product_group: knowledge
+product_categories:
+- wiki
+milestone: '17.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183934
+tiers:
+- free
+- premium
+- ultimate

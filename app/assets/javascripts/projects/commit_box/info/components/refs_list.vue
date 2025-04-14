@@ -66,10 +66,10 @@ export default {
       return this.refType === BRANCHES_REF_TYPE ? 'branch' : 'tag';
     },
     showEmptyMessage() {
-      return this.tippingRefs.length === 0 && this.containingRefs.length === 0 && !this.isLoading;
+      return this.tippingRefs.length === 0 && !this.hasContainingRefs && !this.isLoading;
     },
     showNameSpace() {
-      return (this.tippingRefs.length !== 0 || this.containingRefs.length !== 0) && !this.isLoading;
+      return (this.tippingRefs.length !== 0 || this.hasContainingRefs) && !this.isLoading;
     },
     emptyMessage() {
       return this.refType === BRANCHES_REF_TYPE ? EMPTY_BRANCHES_MESSAGE : EMPTY_TAGS_MESSAGE;

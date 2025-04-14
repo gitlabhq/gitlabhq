@@ -6,6 +6,7 @@ RSpec.describe 'Maintainer creates project runner', feature_category: :fleet_vis
   let_it_be(:user) { create(:user) }
 
   before do
+    stub_feature_flags(vue_project_runners_settings: false)
     sign_in(user)
   end
 

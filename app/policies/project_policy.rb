@@ -309,10 +309,6 @@ class ProjectPolicy < BasePolicy
 
   condition(:namespace_catalog_available) { namespace_catalog_available? }
 
-  condition(:created_and_owned_by_banned_user, scope: :subject) do
-    Feature.enabled?(:hide_projects_of_banned_users) && @subject.created_and_owned_by_banned_user?
-  end
-
   desc "User has either planner or reporter access"
   condition(:planner_or_reporter_access) do
     can?(:reporter_access) || can?(:planner_access)
@@ -566,6 +562,7 @@ class ProjectPolicy < BasePolicy
     enable :update_container_image
     enable :destroy_container_image
     enable :destroy_container_image_tag
+    enable :destroy_container_registry_protection_tag_rule
     enable :create_environment
     enable :update_environment
     enable :destroy_environment
@@ -646,6 +643,7 @@ class ProjectPolicy < BasePolicy
     enable :create_runner
     enable :admin_project_runners
     enable :read_project_runners
+    enable :read_runners_registration_token
     enable :update_runners_registration_token
     enable :admin_project_google_cloud
     enable :admin_project_aws
@@ -786,6 +784,7 @@ class ProjectPolicy < BasePolicy
   rule { container_registry_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:container_image))
     prevent :destroy_container_image_tag
+    prevent :destroy_container_registry_protection_tag_rule
   end
 
   rule { anonymous & ~public_project }.prevent_all
@@ -1043,6 +1042,7 @@ class ProjectPolicy < BasePolicy
 
   rule { ~runner_registration_token_enabled }.policy do
     prevent :register_project_runners
+    prevent :read_runners_registration_token
     prevent :update_runners_registration_token
   end
 
@@ -1063,6 +1063,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:read_project) }.policy do
     enable :read_incident_management_timeline_event_tag
+    enable :read_project_metadata
   end
 
   rule { can?(:download_code) }.policy do
@@ -1098,10 +1099,6 @@ class ProjectPolicy < BasePolicy
 
   rule { developer & model_experiments_enabled }.policy do
     enable :write_model_experiments
-  end
-
-  rule { ~admin & ~organization_owner & created_and_owned_by_banned_user }.policy do
-    prevent :read_project
   end
 
   rule { ~private_project & guest & external_user }.enable :read_container_image

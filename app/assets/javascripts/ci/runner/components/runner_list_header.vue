@@ -9,7 +9,7 @@ export default {
 };
 </script>
 <template>
-  <page-heading>
+  <page-heading class="gl-mb-0">
     <template #heading>
       <slot name="title"></slot>
     </template>

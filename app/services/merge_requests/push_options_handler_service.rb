@@ -175,10 +175,10 @@ module MergeRequests
     end
 
     def merge_params(branch)
-      return {} unless push_options.key?(:merge_when_pipeline_succeeds)
+      return {} unless push_options.key?(:merge_when_pipeline_succeeds) || push_options.key?(:auto_merge)
 
       {
-        merge_when_pipeline_succeeds: push_options[:merge_when_pipeline_succeeds],
+        auto_merge_enabled: push_options[:auto_merge] || push_options[:merge_when_pipeline_succeeds],
         merge_user: current_user,
         sha: changes_by_branch.dig(branch, :newrev)
       }

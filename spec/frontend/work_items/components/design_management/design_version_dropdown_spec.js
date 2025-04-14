@@ -1,6 +1,7 @@
 import { GlAvatar, GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import DesignVersionDropdown from '~/work_items/components/design_management/design_version_dropdown.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { mockAllVersions } from './mock_data';
@@ -21,6 +22,7 @@ const MOCK_ROUTE = {
 };
 
 describe('Design management design version dropdown component', () => {
+  const $router = { push: jest.fn() };
   let wrapper;
 
   function createComponent({ maxVersions = -1, $route = MOCK_ROUTE } = {}) {
@@ -33,6 +35,7 @@ describe('Design management design version dropdown component', () => {
       },
       mocks: {
         $route,
+        $router,
       },
       stubs: { GlAvatar: true, GlCollapsibleListbox },
     });
@@ -82,7 +85,7 @@ describe('Design management design version dropdown component', () => {
 
       await waitForPromises();
 
-      expect(findListbox().props('toggleText')).toBe('Showing latest version');
+      expect(findListbox().props('toggleText')).toBe('Latest version');
     });
 
     it('displays latest version text when only 1 version is present', async () => {
@@ -90,7 +93,7 @@ describe('Design management design version dropdown component', () => {
 
       await waitForPromises();
 
-      expect(findListbox().props('toggleText')).toBe('Showing latest version');
+      expect(findListbox().props('toggleText')).toBe('Latest version');
     });
 
     it('displays version text when the current version is not the latest', async () => {
@@ -106,7 +109,7 @@ describe('Design management design version dropdown component', () => {
 
       await waitForPromises();
 
-      expect(findListbox().props('toggleText')).toBe('Showing latest version');
+      expect(findListbox().props('toggleText')).toBe('Latest version');
     });
 
     it('should have the same length as apollo query', async () => {
@@ -123,6 +126,30 @@ describe('Design management design version dropdown component', () => {
       await waitForPromises();
 
       expect(wrapper.findAllComponents(TimeAgo)).toHaveLength(mockAllVersions.length);
+    });
+
+    it('should update the route when a version is selected', async () => {
+      const originalLocation = window.location.href;
+      setWindowLocation(
+        `${originalLocation}?&or%5Blabel_name%5D%5B%5D=bug&or%5Blabel_name%5D%5B%5D=tech%20debt&not%5Blabel_name%5D%5B%5D=documentation&not%5Blabel_name%5D%5B%5D=feature&first_page_size=20&show=foo`,
+      );
+
+      createComponent();
+
+      await waitForPromises();
+
+      findListbox().vm.$emit('select', mockAllVersions[1].id);
+
+      expect($router.push).toHaveBeenCalledWith({
+        path: MOCK_ROUTE.path,
+        query: {
+          first_page_size: '20',
+          'not[label_name][]': ['documentation', 'feature'],
+          'or[label_name][]': ['bug', 'tech debt'],
+          show: 'foo',
+          version: '2',
+        },
+      });
     });
   });
 });

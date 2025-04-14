@@ -8,9 +8,9 @@
   window: 1
   impact: high  # Can be one of: [critical, high, medium, low]
   scope: project  # Can be one or a combination of: [instance, group, project]
-  reporter: jheimbuck_gl  # (required) GitLab username of the person reporting the deprecation
-  stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
-  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/395708  # (required) Link to the deprecation issue in GitLab
+  reporter: jocelynjane  # (required) GitLab username of the person reporting the deprecation
+  stage: Software Supply Chain Security  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383084  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     In GitLab 14.4, we introduced a setting to [limit access _from_ your project's CI/CD job tokens (`CI_JOB_TOKEN`)](https://docs.gitlab.com/ci/jobs/ci_job_token/#limit-your-projects-job-token-access) to make it more secure.
     This setting was called **Limit CI_JOB_TOKEN access**. In GitLab 16.3, we renamed this setting to **Limit access _from_ this project** for clarity.
@@ -18,7 +18,7 @@
     In GitLab 15.9, we introduced an alternative setting called
     [**Authorized groups and projects**](https://docs.gitlab.com/ci/jobs/ci_job_token/#add-a-group-or-project-to-the-job-token-allowlist).
     This setting controls job token access _to_ your project by using an allowlist.
-    This new setting is a large improvement over the original. The first iteration is deprecated
+    This new setting is a large improvement over the original. The first iteration was deprecated
     in GitLab 16.0 and scheduled for removal in GitLab 18.0.
 
     The **Limit access _from_ this project** setting is disabled by default for all new projects.

@@ -13,7 +13,10 @@ module QA
       it 'relates and unrelates one issue to/from another', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347994' do
         issues.first.visit!
 
-        Page::Project::Issue::Show.perform do |show|
+        work_item_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
+        page_type = work_item_enabled ? Page::Project::WorkItem::Show : Page::Project::Issue::Show
+
+        page_type.perform do |show|
           max_wait = 60
 
           show.relate_issue(issues.last)

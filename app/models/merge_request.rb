@@ -26,6 +26,19 @@ class MergeRequest < ApplicationRecord
   include Todoable
   include Spammable
 
+  ignore_columns %i[
+    latest_merge_request_diff_id_convert_to_bigint
+    assignee_id_convert_to_bigint
+    author_id_convert_to_bigint
+    id_convert_to_bigint
+    last_edited_by_id_convert_to_bigint
+    merge_user_id_convert_to_bigint
+    milestone_id_convert_to_bigint
+    source_project_id_convert_to_bigint
+    target_project_id_convert_to_bigint
+    updated_by_id_convert_to_bigint
+  ], remove_with: '18.3', remove_after: '2025-07-17'
+
   extend ::Gitlab::Utils::Override
 
   sha_attribute :squash_commit_sha
@@ -40,6 +53,7 @@ class MergeRequest < ApplicationRecord
   CI_MERGE_REQUEST_DESCRIPTION_MAX_LENGTH = 2700
   MERGE_LEASE_TIMEOUT = 15.minutes.to_i
   DIFF_VERSION_LIMIT = 1_000
+  DIFF_COMMITS_LIMIT = 1_000_000
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
@@ -317,7 +331,7 @@ class MergeRequest < ApplicationRecord
   end
   scope :by_milestone, ->(milestone) { where(milestone_id: milestone) }
   scope :of_projects, ->(ids) { where(target_project_id: ids) }
-  scope :from_project, ->(project) { where(source_project_id: project.id) }
+  scope :from_project, ->(project) { where(source_project_id: project) }
   scope :from_fork, -> { where('source_project_id <> target_project_id') }
   scope :from_and_to_forks, ->(project) do
     from_fork.where('source_project_id = ? OR target_project_id = ?', project.id, project.id)
@@ -464,6 +478,18 @@ class MergeRequest < ApplicationRecord
     where(reviewers_subquery.exists.not)
   end
 
+  scope :no_review_requested_or_only_user, ->(user) do
+    reviewers = Arel::Table.new("#{to_ability_name}_reviewers")
+
+    where.not(
+      MergeRequestReviewer
+        .where(reviewers[:merge_request_id].eq(Arel.sql('merge_requests.id')))
+        .where(reviewers[:user_id].not_eq(user.id))
+        .arel
+        .exists
+    )
+  end
+
   scope :review_requested_to, ->(user, states = nil) do
     scope = reviewers_subquery.where(Arel::Table.new("#{to_ability_name}_reviewers")[:user_id].eq(user.id))
     scope = scope.where(Arel::Table.new("#{to_ability_name}_reviewers")[:state].in(states)) if states
@@ -488,6 +514,19 @@ class MergeRequest < ApplicationRecord
     )
   end
 
+  scope :not_only_reviewer, ->(user) do
+    reviewers = Arel::Table.new("#{to_ability_name}_reviewers")
+
+    subquery = reviewers
+      .project(Arel.sql('1'))
+      .where(reviewers[:merge_request_id].eq(Arel.sql('merge_requests.id')))
+      .group(reviewers[:merge_request_id])
+      .having(reviewers[:id].count.eq(1))
+      .having(reviewers[:user_id].maximum.eq(user.id))
+
+    review_requested.where.not(subquery.exists)
+  end
+
   scope :no_review_states, ->(states) do
     where(
       reviewers_subquery.exists
@@ -508,6 +547,16 @@ class MergeRequest < ApplicationRecord
       assigned_to_scope,
       review_requested_to(user, reviewer_state)
     )
+  end
+
+  scope :author_or_assignee, ->(user, review_states = nil) do
+    authored = where(author_id: user)
+    authored = authored.review_states(review_states) if review_states
+
+    assigned = joins(:merge_request_assignees).where(merge_request_assignees: { user_id: user })
+    assigned = assigned.review_states(review_states) if review_states
+
+    from("(#{from_union([authored, assigned], remove_duplicates: true).to_sql}) merge_requests")
   end
 
   scope :without_hidden, -> {
@@ -604,6 +653,10 @@ class MergeRequest < ApplicationRecord
       .reorder(arel_table[:updated_at].maximum.desc)
       .limit(limit)
       .pluck(:source_branch)
+  end
+
+  def self.distinct_source_branches
+    distinct.pluck(:source_branch)
   end
 
   def self.sort_by_attribute(method, excluded_labels: [])
@@ -1614,7 +1667,7 @@ class MergeRequest < ApplicationRecord
     visible_notes = user.can?(:read_internal_note, project) ? notes : notes.not_internal
 
     messages = [title, description, *visible_notes.pluck(:note)]
-    messages += commits.map(&:safe_message) if merge_request_diff.persisted?
+    messages += commits(load_from_gitaly: Feature.enabled?(:more_commits_from_gitaly, target_project)).map(&:safe_message) if merge_request_diff.persisted?
 
     ext = Gitlab::ReferenceExtractor.new(project, user)
     ext.analyze(messages.join("\n"))
@@ -2390,10 +2443,6 @@ class MergeRequest < ApplicationRecord
     prepared_at.present?
   end
 
-  def prepare
-    NewMergeRequestWorker.perform_async(id, author_id)
-  end
-
   def check_for_spam?(*)
     spammable_attribute_changed? && project.public?
   end
@@ -2482,6 +2531,17 @@ class MergeRequest < ApplicationRecord
     return false if Feature.disabled?(:merge_requests_diffs_limit, target_project)
 
     merge_request_diffs.count >= DIFF_VERSION_LIMIT
+  end
+
+  def reached_diff_commits_limit?
+    return false if Feature.disabled?(:merge_requests_diff_commits_limit, target_project)
+
+    total_commits_count = MergeRequestDiff
+      .from(merge_request_diffs.limit(1000), :limited_diffs)
+      .pick('SUM(commits_count)')
+      .to_i
+
+    total_commits_count >= DIFF_COMMITS_LIMIT
   end
 
   private

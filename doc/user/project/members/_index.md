@@ -37,7 +37,7 @@ Indirect membership can be inherited, shared, or inherited shared.
 | Direct | The user is added directly to the current group or project. |
 | Inherited | The user is a member of a parent group that contains the current group or project. |
 | [Shared](sharing_projects_groups.md) | The user is a member of a group invited to the current group or project. |
-| [Inherited shared](../members/sharing_projects_groups.md#invite-a-group-to-a-group) | The user is a member of a group invited to an ancestor of the current group or project. |
+| [Inherited shared](sharing_projects_groups.md#invite-a-group-to-a-group) | The user is a member of a group invited to an ancestor of the current group or project. |
 | Indirect | An umbrella term for inherited, shared, or inherited shared members. |
 
 ```mermaid
@@ -175,7 +175,7 @@ Only direct members of a project are imported. Inherited or shared members of a 
 
 Prerequisites:
 
-- You must have the Maintainer or Owner role.
+- You must have at least the Maintainer role.
 
 If the importing member's role for the target project is:
 

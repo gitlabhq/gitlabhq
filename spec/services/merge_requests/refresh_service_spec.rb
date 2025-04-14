@@ -1001,12 +1001,6 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         let(:auto_merge_strategy) { AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS }
       end
     end
-
-    context 'when auto merge strategy is MWPS' do
-      it_behaves_like 'abort ff merge requests with auto merges' do
-        let(:auto_merge_strategy) { AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS }
-      end
-    end
   end
 
   describe '#abort_auto_merges' do

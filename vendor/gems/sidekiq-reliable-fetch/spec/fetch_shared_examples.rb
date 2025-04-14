@@ -27,38 +27,56 @@ shared_examples 'a Sidekiq fetcher' do
       end
     end
 
-    context 'when strictly order is enabled' do
-      let(:queues) { ['first', 'second'] }
-      let(:options) { { strict: true, queues: queues } }
+    context 'with strict configuration' do
+      let(:queues) { ['first', 'second', 'second'] }
+      let(:fetcher) { described_class.new(capsule) }
 
-      it 'retrieves by order' do
-        fetcher = described_class.new(capsule)
+      context 'is true' do
+        let(:options) { { strict: true, queues: queues } }
 
-        Sidekiq.redis do |conn|
-          conn.rpush('queue:first', ['msg3', 'msg2', 'msg1'])
-          conn.rpush('queue:second', 'msg4')
+        it 'retrieves by order' do
+          Sidekiq.redis do |conn|
+            conn.rpush('queue:first', ['msg3', 'msg2', 'msg1'])
+            conn.rpush('queue:second', 'msg4')
+          end
+
+          jobs = (1..4).map { fetcher.retrieve_work.job }
+
+          expect(jobs).to eq ['msg1', 'msg2', 'msg3', 'msg4']
         end
 
-        jobs = (1..4).map { fetcher.retrieve_work.job }
+        it 'strictly order is enabled' do
+          expect(fetcher.strictly_ordered_queues).to be true
+        end
 
-        expect(jobs).to eq ['msg1', 'msg2', 'msg3', 'msg4']
+        it 'remove duplicate queue' do
+          expect(fetcher.queues).to eq ['queue:first', 'queue:second']
+        end
       end
-    end
 
-    context 'when queues are not strictly ordered' do
-      let(:queues) { ['first', 'second'] }
+      context 'is false' do
+        let(:options) { { strict: false, queues: queues } }
 
-      it 'does not starve any queue' do
-        fetcher = described_class.new(capsule)
+        it 'does not starve any queue' do
+          fetcher = described_class.new(capsule)
 
-        Sidekiq.redis do |conn|
-          conn.rpush('queue:first', (1..200).map { |i| "msg#{i}" })
-          conn.rpush('queue:second', 'this_job_should_not_stuck')
+          Sidekiq.redis do |conn|
+            conn.rpush('queue:first', (1..200).map { |i| "msg#{i}" })
+            conn.rpush('queue:second', 'this_job_should_not_stuck')
+          end
+
+          jobs = (1..100).map { fetcher.retrieve_work.job }
+
+          expect(jobs).to include 'this_job_should_not_stuck'
         end
 
-        jobs = (1..100).map { fetcher.retrieve_work.job }
+        it 'strictly order is disabled' do
+          expect(fetcher.strictly_ordered_queues).to be false
+        end
 
-        expect(jobs).to include 'this_job_should_not_stuck'
+        it 'keep duplicate queue' do
+          expect(fetcher.queues).to eq ['queue:first', 'queue:second', 'queue:second']
+        end
       end
     end
 

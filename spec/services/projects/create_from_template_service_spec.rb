@@ -7,10 +7,10 @@ RSpec.describe Projects::CreateFromTemplateService, feature_category: :groups_an
   let(:template_name) { 'rails' }
   let(:project_params) do
     {
-        path: user.to_param,
-        template_name: template_name,
-        description: 'project description',
-        visibility_level: Gitlab::VisibilityLevel::PUBLIC
+      path: user.to_param,
+      template_name: template_name,
+      description: 'project description',
+      visibility_level: Gitlab::VisibilityLevel::PUBLIC
     }
   end
 

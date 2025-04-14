@@ -13,6 +13,7 @@ module Gitlab
           remove_email_multiple
           remove_email_single
           q
+          status
         ].freeze
 
         # Tracks the quick action with name `name`.

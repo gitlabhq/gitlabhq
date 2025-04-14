@@ -413,3 +413,41 @@ tests should be placed in `spec/workers`.
 The application should minimise interaction with of any `Sidekiq.redis` and Sidekiq [APIs](https://github.com/mperham/sidekiq/blob/main/lib/sidekiq/api.rb). Such interactions in generic application logic should be abstracted to a [Sidekiq middleware](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/sidekiq_middleware) for re-use across teams. By decoupling application logic from Sidekiq datastore, it allows for greater freedom when horizontally scaling the GitLab background processing setup.
 
 Some exceptions to this rule would be migration-related logic or administration operations.
+
+## Job duration limit
+
+In general it is best-practice for Sidekiq jobs to run for short durations.
+
+Although there is no specific hard limit for job duration, there are two special considerations for long running jobs:
+
+1. Job durations above our [`urgency` attribute](worker_attributes.md#job-urgency) thresholds contribute negatively to
+   [Sidekiq Apdex](../application_slis/sidekiq_execution.md) and can impact error budgets.
+1. Deploys interrupt long-running jobs. On GitLab.com, deploys can happen several times a day, which can [effectively limit the length a job can run](#effect-of-deploys-on-job-duration).
+
+### Effect of deploys on job duration
+
+During a deploy, Sidekiq is given a `TERM` signal. Jobs are given 25 seconds to finish, after which they are
+interrupted and forced to stop. The 25 second grace period is the
+[Sidekiq default](https://github.com/sidekiq/sidekiq/blob/ba51d286d821777fbe87ea0eff8b04f212aeadf5/lib/sidekiq/config.rb#L18) but can be
+[configured through the charts](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/blob/d2bb7cca2130cd9859e5d40e5bd90f5ef061d422/vendor/charts/gitlab/gprd/charts/gitlab/charts/sidekiq/values.yaml#L291).
+
+If a job is forced to stop a certain number of times (3 times by default, configurable
+through `max_retries_after_interruption`), they are permanently killed. This happens through
+our [`sidekiq-reliable-fetch` gem](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/gems/sidekiq-reliable-fetch/README.md).
+
+This effectively puts a limit on the length of time a job can run
+to a span of `max_retries_after_interruption` deploys, or 3 deploys by default.
+
+### Tips for handling jobs with long durations
+
+Instead of having one big job, it's better to have many small jobs.
+
+To decide if a worker needs to be split up and parallelized we can look at the runtime of jobs in the logs.
+If the 99th percentile of the job duration is lower than the target for that shard based on the configured
+[urgency](worker_attributes.md#job-urgency), there is no need to break up the job.
+
+When breaking up long running jobs into many smaller jobs, do take into account downstream dependencies.
+For example, if we schedule thousands of jobs that all need to write to the primary database, this
+could create contention on connections to the primary database causing other Sidekiq jobs on the shard to
+have to wait to obtain a connection. To circumvent this, we can consider specifying a
+[concurrency limit](worker_attributes.md#concurrency-limit).

@@ -175,21 +175,6 @@ module SystemNoteService
     ::SystemNotes::MergeRequestsService.new(noteable: noteable, container: project, author: author).abort_auto_merge(reason)
   end
 
-  # Called when 'merge when pipeline succeeds' is executed
-  def merge_when_pipeline_succeeds(noteable, project, author, sha)
-    ::SystemNotes::MergeRequestsService.new(noteable: noteable, container: project, author: author).merge_when_pipeline_succeeds(sha)
-  end
-
-  # Called when 'merge when pipeline succeeds' is canceled
-  def cancel_merge_when_pipeline_succeeds(noteable, project, author)
-    ::SystemNotes::MergeRequestsService.new(noteable: noteable, container: project, author: author).cancel_merge_when_pipeline_succeeds
-  end
-
-  # Called when 'merge when pipeline succeeds' is aborted
-  def abort_merge_when_pipeline_succeeds(noteable, project, author, reason)
-    ::SystemNotes::MergeRequestsService.new(noteable: noteable, container: project, author: author).abort_merge_when_pipeline_succeeds(reason)
-  end
-
   def handle_merge_request_draft(noteable, project, author)
     ::SystemNotes::MergeRequestsService.new(noteable: noteable, container: project, author: author).handle_merge_request_draft
   end

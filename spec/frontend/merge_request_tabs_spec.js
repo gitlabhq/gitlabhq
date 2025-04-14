@@ -4,6 +4,7 @@ import htmlMergeRequestsWithTaskList from 'test_fixtures/merge_requests/merge_re
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initMrPage from 'helpers/init_vue_mr_page_helper';
 import { stubPerformanceWebAPI } from 'helpers/performance';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import axios from '~/lib/utils/axios_utils';
 import MergeRequestTabs, { getActionFromHref } from '~/merge_request_tabs';
 import Diff from '~/diff';
@@ -451,6 +452,48 @@ describe('MergeRequestTabs', () => {
         jest.advanceTimersByTime(250);
 
         expect(window.scrollTo).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('switching to the diffs tab', () => {
+      describe('Rapid Diffs', () => {
+        let createRapidDiffsApp;
+        let init;
+        let reloadDiffs;
+
+        beforeEach(() => {
+          setWindowLocation('https://example.com?rapid_diffs=true');
+          reloadDiffs = jest.fn();
+          init = jest.fn();
+          createRapidDiffsApp = jest.fn(() => ({
+            init,
+            reloadDiffs,
+          }));
+        });
+
+        it('stats Rapid Diffs app', () => {
+          testContext.class = new MergeRequestTabs({
+            stubLocation,
+            createRapidDiffsApp,
+          });
+          testContext.class.tabShown('diffs', 'not-a-vue-page');
+          expect(createRapidDiffsApp).toHaveBeenCalledTimes(1);
+          expect(init).toHaveBeenCalledTimes(1);
+          expect(reloadDiffs).toHaveBeenCalledTimes(1);
+        });
+
+        it('creates a single Rapid Diffs app instance', () => {
+          testContext.class = new MergeRequestTabs({
+            stubLocation,
+            createRapidDiffsApp,
+          });
+          testContext.class.tabShown('diffs', 'not-a-vue-page');
+          testContext.class.tabShown('new', 'not-a-vue-page');
+          testContext.class.tabShown('diffs', 'not-a-vue-page');
+          expect(createRapidDiffsApp).toHaveBeenCalledTimes(1);
+          expect(init).toHaveBeenCalledTimes(1);
+          expect(reloadDiffs).toHaveBeenCalledTimes(1);
+        });
       });
     });
   });

@@ -30,7 +30,9 @@ module Gitlab
             authorize_params: { gl_auth_type: 'login' }
           }
         when ->(provider_name) { AuthHelper.saml_providers.include?(provider_name.to_sym) }
-          { attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements }
+          {
+            attribute_statements: ::Gitlab::Auth::Saml::Config.default_attribute_statements
+          }
         else
           {}
         end
@@ -63,6 +65,7 @@ module Gitlab
         provider_arguments.concat arguments
         provider_arguments << defaults unless defaults.empty?
       when Hash, GitlabSettings::Options
+        verify_saml_cert_arguments!(provider['name'], arguments)
         hash_arguments = merge_hash_defaults_and_args(defaults, arguments)
         normalized = normalize_hash_arguments(hash_arguments)
 
@@ -102,6 +105,22 @@ module Gitlab
       end
 
       args
+    end
+
+    def verify_saml_cert_arguments!(provider_name, arguments)
+      return arguments unless AuthHelper.saml_providers.include?(provider_name.to_sym)
+
+      fingerprint = arguments['idp_cert_fingerprint']
+      algorithm = arguments['idp_cert_fingerprint_algorithm']
+
+      return arguments unless fingerprint.present? && algorithm.nil?
+
+      algorithm = AuthHelper.certificate_fingerprint_algorithm(fingerprint)
+
+      return arguments unless algorithm.present?
+
+      arguments['idp_cert_fingerprint_algorithm'] = algorithm
+      arguments
     end
 
     def provider_defaults(provider)

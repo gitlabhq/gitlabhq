@@ -31,7 +31,7 @@ export default {
           };
         case JOB_STATUS_IDLE:
           return {
-            classes: '!gl-text-gray-700 gl-shadow-inner-1-gray-400 !gl-border-gray-500',
+            classes: '!gl-text-subtle gl-shadow-inner-1-gray-400 !gl-border-gray-500',
             label: I18N_JOB_STATUS_IDLE,
           };
         default:

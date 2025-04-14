@@ -237,11 +237,15 @@ module Gitlab
       end
 
       def save_current_token_in_env
-        ::Current.token_info = {
+        token_info = {
           token_id: access_token.id,
           token_type: access_token.class.to_s,
           token_scopes: access_token.scopes.map(&:to_sym)
         }
+
+        token_info[:token_application_id] = access_token.application_id if access_token.respond_to?(:application_id)
+
+        ::Current.token_info = token_info
       end
 
       def save_auth_failure_in_application_context(access_token, cause, requested_scopes)

@@ -77,7 +77,6 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
   {
     "id": 302,
     "body": "closed",
-    "attachment": null,
     "author": {
       "id": 1,
       "username": "pipin",
@@ -102,7 +101,6 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
   {
     "id": 305,
     "body": "Text of the comment\r\n",
-    "attachment": null,
     "author": {
       "id": 1,
       "username": "pipin",
@@ -266,7 +264,6 @@ Parameters:
 {
   "id": 302,
   "body": "closed",
-  "attachment": null,
   "author": {
     "id": 1,
     "username": "pipin",
@@ -404,7 +401,6 @@ Parameters:
 {
   "id": 301,
   "body": "Comment for MR",
-  "attachment": null,
   "author": {
     "id": 1,
     "username": "pipin",
@@ -518,7 +514,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
 and is planned for removal in v5 of the API.
-In GitLab 17.4 or later, if your administrator [enabled the new look for epics](../user/group/epics/epic_work_items.md), use the
+In GitLab 17.4 or later, if [the new look for epics](../user/group/epics/epic_work_items.md) is enabled, use the
 [Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead. For more information, see the [guide how to migrate your existing APIs](graphql/epic_work_items_api_migration_guide.md).
 This change is a breaking change.
 
@@ -573,7 +569,6 @@ Parameters:
 {
   "id": 302,
   "body": "Epic note",
-  "attachment": null,
   "author": {
     "id": 1,
     "username": "pipin",

@@ -27,19 +27,17 @@ GitLab is [transparent](https://handbook.gitlab.com/handbook/values/#transparenc
 As GitLab Duo features mature, the documentation will be updated to clearly state
 how and where you can access these features.
 
-## Implementing GitLab Duo
+## GitLab Duo language models
 
-You can implement GitLab Duo in the following ways:
+The language models that are the source for GitLab Duo depend on where you're using it.
 
-- On GitLab.com, use the default GitLab AI vendor models and the cloud-based AI
-  gateway that is hosted by GitLab.
-- On GitLab Self-Managed:
+- On GitLab.com: GitLab hosts the models and connects to them through the cloud-based AI gateway.
+- On GitLab Self-Managed, two options exist:
 
-  - [Use the default option of GitLab AI vendor models and the cloud-based AI gateway that is hosted by GitLab](setup.md).
-  - Use [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md)
-    to self-host the AI gateway and language models. You can use GitLab AI vendor models or a
-    supported language model. This provides full control over your data and
-    security. GitLab Duo Code Suggestions and Chat are supported.
+  - **GitLab** can [host the models and the cloud-based AI gateway](setup.md).
+  - **Your organization** can [use GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md),
+    which means you host the AI gateway and language models. You can use GitLab AI vendor models
+    or the other supported language models.
     <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://youtu.be/TQoO3sFnb28?si=w_gFAYLYIzPEbhEl)
     <!-- Video published on 2025-02-20 -->
 
@@ -81,9 +79,8 @@ To improve your workflow while authoring code, try these features:
 - [Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide): Test your code by generating tests.
   <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU)
 - [Refactor Code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide): Improve or refactor the selected code.
-  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU)
+  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://youtu.be/oxziu7_mWVk?si=fS2JUO-8doARS169)
 - [Fix Code](../gitlab_duo_chat/examples.md#fix-code-in-the-ide): Fix quality problems, like bugs or typos, in the selected code.
-  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU)
 - [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/_index.md#gitlab-duo-for-the-cli): Discover or recall `git` commands.
 
 ## Reviewing code
@@ -116,24 +113,23 @@ To improve your security, try these features:
 
 ## Summary of GitLab Duo features
 
-| Feature | Tier | Add-on | Offering | Status |
-| ------- | ---- | ------ | -------- | ------ |
-| [GitLab Duo Chat](../gitlab_duo_chat/_index.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md) | Ultimate | GitLab Duo Enterprise | Self-managed | General availability |
-| [GitLab Duo Workflow](../duo_workflow/_index.md) | Ultimate | - | GitLab.com | Experiment |
-| [Issue Description Generation](../project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | Ultimate | GitLab Duo Enterprise | GitLab.com | Experiment |
-| [Discussion Summary](../discussions/_index.md#summarize-issue-discussions-with-duo-chat) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [Code Suggestions](../project/repository/code_suggestions/_index.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [Code Explanation](../project/repository/code_explain.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [Refactor Code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [Fix Code](../gitlab_duo_chat/examples.md#fix-code-in-the-ide) | Premium, Ultimate | GitLab Duo Pro or Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/_index.md#gitlab-duo-for-the-cli) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [Merge Request Summary](../project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | Ultimate | GitLab Duo Enterprise | GitLab.com | Beta |
-| [Code Review](../project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code) | Ultimate | GitLab Duo Enterprise | GitLab.com | Beta |
-| [Code Review Summary](../project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed | Experiment |
-| [Merge Commit Message Generation](../project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [Root Cause Analysis](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [Vulnerability Explanation](../application_security/vulnerabilities/_index.md#explaining-a-vulnerability) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [Vulnerability Resolution](../application_security/vulnerabilities/_index.md#vulnerability-resolution) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed, GitLab Dedicated | General availability |
-| [AI Impact Dashboard](../analytics/ai_impact_analytics.md) | Ultimate | GitLab Duo Enterprise | GitLab.com, Self-managed | General availability |
+| Feature | Tier | Add-on | GitLab.com | GitLab Self-Managed | GitLab Dedicated | GitLab Duo Self-Hosted |
+| ------- | ---- | ------ | ---------- | ----------------- | ---------------- | ------------------------ |
+| [GitLab Duo Chat](../gitlab_duo_chat/_index.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q | Generally available | Generally available | Generally available | Generally available |
+| [GitLab Duo Workflow](../duo_workflow/_index.md) | Ultimate | None | Private beta | N/A | N/A | N/A |
+| [Issue Description Generation](../project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | Ultimate | GitLab Duo Enterprise | Experiment | N/A | N/A | N/A |
+| [Discussion Summary](../discussions/_index.md#summarize-issue-discussions-with-duo-chat) | Ultimate | GitLab Duo Enterprise, GitLab Duo with Amazon Q | Generally available | Generally available | Generally available | N/A |
+| [Code Suggestions](../project/repository/code_suggestions/_index.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q | Generally available | Generally available | Generally available | Generally available |
+| [Code Explanation](../project/repository/code_explain.md) | Premium, Ultimate | GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q | Generally available | Generally available | Generally available | Generally available |
+| [Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide) | Premium, Ultimate | GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q | Generally available | Generally available | Generally available | Generally available |
+| [Refactor Code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide) | Premium, Ultimate | GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q | Generally available | Generally available | Generally available | Generally available |
+| [Fix Code](../gitlab_duo_chat/examples.md#fix-code-in-the-ide) | Premium, Ultimate | GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q | Generally available | Generally available | Generally available | N/A |
+| [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/_index.md#gitlab-duo-for-the-cli) | Ultimate | GitLab Duo Enterprise | Generally available | Generally available | Generally available | N/A |
+| [Merge Request Summary](../project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | Ultimate | GitLab Duo Enterprise | Beta | Beta | N/A | N/A |
+| [Code Review](../project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code) | Ultimate | GitLab Duo Enterprise | Beta | Beta | Beta | N/A |
+| [Code Review Summary](../project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review) | Ultimate | GitLab Duo Enterprise | Experiment | Experiment | N/A | N/A |
+| [Merge Commit Message Generation](../project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message) | Ultimate | GitLab Duo Enterprise | Generally available | Generally available | Generally available | N/A |
+| [Root Cause Analysis](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | Ultimate | GitLab Duo Enterprise, GitLab Duo with Amazon Q | Generally available | Generally available | Generally available | Beta |
+| [Vulnerability Explanation](../application_security/vulnerabilities/_index.md#explaining-a-vulnerability) | Ultimate | GitLab Duo Enterprise, GitLab Duo with Amazon Q | Generally available | Generally available | Generally available | N/A |
+| [Vulnerability Resolution](../application_security/vulnerabilities/_index.md#vulnerability-resolution) | Ultimate | GitLab Duo Enterprise, GitLab Duo with Amazon Q | Generally available | Generally available | Generally available | N/A |
+| [AI Impact Dashboard](../analytics/ai_impact_analytics.md) | Ultimate | GitLab Duo Enterprise | Generally available | Generally available | N/A | Beta |

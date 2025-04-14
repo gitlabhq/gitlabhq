@@ -87,14 +87,7 @@ To set up Google Workspace as your identity provider:
    | **GitLab single sign-on URL**            | **Start URL**          |
    | **Identity provider single sign-on URL** | **SSO URL**            |
 
-1. Google Workspace displays a SHA256 fingerprint. To retrieve the SHA1 fingerprint
-   required by GitLab to [configure SAML](#configure-gitlab):
-   1. Download the certificate.
-   1. Run this command:
-
-      ```shell
-      openssl x509 -noout -fingerprint -sha1 -inform pem -in "GoogleIDPCertificate-domain.com.pem"
-      ```
+1. Google Workspace displays a SHA256 fingerprint when you retrieve the certificate. If you need to generate the SHA256 fingerprint later, see [calculate the fingerprint](troubleshooting.md#calculate-the-fingerprint).
 
 1. Set these values:
    - For **Primary email**: `email`.
@@ -182,6 +175,51 @@ To set up OneLogin as your identity provider:
 
 For more information, see the [OneLogin configuration example](example_saml_config.md#onelogin).
 
+### Keycloak
+
+To set up Keycloak as your identity provider:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > SAML SSO**.
+1. Note the information on this page.
+1. Follow the instructions to [create a SAML client in Keycloack](https://www.keycloak.org/docs/latest/server_admin/index.html#_client-saml-configuration).
+
+The following GitLab settings correspond to the Keycloak fields.
+
+   | GitLab setting                           | Keycloak field                          |
+   |:-----------------------------------------|:------------------------------------------------|
+   | **Identifier**                           | **Client ID**                                   |
+   | **Assertion consumer service URL**       | **Valid redirect URIs**                         |
+   | **Assertion consumer service URL**       | **Assertion Consumer Service POST Binding URL** |
+   | **GitLab single sign-on URL**            | **Home URL**                                    |
+
+1. Configure your GitLab client in Keycloak.
+   1. In Keycloak, go to **Clients** and select your GitLab client configuration.
+   1. On the **Settings** tab, in the **SAML capabilities** section:
+      1. Set the **Name ID format** to `persistent`.
+      1. Turn on **Force name ID format**.
+      1. Turn on **Force POST binding**.
+      1. Turn on **Include AuthnStatement**.
+   1. In the **Signature and Encryption** section, turn on **Sign documents**.
+   1. On the **Keys** tab, make sure all sections are disabled.
+   1. On the **Client scopes** tab:
+      1. Select the client scope for GitLab.
+      1. Select the `email` AttributeStatement.
+      1. Set the **User Attribute** field to `email`.
+      1. Select **Save**.
+1. Retrieve client information from Keycloak.
+   1. In the **Action** dropdown list, select **Download adapter config**.
+   1. In the **Download adapter config** dialog, select **mod-auth-mellon** from the dropdown list.
+   1. Select **Download**.
+   1. Extract the downloaded archive and open `idp-metadata.xml`.
+   1. Retrieve the identity provider single sign-on URL.
+      1. Locate the `<md:SingleSignOnService>` tag.
+      1. Note the value of the `Location` attribute.
+   1. Retrieve the certificate fingerprint.
+      1. Note the value of the `<ds:X509Certificate>` tag.
+      1. Convert the value to [PEM format](https://www.ssl.com/guide/pem-der-crt-and-cer-x-509-encodings-and-conversions/#ftoc-heading-3).
+      1. [Calculate the fingerprint](troubleshooting.md#calculate-the-fingerprint).
+
 ### Configure assertions
 
 {{< alert type="note" >}}
@@ -262,7 +300,7 @@ After you set up your identity provider to work with GitLab, you must configure 
    1. The role to assign to
       [users who are not members of a mapped SAML group](group_sync.md#automatic-member-removal)
       when SAML Group Links is configured for the group.
-1. For groups on self-managed instances: in the **Default membership role** field,
+1. For groups on GitLab Self-Managed instances: in the **Default membership role** field,
    select the role to assign to new users.
    The default role is **Guest**. That role becomes the starting role of all users
    added to the group:
@@ -270,19 +308,13 @@ After you set up your identity provider to work with GitLab, you must configure 
    - In GitLab 16.6 and earlier, group Owners can set a default membership role other than **Guest**.
      as the default membership role.
 1. Select the **Enable SAML authentication for this group** checkbox.
-1. Optional. Select:
+1. Recommended. Select:
    - In GitLab 17.4 and later, **Disable password authentication for enterprise users**.
      For more information, see the [Disable password authentication for enterprise users documentation](#disable-password-authentication-for-enterprise-users).
    - **Enforce SSO-only authentication for web activity for this group**.
    - **Enforce SSO-only authentication for Git and Dependency Proxy activity for this group**.
      For more information, see the [SSO enforcement documentation](#sso-enforcement).
 1. Select **Save changes**.
-
-{{< alert type="note" >}}
-
-The certificate [fingerprint algorithm](../../../integration/saml.md#configure-saml-on-your-idp) must be in SHA1. When configuring the identity provider (such as [Google Workspace](#google-workspace)), use a secure signature algorithm.
-
-{{< /alert >}}
 
 If you are having issues configuring GitLab, see the [troubleshooting documentation](#troubleshooting).
 
@@ -628,7 +660,7 @@ For example:
 - [SAML SSO for GitLab Self-Managed](../../../integration/saml.md)
 - [Glossary](../../../integration/saml.md#glossary)
 - [Blog post: The ultimate guide to enabling SAML and SSO on GitLab.com](https://about.gitlab.com/blog/2023/09/14/the-ultimate-guide-to-enabling-saml/)
-- [Authentication comparison between SaaS and self-managed](../../../administration/auth/_index.md#gitlabcom-compared-to-gitlab-self-managed)
+- [Authentication comparison between SaaS and GitLab Self-Managed](../../../administration/auth/_index.md#gitlabcom-compared-to-gitlab-self-managed)
 - [Passwords for users created through integrated authentication](../../../security/passwords_for_integrated_authentication_methods.md)
 - [SAML Group Sync](group_sync.md)
 
@@ -641,7 +673,7 @@ identity provider:
    configurations for information on the terms they use.
 1. Check the [SAML SSO for GitLab Self-Managed documentation](../../../integration/saml.md).
    The GitLab Self-Managed SAML configuration file supports more options
-   than the GitLab.com file. You can find information on the self-managed instance
+   than the GitLab.com file. You can find information on the GitLab Self-Managed instance
    file in the:
    - External [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml/).
    - [`ruby-saml` library](https://github.com/onelogin/ruby-saml).

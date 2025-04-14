@@ -1,5 +1,5 @@
 import { GlIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import { STATUS_CLOSED } from '~/issues/constants';
 import IssueCardTimeInfo from '~/issues/list/components/issue_card_time_info.vue';
@@ -52,9 +52,10 @@ describe('CE IssueCardTimeInfo component', () => {
 
   const findMilestone = () => wrapper.findComponent(IssuableMilestone);
   const findWorkItemAttribute = () => wrapper.findComponent(WorkItemAttribute);
+  const findDueDateIcon = () => wrapper.findByTestId('issuable-due-date').findComponent(GlIcon);
 
   const mountComponent = ({ issue = issueObject() } = {}) =>
-    shallowMount(IssueCardTimeInfo, {
+    shallowMountExtended(IssueCardTimeInfo, {
       propsData: { issue },
       stubs: {
         WorkItemAttribute,
@@ -82,8 +83,7 @@ describe('CE IssueCardTimeInfo component', () => {
           wrapper = mountComponent({ issue: object({ dueDate: '2020-12-12' }) });
           expect(findWorkItemAttribute().props('title')).toBe('Dec 12, 2020');
           expect(findWorkItemAttribute().props('tooltipText')).toBe('Due date');
-          const datesEl = wrapper.find('[data-testid="issuable-due-date"]');
-          expect(datesEl.findComponent(GlIcon).props()).toMatchObject({
+          expect(findDueDateIcon().props()).toMatchObject({
             variant: 'current',
             name: 'calendar',
           });
@@ -94,8 +94,7 @@ describe('CE IssueCardTimeInfo component', () => {
         describe('when issue is open', () => {
           it('renders in red with overdue icon', () => {
             wrapper = mountComponent({ issue: object({ dueDate: '2020-10-10' }) });
-            const datesEl = wrapper.find('[data-testid="issuable-due-date"]');
-            expect(datesEl.findComponent(GlIcon).props()).toMatchObject({
+            expect(findDueDateIcon().props()).toMatchObject({
               variant: 'danger',
               name: 'calendar-overdue',
             });
@@ -108,8 +107,7 @@ describe('CE IssueCardTimeInfo component', () => {
               issue: object({ dueDate: '2020-10-10', state: STATUS_CLOSED }),
             });
 
-            const datesEl = wrapper.find('[data-testid="issuable-due-date"]');
-            expect(datesEl.findComponent(GlIcon).props()).toMatchObject({
+            expect(findDueDateIcon().props()).toMatchObject({
               variant: 'current',
               name: 'calendar',
             });
@@ -143,7 +141,7 @@ describe('CE IssueCardTimeInfo component', () => {
 
   it('renders time estimate', () => {
     wrapper = mountComponent();
-    const timeEstimate = wrapper.find('[data-testid="time-estimate"]');
+    const timeEstimate = wrapper.findByTestId('time-estimate');
 
     expect(findWorkItemAttribute().props('title')).toBe('1w');
     expect(findWorkItemAttribute().props('tooltipText')).toBe('Estimate');

@@ -1,0 +1,38 @@
+---
+description: The event tracks SAST metrics
+internal_events: true
+action: collect_sast_scan_metrics_from_pipeline
+identifiers:
+- project
+- namespace
+- user
+product_group: static_analysis
+product_categories:
+- vulnerability_management
+milestone: '17.11'
+introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186116'
+tiers:
+- free
+- premium
+- ultimate
+additional_properties:
+  label:
+    description: "name of the analyzers"
+  property:
+    description: "a UUID that identifies a scan"
+  value:
+    description: "exit status of the analyer where 0 indicates success and 1 indicates error"
+  version:
+    description: "version of the analyzer"
+  exit_code:
+    description: "exit code of the analyer"
+  override_count:
+    description: "number of configured overrides"
+  passthrough_count:
+    description: "number of configured passthroughs"
+  custom_exclude_path_count:
+    description: "captures whether or not users configured custom exclude paths"
+  time_s:
+    description: "scan time duration in seconds"
+  file_count:
+    description: "project size in terms of number of files"

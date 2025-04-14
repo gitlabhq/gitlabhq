@@ -56,16 +56,16 @@ In the following table, you can see:
 | Feature | Available in |
 | ------ | ------ |
 | [Email from GitLab](../email_from_gitlab.md)       |   GitLab 14.1 and later     |
-| [Repository size limit](../settings/account_and_limit_settings.md#repository-size-limit) | GitLab 14.4 and later |
+| [Repository size limit](account_and_limit_settings.md#repository-size-limit) | GitLab 14.4 and later |
 | [Group access restriction by IP address](../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address) | GitLab 14.4 and later |
 | [View description change history](../../user/discussions/_index.md#view-description-change-history) | GitLab 16.0 and later |
 | [Maintenance mode](../maintenance_mode/_index.md) | GitLab 16.0 and later |
 | [Configurable issue boards](../../user/project/issue_board.md#configurable-issue-boards) | GitLab 16.0 and later |
 | [Coverage-guided fuzz testing](../../user/application_security/coverage_fuzzing/_index.md) | GitLab 16.0 and later |
-| [Password complexity requirements](../settings/sign_up_restrictions.md#password-complexity-requirements) | GitLab 16.0 and later |
+| [Password complexity requirements](sign_up_restrictions.md#password-complexity-requirements) | GitLab 16.0 and later |
 | [Group wikis](../../user/project/wiki/group.md) | GitLab 16.5 and later |
 | [Issue analytics](../../user/group/issues_analytics/_index.md) | GitLab 16.5 and later |
-| [Custom Text in Emails](../settings/email.md#custom-additional-text) | GitLab 16.5 and later |
+| [Custom Text in Emails](email.md#custom-additional-text) | GitLab 16.5 and later |
 | [Contribution analytics](../../user/group/contribution_analytics/_index.md) | GitLab 16.5 and later |
 | [Group file templates](../../user/group/manage.md#group-file-templates) | GitLab 16.6 and later |
 | [Group webhooks](../../user/project/integrations/webhooks.md#group-webhooks) | GitLab 16.6 and later |
@@ -101,7 +101,7 @@ for all authenticated users, and on the **Admin** area pages. The statuses are:
 - Red: The version of GitLab you are running is vulnerable. You should install
   the latest version with security fixes as soon as possible.
 
-![Version check showing that a non-critical update is available for the GitLab instance](../settings/img/non_critical_update_available_v10_6.png)
+![Version check showing that a non-critical update is available for the GitLab instance](img/non_critical_update_available_v10_6.png)
 
 ### Enable or disable version check
 

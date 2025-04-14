@@ -287,7 +287,7 @@ You can make changes to your default rate limits from the **Admin** area. For mo
 
 ### GitLab SaaS-specific block and error responses
 
-- [403 forbidden error](../user/gitlab_com/_index.md#gitlabcom-specific-rate-limits): If the error occurs for all GitLab SaaS requests, look for an automated process that could have triggered a block. For more assistance, contact GitLab support with your error details, including the affected IP address.
+- [403 forbidden error](../user/gitlab_com/_index.md#rate-limits-on-gitlabcom): If the error occurs for all GitLab SaaS requests, look for an automated process that could have triggered a block. For more assistance, contact GitLab support with your error details, including the affected IP address.
 - [HAProxy API throttle](../user/gitlab_com/_index.md#haproxy): GitLab SaaS responds with HTTP status code 429 to API requests that exceed 10 requests per second, per IP address.
 - [Protected paths throttle](../user/gitlab_com/_index.md#protected-paths-throttle): GitLab SaaS responds with HTTP status code 429 to POST requests at protected paths that exceed 10 requests per minute, per IP address.
 - [Git and container registry failed authentication ban](../user/gitlab_com/_index.md#git-and-container-registry-failed-authentication-ban): GitLab SaaS responds with HTTP status code 403 for one hour if it receives 30 failed authentication requests in three minutes from a single IP address.

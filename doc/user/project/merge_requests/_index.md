@@ -53,7 +53,7 @@ found to your merge request:
 | :-- | :--: | :--: | :--: | :--: | :--: |
 | Standard commit message | 1 | 2 | 3 | 4 | 5 |
 | Commit message with an [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically) like `Closes #1234` | 1 | 2 | 3 | 4 | 5 \* |
-| Branch name [prefixed with an issue ID](../repository/branches/_index.md#prefix-branch-names-with-issue-numbers), like `1234-example` | 1 \* | 2 \* | 3 \* | 4 \* | 5 \* |
+| Branch name [prefixed with an issue ID](../repository/branches/_index.md#prefix-branch-names-with-a-number), like `1234-example` | 1 \* | 2 \* | 3 \* | 4 \* | 5 \* |
 
 {{< alert type="note" >}}
 
@@ -103,15 +103,33 @@ If your group contains subgroups, this view also displays merge requests from th
 
 {{< /tab >}}
 
+{{< tab title="For a file" >}}
+
+When viewing a file in your repository, GitLab shows a badge with the number of open merge requests that target the current branch and modify the file. This helps you identify files that have pending changes.
+
+The availability of this feature is controlled by a feature flag.
+For more information, see [View open merge requests for a file](../repository/files/_index.md#view-open-merge-requests-for-a-file).
+
+To view the open merge requests for a file:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Go to the file you want to view.
+1. At the top right of the screen, next to the filename, look for the green badge with the number
+   of {{< icon name="merge-request-open" >}} **Open** merge requests.
+1. Select the badge to see a list of open merge requests created in the past 30 days.
+1. Select any merge request in the list to go to that merge request.
+
+{{< /tab >}}
+
 {{< /tabs >}}
 
 ## Filter the list of merge requests
 
 {{< history >}}
 
-- Filtering by `source-branch` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134555) in GitLab 16.6.
-- Filtering by `merged-by` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 16.9. Available only when the feature flag `mr_merge_user_filter` is enabled.
-- Filtering by `merged-by` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142666) in GitLab 17.0. Feature flag `mr_merge_user_filter` removed.
+- Filtering by `source branch` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134555) in GitLab 16.6.
+- Filtering by `merged by` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 16.9. Available only when the feature flag `mr_merge_user_filter` is enabled.
+- Filtering by `merged by` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142666) in GitLab 17.0. Feature flag `mr_merge_user_filter` removed.
 
 {{< /history >}}
 
@@ -124,10 +142,10 @@ To filter the list of merge requests:
    - [**By environment or deployment date**](#by-environment-or-deployment-date).
    - **ID**: Enter filter `#30` to return only merge request 30.
    - User filters: Type (or select from the dropdown list) any of these filters to display a list of users:
-     - **Approved-By**, for merge requests already approved by a user. Premium and Ultimate only.
+     - **Approved by**, for merge requests already approved by a user. Premium and Ultimate only.
      - **Approver**, for merge requests that this user is eligible to approve.
        (For more information, read about [Code owners](../codeowners/_index.md)). Premium and Ultimate only.
-     - **Merged-By**, for merge requests merged by this user.
+     - **Merged by**, for merge requests merged by this user.
      - **Reviewer**, for merge requests reviewed by this user.
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:
@@ -146,8 +164,8 @@ To filter merge requests by deployment data, such as the environment or a date,
 you can type (or select from the dropdown list) the following:
 
 - Environment
-- Deployed-before
-- Deployed-after
+- Deployed before
+- Deployed after
 
 {{< alert type="note" >}}
 
@@ -159,7 +177,7 @@ do not return results, as this method does not create a merge commit.
 When filtering by an environment, a dropdown list presents all environments that
 you can choose from.
 
-When filtering by `Deployed-before` or `Deployed-after`:
+When filtering by `Deployed before` or `Deployed after`:
 
 - The date refers to when the deployment to an environment (triggered by the
   merge commit) completed successfully.

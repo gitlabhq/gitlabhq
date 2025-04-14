@@ -14,13 +14,19 @@ module RuboCop
       class PreventIndexCreation < RuboCop::Cop::Base
         include MigrationHelpers
 
-        # NOTE: These tables are not large, or over_limit, but are forbidden for other reasons.
-        FORBIDDEN_TABLES = %i[
-          namespaces
-          users
-          project_statistics
-          issue_search_data
-          packages_packages
+        # NOTE: Other tables are prevented by this cop via `table_size:`
+        FORBIDDEN_TABLES = [
+          :ci_builds,               # Too many indexes + frequently accessed
+          :namespaces,              # Too many indexes + frequently accessed
+          :projects,                # Too many indexes + frequently accessed
+          :users,                   # Too many indexes + frequently accessed
+          :merge_requests,          # Too many indexes + frequently accessed
+          :project_statistics,      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154487
+          :issues,                  # Too many indexes + frequently accessed
+          :issue_search_data,       # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154487
+          :packages_packages,       # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154487
+          :sbom_occurrences,        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154487
+          :deployments              # Too many indexes + frequently accessed
         ].freeze
 
         MSG = "Adding new index to certain tables is forbidden. See " \

@@ -72,7 +72,7 @@ export default {
       projectsLoadingError: false,
       sortKey: this.customSortKey ?? 'STORAGE_SIZE_DESC',
       initialSortBy: this.customSortKey ? null : 'storage',
-      sortableFields: { storage: !this.customSortKey },
+      enableSortableFields: !this.customSortKey,
     };
   },
   computed: {
@@ -116,10 +116,6 @@ export default {
       }
     },
     onSortChanged({ sortBy, sortDesc }) {
-      if (!this.sortableFields[sortBy]) {
-        return;
-      }
-
       const sortDir = sortDesc ? 'desc' : 'asc';
       const sortKey = `${convertToSnakeCase(sortBy)}_size_${sortDir}`.toUpperCase();
       this.sortKey = sortKey;
@@ -195,7 +191,7 @@ export default {
         :is-loading="$apollo.queries.projects.loading"
         :help-links="helpLinks"
         :sort-by="initialSortBy"
-        :sortable-fields="sortableFields"
+        :enable-sortable-fields="enableSortableFields"
         @sortChanged="onSortChanged"
       />
       <div class="gl-mt-5 gl-flex gl-justify-center">

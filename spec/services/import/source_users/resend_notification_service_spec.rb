@@ -4,11 +4,16 @@ require 'spec_helper'
 
 RSpec.describe Import::SourceUsers::ResendNotificationService, feature_category: :importers do
   let_it_be_with_reload(:import_source_user) { create(:import_source_user, :awaiting_approval) }
-  let_it_be(:current_user) { import_source_user.namespace.owner }
+  let(:user) { create(:user) }
+  let(:current_user) { user }
 
   let(:service) { described_class.new(import_source_user, current_user: current_user) }
 
   describe '#execute' do
+    before do
+      import_source_user.namespace.add_owner(user)
+    end
+
     context 'when notification is successfully sent' do
       it 'returns success' do
         expect(Notify).to receive_message_chain(:import_source_user_reassign, :deliver_later)

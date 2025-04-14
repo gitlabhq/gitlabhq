@@ -1,0 +1,17 @@
+---
+description: Number of times the "assign self" button is pressed in a Merge Request
+internal_events: true
+action: assign_self_as_reviewer_in_mr
+identifiers:
+- project
+- namespace
+- user
+product_group: code_review
+product_categories:
+- code_review_workflow
+milestone: '17.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183774
+tiers:
+- free
+- premium
+- ultimate

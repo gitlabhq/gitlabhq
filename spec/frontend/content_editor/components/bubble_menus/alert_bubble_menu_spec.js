@@ -62,7 +62,7 @@ describe('content_editor/components/bubble_menus/alert_bubble_menu', () => {
 
   it('renders bubble menu component', async () => {
     await showBubbleMenu();
-    expect(findBubbleMenu().classes()).toEqual(['gl-rounded-base', 'gl-bg-white', 'gl-shadow']);
+    expect(findBubbleMenu().classes()).toEqual(['gl-rounded-base', 'gl-bg-overlap', 'gl-shadow']);
   });
 
   it('shows alert type listbox', async () => {

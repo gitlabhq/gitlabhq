@@ -1,4 +1,4 @@
-import { addons } from '@storybook/addons';
+import { addons } from '@storybook/manager-api';
 import { GlBadge } from '@gitlab/ui';
 import { FORCE_REMOUNT } from '@storybook/core-events';
 import VueApollo from 'vue-apollo';

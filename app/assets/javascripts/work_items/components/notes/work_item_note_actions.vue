@@ -57,10 +57,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    noteId: {
-      type: String,
-      required: true,
-    },
     showAwardEmoji: {
       type: Boolean,
       required: false,
@@ -111,11 +107,6 @@ export default {
       default: '',
     },
     canResolve: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    resolvable: {
       type: Boolean,
       required: false,
       default: false,
@@ -212,7 +203,7 @@ export default {
       v-if="isWorkItemAuthor"
       v-gl-tooltip
       :title="displayAuthorBadgeText"
-      class="gl-mr-3 gl-hidden sm:gl-block"
+      class="note-hidden-xs gl-mr-3"
       data-testid="author-badge"
     >
       {{ __('Author') }}
@@ -220,7 +211,7 @@ export default {
     <user-access-role-badge
       v-if="maxAccessLevelOfAuthor"
       v-gl-tooltip
-      class="gl-mr-3 gl-hidden sm:gl-block"
+      class="note-hidden-xs gl-mr-3"
       :title="displayMemberBadgeText"
       data-testid="max-access-level-badge"
     >
@@ -229,7 +220,7 @@ export default {
     <user-access-role-badge
       v-else-if="isAuthorContributor"
       v-gl-tooltip
-      class="gl-mr-3 gl-hidden sm:gl-block"
+      class="note-hidden-xs gl-mr-3"
       :title="displayContributorBadgeText"
       data-testid="contributor-badge"
     >
@@ -259,7 +250,7 @@ export default {
     <gl-button
       v-if="showEdit"
       v-gl-tooltip
-      data-testid="note-actions-edit"
+      data-testid="note-edit-button"
       data-track-action="click_button"
       data-track-label="edit_button"
       category="tertiary"
@@ -310,10 +301,11 @@ export default {
         <gl-disclosure-dropdown-item
           v-if="showEdit"
           data-testid="delete-note-action"
+          variant="danger"
           @action="emitEvent('deleteNote')"
         >
           <template #list-item>
-            <span class="gl-text-red-500">{{ $options.i18n.deleteNoteText }}</span>
+            {{ $options.i18n.deleteNoteText }}
           </template>
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>

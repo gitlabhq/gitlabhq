@@ -16,22 +16,6 @@
   }
 }
 
-.milestone-content {
-  .issuable-row {
-    span {
-      a {
-        color: var(--gray-900, $gray-900);
-        word-wrap: break-word;
-      }
-
-      // stylelint-disable-next-line gitlab/no-gl-class
-      .gl-label-link {
-        color: inherit;
-      }
-    }
-  }
-}
-
 .milestone-sidebar {
   .milestone-progress {
     .title {

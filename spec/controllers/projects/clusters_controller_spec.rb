@@ -229,6 +229,35 @@ RSpec.describe Projects::ClustersController, feature_category: :deployment_manag
     end
   end
 
+  describe 'PUT update_migration' do
+    let(:cluster) { create(:cluster, :project, projects: [project]) }
+    let(:redirect_path) { project_cluster_path(project, cluster, tab: 'migrate') }
+
+    def go
+      put :update_migration, params: params.merge(namespace_id: project.namespace, project_id: project, id: cluster)
+    end
+
+    include_examples 'cluster update migration', :project, :user
+
+    describe 'security' do
+      it 'is allowed for admin when admin mode enabled', :enable_admin_mode do
+        expect { go }.to be_allowed_for(:admin)
+      end
+
+      it 'is disabled for admin when admin mode disabled' do
+        expect { go }.to be_denied_for(:admin)
+      end
+
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+  end
+
   describe 'DELETE clear cluster cache' do
     let(:cluster) { create(:cluster, :project, projects: [project]) }
     let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster) }

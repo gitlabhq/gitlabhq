@@ -1,0 +1,8 @@
+---
+migration_job_name: DeleteOrphanedRoutes
+description: Deletes the orphaned routes that were not deleted by the loose foreign key
+feature_category: groups_and_projects
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186659
+milestone: '17.11'
+queued_migration_version: 20250401113424
+finalized_by: # version of the migration that finalized this BBM

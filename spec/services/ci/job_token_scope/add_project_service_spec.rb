@@ -7,9 +7,13 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
   let_it_be(:project) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }
   let_it_be(:target_project) { create(:project) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:policies) { %w[read_containers read_packages] }
+  let_it_be(:policies) { %w[read_deployments read_packages] }
 
   shared_examples 'adds project' do |context|
+    before do
+      allow(project).to receive(:job_token_policies_enabled?).and_return(true)
+    end
+
     it 'adds the project to the scope', :aggregate_failures do
       expect { result }.to change { Ci::JobToken::ProjectScopeLink.count }.by(1)
 
@@ -24,9 +28,9 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
       expect(project_link.job_token_policies).to eq(policies)
     end
 
-    context 'when feature-flag `add_policies_to_ci_job_token` is disabled' do
+    context 'when job token policies are disabled' do
       before do
-        stub_feature_flags(add_policies_to_ci_job_token: false)
+        allow(project).to receive(:job_token_policies_enabled?).and_return(false)
       end
 
       it 'adds the project to the scope but without the policies', :aggregate_failures do

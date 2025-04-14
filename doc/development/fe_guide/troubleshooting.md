@@ -102,7 +102,7 @@ If you see errors like `Missing field 'descriptionHtml' while writing result` , 
 
 The error "Missing field 'description'" indicates that your GraphQL query expects a field named "description" in the response, but the data you're receiving from your backend (or how it's being processed by Apollo Client) is missing that field. This is causing Apollo Client's cache to fail when it tries to update the store with the incomplete data.
 
-To debug this , follow the below steps
+To debug this, follow the below steps
 
 1. Open the error stack developer console
 
@@ -139,7 +139,7 @@ If data related to a query has been invalidated or updated, the cache might not 
 
 When using mutations, the cache might not automatically update unless you configure `refetchQueries` or use a manual cache update after the mutation.
 
-For example : in the first query you have a couple of fields that were not requested in the subsequent query
+For example: in the first query you have a couple of fields that were not requested in the subsequent query
 
 ```graphql
 query workItemTreeQuery($id: WorkItemID!, $pageSize: Int = 100, $endCursor: String) {

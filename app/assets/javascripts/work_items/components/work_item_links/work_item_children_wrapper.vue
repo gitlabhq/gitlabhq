@@ -1,6 +1,7 @@
 <script>
 import Draggable from 'vuedraggable';
 import { cloneDeep } from 'lodash';
+import { produce } from 'immer';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -10,13 +11,13 @@ import { s__ } from '~/locale';
 import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
 
-import { WORK_ITEM_TYPE_VALUE_OBJECTIVE, WORK_ITEM_TYPE_VALUE_EPIC } from '../../constants';
-import { findHierarchyWidgetChildren, getItems } from '../../utils';
 import {
-  addHierarchyChild,
-  removeHierarchyChild,
   optimisticUserPermissions,
-} from '../../graphql/cache_utils';
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_EPIC,
+} from 'ee_else_ce/work_items/constants';
+import { findHierarchyWidget, findHierarchyWidgetChildren, getItems } from '../../utils';
+import { addHierarchyChild, removeHierarchyChild } from '../../graphql/cache_utils';
 import moveWorkItem from '../../graphql/move_work_item.mutation.graphql';
 import toggleHierarchyTreeChildMutation from '../../graphql/client/toggle_hierarchy_tree_child.mutation.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
@@ -144,6 +145,9 @@ export default {
 
       return this.canReorder ? options : {};
     },
+    parentHeirarchyWidget() {
+      return findHierarchyWidget(this.parent);
+    },
     disableList() {
       return this.disableContent || this.updateInProgress;
     },
@@ -229,7 +233,7 @@ export default {
       });
     },
     prefetchWorkItem({ iid }) {
-      if (this.workItemType !== WORK_ITEM_TYPE_VALUE_OBJECTIVE) {
+      if (this.workItemType !== WORK_ITEM_TYPE_NAME_OBJECTIVE) {
         this.prefetch = setTimeout(
           () => this.addWorkItemQuery({ iid }),
           DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
@@ -337,16 +341,17 @@ export default {
       let hierarchyWidgetParams;
       let updatedChildren;
       let toParentHasChildren;
+      let parentHasParent = false;
+      let parentId = toParentId;
 
-      this.updateInProgress = true;
       if (fromParentId === toParentId) {
-        if (oldIndex === newIndex) {
-          this.updateInProgress = false;
-          return;
-        }
+        if (oldIndex === newIndex) return;
+
         hierarchyWidgetParams = this.getReorderParams({ oldIndex, newIndex });
         updatedChildren = cloneDeep(this.children);
         updatedChildren.splice(oldIndex, 1);
+        parentHasParent = this.parentHeirarchyWidget.hasParent;
+        parentId = '';
       } else {
         hierarchyWidgetParams = await this.getMoveItemParams({ toParentId, newIndex });
         updatedChildren = cloneDeep(this.childrenWorkItems);
@@ -367,7 +372,14 @@ export default {
               ...hierarchyWidgetParams,
             },
           },
-          update: async (cache) => {
+          update: async (
+            cache,
+            {
+              data: {
+                workItemsHierarchyReorder: { parentWorkItem },
+              },
+            },
+          ) => {
             if (fromParentId !== toParentId) {
               removeHierarchyChild({
                 cache,
@@ -378,6 +390,24 @@ export default {
               if (!toParentHasChildren) {
                 this.openChild(toParentId);
               }
+            } else {
+              const queryArgs = {
+                query: getWorkItemTreeQuery,
+                variables: { id: fromParentId },
+              };
+              const sourceData = cache.readQuery(queryArgs);
+
+              if (!sourceData) {
+                return;
+              }
+
+              cache.writeQuery({
+                ...queryArgs,
+                data: produce(sourceData, (draftState) => {
+                  const hierarchyWidget = findHierarchyWidget(draftState?.workItem);
+                  hierarchyWidget.children.nodes = findHierarchyWidgetChildren(parentWorkItem);
+                }),
+              });
             }
           },
           optimisticResponse: {
@@ -401,7 +431,7 @@ export default {
               },
               parentWorkItem: {
                 __typename: 'WorkItem',
-                id: toParentId,
+                id: parentId,
                 userPermissions: optimisticUserPermissions,
                 confidential: this.toParent.confidential || this.parent.confidential,
                 title: toParentTitle,
@@ -411,13 +441,14 @@ export default {
                     __typename: 'WorkItemWidgetHierarchy',
                     type: 'HIERARCHY',
                     hasChildren: true,
-                    hasParent: true,
+                    hasParent: parentHasParent,
                     depthLimitReachedByType: [],
                     rolledUpCountsByType: [],
                     parent: null,
                     children: {
                       __typename: 'WorkItemConnection',
                       pageInfo: {
+                        __typename: 'PageInfo',
                         hasNextPage: false,
                         hasPreviousPage: false,
                         startCursor: '',
@@ -456,9 +487,6 @@ export default {
               atIndex: oldIndex,
             });
           }
-        })
-        .finally(() => {
-          this.updateInProgress = false;
         });
     },
     onMove(e, originalEvent) {
@@ -471,9 +499,7 @@ export default {
 
       // Check if current item is an Epic
       if (
-        [WORK_ITEM_TYPE_VALUE_EPIC, WORK_ITEM_TYPE_VALUE_OBJECTIVE].includes(
-          item?.workItemType.name,
-        )
+        [WORK_ITEM_TYPE_NAME_EPIC, WORK_ITEM_TYPE_NAME_OBJECTIVE].includes(item?.workItemType.name)
       ) {
         const { top, left } = originalEvent.target.getBoundingClientRect();
 

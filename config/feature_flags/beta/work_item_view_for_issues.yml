@@ -1,0 +1,9 @@
+---
+name: work_item_view_for_issues
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/461855
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182330
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520791
+milestone: '17.11'
+group: group::project management
+type: beta
+default_enabled: true

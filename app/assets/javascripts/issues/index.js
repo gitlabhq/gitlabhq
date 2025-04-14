@@ -18,7 +18,16 @@ import initSidebarBundle from '~/sidebar/sidebar_bundle';
 import initWorkItemLinks from '~/work_items/components/work_item_links';
 import ZenMode from '~/zen_mode';
 import initAwardsApp from '~/emoji/awards_app';
+import { ISSUE_WIT_FEEDBACK_BADGE } from '~/work_items/constants';
 import { issuableInitialDataById, isLegacyIssueType } from './show/utils/issuable_data';
+
+let feedback = {};
+
+if (gon.features?.workItemViewForIssues) {
+  feedback = {
+    ...ISSUE_WIT_FEEDBACK_BADGE,
+  };
+}
 
 export function initForm() {
   new IssuableForm($('.issue-form')); // eslint-disable-line no-new
@@ -31,10 +40,10 @@ export function initForm() {
   initTypeSelect();
   mountMilestoneDropdown();
 
-  if (gon.features.workItemsViewPreference) {
+  if (gon.features.workItemsViewPreference || gon.features.workItemViewForIssues) {
     import(/* webpackChunkName: 'work_items_feedback' */ '~/work_items_feedback')
       .then(({ initWorkItemsFeedback }) => {
-        initWorkItemsFeedback();
+        initWorkItemsFeedback(feedback);
       })
       .catch({});
   }
@@ -62,10 +71,13 @@ export function initShow() {
     .then((module) => module.default())
     .catch(() => {});
 
-  if (!isLegacyIssueType(issuableData) && gon.features.workItemsViewPreference) {
+  if (
+    !isLegacyIssueType(issuableData) &&
+    (gon.features.workItemsViewPreference || gon.features.workItemViewForIssues)
+  ) {
     import(/* webpackChunkName: 'work_items_feedback' */ '~/work_items_feedback')
       .then(({ initWorkItemsFeedback }) => {
-        initWorkItemsFeedback();
+        initWorkItemsFeedback(feedback);
       })
       .catch({});
   }

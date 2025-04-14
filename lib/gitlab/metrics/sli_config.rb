@@ -3,32 +3,34 @@
 module Gitlab
   module Metrics
     module SliConfig
+      RegisterClass = Data.define(:klass, :is_runtime_enabled_block) do
+        def enabled_class
+          klass if is_runtime_enabled_block.call
+        end
+      end
+
       def self.registered_classes
-        @registered_classes ||= {}
+        @registered_classes ||= Set.new
       end
 
       def self.enabled_slis
-        SliConfig.registered_classes.filter_map { |_, fn| fn.call }
+        SliConfig.registered_classes.filter_map(&:enabled_class)
       end
 
-      def self.register(klass, is_runtime_enabled_block)
-        SliConfig.registered_classes[klass.to_s] = -> do
-          return unless is_runtime_enabled_block.call
-
-          Gitlab::AppLogger.info "Gitlab::Metrics::SliConfig: enabling #{klass}"
-          klass
-        end
+      def self.register(register_class)
+        Gitlab::AppLogger.info "#{self} registering #{register_class.klass}, runtime=#{Gitlab::Runtime.safe_identify}"
+        SliConfig.registered_classes << register_class
       end
 
       module ConfigMethods
         def puma_enabled!(enable = true)
-          is_runtime_enabled = -> { enable && Gitlab::Runtime.puma? }
-          SliConfig.register(self, is_runtime_enabled)
+          register_class = RegisterClass.new(self, -> { enable && Gitlab::Runtime.puma? })
+          SliConfig.register(register_class)
         end
 
         def sidekiq_enabled!(enable = true)
-          is_runtime_enabled = -> { enable && Gitlab::Runtime.sidekiq? }
-          SliConfig.register(self, is_runtime_enabled)
+          register_class = RegisterClass.new(self, -> { enable && Gitlab::Runtime.sidekiq? })
+          SliConfig.register(register_class)
         end
       end
 

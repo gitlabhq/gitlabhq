@@ -24,7 +24,6 @@ export const initNewResourceDropdown = (props = {}) => {
     render(createElement) {
       return createElement(NewResourceDropdown, {
         props: {
-          withLocalStorage: true,
           groupId,
           queryVariables: {
             ...(fullPath

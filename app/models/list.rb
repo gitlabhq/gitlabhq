@@ -6,12 +6,22 @@ class List < ApplicationRecord
 
   belongs_to :board
   belongs_to :label
+  belongs_to :group
+  belongs_to :project
+
   has_many :list_user_preferences
 
   enum list_type: { backlog: 0, label: 1, closed: 2, assignee: 3, milestone: 4, iteration: 5 }
 
   validates :board, :list_type, presence: true, unless: :importing?
   validates :label_id, uniqueness: { scope: :board_id }, if: :label?
+  validates :group, presence: true, unless: :project
+  validates :project, presence: true, unless: :group
+  validates :group, absence: {
+    message: ->(_object, _data) { _("can't be specified if a project was already provided") }
+  }, if: :project
+
+  before_validation :ensure_group_or_project
 
   scope :preload_associated_models, -> { preload(:board, label: :priorities) }
 
@@ -47,6 +57,13 @@ class List < ApplicationRecord
       end
     end
   end
+
+  private
+
+  def ensure_group_or_project
+    self.group_id = board&.group_id
+    self.project_id = board&.project_id
+  end
 end
 
-List.prepend_mod_with('List')
+List.prepend_mod

@@ -68,5 +68,18 @@ RSpec.describe TestCaseEntity do
         expect(subject[:attachment_url]).to be_nil
       end
     end
+
+    context 'when relative_url_root is set' do
+      let(:test_case) { build(:report_test_case, :failed_with_attachment, job: job) }
+
+      it 'returns an attachment_url without duplicating the relative root' do
+        expect(Gitlab::Application.routes).to receive(:default_url_options)
+        .and_return(protocol: 'http', host: 'example.com', port: nil, script_name: '/gitlab')
+
+        expect(subject).to include(:attachment_url)
+        expect(subject[:attachment_url].include?('/gitlab/namespace')).to be_truthy
+        expect(subject[:attachment_url].start_with?('http://example.com')).to be_truthy
+      end
+    end
   end
 end

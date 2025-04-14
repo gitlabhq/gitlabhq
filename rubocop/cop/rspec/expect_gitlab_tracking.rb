@@ -10,25 +10,25 @@ module RuboCop
       #
       # @example
       #
-      # # bad
-      # it 'expects a snowplow event' do
-      #   expect(Gitlab::Tracking).to receive(:event).with("Category", "action", ...)
-      # end
+      #   # bad
+      #   it 'expects a snowplow event' do
+      #     expect(Gitlab::Tracking).to receive(:event).with("Category", "action", ...)
+      #   end
       #
-      # # good
-      # it 'expects a snowplow event', :snowplow do
-      #   expect_snowplow_event(category: "Category", action: "action", ...)
-      # end
+      #   # good
+      #   it 'expects a snowplow event', :snowplow do
+      #     expect_snowplow_event(category: "Category", action: "action", ...)
+      #   end
       #
-      # # bad
-      # it 'does not expect a snowplow event' do
-      #   expect(Gitlab::Tracking).not_to receive(:event)
-      # end
+      #   # bad
+      #   it 'does not expect a snowplow event' do
+      #     expect(Gitlab::Tracking).not_to receive(:event)
+      #   end
       #
-      # # good
-      # it 'does not expect a snowplow event', :snowplow do
-      #   expect_no_snowplow_event
-      # end
+      #   # good
+      #   it 'does not expect a snowplow event', :snowplow do
+      #     expect_no_snowplow_event
+      #   end
       class ExpectGitlabTracking < RuboCop::Cop::Base
         MSG = 'Do not expect directly on `Gitlab::Tracking#event`, add the `snowplow` annotation and use ' \
               '`expect_snowplow_event` instead. ' \

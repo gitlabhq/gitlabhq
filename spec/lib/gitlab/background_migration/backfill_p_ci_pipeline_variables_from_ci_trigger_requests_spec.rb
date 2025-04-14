@@ -37,9 +37,11 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPCiPipelineVariablesFromCiTr
     let!(:pipeline2) { ci_pipeline.create!(partition_id: 100, project_id: 1) }
 
     before do
-      ci_trigger_request.create!(commit_id: pipeline1.id, trigger_id: trigger1.id, variables: { ENV1: true })
-      ci_trigger_request.create!(commit_id: pipeline2.id, trigger_id: trigger2.id, variables: { ENV2: false })
-      ci_trigger_request.create!(commit_id: nil, trigger_id: trigger3.id)
+      ci_trigger_request.create!(commit_id: pipeline1.id, trigger_id: trigger1.id,
+        variables: { ENV1: true }, project_id: 1)
+      ci_trigger_request.create!(commit_id: pipeline2.id, trigger_id: trigger2.id,
+        variables: { ENV2: false }, project_id: 1)
+      ci_trigger_request.create!(commit_id: nil, trigger_id: trigger3.id, project_id: 1)
     end
 
     it 'upserts p_ci_pipeline_variables' do
@@ -73,9 +75,9 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPCiPipelineVariablesFromCiTr
   context 'when one pipeline has multiple ci_trigger_requests' do
     before do
       ci_trigger_request.create!(commit_id: pipeline1.id, trigger_id: trigger1.id,
-        variables: { ENV1: true, VAR1_ONLY: true })
+        variables: { ENV1: true, VAR1_ONLY: true }, project_id: 1)
       ci_trigger_request.create!(commit_id: pipeline1.id, trigger_id: trigger1.id,
-        variables: { ENV1: false, VAR2_ONLY: false })
+        variables: { ENV1: false, VAR2_ONLY: false }, project_id: 1)
     end
 
     it 'upserts p_ci_pipeline_variables' do

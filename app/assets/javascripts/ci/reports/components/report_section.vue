@@ -3,7 +3,6 @@ import { GlButton } from '@gitlab/ui';
 import api from '~/api';
 import StatusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { status, SLOT_SUCCESS, SLOT_LOADING, SLOT_ERROR } from '../constants';
 import IssuesList from './issues_list.vue';
 
@@ -15,7 +14,6 @@ export default {
     HelpPopover,
     StatusIcon,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     alwaysOpen: {
       type: Boolean,
@@ -201,7 +199,7 @@ export default {
 
         <slot name="action-buttons" :is-collapsible="isCollapsible"></slot>
 
-        <div v-if="isCollapsible" class="gl-border-l gl-ml-3 gl-pl-3">
+        <div v-if="isCollapsible" class="gl-border-l gl-ml-3 gl-border-l-section gl-pl-3">
           <gl-button
             data-testid="report-section-expand-button"
             category="tertiary"

@@ -7,3 +7,8 @@
 .gl-label-scoped {
   --label-inset-border: inset 0 0 0 1px currentColor;
 }
+
+.todos-bulk-bar.is-sticky {
+  position: sticky;
+  top: var(--application-header-height);
+}

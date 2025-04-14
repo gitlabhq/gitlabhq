@@ -3,11 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
+  using RSpec::Parameterized::TableSyntax
+
   include AdminModeHelper
 
   describe '#execute' do
-    let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group, :public) }
+    let_it_be(:user) { create(:user, organizations: [group.organization]) }
 
     let_it_be(:private_project) do
       create(:project, :private, name: 'A', path: 'A')
@@ -23,12 +25,6 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
 
     let_it_be(:shared_project) do
       create(:project, :private, name: 'D', path: 'D')
-    end
-
-    let_it_be(:banned_user_project) do
-      create(:project, :public, name: 'Project created by a banned user', creator: create(:user, :banned)).tap do |p|
-        create(:project_authorization, :owner, user: p.creator, project: p)
-      end
     end
 
     let(:params) { {} }
@@ -242,8 +238,8 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
       end
 
       describe 'filter by topic_id' do
-        let_it_be(:topic1) { create(:topic) }
-        let_it_be(:topic2) { create(:topic) }
+        let_it_be(:topic1) { create(:topic, organization_id: public_project.organization_id) }
+        let_it_be(:topic2) { create(:topic, organization_id: public_project.organization_id) }
 
         before do
           public_project.reload
@@ -342,6 +338,26 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
         let(:params) { { name: group.name, search_namespaces: true } }
 
         it { is_expected.to eq([public_project, internal_project]) }
+      end
+
+      describe 'filter by active' do
+        let_it_be(:active_projects) { [public_project, internal_project] }
+        let_it_be(:archived_project) { create(:project, :archived, :public) }
+
+        let(:current_user) { user }
+
+        where :test_params, :expected_projects do
+          {}                | [ref(:active_projects), ref(:archived_project)]
+          { active: nil  }  | [ref(:active_projects), ref(:archived_project)]
+          { active: true }  | [ref(:active_projects)]
+          { active: false } | [ref(:archived_project)]
+        end
+
+        with_them do
+          let(:params) { test_params }
+
+          it { is_expected.to match_array(expected_projects.flatten) }
+        end
       end
 
       describe 'filter by archived' do
@@ -554,22 +570,13 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
               public_project,
               internal_project,
               private_project,
-              shared_project,
-              banned_user_project
+              shared_project
             ])
           end
         end
 
         context 'with admin mode disabled' do
           it { is_expected.to match_array([public_project, internal_project]) }
-
-          context 'when hide_projects_of_banned_users FF is disabled' do
-            before do
-              stub_feature_flags(hide_projects_of_banned_users: false)
-            end
-
-            it { is_expected.to match_array([public_project, internal_project, banned_user_project]) }
-          end
         end
       end
     end

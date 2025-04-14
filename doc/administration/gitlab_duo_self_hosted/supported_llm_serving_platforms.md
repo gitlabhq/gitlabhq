@@ -8,7 +8,8 @@ title: GitLab Duo Self-Hosted supported platforms
 
 {{< details >}}
 
-- Tier: Ultimate with GitLab Duo Enterprise - [Start a GitLab Duo Enterprise trial on a paid Ultimate subscription](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Tier: Ultimate
+- Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
@@ -23,7 +24,7 @@ title: GitLab Duo Self-Hosted supported platforms
 
 {{< /history >}}
 
-There are multiple platforms available to host your self-hosted Large Language Models (LLMs). Each platform has unique features and benefits that can cater to different needs. The following documentation summarises the currently supported options:
+There are multiple platforms available to host your self-hosted Large Language Models (LLMs). Each platform has unique features and benefits that can cater to different needs. The following documentation summarises the currently supported options. If the platform you want to use is not in this documentation, provide feedback in the [platform request issue (issue 526144)](https://gitlab.com/gitlab-org/gitlab/-/issues/526144).
 
 ## For self-hosted model deployments
 
@@ -78,7 +79,7 @@ For more information on:
 
 - vLLM supported models, see the [vLLM Supported Models documentation](https://docs.vllm.ai/en/latest/models/supported_models.html).
 - Available options when using vLLM to run a model, see the [vLLM documentation on engine arguments](https://docs.vllm.ai/en/stable/usage/engine_args.html).
-- The hardware needed for the models, see the [Supported models and Hardware requirements documentation](../gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md).
+- The hardware needed for the models, see the [Supported models and Hardware requirements documentation](supported_models_and_hardware_requirements.md).
 
 Examples:
 
@@ -128,6 +129,26 @@ Examples:
      --tokenizer <path-to-model>/Mixtral-8x7B-Instruct-v0.1
    ```
 
+#### Disable request logging to reduce latency
+
+When running vLLM in production, you can significantly reduce latency by using the `--disable-log-requests` flag to disable request logging.
+
+{{< alert type="note" >}}
+
+Use this flag only when you do not need detailed request logging.
+
+{{< /alert >}}
+
+Disabling request logging minimizes the overhead introduced by verbose logs, especially under high load, and can help improve performance levels.
+
+```shell
+vllm serve <path-to-model>/<model-version> \
+--served_model_name <choose-a-name-for-the-model>  \
+--disable-log-requests
+```
+
+This change has been observed to notably improve response times in internal benchmarks.
+
 ## For cloud-hosted model deployments
 
 1. [AWS Bedrock](https://aws.amazon.com/bedrock/).
@@ -141,3 +162,16 @@ Examples:
    Provides access to OpenAI's powerful models, enabling developers to integrate advanced AI capabilities into their applications with robust security and scalable infrastructure.
    - [Working with Azure OpenAI models](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/working-with-models?tabs=powershell)
    - [Azure OpenAI Service models](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions)
+
+## Use multiple models and platforms
+
+With GitLab Duo Self-Hosted, you can use multiple models and platforms in the same GitLab instance.
+
+For example, you can configure one feature to use Azure OpenAI, and another feature to use AWS Bedrock or self-hosted models served with vLLM.
+
+This setup gives you flexibility to choose the best model and platform for each use case. Models must be supported and served through a compatible platform.
+
+For more information on setting up different providers, see:
+
+- [Configure GitLab Duo Self-Hosted features](configure_duo_features.md)
+- [Supported GitLab Duo Self-Hosted models and hardware requirements](supported_models_and_hardware_requirements.md)

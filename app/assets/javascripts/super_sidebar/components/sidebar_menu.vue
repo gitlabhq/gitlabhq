@@ -6,6 +6,8 @@ import { s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { userCounts } from '~/super_sidebar/user_counts_manager';
+import { formatAsyncCount } from '~/super_sidebar/utils';
 import { PANELS_WITH_PINS, PINNED_NAV_STORAGE_KEY } from '../constants';
 import NavItem from './nav_item.vue';
 import PinnedSection from './pinned_section.vue';
@@ -59,7 +61,7 @@ export default {
   data() {
     return {
       showFlyoutMenus: false,
-      asyncCount: {},
+      asyncCountQuery: {},
 
       // This is used to detect if user came to this page by clicking a
       // nav item in the pinned section.
@@ -71,7 +73,7 @@ export default {
     };
   },
   apollo: {
-    asyncCount: {
+    asyncCountQuery: {
       query: superSidebarDataQuery,
       variables() {
         return { fullPath: this.currentPath };
@@ -80,7 +82,17 @@ export default {
         return !this.currentPath;
       },
       update(data) {
-        return data?.namespace?.sidebar ?? {};
+        const values = data?.namespace?.sidebar ?? {};
+        const result = {};
+
+        for (const [key, value] of Object.entries(values)) {
+          const formatted = formatAsyncCount(value);
+          if (formatted) {
+            result[key] = formatted;
+          }
+        }
+
+        return result;
       },
       error(error) {
         Sentry.captureException(error);
@@ -88,6 +100,29 @@ export default {
     },
   },
   computed: {
+    /**
+     * The behaviour below might be a little unintuitive. For some sidebar items we have set `pill_count_field`
+     * instead of `pill_count`. This is used for work item counts on groups and projects, so that they happen
+     * async with the asyncCountQuery above.
+     *
+     * For the `Your work` sidebar we are using the userCounts from user_counts_manager.js, to make sure that
+     * the counts always match what is in the UserBar.
+     *
+     * It is thinkable that we move all of this out into a "Count Manager" and use it in all sidebars, so that
+     * the sidebar can become a little more agnostic regarding the logic of counts. The sidebar would just ask:
+     * Yo, Count Manager, what is the count for this item and retrieve it. Whether that data available sync,
+     * via a Service Worker or some GraphQL API calls, shouldn't matter too much.
+     */
+    asyncCount() {
+      if (this.panelType === 'your_work') {
+        const result = {};
+        for (const [key, value] of Object.entries(userCounts)) {
+          result[key] = value > 0 ? value : null;
+        }
+        return result;
+      }
+      return this.asyncCountQuery;
+    },
     // Returns the list of items that we want to have static at the top.
     // Only sidebars that support pins also support a static section.
     staticItems() {

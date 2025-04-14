@@ -1,5 +1,5 @@
 <script>
-import { isHealthStatusWidget } from '~/work_items/utils';
+import { findHealthStatusWidget } from '~/work_items/utils';
 
 export default {
   components: {
@@ -15,9 +15,7 @@ export default {
   },
   computed: {
     healthStatus() {
-      return (
-        this.issue.healthStatus || this.issue.widgets?.find(isHealthStatusWidget)?.healthStatus
-      );
+      return this.issue.healthStatus || findHealthStatusWidget(this.issue)?.healthStatus;
     },
     hasUpdateTimeStamp() {
       return this.issue.updatedAt !== this.issue.createdAt;

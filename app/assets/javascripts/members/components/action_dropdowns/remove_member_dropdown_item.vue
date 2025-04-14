@@ -78,12 +78,11 @@ export default {
 <template>
   <gl-disclosure-dropdown-item
     data-testid="delete-member-dropdown-item"
+    variant="danger"
     @action="showRemoveMemberModal(modalData)"
   >
     <template #list-item>
-      <span class="gl-text-red-500">
-        <slot></slot>
-      </span>
+      <slot></slot>
     </template>
   </gl-disclosure-dropdown-item>
 </template>

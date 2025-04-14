@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlDisclosureDropdownGroup } from '@gitlab/ui';
+import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import PermalinkDropdownItem from '~/repository/components/header_area/permalink_dropdown_item.vue';
 import { keysFor, PROJECT_FILES_GO_TO_PERMALINK } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
@@ -16,9 +16,7 @@ const relativePermalinkPath =
 describe('PermalinkDropdownItem', () => {
   let wrapper;
 
-  const $toast = {
-    show: jest.fn(),
-  };
+  const mockToastShow = jest.fn();
 
   const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(PermalinkDropdownItem, {
@@ -26,16 +24,15 @@ describe('PermalinkDropdownItem', () => {
         permalinkPath: relativePermalinkPath,
         ...props,
       },
-      stubs: {
-        GlDisclosureDropdownGroup,
+      mocks: {
+        $toast: {
+          show: mockToastShow,
+        },
       },
-      mocks: { $toast },
     });
   };
 
-  const findDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
-
-  const findPermalinkLinkDropdown = () => wrapper.findByTestId('permalink');
+  const findPermalinkLinkDropdown = () => wrapper.findComponent(GlDisclosureDropdownItem);
 
   beforeEach(() => {
     lineState.currentLineNumber = null;
@@ -43,7 +40,6 @@ describe('PermalinkDropdownItem', () => {
   });
 
   it('renders correctly', () => {
-    expect(findDropdownGroup().exists()).toBe(true);
     expect(findPermalinkLinkDropdown().exists()).toBe(true);
   });
 
@@ -65,9 +61,11 @@ describe('PermalinkDropdownItem', () => {
   });
 
   describe('handles onCopyPermalink correctly', () => {
-    it('shows toast when dropdown item is clicked', () => {
+    it('shows toast when dropdown item is clicked', async () => {
       findPermalinkLinkDropdown().vm.$emit('action');
-      expect($toast.show).toHaveBeenCalledWith('Permalink copied to clipboard.');
+      await nextTick();
+
+      expect(mockToastShow).toHaveBeenCalledWith('Permalink copied to clipboard.');
     });
 
     it('triggers copy permalink when shortcut is used', async () => {
@@ -77,7 +75,7 @@ describe('PermalinkDropdownItem', () => {
       await nextTick();
 
       expect(clickSpy).toHaveBeenCalled();
-      expect($toast.show).toHaveBeenCalledWith('Permalink copied to clipboard.');
+      expect(mockToastShow).toHaveBeenCalledWith('Permalink copied to clipboard.');
     });
   });
 

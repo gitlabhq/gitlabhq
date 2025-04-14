@@ -29,33 +29,52 @@ Status: Experiment
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
-
 You can use fine-grained permissions to explicitly allow access to a limited set of API endpoints.
 These permissions are applied to the CI/CD job tokens in a specified project.
-This feature is an [experiment](../../policy/development_stages_support.md#experiment).
 
-## Enable fine-grained permissions
+This feature is an [experiment](../../policy/development_stages_support.md#experiment) and subject to change without notice. This feature is not ready for production use. If you want to use this feature, you should test outside of production first.
 
-### On GitLab Self-Managed
+## Enable use of fine-grained permissions
 
-1. Start the GitLab Rails console. For information, see [Enable and disable GitLab features deployed behind feature flags](../../administration/feature_flags.md#enable-or-disable-the-feature)
-1. Turn on the [feature flag](../../administration/feature_flags.md):
+Prerequisites:
 
-```ruby
-# You must include a specific project ID with this command.
-Feature.enable(:add_policies_to_ci_job_token, <project_id>)
-```
+- You must have the Owner role for a group.
 
-### On GitLab.com
+You must turn on fine-grained permissions at the group level. Then, each project in the group can
+apply fine-grained permissions for CI/CD job tokens to grant access to individual resources.
 
-Add a comment on this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519575) with your project ID.
+To enable fine-grained permissions for all projects in a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Settings > CI/CD**.
+1. Expand **General pipelines**.
+1. Turn on the **Enable fine-grained permissions for CI/CD job tokens** toggle.
+
+## Add fine-grained permissions to the job token allowlist
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+- You must enable the use of fine-grained permissions for a project.
+
+You can add fine-grained permissions to groups and projects on your job token allowlist. This allows
+them to use job tokens to access specific project resources and more accurately control which
+resources are available to these groups and projects.
+
+To add fine-grained permissions to groups or projects on the job token allowlist:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Job token permissions**.
+1. In the **CI/CD job token allowlist** section, select **Add**.
+1. From the dropdown list, select **Group or project**.
+1. Enter the path to an existing group or project.
+1. Select **Fine-grained permissions**.
+1. Grant permissions to the [available API endpoints](#available-api-endpoints).
+1. Select **Add**.
+
+GitLab adds the group or project to the job token allowlist with the specified permissions. The group or project can now
+access any allowed resources in the current project.
 
 ## Available API endpoints
 
@@ -80,7 +99,6 @@ The following endpoints are available for CI/CD job tokens.
 | Environments: Read and write | `ADMIN_ENVIRONMENTS` | `PUT /projects/:id/environments/:environment_id` | Update an existing environment |
 | Environments: Read | `READ_ENVIRONMENTS` | `GET /projects/:id/environments/:environment_id` | Get a specific environment |
 | Environments: Read | `READ_ENVIRONMENTS` | `GET /projects/:id/environments` | List environments |
-| Jobs: Read and write | `ADMIN_JOBS` | `PUT /projects/:id/pipelines/:pipeline_id/metadata` | Updates pipeline metadata |
 | Jobs: Read | `READ_JOBS` | `GET /jobs/:id/artifacts` | Download the artifacts file for job |
 | Jobs: Read | `READ_JOBS` | `GET /projects/:id/jobs/:job_id/artifacts/*artifact_path` | Download a specific file from artifacts archive |
 | Jobs: Read | `READ_JOBS` | `GET /projects/:id/jobs/:job_id/artifacts` | Download the artifacts archive from a job |
@@ -136,6 +154,8 @@ The following endpoints are available for CI/CD job tokens.
 | Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` | Upload package files |
 | Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name/authorize` | Workhorse authorize the conan recipe file |
 | Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name` | Upload recipe package files |
+| Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files/:file_name/authorize` | Workhorse authorize the conan package file |
+| Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files/:file_name` | Upload package files |
 | Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name/authorize` | Workhorse authorize generic package file |
 | Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name` | Upload package file |
 | Packages: Read and write | `ADMIN_PACKAGES` | `PUT /projects/:id/packages/maven/*path/:file_name/authorize` | Workhorse authorize the maven package file upload |
@@ -155,7 +175,6 @@ The following endpoints are available for CI/CD job tokens.
 | Packages: Read | `READ_PACKAGES` | `GET /packages/maven/*path/:file_name` | Download the maven package file at instance level |
 | Packages: Read | `READ_PACKAGES` | `GET /packages/npm/-/package/*package_name/dist-tags` | Get all tags for a given an NPM package |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/:package_id/package_files` | List package files |
-| Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/:package_id/pipelines` | Get the pipelines for a single project package |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/:package_id` | Get a single project package |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/composer/archives/*package_name` | Composer package endpoint to download a package archive |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/digest` | Recipe Digest |
@@ -166,7 +185,10 @@ The following endpoints are available for CI/CD job tokens.
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` | Recipe Snapshot |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` | Download recipe files |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` | Download package files |
+| Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/latest` | Get the latest revision |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name` | Download recipe files |
+| Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files` | List recipe files |
+| Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions` | Get the list of revisions |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name` | Download package file |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/go/*module_name/@v/:module_version.info` | Version metadata |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/go/*module_name/@v/:module_version.mod` | Download module file |
@@ -190,6 +212,8 @@ The following endpoints are available for CI/CD job tokens.
 | Packages: Read | `READ_PACKAGES` | `POST /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/upload_urls` | Recipe Upload Urls |
 | Packages: Read | `READ_PACKAGES` | `POST /projects/:id/packages/npm/-/npm/v1/security/advisories/bulk` | NPM registry bulk advisory endpoint |
 | Packages: Read | `READ_PACKAGES` | `POST /projects/:id/packages/npm/-/npm/v1/security/audits/quick` | NPM registry quick audit endpoint |
+| Pipelines: Read and write | `ADMIN_PIPELINES` | `PUT /projects/:id/pipelines/:pipeline_id/metadata` | Updates pipeline metadata |
+| Pipelines: Read | `READ_PIPELINES` | `GET /projects/:id/packages/:package_id/pipelines` | Get the pipelines for a single project package |
 | Releases: Read and write | `ADMIN_RELEASES` | `DELETE /projects/:id/releases/:tag_name/assets/links/:link_id` | Delete a release link |
 | Releases: Read and write | `ADMIN_RELEASES` | `DELETE /projects/:id/releases/:tag_name` | Delete a release |
 | Releases: Read and write | `ADMIN_RELEASES` | `POST /projects/:id/catalog/publish` | Publish a new component project release as version to the CI/CD catalog |

@@ -167,12 +167,12 @@ export default {
           <gl-link
             v-if="mergeRequestRef"
             :href="mergeRequestRef.path"
-            class="gl-text-gray-700"
+            class="gl-text-subtle"
             data-testid="ref-name"
           >
             {{ mergeRequestRef.iid }}
           </gl-link>
-          <gl-link v-else :href="refUrl" class="gl-text-gray-700" data-testid="ref-name">
+          <gl-link v-else :href="refUrl" class="gl-text-subtle" data-testid="ref-name">
             {{ commitRef.name }}
           </gl-link>
         </tooltip-on-truncate>
@@ -180,7 +180,7 @@ export default {
 
       <div class="gl-inline-block gl-rounded-base gl-bg-strong gl-px-2 gl-text-sm gl-text-default">
         <gl-icon name="commit" class="js-commit-icon" :size="12" />
-        <gl-link :href="commitUrl" class="gl-text-gray-700" data-testid="commit-sha">{{
+        <gl-link :href="commitUrl" class="gl-text-subtle" data-testid="commit-sha">{{
           shortSha
         }}</gl-link>
       </div>

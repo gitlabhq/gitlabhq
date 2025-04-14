@@ -36,7 +36,7 @@ files in this repository.
 
 ## Hiring
 
-We are hiring developers, support people, and production engineers all the time, please see our [jobs page](https://about.gitlab.com/jobs/).
+We are hiring developers, support engineers, and production engineers all the time, please see our [jobs page](https://about.gitlab.com/jobs/).
 
 ## Website
 

@@ -4,7 +4,6 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import BlobButtonGroup from '~/repository/components/header_area/blob_button_group.vue';
-import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 import { blobControlsDataMock, refMock } from 'ee_else_ce_jest/repository/mock_data';
 
@@ -13,10 +12,10 @@ jest.mock('~/lib/utils/common_utils', () => ({
 }));
 
 const DEFAULT_PROPS = {
-  projectPath: 'some/project/path',
   isUsingLfs: true,
   userPermissions: { pushCode: true, createMergeRequestIn: true, forkProject: true },
   currentRef: refMock,
+  isReplaceDisabled: false,
 };
 
 const DEFAULT_INJECT = {
@@ -57,7 +56,6 @@ describe('BlobButtonGroup component', () => {
 
   const findReplaceItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findUploadBlobModal = () => wrapper.findComponent(UploadBlobModal);
-  const findForkSuggestionModal = () => wrapper.findComponent(ForkSuggestionModal);
 
   beforeEach(async () => {
     await createComponent();
@@ -66,11 +64,9 @@ describe('BlobButtonGroup component', () => {
   it('renders component', () => {
     expect(wrapper.props()).toMatchObject({
       isUsingLfs: true,
-      projectPath: 'some/project/path',
       userPermissions: { pushCode: true, createMergeRequestIn: true, forkProject: true },
       currentRef: 'default-ref',
-      isLoading: false,
-      pathLocks: { nodes: [] },
+      isReplaceDisabled: false,
     });
   });
 
@@ -106,18 +102,18 @@ describe('BlobButtonGroup component', () => {
         expect(showUploadBlobModalMock).not.toHaveBeenCalled();
       });
 
-      it('triggers ForkSuggestionModal from the replace item', async () => {
+      it('emits showForkSuggestion from the replace item', async () => {
         findReplaceItem().vm.$emit('action');
         await nextTick();
 
-        expect(findForkSuggestionModal().props('visible')).toBe(true);
+        expect(wrapper.emitted('showForkSuggestion')).toEqual([[]]);
       });
     });
   });
 
-  it('renders ForkSuggestionModal', () => {
-    expect(findForkSuggestionModal().props()).toMatchObject({
-      forkPath: 'fork/view/path',
+  it('should not disable replace button', () => {
+    expect(findReplaceItem().props('item')).toMatchObject({
+      extraAttrs: { disabled: false },
     });
   });
 
@@ -130,5 +126,6 @@ describe('BlobButtonGroup component', () => {
       path: 'some/file.js',
       replacePath: 'some/replace/file.js',
     });
+    expect(wrapper.emitted('showForkSuggestion')).toBeUndefined();
   });
 });

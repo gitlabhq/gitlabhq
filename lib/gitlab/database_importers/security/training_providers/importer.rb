@@ -23,7 +23,7 @@ module Gitlab
           SECUREFLAG_DATA = {
             name: 'SecureFlag',
             description: "Get remediation advice with example code and recommended hands-on labs in a fully
-                          interactive virtualised environment.",
+                          interactive virtualized environment.",
             url: "https://knowledge-base-api.secureflag.com/gitlab"
           }.freeze
 

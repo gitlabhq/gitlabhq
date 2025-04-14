@@ -1,0 +1,7 @@
+- if project.adjourned_deletion_configured? && scheduled_for_deletion?(project)
+  = render Pajamas::ButtonComponent.new(category: :tertiary,
+    href: project_restore_path(project),
+    method: :post,
+    variant: :link,
+    button_options: { class: 'gl-ml-3' }) do
+    = _("Restore")

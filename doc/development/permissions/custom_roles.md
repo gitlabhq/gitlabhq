@@ -41,7 +41,7 @@ Like default roles, custom roles are [inherited](../../user/project/members/_ind
 
 ### Finding existing abilities checks
 
-Abilities are often [checked in multiple locations](../permissions/authorizations.md#where-should-permissions-be-checked) for a single endpoint or web request. Therefore, it can be difficult to find the list of authorization checks that are run for a given endpoint.
+Abilities are often [checked in multiple locations](authorizations.md#where-should-permissions-be-checked) for a single endpoint or web request. Therefore, it can be difficult to find the list of authorization checks that are run for a given endpoint.
 
 To assist with this, you can locally set `GITLAB_DEBUG_POLICIES=true`.
 

@@ -39,7 +39,7 @@ RSpec.describe 'projects/hooks/edit' do
     it 'renders alert' do
       render
 
-      expect(rendered).to have_text(s_('Webhooks|Webhook failed to connect'))
+      expect(rendered).to have_text(s_('Webhooks|Webhook disabled'))
     end
   end
 
@@ -52,7 +52,7 @@ RSpec.describe 'projects/hooks/edit' do
     it 'renders alert' do
       render
 
-      expect(rendered).to have_text(s_('Webhooks|Webhook fails to connect'))
+      expect(rendered).to have_text(s_('Webhooks|Webhook temporarily disabled'))
     end
   end
 end

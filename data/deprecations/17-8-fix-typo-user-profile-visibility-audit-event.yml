@@ -1,5 +1,5 @@
 - title: 'Fix typo in user profile visibility updated audit event type'
-  removal_milestone: '18.0'
+  removal_milestone: '18.6'
   announcement_milestone: '17.8'
   breaking_change: true
   window: 1
@@ -9,5 +9,7 @@
   impact: low
   scope: instance
   body: | # (required) Don't change this line.
-    To fix a typo in an audit event type, in GitLab 18.0 we'll rename the `user_profile_visiblity_updated` event type to
-    `user_profile_visibility_updated`.
+    In GitLab 17.11, we created a duplicate audit event type with the name `user_profile_visibility_updated` to replace the audit event type
+    `user_profile_visiblity_updated` that is misspelled. You should begin to migrate to this new audit event type as soon as possible.
+
+    In GitLab 18.6, we'll remove the `user_profile_visiblity_updated` event type.

@@ -1,16 +1,17 @@
+@use 'constants';
+
 .rd-page-container {
   max-width: none;
+}
+
+.rd-app {
+  --rd-app-sticky-top-with-padding: calc(var(--rd-app-sticky-top, 0) + #{constants.$app-sticky-top-padding});
 }
 
 .rd-app-header {
   display: flex;
   padding: $gl-spacing-scale-3 0;
   min-height: 3rem;
-  // do not let dropdowns cover sticky header
-  position: relative;
-  // this should always be higher than z-index inside diff files or file browser
-  // otherwise dropdowns will not cover diff file or file tree content
-  z-index: 10;
 }
 
 .rd-app-settings {
@@ -21,7 +22,7 @@
 .rd-app-body {
   display: flex;
 
-  @include media-breakpoint-down(sm) {
+  @include media-breakpoint-down(constants.$app-vertical-breakpoint) {
     flex-direction: column;
   }
 }
@@ -30,26 +31,35 @@
   flex: 1 0;
 }
 
-.rd-app-content[data-sidebar-visible] {
-  @include media-breakpoint-up(sm) {
-    padding-left: $gl-spacing-scale-4;
-  }
+.rd-app-diffs-list {
+  transition: opacity 0.2s;
+}
 
-  @include media-breakpoint-down(sm) {
-    padding-top: $gl-spacing-scale-4;
-  }
+.rd-app-diffs-list[data-loading] {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .rd-app-sidebar {
+  top: var(--rd-app-sticky-top-with-padding) !important;
   width: 320px;
   flex: none;
-  padding-left: 0 !important;
+  box-sizing: content-box;
 
-  @include media-breakpoint-down(sm) {
+  @include media-breakpoint-up(constants.$app-vertical-breakpoint) {
+    $drag-handle-width: 4px;
+    padding-right: calc($gl-spacing-scale-4 + $drag-handle-width / 2);
+    margin-right: calc($gl-spacing-scale-4 - $drag-handle-width / 2);
+  }
+
+  @include media-breakpoint-down(constants.$app-vertical-breakpoint) {
     flex: 1;
+    margin: 0;
+    // override .diff-tree-list, remove when fully switched to Rapid Diffs
     width: auto !important;
-    padding: 0 !important;
     position: static !important;
+    padding: 0 0 $gl-spacing-scale-4 !important;
+    min-height: auto !important;
   }
 }
 

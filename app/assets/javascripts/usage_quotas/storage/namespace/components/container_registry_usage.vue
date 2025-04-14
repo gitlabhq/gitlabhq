@@ -30,13 +30,13 @@ export default {
     },
   },
   i18n: {
-    containerRegistry: s__('UsageQuota|Container Registry'),
+    containerRegistry: s__('UsageQuota|Container registry'),
     storageUsed: s__('UsageQuota|Storage used'),
     containerRegistryDescription: s__(
-      'UsageQuota|Gitlab-integrated Docker Container Registry for storing Docker Images.',
+      'UsageQuota|Gitlab-integrated Docker container registry for storing Docker Images.',
     ),
     estimatedWarningTooltip: s__(
-      'UsageQuota|Precise calculation of Container Registry storage size is delayed because it is too large for synchronous estimation. Precise evaluation will be scheduled within 24 hours.',
+      'UsageQuota|Precise calculation of container registry storage size is delayed because it is too large for synchronous estimation. Precise evaluation will be scheduled within 24 hours.',
     ),
   },
 };

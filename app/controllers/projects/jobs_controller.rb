@@ -6,7 +6,8 @@ class Projects::JobsController < Projects::ApplicationController
   include ContinueParams
   include ProjectStatsRefreshConflictsGuard
 
-  urgency :low, [:index, :show, :trace, :retry, :play, :cancel, :unschedule, :erase, :viewer, :raw, :test_report_summary]
+  urgency :low,
+    [:index, :show, :trace, :retry, :play, :cancel, :unschedule, :erase, :viewer, :raw, :test_report_summary]
 
   before_action :find_job_as_build, except: [:index, :play, :retry, :show]
   before_action :find_job_as_processable, only: [:play, :retry, :show]
@@ -23,7 +24,7 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :verify_proxy_request!, only: :proxy_websocket_authorize
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:erase]
   before_action :push_filter_by_name, only: [:index]
-  before_action :push_force_cancel_build, only: [:cancel, :show]
+  before_action :push_populate_and_use_build_source_table, only: [:index]
   layout 'project'
 
   feature_category :continuous_integration
@@ -48,7 +49,9 @@ class Projects::JobsController < Projects::ApplicationController
             {
               # Pipeline will show all failed builds by default if not using disable_failed_builds
               disable_coverage: true,
-              disable_failed_builds: true
+              disable_failed_builds: true,
+              # By default, :source is not exposed in the JobEntity. We want to expose it for this endpoint
+              enable_source: true
             },
             BuildDetailsEntity
           )
@@ -108,11 +111,7 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def cancel
-    service_response = if Feature.enabled?(:force_cancel_build, current_user)
-                         Ci::BuildCancelService.new(@build, current_user, force_param).execute
-                       else
-                         Ci::BuildCancelService.new(@build, current_user).execute
-                       end
+    service_response = Ci::BuildCancelService.new(@build, current_user, force_param).execute
 
     if service_response.success?
       destination = continue_params[:to].presence || builds_project_pipeline_path(@project, @build.pipeline.id)
@@ -149,7 +148,8 @@ class Projects::JobsController < Projects::ApplicationController
   def raw
     if @build.trace.archived?
       workhorse_set_content_type!
-      send_upload(@build.job_artifacts_trace.file, send_params: raw_send_params, redirect_params: raw_redirect_params, proxy: params[:proxy])
+      send_upload(@build.job_artifacts_trace.file, send_params: raw_send_params, redirect_params: raw_redirect_params,
+        proxy: params[:proxy])
     else
       @build.trace.read do |stream|
         if stream.file?
@@ -161,7 +161,8 @@ class Projects::JobsController < Projects::ApplicationController
           # to the user but, because we have the trace content, we can calculate
           # the proper content type and disposition here.
           raw_data = stream.raw
-          send_data raw_data, type: 'text/plain; charset=utf-8', disposition: raw_trace_content_disposition(raw_data), filename: 'job.log'
+          send_data raw_data, type: 'text/plain; charset=utf-8', disposition: raw_trace_content_disposition(raw_data),
+            filename: 'job.log'
         end
       end
     end
@@ -298,8 +299,8 @@ class Projects::JobsController < Projects::ApplicationController
     push_frontend_feature_flag(:fe_search_build_by_name, @project)
   end
 
-  def push_force_cancel_build
-    push_frontend_feature_flag(:force_cancel_build, current_user)
+  def push_populate_and_use_build_source_table
+    push_frontend_feature_flag(:populate_and_use_build_source_table, @project)
   end
 end
 

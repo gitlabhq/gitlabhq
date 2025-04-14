@@ -245,6 +245,25 @@ describe('TodosFilterBar', () => {
     expect(trackingSpy).toHaveBeenCalledTimes(2);
   });
 
+  it('handles combined action types with semicolon delimiter', () => {
+    createComponent();
+    const combinedActionValue = `mentioned;directly_addressed`;
+
+    findGlFilteredSearch().vm.$emit(
+      'input',
+      generateFilterTokens({
+        action: combinedActionValue,
+      }),
+    );
+    findGlFilteredSearch().vm.$emit('submit');
+
+    expect(wrapper.emitted('filters-changed')[0][0].action).toEqual([
+      'mentioned',
+      'directly_addressed',
+    ]);
+    expect(window.location.search).toBe('?action_id=2');
+  });
+
   it('shows a warning message when trying to text-search and only submits the supported filter tokens', async () => {
     createComponent();
     expect(findGlAlert().exists()).toBe(false);
@@ -403,6 +422,16 @@ describe('TodosFilterBar', () => {
       createComponent();
 
       expect(wrapper.emitted('filters-changed')).toBeUndefined();
+    });
+
+    it('resolves URL action_id to the first value in combined actions', () => {
+      setWindowLocation('?action_id=2');
+      createComponent();
+
+      expect(wrapper.emitted('filters-changed')[0][0].action).toEqual([
+        'mentioned',
+        'directly_addressed',
+      ]);
     });
   });
 });

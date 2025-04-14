@@ -22,7 +22,10 @@ module QA
         it 'is assigned', testcase: testcase do
           issue.visit!
 
-          Page::Project::Issue::Show.perform do |existing_issue|
+          work_item_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
+          page_type = work_item_enabled ? Page::Project::WorkItem::Show : Page::Project::Issue::Show
+
+          page_type.perform do |existing_issue|
             existing_issue.assign_milestone(milestone)
 
             expect(existing_issue).to have_milestone(milestone.title)
@@ -32,12 +35,18 @@ module QA
 
       shared_examples 'when assigned to new issue' do |testcase|
         it 'is assigned', testcase: testcase do
-          Resource::Issue.fabricate_via_browser_ui! do |new_issue|
+          issue.visit!
+
+          work_item_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
+          resource_type = work_item_enabled ? Resource::WorkItem : Resource::Issue
+          page_type = work_item_enabled ? Page::Project::WorkItem::Show : Page::Project::Issue::Show
+
+          resource_type.fabricate_via_browser_ui! do |new_issue|
             new_issue.project = project
             new_issue.milestone = milestone
           end
 
-          Page::Project::Issue::Show.perform do |issue|
+          page_type.perform do |issue|
             expect(issue).to have_milestone(milestone.title)
           end
         end

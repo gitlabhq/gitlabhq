@@ -7,15 +7,6 @@ feature_categories:
 description: Stores verification state for Geo replicated Project-level Secure Files.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90510
 milestone: '15.2'
-gitlab_schema: gitlab_ci
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: ci_secure_file_id
-        table: ci_secure_files
-        sharding_key: project_id
-        belongs_to: ci_secure_file
-desired_sharding_key_migration_job_name: BackfillCiSecureFileStatesProjectId
+gitlab_schema: gitlab_ci_cell_local
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/493768
 table_size: small

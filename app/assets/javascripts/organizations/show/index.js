@@ -32,7 +32,6 @@ export const initOrganizationsShow = () => {
     groupsAndProjectsOrganizationPath,
     usersOrganizationPath,
     newGroupPath,
-    groupsPath,
     newProjectPath,
     associationCounts,
     canCreateProject,
@@ -54,7 +53,6 @@ export const initOrganizationsShow = () => {
     provide: {
       organizationGid,
       newGroupPath,
-      groupsPath,
       newProjectPath,
       canCreateProject,
       canCreateGroup,

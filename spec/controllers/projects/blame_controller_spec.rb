@@ -90,15 +90,6 @@ RSpec.describe Projects::BlameController, feature_category: :source_code_managem
         end
       end
 
-      context 'and the blame_ignore_revs is not enabled' do
-        before do
-          stub_feature_flags(blame_ignore_revs: false)
-          request
-        end
-
-        it { is_expected.to respond_with(:success) }
-      end
-
       context 'and there is no ignore revs file' do
         it_behaves_like 'redirecting ignore rev with flash', '.git-blame-ignore-revs is not a file'
       end

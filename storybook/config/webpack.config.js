@@ -155,15 +155,17 @@ module.exports = function storybookWebpackConfig({ config }) {
     ...config.resolve.alias,
     gridstack: require.resolve('gridstack/dist/es5/gridstack.js'),
     '@cubejs-client/core': require.resolve('@cubejs-client/core/dist/cubejs-client-core.js'),
+    uuid: require.resolve('uuid'),
+    '/assets': path.resolve(__dirname, '../../app/assets'),
   };
 
   // Replace any Storybook-defined CSS loaders with our custom one.
   config.module.rules = [
-    ...config.module.rules.filter((r) => !r.test.test('.css')),
+    ...config.module.rules.filter((r) => !r.test?.test('.css')),
     {
       test: /\.s?css$/,
       exclude: /typescale\/\w+_demo\.scss$/, // skip typescale demo stylesheets
-      loaders: [
+      use: [
         'style-loader',
         'css-loader',
         'postcss-loader',
@@ -193,6 +195,9 @@ module.exports = function storybookWebpackConfig({ config }) {
       test: /\.mjs$/,
       include: /node_modules/,
       type: 'javascript/auto',
+      resolve: {
+        fullySpecified: false,
+      },
     },
     {
       test: /\.(js|cjs)$/,
@@ -205,7 +210,12 @@ module.exports = function storybookWebpackConfig({ config }) {
   ];
 
   // Silence webpack warnings about moment/pikaday not being able to resolve.
-  config.plugins.push(new webpack.IgnorePlugin(/moment/, /pikaday/));
+  config.plugins.push(
+    new webpack.IgnorePlugin({
+      resourceRegExp: /moment/,
+      contextRegExp: /pikaday/,
+    }),
+  );
 
   config.plugins.push(
     new MonacoWebpackPlugin({

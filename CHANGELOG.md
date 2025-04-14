@@ -843,6 +843,48 @@ No changes.
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/998d8028213da6bf0c3c1c08301797c8b3395c28) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180234))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/8ae69a3765cfb7561db95e43faa30cc60fac6444) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177662))
 
+## 17.9.6 (2025-04-09)
+
+### Security (6 changes)
+
+- [Bump workhorse golang-jwt/jwt to 5.2.2](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ac61772efb740af0684755d1db7d057f412b218e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4913))
+- [Global search count leak for confidential issues](https://gitlab.com/gitlab-org/security/gitlab/-/commit/46932e9f78e0b138b8fd7320b2e4e4c09f2fcfc0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4908))
+- [Set the IP address state for Action Cable requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7019ae8aa04f49f66d7db86ec4023f816f8e90f1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4905))
+- [Adding validation for Ci::Pipeline](https://gitlab.com/gitlab-org/security/gitlab/-/commit/33961db6cab6ac4d3cc99d4ad521f160b43aafe2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4885))
+- [Add delay to when pointer events are enabled for 0Auth authorize page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b154f7884178a622da6d60fdcbd1097ce50cc6cb) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4852))
+- [Do not enable pprof by default in Workhorse](https://gitlab.com/gitlab-org/security/gitlab/-/commit/94aba826029e01791e394456aa9dd6a5db497415) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4890))
+
+## 17.9.5 (2025-04-02)
+
+No changes.
+
+## 17.9.4 (2025-04-01)
+
+### Fixed (1 change)
+
+- [Ensure runner taggings are copied from taggings](https://gitlab.com/gitlab-org/gitlab/-/commit/40aa3c8333f19f65f7a74526d61c228e2525f3c0) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186278))
+
+### Other (1 change)
+
+- [No-op ci_runner_machines_687967fa8a table backfill migration](https://gitlab.com/gitlab-org/gitlab/-/commit/9339d0b92dae455ad74d27cde67bc897b153eaf8) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185303))
+
+## 17.9.3 (2025-03-26)
+
+### Fixed (2 changes)
+
+- [Reorder runners backfill migrations](https://gitlab.com/gitlab-org/security/gitlab/-/commit/75f2ae1a6f0716fe70a8ab48fa300e7448fc02aa)
+- [Update dependency gitlab-mail_room to v0.0.27](https://gitlab.com/gitlab-org/security/gitlab/-/commit/153fab2966eb8b9266bfe6625fbebee936b1ce50)
+
+### Security (7 changes)
+
+- [Sync organization user access when admin status changes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/21b924368fccad62c8329c243e086f5fcfa824aa) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4847))
+- [Prevent XSS via merge error on the merge request page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2574af89065d099ec8148f8ac22a02739fa27f2a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4880))
+- [Inherit current_user external status while rotating project/group token](https://gitlab.com/gitlab-org/security/gitlab/-/commit/254f27669b281314fef74c3830b4a812f64708d4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4866))
+- [Add validations for the project_name of Harbor integration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eefe5150b0b9681a564757197c8ce2668088e32b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4857))
+- [Sanitize returned input on asciidoc Timeout](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6041ddbe1808506e5194ef89190f3e44c47badd1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4842))
+- [Add CI/CD project setting `allow_composite_identities_to_run_pipelines`](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4922213de1af01d53c68ecca81524c472fa7fa06) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4875))
+- [Add limit to resource counts in tfplan merge request report](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bfec8bb2981359dca26092f8ee79abe569465f4a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4871))
+
 ## 17.9.2 (2025-03-11)
 
 ### Fixed (3 changes)
@@ -1955,6 +1997,37 @@ No changes.
 - [Add NOT NULL constraint to ml_experiment_metadata.project_id column](https://gitlab.com/gitlab-org/gitlab/-/commit/d0200b5b317b842f7bc2308a20760f8682bff3ba) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177249))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/c932e35efdc0e3c6f316a3c2d37045e115ce8cd5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176452))
 - [Finalize migration BackfillRemoteDevelopmentAgentConfigsProjectId](https://gitlab.com/gitlab-org/gitlab/-/commit/da4c63d7aab3685c3fbe9d1e48f68ba2162a0b5e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172769))
+
+## 17.8.7 (2025-04-09)
+
+### Security (5 changes)
+
+- [Bump workhorse golang-jwt/jwt to 5.2.2](https://gitlab.com/gitlab-org/security/gitlab/-/commit/00f779daaff694529b5ae4d15011c6ed66ce8130) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4914))
+- [Global search count leak for confidential issues](https://gitlab.com/gitlab-org/security/gitlab/-/commit/84a94c7a024ff295241bbf659812cd4a71bd2639) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4909))
+- [Set the IP address state for Action Cable requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/41e74002f076ce8af8d6ed1b7452f5b03c94f291) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4906))
+- [Adding validation for Ci::Pipeline](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e1b887d7c7a826a696a2d459cbd7263b4d78d25c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4886))
+- [Add delay to when pointer events are enabled for 0Auth authorize page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c0202d64a770617d01884b47cac582867769c84b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4853))
+
+### Other (1 change)
+
+- [No-op ci_runner_machines_687967fa8a table backfill migration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/547295b6cfb9da651208fbe64da67d236ff813de)
+
+## 17.8.6 (2025-03-26)
+
+### Fixed (1 change)
+
+- [Reorder runners backfill migrations](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e822c803d82ba9ebb681f8885836dd2c1a0f25a3)
+
+### Security (8 changes)
+
+- [Sync organization user access when admin status changes](https://gitlab.com/gitlab-org/security/gitlab/-/commit/96c20dece9a6a1aa096d09207a6585caf32d5f1a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4848))
+- [Prevent XSS via merge error on the merge request page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b01080ce203d3c28b37c88937819e126d6e688bc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4879))
+- [Inherit current_user external status while rotating project/group token](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5c5642c3379d72fc8906026113da4af1f76728ed) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4868))
+- [Add validations for the project_name of Harbor integration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/af608cad419e11ceeb0ec49997367c456f4178e4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4859))
+- [Sanitize returned input on asciidoc Timeout](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cc7d8607c3b448b6ba98f0c205679ca051f9f903) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4843))
+- [Add CI/CD project setting `allow_composite_identities_to_run_pipelines`](https://gitlab.com/gitlab-org/security/gitlab/-/commit/80d1a17d232460b6b5b80af89df631857c399eba) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4877))
+- [Add limit to resource counts in tfplan merge request report](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2dbaabebbcc1c6106ec695f2c1e1c793aab4e4a2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4872))
+- [Fix a typo in sitemap_controller_spec](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eebde7538b3c48f030172d72e9ebf8c4a361fca4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4861))
 
 ## 17.8.5 (2025-03-11)
 

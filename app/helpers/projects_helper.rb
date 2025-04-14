@@ -5,8 +5,6 @@ module ProjectsHelper
   include CompareHelper
   include Gitlab::Allowable
 
-  BANNED = 'banned'
-
   def project_incident_management_setting
     @project_incident_management_setting ||= @project.incident_management_setting ||
       @project.build_incident_management_setting
@@ -471,7 +469,7 @@ module ProjectsHelper
         anchor: 'delete-a-git-lfs-file-from-repository-history'),
       pagesAvailable: Gitlab.config.pages.enabled,
       pagesAccessControlEnabled: Gitlab.config.pages.access_control,
-      pagesAccessControlForced: ::Gitlab::Pages.access_control_is_forced?(project.group),
+      pagesAccessControlForced: project.pages_access_control_forced_by_ancestor?,
       pagesHelpPath: help_page_path('user/project/pages/pages_access_control.md'),
       issuesHelpPath: help_page_path('user/project/issues/_index.md'),
       membersPagePath: project_project_members_path(project),
@@ -573,7 +571,7 @@ module ProjectsHelper
       project_avatar: project.avatar_url,
       project_name: project.name,
       project_id: project.id,
-      project_visibility_level: visibility_level_name(project)
+      project_visibility_level: Gitlab::VisibilityLevel.string_level(project.visibility_level)
     }.merge(
       dropdown_attributes,
       fork_button_attributes,
@@ -639,6 +637,15 @@ module ProjectsHelper
     localized_access_names[access] || Gitlab::Access.human_access(access)
   end
 
+  def project_delete_delayed_button_data(project, button_text = nil, is_security_policy_project: false)
+    project_delete_button_shared_data(project, button_text).merge({
+      is_security_policy_project: is_security_policy_project.to_s,
+      restore_help_path: help_page_path('user/project/working_with_projects.md', anchor: 'restore-a-project'),
+      delayed_deletion_date: permanent_deletion_date_formatted(Date.current),
+      form_path: project_path(project)
+    })
+  end
+
   def badge_count(number)
     format_cached_count(1000, number)
   end
@@ -672,10 +679,6 @@ module ProjectsHelper
   end
 
   def visibility_level_content(project, css_class: nil, icon_css_class: nil, icon_variant: nil)
-    if project.created_and_owned_by_banned_user? && Feature.enabled?(:hide_projects_of_banned_users)
-      return hidden_resource_icon(project, css_class: css_class, variant: icon_variant)
-    end
-
     title = visibility_icon_description(project)
     container_class = [
       'has-tooltip gl-border-0 gl-bg-transparent gl-p-0 gl-leading-0 gl-text-inherit',
@@ -724,9 +727,7 @@ module ProjectsHelper
   def dashboard_projects_app_data
     {
       initial_sort: project_list_sort_by,
-      programming_languages: programming_languages,
-      empty_state_projects_svg_path: image_path('illustrations/empty-state/empty-projects-md.svg'),
-      empty_state_search_svg_path: image_path('illustrations/empty-state/empty-search-md.svg')
+      programming_languages: programming_languages
     }.to_json
   end
 
@@ -741,7 +742,37 @@ module ProjectsHelper
     dashboard_projects_landing_paths.include?(request.path) && !current_user.authorized_projects.exists?
   end
 
+  def scheduled_for_deletion?(project)
+    project.marked_for_deletion_at.present?
+  end
+
+  def delete_delayed_message(project)
+    date = permanent_deletion_date_formatted(Date.current)
+
+    if project.adjourned_deletion?
+      message = _("This action will place this project, including all its resources, in a pending deletion state " \
+        "for %{deletion_adjourned_period} days, and delete it permanently on %{strongOpen}%{date}%{strongClose}.")
+      ERB::Util.html_escape(message) % delete_message_data(project).merge(date: date,
+        deletion_adjourned_period: project.deletion_adjourned_period)
+    else
+      delete_permanently_message
+    end
+  end
+
   def delete_immediately_message(project)
+    return delete_permanently_message unless project.adjourned_deletion?
+    return delete_delayed_message(project) unless project.marked_for_deletion_on
+
+    date = permanent_deletion_date_formatted(project.marked_for_deletion_on)
+
+    message = _('This project is scheduled for deletion on %{strongOpen}%{date}%{strongClose}. ' \
+      'This action will permanently delete this project, ' \
+      'including all its resources, %{strongOpen}immediately%{strongClose}. This action cannot be undone.')
+
+    ERB::Util.html_escape(message) % delete_message_data(project).merge(date: date)
+  end
+
+  def delete_permanently_message
     _('This action will permanently delete this project, including all its resources.')
   end
 
@@ -791,14 +822,6 @@ module ProjectsHelper
       stars_count: number_with_delimiter(project.star_count),
       button_text: button_text.presence || _('Delete project')
     }
-  end
-
-  def visibility_level_name(project)
-    if project.created_and_owned_by_banned_user? && Feature.enabled?(:hide_projects_of_banned_users)
-      BANNED
-    else
-      Gitlab::VisibilityLevel.string_level(project.visibility_level)
-    end
   end
 
   def can_admin_project_clusters?(project)

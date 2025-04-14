@@ -410,7 +410,6 @@ export default {
           :render-markdown-path="markdownPreviewPath"
           :markdown-docs-path="markdownDocsPath"
           :code-suggestions-config="codeSuggestionsConfig"
-          :add-spacing-classes="false"
           :help-page-path="helpPagePath"
           :note="discussionNote"
           :noteable-type="noteableType"

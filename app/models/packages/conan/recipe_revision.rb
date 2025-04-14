@@ -17,6 +17,8 @@ module Packages
       validates :package, :project, presence: true
       validates :revision, presence: true, format: { with: ::Gitlab::Regex.conan_revision_regex_v2 }
       validates :revision, uniqueness: { scope: :package_id }, on: %i[create update]
+
+      scope :order_by_id_desc, -> { order(id: :desc) }
     end
   end
 end

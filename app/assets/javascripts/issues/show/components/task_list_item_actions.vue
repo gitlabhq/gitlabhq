@@ -1,20 +1,23 @@
 <script>
-import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
 import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
-import { WORK_ITEM_TYPE_VALUE_EPIC, WORK_ITEM_TYPE_VALUE_ISSUE } from '~/work_items/constants';
+import { WORK_ITEM_TYPE_NAME_EPIC, WORK_ITEM_TYPE_NAME_ISSUE } from '~/work_items/constants';
 import eventHub from '../event_hub';
 
 const allowedTypes = [
   TYPE_INCIDENT,
   TYPE_ISSUE,
-  WORK_ITEM_TYPE_VALUE_EPIC,
-  WORK_ITEM_TYPE_VALUE_ISSUE,
+  WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_ISSUE,
 ];
 
 export default {
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   inject: ['id', 'issuableType'],
   computed: {
@@ -41,6 +44,7 @@ export default {
 
 <template>
   <gl-disclosure-dropdown
+    v-gl-tooltip.left="s__('WorkItem|Task actions')"
     class="task-list-item-actions-wrapper"
     category="tertiary"
     icon="ellipsis_v"
@@ -60,10 +64,13 @@ export default {
         {{ s__('WorkItem|Convert to child item') }}
       </template>
     </gl-disclosure-dropdown-item>
-    <gl-disclosure-dropdown-item class="!gl-ml-2" data-testid="delete" @action="deleteTaskListItem">
-      <template #list-item>
-        <span class="gl-text-red-500">{{ __('Delete') }}</span>
-      </template>
+    <gl-disclosure-dropdown-item
+      class="!gl-ml-2"
+      data-testid="delete"
+      variant="danger"
+      @action="deleteTaskListItem"
+    >
+      <template #list-item>{{ __('Delete') }}</template>
     </gl-disclosure-dropdown-item>
   </gl-disclosure-dropdown>
 </template>

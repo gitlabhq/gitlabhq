@@ -6,7 +6,9 @@ description: Use Code Owners to define experts for your code base, and set revie
 title: Advanced `CODEOWNERS` configuration
 ---
 
-This page describes advanced configuration options for Code Owners in GitLab.
+The `CODEOWNERS` file helps you define who is responsible for specific files and directories.
+You can use pattern matching, sections, and inheritance rules to assign reviewers to merge requests
+and require their approval before merging.
 
 ## Pattern matching
 

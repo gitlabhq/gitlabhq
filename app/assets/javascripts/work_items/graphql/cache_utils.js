@@ -10,15 +10,7 @@ import { convertEachWordToTitleCase } from '~/lib/utils/text_utility';
 import { getDraft, clearDraft } from '~/lib/utils/autosave';
 import { findWidget } from '~/issues/list/utils';
 import {
-  findHierarchyWidgets,
-  findHierarchyWidgetChildren,
-  findNotesWidget,
-  getNewWorkItemAutoSaveKey,
-  isNotesWidget,
-  newWorkItemFullPath,
-  newWorkItemId,
-} from '../utils';
-import {
+  newWorkItemOptimisticUserPermissions,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_COLOR,
   WIDGET_TYPE_HIERARCHY,
@@ -34,10 +26,20 @@ import {
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_CRM_CONTACTS,
   NEW_WORK_ITEM_IID,
-  WIDGET_TYPE_CURRENT_USER_TODOS,
   WIDGET_TYPE_LINKED_ITEMS,
   STATE_CLOSED,
-} from '../constants';
+  WIDGET_TYPE_CUSTOM_FIELDS,
+} from 'ee_else_ce/work_items/constants';
+import {
+  findCurrentUserTodosWidget,
+  findHierarchyWidget,
+  findHierarchyWidgetChildren,
+  findNotesWidget,
+  getNewWorkItemAutoSaveKey,
+  isNotesWidget,
+  newWorkItemFullPath,
+  newWorkItemId,
+} from '../utils';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 import workItemByIdQuery from './work_item_by_id.query.graphql';
 import getWorkItemTreeQuery from './work_item_tree.query.graphql';
@@ -149,7 +151,13 @@ function updateNoteAwardEmojiCache(currentNotes, note, callback) {
 
 export const updateCacheAfterAddingAwardEmojiToNote = (currentNotes, note) => {
   return updateNoteAwardEmojiCache(currentNotes, note, (n, awardEmoji) => {
-    n.awardEmoji.nodes.push(awardEmoji);
+    if (
+      !n.awardEmoji.nodes.some(
+        (emoji) => emoji.name === awardEmoji.name && emoji.user.id === awardEmoji.user.id,
+      )
+    ) {
+      n.awardEmoji.nodes.push(awardEmoji);
+    }
   });
 };
 
@@ -176,7 +184,7 @@ export const addHierarchyChild = ({ cache, id, workItem, atIndex = null }) => {
   cache.writeQuery({
     ...queryArgs,
     data: produce(sourceData, (draftState) => {
-      const widget = findHierarchyWidgets(draftState?.workItem.widgets);
+      const widget = findHierarchyWidget(draftState?.workItem);
       widget.hasChildren = true;
       const children = findHierarchyWidgetChildren(draftState?.workItem) || [];
       const existingChild = children.find((child) => child.id === workItem?.id);
@@ -209,7 +217,7 @@ export const addHierarchyChildren = ({ cache, id, workItem, childrenIds }) => {
   cache.writeQuery({
     ...queryArgs,
     data: produce(sourceData, (draftState) => {
-      const widget = findHierarchyWidgets(draftState?.workItem.widgets);
+      const widget = findHierarchyWidget(draftState?.workItem);
       const newChildren = findHierarchyWidgetChildren(workItem);
 
       const existingChildren = findHierarchyWidgetChildren(draftState?.workItem);
@@ -245,7 +253,7 @@ export const removeHierarchyChild = ({ cache, id, workItem }) => {
   cache.writeQuery({
     ...queryArgs,
     data: produce(sourceData, (draftState) => {
-      const widget = findHierarchyWidgets(draftState?.workItem.widgets);
+      const widget = findHierarchyWidget(draftState?.workItem);
       const children = findHierarchyWidgetChildren(draftState?.workItem);
       const index = children.findIndex((child) => child.id === workItem.id);
       if (index >= 0) children.splice(index, 1);
@@ -289,11 +297,7 @@ export const updateWorkItemCurrentTodosWidget = ({ cache, fullPath, iid, todos }
   }
 
   const newData = produce(sourceData, (draftState) => {
-    const { widgets } = draftState.workspace.workItem;
-    const widgetCurrentUserTodos = widgets.find(
-      (widget) => widget.type === WIDGET_TYPE_CURRENT_USER_TODOS,
-    );
-
+    const widgetCurrentUserTodos = findCurrentUserTodosWidget(draftState.workspace.workItem);
     widgetCurrentUserTodos.currentUserTodos.nodes = todos;
   });
 
@@ -321,6 +325,7 @@ export const setNewWorkItemCache = async (
     WIDGET_TYPE_HEALTH_STATUS,
     WIDGET_TYPE_LINKED_ITEMS,
     WIDGET_TYPE_COLOR,
+    WIDGET_TYPE_CUSTOM_FIELDS,
     WIDGET_TYPE_HIERARCHY,
     WIDGET_TYPE_TIME_TRACKING,
     WIDGET_TYPE_PARTICIPANTS,
@@ -514,6 +519,18 @@ export const setNewWorkItemCache = async (
           __typename: 'WorkItemWidgetTimeTracking',
         });
       }
+
+      if (widgetName === WIDGET_TYPE_CUSTOM_FIELDS) {
+        const customFieldsWidgetData = widgetDefinitions.find(
+          (definition) => definition.type === WIDGET_TYPE_CUSTOM_FIELDS,
+        );
+
+        widgets.push({
+          type: WIDGET_TYPE_CUSTOM_FIELDS,
+          customFieldValues: customFieldsWidgetData?.customFieldValues ?? [],
+          __typename: 'WorkItemWidgetCustomFields',
+        });
+      }
     }
   });
 
@@ -598,19 +615,7 @@ export const setNewWorkItemCache = async (
             iconName: workItemTypeIconName,
             __typename: 'WorkItemType',
           },
-          userPermissions: {
-            adminParentLink: true,
-            adminWorkItemLink: true,
-            createNote: true,
-            deleteWorkItem: true,
-            markNoteAsInternal: true,
-            moveWorkItem: true,
-            reportSpam: true,
-            setWorkItemMetadata: true,
-            summarizeComments: true,
-            updateWorkItem: true,
-            __typename: 'WorkItemPermissions',
-          },
+          userPermissions: newWorkItemOptimisticUserPermissions,
           widgets,
           __typename: 'WorkItem',
         },
@@ -651,7 +656,7 @@ export const updateCountsForParent = ({ cache, parentId, workItemType, isClosing
   }
 
   const updatedParent = produce(parent, (draft) => {
-    const hierarchyWidget = findHierarchyWidgets(draft.workItem.widgets);
+    const hierarchyWidget = findHierarchyWidget(draft.workItem);
 
     const counts = hierarchyWidget.rolledUpCountsByType.find(
       (i) => i.workItemType.name === workItemType,

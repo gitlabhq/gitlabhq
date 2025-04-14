@@ -1,5 +1,5 @@
 ---
-redirect_to: ../../group/import/index.md
+redirect_to: ../../group/import/_index.md
 remove_date: "2025-01-25"
 stage: Foundations
 group: Import and Integrate

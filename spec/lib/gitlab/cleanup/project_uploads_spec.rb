@@ -239,11 +239,13 @@ RSpec.describe Gitlab::Cleanup::ProjectUploads do
       end
 
       it 'does not move any non-project (FileUploader) uploads' do
+        appearance = create(:appearance)
+
         paths = []
         orphaned1 = create(:upload, :personal_snippet_upload, :with_file)
         orphaned2 = create(:upload, :namespace_upload, :with_file)
-        orphaned3 = create(:upload, :attachment_upload, :with_file)
-        orphaned4 = create(:upload, :favicon_upload, :with_file)
+        orphaned3 = create(:upload, :attachment_upload, :with_file, model: appearance)
+        orphaned4 = create(:upload, :favicon_upload, :with_file, model: appearance)
         paths << orphaned1.absolute_path
         paths << orphaned2.absolute_path
         paths << orphaned3.absolute_path

@@ -16,11 +16,7 @@ See [Getting started](doc/getting_started.md).
 
 ## Usage
 
-Follow the guides to set up a new collection:
-
-1. Use an existing queue or [set up a new queue](doc/usage.md#registering-a-queue)
-1. Use an existing reference class or [set up a new reference class](doc/usage.md#adding-a-new-reference-type)
-1. [Add a collection class](doc/usage.md#adding-a-new-collection)
+See [Usage](doc/usage.md)
 
 ## Contributing
 

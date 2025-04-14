@@ -20,7 +20,7 @@
         web_ide_button_options: web_ide_button_data.merge(fork_options).to_json,
         web_ide_button_default_branch: @project.default_branch_or_main,
         escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref)
-      } }
+      }.merge(vue_readme_header_additional_data) }
 
     - else
       .nav-block.mt-0

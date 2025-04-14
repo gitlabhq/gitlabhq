@@ -11,6 +11,10 @@
     "root_moved_permanently_redirection": {
       "type": "boolean",
       "description": "When enabled, it will send 301 Moved Permanently instead of 302 if you want web crawlers to index a different site such as the Home Page URL."
+    },
+    "session_expire_from_init": {
+      "type": "boolean",
+      "description": "When enabled, sessions will expire a specific time after creation even if the session is active. Sessions cannot be extended."
     }
   }
 }

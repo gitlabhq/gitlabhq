@@ -1,0 +1,20 @@
+---
+description: todos accessed by user who is a bot
+internal_events: true
+action: request_todos_by_bot_user
+identifiers:
+- user
+additional_properties:
+  label:
+    description: type of user
+  property:
+    description: type of user who requested todos
+product_group: personal_productivity
+product_categories:
+- notifications
+milestone: '17.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185261
+tiers:
+- free
+- premium
+- ultimate

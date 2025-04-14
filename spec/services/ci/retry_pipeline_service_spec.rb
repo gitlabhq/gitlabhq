@@ -6,9 +6,10 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
   include ProjectForksHelper
 
   let_it_be_with_refind(:user) { create(:user) }
-  let_it_be_with_refind(:project) { create(:project) }
+  let_it_be_with_refind(:project) { create(:project, :repository) }
 
-  let(:pipeline) { create(:ci_pipeline, project: project) }
+  let(:sha) { project.repository.commit.sha }
+  let(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
   let(:build_stage) { create(:ci_stage, name: 'build', position: 0, pipeline: pipeline) }
   let(:test_stage) { create(:ci_stage, name: 'test', position: 1, pipeline: pipeline) }
   let(:deploy_stage) { create(:ci_stage, name: 'deploy', position: 2, pipeline: pipeline) }
@@ -461,9 +462,10 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
 
   context 'when maintainer is allowed to push to forked project' do
     let(:user) { create(:user) }
-    let(:project) { create(:project, :public) }
-    let(:forked_project) { fork_project(project) }
-    let(:pipeline) { create(:ci_pipeline, project: forked_project, ref: 'fixes') }
+    let(:project) { create(:project, :public, :repository) }
+    let(:forked_project) { fork_project(project, nil, repository: true) }
+    let(:sha) { forked_project.repository.commit.sha }
+    let(:pipeline) { create(:ci_pipeline, sha: sha, project: forked_project, ref: 'fixes') }
 
     before do
       project.add_maintainer(user)

@@ -13,7 +13,9 @@ title: Organizations API
 
 {{< /details >}}
 
-## Create organization
+Use this API to interact with GitLab organizations. For more information, see [organization](../user/organization/_index.md).
+
+## Create an organization
 
 {{< history >}}
 

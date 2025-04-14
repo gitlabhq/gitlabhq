@@ -49,23 +49,23 @@ RSpec.describe Upload do
     end
 
     context 'before_save' do
+      let_it_be(:project) { create(:project) }
+
       it 'sets sharding key on create' do
-        project = build_stubbed(:project)
         upload = build(:upload, model: project)
 
         expect { upload.save! }
-          .to change { upload.namespace_id }.from(nil)
-          .to(project.uploads_sharding_key.each_value.first)
+          .to change { upload.project_id }.from(nil)
+          .to(project.id)
       end
 
       it 'sets sharding key on update' do
-        project = build_stubbed(:project)
         upload = create(:upload, model: project)
-        other_project = build_stubbed(:project)
+        other_project = create(:project)
 
         expect { upload.update!(model: other_project) }
-          .to change { upload.namespace_id }.from(project.uploads_sharding_key.each_value.first)
-          .to(other_project.uploads_sharding_key.each_value.first)
+          .to change { upload.project_id }.from(project.id)
+          .to(other_project.id)
       end
     end
 
@@ -86,14 +86,11 @@ RSpec.describe Upload do
     let_it_be(:project) { create(:project) }
 
     describe '.for_model_type_and_id' do
-      let(:avatar_uploads) { create_list(:upload, 2) }
-      let(:attachment_uploads) { create_list(:upload, 2, :attachment_upload) }
+      let(:snippet_uploads) { create_list(:upload, 2, :personal_snippet_upload) }
 
       it 'returns records matching the given model_type and ids' do
-        model_ids = [avatar_uploads, attachment_uploads].map { |uploads| uploads.first.model_id }
-
-        expect(described_class.for_model_type_and_id(Note, model_ids))
-          .to contain_exactly(attachment_uploads.first)
+        expect(described_class.for_model_type_and_id(Snippet, snippet_uploads.first.model_id))
+          .to contain_exactly(snippet_uploads.first)
       end
     end
 

@@ -167,7 +167,7 @@ For more details, see [Maximum file size for job logs](../instance_limits.md#max
 If you want to avoid any local disk usage for job logs,
 you can do so using one of the following options:
 
-- Enable the [incremental logging](#incremental-logging-architecture) feature.
+- Turn on [incremental logging](#incremental-logging).
 - Set the [job logs location](#changing-the-job-logs-local-location)
   to an NFS drive.
 
@@ -232,79 +232,39 @@ the Rake task that checks the
 For more information, see how to
 [delete references to missing artifacts](../raketasks/check.md#delete-references-to-missing-artifacts).
 
-## Incremental logging architecture
+## Incremental logging
 
-By default, job logs are sent from the GitLab Runner in chunks and cached
-temporarily on disk. After the job completes, a background job archives the job
-log. The log is moved to the artifacts directory by default, or to object
-storage if configured.
+Incremental logging changes how job logs are processed and stored, improving performance in scaled-out deployments.
 
-To use in your instance, ask a GitLab administrator to [enable it](#enable-or-disable-incremental-logging).
+By default, job logs are sent from GitLab Runner in chunks and cached temporarily on disk. After the job completes, a background job archives the log to the artifacts directory or to object storage if configured.
 
-In [scaled-out architectures](../reference_architectures/_index.md) where Rails and
-Sidekiq run on multiple servers, these two file system locations
-must use NFS sharing, which is not recommended. Instead:
+With incremental logging, logs are stored in Redis and a persistent store instead of file storage. This approach:
 
-1. Configure [object storage](job_artifacts.md#using-object-storage) for storing archived job logs.
-1. [Enable the incremental logging feature](#enable-or-disable-incremental-logging), which uses Redis instead of disk space for temporary caching of job logs.
+- Prevents local disk usage for job logs.
+- Eliminates the need for NFS sharing between Rails and Sidekiq servers.
+- Improves performance in multi-node installations.
 
-### Enable or disable incremental logging
+The incremental logging process uses Redis as temporary storage and follows this flow:
 
-Before you enable the feature flag:
-
-- See [known issues](#known-issues).
-- [Enable object storage](job_artifacts.md#using-object-storage).
-
-To enable incremental logging:
-
-1. Open a [Rails console](../operations/rails_console.md#starting-a-rails-console-session).
-1. Enable the feature flag:
-
-   ```ruby
-   Feature.enable(:ci_enable_live_trace)
-   ```
-
-   Running jobs' logs continue to be written to disk, but new jobs use
-   incremental logging.
-
-To disable incremental logging:
-
-1. Open a [Rails console](../operations/rails_console.md#starting-a-rails-console-session).
-1. Disable the feature flag:
-
-   ```ruby
-   Feature.disable(:ci_enable_live_trace)
-   ```
-
-   Running jobs continue to use incremental logging, but new jobs write to the disk.
-
-### Technical details
-
-The data flow matches the [data flow section](#data-flow) description except
-the stored path differs in the first two phases. This incremental
-log architecture stores chunks of logs in Redis and a persistent store (object storage or database) instead of
-file storage. Redis is used as first-class storage, and it stores up-to 128 KB
-of data. After the full chunk is sent, it is flushed to a persistent store, either object storage (temporary directory) or database.
-After a while, the data in Redis and a persistent store is archived to [object storage](#uploading-logs-to-object-storage).
-
-The data are stored in the following Redis namespace: `Gitlab::Redis::TraceChunks`.
-
-Here is the detailed data flow:
-
-1. The runner picks a job from GitLab
-1. The runner sends a piece of log to GitLab
-1. GitLab appends the data to Redis
-1. After the data in Redis reaches 128 KB, the data is flushed to a persistent store (object storage or the database).
-1. The above steps are repeated until the job is finished.
+1. The runner picks a job from GitLab.
+1. The runner sends a piece of log to GitLab.
+1. GitLab appends the data to Redis in the `Gitlab::Redis::TraceChunks` namespace.
+1. After the data in Redis reaches 128 KB, the data is flushed to a persistent store.
+1. The above steps repeat until the job is finished.
 1. After the job is finished, GitLab schedules a Sidekiq worker to archive the log.
-1. The Sidekiq worker archives the log to object storage and cleans up the log
-   in Redis and a persistent store (object storage or the database).
+1. The Sidekiq worker archives the log to object storage and cleans up temporary data.
 
-### Known issues
+Redis Cluster is not supported with incremental logging.
+For more information, see [issue 224171](https://gitlab.com/gitlab-org/gitlab/-/issues/224171).
 
-- [Redis Cluster is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/224171).
-- You must configure [object storage for CI/CD artifacts, logs, and builds](job_artifacts.md#using-object-storage)
-  before you enable the feature flag. After the flag is enabled, files cannot be written
-  to disk, and there is no protection against misconfiguration.
+### Configure incremental logging
 
-For more information, see [epic 3791](https://gitlab.com/groups/gitlab-org/-/epics/3791).
+Before you turn on incremental logging, you must [configure object storage](job_artifacts.md#using-object-storage) for CI/CD artifacts, logs, and builds. After incremental logging is turned on, files cannot be written to disk, and there is no protection against misconfiguration.
+
+When you turn on incremental logging, running jobs' logs continue to be written to disk, but new jobs use incremental logging.
+
+When you turn off incremental logging, running jobs continue to use incremental logging, but new jobs write to the disk.
+
+To configure incremental logging:
+
+- Use the setting in the [Admin area](../settings/continuous_integration.md#incremental-logging) or the [Settings API](../../api/settings.md).

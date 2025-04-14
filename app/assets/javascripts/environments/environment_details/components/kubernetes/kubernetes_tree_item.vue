@@ -36,7 +36,7 @@ export default {
 </script>
 <template>
   <div
-    class="gl-rounded gl-relative gl-z-1 gl-flex gl-w-28 gl-border-1 gl-border-solid gl-border-strong gl-bg-white gl-p-3"
+    class="gl-rounded gl-relative gl-z-1 gl-flex gl-w-28 gl-border-1 gl-border-solid gl-border-strong gl-bg-default gl-p-3"
   >
     <gl-icon :name="kindIcon" data-testid="resource-kind-icon" />
     <div class="gl-ml-4">

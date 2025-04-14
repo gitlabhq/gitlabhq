@@ -85,13 +85,6 @@ If available, you can add user-friendly group names instead. When setting up Azu
 
 ### IdP links and certificate
 
-{{< alert type="note" >}}
-
-Google Workspace displays a SHA256 fingerprint. To retrieve the SHA1 fingerprint required by GitLab for configuring SAML, download the certificate and calculate the SHA1 certificate
-fingerprint.
-
-{{< /alert >}}
-
 ![Google Workspace Links and Certificate](img/GoogleWorkspace-linkscert_v14_10.png)
 
 ## Okta

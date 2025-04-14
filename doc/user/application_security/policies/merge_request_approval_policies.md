@@ -73,7 +73,10 @@ following when implementing a merge request approval policy:
   manual jobs are run, the policy re-evaluates the merge request's jobs.
 - For a merge request approval policy that evaluates the results of security scanners, all specified
   scanners must have output a security report. If not, approvals are enforced to minimize the risk
-  of vulnerabilities being introduced.
+  of vulnerabilities being introduced. This behavior can affect:
+  - New projects where security scans are not yet established.
+  - Branches created before the security scans were configured.
+  - Projects with inconsistent scanner configurations between branches.
 - The pipeline must produce artifacts for all enabled scanners, for both the source and target
   branches. If not, there's no basis for comparison and so the policy can't be evaluated. You should
   use a scan execution policy to enforce this requirement.
@@ -82,6 +85,38 @@ following when implementing a merge request approval policy:
 - Security scanners specified in a policy must be configured and enabled in the projects on which
   the policy is enforced. If not, the merge request approval policy cannot be evaluated and the
   corresponding approvals are required.
+
+## Best practices for using security scanners with merge request approval policies
+
+When you create a new project, you can enforce both merge request approval policies and security scans on that project. However, incorrectly configured security scanners can affect the merge request approval policies.
+
+There are multiple ways to configure security scans in new projects:
+
+- In the project's CI/CD configuration by adding the scanners to the initial `.gitlab-ci.yml` configuration file.
+- In a scan execution policy to enforce that pipelines run specific security scanners.
+- In a pipeline execution policy to control which jobs must run in pipelines.
+
+For simple use cases, you can use the project's CI/CD configuration. For a comprehensive security strategy, consider combining merge request approval policies with the other policy types.
+
+To minimize unnecessary approval requirements and ensure accurate security evaluations:
+
+- **Run security scans on your default branch first**: Before creating feature branches, ensure security scans have run successfully on your default branch.
+- **Use consistent scanner configuration**: Run the same scanners in both source and target branches, preferably in a single pipeline.
+- **Verify that scans produce artifacts**: Ensure that scans complete successfully and produce artifacts for comparison.
+- **Keep branches synchronized**: Regularly merge changes from the default branch into feature branches.
+- **Consider pipeline configurations**: For new projects, include security scanners in your initial `.gitlab-ci.yml` configuration.
+
+### Verify security scanners before you apply merge request approval policies
+
+By implementing your security scans in your new project before you apply a merge request approval policy, you can ensure security scanners run consistently before relying on merge request approval policies, which helps avoid situations where merge requests are blocked due to missing security scans.
+
+To create and verify your security scanners and merge request approval policies together, use this recommended workflow:
+
+1. Create the project.
+1. Configure security scanners using the `.gitlab-ci.yml` configuration, a scan execution policy, or a pipeline execution policy.
+1. Wait for the initial pipeline to complete on the default branch. Resolve any issues and rerun the pipeline to ensure it completes successfully before you continue.
+1. Create merge requests using feature branches with the same security scanners configured. Again, ensure that the security scanners complete sucessfully.
+1. Apply your merge request approval policies.
 
 ## Merge request with multiple pipelines
 
@@ -213,20 +248,42 @@ This rule enforces the defined actions based on security scan findings.
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8092) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `license_scanning_policies`.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/397644) in GitLab 15.11. Feature flag `license_scanning_policies` removed.
 - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133753) in GitLab 16.5. Feature flag removed.
+- The `licenses` field was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10203) in GitLab 17.11 [with a flag](../../../administration/feature_flags.md) named `exclude_license_packages`. Disabled by default.
 
 {{< /history >}}
 
 This rule enforces the defined actions based on license findings.
 
-| Field                | Type                | Required                                   | Possible values              | Description |
-|----------------------|---------------------|--------------------------------------------|------------------------------|-------------|
-| `type`               | `string`            | true                                       | `license_finding`            | The rule's type. |
-| `branches`           | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name    | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
-| `branch_type`        | `string`            | true if `branches` field does not exist    | `default` or `protected`     | The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`. |
-| `branch_exceptions`  | `array` of `string` | false                                      | Names of branches            | Branches to exclude from this rule. |
-| `match_on_inclusion_license` | `boolean` | true | `true`, `false` | Whether the rule matches inclusion or exclusion of licenses listed in `license_types`. |
-| `license_types`      | `array` of `string` | true                                       | license types                | [SPDX license names](https://spdx.org/licenses) to match on, for example `Affero General Public License v1.0` or `MIT License`. |
-| `license_states`     | `array` of `string` | true                                       | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. The `newly_detected` state triggers approval when either a new package is introduced or when a new license for an existing package is detected. |
+| Field          | Type     | Required                                      | Possible values              | Description                                                                                                                                                                                                         |
+|----------------|----------|-----------------------------------------------|------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `type`         | `string` | true                                          | `license_finding`            | The rule's type.                                                                                                                                                                                                    |
+| `branches`     | `array` of `string` | true if `branch_type` field does not exist    | `[]` or the branch's name    | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field.                                                 |
+| `branch_type`  | `string` | true if `branches` field does not exist       | `default` or `protected`     | The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`.                                                                   |
+| `branch_exceptions` | `array` of `string` | false                                         | Names of branches            | Branches to exclude from this rule.                                                                                                                                                                                 |
+| `match_on_inclusion_license` | `boolean` | true if `licenses` field does not exists      | `true`, `false`              | Whether the rule matches inclusion or exclusion of licenses listed in `license_types`.                                                                                                                              |
+| `license_types` | `array` of `string` | true if `licenses` field does not exists      | license types                | [SPDX license names](https://spdx.org/licenses) to match on, for example `Affero General Public License v1.0` or `MIT License`.                                                                                     |
+| `license_states` | `array` of `string` | true                                          | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. The `newly_detected` state triggers approval when either a new package is introduced or when a new license for an existing package is detected. |
+| `licenses`     | `object` | true if `license_types` field does not exists | `licenses` object            | [SPDX license names](https://spdx.org/licenses) to match on including package exceptions.                                                                                                                        |
+
+### `licenses` object
+
+| Field     | Type     | Required                                | Possible values                                      | Description                                                |
+|-----------|----------|-----------------------------------------|------------------------------------------------------|------------------------------------------------------------|
+| `denied`  | `object` | true if `allowed` field does not exist | `array` of `licenses_with_package_exclusion` objects  | The list of denied licenses including package exceptions.  |
+| `allowed` | `object` | true if `denied` field does not exist  | `array` of `licenses_with_package_exclusion` objects  | The list of allowed licenses including package exceptions. |
+
+### `licenses_with_package_exclusion` object
+
+| Field  | Type     | Required | Possible values   | Description                                        |
+|--------|----------|----------|-------------------|----------------------------------------------------|
+| `name` | `string` | true     | SPDX license name | [SPDX license name](https://spdx.org/licenses).    |
+| `packages` | `object` | false    | `packages` object | List of packages exceptions for the given license. |
+
+### `packages` object
+
+| Field  | Type     | Required | Possible values                                       | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+|--------|----------|----------|-------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `excluding` | `object` | true     | {purls: `array` of `strings` using the `uri` format} | List of package exceptions for the given license. Define the list of packages exceptions using the [`purl`](https://github.com/package-url/purl-spec?tab=readme-ov-file#purl) components `scheme:type/name@version`. The `scheme:type/name` components are required. The `@` and `version` are optional. If a version is specified, only that version is considered an exception. If no version is specified and the `@` character is added at the end of the `purl`, only packages with the exact name is considered a match. If the `@` character is not added to the package name, all packages with the same prefix for the given license are matches. For example, a purl `pkg:gem/bundler` matches the `bundler` and `bundler-stats` packages because both packages use the same license. Defining a `purl` `pkg:gem/bundler@` matches only the `bundler` package. |
 
 ## `any_merge_request` rule type
 
@@ -744,6 +801,27 @@ To resolve these issues:
 - Consider using [`fallback_behavior`](#fallback_behavior) with `open` to prevent invalid or unenforceable rules in a policy from requiring approval.
 - Consider using the [`policy tuning`](#policy_tuning) setting `unblock_rules_using_execution_policies` to address scenarios where security scan artifacts are missing, and scan execution policies are enforced. When enabled, this setting makes approval rules optional when scan artifacts are missing from the target branch and a scan is required by a scan execution policy. This feature only works with an existing scan execution policy that has matching scanners. It offers flexibility in the merge request process when certain security scans cannot be performed due to missing artifacts.
 
+### `Target: none` in security bot comments
+
+If you see `Target: none` in security bot comments, it means GitLab couldn't find a security report for the target branch. To resolve this:
+
+1. Run a pipeline on the target branch that includes the required security scanners.
+1. Ensure the pipeline completes successfully and produces security reports.
+1. Re-run the pipeline on the source branch. Creating a new commit also triggers the pipeline to re-run
+
+#### Security bot messages
+
+When the target branch has no security scans:
+
+- The security bot may list all vulnerabilities found in the source branch.
+- Some of the vulnerabilities might already exist in the target branch, but without a target branch scan, GitLab cannot determine which ones are new.
+
+Potential solutions:
+
+1. **Manual approvals**: Temporarily approve merge requests manually for new projects until security scans are established.
+1. **Targeted policies**: Create separate policies for new projects with different approval requirements.
+1. **Fallback behavior**: Consider using `fail: open` for policies on new projects, but be aware this may allow users to merge vulnerabilities even if scans fail.
+
 ### Support request for debugging of merge request approval policy
 
 GitLab.com users may submit a [support ticket](https://about.gitlab.com/support/) titled "Merge request approval policy debugging". Provide the following details:
@@ -787,6 +865,7 @@ If you notice any inconsistencies in your merge request approval rules, you can 
 
 - Unassign and then reassign the security policy project to the affected group or project.
 - Alternatively, you can update a policy to trigger that policy to resynchronize for the affected group or project.
+- Confirm that the syntax of the YAML file in the security policy project is valid.
 
 These actions help ensure that your merge request approval policies are correctly applied and consistent across all merge requests.
 

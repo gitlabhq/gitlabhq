@@ -1,9 +1,7 @@
 ---
-# Warning: gitlab_base.UnclearAntecedent
-#
-# Checks for words that need a noun for clarity.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.UnclearAntecedent
+description: |
+  Checks for words that need a noun for clarity.
 extends: existence
 message: "Instead of '%s', try starting this sentence with a specific subject and verb."
 link: https://docs.gitlab.com/development/documentation/styleguide/word_list/#this-these-that-those

@@ -1,5 +1,6 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import GlqlActions from '~/glql/components/common/actions.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
 import ListPresenter from '~/glql/components/presenters/list.vue';
 import StatePresenter from '~/glql/components/presenters/state.vue';
@@ -15,6 +16,7 @@ describe('ListPresenter', () => {
     wrapper = mountFn(ListPresenter, {
       provide: {
         presenter: new Presenter().init({ data, config }),
+        queryKey: 'glql_key',
       },
       propsData: { data, config, ...moreProps },
     });
@@ -70,6 +72,14 @@ describe('ListPresenter', () => {
     );
 
     expect(wrapper.findAllComponents(GlSkeletonLoader)).toHaveLength(5);
+  });
+
+  it('renders actions', () => {
+    createWrapper({ data: MOCK_ISSUES, config: { fields: MOCK_FIELDS } }, mountExtended);
+    expect(wrapper.findComponent(GlqlActions).props()).toEqual({
+      modalTitle: 'GLQL list',
+      showCopyContents: true,
+    });
   });
 
   it('renders a footer text', () => {

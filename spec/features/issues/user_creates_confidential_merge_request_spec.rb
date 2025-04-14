@@ -50,8 +50,6 @@ RSpec.describe 'User creates confidential merge request on issue page', :js, fea
         click_button 'Create confidential merge request'
       end
 
-      click_button 'Show more breadcrumbs'
-
       expect(page).to have_content(forked_project.namespace.name)
     end
   end

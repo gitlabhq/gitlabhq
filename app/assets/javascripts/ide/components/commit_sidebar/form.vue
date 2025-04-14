@@ -162,7 +162,7 @@ export default {
             data-testid="begin-commit-button"
             @click="beginCommit"
           >
-            {{ __('Create commit...') }}
+            {{ __('Create commit…') }}
           </gl-button>
         </div>
         <p class="gl-text-center gl-font-bold">{{ overviewText }}</p>

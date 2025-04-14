@@ -85,7 +85,9 @@ describe('PackagesApp', () => {
       provide,
       stubs: {
         PackageTitle,
+        PackageFiles,
         DeletePackages,
+        PackageVersionsList,
         GlModal: stubComponent(GlModal, {
           methods: {
             show: showMock,

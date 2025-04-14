@@ -23,7 +23,7 @@ module Gitlab
         # Note: Asciidoctor calls #freeze on extensions, so we can't set new
         # instance variables after initialization.
         @cache = {
-            uri_types: {}
+          uri_types: {}
         }
       end
 

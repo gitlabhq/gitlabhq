@@ -1,8 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlAlert, GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
+import { mapActions } from 'pinia';
 
 import {
   TRANSITION_LOAD_START,
@@ -15,6 +14,7 @@ import {
 } from '~/diffs/constants';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { transition } from '../utils';
 
 export default {
@@ -52,7 +52,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('diffs', ['switchToFullDiffFromRenamedFile']),
+    ...mapActions(useLegacyDiffs, ['switchToFullDiffFromRenamedFile']),
     is(state) {
       return this.state === state;
     },

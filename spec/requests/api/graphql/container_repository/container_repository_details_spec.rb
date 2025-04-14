@@ -302,7 +302,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
 
         subject
 
-        expect_graphql_errors_to_include("Can't connect to the Container Registry. If this error persists, please review the troubleshooting documentation.")
+        expect_graphql_errors_to_include("Can't connect to the container registry. If this error persists, please review the troubleshooting documentation.")
       end
     end
 
@@ -364,7 +364,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
 
         subject
 
-        expect_graphql_errors_to_include("Can't connect to the Container Registry. If this error persists, please review the troubleshooting documentation.")
+        expect_graphql_errors_to_include("Can't connect to the container registry. If this error persists, please review the troubleshooting documentation.")
       end
     end
   end
@@ -631,7 +631,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
 
         subject
 
-        expect_graphql_errors_to_include("Can't connect to the Container Registry. If this error persists, please review the troubleshooting documentation.")
+        expect_graphql_errors_to_include("Can't connect to the container registry. If this error persists, please review the troubleshooting documentation.")
       end
     end
   end
@@ -721,12 +721,17 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       )
     end
 
-    context 'when the feature container_registry_protected_tags is disabled' do
-      before do
-        stub_feature_flags(container_registry_protected_tags: false)
+    context 'when there is an immutable rule' do
+      before_all do
+        create(
+          :container_registry_protection_tag_rule,
+          :immutable,
+          project: project,
+          tag_name_pattern: 'la'
+        )
       end
 
-      it 'returns nil' do
+      it 'returns the maximum access fields from the matching protection rules' do
         subject
 
         expect(tag_permissions_response).to eq(
@@ -735,6 +740,23 @@ RSpec.describe 'container repository details', feature_category: :container_regi
             'minimumAccessLevelForDelete' => nil
           }
         )
+      end
+
+      context 'when the feature container_registry_immutable_tags is disabled' do
+        before do
+          stub_feature_flags(container_registry_immutable_tags: false)
+        end
+
+        it 'ignores the immutable rule' do
+          subject
+
+          expect(tag_permissions_response).to eq(
+            {
+              'minimumAccessLevelForPush' => 'OWNER',
+              'minimumAccessLevelForDelete' => 'OWNER'
+            }
+          )
+        end
       end
     end
   end

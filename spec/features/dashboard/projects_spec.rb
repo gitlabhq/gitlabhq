@@ -31,6 +31,9 @@ RSpec.describe 'Dashboard Projects', :js, feature_category: :groups_and_projects
   end
 
   it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_projects_path, :projects
+  it_behaves_like 'page with product usage data collection banner' do
+    let(:page_path) { dashboard_projects_path }
+  end
 
   it 'links to the "Explore projects" page' do
     visit dashboard_projects_path

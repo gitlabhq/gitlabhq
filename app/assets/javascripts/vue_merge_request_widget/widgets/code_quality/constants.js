@@ -26,10 +26,13 @@ export const i18n = {
       false,
     ),
   improvementAndDegradationCopy: (improvement, degradation) =>
-    sprintf(__('Code Quality scans found %{degradation} and %{improvement}.'), {
-      improvement,
-      degradation,
-    }),
-  singularCopy: (findings) =>
-    sprintf(__('Code Quality scans found %{findings}.'), { findings }, false),
+    sprintf(
+      __('Code Quality scans found %{degradation} and %{improvement}.'),
+      {
+        improvement,
+        degradation,
+      },
+      false,
+    ),
+  singularCopy: (findings) => sprintf(__('Code Quality scans found %{findings}.'), { findings }),
 };

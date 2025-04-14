@@ -119,7 +119,7 @@ export default {
       const { timeSpentTo } = this;
 
       if (timeSpentTo) {
-        timeSpentTo.setDate(timeSpentTo.getDate() + 1);
+        timeSpentTo.setHours(23, 59, 59, 999);
       }
 
       this.queryVariables = {

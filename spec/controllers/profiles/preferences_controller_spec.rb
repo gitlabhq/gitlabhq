@@ -65,7 +65,13 @@ RSpec.describe Profiles::PreferencesController do
           extensions_marketplace_enabled: '1'
         }.with_indifferent_access
 
-        expect(user).to receive(:assign_attributes).with(ActionController::Parameters.new(prefs).permit!)
+        expected_params = prefs.except(:extensions_marketplace_enabled).merge(
+          extensions_marketplace_opt_in_status: "enabled",
+          # Default marketplace_home_url based on Open VSX
+          extensions_marketplace_opt_in_url: "https://open-vsx.org"
+        )
+
+        expect(user).to receive(:assign_attributes).with(ActionController::Parameters.new(expected_params).permit!)
         expect(user).to receive(:save)
 
         go params: prefs

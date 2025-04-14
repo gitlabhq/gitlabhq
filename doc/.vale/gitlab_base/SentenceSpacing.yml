@@ -1,11 +1,9 @@
 ---
-# Error: gitlab_base.SentenceSpacing
-#
-# Checks for incorrect spacing (no spaces, or more than one space) around punctuation.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.SentenceSpacing
+description: |
+  Checks for incorrect spacing (no spaces, or more than one space) around punctuation.
 extends: existence
-message: "Use exactly one space between sentences and clauses. Check '%s' for spacing problems."
+message: "Use exactly one space with punctuation. Check '%s' for spacing problems."
 link: https://docs.gitlab.com/development/documentation/styleguide/#punctuation
 vocab: false
 level: error
@@ -13,3 +11,4 @@ nonword: true
 tokens:
   - '[a-z][.?!,][A-Z]'
   - '[\w.?!,\(\)\-":] {2,}[\w.?!,\(\)\-":]'
+  - '[a-z] +[.?!,:] +'

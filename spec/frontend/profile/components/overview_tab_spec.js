@@ -86,7 +86,7 @@ describe('OverviewTab', () => {
         wrapper
           .findByTestId('personal-projects-section')
           .findComponent(ProjectsList)
-          .props('projects'),
+          .props('items'),
       ).toMatchObject(defaultPropsData.personalProjects);
     });
   });

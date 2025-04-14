@@ -92,7 +92,7 @@ export default {
     :initial-filter-value="initialFilterValue"
     :tokens="validTokens"
     :initial-sort-by="initialSortBy"
-    :search-text-option-label="s__('Runners|Search description...')"
+    :search-text-option-label="s__('Runners|Search description…')"
     terms-as-tokens
     data-testid="runners-filtered-search"
     @onFilter="onFilter"

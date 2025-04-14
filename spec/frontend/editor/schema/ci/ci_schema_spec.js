@@ -31,6 +31,7 @@ import RulesYaml from './yaml_tests/positive_tests/rules.yml';
 import RulesNeedsYaml from './yaml_tests/positive_tests/rules_needs.yml';
 import RunYaml from './yaml_tests/positive_tests/run.yml';
 import ProjectPathYaml from './yaml_tests/positive_tests/project_path.yml';
+import SpecInputsYaml from './yaml_tests/positive_tests/spec_inputs.yml';
 import VariablesYaml from './yaml_tests/positive_tests/variables.yml';
 import JobWhenYaml from './yaml_tests/positive_tests/job_when.yml';
 import IdTokensYaml from './yaml_tests/positive_tests/id_tokens.yml';
@@ -63,6 +64,7 @@ import ProjectPathIncludeTailSlashYaml from './yaml_tests/negative_tests/project
 import RulesNegativeYaml from './yaml_tests/negative_tests/rules.yml';
 import RulesNeedsNegativeYaml from './yaml_tests/negative_tests/rules_needs.yml';
 import RunNegativeYaml from './yaml_tests/negative_tests/run.yml';
+import SpecInputsNegativeYaml from './yaml_tests/negative_tests/spec_inputs.yml';
 import TriggerNegativeYaml from './yaml_tests/negative_tests/trigger.yml';
 import VariablesInvalidOptionsYaml from './yaml_tests/negative_tests/variables/invalid_options.yml';
 import VariablesInvalidSyntaxDescYaml from './yaml_tests/negative_tests/variables/invalid_syntax_desc.yml';
@@ -113,25 +115,26 @@ describe('positive tests', () => {
       CacheYaml,
       MultipleCachesYaml,
       FilterYaml,
+      HooksYaml,
+      IdTokensYaml,
       IncludeYaml,
       JobWhenYaml,
-      HooksYaml,
+      NeedsParallelMatrixYaml,
+      ParallelYaml,
+      ProjectPathYaml,
+      RetryYaml,
       RulesYaml,
       RulesNeedsYaml,
       RunYaml,
-      VariablesYaml,
-      ProjectPathYaml,
-      IdTokensYaml,
-      ServicesYaml,
-      SecretsYaml,
-      NeedsParallelMatrixYaml,
       ScriptYaml,
+      SecretsYaml,
+      ServicesYaml,
+      SpecInputsYaml,
+      StagesYaml,
+      TriggerYaml,
+      VariablesYaml,
       WorkflowRulesAutoCancelOnJobFailureYaml,
       WorkflowRulesAutoCancelOnNewCommitYaml,
-      StagesYaml,
-      RetryYaml,
-      ParallelYaml,
-      TriggerYaml,
     }),
   )('schema validates %s', (_, input) => {
     // We construct a new "JSON" from each main key that is inside a
@@ -170,43 +173,44 @@ describe('negative tests', () => {
     Object.entries({
       // JSON
       DefaultNoAdditionalPropertiesJson,
-      JobVariablesMustNotContainObjectsJson,
       InheritDefaultNoAdditionalPropertiesJson,
+      JobVariablesMustNotContainObjectsJson,
       ReleaseAssetsLinksJson,
       RetryUnknownWhenJson,
 
       // YAML
       ArtifactsNegativeYaml,
-      ImageNegativeYaml,
       CacheKeyNeative,
-      MultipleCachesYamlNegative,
       HooksNegative,
       IdTokensNegativeYaml,
+      ImageNegativeYaml,
       IncludeNegativeYaml,
       JobWhenNegativeYaml,
-      RulesNegativeYaml,
-      RulesNeedsNegativeYaml,
-      RunNegativeYaml,
-      TriggerNegativeYaml,
-      VariablesInvalidOptionsYaml,
-      VariablesInvalidSyntaxDescYaml,
-      VariablesWrongSyntaxUsageExpand,
+      MultipleCachesYamlNegative,
+      NeedsParallelMatrixNumericYaml,
+      NeedsParallelMatrixWrongMatrixValueYaml,
+      NeedsParallelMatrixWrongParallelValueYaml,
+      ParallelNegativeYaml,
       ProjectPathIncludeEmptyYaml,
       ProjectPathIncludeInvalidVariableYaml,
       ProjectPathIncludeLeadSlashYaml,
       ProjectPathIncludeNoSlashYaml,
       ProjectPathIncludeTailSlashYaml,
+      RetryNegativeYaml,
+      RulesNeedsNegativeYaml,
+      RulesNegativeYaml,
+      RunNegativeYaml,
+      ScriptNegativeYaml,
       SecretsNegativeYaml,
       ServicesNegativeYaml,
-      NeedsParallelMatrixNumericYaml,
-      NeedsParallelMatrixWrongParallelValueYaml,
-      NeedsParallelMatrixWrongMatrixValueYaml,
-      ScriptNegativeYaml,
+      SpecInputsNegativeYaml,
+      StagesNegativeYaml,
+      TriggerNegativeYaml,
+      VariablesInvalidOptionsYaml,
+      VariablesInvalidSyntaxDescYaml,
+      VariablesWrongSyntaxUsageExpand,
       WorkflowRulesAutoCancelOnJobFailureNegativeYaml,
       WorkflowRulesAutoCancelOnNewCommitNegativeYaml,
-      StagesNegativeYaml,
-      RetryNegativeYaml,
-      ParallelNegativeYaml,
     }),
   )('schema validates %s', (_, input) => {
     // We construct a new "JSON" from each main key that is inside a

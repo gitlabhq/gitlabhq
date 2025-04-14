@@ -19,12 +19,19 @@ module QA
       end
 
       it 'creates an issue via custom template', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347945' do
-        Resource::Issue.fabricate_via_browser_ui! do |issue|
+        template_project.visit!
+        Page::Project::Menu.perform(&:go_to_new_issue)
+
+        work_item_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
+        show_page_type = work_item_enabled ? Page::Project::WorkItem::Show : Page::Project::Issue::Show
+        resource_type = work_item_enabled ? Resource::WorkItem : Resource::Issue
+
+        resource_type.fabricate_via_browser_ui! do |issue|
           issue.project = template_project
           issue.template = template_name
         end
 
-        Page::Project::Issue::Show.perform do |issue_page|
+        show_page_type.perform do |issue_page|
           expect(issue_page).to have_content(template_content)
         end
       end

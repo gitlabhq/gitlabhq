@@ -4,6 +4,8 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ListType } from '~/boards/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
+import WorkItemDates from 'ee_else_ce/work_items/components/work_item_dates.vue';
+
 import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_HEALTH_STATUS,
@@ -18,8 +20,8 @@ import {
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_COLOR,
   WIDGET_TYPE_CRM_CONTACTS,
-  WORK_ITEM_TYPE_VALUE_EPIC,
-  WORK_ITEM_TYPE_VALUE_MAP,
+  WORK_ITEM_TYPE_NAME_EPIC,
+  NAME_TO_ENUM_MAP,
   WIDGET_TYPE_CUSTOM_FIELDS,
 } from '../constants';
 import { findHierarchyWidgetDefinition } from '../utils';
@@ -32,7 +34,6 @@ import WorkItemMilestone from './work_item_milestone.vue';
 import WorkItemParent from './work_item_parent.vue';
 import WorkItemTimeTracking from './work_item_time_tracking.vue';
 import WorkItemCrmContacts from './work_item_crm_contacts.vue';
-import WorkItemDueDates from './work_item_due_dates.vue';
 
 export default {
   ListType,
@@ -44,7 +45,7 @@ export default {
     WorkItemParent,
     WorkItemTimeTracking,
     WorkItemCrmContacts,
-    WorkItemDueDates,
+    WorkItemDates,
     WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
@@ -115,7 +116,7 @@ export default {
       update(data) {
         return (
           findHierarchyWidgetDefinition(data.workItem)?.allowedParentTypes?.nodes.map(
-            (el) => WORK_ITEM_TYPE_VALUE_MAP[el.name],
+            (el) => NAME_TO_ENUM_MAP[el.name],
           ) || []
         );
       },
@@ -144,7 +145,7 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_START_AND_DUE_DATE);
     },
     canWorkItemRollUp() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC;
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     workItemWeight() {
       return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
@@ -165,10 +166,10 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_MILESTONE);
     },
     showRolledupDates() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC;
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     isParentEnabled() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC ? this.hasSubepicsFeature : true;
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC ? this.hasSubepicsFeature : true;
     },
     workItemParent() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
@@ -189,7 +190,7 @@ export default {
       return this.workItemHierarchy?.hasParent;
     },
     workItemCrmContacts() {
-      return this.isWidgetPresent(WIDGET_TYPE_CRM_CONTACTS) && this.glFeatures.workItemsAlpha;
+      return this.isWidgetPresent(WIDGET_TYPE_CRM_CONTACTS);
     },
     customFields() {
       return this.isWidgetPresent(WIDGET_TYPE_CUSTOM_FIELDS)?.customFieldValues;
@@ -249,7 +250,7 @@ export default {
       :work-item-type="workItemType"
       @error="$emit('error', $event)"
     />
-    <work-item-due-dates
+    <work-item-dates
       v-if="workItemStartAndDueDate"
       class="work-item-attributes-item"
       :can-update="canUpdateMetadata"

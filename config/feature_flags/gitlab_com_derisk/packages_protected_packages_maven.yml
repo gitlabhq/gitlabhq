@@ -1,9 +1,0 @@
----
-name: packages_protected_packages_maven
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/323969
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147055
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/497082
-milestone: '17.9'
-group: group::package registry
-type: gitlab_com_derisk
-default_enabled: false

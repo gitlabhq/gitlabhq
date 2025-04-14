@@ -151,7 +151,7 @@ User approvals are associated with a user ID. Other user contributions do not ha
 
 {{< /alert >}}
 
-## Delete the root account on a self-managed instance
+## Delete the root account on a GitLab Self-Managed instance
 
 {{< details >}}
 
@@ -169,7 +169,7 @@ You can delete the root account using either the UI or the [GitLab Rails console
 
 Before you delete the root account:
 
-1. If you have created any [project](../../project/settings/project_access_tokens.md) or [personal access tokens](../../profile/personal_access_tokens.md) for the root account and use them in your workflow, transfer any necessary permissions or ownership from the root account to the new administrator.
+1. If you have created any [project](../../project/settings/project_access_tokens.md) or [personal access tokens](../personal_access_tokens.md) for the root account and use them in your workflow, transfer any necessary permissions or ownership from the root account to the new administrator.
 1. [Back up your GitLab Self-Managed instance](../../../administration/backup_restore/backup_gitlab.md).
 1. Consider [deactivating](../../../administration/moderate_users.md#deactivate-a-user) or [blocking](../../../administration/moderate_users.md#block-and-unblock-users) the root account instead.
 
@@ -177,11 +177,11 @@ Before you delete the root account:
 
 Prerequisites:
 
-- You must be an administrator for the self-managed instance.
+- You must be an administrator for the GitLab Self-Managed instance.
 
 To delete the root account:
 
-1. In the **Admin** area, [create a new user with administrator access](../../profile/account/create_accounts.md#create-users-in-admin-area). This ensures that you maintain administrator access to the instance whilst mitigating the risks associated with deleting the root account.
+1. In the **Admin** area, [create a new user with administrator access](create_accounts.md#create-users-in-admin-area). This ensures that you maintain administrator access to the instance whilst mitigating the risks associated with deleting the root account.
 1. [Delete the root account](#delete-users-and-user-contributions).
 
 ### Use the GitLab Rails console

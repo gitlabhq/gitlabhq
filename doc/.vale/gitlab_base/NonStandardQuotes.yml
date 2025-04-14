@@ -1,9 +1,7 @@
 ---
-# Warning: gitlab_base.NonStandardQuotes
-#
-# Use only standard single and double quotes, not left or right quotes.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.NonStandardQuotes
+description: |
+  Use only standard single and double quotes, not left or right quotes.
 extends: existence
 message: "Use standard single quotes or double quotes only. Do not use left or right quotes."
 vocab: false

@@ -232,7 +232,6 @@ export default {
             :actions="actions"
             data-track-action="click_dropdown"
             data-track-label="environment_actions"
-            graphql
           />
 
           <stop-component
@@ -240,7 +239,6 @@ export default {
             :environment="environment"
             data-track-action="click_button"
             data-track-label="environment_stop"
-            graphql
           />
 
           <gl-disclosure-dropdown
@@ -258,7 +256,6 @@ export default {
               :environment="environment"
               :is-last-deployment="isLastDeployment"
               :retry-url="retryPath"
-              graphql
               data-track-action="click_button"
               data-track-label="environment_rollback"
             />
@@ -266,7 +263,6 @@ export default {
             <pin
               v-if="canShowAutoStopDate"
               :auto-stop-url="autoStopPath"
-              graphql
               data-track-action="click_button"
               data-track-label="environment_pin"
             />
@@ -283,7 +279,6 @@ export default {
               :environment="environment"
               data-track-action="click_button"
               data-track-label="environment_delete"
-              graphql
             />
           </gl-disclosure-dropdown>
         </div>

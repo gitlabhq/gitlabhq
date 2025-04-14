@@ -116,6 +116,11 @@ export default {
       required: false,
       default: false,
     },
+    isGroupWorkItem: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -125,6 +130,7 @@ export default {
     };
   },
   computed: {
+    // eslint-disable-next-line vue/no-unused-properties
     tracking() {
       return {
         category: TRACKING_CATEGORY_SHOW,
@@ -373,9 +379,7 @@ export default {
             :note-url="noteUrl"
             :is-internal-note="note.internal"
             :email-participant="externalAuthor"
-          >
-            <span v-if="note.createdAt" class="gl-hidden sm:gl-inline">&middot;</span>
-          </note-header>
+          />
           <div class="gl-inline-flex">
             <note-actions
               v-if="!isEditing"
@@ -386,7 +390,6 @@ export default {
               :note-url="noteUrl"
               :show-reply="showReply"
               :show-edit="hasAdminPermission"
-              :note-id="note.id"
               :is-author-an-assignee="isAuthorAnAssignee"
               :show-assign-unassign="canSetWorkItemMetadata && hasAuthor"
               :can-report-abuse="!isCurrentUserAuthorOfNote"
@@ -396,7 +399,6 @@ export default {
               :max-access-level-of-author="note.maxAccessLevelOfAuthor"
               :project-name="projectName"
               :can-resolve="canResolve"
-              :resolvable="isDiscussionResolvable"
               :is-resolved="isDiscussionResolved"
               :is-resolving="isResolving"
               :resolved-by="discussionResolvedBy"
@@ -430,6 +432,7 @@ export default {
             :has-replies="hasReplies"
             :full-path="fullPath"
             :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
+            :is-group-work-item="isGroupWorkItem"
             class="gl-mt-3"
             @cancelEditing="cancelEditing"
             @toggleResolveDiscussion="$emit('resolve')"
@@ -439,7 +442,7 @@ export default {
             <note-body
               ref="noteBody"
               :note="note"
-              :has-replies="hasReplies"
+              :has-admin-note-permission="hasAdminPermission"
               :is-updating="isUpdating"
               @updateNote="updateNote"
             />
@@ -458,7 +461,6 @@ export default {
               :full-path="fullPath"
               :note="note"
               :work-item-iid="workItemIid"
-              :is-modal="isModal"
             />
           </div>
         </div>

@@ -1,11 +1,10 @@
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import { trimText } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import autoMergeEnabledComponent from '~/vue_merge_request_widget/components/states/mr_widget_auto_merge_enabled.vue';
-import { MWPS_MERGE_STRATEGY, MWCP_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
+import { MWCP_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 
@@ -70,7 +69,7 @@ const defaultMrProps = () => ({
   sha,
   targetBranchPath,
   targetBranch,
-  autoMergeStrategy: MWPS_MERGE_STRATEGY,
+  autoMergeStrategy: MWCP_MERGE_STRATEGY,
 });
 
 const getStatusText = () => wrapper.findByTestId('statusText').text();
@@ -99,10 +98,10 @@ describe('MRWidgetAutoMergeEnabled', () => {
 
   describe('computed', () => {
     describe('cancelButtonText', () => {
-      it('should return "Cancel" if MWPS is selected', () => {
+      it('should return "Cancel" if MWCP is selected', () => {
         factory({
           ...defaultMrProps(),
-          autoMergeStrategy: MWPS_MERGE_STRATEGY,
+          autoMergeStrategy: MWCP_MERGE_STRATEGY,
         });
 
         expect(wrapper.findByTestId('cancelAutomaticMergeButton').text()).toBe('Cancel auto-merge');
@@ -148,15 +147,6 @@ describe('MRWidgetAutoMergeEnabled', () => {
       expect(wrapper.find('.js-cancel-auto-merge').props('loading')).toBe(true);
     });
 
-    it('should render the status text as "...to merged automatically" if MWPS is selected', () => {
-      factory({
-        ...defaultMrProps(),
-        autoMergeStrategy: MWPS_MERGE_STRATEGY,
-      });
-
-      expect(getStatusText()).toContain('to be merged automatically when the pipeline succeeds');
-    });
-
     it('should render the status text as "to be merged automatically..." if MWCP is selected', () => {
       factory({
         ...defaultMrProps(),
@@ -164,17 +154,6 @@ describe('MRWidgetAutoMergeEnabled', () => {
       });
 
       expect(getStatusText()).toContain('to be merged automatically when all merge checks pass');
-    });
-
-    it('should render the cancel button as "Cancel" if MWPS is selected', () => {
-      factory({
-        ...defaultMrProps(),
-        autoMergeStrategy: MWPS_MERGE_STRATEGY,
-      });
-
-      const cancelButtonText = trimText(wrapper.find('.js-cancel-auto-merge').text());
-
-      expect(cancelButtonText).toBe('Cancel auto-merge');
     });
   });
 });

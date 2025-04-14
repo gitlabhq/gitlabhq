@@ -170,7 +170,7 @@ See [configuration](browser/configuration/_index.md) for more information on con
 | `DAST_TARGET_AVAILABILITY_TIMEOUT`   | Change                   | To `DAST_TARGET_CHECK_TIMEOUT` using a duration. For example, instead of `60`, use `60s` |
 | `DAST_USE_AJAX_SPIDER`               | Remove                   | Not supported                                                                            |
 | `DAST_XML_REPORT`                    | Remove                   | Not supported                                                                            |
-| `DAST_WEBSITE`                              | Rename             | To `DAST_TARGET_URL`<br/>Self-managed: Upgrade your instance to version 17.0 or newer before removing `DAST_WEBSITE`. This variable is required if you use the `DAST.gitlab-ci.yml` file included with pre-17.0 versions of GitLab. |
+| `DAST_WEBSITE`                              | Rename             | To `DAST_TARGET_URL`<br/>GitLab Self-Managed: Upgrade your instance to version 17.0 or newer before removing `DAST_WEBSITE`. This variable is required if you use the `DAST.gitlab-ci.yml` file included with pre-17.0 versions of GitLab. |
 | `DAST_ZAP_CLI_OPTIONS`               | Remove                   | Not supported                                                                            |
 | `DAST_ZAP_LOG_CONFIGURATION`         | Remove                   | Not supported                                                                            |
 | `SECURE_ANALYZERS_PREFIX`            | None                     | Supported                                                                                |

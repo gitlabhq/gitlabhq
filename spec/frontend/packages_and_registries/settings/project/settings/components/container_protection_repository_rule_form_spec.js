@@ -20,6 +20,9 @@ describe('container Protection Rule Form', () => {
 
   const defaultProvidedValues = {
     projectPath: 'path',
+    glFeatures: {
+      containerRegistryProtectedContainersDelete: true,
+    },
   };
 
   const findForm = () => wrapper.findComponent(GlForm);
@@ -27,7 +30,17 @@ describe('container Protection Rule Form', () => {
     wrapper.findByRole('textbox', { name: /repository path pattern/i });
   const findMinimumAccessLevelForPushSelect = () =>
     wrapper.findByRole('combobox', { name: /minimum access level for push/i });
+  const findMinimumAccessLevelForDeleteSelect = () =>
+    wrapper.findByRole('combobox', { name: /minimum access level for delete/i });
   const findSubmitButton = () => wrapper.findByTestId('add-rule-btn');
+
+  const setSelectValue = async (selectWrapper, value) => {
+    await selectWrapper.setValue(value);
+    // Work around compat flag which prevents change event from being triggered by setValue.
+    // TODO: Disable WRAPPER_SET_VALUE_DOES_NOT_TRIGGER_CHANGE globally:
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/526008
+    await selectWrapper.trigger('change');
+  };
 
   const mountComponent = ({ config, provide = defaultProvidedValues } = {}) => {
     wrapper = mountExtended(ContainerProtectionRepositoryRuleForm, {
@@ -54,17 +67,74 @@ describe('container Protection Rule Form', () => {
       const minimumAccessLevelForPushOptions = () =>
         findMinimumAccessLevelForPushSelect()
           .findAll('option')
-          .wrappers.map((option) => option.element.value);
+          .wrappers.map((o) => o.text());
 
-      it.each(['MAINTAINER', 'OWNER', 'ADMIN'])(
-        'includes the access level "%s" as an option',
-        (accessLevel) => {
-          mountComponent();
+      it('includes correct access levels as options', () => {
+        mountComponent();
 
-          expect(findMinimumAccessLevelForPushSelect().exists()).toBe(true);
-          expect(minimumAccessLevelForPushOptions()).toContain(accessLevel);
-        },
-      );
+        expect(findMinimumAccessLevelForPushSelect().exists()).toBe(true);
+        expect(minimumAccessLevelForPushOptions()).toEqual([
+          'Developer (default)',
+          'Maintainer',
+          'Owner',
+          'Administrator',
+        ]);
+      });
+
+      describe('when feature flag containerRegistryProtectedContainersDelete is disabled', () => {
+        it('does not include default option for "Minimum access level for push"', () => {
+          mountComponent({
+            provide: {
+              ...defaultProvidedValues,
+              glFeatures: {
+                ...defaultProvidedValues.glFeatures,
+                containerRegistryProtectedContainersDelete: false,
+              },
+            },
+          });
+
+          expect(minimumAccessLevelForPushOptions()).toEqual([
+            'Maintainer',
+            'Owner',
+            'Administrator',
+          ]);
+        });
+      });
+    });
+
+    describe('form field "minimumAccessLevelForDelete"', () => {
+      const minimumAccessLevelForDeleteOptions = () =>
+        findMinimumAccessLevelForDeleteSelect()
+          .findAll('option')
+          .wrappers.map((o) => o.text());
+
+      it('includes correct access levels as options', () => {
+        mountComponent();
+
+        expect(findMinimumAccessLevelForDeleteSelect().exists()).toBe(true);
+        expect(minimumAccessLevelForDeleteOptions()).toEqual([
+          'Developer (default)',
+          'Maintainer',
+          'Owner',
+          'Administrator',
+        ]);
+      });
+
+      describe('when feature flag containerRegistryProtectedContainersDelete is disabled', () => {
+        it('does not show form field "minimumAccessLevelForDeleteSelect"', () => {
+          mountComponent({
+            provide: {
+              ...defaultProvidedValues,
+              glFeatures: {
+                ...defaultProvidedValues.glFeatures,
+                containerRegistryProtectedContainersDelete: false,
+              },
+            },
+          });
+
+          expect(findMinimumAccessLevelForDeleteSelect().exists()).toBe(false);
+        });
+      });
     });
 
     describe('when graphql mutation is in progress', () => {
@@ -77,6 +147,7 @@ describe('container Protection Rule Form', () => {
       it('disables all form fields', () => {
         expect(findSubmitButton().props('disabled')).toBe(true);
         expect(findRepositoryPathPatternInput().attributes('disabled')).toBe('disabled');
+        expect(findMinimumAccessLevelForDeleteSelect().attributes('disabled')).toBe('disabled');
         expect(findMinimumAccessLevelForPushSelect().attributes('disabled')).toBe('disabled');
       });
 
@@ -162,6 +233,31 @@ describe('container Protection Rule Form', () => {
         });
       });
 
+      it('dispatches correct apollo mutation when no minimumAccessLevelForPush is selected', async () => {
+        const mutationResolver = jest
+          .fn()
+          .mockResolvedValue(createContainerProtectionRepositoryRuleMutationPayload());
+
+        mountComponentWithApollo({ mutationResolver });
+
+        await findRepositoryPathPatternInput().setValue(
+          createContainerProtectionRepositoryRuleMutationInput.repositoryPathPattern,
+        );
+        await setSelectValue(findMinimumAccessLevelForPushSelect(), '');
+        await setSelectValue(findMinimumAccessLevelForDeleteSelect(), 'ADMIN');
+
+        await submitForm();
+
+        expect(mutationResolver).toHaveBeenCalledWith({
+          input: {
+            projectPath: 'path',
+            ...createContainerProtectionRepositoryRuleMutationInput,
+            minimumAccessLevelForPush: null,
+            minimumAccessLevelForDelete: 'ADMIN',
+          },
+        });
+      });
+
       it('emits event "submit" when apollo mutation successful', async () => {
         const mutationResolver = jest
           .fn()
@@ -176,8 +272,6 @@ describe('container Protection Rule Form', () => {
           createContainerProtectionRepositoryRuleMutationPayload().data
             .createContainerProtectionRepositoryRule.containerProtectionRepositoryRule;
         expect(wrapper.emitted('submit')[0]).toEqual([expectedEventSubmitPayload]);
-
-        expect(wrapper.emitted()).not.toHaveProperty('cancel');
       });
 
       it('shows error alert with general message when apollo mutation request responds with errors', async () => {

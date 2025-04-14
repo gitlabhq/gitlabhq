@@ -28,8 +28,9 @@ RSpec.describe Members::ApproveAccessRequestService, feature_category: :groups_a
     end
 
     it 'returns a <Source>Member' do
-      member = described_class.new(current_user, params).execute(access_requester, **opts)
+      result = described_class.new(current_user, params).execute(access_requester, **opts)
 
+      member = result[:member]
       expect(member).to be_a "#{source.class}Member".constantize
       expect(member.requested_at).to be_nil
     end
@@ -54,8 +55,9 @@ RSpec.describe Members::ApproveAccessRequestService, feature_category: :groups_a
       let(:params) { { access_level: custom_access_level } }
 
       it 'returns a ProjectMember with the custom access level' do
-        member = described_class.new(current_user, params).execute(access_requester, **opts)
+        result = described_class.new(current_user, params).execute(access_requester, **opts)
 
+        member = result[:member]
         expect(member.access_level).to eq(custom_access_level)
       end
     end

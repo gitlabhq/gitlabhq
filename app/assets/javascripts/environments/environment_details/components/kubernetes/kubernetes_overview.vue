@@ -132,7 +132,6 @@ export default {
       podsLoading: false,
       activeTab: k8sResourceType.k8sPods,
       fluxApiError: '',
-      focusedElement: null,
       podToDelete: {},
       fluxHelmRelease: {},
       fluxKustomization: {},

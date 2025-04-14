@@ -5,8 +5,6 @@
   "items": {
     "type": "string",
     "enum": [
-      "read_containers",
-      "admin_containers",
       "read_deployments",
       "admin_deployments",
       "read_environments",
@@ -15,6 +13,8 @@
       "admin_jobs",
       "read_packages",
       "admin_packages",
+      "read_pipelines",
+      "admin_pipelines",
       "read_releases",
       "admin_releases",
       "read_secure_files",

@@ -23,6 +23,8 @@ module Types
       description: 'Indicates repository has no visible content.'
     field :exists, GraphQL::Types::Boolean, null: false, method: :exists?, calls_gitaly: true,
       description: 'Indicates a corresponding Git repository exists on disk.'
+    field :last_commit, Types::Repositories::CommitType, null: true, resolver: Resolvers::LastCommitResolver, calls_gitaly: true,
+      description: 'The last commit made in the repository for the given path and ref.'
     field :paginated_tree, Types::Tree::TreeType.connection_type, null: true, resolver: Resolvers::PaginatedTreeResolver, calls_gitaly: true,
       connection_extension: Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension,
       max_page_size: 100,

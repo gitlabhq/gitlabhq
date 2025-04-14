@@ -199,12 +199,8 @@ semgrep-sast:
         - '**/*.kt'
         - '**/*.properties'
         - '**/application*.yml'
-        - '**/management*.yml'
-        - '**/actuator*.yml'
         - '**/bootstrap*.yml'
         - '**/application*.yaml'
-        - '**/management*.yaml'
-        - '**/actuator*.yaml'
         - '**/bootstrap*.yaml'
     ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned
     - if: $CI_COMMIT_BRANCH &&
@@ -241,12 +237,8 @@ semgrep-sast:
         - '**/*.kt'
         - '**/*.properties'
         - '**/application*.yml'
-        - '**/management*.yml'
-        - '**/actuator*.yml'
         - '**/bootstrap*.yml'
         - '**/application*.yaml'
-        - '**/management*.yaml'
-        - '**/actuator*.yaml'
         - '**/bootstrap*.yaml'
 
 sobelow-sast:

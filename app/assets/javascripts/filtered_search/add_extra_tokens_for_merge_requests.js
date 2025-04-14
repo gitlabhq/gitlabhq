@@ -201,7 +201,7 @@ export default (
     };
 
     const deployedBeforeToken = {
-      formattedKey: __('Deployed-before'),
+      formattedKey: __('Deployed before'),
       key: 'deployed-before',
       type: 'string',
       param: '',
@@ -211,7 +211,7 @@ export default (
     };
 
     const deployedAfterToken = {
-      formattedKey: __('Deployed-after'),
+      formattedKey: __('Deployed after'),
       key: 'deployed-after',
       type: 'string',
       param: '',

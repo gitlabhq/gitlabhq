@@ -1,8 +1,7 @@
 ---
-# Warning: gitlab_docs.HistoryItems
-#
-# Ensures history items are properly formatted.
-#
+name: gitlab_docs.HistoryItems
+description: |
+  Ensures history items are properly formatted.
 extends: existence
 message: "History items must always use Hugo shortcodes and be a list with each line starting with '-', one item per line, even if there is only one item."
 link: https://docs.gitlab.com/development/documentation/feature_flags/#add-history-text

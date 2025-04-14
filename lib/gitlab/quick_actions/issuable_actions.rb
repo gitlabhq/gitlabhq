@@ -288,15 +288,15 @@ module Gitlab
                                         when :relabel
                                           _('Replaced all labels with %{label_references} %{label_text}.') %
                                             {
-                                            label_references: label_references.join(' '),
-                                            label_text: 'label'.pluralize(label_references.count)
-                                          }
+                                              label_references: label_references.join(' '),
+                                              label_text: 'label'.pluralize(label_references.count)
+                                            }
                                         when :label
                                           _('Added %{label_references} %{label_text}.') %
                                             {
-                                            label_references: label_references.join(' '),
-                                            label_text: 'label'.pluralize(labels.count)
-                                          }
+                                              label_references: label_references.join(' '),
+                                              label_text: 'label'.pluralize(labels.count)
+                                            }
                                         end
         end
 

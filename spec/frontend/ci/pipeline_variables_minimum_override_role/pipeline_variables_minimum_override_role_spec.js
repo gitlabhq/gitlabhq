@@ -108,7 +108,7 @@ describe('PipelineVariablesMinimumOverrideRole', () => {
     it('has the correct help path', () => {
       expect(PipelineVariablesMinimumOverrideRole.helpPath).toBe(
         helpPagePath('ci/variables/_index', {
-          anchor: 'set-a-minimum-role-for-pipeline-variables',
+          anchor: 'restrict-pipeline-variables',
         }),
       );
     });

@@ -187,6 +187,54 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
+    shared_examples_for 'filtering by topic (column topic_list)' do
+      let(:project_with_topics) { nil }
+
+      before do
+        project_with_topics.update!(topic_list: %w[ruby javascript])
+      end
+
+      it 'returns no projects' do
+        get api(path, user), params: { topic: 'foo' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_empty
+      end
+
+      it 'returns matching project for a single topic' do
+        get api(path, user), params: { topic: 'ruby' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to contain_exactly a_hash_including('id' => project_with_topics.id)
+      end
+
+      it 'returns matching project for multiple topics' do
+        get api(path, user), params: { topic: 'ruby, javascript' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to contain_exactly a_hash_including('id' => project_with_topics.id)
+      end
+
+      it 'returns no projects if project match only some topic' do
+        get api(path, user), params: { topic: 'ruby, foo' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_empty
+      end
+
+      it 'ignores topic if it is empty' do
+        get api(path, user), params: { topic: '' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_present
+      end
+    end
+
     context 'when unauthenticated' do
       it_behaves_like 'projects response' do
         let(:filter) { { search: project.path } }
@@ -196,6 +244,21 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       it_behaves_like 'projects response without N + 1 queries', 1 do
         let(:current_user) { nil }
+      end
+
+      it_behaves_like 'filtering by topic (column topic_list)' do
+        let(:user) { nil }
+        let(:current_user) { nil }
+        let(:namespace) { create(:namespace) }
+        let(:project_with_topics) do
+          create(:project, :repository, :public, namespace: namespace, updated_at: 5.days.ago)
+        end
+
+        before do
+          allow(Organizations::Organization).to(
+            receive(:default_organization).and_return(namespace.organization)
+          )
+        end
       end
     end
 
@@ -208,6 +271,12 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       it_behaves_like 'projects response without N + 1 queries', 0 do
         let(:current_user) { user }
+      end
+
+      it_behaves_like 'filtering by topic (column topic_list)' do
+        let(:project_with_topics) do
+          create(:project, :repository, namespace: user.namespace, updated_at: 5.days.ago)
+        end
       end
 
       shared_examples 'includes container_registry_access_level' do
@@ -326,55 +395,9 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response.find { |hash| hash['id'] == project.id }.keys).not_to include('open_issues_count')
       end
 
-      context 'filter by topic (column topic_list)' do
-        before do
-          project.update!(topic_list: %w[ruby javascript])
-        end
-
-        it 'returns no projects' do
-          get api(path, user), params: { topic: 'foo' }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to include_pagination_headers
-          expect(json_response).to be_empty
-        end
-
-        it 'returns matching project for a single topic' do
-          get api(path, user), params: { topic: 'ruby' }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to include_pagination_headers
-          expect(json_response).to contain_exactly a_hash_including('id' => project.id)
-        end
-
-        it 'returns matching project for multiple topics' do
-          get api(path, user), params: { topic: 'ruby, javascript' }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to include_pagination_headers
-          expect(json_response).to contain_exactly a_hash_including('id' => project.id)
-        end
-
-        it 'returns no projects if project match only some topic' do
-          get api(path, user), params: { topic: 'ruby, foo' }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to include_pagination_headers
-          expect(json_response).to be_empty
-        end
-
-        it 'ignores topic if it is empty' do
-          get api(path, user), params: { topic: '' }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to include_pagination_headers
-          expect(json_response).to be_present
-        end
-      end
-
       context 'filter by topic_id' do
-        let_it_be(:topic1) { create(:topic) }
-        let_it_be(:topic2) { create(:topic) }
+        let_it_be(:topic1) { create(:topic, organization_id: project.organization_id) }
+        let_it_be(:topic2) { create(:topic, organization_id: project.organization_id) }
 
         let(:current_user) { user }
 
@@ -4012,6 +4035,46 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
   end
 
+  describe 'POST /projects/:id/restore' do
+    let_it_be(:group) { create(:group, owners: user) }
+    let_it_be_with_reload(:project) { create(:project, group: group) }
+
+    context 'when the feature is available' do
+      it 'restores project' do
+        project.update!(archived: true, marked_for_deletion_at: 1.day.ago, deleting_user: user)
+
+        post api("/projects/#{project.id}/restore", user)
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['archived']).to be_falsey
+        expect(json_response['marked_for_deletion_at']).to be_falsey
+        expect(json_response['marked_for_deletion_on']).to be_falsey
+      end
+
+      it 'returns error if project is already being deleted' do
+        message = 'Error'
+        expect(::Projects::RestoreService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: message })
+
+        post api("/projects/#{project.id}/restore", user)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response["message"]).to eq(message)
+      end
+    end
+
+    context 'when the feature is not available' do
+      before do
+        stub_feature_flags(downtier_delayed_deletion: false)
+      end
+
+      it 'returns error' do
+        post api("/projects/#{project.id}/restore", user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'POST /projects/:id/import_project_members/:project_id' do
     let_it_be(:project2) { create(:project) }
     let_it_be(:project2_user) { create(:user) }
@@ -4428,6 +4491,40 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         put api("/projects/#{project3.id}", user), params: project_param
 
         expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      context 'when ci_pipeline_variables_minimum_override_role is maintainer' do
+        let(:ci_cd_settings) { project3.ci_cd_settings }
+
+        before do
+          project3.add_maintainer(user2)
+          ci_cd_settings.pipeline_variables_minimum_override_role = 'maintainer'
+          ci_cd_settings.save!
+        end
+
+        context 'and resrict_user_defined_variables is true' do
+          before do
+            ci_cd_settings.restrict_user_defined_variables = true
+            ci_cd_settings.save!
+          end
+
+          context 'and current user is maintainer' do
+            let_it_be(:current_user) { user2 }
+
+            it 'accepts to change restrict_user_defined_variables' do
+              project_param = { restrict_user_defined_variables: false }
+
+              expect do
+                put api("/projects/#{project3.id}", current_user), params: project_param
+              end.to change { ci_cd_settings.reload.restrict_user_defined_variables }.from(true).to(false)
+              .and change { ci_cd_settings.pipeline_variables_minimum_override_role }.from('maintainer').to('developer')
+
+              expect(response).to have_gitlab_http_status(:ok)
+              response_data = Gitlab::Json.parse(response.body)
+              expect(response_data['restrict_user_defined_variables']).to be_falsey
+            end
+          end
+        end
       end
 
       context 'when ci_pipeline_variables_minimum_override_role is owner' do
@@ -5400,6 +5497,104 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       it_behaves_like '412 response' do
         let(:success_status) { 202 }
         subject(:request) { api("/projects/#{project.id}", admin, admin_mode: true) }
+      end
+    end
+
+    shared_examples 'deletes project immediately' do
+      it :aggregate_failures do
+        expect(::Projects::DestroyService).to receive(:new).with(project, user, {}).and_call_original
+
+        delete api(path, user), params: params
+        expect(response).to have_gitlab_http_status(:accepted)
+      end
+    end
+
+    shared_examples 'immediately delete project error' do
+      it :aggregate_failures do
+        expect(::Projects::DestroyService).not_to receive(:new)
+        expect(::Projects::MarkForDeletionService).not_to receive(:new)
+
+        delete api(path, user), params: params
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(Gitlab::Json.parse(response.body)['message']).to eq(error_message)
+      end
+    end
+
+    shared_examples 'marks project for deletion' do
+      it :aggregate_failures do
+        expect(::Projects::MarkForDeletionService).to receive(:new).with(project, user, {}).and_call_original
+
+        delete api(path, user), params: params
+
+        expect(response).to have_gitlab_http_status(:accepted)
+        expect(project.reload.marked_for_deletion?).to be_truthy
+      end
+    end
+
+    context 'for delayed deletion' do
+      let_it_be(:group) { create(:group) }
+      let_it_be_with_reload(:project) { create(:project, group: group, owners: user) }
+      let(:params) { {} }
+
+      before do
+        stub_licensed_features(adjourned_deletion_for_projects_and_groups: false)
+      end
+
+      context 'when the downtier_delayed_deletion feature flag is enabled' do
+        it_behaves_like 'marks project for deletion'
+
+        context 'when permanently_remove param is true' do
+          before do
+            params.merge!(permanently_remove: true)
+          end
+
+          context 'when project is already marked for deletion' do
+            before do
+              project.update!(archived: true, marked_for_deletion_at: 1.day.ago, deleting_user: user)
+            end
+
+            context 'with correct project full path' do
+              before do
+                params.merge!(full_path: project.full_path)
+              end
+
+              it_behaves_like 'deletes project immediately'
+            end
+
+            context 'with incorrect project full path' do
+              let(:error_message) { '`full_path` is incorrect. You must enter the complete path for the project.' }
+
+              before do
+                params.merge!(full_path: "#{project.full_path}-wrong-path")
+              end
+
+              it_behaves_like 'immediately delete project error'
+            end
+          end
+
+          context 'when project is not marked for deletion' do
+            let(:error_message) { 'Project must be marked for deletion first.' }
+
+            it_behaves_like 'immediately delete project error'
+          end
+        end
+      end
+
+      context 'when the downtier_delayed_deletion feature flag is disabled' do
+        before do
+          stub_feature_flags(downtier_delayed_deletion: false)
+        end
+
+        it_behaves_like 'deletes project immediately'
+
+        context 'when permanently_remove param is true' do
+          before do
+            params.merge!(permanently_remove: true)
+          end
+
+          it_behaves_like 'deletes project immediately'
+        end
       end
     end
   end

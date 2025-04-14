@@ -192,3 +192,7 @@ export function discardDrafts() {
       }),
     );
 }
+
+export function setDrawerOpened(opened) {
+  this.drawerOpened = opened;
+}

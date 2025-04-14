@@ -395,3 +395,16 @@
     :why: https://blueoakcouncil.org/list#bronze
     :versions: []
     :when: 2024-07-10 09:44:40.477216000 Z
+- - :approve
+  - pdf-core
+  - &3
+    :who: Michael Becker <mbecker@gitlab.com>
+    :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/issues/2565#note_2400932836
+    :versions: []
+    :when: 2025-03-18 12:02:11.554061713 Z
+- - :approve
+  - ttfunk
+  - *3
+- - :approve
+  - prawn
+  - *3

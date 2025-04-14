@@ -19,7 +19,7 @@ instance entirely offline.
 
 {{< alert type="note" >}}
 
-This guide assumes the server is Ubuntu 20.04 using the [Omnibus installation method](https://docs.gitlab.com/omnibus/) and is running GitLab [Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/). Instructions for other servers may vary.
+This guide assumes the server is Ubuntu 20.04 using the [Linux package installation method](https://docs.gitlab.com/omnibus/) and is running GitLab [Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/). Instructions for other servers may vary.
 This guide also assumes the server host resolves as `my-host.internal`, which you should replace with your
 server's FQDN, and that you have access to a different server with Internet access to download the required package files.
 
@@ -80,7 +80,7 @@ sudo EXTERNAL_URL="http://my-host.internal" dpkg -i <gitlab_package_name>.deb
 ## Enabling SSL
 
 Follow these steps to enable SSL for your fresh instance. These steps reflect those for
-[manually configuring SSL in Omnibus's NGINX configuration](https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually):
+[manually configuring SSL in the NGINX configuration](https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually):
 
 1. Make the following changes to `/etc/gitlab/gitlab.rb`:
 

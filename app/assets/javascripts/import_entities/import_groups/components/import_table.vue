@@ -116,9 +116,6 @@ export default {
       reimportRequests: [],
       importTargets: {},
       unavailableFeaturesAlertVisible: true,
-      helpUrl: helpPagePath('user/group/import/_index', {
-        anchor: 'visibility-rules',
-      }),
       shouldMigrateMemberships: true,
     };
   },
@@ -652,6 +649,12 @@ export default {
   betaFeatureHelpPath: helpPagePath('policy/development_stages_support', {
     anchor: 'beta-features',
   }),
+  placeholderUserLimitsHelpPath: helpPagePath('user/project/import/_index', {
+    anchor: 'placeholder-user-limits',
+  }),
+  visibilityRulesHelpPath: helpPagePath('user/group/import/_index', {
+    anchor: 'visibility-rules',
+  }),
   popoverOptions: { title: __('What is listed here?') },
   learnMoreOptions: { title: s__('BulkImport|Import user memberships') },
   i18n,
@@ -725,12 +728,17 @@ export default {
       <gl-sprintf
         :message="
           s__(
-            'BulkImport|Be aware of %{linkStart}visibility rules%{linkEnd} when importing groups.',
+            'BulkImport|Be aware of %{visibilityLinkStart}visibility rules%{visibilityLinkEnd} and %{placeholdersLinkStart}placeholder user limits%{placeholdersLinkEnd} when importing groups.',
           )
         "
       >
-        <template #link="{ content }">
-          <gl-link :href="helpUrl" target="_blank">{{ content }}</gl-link>
+        <template #visibilityLink="{ content }">
+          <gl-link :href="$options.visibilityRulesHelpPath" target="_blank">{{ content }}</gl-link>
+        </template>
+        <template #placeholdersLink="{ content }">
+          <gl-link :href="$options.placeholderUserLimitsHelpPath" target="_blank">{{
+            content
+          }}</gl-link>
         </template>
       </gl-sprintf>
     </gl-alert>

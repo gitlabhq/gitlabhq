@@ -25,9 +25,6 @@ export const SORT_OPTION_STARS = {
   text: SORT_LABEL_STARS,
 };
 
-export const SORT_DIRECTION_ASC = 'asc';
-export const SORT_DIRECTION_DESC = 'desc';
-
 export const FILTERED_SEARCH_TERM_KEY = 'name';
 export const FILTERED_SEARCH_NAMESPACE = 'explore';
 export const SORT_OPTIONS = [

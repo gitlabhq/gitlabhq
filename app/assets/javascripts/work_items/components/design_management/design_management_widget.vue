@@ -8,7 +8,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { TYPENAME_DESIGN_VERSION } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { findDesignWidget, canRouterNav } from '~/work_items/utils';
+import { findDesignsWidget, canRouterNav } from '~/work_items/utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import {
@@ -99,7 +99,7 @@ export default {
         };
       },
       update(data) {
-        const designWidget = findDesignWidget(data.workItem.widgets);
+        const designWidget = findDesignsWidget(data.workItem);
         if (designWidget.designCollection === null) {
           return null;
         }
@@ -207,8 +207,8 @@ export default {
     issueAsWorkItem() {
       return Boolean(
         !this.isGroup &&
-          this.glFeatures.workItemsViewPreference &&
-          gon.current_user_use_work_items_view,
+          (this.glFeatures.workItemViewForIssues ||
+            (this.glFeatures.workItemsViewPreference && gon.current_user_use_work_items_view)),
       );
     },
     canUseRouter() {
@@ -385,7 +385,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="work-item-design-widget-container">
     <slot v-if="!hasDesignsAndVersions" name="empty-state"></slot>
     <crud-component
       v-if="hasDesignsAndVersions"
@@ -418,7 +418,7 @@ export default {
         <archive-design-button
           v-if="isLatestVersion"
           data-testid="archive-button"
-          button-class="gl-hidden sm:gl-block"
+          button-class="work-item-design-hidden-xs work-item-design-show-sm"
           :has-selected-designs="hasSelectedDesigns"
           :loading="isArchiving"
           @archive-selected-designs="onArchiveDesign"
@@ -429,7 +429,7 @@ export default {
           v-if="isLatestVersion"
           v-gl-tooltip.bottom
           data-testid="archive-button"
-          button-class="sm:gl-hidden gl-block"
+          button-class="work-item-design-hidden-sm"
           button-icon="archive"
           :title="$options.i18n.archiveDesignText"
           :aria-label="$options.i18n.archiveDesignText"
@@ -480,7 +480,7 @@ export default {
             :value="designs"
             :disabled="isDraggingDisabled"
             v-bind="$options.dragOptions"
-            class="list-unstyled row -gl-my-1 gl-flex gl-gap-y-5"
+            class="list-unstyled row work-item-design-grid -gl-my-1 gl-gap-y-5"
             :class="{ 'gl-px-3 gl-py-2': hasDesigns, 'gl-hidden': !hasDesigns }"
             @end="onDragEnd"
             @change="onDesignsReorder"
@@ -490,13 +490,12 @@ export default {
             <li
               v-for="design in designs"
               :key="design.id"
-              class="col-sm-6 col-lg-3 js-design-tile gl-bg-transparent gl-px-3 gl-shadow-none"
+              class="js-design-tile gl-relative gl-bg-transparent gl-px-3 gl-shadow-none"
               @mousedown="onMouseDown"
               @pointerup="onPointerUp"
             >
               <design
                 v-bind="design"
-                class="gl-bg-default"
                 :is-uploading="false"
                 :is-dragging="isDraggingDesign"
                 :work-item-iid="workItemIid"

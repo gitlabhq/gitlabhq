@@ -70,6 +70,14 @@ export default {
     isLoading() {
       return this.$apollo.queries.wikiPage.loading;
     },
+    queryData() {
+      const { defaultClient: cache } = this.$apollo.provider.clients;
+
+      return cache.readQuery({
+        query: wikiPageQuery,
+        variables: this.queryVariables,
+      });
+    },
   },
   mounted() {
     eventHub.$on(EVENT_EDIT_WIKI_START, () => {
@@ -87,35 +95,9 @@ export default {
     removePlaceholder() {
       this.placeholderNote = {};
     },
-    async updateDiscussions(discussion) {
-      // apollo does not update cache when a discussion is added so we have to do it manually
-      if (!this.$apollo.provider) return;
-      const { defaultClient: cache } = this.$apollo.provider.clients;
-      const queryData = cache.readQuery({
-        query: wikiPageQuery,
-        variables: this.queryVariables,
-      });
-      const data = produce(queryData, (draft) => {
-        draft.wikiPage.discussions.nodes.push({
-          ...discussion,
-          replyId: null,
-          resolvable: false,
-          resolved: false,
-          resolvedAt: null,
-          resolvedBy: null,
-        });
-      });
-
-      cache.writeQuery({
-        query: wikiPageQuery,
-        variables: this.queryVariables,
-        data,
-      });
-    },
     getDiscussionKey(key, stringModifier) {
       return [key, stringModifier].join('-');
     },
-
     handleDeleteNote(noteId, discussionId) {
       const discussionIndex = this.discussions.findIndex(
         (discussion) => discussion.id === discussionId,
@@ -123,15 +105,74 @@ export default {
 
       if (discussionIndex === -1) return;
 
-      if (this.discussions[discussionIndex].notes.nodes.length === 1) {
+      const discussion = this.discussions[discussionIndex];
+      const isLastNote = discussion.notes.nodes.length === 1;
+
+      // Update local state
+      if (isLastNote) {
+        // Remove entire discussion if it's the last note
         this.discussions = this.discussions.filter(({ id }) => id !== discussionId);
       } else {
-        const updatedNotes = this.discussions[discussionIndex].notes.nodes.filter(
+        // Remove only the specific note
+        this.discussions[discussionIndex].notes.nodes = discussion.notes.nodes.filter(
           ({ id }) => id !== noteId,
         );
-
-        this.discussions[discussionIndex].notes.nodes = updatedNotes;
       }
+
+      this.updateCache({ discussionId, noteId, isLastNote });
+    },
+
+    updateCache({ discussion, discussionId, noteId, isLastNote }) {
+      if (!this.$apollo.provider) return;
+      const { defaultClient: cache } = this.$apollo.provider.clients;
+
+      const queryData = cache.readQuery({
+        query: wikiPageQuery,
+        variables: this.queryVariables,
+      });
+
+      if (!queryData) return;
+
+      let data;
+      if (discussion) {
+        data = produce(queryData, (draft) => {
+          draft.wikiPage.discussions.nodes.push({
+            ...discussion,
+            replyId: null,
+            resolvable: false,
+            resolved: false,
+            resolvedAt: null,
+            resolvedBy: null,
+          });
+        });
+      } else {
+        data = produce(queryData, (draft) => {
+          const cachedDiscussionIndex = draft.wikiPage.discussions.nodes.findIndex(
+            (d) => d.id === discussionId,
+          );
+
+          if (cachedDiscussionIndex === -1) return;
+
+          if (isLastNote) {
+            // Remove entire discussion if it's the last note
+            draft.wikiPage.discussions.nodes = draft.wikiPage.discussions.nodes.filter(
+              (d) => d.id !== discussionId,
+            );
+          } else {
+            // Remove only the specific note
+            draft.wikiPage.discussions.nodes[cachedDiscussionIndex].notes.nodes =
+              draft.wikiPage.discussions.nodes[cachedDiscussionIndex].notes.nodes.filter(
+                (note) => note.id !== noteId,
+              );
+          }
+        });
+      }
+
+      cache.writeQuery({
+        query: wikiPageQuery,
+        variables: this.queryVariables,
+        data,
+      });
     },
   },
 };
@@ -147,7 +188,7 @@ export default {
           :note-id="noteableId"
           @creating-note:start="setPlaceHolderNote"
           @creating-note:done="removePlaceholder"
-          @creating-note:success="updateDiscussions"
+          @creating-note:success="(discussion) => updateCache({ discussion })"
         />
       </template>
       <template v-if="placeholderNote.body" #place-holder-note>

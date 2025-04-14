@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
 import Tracking from '~/tracking';
 import { INSTRUMENT_TODO_ITEM_CLICK } from '~/todos/constants';
+import { updateGlobalTodoCount } from '~/sidebar/utils';
 import { snoozeTodo } from '../utils';
 import unSnoozeTodoMutation from './mutations/un_snooze_todo.mutation.graphql';
 import SnoozeTimePicker from './todo_snooze_until_picker.vue';
@@ -61,15 +62,19 @@ export default {
           variables: {
             todoId: this.todo.id,
           },
-          optimisticResponse: {
-            todoUnSnooze: {
-              todo: {
-                id: this.todo.id,
-                snoozedUntil: null,
-                __typename: 'Todo',
+          optimisticResponse: () => {
+            updateGlobalTodoCount(+1);
+
+            return {
+              todoUnSnooze: {
+                todo: {
+                  id: this.todo.id,
+                  snoozedUntil: null,
+                  __typename: 'Todo',
+                },
+                errors: [],
               },
-              errors: [],
-            },
+            };
           },
         });
 

@@ -1,17 +1,10 @@
 @import 'mixins_and_variables_and_functions';
+@import 'issues_show';
 
 $work-item-field-inset-shadow: inset 0 0 0 $gl-border-size-1 var(--gray-200, $gray-200) !important;
 $work-item-overview-right-sidebar-width: px-to-rem(290px);
 $work-item-sticky-header-height: 52px;
 $work-item-overview-gap-width: 2rem;
-
-.hide-unfocused-input-decoration:not(:focus, :hover),
-.hide-unfocused-input-decoration:disabled {
-  background-color: transparent;
-  border-color: transparent;
-  background-image: none;
-  box-shadow: none;
-}
 
 // sticky error placement for errors in modals, by default it is 83px for full view
 #work-item-detail-modal {
@@ -105,20 +98,6 @@ $work-item-overview-gap-width: 2rem;
   }
 }
 
-.work-item-field-value {
-  .work-item-overview & {
-    max-width: 65%;
-  }
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  &.gl-form-select {
-    &:hover,
-    &:focus {
-      box-shadow: $work-item-field-inset-shadow;
-    }
-  }
-}
-
 // There is no props to set the font weight class in GlToggle
 // Here, we are overriding the font weight
 .work-item-dropdown-toggle {
@@ -172,7 +151,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   display: flex;
   position: relative;
   font-size: $gl-font-size-sm;
-  border: 1px solid var(--gray-100, $gray-100);
+  @apply gl-border;
   border-right-style: none;
   border-left-style: none;
   line-height: $gl-line-height-16;
@@ -190,7 +169,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     width: $disclosure-hierarchy-chevron-dimension;
     height: $disclosure-hierarchy-chevron-dimension;
     transform: rotate(45deg) skew(14deg, 14deg);
-    border: 1px solid var(--gray-100, $gray-100);
+    @apply gl-border;
     border-color: inherit;
     border-bottom-color: transparent;
     border-left-color: transparent;
@@ -210,7 +189,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 
   .disclosure-hierarchy-item:first-child & {
     padding-left: $gl-spacing-scale-3;
-    border-left: 1px solid var(--gray-100, $gray-100);
+    @apply gl-border-l;
     border-top-left-radius: $gl-border-radius-base;
     border-bottom-left-radius: $gl-border-radius-base;
 
@@ -228,7 +207,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 
   .disclosure-hierarchy-item:last-child & {
     padding-right: $gl-spacing-scale-4;
-    border-right: 1px solid var(--gray-100, $gray-100);
+    @apply gl-border-r;
     border-top-right-radius: $gl-border-radius-base;
     border-bottom-right-radius: $gl-border-radius-base;
 
@@ -342,11 +321,78 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 }
 
-.design-list-item {
-  height: 160px;
-  text-decoration: none;
+.work-item-design-widget-container {
+  container-type: inline-size;
+  container-name: work-item-design-widget;
 
-  &:hover {
-    border-color: var(--gray-400, $gray-400);
+  .work-item-design-grid {
+    @apply gl-grid gl-grid-cols-2;
+  }
+
+  .design-list-item {
+    height: unset;
+  }
+
+  .work-item-design-hidden-xs {
+    @apply gl-hidden;
+  }
+
+  @container work-item-design-widget (min-width: #{$breakpoint-sm}) {
+    .work-item-design-grid {
+      @apply gl-grid-cols-3;
+    }
+
+    .work-item-design-show-sm {
+      @apply gl-block;
+    }
+
+    .work-item-design-hidden-sm {
+      @apply gl-hidden;
+    }
+  }
+
+  @container work-item-design-widget (min-width: #{$breakpoint-md}) {
+    .work-item-design-grid {
+      @apply gl-grid-cols-4;
+    }
+  }
+
+  @container work-item-design-widget (min-width: #{$breakpoint-xl}) {
+    .work-item-design-grid {
+      @apply gl-grid-cols-6;
+    }
+  }
+}
+
+// Safari-specific override to avoid container stacking context problems
+@supports (-webkit-appearance:none) and (stroke-color:transparent) {
+  .work-item-design-widget-container {
+    container-type: unset;
+
+    @media (min-width: $breakpoint-sm) {
+      .work-item-design-grid {
+        @apply gl-grid-cols-3;
+      }
+
+      .work-item-design-show-sm {
+        @apply gl-block;
+      }
+
+      .work-item-design-hidden-sm {
+        @apply gl-hidden;
+      }
+    }
+
+    @media (min-width: $breakpoint-md) {
+      .work-item-design-grid {
+        @apply gl-grid-cols-4;
+      }
+    }
+
+    @media (min-width: $breakpoint-xl) {
+      .work-item-design-grid {
+        @apply gl-grid-cols-6;
+      }
+    }
   }
 }

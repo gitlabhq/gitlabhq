@@ -36,16 +36,6 @@ export default {
       type: Object,
       required: true,
     },
-    line: {
-      type: Object,
-      required: false,
-      default: null,
-    },
-    isOverviewTab: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     internalNote: {
       type: Boolean,
       required: false,

@@ -10,7 +10,7 @@ module Gitlab
 
         ALLOWED_TABLES = %w[group_audit_events project_audit_events instance_audit_events user_audit_events
           audit_events web_hook_logs merge_request_diff_files merge_request_diff_commits
-          ci_runners ci_runner_machines].freeze
+          ci_runners ci_runner_machines uploads].freeze
 
         ERROR_SCOPE = 'table partitioning'
 
@@ -154,7 +154,8 @@ module Gitlab
         #
         def partition_table_by_list(
           table_name, column_name,
-          primary_key:, partition_mappings: nil, partition_name_format: nil, create_partitioned_table_fn: nil
+          primary_key:, partition_mappings: nil, partition_name_format: nil,
+          create_partitioned_table_fn: nil, sync_trigger: true
         )
           Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
 
@@ -191,7 +192,7 @@ module Gitlab
             create_list_partitioned_copy(
               table_name, partitioned_table_name, partition_column, primary_key_objects, create_partitioned_table_fn)
             create_list_partitions(partitioned_table_name, partition_mappings, partition_name_format)
-            create_trigger_to_sync_tables(table_name, partitioned_table_name, current_primary_key)
+            create_trigger_to_sync_tables(table_name, partitioned_table_name, current_primary_key) if sync_trigger
           end
         end
 

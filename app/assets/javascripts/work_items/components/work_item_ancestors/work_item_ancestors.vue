@@ -5,7 +5,7 @@ import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
-import { findHierarchyWidgets, formatAncestors } from '../../utils';
+import { findHierarchyWidget, formatAncestors } from '../../utils';
 import workItemAncestorsQuery from '../../graphql/work_item_ancestors.query.graphql';
 import workItemAncestorsUpdatedSubscription from '../../graphql/work_item_ancestors.subscription.graphql';
 import WorkItemStateBadge from '../work_item_state_badge.vue';
@@ -52,7 +52,7 @@ export default {
       },
       update(data) {
         const formattedAncestors = formatAncestors(data.workItem).flatMap((ancestor) => {
-          const ancestorHierarchyWidget = findHierarchyWidgets(ancestor.widgets);
+          const ancestorHierarchyWidget = findHierarchyWidget(ancestor);
           // Condition is to check if it `hasParent` is true and the parent object is null  i.e, inaccessible
           // then add "ancestor is not available" with other parents
           return ancestorHierarchyWidget?.hasParent && !ancestorHierarchyWidget?.parent
@@ -62,7 +62,7 @@ export default {
 
         // If the work item has a parent at root level but the parent object is null i.e, inaccessible
         // then add "ancestor is not available" as the only item
-        const widgets = findHierarchyWidgets(data.workItem?.widgets);
+        const widgets = findHierarchyWidget(data.workItem);
         if (formattedAncestors.length === 0 && widgets?.hasParent && !widgets?.parent) {
           formattedAncestors.push(ANCESTOR_NOT_AVAILABLE);
         }

@@ -8,9 +8,50 @@
       "description": "Indicates whether to skip metadata URL validation for the NuGet package"
     },
     "helm_max_packages_count": {
-      "type": ["integer", "null"],
+      "type": [
+        "integer",
+        "null"
+      ],
       "minimum": 1,
       "description": "Maximum number of Helm packages that can be listed per channel. If null, defaults to 1000"
+    },
+    "package_registry_allow_anyone_to_pull_option": {
+      "type": "boolean",
+      "description": "Enables or disables the `Allow anyone to pull from package registry` toggle"
+    },
+    "package_registry_cleanup_policies_worker_capacity": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of workers assigned to the packages cleanup policies"
+    },
+    "packages_cleanup_package_file_worker_capacity": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of concurrent workers allowed for package file cleanup"
+    },
+    "npm_package_requests_forwarding": {
+      "type": "boolean",
+      "description": "Enables or disables npm package forwarding for the instance"
+    },
+    "lock_npm_package_requests_forwarding": {
+      "type": "boolean",
+      "description": "Enforce npm package forwarding for all subgroups"
+    },
+    "maven_package_requests_forwarding": {
+      "type": "boolean",
+      "description": "Enables or disables Maven package forwarding for the instance"
+    },
+    "lock_maven_package_requests_forwarding": {
+      "type": "boolean",
+      "description": "Enforce Maven package forwarding for all subgroups"
+    },
+    "pypi_package_requests_forwarding": {
+      "type": "boolean",
+      "description": "Enables or disables PyPI package forwarding for the instance"
+    },
+    "lock_pypi_package_requests_forwarding": {
+      "type": "boolean",
+      "description": "Enforce PyPI package forwarding for all subgroups"
     }
   },
   "additionalProperties": false

@@ -31,7 +31,7 @@ In August 2020, a second Deep Dive was hosted, focusing on
 [slides](https://lulalala.gitlab.io/gitlab-elasticsearch-deepdive/) are available.
 Everything covered in this deep dive was accurate as of GitLab 13.3.
 
-In July 2024, Terri Chu hosted a Lunch and Learn on Advanced search basics, integration, indexing and search. The [Google Slides](https://docs.google.com/presentation/d/1Fy3pfFIGK_2ZCoB93EksRKhaS7uuNp81I3L5_joWa04/edit?usp=sharing_) (GitLab team members only) and
+In July 2024, Terri Chu hosted a Lunch and Learn on Advanced search basics, integration, indexing, and search. The [Google Slides](https://docs.google.com/presentation/d/1Fy3pfFIGK_2ZCoB93EksRKhaS7uuNp81I3L5_joWa04/edit?usp=sharing_) (GitLab team members only) and
  <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>[recording on YouTube](https://youtu.be/5OXK1isDaks) (GitLab team members only) are available.
 Everything covered in this deep dive was accurate as of GitLab 17.0.
 
@@ -1629,11 +1629,12 @@ in the cluster back the request in GitLab.
 
 ## Development tips
 
-- [Kibana](advanced_search/tips.md#kibana)
-- [Viewing index status](advanced_search/tips.md#viewing-index-status)
 - [Creating indices from scratch](advanced_search/tips.md#creating-all-indices-from-scratch-and-populating-with-local-data)
-- [Testing migrations](advanced_search/tips.md#testing-migrations)
 - [Index data](advanced_search/tips.md#index-data)
+- [Kibana](advanced_search/tips.md#kibana)
+- [Running tests with Elasticsearch](advanced_search/tips.md#testing)
+- [Testing migrations](advanced_search/tips.md#advanced-search-migrations)
+- [Viewing index status](advanced_search/tips.md#viewing-index-status)
 
 ## Troubleshooting
 

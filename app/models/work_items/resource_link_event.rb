@@ -6,7 +6,7 @@ module WorkItems
 
     validates :child_work_item, presence: true
 
-    enum action: {
+    enum :action, {
       add: 1,
       remove: 2
     }

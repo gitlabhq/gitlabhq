@@ -204,4 +204,8 @@ class Discussion
   def noteable_collection_name
     noteable.class.underscore.pluralize
   end
+
+  def can_resolve_discussion?(user)
+    !first_note.system? && user&.can?(:resolve_note, first_note)
+  end
 end

@@ -630,6 +630,10 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
         expect(mutation_response['workItem']['widgets']).to include(
           'timeEstimate' => 12.hours.to_i,
           'totalTimeSpent' => 2.hours.to_i,
+          'humanReadableAttributes' => {
+            'timeEstimate' => Gitlab::TimeTrackingFormatter.output(12.hours.to_i),
+            'totalTimeSpent' => Gitlab::TimeTrackingFormatter.output(2.hours.to_i)
+          },
           'timelogs' => {
             'nodes' => [
               {
@@ -656,6 +660,10 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
               type
               timeEstimate
               totalTimeSpent
+              humanReadableAttributes {
+                timeEstimate
+                totalTimeSpent
+              }
               timelogs {
                 nodes {
                   timeSpent

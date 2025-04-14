@@ -211,6 +211,7 @@ The connection settings match those provided by [fog-aws](https://github.com/fog
 | `path_style`                                | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Set to `true` for using [MinIO](https://min.io). Leave as `false` for AWS S3. | `false`. |
 | `use_iam_profile`                           | Set to `true` to use IAM profile instead of access keys. | `false` |
 | `aws_credentials_refresh_threshold_seconds` | Sets the [automatic refresh threshold](https://github.com/fog/fog-aws#controlling-credential-refresh-time-with-iam-authentication) in seconds when using temporary credentials in IAM. | `15` |
+| `disable_imds_v2`                           | Force the use of IMDS v1 by disabling access to the IMDS v2 endpoint that retrieves `X-aws-ec2-metadata-token`. | `false` |
 
 #### Use Amazon instance profiles
 
@@ -227,6 +228,8 @@ Prerequisites:
   [instance metadata endpoint](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html).
 - If GitLab is [configured to use an internet proxy](https://docs.gitlab.com/omnibus/settings/environment-variables.html), the endpoint IP
   address must be added to the `no_proxy` list.
+- For IMDS v2 access, ensure the [hop limit](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html) is sufficient. If GitLab
+  is running in a container, you may need to raise the limit from 1 to 2.
 
 To set up an instance profile:
 
@@ -1159,7 +1162,7 @@ Prerequisites:
 
    The configuration process is interactive. Add at least two "remotes": one for the object storage provider your data is currently on (`old`), and one for the provider you are moving to (`new`).
 
-1. Verify that you can read the old data. The following example refers to the `uploads` bucket , but your bucket may have a different name:
+1. Verify that you can read the old data. The following example refers to the `uploads` bucket, but your bucket may have a different name:
 
    ```shell
    rclone ls old:uploads | head
@@ -1366,13 +1369,20 @@ In some situations, it may be helpful to test object storage settings using the 
 1. Start a [Rails console](operations/rails_console.md).
 1. Set up the object storage connection, using the same parameters you set up in `/etc/gitlab/gitlab.rb`, in the following example format:
 
+   Example connection using the existing uploads configuration:
+
+   ```ruby
+   settings = Gitlab.config.uploads.object_store.connection.deep_symbolize_keys
+   connection = Fog::Storage.new(settings)
+   ```
+
    Example connection using access keys:
 
    ```ruby
    connection = Fog::Storage.new(
      {
        provider: 'AWS',
-       region: `eu-central-1`,
+       region: 'eu-central-1',
        aws_access_key_id: '<AWS_ACCESS_KEY_ID>',
        aws_secret_access_key: '<AWS_SECRET_ACCESS_KEY>'
      }
@@ -1399,3 +1409,159 @@ In some situations, it may be helpful to test object storage settings using the 
    pp f
    pp dir.files.head('test.txt')
    ```
+
+#### Enable additional debugging
+
+You can also enable additional debugging to see the HTTP requests. You
+should do it in the [Rails Console](operations/rails_console.md) to avoid leaking credentials in
+log files. The following shows how to enable request debugging for
+different providers:
+
+{{< tabs >}}
+
+{{< tab title="Amazon S3" >}}
+
+Set the `EXCON_DEBUG` environment variable:
+
+```ruby
+ENV['EXCON_DEBUG'] = "1"
+```
+
+{{< /tab >}}
+
+{{< tab title="Google Cloud Storage" >}}
+
+Configure the logger to log to `STDOUT`:
+
+```ruby
+Google::Apis.logger = Logger::new(STDOUT)
+```
+
+{{< /tab >}}
+
+{{< tab title="Azure Blob Storage" >}}
+
+Set the `DEBUG` environment variable:
+
+```ruby
+ENV['DEBUG'] = "1"
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+### Inconsistencies after migrating to object storage
+
+Data inconsistencies can occur when migrating from local to object storage.
+Especially in combination with [Geo](geo/replication/object_storage.md),
+when files were manually deleted prior to the migration.
+
+For example, an instance administrator manually deletes several artifacts on
+the local file system. Such changes are not properly propagated to the database
+and result in inconsistencies. After the migration to object storage, these
+inconsistencies remain and can cause frictions. Geo secondaries might continue
+to try replicating those files as they are still referenced in the database but
+no longer exist.
+
+#### Identify inconsistencies when using Geo
+
+Assume the following Geo scenario:
+
+- An environment consists of a Geo primary and secondary node
+- Both systems have been migrated to object storage
+  - The secondary uses the same object storage as the primary
+  - The option `Allow this secondary site to replicate content on Object Storage` is deactivated
+- Multiple *uploads* were manually deleted before the object storage migration
+  - For this example, two images which were uploaded to an issue
+
+In such a scenario, the secondary does no longer need to replicate any data as
+it uses the same object storage as the primary. Because of inconsistencies,
+administrators can observe that the secondary still tries to replicate data:
+
+On the primary site:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Geo > Sites**.
+1. Look at the **primary site** and check the verification information. Take note that all *uploads* were verified:
+   ![The Geo Sites dashboard displaying successful verification of the primary.](img/geo_primary_uploads_verification_v17_11.png)
+1. Look at the **secondary site** and check the verification information. Notice that two *uploads* are still being synced, even though the secondary should use the same object storage. Meaning it should not have to synchronize any uploads:
+   ![The Geo Sites dashboard displaying inconsistencies of the secondary.](img/geo_secondary_uploads_inconsistencies_v17_11.png)
+
+#### Clean up inconsistencies
+
+{{< alert type="warning" >}}
+
+Ensure you have a recent and working backup at hand before issuing any deletion commands.
+
+{{< /alert >}}
+
+Based on the previous scenario, multiple **uploads** are causing
+inconsistencies which are used as an example below.
+
+Proceed as follows to properly delete potential leftovers:
+
+1. Map the identified inconsistencies to their respective model names. The model name is needed in the following steps.
+
+   | Object storage type      | Model name                                              |
+   |--------------------------|---------------------------------------------------------|
+   | Backups                  | not applicable                                          |
+   | Container registry       | not applicable                                          |
+   | Mattermost               | not applicable                                          |
+   | Autoscale runner caching | not applicable                                          |
+   | Secure Files             | `Ci::SecureFile`                                        |
+   | Job artifacts            | `Ci::JobArtifact` and `Ci::PipelineArtifact`            |
+   | LFS objects              | `LfsObject`                                             |
+   | Uploads                  | `Upload`                                                |
+   | Merge request diffs      | `MergeRequestDiff`                                      |
+   | Packages                 | `Packages::PackageFile`                                 |
+   | Dependency Proxy         | `DependencyProxy::Blob` and `DependencyProxy::Manifest` |
+   | Terraform state files    | `Terraform::StateVersion`                               |
+   | Pages content            | `PagesDeployment`                                       |
+
+1. Start a [Rails console](operations/rails_console.md). When using Geo, run it on the primary site.
+1. Query for all "files" which are still stored locally (instead of in object storage) based on the *model name* of the previous step. In this case, as uploads are affected, the model name `Upload` is used. Observe how `openbao.png` is still stored locally:
+
+   ```ruby
+   Upload.with_files_stored_locally
+   ```
+
+   ```ruby
+   #<Upload:0x00007d35b69def68
+     id: 108,
+     size: 13346,
+     path: "c95c1c9bf91a34f7d97346fd3fa6a7be/openbao.png",
+     checksum: "db29d233de49b25d2085dcd8610bac787070e721baa8dcedba528a292b6e816b",
+     model_id: 2,
+     model_type: "Project",
+     uploader: "FileUploader",
+     created_at: Wed, 02 Apr 2025 05:56:47.941319000 UTC +00:00,
+     store: 1,
+     mount_point: nil,
+     secret: "[FILTERED]",
+     version: 2,
+     uploaded_by_user_id: 1,
+     organization_id: nil,
+     namespace_id: nil,
+     project_id: 2,
+     verification_checksum: nil>]
+   ```
+
+1. Use the `id` of the identified resources to properly delete them. First, verify that it is the correct resource by using `find` and then run `destroy`:
+
+   ```ruby
+   Upload.find(108)
+   Upload.find(108).destroy
+   ```
+
+1. Optionally, verify that the resource was deleted correctly by running `find` again which should no longer find it:
+
+   ```ruby
+   Upload.find(108)
+   ```
+
+   ```ruby
+   ActiveRecord::RecordNotFound: Couldn't find Upload with 'id'=108
+   ```
+
+Repeat the steps for all affected object storage types.

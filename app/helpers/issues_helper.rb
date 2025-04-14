@@ -181,7 +181,8 @@ module IssuesHelper
       quick_actions_help_path: help_page_path('user/project/quick_actions.md'),
       releases_path: project_releases_path(project, format: :json),
       reset_path: new_issuable_address_project_path(project, issuable_type: 'issue'),
-      show_new_issue_link: show_new_issue_link?(project).to_s
+      show_new_issue_link: show_new_issue_link?(project).to_s,
+      time_tracking_limit_to_hours: Gitlab::CurrentSettings.time_tracking_limit_to_hours.to_s
     )
   end
 
@@ -193,7 +194,8 @@ module IssuesHelper
       group_id: group.id,
       has_any_issues: @has_issues.to_s,
       has_any_projects: @has_projects.to_s,
-      new_project_path: new_project_path(namespace_id: group.id)
+      new_project_path: new_project_path(namespace_id: group.id),
+      time_tracking_limit_to_hours: Gitlab::CurrentSettings.time_tracking_limit_to_hours.to_s
     )
   end
 

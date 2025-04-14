@@ -2,6 +2,7 @@
 
 module Notes
   class CreateService < ::Notes::BaseService
+    include Gitlab::InternalEventsTracking
     include IncidentManagement::UsageData
 
     def execute(

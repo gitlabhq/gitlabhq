@@ -219,13 +219,14 @@
   background-color: var(--blue-500, $blue-500) !important;
 }
 
-.ci-job-item-failed {
-  @apply gl-bg-red-50;
+.ci-card:has(.ci-job-item-failed) {
+  border-color: var(--gl-control-border-color-error);
+}
 
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-dark & {
-    background: var(--gl-action-danger-background-color-active);
-  }
+// Pipeline failed status
+.ci-job-component > .ci-job-item-failed,
+.ci-job-component.ci-job-item-failed:not(:hover):not(:focus) > a {
+  @include ci-job-item-failed-status-bg;
 }
 
 .pipeline-graph-container {

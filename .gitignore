@@ -126,3 +126,6 @@ config/helpers/tailwind/css_in_js.js
 
 # ruby-lsp
 .index.yml
+
+# Rubocop cop documentation generation
+.yardoc

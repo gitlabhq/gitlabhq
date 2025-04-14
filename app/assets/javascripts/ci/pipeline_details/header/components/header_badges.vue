@@ -81,50 +81,63 @@ export default {
       };
     },
   },
+  buttonClass: '!gl-cursor-default gl-rounded-pill gl-border-none gl-bg-transparent gl-p-0',
 };
 </script>
 
 <template>
   <div class="gl-mb-3 gl-inline-block">
-    <gl-badge
+    <button
       v-if="badges.schedule"
       v-gl-tooltip
       :title="__('This pipeline was created by a schedule')"
-      variant="info"
+      :class="$options.buttonClass"
+      data-testid="badges-scheduled"
     >
-      {{ s__('Pipelines|Scheduled') }}
-    </gl-badge>
-    <gl-badge
+      <gl-badge variant="info">
+        {{ s__('Pipelines|Scheduled') }}
+      </gl-badge>
+    </button>
+    <button
       v-if="badges.trigger"
       v-gl-tooltip
       :title="__('This pipeline was created by an API call authenticated with a trigger token')"
-      variant="info"
+      :class="$options.buttonClass"
+      data-testid="badges-trigger-token"
     >
-      {{ __('trigger token') }}
-    </gl-badge>
-    <gl-badge
+      <gl-badge variant="info">
+        {{ __('trigger token') }}
+      </gl-badge>
+    </button>
+    <button
       v-if="badges.child"
       v-gl-tooltip
       :title="__('This is a child pipeline within the parent pipeline')"
-      variant="info"
+      :class="$options.buttonClass"
+      data-testid="badges-child-pipeline"
     >
-      <gl-sprintf :message="s__('Pipelines|Child pipeline (%{linkStart}parent%{linkEnd})')">
-        <template #link="{ content }">
-          <gl-link :href="triggeredByPath" target="_blank">
-            {{ content }}
-          </gl-link>
-        </template>
-      </gl-sprintf>
-    </gl-badge>
-    <gl-badge
+      <gl-badge variant="info">
+        <gl-sprintf :message="s__('Pipelines|Child pipeline (%{linkStart}parent%{linkEnd})')">
+          <template #link="{ content }">
+            <gl-link :href="triggeredByPath" target="_blank">
+              {{ content }}
+            </gl-link>
+          </template>
+        </gl-sprintf>
+      </gl-badge>
+    </button>
+    <button
       v-if="badges.latest"
       v-gl-tooltip
       :title="__('Latest pipeline for the most recent commit on this ref')"
-      variant="success"
+      :class="$options.buttonClass"
+      data-testid="badges-latest"
     >
-      {{ s__('Pipelines|latest') }}
-    </gl-badge>
-    <gl-badge
+      <gl-badge variant="success">
+        {{ s__('Pipelines|latest') }}
+      </gl-badge>
+    </button>
+    <button
       v-if="badges.mergeTrainPipeline"
       v-gl-tooltip
       :title="
@@ -132,27 +145,49 @@ export default {
           'Pipelines|This pipeline ran on the contents of the merge request combined with the contents of all other merge requests queued for merging into the target branch.',
         )
       "
-      variant="info"
+      :class="$options.buttonClass"
+      data-testid="badges-merge-train"
     >
-      {{ s__('Pipelines|merge train') }}
-    </gl-badge>
-    <gl-badge v-if="badges.invalid" v-gl-tooltip :title="yamlErrorMessage" variant="danger">
-      {{ s__('Pipelines|yaml invalid') }}
-    </gl-badge>
-    <gl-badge v-if="badges.failed" v-gl-tooltip :title="failureReason" variant="danger">
-      {{ s__('Pipelines|error') }}
-    </gl-badge>
-    <gl-badge
+      <gl-badge variant="info">
+        {{ s__('Pipelines|merge train') }}
+      </gl-badge>
+    </button>
+    <button
+      v-if="badges.invalid"
+      v-gl-tooltip
+      :title="yamlErrorMessage"
+      :class="$options.buttonClass"
+      data-testid="badges-invalid"
+    >
+      <gl-badge variant="danger">
+        {{ s__('Pipelines|yaml invalid') }}
+      </gl-badge>
+    </button>
+    <button
+      v-if="badges.failed"
+      v-gl-tooltip
+      :title="failureReason"
+      :class="$options.buttonClass"
+      data-testid="badges-failed"
+    >
+      <gl-badge variant="danger">
+        {{ s__('Pipelines|error') }}
+      </gl-badge>
+    </button>
+    <button
       v-if="badges.autoDevops"
       v-gl-tooltip
       :title="
         __('This pipeline makes use of a predefined CI/CD configuration enabled by Auto DevOps.')
       "
-      variant="info"
+      :class="$options.buttonClass"
+      data-testid="badges-auto-devops"
     >
-      {{ s__('Pipelines|Auto DevOps') }}
-    </gl-badge>
-    <gl-badge
+      <gl-badge variant="info">
+        {{ s__('Pipelines|Auto DevOps') }}
+      </gl-badge>
+    </button>
+    <button
       v-if="badges.detached"
       v-gl-tooltip
       :title="
@@ -160,11 +195,14 @@ export default {
           'Pipelines|This pipeline ran on the contents of the merge requests source branch, not the target branch.',
         )
       "
-      variant="info"
+      :class="$options.buttonClass"
+      data-testid="badges-merge-request"
     >
-      {{ s__('Pipelines|merge request') }}
-    </gl-badge>
-    <gl-badge
+      <gl-badge variant="info">
+        {{ s__('Pipelines|merge request') }}
+      </gl-badge>
+    </button>
+    <button
       v-if="badges.mergedResultsPipeline"
       v-gl-tooltip
       :title="
@@ -172,33 +210,45 @@ export default {
           'Pipelines|This pipeline ran on the contents of the merge request combined with the contents of the target branch.',
         )
       "
-      variant="info"
+      :class="$options.buttonClass"
+      data-testid="badges-merged-results"
     >
-      {{ s__('Pipelines|merged results') }}
-    </gl-badge>
-    <gl-badge
+      <gl-badge variant="info">
+        {{ s__('Pipelines|merged results') }}
+      </gl-badge>
+    </button>
+    <button
       v-if="badges.branchPipeline"
       v-gl-tooltip
       :title="s__('Pipelines|This pipeline ran for a branch.')"
-      variant="info"
+      :class="$options.buttonClass"
+      data-testid="badges-branch"
     >
-      {{ s__('Pipelines|branch') }}
-    </gl-badge>
-    <gl-badge
+      <gl-badge variant="info">
+        {{ s__('Pipelines|branch') }}
+      </gl-badge>
+    </button>
+    <button
       v-if="badges.tagPipeline"
       v-gl-tooltip
       :title="s__('Pipelines|This pipeline ran for a tag.')"
-      variant="info"
+      :class="$options.buttonClass"
+      data-testid="badges-tag"
     >
-      {{ s__('Pipelines|tag') }}
-    </gl-badge>
-    <gl-badge
+      <gl-badge variant="info">
+        {{ s__('Pipelines|tag') }}
+      </gl-badge>
+    </button>
+    <button
       v-if="badges.stuck"
       v-gl-tooltip
       :title="s__('Pipelines|This pipeline is stuck')"
-      variant="warning"
+      :class="$options.buttonClass"
+      data-testid="badges-stuck"
     >
-      {{ s__('Pipelines|stuck') }}
-    </gl-badge>
+      <gl-badge variant="warning">
+        {{ s__('Pipelines|stuck') }}
+      </gl-badge>
+    </button>
   </div>
 </template>

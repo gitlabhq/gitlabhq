@@ -283,6 +283,8 @@ GET /projects/:id/packages/:package_id/package_files
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `package_id`      | integer | yes | ID of a package. |
+| `order_by`            | string         | no       | The field to use as order. One of `id` (default), `file_name`, `created_at`. |
+| `sort`                | string         | no       | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages/:package_id/package_files"

@@ -4,11 +4,13 @@ require 'spec_helper'
 
 RSpec.describe 'Dashboard > Activity', :js, feature_category: :user_profile do
   let(:user) { create(:user) }
+  let(:page_path) { activity_dashboard_path }
 
   before do
     sign_in(user)
   end
 
+  it_behaves_like 'page with product usage data collection banner'
   it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :activity_dashboard_path, :activity
 
   context 'tabs' do

@@ -10,8 +10,9 @@ describe('WorkItemFeedback', () => {
   let wrapper;
   const userCalloutDismissSpy = jest.fn();
 
-  const title = 'New thing!';
-  const content = 'We added a new work items thing, you should be able to see it.';
+  const badgeTitle = 'New thing!';
+  const badgePopoverTitle = 'We added a new thing!';
+  const badgeContent = 'We added a new work items thing, you should be able to see it.';
   const feedbackIssueText = 'Click here to leave us feedback.';
   const feedbackIssue = 'https://link.to.gitlab/issue';
   const featureName = 'the_feature_we_want_feedback_for';
@@ -21,9 +22,10 @@ describe('WorkItemFeedback', () => {
       provide: {
         feedbackIssue,
         feedbackIssueText,
-        title,
-        content,
         featureName,
+        badgeTitle,
+        badgePopoverTitle,
+        badgeContent,
       },
       stubs: {
         UserCalloutDismisser: makeMockUserCalloutDismisser({
@@ -46,13 +48,16 @@ describe('WorkItemFeedback', () => {
       expect(findBadge().exists()).toBe(true);
     });
     it('displays the title in the badge', () => {
-      expect(findBadge().text()).toContain(title);
+      expect(findBadge().text()).toContain(badgeTitle);
     });
     it('renders a popover', () => {
       expect(findPopover().exists()).toBe(true);
     });
+    it('displays the title of the popover', () => {
+      expect(findPopover().props('title')).toContain(badgePopoverTitle);
+    });
     it('displays the content in the popover', () => {
-      expect(findPopover().text()).toContain(content);
+      expect(findPopover().text()).toContain(badgeContent);
     });
     it('displays the feedback issue link and text in the popover', () => {
       const link = findLink();

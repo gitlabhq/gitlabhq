@@ -38,6 +38,8 @@ Using project export files for backups does not always work, and not all items a
   [troubleshooting documentation](import_export_troubleshooting.md#error-pgquerycanceled-error-canceling-statement-due-to-statement-timeout).
 - In GitLab 17.0, 17.1, and 17.2, imported epics and work items are mapped
   to the importing user rather than the original author.
+- For merge requests, only the latest diff is preserved during import or export.
+  After importing or exporting a project, only the latest diff version and the latest pipeline in merge requests are visible.
 
 ## Migrate projects by uploading an export file
 
@@ -47,7 +49,7 @@ then imported into another GitLab instance.
 ### Preserving user contributions
 
 The requirements for preserving user contribution depends on whether you're migrating to GitLab.com or to a GitLab
-self-managed instance.
+Self-Managed instance.
 
 #### When migrating from GitLab Self-Managed to GitLab.com
 
@@ -95,7 +97,7 @@ You can add or remove data from export files. For example, you can:
 To edit a project export file:
 
 1. Extract the exported `.tar.gz` file.
-1. Edit the appropriate file . For example, `tree/project/project_members.ndjson`.
+1. Edit the appropriate file. For example, `tree/project/project_members.ndjson`.
 1. Compress the files back to a `.tar.gz` file.
 
 You can also make sure that all members were exported by checking the `project_members.ndjson` file.

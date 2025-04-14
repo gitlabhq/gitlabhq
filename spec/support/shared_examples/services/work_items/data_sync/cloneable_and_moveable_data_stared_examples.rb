@@ -240,14 +240,20 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
   end
 
   let_it_be(:child_items) do
+    namespace_params = if original_work_item.project
+                         [project: original_work_item.project]
+                       else
+                         [:group_level, { namespace: original_work_item.namespace }]
+                       end
+
     child_item_type1 =  WorkItems::HierarchyRestriction.where(parent_type: original_work_item.work_item_type).order(
       id: :asc).first.child_type.base_type
     child_item_type2 =  WorkItems::HierarchyRestriction.where(parent_type: original_work_item.work_item_type).order(
       id: :asc).last.child_type.base_type
 
-    child_item1 = create(:work_item, child_item_type1)
+    child_item1 = create(:work_item, child_item_type1, *namespace_params)
     create(:parent_link, work_item: child_item1, work_item_parent: original_work_item)
-    child_item2 = create(:work_item, child_item_type2)
+    child_item2 = create(:work_item, child_item_type2, *namespace_params)
     create(:parent_link, work_item: child_item2, work_item_parent: original_work_item)
 
     [child_item1, child_item2].pluck(:title)
@@ -327,6 +333,9 @@ RSpec.shared_examples 'for clone and move services' do
       # This example is being called from EE spec where we text move/clone on a group level work item(Epic).
       # Designs are only available for project level work items so we will skip the spec group level work items.
       next if widget[:assoc_name] == :designs && original_work_item.project.blank?
+
+      task_unsupported_eval_values = [:wi_epic, :wi_weights_source, :wi_linked_items]
+      next if task_unsupported_eval_values.include?(widget[:eval_value]) && new_work_item.work_item_type.task?
 
       widget_value = send(widget[:eval_value], new_work_item)
 

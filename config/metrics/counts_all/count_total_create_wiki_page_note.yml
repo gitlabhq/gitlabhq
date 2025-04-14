@@ -1,0 +1,23 @@
+---
+key_path: counts.count_total_create_wiki_page_note
+description: Count of wiki page notes created
+product_group: knowledge
+product_categories:
+- wiki
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183934
+time_frame:
+- 28d
+- 7d
+- all
+data_source: internal_events
+data_category: optional
+tiers:
+- free
+- premium
+- ultimate
+events:
+- name: create_wiki_page_note

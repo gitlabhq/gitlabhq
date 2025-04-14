@@ -1,8 +1,8 @@
 import { GlLoadingIcon, GlTable, GlButton } from '@gitlab/ui';
 import { getAllByRole } from '@testing-library/dom';
-import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Papa from 'papaparse';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CsvViewer from '~/blob/csv/csv_viewer.vue';
 import PapaParseAlert from '~/blob/components/papa_parse_alert.vue';
 import { MAX_ROWS_TO_RENDER } from '~/blob/csv/constants';
@@ -16,7 +16,7 @@ describe('app/assets/javascripts/blob/csv/csv_viewer.vue', () => {
   const createComponent = ({
     csv = validCsv,
     remoteFile = false,
-    mountFunction = shallowMount,
+    mountFunction = shallowMountExtended,
   } = {}) => {
     wrapper = mountFunction(CsvViewer, {
       propsData: {
@@ -30,7 +30,7 @@ describe('app/assets/javascripts/blob/csv/csv_viewer.vue', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAlert = () => wrapper.findComponent(PapaParseAlert);
   const findSwitchToRawViewBtn = () => wrapper.findComponent(GlButton);
-  const findLargeCsvText = () => wrapper.find('[data-testid="large-csv-text"]');
+  const findLargeCsvText = () => wrapper.findByTestId('large-csv-text');
 
   it('should render loading spinner', () => {
     createComponent();
@@ -70,7 +70,7 @@ describe('app/assets/javascripts/blob/csv/csv_viewer.vue', () => {
     });
 
     it('renders the CSV table with the correct content', async () => {
-      createComponent({ mountFunction: mount });
+      createComponent({ mountFunction: mountExtended });
       await nextTick();
 
       expect(getAllByRole(wrapper.element, 'row', { name: /One/i })).toHaveLength(1);

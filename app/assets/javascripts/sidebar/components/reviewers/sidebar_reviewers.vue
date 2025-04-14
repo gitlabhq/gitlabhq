@@ -11,6 +11,7 @@ import { InternalEvents } from '~/tracking';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import ReviewerDrawer from '~/merge_requests/components/reviewers/reviewer_drawer.vue';
+import { useBatchComments } from '~/batch_comments/store';
 import eventHub from '../../event_hub';
 import getMergeRequestReviewersQuery from '../../queries/get_merge_request_reviewers.query.graphql';
 import mergeRequestReviewersUpdatedSubscription from '../../queries/merge_request_reviewers.subscription.graphql';
@@ -130,6 +131,18 @@ export default {
     canUpdate() {
       return this.issuable.userPermissions?.adminMergeRequest || false;
     },
+    isReviewer() {
+      const { username } = this.store?.currentUser || {};
+      return this.reviewers.some((reviewer) => reviewer.username === username) || false;
+    },
+  },
+  watch: {
+    isReviewer: {
+      handler(value) {
+        useBatchComments().isReviewer = value;
+      },
+      immediate: true,
+    },
   },
   created() {
     this.store = new Store();
@@ -158,6 +171,7 @@ export default {
       this.$el.parentElement.dispatchEvent(new Event('assignYourself'));
 
       this.mediator.addSelfReview();
+      this.trackEvent('assign_self_as_reviewer_in_mr');
       this.saveReviewers();
     },
     saveReviewers() {

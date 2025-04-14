@@ -574,4 +574,4 @@ for updates.
 
 This stage is enabled by default. You can disable it by adding the
 `CODE_INTELLIGENCE_DISABLED` CI/CD variable. Read more about
-[disabling Auto DevOps jobs](../autodevops/cicd_variables.md#job-skipping-variables).
+[disabling Auto DevOps jobs](cicd_variables.md#job-skipping-variables).

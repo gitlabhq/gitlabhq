@@ -7,7 +7,7 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { BRIDGE_KIND, BUILD_KIND } from '~/ci/pipeline_details/graph/constants';
 import RetryMrFailedJobMutation from '~/ci/merge_requests/graphql/mutations/retry_mr_failed_job.mutation.graphql';
-import RootCauseAnalysisButton from 'ee_else_ce/ci/job_details/components/root_cause_analysis_button.vue';
+import RootCauseAnalysisHotspotExperiment from 'ee_else_ce/ci/job_details/components/root_cause_analysis_hotspot_experiment.vue';
 
 export default {
   components: {
@@ -15,7 +15,7 @@ export default {
     GlButton,
     GlLink,
     GlTooltip,
-    RootCauseAnalysisButton,
+    RootCauseAnalysisHotspotExperiment,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -128,7 +128,7 @@ export default {
         {{ tooltipErrorText }}
       </gl-tooltip>
       <div class="col-4 gl-flex gl-max-w-full gl-flex-grow gl-justify-end gl-gap-3">
-        <root-cause-analysis-button
+        <root-cause-analysis-hotspot-experiment
           :job-gid="job.id"
           :job-status-group="statusGroup"
           :can-troubleshoot-job="canTroubleshootJob"

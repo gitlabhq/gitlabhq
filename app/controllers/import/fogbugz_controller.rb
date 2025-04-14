@@ -58,7 +58,7 @@ class Import::FogbugzController < Import::BaseController
 
     service_params = params.merge({
       umap: session[:fogbugz_user_map] || client.user_map,
-      organization_id: Current.organization_id
+      organization_id: Current.organization&.id
     })
 
     result = Import::FogbugzService.new(client, current_user, service_params).execute(credentials)

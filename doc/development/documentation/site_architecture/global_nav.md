@@ -162,7 +162,12 @@ For example:
 Each entry can stand alone or contain nested pages, under `submenu`.
 New components are indented two spaces.
 
-All nav links are selectable and must refer to unique pages.
+All nav links:
+
+- Are selectable.
+- Must refer to unique pages.
+- Must not point to an anchor in a page, for example: `path/to/page/#anchor-link`.
+
 This must be followed so that we don't have duplicated links nor two `.active` links
 at the same time.
 

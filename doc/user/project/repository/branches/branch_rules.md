@@ -161,6 +161,13 @@ For additional information, see [Approval rules](../../merge_requests/approvals/
 
 ### Edit squash commits option
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181370) in GitLab 17.9 with a flag named `branch_rule_squash_settings`. Disabled by default.
@@ -188,7 +195,7 @@ To edit a squash option:
    - **Do not allow**: Squashing is never allowed and the checkbox is hidden.
    - **Allow**: Checkbox is visible and unselected by default.
    - **Encourage**: Checkbox is visible and selected by default.
-   - **Require**: Squashing is almost performed. Checkbox is visible and selected, and users cannot change it.
+   - **Require**: Squashing is always performed. Checkbox is visible and selected, and users cannot change it.
 
 1. Select **Save changes**.
 

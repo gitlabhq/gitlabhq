@@ -243,7 +243,7 @@ the package format does not upload and store package files.
 #### Rate Limits on GitLab.com
 
 Package manager clients can make rapid requests that exceed the
-[GitLab.com standard API rate limits](../../user/gitlab_com/_index.md#gitlabcom-specific-rate-limits).
+[GitLab.com standard API rate limits](../../user/gitlab_com/_index.md#rate-limits-on-gitlabcom).
 This results in a `429 Too Many Requests` error.
 
 We have opened a set of paths to allow higher rate limits. Unless it is not possible,

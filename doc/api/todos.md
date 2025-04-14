@@ -12,7 +12,7 @@ title: GitLab To-Do List API
 
 {{< /details >}}
 
-Interact with [to-do items](../user/todos.md) using the REST API.
+Use this API to interact with [to-do items](../user/todos.md).
 
 ## Get a list of to-do items
 
@@ -33,7 +33,7 @@ Parameters:
 | `project_id` | integer | no | The ID of a project                                                                                                                                                                                |
 | `group_id` | integer | no | The ID of a group                                                                                                                                                                                  |
 | `state` | string | no | The state of the to-do item. Can be either `pending` or `done`                                                                                                                                     |
-| `type` | string | no | The type of to-do item. Can be either `Issue`, `MergeRequest`, `Commit`, `Epic`, `DesignManagement::Design`, `AlertManagement::Alert`, `Project`, `Namespace` or `Vulnerability`                   |
+| `type` | string | no | The type of to-do item. Can be either `Issue`, `MergeRequest`, `Commit`, `Epic`, `DesignManagement::Design`, `AlertManagement::Alert`, `Project`, `Namespace`, `Vulnerability` or `WikiPage::Meta`  |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/todos"

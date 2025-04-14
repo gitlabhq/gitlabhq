@@ -1,0 +1,12 @@
+openapi-doc-check:
+  variables:
+    SETUP_DB: "false"
+  extends:
+    - .default-retry
+    - .ruby-cache
+    - .default-before_script
+    - .openapi:rules:openapi-check_docs
+  stage: lint
+  needs: []
+  script:
+    - bundle exec rake gitlab:openapi:check_docs

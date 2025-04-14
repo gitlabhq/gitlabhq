@@ -142,6 +142,19 @@ channel 1 database for your environment.
 
 {{< /alert >}}
 
+## Auto DevOps is automatically disabled for a project
+
+If Auto DevOps is automatically disabled for a project, it may be due to the following reasons:
+
+- The Auto DevOps setting has not been explicitly enabled in the [project](_index.md#per-project) itself. It is enabled only in the parent [group](_index.md#per-group) or its [instance](../../administration/settings/continuous_integration.md#auto-devops).
+- The project has no history of successful Auto DevOps pipelines.
+- An Auto DevOps pipeline failed.
+
+To resolve this issue:
+
+- Enable the Auto DevOps setting in the project.
+- Fix errors that are breaking the pipeline so the pipeline reruns.
+
 ## `Error: unable to recognize "": no matches for kind "Deployment" in version "extensions/v1beta1"`
 
 After upgrading your Kubernetes cluster to [v1.16+](stages.md#kubernetes-116),

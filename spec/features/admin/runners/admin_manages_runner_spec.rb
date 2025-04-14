@@ -127,7 +127,7 @@ RSpec.describe "Admin manages runner in admin section", :js, feature_category: :
       shared_examples 'assignable runner' do
         it 'enables a runner for a project' do
           within_testid('unassigned-projects') do
-            within('tr', text: project2.full_name) do
+            within('li', text: project2.full_name) do
               click_on 'Enable'
             end
           end

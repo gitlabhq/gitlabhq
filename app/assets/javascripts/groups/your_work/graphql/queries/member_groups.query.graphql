@@ -1,0 +1,9 @@
+#import "ee_else_ce/organizations/shared/graphql/fragments/group.fragment.graphql"
+
+query getMemberYourWorkGroups($search: String, $sort: String) {
+  groups(search: $search, sort: $sort) @client {
+    nodes {
+      ...Group
+    }
+  }
+}

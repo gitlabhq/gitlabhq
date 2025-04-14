@@ -10,4 +10,4 @@ milestone: "<6.0"
 gitlab_schema: gitlab_main_cell
 sharding_key:
   target_project_id: projects
-table_size: small
+table_size: over_limit

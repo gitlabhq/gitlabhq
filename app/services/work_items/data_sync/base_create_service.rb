@@ -16,6 +16,8 @@ module WorkItems
       end
 
       def initialize_callbacks!(work_item)
+        # reset system notes timestamp
+        work_item.system_note_timestamp = nil
         @callbacks = original_work_item.widgets.filter_map do |widget|
           sync_data_callback_class = widget.class.sync_data_callback_class
           next if sync_data_callback_class.nil?

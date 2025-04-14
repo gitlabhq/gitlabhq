@@ -125,7 +125,8 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
     it 'returns error with correct error message' do
       post_graphql_mutation_update_container_registry_protection_rule
 
-      expect(mutation_response['errors']).to eq ['A rule must have at least a minimum access role for push or delete.']
+      expect(mutation_response['errors'])
+        .to eq ['A rule requires at least the Maintainer role for either push or delete.']
     end
   end
 

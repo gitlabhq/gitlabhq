@@ -229,6 +229,11 @@ export function parseChronicDuration(string, opts = {}) {
 // Given an integer and an optional format,
 // returns a formatted string representing elapsed time
 export function outputChronicDuration(seconds, opts = {}) {
+  if (opts.hoursOnly) {
+    const hours = Math.round(seconds / 3600);
+    return `${hours}h`;
+  }
+
   const units = {
     years: 0,
     months: 0,

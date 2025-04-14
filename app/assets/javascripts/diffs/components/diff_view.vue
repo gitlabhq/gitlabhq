@@ -1,6 +1,7 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
-import { mapGetters, mapState, mapActions } from 'vuex';
+import { mapState as mapVuexState, mapActions as mapVuexActions } from 'vuex';
+import { mapState, mapActions } from 'pinia';
 import { throttle } from 'lodash';
 import { IdState } from 'vendor/vue-virtual-scroller';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
@@ -9,6 +10,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getCommentedLines } from '~/notes/components/multiline_comment_utils';
 import { hide } from '~/tooltips';
 import { countLinesInBetween } from '~/diffs/utils/diff_file';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { pickDirection } from '../utils/diff_line';
 import DiffCommentCell from './diff_comment_cell.vue';
 import DiffExpansionCell from './diff_expansion_cell.vue';
@@ -69,9 +71,14 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('diffs', ['commitId', 'fileLineCoverage']),
-    ...mapState('diffs', ['highlightedRow', 'coverageLoaded', 'selectedCommentPosition']),
-    ...mapState({
+    ...mapState(useLegacyDiffs, [
+      'commitId',
+      'fileLineCoverage',
+      'highlightedRow',
+      'coverageLoaded',
+      'selectedCommentPosition',
+    ]),
+    ...mapVuexState({
       selectedCommentPosition: ({ notes }) => notes.selectedCommentPosition,
       selectedCommentPositionHover: ({ notes }) => notes.selectedCommentPositionHover,
     }),
@@ -95,8 +102,12 @@ export default {
     this.onDragOverThrottled = throttle((line) => this.onDragOver(line), 100, { leading: true });
   },
   methods: {
-    ...mapActions(['setSelectedCommentPosition']),
-    ...mapActions('diffs', ['showCommentForm', 'setHighlightedRow', 'toggleLineDiscussions']),
+    ...mapVuexActions(['setSelectedCommentPosition']),
+    ...mapActions(useLegacyDiffs, [
+      'showCommentForm',
+      'setHighlightedRow',
+      'toggleLineDiscussions',
+    ]),
     showCommentLeft(line) {
       return line.left && !line.right;
     },

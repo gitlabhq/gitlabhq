@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_registry do
   include_context 'with conan api setup'
 
-  let_it_be_with_reload(:package) { create(:conan_package, project: project, without_recipe_revisions: true) }
+  let_it_be_with_reload(:package) { create(:conan_package, project: project, without_revisions: true) }
   let(:snowplow_gitlab_standard_context) do
     { user: user, project: project, namespace: project.namespace, property: 'i_package_conan_user' }
   end
@@ -157,6 +157,8 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
   context 'with file upload endpoints' do
     include_context 'for conan file upload endpoints'
     let(:recipe_revision) { ::Packages::Conan::FileMetadatum::DEFAULT_REVISION }
+    let(:package_revision) { ::Packages::Conan::FileMetadatum::DEFAULT_REVISION }
+    let(:conan_package_reference) { OpenSSL::Digest.hexdigest('SHA1', 'valid_package_reference') }
 
     describe 'PUT /api/v4/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel' \
       '/:recipe_revision/export/:file_name/authorize' do
@@ -174,7 +176,8 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
       let(:file_name) { 'conaninfo.txt' }
 
       subject(:request) do
-        put api("/packages/conan/v1/files/#{recipe_path}/0/package/123456789/0/#{file_name}/authorize"),
+        put api("/packages/conan/v1/files/#{recipe_path}/0/package/#{conan_package_reference}/0/#{file_name}" \
+          "/authorize"),
           headers: headers_with_token
       end
 
@@ -190,7 +193,7 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
 
     describe 'PUT /api/v4/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel' \
       '/:recipe_revision/export/:conan_package_reference/:package_revision/:file_name' do
-      let(:url) { "/packages/conan/v1/files/#{recipe_path}/0/package/123456789/0/#{file_name}" }
+      let(:url) { "/packages/conan/v1/files/#{recipe_path}/0/package/#{conan_package_reference}/0/#{file_name}" }
 
       it_behaves_like 'workhorse package file upload endpoint'
     end

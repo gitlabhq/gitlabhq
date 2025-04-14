@@ -4,6 +4,8 @@ module Types
   class ProjectType < BaseObject
     graphql_name 'Project'
 
+    include ::NamespacesHelper
+
     connection_type_class Types::CountableConnectionType
 
     authorize :read_project
@@ -11,6 +13,7 @@ module Types
     expose_permissions Types::PermissionTypes::Project
 
     implements Types::TodoableInterface
+    implements ::Types::Projects::ProjectInterface
 
     field :id, GraphQL::Types::ID,
       null: false,
@@ -40,7 +43,7 @@ module Types
         description: 'ID of the pipeline creation request.'
     end
 
-    field :ci_pipeline_creation_inputs, [Types::Ci::Inputs::InputSpecType],
+    field :ci_pipeline_creation_inputs, [Types::Ci::Inputs::SpecType],
       authorize: :create_pipeline,
       null: true,
       calls_gitaly: true,
@@ -75,11 +78,11 @@ module Types
 
     field :name, GraphQL::Types::String,
       null: false,
-      description: 'Name of the project (without namespace).'
+      description: 'Name of the project without the namespace.'
 
     field :name_with_namespace, GraphQL::Types::String,
       null: false,
-      description: 'Full name of the project with its namespace.'
+      description: 'Name of the project including the namespace.'
 
     field :description, GraphQL::Types::String,
       null: true,
@@ -133,6 +136,22 @@ module Types
       null: true,
       description: 'Indicates the archived status of the project.'
 
+    field :marked_for_deletion_on, ::Types::TimeType,
+      null: true,
+      description: 'Date when project was scheduled to be deleted.',
+      experiment: { milestone: '16.10' }
+
+    field :is_adjourned_deletion_enabled, GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates if delayed project deletion is enabled.',
+      method: :adjourned_deletion?,
+      experiment: { milestone: '16.11' }
+
+    field :permanent_deletion_date, GraphQL::Types::String,
+      null: true,
+      description: 'Date when project will be deleted if delayed project deletion is enabled.',
+      experiment: { milestone: '16.11' }
+
     field :visibility, GraphQL::Types::String,
       null: true,
       description: 'Visibility of the project.'
@@ -165,7 +184,7 @@ module Types
     field :avatar_url, GraphQL::Types::String,
       null: true,
       calls_gitaly: true,
-      description: 'URL to avatar image file of the project.'
+      description: 'Avatar URL of the project.'
 
     field :jobs_enabled, GraphQL::Types::Boolean,
       null: true,
@@ -552,10 +571,10 @@ module Types
 
     field :container_protection_tag_rules,
       Types::ContainerRegistry::Protection::TagRuleType.connection_type,
+      method: :container_registry_protection_tag_rules,
       null: true,
       experiment: { milestone: '17.8' },
-      description: 'Container repository tag protection rules for the project. ' \
-        'Returns an empty array if the `container_registry_protected_tags` feature flag is disabled.'
+      description: 'Container repository tag protection rules for the project.'
 
     field :container_repositories, Types::ContainerRegistry::ContainerRepositoryType.connection_type,
       null: true,
@@ -855,7 +874,7 @@ module Types
       merge_requests: "Merge requests are",
       wiki: 'Wikis are',
       snippets: 'Snippets are',
-      container_registry: 'Container Registry is'
+      container_registry: 'Container registry is'
     }.each do |feature, name_string|
       field "#{feature}_enabled", GraphQL::Types::Boolean, null: true,
         description: "Indicates if #{name_string} enabled for the current user"
@@ -879,10 +898,6 @@ module Types
     end
 
     markdown_field :description_html, null: true
-
-    def avatar_url
-      object.avatar_url(only_path: false)
-    end
 
     def jobs_enabled
       object.feature_available?(:builds, context[:current_user])
@@ -1020,10 +1035,18 @@ module Types
       )
     end
 
-    def container_protection_tag_rules
-      return [] unless Feature.enabled?(:container_registry_protected_tags, object)
+    def marked_for_deletion_on
+      ## marked_for_deletion_at is deprecated in our v5 REST API in favor of marked_for_deletion_on
+      ## https://docs.gitlab.com/ee/api/projects.html#removals-in-api-v5
+      return unless project.adjourned_deletion?
 
-      object.container_registry_protection_tag_rules
+      project.marked_for_deletion_at
+    end
+
+    def permanent_deletion_date
+      return unless project.adjourned_deletion_configured?
+
+      permanent_deletion_date_formatted(Date.current)
     end
 
     private

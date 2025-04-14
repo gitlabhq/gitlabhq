@@ -65,7 +65,7 @@ To clear the cache:
 
 ## Base domain
 
-Specifying a base domain automatically sets `KUBE_INGRESS_BASE_DOMAIN` as an deployment variable.
+Specifying a base domain automatically sets `KUBE_INGRESS_BASE_DOMAIN` as a deployment variable.
 If you are using [Auto DevOps](../../../topics/autodevops/_index.md), this domain is used for the different
 stages. For example, Auto Review Apps and Auto Deploy.
 
@@ -90,7 +90,7 @@ To determine the external Ingress IP address, or external Ingress hostname:
   cluster. This information can then be used to set up DNS entries and forwarding
   rules that allow external access to your deployed applications.
 
-Depending an your Ingress, the external IP address can be retrieved in various ways.
+Depending on your Ingress, the external IP address can be retrieved in various ways.
 This list provides a generic solution, and some GitLab-specific approaches:
 
 - In general, you can list the IP addresses of all load balancers by running:

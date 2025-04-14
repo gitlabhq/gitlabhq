@@ -8,11 +8,9 @@ RSpec::Matchers.define :be_in_sync_with_project do |project|
     break true if project.new_record? && !project_namespace.present?
 
     project_namespace.present? &&
-      project.name == project_namespace.name &&
-      project.path == project_namespace.path &&
-      project.namespace_id == project_namespace.parent_id &&
-      project.visibility_level == project_namespace.visibility_level &&
-      project.shared_runners_enabled == project_namespace.shared_runners_enabled
+      Namespaces::ProjectNamespace::SYNCED_ATTRIBUTES.all? do |attribute|
+        project[attribute] == project_namespace[attribute]
+      end
   end
 
   failure_message_when_negated do |project_namespace|

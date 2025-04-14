@@ -29,6 +29,7 @@ export const initSecurityConfiguration = (el) => {
     vulnerabilityTrainingDocsPath,
     containerScanningForRegistryEnabled,
     secretDetectionConfigurationPath,
+    vulnerabilityArchiveExportPath,
   } = el.dataset;
 
   const { augmentedSecurityFeatures } = augmentFeatures(features ? JSON.parse(features) : []);
@@ -44,6 +45,7 @@ export const initSecurityConfiguration = (el) => {
       autoDevopsPath,
       vulnerabilityTrainingDocsPath,
       containerScanningForRegistryEnabled,
+      vulnerabilityArchiveExportPath,
       secretDetectionConfigurationPath,
       ...parseBooleanDataAttributes(el, [
         'secretPushProtectionAvailable',

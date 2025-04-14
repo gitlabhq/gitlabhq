@@ -242,7 +242,44 @@ To view the full list of jobs that ran in a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Jobs**.
 
-You can filter the list by [job status](#view-jobs-in-a-pipeline) and [job name](#job-names).
+You can filter the list by [job status](#view-jobs-in-a-pipeline), [job name](#job-names) and [job source](#available-job-sources).
+
+### View the source of a job
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181159) job source in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `populate_and_use_build_source_table`. Enabled by default.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/11796) on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 17.11.
+
+{{< /history >}}
+
+GitLab CI/CD jobs now include a source attribute that indicates the action that initially triggered a CI/CD job. Use this attribute to track how a job was initiated or filter job runs based on the specific sources.
+
+#### Available job sources
+
+The source attribute can have the following values:
+
+– `api`: Job initiated by a REST call to the Jobs API.
+– `chat`: Job initiated by a chat command using GitLab ChatOps.
+– `container_registry_push`: Job initiated by container registry push.
+– `duo_workflow`: Job initiated by GitLab Duo Workflow.
+– `external`: Job initiated by an event in an external repository integrated with GitLab. This does not include pull request events.
+– `external_pull_request_event`: Job initiated by a pull request event in an external repository.
+– `merge_request_event`: Job initiated by a merge request event.
+– `ondemand_dast_scan`:Job initiated by an on-demand DAST scan.
+– `ondemand_dast_validation`: Job initiated by an on-demand DAST validation.
+– `parent_pipeline`: Job initiated by a parent pipeline
+– `pipeline`: Job initiated by a user manually running a pipeline.
+– `pipeline_execution_policy`: Job initiated by a triggered pipeline execution policy.
+– `pipeline_execution_policy_schedule`: Job initiated by a scheduled pipeline execution policy.
+– `push`: Job initiated by a code push.
+– `scan_execution_policy`: Job initiated by a scan execution policy.
+– `schedule`: Job initiated by a scheduled pipeline.
+– `security_orchestration_policy`: Job initiated by a security orchestration policy.
+– `trigger`: Job initiated by another job or pipeline.
+– `unknown` – Job initiated by an unknown source.
+– `web` – Job initiated by a user from the GitLab UI.
+– `webide` – Job initiated by a user from the Web IDE.
 
 ### Group similar jobs together in pipeline views
 
@@ -296,6 +333,160 @@ evaluates the job names: `([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+))){1,3}\s*\z`.
 One or more `: [...]`, `X Y`, `X/Y`, or `X\Y` sequences are removed from the **end**
 of job names only. Matching substrings found at the beginning or in the middle of
 job names are not removed.
+
+## Retry jobs
+
+You can retry a job after it completes, regardless of its final state (failed, success, or canceled).
+
+When you retry a job:
+
+- A new job instance is created with a new job ID.
+- The job runs with the same parameters and variables as the original job.
+- If the job produces artifacts, new artifacts are created and stored.
+- The new job associates with the user who initiated the retry, not the user who created the original pipeline.
+- Any subsequent jobs that were previously skipped are reassigned to the user who initiated the retry.
+
+When you retry a [trigger job](../yaml/_index.md#trigger) that triggers a downstream pipeline:
+
+- The trigger job generates a new downstream pipeline.
+- The downstream pipeline also associates with the user who initiated the retry.
+- The downstream pipeline runs with the configuration that exists at the time of the retry,
+  which might be different from the original run.
+
+### Retry a job
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+
+To retry a job from a merge request:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. From your merge request, do one of the following:
+   - In the pipeline widget, next to the job you want to retry, select **Run again** ({{< icon name="retry" >}}).
+   - Select the **Pipelines** tab, next to the job you want to retry, select **Run again** ({{< icon name="retry" >}}).
+
+To retry a job from the job log:
+
+1. Go to the job's log page.
+1. In the upper-right corner, select **Run again** ({{< icon name="retry" >}}).
+
+To retry a job from a pipeline:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Build > Pipelines**.
+1. Find the pipeline that contains the job you want to retry.
+1. From the pipeline graph, next to the job you want to retry, select **Run again** ({{< icon name="retry" >}}).
+
+### Retry all failed or canceled jobs in a pipeline
+
+If a pipeline has multiple failed or canceled jobs, you can retry all of them at once:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Do one of the following:
+   - Select **Build > Pipelines**.
+   - Go to a merge request and select the **Pipelines** tab.
+1. For the pipeline with failed or canceled jobs, select **Retry all failed or canceled jobs** ({{< icon name="retry" >}}).
+
+## Cancel jobs
+
+You can cancel a CI/CD job that hasn't completed yet.
+
+When you cancel a job, what happens next depends on its state and the GitLab Runner version:
+
+- For jobs that haven't started executing yet, the job is canceled immediately.
+- For running jobs:
+  - For GitLab Runner 16.10 and later with GitLab 17.0 and later, the job is marked as `canceling` while the runner runs the job's [`after_script`](../yaml/_index.md#after_script).
+    When `after_script` completes, the job is marked as `canceled`.
+  - For GitLab Runner 16.9 and earlier with GitLab 16.11 and earlier, the job is `canceled` immediately without running `after_script`.
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+stateDiagram-v2
+    accTitle: CI/CD job state transitions
+    accDescr: Shows possible state transitions for CI/CD jobs, including cancellation paths.
+
+    direction TB
+    state if_versions <>
+    [*] --> pending: Job created
+    pending --> canceled: Cancel requested
+    canceled --> [*]
+    pending --> running: Runner picks up job
+    running --> success: Job succeeds
+    success --> [*]
+    running --> failed: Job fails
+    failed --> [*]
+    running --> if_versions: Cancel requested
+    if_versions --> canceling: GitLab 17.0 and later with GitLab Runner 16.10 and later
+    if_versions --> canceled: GitLab 16.11 and earlier with GitLab Runner 16.9 and earlier
+    canceling --> canceled: after_script complete
+```
+
+If you need to cancel a job immediately without waiting for the `after_script`, use [force cancel](#force-cancel-a-job).
+
+### Cancel a job
+
+Prerequisites:
+
+- You must have at least the Developer role for the project,
+  or the [minimum role required to cancel a pipeline or job](../pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs).
+
+To cancel a job from a merge request:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. From your merge request, do one of the following:
+   - In the pipeline widget, next to the job you want to cancel, select **Cancel** ({{< icon name="cancel" >}}).
+   - Select the **Pipelines** tab, next to the job you want to cancel, select **Cancel** ({{< icon name="cancel" >}}).
+
+To cancel a job from the job log:
+
+1. Go to the job's log page.
+1. In the upper-right corner, select **Cancel** ({{< icon name="cancel" >}}).
+
+To cancel a job from a pipeline:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Build > Pipelines**.
+1. Find the pipeline that contains the job you want to cancel.
+1. From the pipeline graph, next to the job you want to cancel, select **Cancel** ({{< icon name="cancel" >}}).
+
+### Cancel all running jobs in a pipeline
+
+You can cancel all jobs in a running pipeline at once.
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Do one of the following:
+   - Select **Build > Pipelines**.
+   - Go to a merge request and select the **Pipelines** tab.
+1. For the pipeline you want to cancel, select **Cancel the running pipeline** ({{< icon name="cancel" >}}).
+
+### Force cancel a job
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467107) as an [experiment](../../policy/development_stages_support.md) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `force_cancel_build`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/519313) in GitLab 17.11. Feature flag `force_cancel_build` removed.
+
+{{< /history >}}
+
+If you don't want to wait for `after_script` to finish or a job is unresponsive, you can force cancel it.
+Force cancel immediately moves a job from the `canceling` state to `canceled`.
+
+When you force cancel a job, the [job token](ci_job_token.md) is immediately revoked.
+If the runner is still executing the job, it loses access to GitLab.
+The runner aborts the job without waiting for `after_script` to complete.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+- The job must be in the `canceling` state, which requires:
+  - GitLab 17.0 and later.
+  - GitLab Runner 16.10 and later.
+
+To force cancel a job:
+
+1. Go to the job's log page.
+1. In the upper-right corner, select **Force cancel**.
 
 ## Troubleshoot a failed job
 

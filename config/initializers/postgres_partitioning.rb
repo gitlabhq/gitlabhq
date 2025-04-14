@@ -51,6 +51,9 @@ if Gitlab.ee?
       Search::Zoekt::Task,
       Ai::CodeSuggestionEvent,
       Ai::DuoChatEvent,
+      Ai::TroubleshootJobEvent,
+      Vulnerabilities::Archive,
+      Vulnerabilities::ArchivedRecord,
       Vulnerabilities::ArchiveExport
     ])
 else

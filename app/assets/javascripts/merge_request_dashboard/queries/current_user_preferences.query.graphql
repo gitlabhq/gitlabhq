@@ -1,0 +1,8 @@
+query getCurrentUserMergeRequestDashboardPreferences {
+  currentUser {
+    id
+    userPreferences {
+      listType: mergeRequestDashboardListType
+    }
+  }
+}

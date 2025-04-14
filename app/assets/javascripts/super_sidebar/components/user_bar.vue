@@ -81,11 +81,13 @@ export default {
     };
   },
   computed: {
-    mergeRequestTotalCount() {
-      return userCounts.assigned_merge_requests + userCounts.review_requested_merge_requests;
-    },
     mergeRequestMenuComponent() {
       return this.sidebarData.merge_request_menu ? 'merge-request-menu' : 'div';
+    },
+    shouldShowOrganizationSwitcher() {
+      return (
+        this.glFeatures.uiForOrganizations && this.isLoggedIn && window.gon.current_organization
+      );
     },
   },
   created() {
@@ -153,7 +155,7 @@ export default {
         data-testid="stop-impersonation-btn"
       />
     </div>
-    <organization-switcher v-if="glFeatures.uiForOrganizations && isLoggedIn" />
+    <organization-switcher v-if="shouldShowOrganizationSwitcher" />
     <div v-if="sidebarData.is_logged_in" class="gl-flex gl-justify-between gl-gap-2">
       <counter
         v-gl-tooltip:super-sidebar.bottom="$options.i18n.issues"
@@ -182,7 +184,7 @@ export default {
           }"
           icon="merge-request"
           :href="sidebarData.merge_request_dashboard_path"
-          :count="mergeRequestTotalCount"
+          :count="userCounts.total_merge_requests"
           :label="$options.i18n.mergeRequests"
           data-testid="merge-requests-shortcut-button"
           data-track-action="click_dropdown"

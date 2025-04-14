@@ -285,7 +285,7 @@ export default {
     >
       <template v-if="isLoading">{{ $options.FETCH_LOADING }}</template>
       <template v-else>
-        <div class="gl-flex gl-flex-col">
+        <div class="gl-z-1 gl-flex gl-flex-col">
           <div
             class="gl-flex gl-flex-col gl-flex-wrap gl-items-baseline gl-gap-3 sm:gl-flex-row sm:gl-items-center"
           >
@@ -317,6 +317,7 @@ export default {
               :category="action.category"
               :loading="isApproving"
               data-testid="approve-button"
+              class="gl-z-1"
               @click="action.action"
             >
               {{ action.text }}

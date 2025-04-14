@@ -89,8 +89,11 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:use_new_navigation).to(:user_preference) }
     it { is_expected.to delegate_method(:use_new_navigation=).to(:user_preference).with_arguments(:args) }
 
-    it { is_expected.to delegate_method(:extensions_marketplace_enabled).to(:user_preference) }
-    it { is_expected.to delegate_method(:extensions_marketplace_enabled=).to(:user_preference).with_arguments(:args) }
+    it { is_expected.to delegate_method(:extensions_marketplace_opt_in_status).to(:user_preference) }
+    it { is_expected.to delegate_method(:extensions_marketplace_opt_in_status=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:extensions_marketplace_opt_in_url).to(:user_preference) }
+    it { is_expected.to delegate_method(:extensions_marketplace_opt_in_url=).to(:user_preference).with_arguments(:args) }
 
     it { is_expected.to delegate_method(:pinned_nav_items).to(:user_preference) }
     it { is_expected.to delegate_method(:pinned_nav_items=).to(:user_preference).with_arguments(:args) }
@@ -113,6 +116,9 @@ RSpec.describe User, feature_category: :user_profile do
 
     it { is_expected.to delegate_method(:use_work_items_view).to(:user_preference) }
     it { is_expected.to delegate_method(:use_work_items_view=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:merge_request_dashboard_list_type).to(:user_preference) }
+    it { is_expected.to delegate_method(:merge_request_dashboard_list_type=).to(:user_preference).with_arguments(:args) }
 
     it { is_expected.to delegate_method(:text_editor).to(:user_preference) }
     it { is_expected.to delegate_method(:text_editor=).to(:user_preference).with_arguments(:args) }
@@ -991,12 +997,14 @@ RSpec.describe User, feature_category: :user_profile do
           expect(user.errors.messages[:email].first).to eq(expected_error)
         end
 
-        it 'allows example@test.com if user is placeholder or import user' do
+        it 'allows example@test.com if user is placeholder, import user or security policy bot' do
           placeholder_user = build(:user, :placeholder, email: "example@test.com")
           import_user = build(:user, :import_user, email: "example@test.com")
+          security_policy_bot = build(:user, :security_policy_bot, email: "example@test.com")
 
           expect(placeholder_user).to be_valid
           expect(import_user).to be_valid
+          expect(security_policy_bot).to be_valid
         end
 
         it 'does not allow user to update email to a non-allowlisted domain' do
@@ -1006,12 +1014,14 @@ RSpec.describe User, feature_category: :user_profile do
             .to raise_error(StandardError, 'Validation failed: Email is not allowed. Please use your regular email address. Check with your administrator.')
         end
 
-        it 'allows placeholder and import users to update email to a non-allowlisted domain' do
+        it 'allows placeholder, import users and security policy bot to update email to a non-allowlisted domain' do
           placeholder_user = create(:user, :placeholder, email: "info@test.example.com")
           import_user = create(:user, :import_user, email: "info2@test.example.com")
+          security_policy_bot = create(:user, :security_policy_bot, email: "info3@test.example.com")
 
           expect(placeholder_user.update!(email: "test@notexample.com")).to eq(true)
           expect(import_user.update!(email: "test2@notexample.com")).to eq(true)
+          expect(security_policy_bot.update!(email: "test3@notexample.com")).to eq(true)
         end
       end
 
@@ -1168,6 +1178,16 @@ RSpec.describe User, feature_category: :user_profile do
             user = build(:user, email: 'info@test.com')
 
             expect(user).to be_valid
+          end
+
+          it 'allows placeholder, import users and security policy bot to bypass email restrictions' do
+            placeholder_user = build(:user, :placeholder, email: "info+1@test.com")
+            import_user = build(:user, :import_user, email: "info+1@test.com")
+            security_policy_bot = build(:user, :security_policy_bot, email: "info+1@test.com")
+
+            expect(placeholder_user).to be_valid
+            expect(import_user).to be_valid
+            expect(security_policy_bot).to be_valid
           end
 
           context 'when created_by_id is set' do
@@ -3256,6 +3276,26 @@ RSpec.describe User, feature_category: :user_profile do
       it 'uses a certain scope for the given filter name' do
         expect(described_class).to receive(scope).and_return([user])
         expect(described_class.filter_items(filter_name)).to include user
+      end
+    end
+
+    context 'with placeholder filter' do
+      it 'returns only placeholder users' do
+        placeholder_user = create(:user, user_type: :placeholder)
+        regular_user = create(:user)
+
+        expect(described_class.filter_items('placeholder')).to include(placeholder_user)
+        expect(described_class.filter_items('placeholder')).not_to include(regular_user)
+      end
+    end
+
+    context 'with without_placeholders filter' do
+      it 'returns users that are not placeholders' do
+        placeholder_user = create(:user, user_type: :placeholder)
+        regular_user = create(:user)
+
+        expect(described_class.filter_items('without_placeholders')).to include(regular_user)
+        expect(described_class.filter_items('without_placeholders')).not_to include(placeholder_user)
       end
     end
   end

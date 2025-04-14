@@ -40,5 +40,9 @@ module Types
     value 'UPDATED_ASC', 'Updated at ascending order.', value: :updated_asc
     value 'CREATED_DESC', 'Created at descending order.', value: :created_desc
     value 'CREATED_ASC', 'Created at ascending order.', value: :created_asc
+
+    def self.enum_values(context = {})
+      super.sort { |a, b| a.value.to_s <=> b.value.to_s }
+    end
   end
 end

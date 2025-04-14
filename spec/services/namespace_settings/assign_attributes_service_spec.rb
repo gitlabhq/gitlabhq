@@ -309,6 +309,7 @@ RSpec.describe NamespaceSettings::AssignAttributesService, feature_category: :gr
         :new_user_signups_cap | nil | 100
         :seat_control | 'off' | 'user_cap'
         :enabled_git_access_protocol | 'all' | 'ssh'
+        :job_token_policies_enabled | false | true
       end
 
       with_them do

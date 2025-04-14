@@ -1,4 +1,5 @@
-import { mount, RouterLinkStub } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
+import { GlBreadcrumb } from '@gitlab/ui';
 
 import component from '~/packages_and_registries/shared/components/registry_breadcrumb.vue';
 
@@ -11,11 +12,11 @@ describe('Registry Breadcrumb', () => {
 
   const routes = [
     { name: 'list', path: '/', meta: { nameGenerator, root: true } },
-    { name: 'details', path: '/:id', meta: { nameGenerator } },
+    { name: 'details', path: '/:id', meta: { nameGenerator, path: '/details' } },
   ];
 
   const mountComponent = ($route) => {
-    wrapper = mount(component, {
+    wrapper = shallowMount(component, {
       mocks: {
         $route,
         $router: {
@@ -23,9 +24,6 @@ describe('Registry Breadcrumb', () => {
             routes,
           },
         },
-      },
-      stubs: {
-        RouterLink: RouterLinkStub,
       },
     });
   };
@@ -39,18 +37,13 @@ describe('Registry Breadcrumb', () => {
       mountComponent(routes[0]);
     });
 
-    it('renders', () => {
-      expect(wrapper.element).toMatchSnapshot();
-    });
-
-    it('contains only a single router-link to list', () => {
-      const links = wrapper.findAll('a');
-
-      expect(links).toHaveLength(1);
-    });
-
-    it('the link text is calculated by nameGenerator', () => {
-      expect(nameGenerator).toHaveBeenCalledTimes(1);
+    it('only passes root to `items` prop', () => {
+      expect(wrapper.findComponent(GlBreadcrumb).props('items')).toEqual([
+        {
+          text: 'mock name',
+          to: '/',
+        },
+      ]);
     });
   });
 
@@ -59,19 +52,17 @@ describe('Registry Breadcrumb', () => {
       mountComponent(routes[1]);
     });
 
-    it('renders', () => {
-      expect(wrapper.element).toMatchSnapshot();
-    });
-
-    it('contains two router-links to list and details', () => {
-      const links = wrapper.findAll('a');
-
-      expect(links).toHaveLength(2);
-      expect(links.at(1).attributes('href')).toBe('#');
-    });
-
-    it('the link text is calculated by nameGenerator', () => {
-      expect(nameGenerator).toHaveBeenCalledTimes(2);
+    it('passes root and details to `items` prop', () => {
+      expect(wrapper.findComponent(GlBreadcrumb).props('items')).toEqual([
+        {
+          text: 'mock name',
+          to: '/',
+        },
+        {
+          text: 'mock name',
+          href: '/details',
+        },
+      ]);
     });
   });
 });

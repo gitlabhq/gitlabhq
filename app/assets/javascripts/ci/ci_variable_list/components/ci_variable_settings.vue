@@ -1,5 +1,4 @@
 <script>
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ADD_VARIABLE_ACTION, EDIT_VARIABLE_ACTION, VARIABLE_ACTIONS } from '../constants';
 import CiVariableDrawer from './ci_variable_drawer.vue';
 import CiVariableTable from './ci_variable_table.vue';
@@ -9,7 +8,6 @@ export default {
     CiVariableDrawer,
     CiVariableTable,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     areEnvironmentsLoading: {
       type: Boolean,

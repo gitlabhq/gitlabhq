@@ -1,8 +1,10 @@
+import { set } from 'lodash';
 import { GlAvatar } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PipelineCell from '~/ci/jobs_page/components/job_cells/pipeline_cell.vue';
+import LinkCell from '~/ci/runner/components/cells/link_cell.vue';
 
 const mockJobWithoutUser = {
   id: 'gid://gitlab/Ci::Build/2264',
@@ -28,7 +30,7 @@ const mockJobWithUser = {
 describe('Pipeline Cell', () => {
   let wrapper;
 
-  const findPipelineId = () => wrapper.findByTestId('pipeline-id');
+  const findPipelineId = () => wrapper.findComponent(LinkCell);
   const findPipelineUserLink = () => wrapper.findByTestId('pipeline-user-link');
   const findUserAvatar = () => wrapper.findComponent(GlAvatar);
 
@@ -43,15 +45,28 @@ describe('Pipeline Cell', () => {
   };
 
   describe('Pipeline Id', () => {
+    const expectedPipelineId = `#${getIdFromGraphQLId(mockJobWithUser.pipeline.id)}`;
+
     beforeEach(() => {
       createComponent();
     });
 
-    it('displays the pipeline id and links to the pipeline', () => {
-      const expectedPipelineId = `#${getIdFromGraphQLId(mockJobWithUser.pipeline.id)}`;
-
+    it('renders a LinkCell with href set to the pipeline path', () => {
       expect(findPipelineId().text()).toBe(expectedPipelineId);
-      expect(findPipelineId().attributes('href')).toBe(mockJobWithUser.pipeline.path);
+      expect(findPipelineId().props('href')).toBe(mockJobWithUser.pipeline.path);
+    });
+
+    describe('when URL of the pipeline is not available', () => {
+      beforeEach(() => {
+        set(mockJobWithUser, ['pipeline', 'path'], null);
+
+        createComponent();
+      });
+
+      it('renders a LinkCell with href set to null', () => {
+        expect(findPipelineId().text()).toBe(expectedPipelineId);
+        expect(findPipelineId().props('href')).toBe(null);
+      });
     });
   });
 

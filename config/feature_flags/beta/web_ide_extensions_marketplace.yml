@@ -6,4 +6,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/459028
 milestone: '17.0'
 group: group::ide
 type: beta
-default_enabled: false
+default_enabled: true

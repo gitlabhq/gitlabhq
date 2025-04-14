@@ -88,7 +88,7 @@ RSpec.describe 'Merge request > User sees avatars on diff notes', :js, feature_c
 
         wait_for_requests
 
-        find('.js-toggle-tree-list').click
+        find_by_testid('file-tree-button').click
       end
 
       it 'shows note avatar' do

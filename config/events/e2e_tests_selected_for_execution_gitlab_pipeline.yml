@@ -1,0 +1,21 @@
+---
+description: when specific E2E tests are selected for execution
+internal_events: true
+action: e2e_tests_selected_for_execution_gitlab_pipeline
+identifiers:
+- project
+- namespace
+additional_properties:
+  # Refer https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/quick_start/
+  # label, value and property are fixed keys we can use to store anything needed
+  label:
+    description: whether tests were selected or full suite was executed
+  value:
+    description: number of selected tests
+product_group: development_analytics
+milestone: '17.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184867
+tiers:
+- free
+- premium
+- ultimate

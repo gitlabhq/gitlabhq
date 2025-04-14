@@ -25,7 +25,7 @@ module Users
 
       return ::ServiceResponse.success(message: _('User has already been deactivated')) if user.deactivated?
 
-      unless user.can_be_deactivated?
+      unless can_be_deactivated?(user)
         message = _(
           'The user you are trying to deactivate has been active in the past %{minimum_inactive_days} days ' \
           'and cannot be deactivated')
@@ -48,6 +48,11 @@ module Users
     private
 
     attr_reader :current_user
+
+    # Wrapped in a method to allow overriding in subclasses
+    def can_be_deactivated?(user)
+      user.can_be_deactivated?
+    end
 
     def allowed?
       return true if @skip_authorization

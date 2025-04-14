@@ -11,7 +11,7 @@ export default {
 
 <template>
   <div
-    class="board-card-skeleton gl-mb-3 gl-rounded-base gl-border-1 gl-border-solid gl-border-subtle gl-bg-white gl-p-5"
+    class="board-card-skeleton gl-mb-3 gl-rounded-base gl-border-1 gl-border-solid gl-border-subtle gl-bg-default gl-p-5"
   >
     <div class="board-card-skeleton-inner">
       <gl-skeleton-loader :width="340" :height="100">

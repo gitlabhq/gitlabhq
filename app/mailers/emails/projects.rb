@@ -2,6 +2,8 @@
 
 module Emails
   module Projects
+    include NamespacesHelper
+
     def project_was_moved_email(project_id, user_id, old_path_with_namespace)
       @current_user = @user = User.find user_id
       @project = Project.find project_id
@@ -27,6 +29,18 @@ module Emails
       email_with_layout(
         to: current_user.notification_email_for(@project.group),
         subject: subject("Project export error")
+      )
+    end
+
+    def project_scheduled_for_deletion(recipient_id, project_id)
+      @project = ::Project.find(project_id)
+      @user = ::User.find(recipient_id)
+      @deletion_due_in_days = ::Gitlab::CurrentSettings.deletion_adjourned_period.days
+      @deletion_date = permanent_deletion_date_formatted(@project.marked_for_deletion_on, format: '%B %-d, %Y')
+
+      email_with_layout(
+        to: @user.email,
+        subject: subject('Project scheduled for deletion')
       )
     end
 

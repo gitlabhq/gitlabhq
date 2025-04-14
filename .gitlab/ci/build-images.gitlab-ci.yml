@@ -1,9 +1,3 @@
-.base-image-build:
-  extends: .use-kaniko
-  variables:
-    GIT_LFS_SKIP_SMUDGE: 1  # disable pulling objects from lfs
-  retry: 2
-
 .base-image-build-buildx:
   extends: .use-buildx
   variables:
@@ -11,7 +5,7 @@
   retry: 2
 
 # This image is used by:
-# - The `e2e:test-on-omnibus` child pipeline test stage jobs
+# - The `e2e:test-on-omnibus-ee` child pipeline test stage jobs
 # See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/#testing-code-in-merge-requests for more details.
 build-qa-image:
   extends:
@@ -20,7 +14,7 @@ build-qa-image:
   stage: build-images
   needs: []
   script:
-    - run_timed_command "scripts/build_qa_image"
+    - scripts/build_qa_image
 
 build-qa-image as-if-foss:
   extends:
@@ -30,18 +24,18 @@ build-qa-image as-if-foss:
 
 retag-gdk-image:
   extends:
-    - .base-image-build
+    - .base-image-build-buildx
     - .build-images:rules:retag-gdk-image
   tags:
     - docker
   stage: build-images
   needs: []
   script:
+    - echo "$RETAG_GDK_IMAGE_TOKEN" | docker login "$CI_REGISTRY" -u "$RETAG_GDK_IMAGE_TOKEN_NAME" --password-stdin
     - |
-      image="registry.gitlab.com/gitlab-org/gitlab-development-kit/asdf-bootstrapped-verify/main"
+      image="registry.gitlab.com/gitlab-org/gitlab-development-kit/mise-bootstrapped-verify/main"
       tag=$(awk '/ARG GDK_SHA=/ {print $2}' qa/gdk/Dockerfile.gdk | sed 's/.*=//g')
-      skopeo login -u $RETAG_GDK_IMAGE_TOKEN_NAME -p $RETAG_GDK_IMAGE_TOKEN $CI_REGISTRY
-      skopeo copy docker://${image}:${tag} docker://${image}:stable-${tag}
+      docker buildx imagetools create --tag "${image}:stable-${tag}" "${image}:${tag}"
 
 build-gdk-image:
   extends:
@@ -55,25 +49,26 @@ build-gdk-image:
     - job: retag-gdk-image
       optional: true
   script:
-    - run_with_custom_exit_code run_timed_command "scripts/build_gdk_image"
+    - run_with_custom_exit_code scripts/build_gdk_image
 
 # NOTE: release-tools verifies the presence on this job for a commit that is
 # candidate to an auto-deploy package. This job name can't be changed without
 # changing the code in release-tools.
+# TODO: assets image is built in compile-production-assets job, update release-tools to not depend on this job
 build-assets-image:
   extends:
-    - .base-image-build
+    - .base-image-build-buildx
     - .build-images:rules:build-assets-image
   stage: build-images
   needs: ["compile-production-assets"]
+  variables:
+    GLCI_BUILD_ASSETS_IMAGE: "true"
+    ARCH: linux/amd64,linux/arm64
   script:
-    - skopeo login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - run_timed_command "scripts/build_assets_image"
+    - scripts/build_assets_image
   artifacts:
     expire_in: 7 days
     paths:
-      # The `cached-assets-hash.txt` file is used in `review-build-cng-env` (`.gitlab/ci/review-apps/main.gitlab-ci.yml`)
-      # to pass the assets image tag to the CNG downstream pipeline.
       - cached-assets-hash.txt
 
 build-assets-image as-if-foss:

@@ -10,7 +10,7 @@ import { createAlert } from '~/alert';
 import RichTimestampTooltip from '~/work_items/components/rich_timestamp_tooltip.vue';
 import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vue';
 import WorkItemLinkChildContents from '~/work_items/components/shared/work_item_link_child_contents.vue';
-import { WORK_ITEM_TYPE_VALUE_OBJECTIVE } from '~/work_items/constants';
+import { WORK_ITEM_TYPE_NAME_OBJECTIVE } from '~/work_items/constants';
 import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 
 import {
@@ -201,7 +201,7 @@ describe('WorkItemLinkChildContents', () => {
     it('renders item metadata component when item has metadata present', () => {
       createComponent({
         childItem: workItemObjectiveWithoutChild,
-        workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+        workItemType: WORK_ITEM_TYPE_NAME_OBJECTIVE,
       });
 
       expect(findMetadataComponent().props()).toMatchObject({

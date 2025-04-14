@@ -70,6 +70,7 @@ class CommitStatus < Ci::ApplicationRecord
   scope :after_stage, ->(index) { where('stage_idx > ?', index) }
   scope :for_project, ->(project_id) { where(project_id: project_id) }
   scope :for_ref, ->(ref) { where(ref: ref) }
+  scope :for_user, ->(user) { where(user: user) }
   scope :by_name, ->(name) { where(name: name) }
   scope :in_pipelines, ->(pipelines) { where(pipeline: pipelines) }
   scope :with_pipeline, -> { joins(:pipeline) }
@@ -80,6 +81,7 @@ class CommitStatus < Ci::ApplicationRecord
   }
   scope :with_when_executed, ->(when_executed) { where(when: when_executed) }
   scope :with_type, ->(type) { where(type: type) }
+  scope :ref_protected, -> { where(protected: true) }
 
   # The scope applies `pluck` to split the queries. Use with care.
   scope :for_project_paths, ->(paths) do

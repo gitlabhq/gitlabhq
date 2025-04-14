@@ -71,6 +71,7 @@ describe('job group dropdown component', () => {
   const findTriggerButton = () => wrapper.find('button');
   const findDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findJobDropdownItems = () => wrapper.findAllComponents(JobDropdownItem);
+  const findFailedJobs = () => wrapper.find('[data-testid="failed-jobs"]');
 
   const createComponent = ({ props, mountFn = shallowMount } = {}) => {
     wrapper = mountFn(JobGroupDropdown, {
@@ -174,6 +175,78 @@ describe('job group dropdown component', () => {
       expect(findDisclosureDropdown().attributes('title')).toBe(
         groupWithJustTextTooltip.status.text,
       );
+    });
+  });
+
+  describe('job status', () => {
+    it.each`
+      statusGroup  | shouldHaveFailedClass
+      ${'success'} | ${false}
+      ${'failed'}  | ${true}
+    `(
+      'when status is $statusGroup, failed class presence should be $shouldHaveFailedClass',
+      ({ statusGroup, shouldHaveFailedClass }) => {
+        const testGroup = {
+          ...group,
+          status: {
+            ...group.status,
+            group: statusGroup,
+          },
+        };
+
+        createComponent({
+          props: { group: testGroup },
+          mountFn: mount,
+        });
+
+        expect(
+          findDisclosureDropdown()
+            .find('button')
+            .attributes('class')
+            .includes('ci-job-item-failed'),
+        ).toBe(shouldHaveFailedClass);
+      },
+    );
+  });
+
+  describe('failed jobs', () => {
+    it('shows failed jobs grouped if there are any', () => {
+      const failedJob = {
+        id: 5000,
+        name: 'rspec:linux 1/3',
+        status: {
+          icon: 'status_failed',
+          text: 'failed',
+          label: 'failed',
+          tooltip: 'failed',
+          group: 'failed',
+        },
+      };
+
+      createComponent({
+        props: {
+          group: {
+            ...group,
+            status: {
+              status: 'failed',
+              tooltip: 'Failed - (stuck or timeout failure) (allowed to fail)',
+              text: 'Failed text',
+            },
+            jobs: [...group.jobs, failedJob],
+          },
+        },
+        mountFn: mount,
+      });
+
+      expect(findFailedJobs().exists()).toBe(true);
+      expect(findFailedJobs().text()).toContain('Failed jobs');
+      expect(findFailedJobs().text()).toContain('rspec:linux 1/3');
+    });
+
+    it('does not show failed jobs if there aren`t any', () => {
+      createComponent();
+
+      expect(findFailedJobs().exists()).toBe(false);
     });
   });
 });

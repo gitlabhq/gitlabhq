@@ -88,7 +88,7 @@ To move all projects by using the API:
    "https://gitlab.example.com/api/v4/projects?repository_storage=<original_storage_name>"
    ```
 
-   Alternatively use [the rails console](../operations/rails_console.md) to confirm that all
+   Alternatively use [the rails console](rails_console.md) to confirm that all
    projects have moved. Run the following in the rails console:
 
    ```ruby
@@ -116,7 +116,7 @@ To move all snippets by using the API:
    - The moves are in progress. Re-query the repository move until it completes successfully.
    - The moves have failed. Most failures are temporary and are solved by rescheduling the move.
 
-1. After the moves are complete, use [the rails console](../operations/rails_console.md) to confirm
+1. After the moves are complete, use [the rails console](rails_console.md) to confirm
    that all snippets have moved. No snippets should be returned for the original storage. Run the
    following in the rails console:
 
@@ -153,7 +153,7 @@ To move all groups by using the API:
    - The moves are in progress. Re-query the repository move until it completes successfully.
    - The moves have failed. Most failures are temporary and are solved by rescheduling the move.
 
-1. After the moves are complete, use [the rails console](../operations/rails_console.md) to confirm
+1. After the moves are complete, use [the rails console](rails_console.md) to confirm
    that all groups have moved. No groups should be returned for the original storage. Run the
    following in the rails console:
 

@@ -8,7 +8,7 @@ class GitlabServicePingWorker # rubocop:disable Scalability/IdempotentWorker
 
   include ApplicationWorker
 
-  data_consistency :always
+  data_consistency :sticky
   include CronjobQueue # rubocop:disable Scalability/CronWorkerContext
   include Gitlab::ExclusiveLeaseHelpers
 
@@ -75,6 +75,7 @@ class GitlabServicePingWorker # rubocop:disable Scalability/IdempotentWorker
     record = {
       recorded_at: payload[:recorded_at],
       payload: payload,
+      metadata: Gitlab::Utils::UsageData.metrics_collection_metadata(payload),
       created_at: Time.current,
       updated_at: Time.current,
       organization_id: Organizations::Organization.first.id

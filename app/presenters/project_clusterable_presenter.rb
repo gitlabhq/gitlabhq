@@ -20,6 +20,11 @@ class ProjectClusterablePresenter < ClusterablePresenter
     migrate_project_cluster_path(clusterable, cluster)
   end
 
+  override :update_cluster_migration_path
+  def update_cluster_migration_path(cluster)
+    update_migration_project_cluster_path(clusterable, cluster)
+  end
+
   override :cluster_path
   def cluster_path(cluster, params = {})
     project_cluster_path(clusterable, cluster, params)

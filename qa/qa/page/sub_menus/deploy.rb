@@ -11,7 +11,7 @@ module QA
         end
 
         def go_to_container_registry
-          open_deploy_submenu('Container Registry')
+          open_deploy_submenu('Container registry')
         end
 
         def go_to_pages_settings

@@ -41,7 +41,7 @@ describe('Environment Breadcrumb', () => {
     });
 
     it('contains only a single router-link to list', () => {
-      const links = wrapper.findAll('a');
+      const links = wrapper.findAllComponents(RouterLinkStub);
 
       expect(links).toHaveLength(1);
       expect(links.at(0).props('to')).toEqual(routes[0].path);
@@ -58,7 +58,7 @@ describe('Environment Breadcrumb', () => {
     });
 
     it('contains two router-links to list and details', () => {
-      const links = wrapper.findAll('a');
+      const links = wrapper.findAllComponents(RouterLinkStub);
 
       expect(links).toHaveLength(2);
       expect(links.at(0).props('to')).toEqual(routes[0].path);

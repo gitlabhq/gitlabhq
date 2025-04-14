@@ -50,7 +50,7 @@ export default {
       required: false,
       default: false,
     },
-    gitpodEnabled: {
+    isGitpodEnabledForUser: {
       type: Boolean,
       required: false,
       default: false,
@@ -70,7 +70,7 @@ export default {
       required: false,
       default: true,
     },
-    showGitpodButton: {
+    isGitpodEnabledForInstance: {
       type: Boolean,
       required: false,
       default: false,
@@ -247,7 +247,7 @@ export default {
       return this.gitpodText || __('Gitpod');
     },
     computedShowGitpodButton() {
-      return this.showGitpodButton && this.gitpodEnabled && this.gitpodUrl;
+      return this.isGitpodEnabledForInstance && this.isGitpodEnabledForUser && this.gitpodUrl;
     },
     pipelineEditorAction() {
       if (!this.showPipelineEditorButton) {

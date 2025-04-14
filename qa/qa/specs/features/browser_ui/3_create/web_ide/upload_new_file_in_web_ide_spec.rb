@@ -45,18 +45,24 @@ module QA
         end
       end
 
-      context 'when the file is a text file',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/390006' do
-        let(:file_name) { 'text_file.txt' }
+      context 'with a new file', quarantine: {
+        only: { pipeline: %i[staging staging-canary] },
+        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/527274',
+        type: :flaky
+      } do
+        context 'when the file is a text file',
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/390006' do
+          let(:file_name) { 'text_file.txt' }
 
-        it_behaves_like 'upload a file'
-      end
+          it_behaves_like 'upload a file'
+        end
 
-      context 'when the file is an image',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/390007' do
-        let(:file_name) { 'dk.png' }
+        context 'when the file is an image',
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/390007' do
+          let(:file_name) { 'dk.png' }
 
-        it_behaves_like 'upload a file'
+          it_behaves_like 'upload a file'
+        end
       end
     end
   end

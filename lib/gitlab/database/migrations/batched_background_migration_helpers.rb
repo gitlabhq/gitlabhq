@@ -18,6 +18,7 @@ module Gitlab
         BATCH_CLASS_NAME = 'PrimaryKeyBatchingStrategy' # Default batch class for batched migrations
         BATCH_MIN_VALUE = 1 # Default minimum value for batched migrations
         BATCH_MIN_DELAY = 2.minutes.freeze # Minimum delay between batched migrations
+        MIGRATION_NOT_FOUND_MESSAGE = "Could not find batched background migration for the given configuration: %<configuration>s"
 
         ENFORCE_EARLY_FINALIZATION_FROM_VERSION = '20240905124117'
         EARLY_FINALIZATION_ERROR = <<-MESSAGE.squeeze(' ').strip
@@ -33,14 +34,14 @@ module Gitlab
         # class must be present in the Gitlab::BackgroundMigration module, and the batch class (if specified) must be
         # present in the Gitlab::BackgroundMigration::BatchingStrategies module.
         #
-        # If migration with same job_class_name, table_name, column_name, and job_arguments already exists, this helper
-        # will log an warning and not create a new one.
+        # If a migration with same job_class_name, table_name, column_name, and job_arguments already exists, this helper
+        # will log a warning and not create a new one.
         #
         # job_class_name - The background migration job class as a string
         # batch_table_name - The name of the table the migration will batch over
         # batch_column_name - The name of the column the migration will batch over
         # job_arguments - Extra arguments to pass to the job instance when the migration runs
-        # job_interval - The pause interval between each job's execution, minimum of 2 minutes
+        # job_interval - The pause interval between each job's execution, minimum of 2 minutes, defaults to BATCH_MIN_DELAY
         # batch_min_value - The value in the column the batching will begin at
         # batch_max_value - The value in the column the batching will end at, defaults to `SELECT MAX(batch_column)`
         # batch_class_name - The name of the class that will be called to find the range of each next batch
@@ -55,10 +56,9 @@ module Gitlab
         #       'CopyColumnUsingBackgroundMigrationJob',
         #       :events,
         #       :id,
-        #       job_interval: 2.minutes,
         #       other_job_arguments: ['column1', 'column2'])
         #
-        # Where the the background migration exists:
+        # Where the background migration exists:
         #
         #     class Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob
         #       def perform(start_id, end_id, batch_table, batch_column, sub_batch_size, *other_args)
@@ -70,7 +70,7 @@ module Gitlab
           batch_table_name,
           batch_column_name,
           *job_arguments,
-          job_interval:,
+          job_interval: BATCH_MIN_DELAY,
           batch_min_value: BATCH_MIN_VALUE,
           batch_max_value: nil,
           batch_class_name: BATCH_CLASS_NAME,
@@ -229,11 +229,13 @@ module Gitlab
             job_arguments: job_arguments
           }
 
+          migration_not_found_message = format(MIGRATION_NOT_FOUND_MESSAGE, configuration: configuration)
+
           if ENV['DBLAB_ENVIRONMENT'] && migration.nil?
-            raise NonExistentMigrationError, 'called ensure_batched_background_migration_is_finished with non-existent migration name'
+            raise NonExistentMigrationError, migration_not_found_message
           end
 
-          return Gitlab::AppLogger.warn "Could not find batched background migration for the given configuration: #{configuration}" if migration.nil?
+          return Gitlab::AppLogger.warn migration_not_found_message if migration.nil?
 
           if migration.respond_to?(:queued_migration_version) && !skip_early_finalization_validation
             prevent_early_finalization!(migration.queued_migration_version, version)

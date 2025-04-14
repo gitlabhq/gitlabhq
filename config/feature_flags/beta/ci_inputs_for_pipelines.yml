@@ -1,0 +1,9 @@
+---
+name: ci_inputs_for_pipelines
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/16321
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182125
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520290
+milestone: '17.10'
+group: group::pipeline authoring
+type: beta
+default_enabled: true

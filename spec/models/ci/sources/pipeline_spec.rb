@@ -25,6 +25,7 @@ RSpec.describe Ci::Sources::Pipeline, feature_category: :continuous_integration 
 
   context 'loose foreign key on ci_sources_pipelines.source_project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
+      let(:lfk_column) { :source_project_id }
       let!(:parent) { create(:project, namespace: create(:group)) }
       let!(:model) { create(:ci_sources_pipeline, source_project: parent) }
     end
@@ -32,6 +33,7 @@ RSpec.describe Ci::Sources::Pipeline, feature_category: :continuous_integration 
 
   context 'loose foreign key on ci_sources_pipelines.project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
+      let(:lfk_column) { :project_id }
       let!(:parent) { create(:project, namespace: create(:group)) }
       let!(:model) { create(:ci_sources_pipeline, project: parent) }
     end

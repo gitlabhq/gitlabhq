@@ -10,10 +10,13 @@ module QA
       end
 
       it 'comments on an issue and edits the comment', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347978' do
-        Page::Project::Issue::Show.perform do |show|
-          first_version_of_comment = 'First version of the comment'
-          second_version_of_comment = 'Second version of the comment'
+        first_version_of_comment = 'First version of the comment'
+        second_version_of_comment = 'Second version of the comment'
 
+        work_item_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
+        page_type = work_item_enabled ? Page::Project::WorkItem::Show : Page::Project::Issue::Show
+
+        page_type.perform do |show|
           show.comment(first_version_of_comment)
 
           expect(show).to have_comment(first_version_of_comment)

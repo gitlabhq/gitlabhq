@@ -8,15 +8,6 @@ description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41585
 milestone: '13.4'
 gitlab_schema: gitlab_ci
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: build_id
-        table: p_ci_builds
-        sharding_key: project_id
-        belongs_to: build
-        foreign_key_name: fk_861cd17da3_p
-desired_sharding_key_migration_job_name: BackfillCiBuildPendingStatesProjectId
 table_size: small
+sharding_key:
+  project_id: projects

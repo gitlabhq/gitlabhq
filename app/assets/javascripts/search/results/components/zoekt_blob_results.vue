@@ -5,7 +5,7 @@ import { mapState, mapActions } from 'vuex';
 import BlobHeader from '~/search/results/components/blob_header.vue';
 import BlobFooter from '~/search/results/components/blob_footer.vue';
 import BlobBody from '~/search/results/components/blob_body.vue';
-import EmptyResult from '~/search/results/components/result_empty.vue';
+
 import {
   getSystemColorScheme,
   listenSystemColorSchemeChange,
@@ -22,7 +22,6 @@ export default {
     BlobFooter,
     BlobBody,
     GlPagination,
-    EmptyResult,
     GlLoadingIcon,
   },
   props: {
@@ -97,10 +96,9 @@ export default {
       <gl-card
         v-for="(file, index) in blobSearch.files"
         :key="projectPathAndFilePath(file)"
-        class="file-result-holder file-holder gl-my-5"
+        class="gl-my-5"
         :header-class="{
           '!gl-border-b-0': !hasCode(file),
-          'file-title': true,
         }"
         body-class="gl-p-0"
       >
@@ -126,7 +124,6 @@ export default {
         </template>
       </gl-card>
     </div>
-    <empty-result v-else-if="!hasResults && !isLoading" />
     <template v-if="hasResults && !isLoading">
       <gl-pagination
         v-model="pagination"

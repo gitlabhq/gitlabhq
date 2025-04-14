@@ -62,9 +62,7 @@ module Mutations
             GitlabSchema.find_by_gid(args[:target_id])
           )
 
-          if target.nil?
-            raise Gitlab::Graphql::Errors::ResourceNotAvailable, "Resource not available: #{args[:target_id]}"
-          end
+          raise_resource_not_available_error! "Resource not available: #{args[:target_id]}" if target.nil?
 
           finder_params[:type] = target.class.name
           finder_params[:target_id] = target.id

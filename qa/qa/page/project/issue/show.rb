@@ -18,10 +18,20 @@ module QA
             element 'remove-related-issue-button'
           end
 
+          view 'app/assets/javascripts/issues/show/components/description.vue' do
+            element 'gfm-content'
+          end
+
+          view 'app/assets/javascripts/issues/show/components/edit_actions.vue' do
+            element 'issuable-save-button'
+          end
+
           view 'app/assets/javascripts/issues/show/components/header_actions.vue' do
-            element 'toggle-issue-state-button'
-            element 'desktop-dropdown'
             element 'delete-issue-button'
+            element 'desktop-dropdown'
+            element 'edit-button'
+            element 'issue-header'
+            element 'toggle-issue-state-button'
           end
 
           view 'app/assets/javascripts/related_issues/components/related_issues_block.vue' do
@@ -31,6 +41,19 @@ module QA
           view 'app/assets/javascripts/related_issues/components/related_issues_list.vue' do
             element 'related-issuable-content'
             element 'related-issues-loading-placeholder'
+          end
+
+          def work_item_enabled?
+            Page::Project::Issue::Index.perform(&:work_item_enabled?)
+          end
+
+          def edit_description(new_description)
+            within_element('issue-header') do
+              click_element('edit-button')
+            end
+
+            fill_element('markdown-editor-form-field', new_description)
+            click_element('issuable-save-button')
           end
 
           def relate_issue(issue)
@@ -59,6 +82,10 @@ module QA
             click_element('toggle-issue-state-button', text: 'Close issue')
           end
 
+          def has_description?(description)
+            find_element('gfm-content').text.include?(description)
+          end
+
           def has_reopen_issue_button?
             open_actions_dropdown
             has_element?('toggle-issue-state-button', text: 'Reopen issue')
@@ -74,9 +101,13 @@ module QA
             has_no_element?('delete-issue-button')
           end
 
+          def has_issue_title?(title)
+            wait_for_requests
+            find_element('issue-title').text.include?(title)
+          end
+
           def delete_issue
             has_delete_issue_button?
-
             click_element(
               'delete-issue-button',
               Page::Modal::DeleteIssue,
@@ -89,8 +120,8 @@ module QA
           end
 
           def open_actions_dropdown
-            # We use find here because these are gitlab-ui elements
             wait_for_requests
+            # We use find here because these are gitlab-ui elements
             find('[data-testid="desktop-dropdown"] > button').click
           end
         end

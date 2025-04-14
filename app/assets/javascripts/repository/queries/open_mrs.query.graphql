@@ -18,7 +18,11 @@ query getOpenMrsForBlobPath(
         id
         iid
         title
+        webUrl
         createdAt
+        author {
+          ...User
+        }
         assignees {
           nodes {
             ...User

@@ -89,3 +89,48 @@ export const crmContactsMock = [
     set: undefined, // On purpose
   },
 ];
+
+export const mockIssues = [
+  {
+    title: 'Issue 1',
+    iid: 1,
+    reference: 'group/project#1',
+    workItemType: { iconName: 'issues' },
+  },
+  {
+    title: 'Issue 2',
+    iid: 2,
+    reference: 'group/project#2',
+    workItemType: { iconName: 'issues' },
+  },
+];
+
+export const mockAssignees = [
+  {
+    __typename: 'UserCore',
+    id: 'gid://gitlab/User/1',
+    avatarUrl: '',
+    name: 'Administrator',
+    username: 'root',
+    webUrl: 'http://127.0.0.1:3000/root',
+    webPath: '/root',
+  },
+  {
+    __typename: 'UserCore',
+    id: 'gid://gitlab/User/9',
+    avatarUrl: '',
+    name: 'Carla Weissnat',
+    username: 'milford',
+    webUrl: 'http://127.0.0.1:3000/milford',
+    webPath: '/milford',
+  },
+  {
+    __typename: 'UserCore',
+    id: 'gid://gitlab/User/16',
+    avatarUrl: '',
+    name: 'Carol Hagenes',
+    username: 'nancee_simonis',
+    webUrl: 'http://127.0.0.1:3000/nancee_simonis',
+    webPath: '/nancee_simonis',
+  },
+];

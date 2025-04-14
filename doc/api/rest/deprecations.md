@@ -138,7 +138,7 @@ instead. If you supply values to both fields, the `require_reauthentication_to_a
 
 The `require_password_to_approve` field will be removed in v5 of the GitLab REST API.
 
-## Pull mirroring configuration with Project API
+## Pull mirroring configuration with the projects API endpoint
 
 Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/494294).
 
@@ -146,3 +146,10 @@ In GitLab 17.6, the [pull mirroring configuration with the Projects API](../proj
 It is replaced by a new configuration and endpoint, [`projects/:id/mirror/pull`](../project_pull_mirroring.md#configure-pull-mirroring-for-a-project).
 
 The previous configuration using the Projects API will be removed in v5 of the GitLab REST API.
+
+## `restrict_user_defined_variables` parameter with the projects API endpoint
+
+In GitLab 17.7, the [`restrict_user_defined_variables` parameter in Projects API](../projects.md#edit-a-project)
+is deprecated in favour of using only `ci_pipeline_variables_minimum_override_role`.
+
+To match the same behavior of `restrict_user_defined_variables: false` set `ci_pipeline_variables_minimum_override_role` as `developer`.

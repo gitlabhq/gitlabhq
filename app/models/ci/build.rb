@@ -179,7 +179,6 @@ module Ci
     scope :with_pipeline_locked_artifacts, -> { joins(:pipeline).where('pipeline.locked': Ci::Pipeline.lockeds[:artifacts_locked]) }
     scope :last_month, -> { where('created_at > ?', Date.today - 1.month) }
     scope :scheduled_actions, -> { where(when: :delayed, status: COMPLETED_STATUSES + %i[scheduled]) }
-    scope :ref_protected, -> { where(protected: true) }
     scope :with_live_trace, -> { where_exists(Ci::BuildTraceChunk.scoped_build) }
     scope :with_stale_live_trace, -> { with_live_trace.finished_before(12.hours.ago) }
     scope :finished_before, ->(date) { finished.where('finished_at < ?', date) }
@@ -417,6 +416,10 @@ module Ci
     # but only a Ci::Build will transition to `canceling`` via `.cancel`
     def supports_canceling?
       cancel_gracefully?
+    end
+
+    def cancel_gracefully?
+      !!runner_manager&.supports_after_script_on_cancel?
     end
 
     def supports_force_cancel?
@@ -751,15 +754,6 @@ module Ci
 
     def needs_touch?
       Time.current - updated_at > 15.minutes.to_i
-    end
-
-    def valid_token?(token)
-      jwt = ::Ci::JobToken::Jwt.decode(token)
-      if jwt
-        jwt.job == self
-      else
-        self.token && token.present? && ActiveSupport::SecurityUtils.secure_compare(token, self.token)
-      end
     end
 
     def remove_token!

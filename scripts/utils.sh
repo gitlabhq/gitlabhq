@@ -104,7 +104,8 @@ function bundle_install_script() {
   echo "${BUNDLE_WITHOUT}"
   bundle config
 
-  run_timed_command "bundle install ${BUNDLE_INSTALL_FLAGS} ${extra_install_args}"
+  # Call `eval` explicitly to run the shell functions stored inside BUNDLE_INSTALL_FLAGS
+  eval "bundle install ${BUNDLE_INSTALL_FLAGS} ${extra_install_args}"
 
   if [[ $(bundle info pg) ]]; then
     # Bundler will complain about replacing gems in world-writeable directories, so lock down access.
@@ -113,7 +114,7 @@ function bundle_install_script() {
     # When we test multiple versions of PG in the same pipeline, we have a single `setup-test-env`
     # job but the `pg` gem needs to be rebuilt since it includes extensions (https://guides.rubygems.org/gems-with-extensions).
     # Uncomment the following line if multiple versions of PG are tested in the same pipeline.
-    run_timed_command "bundle pristine pg"
+    bundle pristine pg
   fi
 
   section_end "bundle-install"
@@ -221,20 +222,20 @@ function setup_db() {
 }
 
 function install_gitlab_gem() {
-  run_timed_command "gem install httparty --no-document --version 0.20.0"
-  run_timed_command "gem install gitlab --no-document --version 4.19.0"
+  gem install httparty --no-document --version 0.20.0
+  gem install gitlab --no-document --version 4.19.0
 }
 
 function install_tff_gem() {
-  run_timed_command "gem install test_file_finder --no-document --version 0.3.1"
+  gem install test_file_finder --no-document --version 0.3.1
 }
 
 function install_activesupport_gem() {
-  run_timed_command "gem install activesupport --no-document --version 7.0.8.4"
+  gem install activesupport --no-document --version 7.0.8.4
 }
 
 function install_junit_merge_gem() {
-  run_timed_command "gem install junit_merge --no-document --version 0.1.2"
+  gem install junit_merge --no-document --version 0.1.2
 }
 
 function select_existing_files() {
@@ -371,7 +372,6 @@ function fail_pipeline_early() {
   fi
 }
 
-# We're inlining this function in `.gitlab/ci/test-on-omnibus/main.gitlab-ci.yml` so make sure to reflect any changes there
 function assets_image_tag() {
   local cache_assets_hash_file="cached-assets-hash.txt"
 
@@ -543,25 +543,29 @@ function log_disk_usage() {
 
 # all functions below are for customizing CI job exit code
 function run_with_custom_exit_code() {
-  set +e # temporarily disable exit on error to prevent premature exit
+  "$@"
 
-  # runs command passed in as argument, save standard error and standard output
-  output=$(set -e; "$@" 2>&1)
-  initial_exit_code=$?
+  # set -o pipefail # Take the exit status of the rightmost command that failed
+  # set +e          # temporarily disable exit on error to prevent premature exit
 
-  echo "initial_exit_code: $initial_exit_code"
+  # local trace_file="/tmp/stdout_stderr_log.out"
 
-  local trace_file="stdout_stderr_log.out"
+  # # Run the command and tee output to both the terminal and the file
+  # "$@" 2>&1 | tee "$trace_file"
+  # initial_exit_code=$?
 
-  echo "$output" | tee "$trace_file"
+  # echo "initial_exit_code: $initial_exit_code"
 
-  find_custom_exit_code "$initial_exit_code" "$trace_file"
-  new_exit_code=$?
+  # find_custom_exit_code "$initial_exit_code" "$trace_file"
+  # new_exit_code=$?
 
-  echo "new_exit_code=$new_exit_code"
-  set -e
+  # echo "new_exit_code=$new_exit_code"
 
-  exit "$new_exit_code"
+  # # Restore shell default behavior
+  # set -e
+  # set +o pipefail
+
+  # exit "$new_exit_code"
 }
 
 function find_custom_exit_code() {

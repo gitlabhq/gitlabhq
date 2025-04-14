@@ -20,10 +20,11 @@ describe('~/access_tokens/components/access_token_table_app', () => {
   const accessTokenTypePlural = 'personal access tokens';
   const noActiveTokensMessage = 'This user has no active personal access tokens.';
   const showRole = false;
+  const tokenNameWithHtmlEntities = "John's & ¥200<>";
 
   const defaultActiveAccessTokens = [
     {
-      name: 'a',
+      name: tokenNameWithHtmlEntities,
       description: 'Test description',
       scopes: ['api'],
       created_at: '2021-05-01T00:00:00.000Z',
@@ -211,7 +212,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       expect(cells).toHaveLength(18);
 
       // First row
-      expect(cells.at(0).text()).toBe('a');
+      expect(cells.at(0).text()).toBe(tokenNameWithHtmlEntities);
       expect(cells.at(1).text()).toBe('Test description');
       expect(cells.at(2).text()).toBe('api');
       expect(cells.at(3).text()).not.toBe('Never');
@@ -222,13 +223,18 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       let buttons = cells.at(8).findAllComponents(GlButton);
       expect(buttons).toHaveLength(2);
       expect(buttons.at(0).attributes()).toMatchObject({
-        'aria-label': `Revoke ${defaultActiveAccessTokens[0].name}`,
+        'aria-label': sprintf(
+          'Revoke %{tokenName}',
+          { tokenName: tokenNameWithHtmlEntities },
+          false,
+        ),
         title: 'Revoke',
         'data-testid': 'revoke-button',
         href: '/-/user_settings/personal_access_tokens/1/revoke',
         'data-confirm': sprintf(
           'Are you sure you want to revoke the %{accessTokenType} "%{tokenName}"? This action cannot be undone. Any tools that rely on this access token will stop working.',
-          { accessTokenType, tokenName: 'a' },
+          { accessTokenType, tokenName: tokenNameWithHtmlEntities },
+          false,
         ),
       });
       expect(buttons.at(0).props('category')).toBe('tertiary');
@@ -272,7 +278,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       });
       const cells = findCells();
       expect(cells).toHaveLength(16);
-      expect(cells.at(0).text()).toBe('a');
+      expect(cells.at(0).text()).toBe(tokenNameWithHtmlEntities);
       expect(cells.at(8).text()).toBe('b');
       expect(createAlert).not.toHaveBeenCalled();
     });
@@ -370,7 +376,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       const cells = findCells();
 
       // First and second rows
-      expect(cells.at(0).text()).toBe('a');
+      expect(cells.at(0).text()).toBe(tokenNameWithHtmlEntities);
       expect(cells.at(9).text()).toBe('b');
 
       const headers = findHeaders();
@@ -378,8 +384,8 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       await headers.at(0).trigger('click');
 
       // First and second rows have swapped
-      expect(cells.at(0).text()).toBe('b');
-      expect(cells.at(9).text()).toBe('a');
+      expect(cells.at(0).text()).toBe(tokenNameWithHtmlEntities);
+      expect(cells.at(9).text()).toBe('b');
     });
 
     it('sorts rows by date', async () => {
@@ -451,7 +457,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       const cells = findCells();
 
       // First and second rows
-      expect(cells.at(0).text()).toBe('a');
+      expect(cells.at(0).text()).toBe(tokenNameWithHtmlEntities);
       expect(cells.at(9).text()).toBe('b');
 
       const headers = findHeaders();
@@ -459,7 +465,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       await headers.at(0).trigger('click');
 
       // First and second rows are not swapped
-      expect(cells.at(0).text()).toBe('a');
+      expect(cells.at(0).text()).toBe(tokenNameWithHtmlEntities);
       expect(cells.at(9).text()).toBe('b');
     });
 

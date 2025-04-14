@@ -33,14 +33,14 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
   it 'has a page title set' do
     visit_container_registry
 
-    expect(page).to have_title _('Container Registry')
+    expect(page).to have_title _('Container registry')
   end
 
   it 'sidebar menu is open' do
     visit_container_registry
 
     expect(page).to have_active_navigation('Deploy')
-    expect(page).to have_active_sub_navigation('Container Registry')
+    expect(page).to have_active_sub_navigation('Container registry')
   end
 
   context 'when there are no image repositories' do

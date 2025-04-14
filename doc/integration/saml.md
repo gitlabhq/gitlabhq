@@ -74,7 +74,7 @@ For more information on:
        label: "Provider name", # optional label for login button, defaults to "Saml"
        args: {
          assertion_consumer_service_url: "https://gitlab.example.com/users/auth/saml/callback",
-         idp_cert_fingerprint: "43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8",
+         idp_cert_fingerprint: "2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6",
          idp_sso_target_url: "https://login.example.com/idp",
          issuer: "https://gitlab.example.com",
          name_identifier_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
@@ -83,18 +83,15 @@ For more information on:
    ]
    ```
 
-   Where:
+   | Argument                         | Description |
+   | -------------------------------- | ----------- |
+   | `assertion_consumer_service_url` | The GitLab HTTPS endpoint (append `/users/auth/saml/callback` to the HTTPS URL of your GitLab installation). |
+   | `idp_cert_fingerprint`           | Your IdP value. To generate the SHA256 fingerprint from the certificate, see [calculate the fingerprint](../user/group/saml_sso/troubleshooting.md#calculate-the-fingerprint). |
+   | `idp_sso_target_url`             | Your IdP value. |
+   | `issuer`                         | Change to a unique name, which identifies the application to the IdP. |
+   | `name_identifier_format`         | Your IdP value. |
 
-   - `assertion_consumer_service_url`: The GitLab HTTPS endpoint
-     (append `/users/auth/saml/callback` to the HTTPS URL of your GitLab installation).
-   - `idp_cert_fingerprint`: Your IdP value. It must be a SHA1 fingerprint.
-     For more information on these values, see the
-     [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml).
-     For more information on other configuration settings, see
-     [configuring SAML on your IdP](#configure-saml-on-your-idp).
-   - `idp_sso_target_url`: Your IdP value.
-   - `issuer`: Change to a unique name, which identifies the application to the IdP.
-   - `name_identifier_format`: Your IdP value.
+   For more information on these values, see the [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml). For more information on other configuration settings, see [configuring SAML on your IdP](#configure-saml-on-your-idp).
 
 1. Save the file and reconfigure GitLab:
 
@@ -158,24 +155,21 @@ For more information on:
    label: 'Provider name' # optional label for login button, defaults to "Saml"
    args:
      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback'
-     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8'
+     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6'
      idp_sso_target_url: 'https://login.example.com/idp'
      issuer: 'https://gitlab.example.com'
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
    ```
 
-   Where:
+   | Argument                         | Description |
+   | -------------------------------- | ----------- |
+   | `assertion_consumer_service_url` | The GitLab HTTPS endpoint (append `/users/auth/saml/callback` to the HTTPS URL of your GitLab installation). |
+   | `idp_cert_fingerprint`           | Your IdP value. To generate the SHA256 fingerprint from the certificate, see [calculate the fingerprint](../user/group/saml_sso/troubleshooting.md#calculate-the-fingerprint). |
+   | `idp_sso_target_url`             | Your IdP value. |
+   | `issuer`                         | Change to a unique name, which identifies the application to the IdP. |
+   | `name_identifier_format`         | Your IdP value. |
 
-   - `assertion_consumer_service_url`: The GitLab HTTPS endpoint
-     (append `/users/auth/saml/callback` to the HTTPS URL of your GitLab installation).
-   - `idp_cert_fingerprint`: Your IdP value. It must be a SHA1 fingerprint.
-     For more information on these values, see the
-     [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml).
-     For more information on other configuration settings, see
-     [configuring SAML on your IdP](#configure-saml-on-your-idp).
-   - `idp_sso_target_url`: Your IdP value.
-   - `issuer`: Change to a unique name, which identifies the application to the IdP.
-   - `name_identifier_format`: Your IdP value.
+   For more information on these values, see the [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml). For more information on other configuration settings, see [configuring SAML on your IdP](#configure-saml-on-your-idp).
 
 1. Create the Kubernetes Secret:
 
@@ -258,7 +252,7 @@ For more information on:
                label: "Provider name", # optional label for login button, defaults to "Saml"
                args: {
                  assertion_consumer_service_url: "https://gitlab.example.com/users/auth/saml/callback",
-                 idp_cert_fingerprint: "43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8",
+                 idp_cert_fingerprint: "2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6",
                  idp_sso_target_url: "https://login.example.com/idp",
                  issuer: "https://gitlab.example.com",
                  name_identifier_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
@@ -267,18 +261,15 @@ For more information on:
            ]
    ```
 
-   Where:
+   | Argument                         | Description |
+   | -------------------------------- | ----------- |
+   | `assertion_consumer_service_url` | The GitLab HTTPS endpoint (append `/users/auth/saml/callback` to the HTTPS URL of your GitLab installation). |
+   | `idp_cert_fingerprint`           | Your IdP value. To generate the SHA256 fingerprint from the certificate, see [calculate the fingerprint](../user/group/saml_sso/troubleshooting.md#calculate-the-fingerprint). |
+   | `idp_sso_target_url`             | Your IdP value. |
+   | `issuer`                         | Change to a unique name, which identifies the application to the IdP. |
+   | `name_identifier_format`         | Your IdP value. |
 
-   - `assertion_consumer_service_url`: The GitLab HTTPS endpoint
-     (append `/users/auth/saml/callback` to the HTTPS URL of your GitLab installation).
-   - `idp_cert_fingerprint`: Your IdP value. It must be a SHA1 fingerprint.
-     For more information on these values, see the
-     [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml).
-     For more information on other configuration settings, see
-     [configuring SAML on your IdP](#configure-saml-on-your-idp).
-   - `idp_sso_target_url`: Your IdP value.
-   - `issuer`: Change to a unique name, which identifies the application to the IdP.
-   - `name_identifier_format`: Your IdP value.
+   For more information on these values, see the [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml). For more information on other configuration settings, see [configuring SAML on your IdP](#configure-saml-on-your-idp).
 
 1. Save the file and restart GitLab:
 
@@ -336,7 +327,7 @@ For more information on:
          label: 'Provider name', # optional label for login button, defaults to "Saml"
          args: {
            assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-           idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+           idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
            idp_sso_target_url: 'https://login.example.com/idp',
            issuer: 'https://gitlab.example.com',
            name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -344,18 +335,15 @@ For more information on:
        }
    ```
 
-   Where:
+   | Argument                         | Description |
+   | -------------------------------- | ----------- |
+   | `assertion_consumer_service_url` | The GitLab HTTPS endpoint (append `/users/auth/saml/callback` to the HTTPS URL of your GitLab installation). |
+   | `idp_cert_fingerprint`           | Your IdP value. To generate the SHA256 fingerprint from the certificate, see [calculate the fingerprint](../user/group/saml_sso/troubleshooting.md#calculate-the-fingerprint). |
+   | `idp_sso_target_url`             | Your IdP value. |
+   | `issuer`                         | Change to a unique name, which identifies the application to the IdP. |
+   | `name_identifier_format`         | Your IdP value. |
 
-   - `assertion_consumer_service_url`: The GitLab HTTPS endpoint
-     (append `/users/auth/saml/callback` to the HTTPS URL of your GitLab installation).
-   - `idp_cert_fingerprint`: Your IdP value. It must be a SHA1 fingerprint.
-     For more information on these values, see the
-     [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml).
-     For more information on other configuration settings, see
-     [configuring SAML on your IdP](#configure-saml-on-your-idp).
-   - `idp_sso_target_url`: Your IdP value.
-   - `issuer`: Change to a unique name, which identifies the application to the IdP.
-   - `name_identifier_format`: Your IdP value.
+   For more information on these values, see the [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml). For more information on other configuration settings, see [configuring SAML on your IdP](#configure-saml-on-your-idp).
 
 1. Save the file and restart GitLab:
 
@@ -720,10 +708,11 @@ To set up a Google Workspace:
 
 When configuring the Google Workspace SAML application, record the following information:
 
-|             | Value        | Description                                                                       |
-|-------------|--------------|-----------------------------------------------------------------------------------|
-| SSO URL     | Depends      | Google Identity Provider details. Set to the GitLab `idp_sso_target_url` setting. |
-| Certificate | Downloadable | Run `openssl x509 -in <your_certificate.crt> -noout -fingerprint -sha1` to generate the SHA1 fingerprint that can be used in the `idp_cert_fingerprint` setting.                         |
+|                    | Value        | Description |
+| ------------------ | ------------ | ----------- |
+| SSO URL            | Depends      | Google Identity Provider details. Set to the GitLab `idp_sso_target_url` setting. |
+| Certificate        | Downloadable | Google SAML certificate. |
+| SHA256 fingerprint | Depends      | Available when you download the certificate. To generate the SHA256 fingerprint from the certificate, see [calculate the fingerprint](../user/group/saml_sso/troubleshooting.md#calculate-the-fingerprint). |
 
 Google Workspace Administrator also provides the IdP metadata, Entity ID, and SHA-256
 fingerprint. However, GitLab does not need this information to connect to the
@@ -940,7 +929,7 @@ If the attribute specified in `groups_attribute` is incorrect or missing then al
        required_groups: ['Developers', 'Freelancers', 'Admins', 'Auditors'],
        args: {
                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-               idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+               idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                idp_sso_target_url: 'https://login.example.com/idp',
                issuer: 'https://gitlab.example.com',
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -969,7 +958,7 @@ If the attribute specified in `groups_attribute` is incorrect or missing then al
    required_groups: ['Developers', 'Freelancers', 'Admins', 'Auditors']
    args:
      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback'
-     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8'
+     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6'
      idp_sso_target_url: 'https://login.example.com/idp'
      issuer: 'https://gitlab.example.com'
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1022,7 +1011,7 @@ If the attribute specified in `groups_attribute` is incorrect or missing then al
                 required_groups: ['Developers', 'Freelancers', 'Admins', 'Auditors'],
                 args: {
                         assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                        idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                         idp_sso_target_url: 'https://login.example.com/idp',
                         issuer: 'https://gitlab.example.com',
                         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1053,7 +1042,7 @@ If the attribute specified in `groups_attribute` is incorrect or missing then al
              required_groups: ['Developers', 'Freelancers', 'Admins', 'Auditors'],
              args: {
                      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                      idp_sso_target_url: 'https://login.example.com/idp',
                      issuer: 'https://gitlab.example.com',
                      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1111,7 +1100,7 @@ Example configuration:
        external_groups: ['Freelancers'],
        args: {
                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-               idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+               idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                idp_sso_target_url: 'https://login.example.com/idp',
                issuer: 'https://gitlab.example.com',
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1140,7 +1129,7 @@ Example configuration:
    external_groups: ['Freelancers']
    args:
      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback'
-     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8'
+     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6'
      idp_sso_target_url: 'https://login.example.com/idp'
      issuer: 'https://gitlab.example.com'
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1193,7 +1182,7 @@ Example configuration:
                external_groups: ['Freelancers'],
                args: {
                        assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                       idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                       idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                        idp_sso_target_url: 'https://login.example.com/idp',
                        issuer: 'https://gitlab.example.com',
                        name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1224,7 +1213,7 @@ Example configuration:
               external_groups: ['Freelancers'],
               args: {
                       assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                      idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                      idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                       idp_sso_target_url: 'https://login.example.com/idp',
                       issuer: 'https://gitlab.example.com',
                       name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1275,7 +1264,7 @@ Example configuration:
        admin_groups: ['Admins'],
        args: {
                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-               idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+               idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                idp_sso_target_url: 'https://login.example.com/idp',
                issuer: 'https://gitlab.example.com',
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1304,7 +1293,7 @@ Example configuration:
    admin_groups: ['Admins']
    args:
      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback'
-     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8'
+     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6'
      idp_sso_target_url: 'https://login.example.com/idp'
      issuer: 'https://gitlab.example.com'
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1357,7 +1346,7 @@ Example configuration:
                 admin_groups: ['Admins'],
                 args: {
                         assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                        idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                         idp_sso_target_url: 'https://login.example.com/idp',
                         issuer: 'https://gitlab.example.com',
                         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1388,7 +1377,7 @@ Example configuration:
              admin_groups: ['Admins'],
              args: {
                      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                      idp_sso_target_url: 'https://login.example.com/idp',
                      issuer: 'https://gitlab.example.com',
                      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1446,7 +1435,7 @@ Example configuration:
        auditor_groups: ['Auditors'],
        args: {
                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-               idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+               idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                idp_sso_target_url: 'https://login.example.com/idp',
                issuer: 'https://gitlab.example.com',
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1475,7 +1464,7 @@ Example configuration:
    auditor_groups: ['Auditors']
    args:
      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback'
-     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8'
+     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6'
      idp_sso_target_url: 'https://login.example.com/idp'
      issuer: 'https://gitlab.example.com'
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1528,7 +1517,7 @@ Example configuration:
                 auditor_groups: ['Auditors'],
                 args: {
                         assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                        idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                         idp_sso_target_url: 'https://login.example.com/idp',
                         issuer: 'https://gitlab.example.com',
                         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1559,7 +1548,7 @@ Example configuration:
              auditor_groups: ['Auditors'],
              args: {
                      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                      idp_sso_target_url: 'https://login.example.com/idp',
                      issuer: 'https://gitlab.example.com',
                      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1623,7 +1612,7 @@ list.
           label: 'Our SAML Provider',
           args: {
                   assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                  idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                  idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                   idp_sso_target_url: 'https://login.example.com/idp',
                   issuer: 'https://gitlab.example.com',
                   name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -1656,7 +1645,7 @@ list.
       label: 'Our SAML Provider'
       args:
         assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback'
-        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8'
+        idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6'
         idp_sso_target_url: 'https://login.example.com/idp'
         issuer: 'https://gitlab.example.com'
         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1711,7 +1700,7 @@ list.
                    label: 'Our SAML Provider',
                    args: {
                            assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                           idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                           idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                            idp_sso_target_url: 'https://login.example.com/idp',
                            issuer: 'https://gitlab.example.com',
                            name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1746,7 +1735,7 @@ list.
                 label: 'Our SAML Provider',
                 args: {
                         assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                        idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                         idp_sso_target_url: 'https://login.example.com/idp',
                         issuer: 'https://gitlab.example.com',
                         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1798,7 +1787,7 @@ An example configuration:
        label: 'Our SAML Provider',
        args: {
                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-               idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+               idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                idp_sso_target_url: 'https://login.example.com/idp',
                issuer: 'https://gitlab.example.com',
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1825,7 +1814,7 @@ An example configuration:
    label: 'Our SAML Provider'
    args:
      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback'
-     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8'
+     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6'
      idp_sso_target_url: 'https://login.example.com/idp'
      issuer: 'https://gitlab.example.com'
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1876,7 +1865,7 @@ An example configuration:
                 label: 'Our SAML Provider',
                 args: {
                         assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                        idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                         idp_sso_target_url: 'https://login.example.com/idp',
                         issuer: 'https://gitlab.example.com',
                         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1905,7 +1894,7 @@ An example configuration:
              label: 'Our SAML Provider',
              args: {
                      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                      idp_sso_target_url: 'https://login.example.com/idp',
                      issuer: 'https://gitlab.example.com',
                      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -2237,7 +2226,7 @@ instead of `email`, let GitLab know by setting it on your configuration:
        label: 'Our SAML Provider',
        args: {
                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-               idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+               idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                idp_sso_target_url: 'https://login.example.com/idp',
                issuer: 'https://gitlab.example.com',
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -2265,7 +2254,7 @@ instead of `email`, let GitLab know by setting it on your configuration:
    label: 'Our SAML Provider'
    args:
      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback'
-     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8'
+     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6'
      idp_sso_target_url: 'https://login.example.com/idp'
      issuer: 'https://gitlab.example.com'
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -2318,7 +2307,7 @@ instead of `email`, let GitLab know by setting it on your configuration:
                 label: 'Our SAML Provider',
                 args: {
                         assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                        idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                         idp_sso_target_url: 'https://login.example.com/idp',
                         issuer: 'https://gitlab.example.com',
                         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -2348,7 +2337,7 @@ instead of `email`, let GitLab know by setting it on your configuration:
              label: 'Our SAML Provider',
              args: {
                      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                      idp_sso_target_url: 'https://login.example.com/idp',
                      issuer: 'https://gitlab.example.com',
                      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -2390,7 +2379,7 @@ Configure [`username` or `nickname`](omniauth.md#per-provider-configuration) in 
        label: 'Our SAML Provider',
        args: {
                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-               idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+               idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                idp_sso_target_url: 'https://login.example.com/idp',
                issuer: 'https://gitlab.example.com',
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -2418,7 +2407,7 @@ Configure [`username` or `nickname`](omniauth.md#per-provider-configuration) in 
    label: 'Our SAML Provider'
    args:
      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback'
-     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8'
+     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6'
      idp_sso_target_url: 'https://login.example.com/idp'
      issuer: 'https://gitlab.example.com'
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -2473,7 +2462,7 @@ Configure [`username` or `nickname`](omniauth.md#per-provider-configuration) in 
                 required_groups: ['Developers', 'Freelancers', 'Admins', 'Auditors'],
                 args: {
                         assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                        idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                         idp_sso_target_url: 'https://login.example.com/idp',
                         issuer: 'https://gitlab.example.com',
                         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -2505,7 +2494,7 @@ Configure [`username` or `nickname`](omniauth.md#per-provider-configuration) in 
              required_groups: ['Developers', 'Freelancers', 'Admins', 'Auditors'],
              args: {
                      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                      idp_sso_target_url: 'https://login.example.com/idp',
                      issuer: 'https://gitlab.example.com',
                      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -2560,7 +2549,7 @@ These attributes have no default mappings and do not sync unless explicitly conf
        label: 'Our SAML Provider',
        args: {
                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-               idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+               idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                idp_sso_target_url: 'https://login.example.com/idp',
                issuer: 'https://gitlab.example.com',
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -2592,7 +2581,7 @@ These attributes have no default mappings and do not sync unless explicitly conf
    label: 'Our SAML Provider'
    args:
      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback'
-     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8'
+     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6'
      idp_sso_target_url: 'https://login.example.com/idp'
      issuer: 'https://gitlab.example.com'
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -2647,7 +2636,7 @@ These attributes have no default mappings and do not sync unless explicitly conf
                 label: 'Our SAML Provider',
                 args: {
                         assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                        idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                         idp_sso_target_url: 'https://login.example.com/idp',
                         issuer: 'https://gitlab.example.com',
                         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -2681,7 +2670,7 @@ These attributes have no default mappings and do not sync unless explicitly conf
              label: 'Our SAML Provider',
              args: {
                      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                      idp_sso_target_url: 'https://login.example.com/idp',
                      issuer: 'https://gitlab.example.com',
                      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -2728,7 +2717,7 @@ The value given is added to the current time at which the response is validated.
        required_groups: ['Developers', 'Freelancers', 'Admins', 'Auditors'],
        args: {
                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-               idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+               idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                idp_sso_target_url: 'https://login.example.com/idp',
                issuer: 'https://gitlab.example.com',
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -2758,7 +2747,7 @@ The value given is added to the current time at which the response is validated.
    required_groups: ['Developers', 'Freelancers', 'Admins', 'Auditors']
    args:
      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback'
-     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8'
+     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6'
      idp_sso_target_url: 'https://login.example.com/idp'
      issuer: 'https://gitlab.example.com'
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -2812,7 +2801,7 @@ The value given is added to the current time at which the response is validated.
                 required_groups: ['Developers', 'Freelancers', 'Admins', 'Auditors'],
                 args: {
                         assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                        idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                         idp_sso_target_url: 'https://login.example.com/idp',
                         issuer: 'https://gitlab.example.com',
                         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -2844,7 +2833,7 @@ The value given is added to the current time at which the response is validated.
              required_groups: ['Developers', 'Freelancers', 'Admins', 'Auditors'],
              args: {
                      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                      idp_sso_target_url: 'https://login.example.com/idp',
                      issuer: 'https://gitlab.example.com',
                      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -2895,7 +2884,7 @@ In the following example, the value of `uid` attribute in the SAML response is s
        label: 'Our SAML Provider',
        args: {
                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-               idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+               idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                idp_sso_target_url: 'https://login.example.com/idp',
                issuer: 'https://gitlab.example.com',
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -2925,7 +2914,7 @@ In the following example, the value of `uid` attribute in the SAML response is s
    required_groups: ['Developers', 'Freelancers', 'Admins', 'Auditors']
    args:
      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback'
-     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8'
+     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6'
      idp_sso_target_url: 'https://login.example.com/idp'
      issuer: 'https://gitlab.example.com'
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -2979,7 +2968,7 @@ In the following example, the value of `uid` attribute in the SAML response is s
                 required_groups: ['Developers', 'Freelancers', 'Admins', 'Auditors'],
                 args: {
                         assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                        idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                         idp_sso_target_url: 'https://login.example.com/idp',
                         issuer: 'https://gitlab.example.com',
                         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -3011,7 +3000,7 @@ In the following example, the value of `uid` attribute in the SAML response is s
              required_groups: ['Developers', 'Freelancers', 'Admins', 'Auditors'],
              args: {
                      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                      idp_sso_target_url: 'https://login.example.com/idp',
                      issuer: 'https://gitlab.example.com',
                      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -3075,7 +3064,7 @@ This makes the key file one long string with no line feeds.
        required_groups: ['Developers', 'Freelancers', 'Admins', 'Auditors'],
        args: {
                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-               idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+               idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                idp_sso_target_url: 'https://login.example.com/idp',
                issuer: 'https://gitlab.example.com',
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -3106,7 +3095,7 @@ This makes the key file one long string with no line feeds.
    required_groups: ['Developers', 'Freelancers', 'Admins', 'Auditors']
    args:
      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback'
-     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8'
+     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6'
      idp_sso_target_url: 'https://login.example.com/idp'
      issuer: 'https://gitlab.example.com'
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -3161,7 +3150,7 @@ This makes the key file one long string with no line feeds.
                 required_groups: ['Developers', 'Freelancers', 'Admins', 'Auditors'],
                 args: {
                         assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                        idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                         idp_sso_target_url: 'https://login.example.com/idp',
                         issuer: 'https://gitlab.example.com',
                         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -3194,7 +3183,7 @@ This makes the key file one long string with no line feeds.
              required_groups: ['Developers', 'Freelancers', 'Admins', 'Auditors'],
              args: {
                      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                     idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                     idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                      idp_sso_target_url: 'https://login.example.com/idp',
                      issuer: 'https://gitlab.example.com',
                      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -3242,7 +3231,7 @@ To implement signing:
           label: 'Our SAML Provider',
           args: {
                   assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                  idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                  idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                   idp_sso_target_url: 'https://login.example.com/idp',
                   issuer: 'https://gitlab.example.com',
                   name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -3279,7 +3268,7 @@ To implement signing:
       label: 'Our SAML Provider'
       args:
         assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback'
-        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8'
+        idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6'
         idp_sso_target_url: 'https://login.example.com/idp'
         issuer: 'https://gitlab.example.com'
         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -3339,7 +3328,7 @@ To implement signing:
                    label: 'Our SAML Provider',
                    args: {
                            assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                           idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                           idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                            idp_sso_target_url: 'https://login.example.com/idp',
                            issuer: 'https://gitlab.example.com',
                            name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
@@ -3378,7 +3367,7 @@ To implement signing:
                 label: 'Our SAML Provider',
                 args: {
                         assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
-                        idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+                        idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
                         idp_sso_target_url: 'https://login.example.com/idp',
                         issuer: 'https://gitlab.example.com',
                         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',

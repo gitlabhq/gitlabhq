@@ -6,8 +6,10 @@ module WorkItems
       delegate :linked_work_items, to: :work_item
 
       def self.quick_action_commands
-        %i[blocks blocked_by relate unlink]
+        %i[relate unlink]
       end
     end
   end
 end
+
+::WorkItems::Widgets::LinkedItems.prepend_mod

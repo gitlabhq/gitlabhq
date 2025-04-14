@@ -515,7 +515,12 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   end
 
   describe '#assign_to' do
-    subject(:assign_to) { runner.assign_to(project) }
+    subject(:assign_to) do
+      runner.assign_to(project).tap do
+        # Ensure we're recomputing the owner value
+        runner.clear_memoization(:owner)
+      end
+    end
 
     context 'with instance runner' do
       let(:runner) { create(:ci_runner, :instance) }
@@ -540,9 +545,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       let_it_be_with_reload(:fallback_owner_project) { create(:project, group: group) }
 
       let(:associated_projects) { [owner_project, fallback_owner_project] }
-      let(:runner) { create(:ci_runner, :project, projects: associated_projects, tag_list: %w[tag1 tag2]) }
-      let(:runner_manager) { create(:ci_runner_machine, runner: runner) }
-      let(:runner_taggings) { runner.taggings }
+      let(:runner) { create(:ci_runner, :project, projects: associated_projects) }
 
       it 'assigns runner to project' do
         expect(assign_to).to be_truthy
@@ -551,53 +554,41 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         expect(runner.project_ids).to contain_exactly(project.id, owner_project.id, fallback_owner_project.id)
       end
 
-      it 'does not change sharding_key_id or owner' do
-        expect { assign_to }
-          .to not_change { runner.reload.sharding_key_id }.from(owner_project.id)
-          .and not_change { runner.owner }.from(owner_project)
-          .and not_change { runner_manager.reload.sharding_key_id }.from(owner_project.id)
-          .and not_change { runner.taggings.pluck(:sharding_key_id).uniq }.from([owner_project.id])
+      it 'does not change owner' do
+        expect { assign_to }.not_to change { runner.reload.owner }.from(owner_project)
       end
 
-      context 'when sharding_key_id does not point to an existing project' do
+      context 'when owner project does not exist' do
         subject(:assign_to) do
-          owner_project.destroy!
+          owner_project.destroy!.then do |project|
+            runner.runner_projects.where(project_id: project.id).delete_all
+            runner.reload
+            runner.clear_memoization(:owner)
+          end
 
           runner.assign_to(project)
         end
 
-        it 'changes sharding_key_id and owner to fallback owner project' do
-          expect { assign_to }
-            .to change { runner.reload.sharding_key_id }.from(owner_project.id).to(fallback_owner_project.id)
-            .and change { runner.owner }.from(owner_project).to(fallback_owner_project)
-            .and change { runner_manager.reload.sharding_key_id }.to(fallback_owner_project.id)
-            .and change { runner.taggings.pluck(:sharding_key_id).uniq }.to([fallback_owner_project.id])
+        it 'changes owner to fallback owner project' do
+          expect { assign_to }.to change { runner.owner }.from(owner_project).to(fallback_owner_project)
         end
 
         context 'and fallback does not exist' do
           let(:associated_projects) { [owner_project] }
 
-          it 'does not change sharding_key_id or owner' do
-            expect { assign_to }
-              .to not_change { runner.reload.sharding_key_id }.from(owner_project.id)
-              .and not_change { runner.owner }.from(owner_project)
-              .and not_change { runner_manager.reload.sharding_key_id }.from(owner_project.id)
-              .and not_change { runner.taggings.pluck(:sharding_key_id).uniq }.from([owner_project.id])
+          it 'changes owner to nil' do
+            expect { assign_to }.to change { runner.owner }.to(nil)
 
-            expect(runner.errors[:assign_to]).to contain_exactly('Runner is orphaned and no fallback owner exists')
+            expect(runner.errors[:assign_to]).to contain_exactly('Taking over an orphaned project runner is not allowed')
           end
         end
       end
 
       context 'when runner is not associated with any projects' do
-        let(:runner) { create(:ci_runner, :project, :without_projects, tag_list: %w[tag1 tag2]) }
+        let(:runner) { create(:ci_runner, :project, :without_projects) }
 
         it 'does not allow taking over project runner' do
-          expect { assign_to }
-            .to not_change { runner.reload.sharding_key_id }
-            .and not_change { runner.owner }
-            .and not_change { runner_manager.reload.sharding_key_id }
-            .and not_change { runner.taggings.pluck(:sharding_key_id).uniq }
+          expect { assign_to }.not_to change { runner.owner }.from(nil)
 
           expect(runner.errors[:assign_to]).to contain_exactly('Taking over an orphaned project runner is not allowed')
         end
@@ -995,39 +986,62 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   describe '#status', :freeze_time do
     let(:runner) { build(:ci_runner, *Array.wrap(traits)) }
 
-    subject { runner.status }
+    subject(:status) { runner.status }
 
-    context 'stale, never contacted' do
-      let(:traits) { %i[unregistered stale] }
+    context 'if unregistered' do
+      let(:traits) { :unregistered }
 
-      it { is_expected.to eq(:stale) }
+      it { is_expected.to eq(:never_contacted) }
 
-      context 'created recently, never contacted' do
+      context 'if created recently' do
         let(:traits) { %i[unregistered online] }
 
-        it { is_expected.to eq(:never_contacted) }
+        it { is_expected.to eq(:offline) }
+      end
+
+      context 'if stale' do
+        let(:traits) { %i[unregistered stale] }
+
+        it { is_expected.to eq(:stale) }
+
+        context 'created recently, never contacted', :clean_gitlab_redis_cache do
+          let(:traits) { %i[unregistered online] }
+
+          it { is_expected.to eq(:offline) }
+
+          context "when cache contains 'finished' creation_state" do
+            before do
+              Gitlab::Redis::Cache.with do |redis|
+                cache_key = runner.send(:cache_attribute_key)
+                redis.set(cache_key, Gitlab::Json.dump(creation_state: :finished))
+              end
+            end
+
+            it { is_expected.to eq(:online) }
+          end
+        end
       end
     end
 
-    context 'online, paused' do
+    context 'if online, paused' do
       let(:traits) { %i[paused online] }
 
       it { is_expected.to eq(:online) }
     end
 
-    context 'online' do
+    context 'if online' do
       let(:traits) { :almost_offline }
 
       it { is_expected.to eq(:online) }
     end
 
-    context 'offline' do
+    context 'if offline' do
       let(:traits) { :offline }
 
       it { is_expected.to eq(:offline) }
     end
 
-    context 'stale' do
+    context 'if stale' do
       let(:traits) { :stale }
 
       it { is_expected.to eq(:stale) }
@@ -1152,12 +1166,12 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         it 'still updates contacted at in redis cache and database' do
           expect(runner).to be_invalid
 
-          expect_redis_update(contacted_at: Time.current, creation_state: :finished)
+          expect_redis_update(contacted_at: Time.current)
           expect { heartbeat }.to change { runner.reload.read_attribute(:contacted_at) }
         end
 
         it 'only updates contacted at in redis cache and database' do
-          expect_redis_update(contacted_at: Time.current, creation_state: :finished)
+          expect_redis_update(contacted_at: Time.current)
           expect { heartbeat }.to change { runner.reload.read_attribute(:contacted_at) }
         end
       end
@@ -1174,22 +1188,6 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
     def does_db_update
       expect { heartbeat }.to change { runner.reload.read_attribute(:contacted_at) }
-    end
-  end
-
-  describe '#clear_heartbeat', :freeze_time do
-    let!(:runner) { create(:ci_runner) }
-
-    it 'clears contacted at' do
-      expect do
-        runner.heartbeat
-      end.to change { runner.reload.contacted_at }.from(nil).to(Time.current)
-        .and change { runner.reload.uncached_contacted_at }.from(nil).to(Time.current)
-
-      expect do
-        runner.clear_heartbeat
-      end.to change { runner.reload.contacted_at }.from(Time.current).to(nil)
-        .and change { runner.reload.uncached_contacted_at }.from(Time.current).to(nil)
     end
   end
 
@@ -1272,13 +1270,23 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         context 'and owner project is deleted' do
           before do
             owner_project.destroy!
-            project_runner.clear_memoization(:owner)
           end
 
-          it { is_expected.to eq other_project }
-          it { is_expected.not_to eq projects.last }
+          it { is_expected.to eq owner_project }
+
+          it "changes when corresponding runner project is deleted" do
+            project_runner.runner_projects.where(project_id: owner_project.id).delete_all
+            project_runner.reload.clear_memoization(:owner)
+
+            expect(project_runner.owner).to eq other_project
+          end
 
           context 'and projects are associated in different order' do
+            before do
+              project_runner.runner_projects.where(project_id: owner_project.id).delete_all
+              project_runner.reload.clear_memoization(:owner)
+            end
+
             let(:associated_projects) { [owner_project, projects.last, other_project] }
 
             it 'is not sensitive to project ID order' do
@@ -1790,16 +1798,33 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     describe '#owner' do
       subject(:owner) { runner.owner }
 
-      let_it_be_with_refind(:runner) { create(:ci_runner, :group, groups: [group]) }
+      context 'with runner assigned to group' do
+        let(:owner_group) { create(:group) }
+        let(:runner) { create(:ci_runner, :group, groups: [owner_group]) }
 
-      it { is_expected.to eq group }
+        it { is_expected.to eq owner_group }
 
-      context 'when sharding_key_id points to non-existing group' do
-        before do
-          runner.update_columns(sharding_key_id: non_existing_record_id)
+        context 'and owner group is deleted' do
+          before do
+            owner_group.destroy!
+          end
+
+          it { is_expected.to eq owner_group }
+
+          it "becomes nil when corresponding runner namespace is deleted" do
+            runner.runner_namespaces.where(namespace_id: group.id).delete_all
+            runner.clear_memoization(:owner)
+            runner.reload
+
+            is_expected.to be_nil
+          end
         end
+      end
 
-        it { is_expected.to be_nil }
+      context 'with runner assigned to child_group' do
+        let(:runner) { child_group_runner }
+
+        it { is_expected.to eq child_group }
       end
     end
   end
@@ -1810,18 +1835,40 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     context 'when registered via command-line' do
       let_it_be(:runner) { create(:ci_runner) }
 
+      specify { expect(runner.token).to start_with(described_class::REGISTRATION_RUNNER_TOKEN_PREFIX) }
       specify { expect(runner.token).not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
       it { is_expected.to match(/[0-9a-zA-Z_-]{8}/) }
-      it { is_expected.not_to start_with('t1_') }
+      it { is_expected.not_to start_with(described_class::REGISTRATION_RUNNER_TOKEN_PREFIX) }
       it { is_expected.not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
+    end
+
+    context 'when legacy token' do
+      context 'with legacy partition prefix' do
+        let_it_be(:runner) { create(:ci_runner, token: 't1_deadbeaf') }
+
+        it { is_expected.to eq('deadbeaf') }
+      end
+
+      context 'with runner token prefix and legacy partition prefix' do
+        let_it_be(:runner) { create(:ci_runner, registration_type: :authenticated_user, token: 'glrt-t1_deadbeaf') }
+
+        it { is_expected.to eq('deadbeaf') }
+      end
+
+      context 'without prefix' do
+        let_it_be(:runner) { create(:ci_runner, token: 'deadbeaf') }
+
+        it { is_expected.to eq('deadbeaf') }
+      end
     end
 
     context 'when creating new runner via UI' do
       let_it_be(:runner) { create(:ci_runner, registration_type: :authenticated_user) }
 
       specify { expect(runner.token).to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
+      specify { expect(runner.token).not_to start_with(described_class::REGISTRATION_RUNNER_TOKEN_PREFIX) }
       it { is_expected.to match(/[0-9a-zA-Z_-]{8}/) }
-      it { is_expected.not_to start_with('t1_') }
+      it { is_expected.not_to start_with(described_class::REGISTRATION_RUNNER_TOKEN_PREFIX) }
       it { is_expected.not_to start_with(described_class::CREATED_RUNNER_TOKEN_PREFIX) }
     end
   end
@@ -1842,41 +1889,29 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
     include_context 'with token authenticatable routable token context'
 
-    shared_examples 'an encrypted non-routable token' do |prefix|
-      context 'when :routable_runner_token feature flag is disabled' do
-        before do
-          stub_feature_flags(routable_runner_token: false)
-        end
-
-        it_behaves_like 'an encrypted token' do
-          let(:expected_token) { token }
-          let(:expected_token_payload) { devise_token }
-          let(:expected_token_prefix) { prefix }
-          let(:expected_encrypted_token) { token_owner_record.token_encrypted }
-        end
-      end
-    end
-
     shared_examples 'an encrypted routable token for resource' do |prefix|
-      let(:expected_routing_payload) do
-        if resource.is_a?(Group)
-          "c:1\ng:#{resource.id.to_s(36)}\no:#{resource.organization_id.to_s(36)}\nu:#{creator.id.to_s(36)}"
+      let(:resource_payload) do
+        case resource
+        when Group
+          { g: resource.id.to_s(36), o: resource.organization_id.to_s(36) }
+        when Project
+          { p: resource.id.to_s(36), o: resource.organization_id.to_s(36) }
         else
-          "c:1\no:#{resource.organization_id.to_s(36)}\np:#{resource.id.to_s(36)}\nu:#{creator.id.to_s(36)}"
+          {}
         end
       end
 
-      context 'when :routable_runner_token feature flag is enabled for the resource' do
-        before do
-          stub_feature_flags(routable_runner_token: resource)
-        end
+      let(:routing_payload) do
+        {
+          c: 1,
+          u: creator.id.to_s(36),
+          t: described_class.runner_types[runner_type].to_s(36),
+          **resource_payload
+        }.sort.to_h
+      end
 
-        it_behaves_like 'an encrypted routable token' do
-          let(:expected_token) { token }
-          let(:expected_random_bytes) { random_bytes }
-          let(:expected_token_prefix) { prefix }
-          let(:expected_encrypted_token) { token_owner_record.token_encrypted }
-        end
+      let(:expected_routing_payload) do
+        routing_payload.map { |pairs| pairs.join(':') }.join("\n")
       end
 
       it_behaves_like 'an encrypted routable token' do
@@ -1890,13 +1925,8 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     shared_examples 'an instance runner encrypted token' do |prefix|
       let(:runner_type) { :instance_type }
 
-      it_behaves_like 'an encrypted non-routable token', prefix
-
-      it_behaves_like 'an encrypted token' do
-        let(:expected_token) { token }
-        let(:expected_token_payload) { devise_token }
-        let(:expected_token_prefix) { prefix }
-        let(:expected_encrypted_token) { token_owner_record.token_encrypted }
+      it_behaves_like 'an encrypted routable token for resource', prefix do
+        let(:resource) { nil }
       end
     end
 
@@ -1904,7 +1934,6 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       let(:runner_type) { :group_type }
       let(:attrs) { { groups: [group], sharding_key_id: group.id } }
 
-      it_behaves_like 'an encrypted non-routable token', prefix
       it_behaves_like 'an encrypted routable token for resource', prefix do
         let(:resource) { group }
       end
@@ -1914,7 +1943,6 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       let(:runner_type) { :project_type }
       let(:attrs) { { projects: [project], sharding_key_id: project.id } }
 
-      it_behaves_like 'an encrypted non-routable token', prefix
       it_behaves_like 'an encrypted routable token for resource', prefix do
         let(:resource) { project }
       end
@@ -1924,15 +1952,15 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       let(:registration_type) { :registration_token }
 
       context 'when runner is instance type' do
-        it_behaves_like 'an instance runner encrypted token', 't1_'
+        it_behaves_like 'an instance runner encrypted token', described_class::REGISTRATION_RUNNER_TOKEN_PREFIX
       end
 
       context 'when runner is group type' do
-        it_behaves_like 'a group runner encrypted token', 't2_'
+        it_behaves_like 'a group runner encrypted token', described_class::REGISTRATION_RUNNER_TOKEN_PREFIX
       end
 
       context 'when runner is project type' do
-        it_behaves_like 'a project runner encrypted token', 't3_'
+        it_behaves_like 'a project runner encrypted token', described_class::REGISTRATION_RUNNER_TOKEN_PREFIX
       end
     end
 
@@ -1940,15 +1968,15 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       let(:registration_type) { :authenticated_user }
 
       context 'when runner is instance type' do
-        it_behaves_like 'an instance runner encrypted token', 'glrt-t1_'
+        it_behaves_like 'an instance runner encrypted token', described_class::CREATED_RUNNER_TOKEN_PREFIX
       end
 
       context 'when runner is group type' do
-        it_behaves_like 'a group runner encrypted token', 'glrt-t2_'
+        it_behaves_like 'a group runner encrypted token', described_class::CREATED_RUNNER_TOKEN_PREFIX
       end
 
       context 'when runner is project type' do
-        it_behaves_like 'a project runner encrypted token', 'glrt-t3_'
+        it_behaves_like 'a project runner encrypted token', described_class::CREATED_RUNNER_TOKEN_PREFIX
       end
     end
   end
@@ -2248,7 +2276,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
   end
 
-  describe '#registration_available?', :freeze_time do
+  describe '#registration_available?', :freeze_time, :clean_gitlab_redis_cache do
     subject { runner.registration_available? }
 
     let(:runner) { build(:ci_runner, *runner_traits, registration_type: registration_type) }
@@ -2263,6 +2291,17 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
           let(:extra_runner_traits) { [:unregistered] }
 
           it { is_expected.to be_truthy }
+
+          context "when runner has cached creation_state value" do
+            before do
+              Gitlab::Redis::Cache.with do |redis|
+                cache_key = runner.send(:cache_attribute_key)
+                redis.set(cache_key, Gitlab::Json.dump(creation_state: :finished))
+              end
+            end
+
+            it { is_expected.to be_falsy }
+          end
         end
 
         context 'with runner creation finished' do
@@ -2345,6 +2384,28 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     subject(:is_hosted) { runner.dedicated_gitlab_hosted? }
 
     specify { expect(is_hosted).to be false }
+  end
+
+  describe '#partition_id' do
+    subject(:partition) { runner.partition_id }
+
+    context 'with an instance runner' do
+      let(:runner) { build(:ci_runner, :instance) }
+
+      it { is_expected.to be(1) }
+    end
+
+    context 'with a group runner' do
+      let(:runner) { build(:ci_runner, :group, groups: [group]) }
+
+      it { is_expected.to be(2) }
+    end
+
+    context 'with a project runner' do
+      let(:runner) { build(:ci_runner, :project, projects: [project]) }
+
+      it { is_expected.to be(3) }
+    end
   end
 
   describe 'status scopes', :freeze_time do

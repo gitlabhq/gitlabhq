@@ -8,14 +8,6 @@ description: The relationships between Epics and Issues
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3302
 milestone: '10.2'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  namespace_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: issue_id
-        table: issues
-        sharding_key: namespace_id
-        belongs_to: issue
-desired_sharding_key_migration_job_name: BackfillEpicIssuesNamespaceId
 table_size: small
+sharding_key:
+  namespace_id: namespaces

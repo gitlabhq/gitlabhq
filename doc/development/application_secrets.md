@@ -13,6 +13,8 @@ Use this guide to understand how different kinds of secrets are stored and manag
 
 Broadly speaking, there are two classes of secrets:
 
+<!-- vale gitlab_base.SubstitutionWarning = NO -->
+
 1. **Application secrets.** The GitLab application uses these to implement a particular feature or function.
    An example would be access tokens or private keys to create cryptographic signatures. We store
    these secrets in the database in encrypted columns.
@@ -20,13 +22,17 @@ Broadly speaking, there are two classes of secrets:
 1. **Operational secrets.** Used to read and store other secrets or bootstrap the application. For this reason,
    they cannot be stored in the database.
    These secrets are stored as [Rails credentials](https://guides.rubyonrails.org/security.html#environmental-security)
-   in the `config/secrets.yml` file, directly for source installation, or through an installer like Omnibus or Helm (where
-   actual secrets can be stored in an external secrets container like
-   [Kubernetes secrets](https://kubernetes.io/docs/concepts/configuration/secret/) or [Vault](https://www.vaultproject.io/)).
+   in the `config/secrets.yml` file:
+
+   - Directly for self-compiled installations.
+   - Through an installer like Omnibus or Helm (where actual secrets can be stored in an external secrets container like
+     [Kubernetes secrets](https://kubernetes.io/docs/concepts/configuration/secret/) or [Vault](https://www.vaultproject.io/)).
+
+<!-- vale gitlab_base.SubstitutionWarning = YES -->
 
 ## Application secrets
 
-Application secrets should be stored in postgres using `ActiveRecord::Encryption`:
+Application secrets should be stored in PostgreSQL using `ActiveRecord::Encryption`:
 
 ```ruby
 class MyModel < ApplicationRecord
@@ -84,9 +90,9 @@ the database may be ready.
 
 #### Add support to Omnibus GitLab and the Cloud Native GitLab charts
 
-Before you add a new secret to
+Before adding a new secret to
 [`config/initializers/01_secret_token.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/01_secret_token.rb),
-make sure you also update Omnibus GitLab and the Cloud Native GitLab charts, or the update will fail.
+ensure you also update the GitLab Linux package and the Cloud Native GitLab charts, or the update will fail.
 Both installation methods are responsible for writing the `config/secrets.yml` file.
 If if they don't know about a secret, Rails attempts to write to the file, and fails because it doesn't
 have write access.
@@ -94,7 +100,7 @@ have write access.
 **Examples**
 
 - [Change for self-compiled installation](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175154)
-- [Change for Omnibus GitLab installation](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/8026)
+- [Change for Linux package installation](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/8026)
 - [Change for Cloud Native installation](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/3988)
 
 #### Populate the secrets in live environments

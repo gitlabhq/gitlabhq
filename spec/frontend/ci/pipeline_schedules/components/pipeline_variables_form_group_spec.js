@@ -59,6 +59,9 @@ describe('Pipeline variables form group', () => {
 
       it('displays the inputs adoption banner', () => {
         expect(findInputsAdoptionBanner().exists()).toBe(true);
+        expect(findInputsAdoptionBanner().props('featureName')).toBe(
+          'pipeline_schedules_inputs_adoption_banner',
+        );
       });
     });
   });

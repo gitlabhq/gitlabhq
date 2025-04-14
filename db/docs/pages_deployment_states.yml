@@ -7,15 +7,6 @@ feature_categories:
 description: Stores verification state for Geo replicated Pages deployments.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74905
 milestone: '14.6'
-gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: pages_deployment_id
-        table: pages_deployments
-        sharding_key: project_id
-        belongs_to: pages_deployment
-desired_sharding_key_migration_job_name: BackfillPagesDeploymentStatesProjectId
+gitlab_schema: gitlab_main_cell_local
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/493768
 table_size: small

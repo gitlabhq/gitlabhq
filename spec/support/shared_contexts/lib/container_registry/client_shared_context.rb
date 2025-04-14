@@ -7,10 +7,10 @@ RSpec.shared_context 'container registry client' do
   let(:client) { described_class.new(registry_api_url, options) }
   let(:push_blob_headers) do
     {
-        'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
-        'Authorization' => "bearer #{token}",
-        'Content-Type' => 'application/octet-stream',
-        'User-Agent' => "GitLab/#{Gitlab::VERSION}"
+      'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
+      'Authorization' => "bearer #{token}",
+      'Content-Type' => 'application/octet-stream',
+      'User-Agent' => "GitLab/#{Gitlab::VERSION}"
     }
   end
 

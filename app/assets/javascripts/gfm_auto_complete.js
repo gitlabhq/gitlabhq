@@ -9,6 +9,7 @@ import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import { s__, __, sprintf } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
+import { currentAssignees, linkedItems } from '~/graphql_shared/issuable_client';
 import { state } from '~/sidebar/components/reviewers/sidebar_reviewers.vue';
 import {
   ISSUABLE_EPIC,
@@ -181,6 +182,18 @@ export const defaultAutocompleteConfig = {
 
 class GfmAutoComplete {
   constructor(dataSources = {}) {
+    // Ensure that all possible work item paths are included
+    const { page } = document.body.dataset;
+    this.isWorkItemsView =
+      (gon.current_user_use_work_items_view || gon.features?.workItemViewForIssues) &&
+      (page.includes('groups:work_items') ||
+        page.includes('projects:work_items') ||
+        page.includes('groups:issues') ||
+        page.includes('projects:issues') ||
+        page.includes('groups:epics') ||
+        page.includes('issues:show') ||
+        page.includes('epics:show'));
+
     this.dataSources = dataSources;
     this.cachedData = {};
     this.isLoadingData = {};
@@ -453,8 +466,16 @@ class GfmAutoComplete {
           });
 
           // Cache assignees & reviewers list for easier filtering later
-          assignees =
-            SidebarMediator.singleton?.store?.assignees?.map(createMemberSearchString) || [];
+          if (instance.isWorkItemsView) {
+            const element = this.$inputor.get(0).closest('.js-gfm-wrapper');
+            if (element) {
+              const { workItemId } = element.dataset;
+              assignees = (currentAssignees()[`${workItemId}`] || []).map(createMemberSearchString);
+            }
+          } else {
+            assignees =
+              SidebarMediator.singleton?.store?.assignees?.map(createMemberSearchString) || [];
+          }
           reviewers = state.issuable?.reviewers?.nodes?.map(createMemberSearchString) || [];
 
           const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
@@ -507,6 +528,13 @@ class GfmAutoComplete {
   }
 
   setupIssues($input) {
+    const instance = this;
+    const fetchData = this.fetchData.bind(this);
+    const MEMBER_COMMAND = {
+      UNLINK: '/unlink',
+    };
+    let command = '';
+
     $input.atwho({
       at: '#',
       alias: ISSUES_ALIAS,
@@ -538,6 +566,48 @@ class GfmAutoComplete {
               iconName: i.icon_name,
             };
           });
+        },
+        matcher(flag, subtext) {
+          const subtextNodes = subtext.split(/\n+/g).pop().split(GfmAutoComplete.regexSubtext);
+
+          // Check if # is followed by '/unlink' command.
+          command = subtextNodes.find((node) => {
+            if (Object.values(MEMBER_COMMAND).includes(node)) {
+              return node;
+            }
+            return null;
+          });
+
+          const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
+          return match && match.length ? match[1] : null;
+        },
+        filter(query, data) {
+          if (instance.isWorkItemsView && command === MEMBER_COMMAND.UNLINK) {
+            const { workItemFullPath, workItemIid } = this.$inputor
+              .get(0)
+              .closest('.js-gfm-wrapper').dataset;
+
+            // Only include items which are linked to the Issuable currently
+            // if `#` is followed by `/unlink` command.
+            const items = linkedItems()[`${workItemFullPath}:${workItemIid}`] || [];
+            return items.map((item) => ({
+              id: Number(item.iid),
+              title: item.title,
+              reference: item.reference,
+              search: `${item.iid} ${item.title}`,
+              iconName: item.workItemType.iconName,
+            }));
+          }
+
+          if (GfmAutoComplete.isLoading(data) || instance.previousQuery !== query) {
+            instance.previousQuery = query;
+
+            fetchData(this.$inputor, this.at, query);
+            return data;
+          }
+
+          // Return default data
+          return data;
         },
       },
     });

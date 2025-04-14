@@ -1,5 +1,5 @@
 variables:
-  AUTO_DEPLOY_IMAGE_VERSION: 'v2.125.0'
+  AUTO_DEPLOY_IMAGE_VERSION: 'v2.126.0'
 
 .auto-deploy:
   image: "${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/auto-deploy-image:${AUTO_DEPLOY_IMAGE_VERSION}"

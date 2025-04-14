@@ -68,43 +68,58 @@ To create a GitLab agent for Kubernetes:
 Set up your AWS credentials when you want to authenticate AWS with GitLab.
 
 1. Create an [IAM User](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users.html) or [IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html).
-1. Make sure that your IAM user or role has the appropriate permissions for your project. For this example project, you must have the permissions shown below. You can expand this when you set up your own project.
+1. Make sure that your IAM user or role has the appropriate permissions for your project. For this example project, you must have the permissions listed in the following JSON block. You can expand these permissions when you set up your own project.
 
    ```json
    // IAM custom Policy definition
    {
      "Version": "2012-10-17",
      "Statement": [
-         {
-             "Sid": "VisualEditor0",
-             "Effect": "Allow",
-             "Action": [
-                 "ec2:*",
-                 "eks:*",
-                 "elasticloadbalancing:*",
-                 "autoscaling:*",
-                 "cloudwatch:*",
-                 "logs:*",
-                 "kms:DescribeKey",
-                 "iam:AddRoleToInstanceProfile",
-                 "iam:AttachRolePolicy",
-                 "iam:CreateInstanceProfile",
-                 "iam:CreateRole",
-                 "iam:CreateServiceLinkedRole",
-                 "iam:GetRole",
-                 "iam:ListAttachedRolePolicies",
-                 "iam:ListRolePolicies",
-                 "iam:ListRoles",
-                 "iam:PassRole",
-                 // required for destroy step
-                 "iam:DetachRolePolicy",
-                 "iam:ListInstanceProfilesForRole",
-                 "iam:DeleteRole"
-             ],
-             "Resource": "*"
-         }
+       {
+         "Sid": "VisualEditor0",
+         "Effect": "Allow",
+         "Action": [
+           "ec2:*",
+           "eks:*",
+           "elasticloadbalancing:*",
+           "autoscaling:*",
+           "cloudwatch:*",
+           "logs:*",
+           "kms:DescribeKey",
+           "kms:TagResource",
+           "kms:UntagResource",
+           "kms:ListResourceTags",
+           "kms:CreateKey",
+           "kms:CreateAlias",
+           "kms:ListAliases",
+           "kms:DeleteAlias",
+           "iam:AddRoleToInstanceProfile",
+           "iam:AttachRolePolicy",
+           "iam:CreateInstanceProfile",
+           "iam:CreateRole",
+           "iam:CreateServiceLinkedRole",
+           "iam:GetRole",
+           "iam:ListAttachedRolePolicies",
+           "iam:ListRolePolicies",
+           "iam:ListRoles",
+           "iam:PassRole",
+           "iam:DetachRolePolicy",
+           "iam:ListInstanceProfilesForRole",
+           "iam:DeleteRole",
+           "iam:CreateOpenIDConnectProvider",
+           "iam:CreatePolicy",
+           "iam:TagOpenIDConnectProvider",
+           "iam:GetPolicy",
+           "iam:GetPolicyVersion",
+           "iam:GetOpenIDConnectProvider",
+           "iam:DeleteOpenIDConnectProvider",
+           "iam:ListPolicyVersions",
+           "iam:DeletePolicy"
+         ],
+         "Resource": "*"
+       }
      ]
-   }
+   } 
    ```
 
 1. [Create an access key for the user or role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html).

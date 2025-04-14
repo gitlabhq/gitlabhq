@@ -12,12 +12,12 @@ import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutati
 import projectMilestonesQuery from '~/sidebar/queries/project_milestones.query.graphql';
 import { ISSUE_MR_CHANGE_MILESTONE } from '~/behaviors/shortcuts/keybindings';
 import {
+  updateWorkItemMutationErrorResponse,
+  updateWorkItemMutationResponse,
   projectMilestonesResponse,
   projectMilestonesResponseWithNoMilestones,
   mockMilestoneWidgetResponse,
-  updateWorkItemMutationErrorResponse,
-  updateWorkItemMutationResponse,
-} from '../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 describe('WorkItemMilestone component', () => {
   Vue.use(VueApollo);

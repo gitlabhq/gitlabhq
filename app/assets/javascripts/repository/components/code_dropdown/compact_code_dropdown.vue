@@ -9,6 +9,7 @@ import CodeDropdownIdeItem from './code_dropdown_ide_item.vue';
 import { VSCODE_BASE_URL, JETBRAINS_BASE_URL } from './constants';
 
 export default {
+  name: 'CECompactCodeDropdown',
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
@@ -241,6 +242,7 @@ export default {
         @close-dropdown="closeDropdown"
       />
     </gl-disclosure-dropdown-group>
+    <slot name="gl-ee-compact-code-dropdown"></slot>
   </gl-disclosure-dropdown>
 </template>
 <style>

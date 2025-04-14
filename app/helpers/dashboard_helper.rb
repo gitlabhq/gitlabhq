@@ -18,7 +18,7 @@ module DashboardHelper
       concat(tag.span(class: %w[gl-float-right]) do
         concat(boolean_to_icon(enabled))
 
-        if href.present?
+        if href.present? && current_user.can_admin_all_resources?
           concat(render(Pajamas::ButtonComponent.new(icon: 'settings', category: :tertiary, size: :small, href: href,
             button_options: {
               title: _('Configure'),

@@ -56,7 +56,7 @@ class UserDetail < ApplicationRecord
   before_validation :sanitize_attrs
   before_save :prevent_nil_fields
 
-  enum registration_objective: REGISTRATION_OBJECTIVE_PAIRS, _suffix: true
+  enum :registration_objective, REGISTRATION_OBJECTIVE_PAIRS, suffix: true
 
   def sanitize_attrs
     %i[bluesky discord linkedin mastodon skype twitter website_url].each do |attr|

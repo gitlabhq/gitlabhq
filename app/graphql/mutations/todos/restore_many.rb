@@ -5,6 +5,10 @@ module Mutations
     class RestoreMany < BaseMany
       graphql_name 'TodoRestoreMany'
 
+      field :todos, [::Types::TodoType],
+        null: false,
+        description: 'Restored to-do items.'
+
       private
 
       def process_todos(todos)

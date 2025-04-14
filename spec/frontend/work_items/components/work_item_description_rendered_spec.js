@@ -251,13 +251,14 @@ and more text
 and even more`,
           hideButton: true,
           isGroup: false,
+          namespaceFullName: '',
           parentId: 'gid://gitlab/WorkItem/818',
           relatedItem: null,
           showProjectSelector: false,
           title:
             'item 2 with a really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really rea',
           visible: true,
-          workItemTypeName: 'TASK',
+          preselectedWorkItemType: 'TASK',
         });
 
         findCreateWorkItemModal().vm.$emit('workItemCreated');
@@ -295,7 +296,7 @@ and even more`,
             showProjectSelector: true,
             title: 'item 1',
             visible: true,
-            workItemTypeName: 'ISSUE',
+            preselectedWorkItemType: 'ISSUE',
           });
         });
       });
@@ -321,7 +322,7 @@ and even more`,
             showProjectSelector: false,
             title: 'item 1',
             visible: true,
-            workItemTypeName: 'TASK',
+            preselectedWorkItemType: 'TASK',
           });
         });
       });

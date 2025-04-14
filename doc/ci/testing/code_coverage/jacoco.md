@@ -52,7 +52,7 @@ test-jdk11:
 In this example, the `mvn` command generates the JaCoCo coverage report. The `path`
 points to the generated report.
 
-If the job generates multiple reports, [use a wildcard in the artifact path](../code_coverage/_index.md#configure-coverage-visualization).
+If the job generates multiple reports, [use a wildcard in the artifact path](_index.md#configure-coverage-visualization).
 
 ## Relative File Paths Correction
 

@@ -69,6 +69,8 @@ en:
       read_repository: Allows read-only access to the repository
       write_repository: Allows read-write access to the repository
       read_registry: Grants permission to read container registry images
+      read_virtual_registry: Grants read-only access to container images through the dependency proxy.
+      write_virtual_registry: Grants read, write, and delete access to container images through the dependency proxy.
       read_observability: Allows read-only access to GitLab Observability
       write_observability: Allows read-write access to GitLab Observability
       openid: Authenticate using OpenID Connect
@@ -91,6 +93,8 @@ en:
       write_repository: Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API).
       read_registry: Grants read-only access to container registry images on private projects.
       write_registry: Grants write access to container registry images on private projects. You need both read and write access to push images.
+      read_virtual_registry: Grants read-only access to container images through the dependency proxy in private projects.
+      write_virtual_registry: Grants read, write, and delete access to container images through the dependency proxy in private projects.
       read_observability: Grants read-only access to GitLab Observability.
       write_observability: Grants write access to GitLab Observability.
       ai_features: Grants access to GitLab Duo related API endpoints.
@@ -112,6 +116,8 @@ en:
       write_repository: Grants read and write access (pull and push) to all repositories within a group.
       read_registry: Grants read access (pull) to the container registry images if any project within a group is private and authorization is required.
       write_registry: Grants write access (push) to the container registry. You need both read and write access to push images.
+      read_virtual_registry: Grants read-only access (pull) to container images through the dependency proxy if any project in a group is private and authorization is required.
+      write_virtual_registry: Grants read (pull), write (push), and delete access to container images through the dependency proxy if any project in a group is private and authorization is required.
       read_observability: Grants read-only access to GitLab Observability.
       write_observability: Grants write access to GitLab Observability.
       ai_features: Grants permission to perform API actions for GitLab Duo. This scope is designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see scope requirements.

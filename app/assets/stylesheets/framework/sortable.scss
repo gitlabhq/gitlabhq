@@ -19,21 +19,6 @@
   }
 }
 
-.gl-sortable {
-  .header {
-    user-select: none;
-
-    &:hover {
-      cursor: pointer;
-      background-color: $gray-100;
-    }
-
-    &:focus {
-      outline: 1px solid $blue-300;
-    }
-  }
-}
-
 .is-dragging {
   // Important because plugin sets inline CSS
   opacity: 1 !important;

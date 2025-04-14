@@ -52,6 +52,7 @@ class BulkImports::Entity < ApplicationRecord
   validate :validate_imported_entity_type
   validate :validate_destination_namespace_ascendency, if: :group_entity?
   validate :validate_source_full_path_format
+  validate :validate_bulk_import_organization_matches
 
   enum source_type: { group_entity: 0, project_entity: 1 }
 
@@ -290,5 +291,11 @@ class BulkImports::Entity < ApplicationRecord
          'protocol characters, or leading or trailing forward slashes. Path segments must not start or ' \
          'end with a special character, and must not contain consecutive special characters')
     )
+  end
+
+  def validate_bulk_import_organization_matches
+    return if bulk_import.nil? || organization.nil? || bulk_import.organization == organization
+
+    errors.add(:organization_id, _("must match the bulk import organization's ID"))
   end
 end

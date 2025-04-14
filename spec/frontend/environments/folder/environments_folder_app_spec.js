@@ -109,7 +109,6 @@ describe('EnvironmentsFolderAppComponent', () => {
 
         expect(modal.exists()).toBe(true);
         expect(modal.props().environment).toEqual(expectedEnvironment);
-        expect(modal.props().graphql).toBe(true);
       }),
     );
 

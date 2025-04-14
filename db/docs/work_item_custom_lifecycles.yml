@@ -1,0 +1,13 @@
+---
+table_name: work_item_custom_lifecycles
+classes:
+- WorkItems::Statuses::Custom::Lifecycle
+feature_categories:
+- team_planning
+description: Stores namespace-level custom lifecycle configurations with default statuses for open, closed, and duplicate states
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186050
+milestone: '17.11'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces
+table_size: small

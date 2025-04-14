@@ -18,9 +18,9 @@ module QA
 
       before do
         Runtime::Feature.enable(:ci_release_cli_catalog_publish_option)
+        Runtime::Feature.enable(:ci_glab_for_release)
 
         Flow::Login.sign_in
-
         Flow::Project.enable_catalog_resource_feature(project)
       end
 

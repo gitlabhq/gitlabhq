@@ -1,4 +1,5 @@
 import { lowlight } from 'lowlight/lib/core';
+import { Fragment } from '@tiptap/pm/model';
 import { textblockTypeInputRule } from '@tiptap/core';
 import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 import { memoizedGet } from '../services/utils';
@@ -70,6 +71,11 @@ export default CodeBlockHighlight.extend({
       {
         priority: PARSE_HTML_PRIORITY_HIGHEST,
         tag: 'pre[data-canonical-lang="suggestion"]',
+        getContent(element, schema) {
+          return element.textContent
+            ? Fragment.from(schema.text(element.textContent))
+            : Fragment.empty;
+        },
       },
     ];
   },

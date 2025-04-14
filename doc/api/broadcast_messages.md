@@ -20,7 +20,7 @@ title: Broadcast Messages API
 
 {{< /history >}}
 
-Broadcast messages API operates on [broadcast messages](../administration/broadcast_messages.md).
+Use this API to interact with banners and notifications displayed in the UI. For more information, see [broadcast messages](../administration/broadcast_messages.md).
 
 GET requests do not require authentication. All other broadcast message API endpoints are accessible only to administrators. Non-GET requests by:
 

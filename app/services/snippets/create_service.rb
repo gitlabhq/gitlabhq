@@ -4,6 +4,8 @@ module Snippets
   class CreateService < Snippets::BaseService
     include Gitlab::InternalEventsTracking
 
+    FAILED_TO_CREATE_ERROR = :failed_to_create_error
+
     def initialize(project:, current_user: nil, params: {}, perform_spam_check: true)
       super(project: project, current_user: current_user, params: params)
       @perform_spam_check = perform_spam_check
@@ -32,7 +34,7 @@ module Snippets
 
         ServiceResponse.success(payload: { snippet: @snippet })
       else
-        snippet_error_response(@snippet, 400)
+        snippet_error_response(@snippet, FAILED_TO_CREATE_ERROR)
       end
     end
 

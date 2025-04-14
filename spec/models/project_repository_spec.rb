@@ -49,4 +49,11 @@ RSpec.describe ProjectRepository, feature_category: :source_code_management do
       it { is_expected.to eq 'sha1' }
     end
   end
+
+  context 'with loose foreign key on project_repositories.project_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let_it_be(:parent) { create(:project) }
+      let_it_be(:model) { create(:project_repository, project: parent) }
+    end
+  end
 end

@@ -7,11 +7,12 @@ module Gitlab
         class FindingSignature
           include VulnerabilityFindingSignatureHelpers
 
-          attr_accessor :algorithm_type, :signature_value
+          attr_accessor :algorithm_type, :signature_value, :qualified_signature
 
           def initialize(params = {})
             @algorithm_type = params[:algorithm_type]
             @signature_value = params[:signature_value]
+            @qualified_signature = params[:qualified_signature]
           end
 
           def signature_sha
@@ -19,7 +20,11 @@ module Gitlab
           end
 
           def signature_hex
-            signature_sha.unpack1("H*")
+            if qualified_signature
+              "#{algorithm_type}:#{signature_sha.unpack1('H*')}"
+            else
+              signature_sha.unpack1("H*")
+            end
           end
 
           def to_hash

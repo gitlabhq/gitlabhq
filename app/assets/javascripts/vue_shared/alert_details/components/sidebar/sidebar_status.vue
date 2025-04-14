@@ -47,11 +47,6 @@ export default {
       isUpdating: false,
     };
   },
-  computed: {
-    dropdownClass() {
-      return this.isDropdownShowing ? 'show' : 'gl-hidden';
-    },
-  },
   methods: {
     hideDropdown() {
       this.isDropdownShowing = false;

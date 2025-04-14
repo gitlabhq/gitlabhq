@@ -104,26 +104,46 @@ describe('NavItem component', () => {
       });
     });
 
-    describe('if `pill_count_field` exists, use it to get async count', () => {
+    it.each([null, undefined, false, true, '', NaN, Number.POSITIVE_INFINITY])(
+      'if `pill_count_field` field is `%s`, does not render pill',
+      (value) => {
+        createWrapper({
+          item: {
+            pill_count: 100,
+            pill_count_field: 'test',
+          },
+          props: {
+            asyncCount: {
+              test: value,
+            },
+          },
+        });
+        expect(findPill().exists()).toBe(false);
+      },
+    );
+
+    describe('if asyncCount `pill_count_field` exists, use it to get count', () => {
       it.each`
-        pillCountField              | asyncCountValue | result
-        ${'openIssuesCount'}        | ${0}            | ${0}
-        ${'openIssuesCount'}        | ${10}           | ${10}
-        ${'openIssuesCount'}        | ${100234}       | ${'100.2k'}
-        ${'openMergeRequestsCount'} | ${0}            | ${0}
-        ${'openMergeRequestsCount'} | ${10}           | ${10}
-        ${'openMergeRequestsCount'} | ${100234}       | ${'100.2k'}
+        pillCountField                       | result
+        ${'openIssuesCount'}                 | ${0}
+        ${'openIssuesCount'}                 | ${10}
+        ${'openIssuesCount'}                 | ${'100.2k'}
+        ${'todos'}                           | ${1}
+        ${'assigned_issues'}                 | ${2}
+        ${'assigned_merge_requests'}         | ${3}
+        ${'review_requested_merge_requests'} | ${4}
+        ${'total_merge_requests'}            | ${7}
       `(
-        'returns `$result` when nav item `pill_count_field` is `$pillCountField` and count is `$asyncCountValue`',
-        ({ pillCountField, asyncCountValue, result }) => {
+        'returns `$result` when nav item `pill_count_field` is `$pillCountField` and count is `$result`',
+        ({ pillCountField, result }) => {
           createWrapper({
             item: {
-              pill_count: 0,
+              pill_count: 100,
               pill_count_field: pillCountField,
             },
             props: {
               asyncCount: {
-                [pillCountField]: asyncCountValue,
+                [pillCountField]: result,
               },
             },
           });

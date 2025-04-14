@@ -7,7 +7,7 @@ title: Metadata
 
 Each documentation Markdown page contains YAML front matter.
 All values in the metadata are treated as strings and are used for the
-docs website only.
+documentation website only.
 
 ## Stage and group metadata
 
@@ -69,7 +69,7 @@ The `title` metadata:
 
 The `description` tag:
 
-- Is used to populate text on the docs home page.
+- Is used to populate text on the documentation home page.
 - Is shown in social media previews.
 - Can be used in search result snippets.
 
@@ -97,6 +97,38 @@ When this metadata is set on a page:
   script ignores the page when processing the documentation.
 - Technical writers doing the Technical Writing team's monthly tasks aren't prompted to add the page to the global
   navigation.
+
+## Indicate GitLab Dedicated support
+
+The `gitlab_dedicated` metadata indicates whether a documentation page applies to GitLab Dedicated.
+
+Add this field to documentation pages when GitLab Dedicated availability status has been confirmed with the product team. This metadata should complement, not replace, the information from the **Offering** details.
+
+For example, usually pages that apply to GitLab Self-Managed apply to GitLab Dedicated.
+Use this metadata when they don't:
+
+```yaml
+gitlab_dedicated: no
+```
+
+When a page applies to GitLab Dedicated, use:
+
+```yaml
+gitlab_dedicated: yes
+```
+
+For pages with partial availability on GitLab Dedicated, use `gitlab_dedicated: yes`
+and update the [product availability details](styleguide/availability_details.md)
+for any topics that don't apply to GitLab Dedicated.
+
+## Indicate lack of product availability details
+
+On pages that purposely do not have availability details, add this metadata to the
+top of the page:
+
+```yaml
+availability_details: no
+```
 
 ## Additional metadata
 
@@ -145,7 +177,7 @@ When you update the `codeowners.rake` file:
   CodeOwnerRule.new('Group Name', '@writer1 @writer2'),
   ```
 
-  - To assign different writers within a group to docs in different directories, use the `path` parameter to specify a directory:
+  - To assign different writers in a group to documentation in different directories, use the `path` parameter to specify a directory:
 
     ```ruby
     CodeOwnerRule.new('Group Name', ->(path) { path.start_with?('/doc/user') ? '@writer1' : '@writer2' }),

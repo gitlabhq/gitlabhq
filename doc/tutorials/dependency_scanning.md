@@ -2,6 +2,7 @@
 stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn how to configure dependency scanning, detect vulnerabilities in your project dependencies, and resolve them through practical step-by-step guidance.
 title: 'Tutorial: Set up dependency scanning'
 ---
 

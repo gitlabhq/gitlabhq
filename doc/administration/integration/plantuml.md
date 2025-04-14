@@ -368,6 +368,22 @@ stop;
 @enduml
 ```
 
+#### Secure PlantUML SVG diagram output
+
+When generating PlantUML diagrams in SVG format, configure your server for enhanced security.
+Disable the SVG output route in your NGINX configuration to prevent potential security issues.
+
+To disable the SVG output route, add this configuration to your NGINX server hosting
+the PlantUML service:
+
+```nginx
+location ~ ^/-/plantuml/svg/ {
+    return 403;
+}
+```
+
+This configuration prevents potentially malicious diagram code from executing in browsers.
+
 ## Enable PlantUML integration
 
 After configuring your local PlantUML server, you're ready to enable the PlantUML integration:

@@ -9,7 +9,7 @@ module Ci
         "test_report_summary_url" => test_report_summary(project, build),
         "page_path" => project_job_path(project, build),
         "project_path" => project.full_path,
-        "artifact_help_url" => help_page_path('user/gitlab_com/_index.md', anchor: 'gitlab-cicd'),
+        "artifact_help_url" => help_page_path('user/gitlab_com/_index.md', anchor: 'cicd'),
         "deployment_help_url" => help_page_path('user/project/clusters/deploy_to_cluster.md', anchor: 'troubleshooting'),
         "runner_settings_url" => project_runners_path(build.project, anchor: 'js-runners-settings'),
         "retry_outdated_job_docs_url" => help_page_path('ci/pipelines/settings.md', anchor: 'prevent-outdated-deployment-jobs'),

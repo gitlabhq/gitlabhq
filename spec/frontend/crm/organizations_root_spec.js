@@ -57,7 +57,6 @@ describe('Customer relations organizations root app', () => {
     mountComponent();
 
     expect(findTable().props()).toMatchObject({
-      items: [],
       itemsCount: {},
       pageInfo: {},
       statusTabs: [
@@ -138,15 +137,6 @@ describe('Customer relations organizations root app', () => {
       await waitForPromises();
 
       expect(wrapper.text()).not.toContain('Something went wrong. Please try again.');
-    });
-
-    it('renders correct results', async () => {
-      mountComponent();
-      await waitForPromises();
-
-      expect(findTable().props('items')).toEqual(
-        getGroupOrganizationsQueryResponse.data.group.organizations.nodes,
-      );
     });
   });
 });

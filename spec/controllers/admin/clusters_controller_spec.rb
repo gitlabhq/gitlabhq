@@ -174,6 +174,23 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
     end
   end
 
+  describe 'PUT update_migration' do
+    let(:cluster) { create(:cluster, :instance) }
+    let(:redirect_path) { admin_cluster_path(cluster, tab: 'migrate') }
+
+    def go
+      put :update_migration, params: params.merge(id: cluster)
+    end
+
+    include_examples 'cluster update migration', :admin, :admin
+
+    describe 'security' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+  end
+
   describe 'DELETE clear cluster cache' do
     let(:cluster) { create(:cluster, :instance) }
     let!(:kubernetes_namespace) do

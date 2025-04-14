@@ -26,6 +26,9 @@ module QA
 
         view 'app/assets/javascripts/diffs/components/compare_versions.vue' do
           element 'target-version-dropdown'
+        end
+
+        view 'app/assets/javascripts/diffs/components/file_browser_toggle.vue' do
           element 'file-tree-button'
         end
 
@@ -239,12 +242,6 @@ module QA
           click_by_javascript(find_element('edit-title-button', skip_finished_loading_check: true))
         end
 
-        def expand_merge_checks
-          within_element('.mr-widget-section') do
-            click_element('chevron-lg-down-icon')
-          end
-        end
-
         def has_file?(file_name)
           open_file_tree
 
@@ -380,15 +377,20 @@ module QA
             # merge button, in such case we must retry loop otherwise find_element will raise ElementNotFound error
             next false unless has_element?('merge-button', wait: 1)
 
-            break true unless find_element('merge-button').disabled?
-
             # If the widget shows "Merge blocked: new changes were just added" we can refresh the page and check again
-            next false if has_element?('head-mismatch-content', wait: 1)
+            next false if merge_blocked_by_new_changes?
+
+            break true unless find_element('merge-button').disabled?
 
             QA::Runtime::Logger.debug("MR widget text: \"#{mr_widget_text}\"")
 
             false
           end
+        end
+
+        # Returns true when widget shows "Merge blocked: new changes were just added"
+        def merge_blocked_by_new_changes?
+          has_element?('head-mismatch-content', wait: 1)
         end
 
         def rebase!
@@ -421,6 +423,7 @@ module QA
         def try_to_merge!(wait_for_no_auto_merge: true)
           wait_until_ready_to_merge
           wait_until { !find_element('merge-button').text.include?('auto-merge') } if wait_for_no_auto_merge # rubocop:disable Rails/NegateInclude -- Wait for text auto-merge to change
+          wait_until { !merge_blocked_by_new_changes? }
 
           click_element('merge-button')
         end

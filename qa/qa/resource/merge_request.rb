@@ -280,6 +280,8 @@ module QA
       # @return [void]
       def wait_until_mergable
         return if Support::Waiter.wait_until(sleep_interval: 1, raise_on_failure: false, log: false) do
+          Runtime::Logger.debug("Merge Request detailed_merge_status: #{detailed_merge_status}")
+
           reload!.detailed_merge_status == 'mergeable'
         end
 
@@ -293,7 +295,9 @@ module QA
       # @return [void]
       def wait_for_preparation
         return if Support::Waiter.wait_until(sleep_interval: 1, raise_on_failure: false, log: false) do
-          reload!.prepared_at
+          Runtime::Logger.debug("Merge Request detailed_merge_status: #{detailed_merge_status}")
+
+          reload!.prepared_at && %w[preparing checking approvals_syncing].exclude?(detailed_merge_status)
         end
 
         Runtime::Logger.debug("Merge Request was not prepared, last response was: #{inspect}")

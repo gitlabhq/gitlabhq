@@ -1,7 +1,7 @@
 <script>
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
-import { toggleMarkCheckboxes } from '~/behaviors/markdown/utils';
+import { toggleCheckbox } from '~/behaviors/markdown/utils';
 
 const isCheckbox = (target) => target?.classList.contains('task-list-item-checkbox');
 
@@ -15,7 +15,7 @@ export default {
       type: Object,
       required: true,
     },
-    hasReplies: {
+    hasAdminNotePermission: {
       type: Boolean,
       required: false,
       default: false,
@@ -50,11 +50,18 @@ export default {
       gl?.lazyLoader?.searchLazyImages();
     },
     disableCheckboxes(disabled) {
+      if (!this.hasAdminNotePermission) {
+        return;
+      }
       this.$el.querySelectorAll('.task-list-item-checkbox').forEach((checkbox) => {
         checkbox.disabled = disabled; // eslint-disable-line no-param-reassign
       });
     },
     toggleCheckboxes(event) {
+      if (!this.hasAdminNotePermission) {
+        return;
+      }
+
       const { target } = event;
 
       if (!isCheckbox(target)) {
@@ -67,7 +74,7 @@ export default {
         return;
       }
 
-      const commentText = toggleMarkCheckboxes({
+      const commentText = toggleCheckbox({
         rawMarkdown: this.note.body,
         checkboxChecked: target.checked,
         sourcepos,

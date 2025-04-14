@@ -1,10 +1,15 @@
 import { start } from '@gitlab/web-ide';
 import { GITLAB_WEB_IDE_FEEDBACK_ISSUE } from '~/ide/constants';
 import { initGitlabWebIDE } from '~/ide/init_gitlab_web_ide';
-import { handleTracking, handleUpdateUrl } from '~/ide/lib/gitlab_web_ide';
+import {
+  handleTracking,
+  handleUpdateUrl,
+  isMultiDomainEnabled,
+  getBaseConfig,
+} from '~/ide/lib/gitlab_web_ide';
 import Tracking from '~/tracking';
-import { TEST_HOST } from 'helpers/test_constants';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { renderWebIdeError } from '~/ide/render_web_ide_error';
 import { getMockCallbackUrl } from './helpers';
 
@@ -15,6 +20,8 @@ jest.mock('~/lib/utils/csrf', () => ({
 }));
 jest.mock('~/tracking');
 jest.mock('~/ide/render_web_ide_error');
+jest.mock('~/ide/lib/gitlab_web_ide/is_multi_domain_enabled');
+jest.mock('~/ide/lib/gitlab_web_ide/get_base_config');
 
 const ROOT_ELEMENT_ID = 'ide';
 const TEST_NONCE = 'test123nonce';
@@ -43,6 +50,13 @@ const TEST_EDITOR_FONT_FAMILY = 'GitLab Mono';
 
 const TEST_OAUTH_CLIENT_ID = 'oauth-client-id-123abc';
 const TEST_OAUTH_CALLBACK_URL = getMockCallbackUrl();
+
+const TEST_BASE_CONFIG = {
+  embedderOriginUrl: 'https://embedder.example.com',
+  gitlabUrl: 'https://gitlab.example.com',
+  workbenchBaseUrl: 'https://workbench.example.com',
+  extensionsHostBaseUrl: 'https://extensions.example.com',
+};
 
 describe('ide/init_gitlab_web_ide', () => {
   const createRootElement = () => {
@@ -84,6 +98,9 @@ describe('ide/init_gitlab_web_ide', () => {
     gon.features = { webIdeLanguageServer: true };
     process.env.GITLAB_WEB_IDE_PUBLIC_PATH = TEST_GITLAB_WEB_IDE_PUBLIC_PATH;
 
+    getBaseConfig.mockResolvedValue(TEST_BASE_CONFIG);
+    isMultiDomainEnabled.mockReturnValue(false);
+
     createRootElement();
   });
 
@@ -103,10 +120,7 @@ describe('ide/init_gitlab_web_ide', () => {
     it('calls start with element', () => {
       expect(start).toHaveBeenCalledTimes(1);
       expect(start).toHaveBeenCalledWith(findRootElement(), {
-        embedderOriginUrl: TEST_HOST,
-        workbenchBaseUrl: `${TEST_HOST}/${TEST_GITLAB_WEB_IDE_PUBLIC_PATH}`,
-        extensionsHostBaseUrl:
-          'https://{{uuid}}.cdn.web-ide.gitlab-static.net/web-ide-vscode/{{quality}}/{{commit}}',
+        ...TEST_BASE_CONFIG,
         projectPath: TEST_PROJECT_PATH,
         ref: TEST_BRANCH_NAME,
         filePath: TEST_FILE_PATH,
@@ -114,7 +128,6 @@ describe('ide/init_gitlab_web_ide', () => {
         mrTargetProject: '',
         forkInfo: null,
         username: gon.current_username,
-        gitlabUrl: TEST_HOST,
         nonce: TEST_NONCE,
         httpHeaders: {
           'mock-csrf-header': 'mock-csrf-token',
@@ -128,6 +141,7 @@ describe('ide/init_gitlab_web_ide', () => {
         featureFlags: {
           crossOriginExtensionHost: false,
           languageServerWebIDE: gon.features.webIdeLanguageServer,
+          dedicatedWebIDEOrigin: false,
         },
         editorFont: {
           fallbackFontFamily: 'monospace',
@@ -243,7 +257,7 @@ describe('ide/init_gitlab_web_ide', () => {
   });
 
   describe('when extensionMarketplaceSettings is in dataset', () => {
-    function setMockExtensionMarketplaceSettingsDataset(
+    async function setMockExtensionMarketplaceSettingsDataset(
       mockSettings = TEST_EXTENSION_MARKETPLACE_SETTINGS,
     ) {
       findRootElement().dataset.extensionMarketplaceSettings = JSON.stringify(mockSettings);
@@ -253,10 +267,12 @@ describe('ide/init_gitlab_web_ide', () => {
       }
 
       createSubject();
+
+      await waitForPromises();
     }
 
-    it('calls start with element and extensionsGallerySettings', () => {
-      setMockExtensionMarketplaceSettingsDataset();
+    it('calls start with element and extensionsGallerySettings', async () => {
+      await setMockExtensionMarketplaceSettingsDataset();
       expect(start).toHaveBeenCalledTimes(1);
       expect(start).toHaveBeenCalledWith(
         findRootElement(),
@@ -272,8 +288,8 @@ describe('ide/init_gitlab_web_ide', () => {
       );
     });
 
-    it('calls start with element and crossOriginExtensionHost flag if extensionMarketplaceSettings is enabled', () => {
-      setMockExtensionMarketplaceSettingsDataset();
+    it('calls start with element and crossOriginExtensionHost flag if extensionMarketplaceSettings is enabled', async () => {
+      await setMockExtensionMarketplaceSettingsDataset();
       expect(start).toHaveBeenCalledTimes(1);
       expect(start).toHaveBeenCalledWith(
         findRootElement(),
@@ -281,13 +297,14 @@ describe('ide/init_gitlab_web_ide', () => {
           featureFlags: {
             crossOriginExtensionHost: true,
             languageServerWebIDE: gon.features.webIdeLanguageServer,
+            dedicatedWebIDEOrigin: false,
           },
         }),
       );
     });
 
-    it('calls start with settingsContextHash', () => {
-      setMockExtensionMarketplaceSettingsDataset();
+    it('calls start with settingsContextHash', async () => {
+      await setMockExtensionMarketplaceSettingsDataset();
 
       expect(start).toHaveBeenCalledTimes(1);
       expect(start).toHaveBeenCalledWith(
@@ -300,13 +317,13 @@ describe('ide/init_gitlab_web_ide', () => {
 
     it.each(['opt_in_unset', 'opt_in_disabled'])(
       'calls start with element and crossOriginExtensionHost flag if extensionMarketplaceSettings reason is $reason',
-      (reason) => {
+      async (reason) => {
         const mockExtensionMarketplaceDisabledSettings = {
           enabled: false,
           reason,
         };
 
-        setMockExtensionMarketplaceSettingsDataset(mockExtensionMarketplaceDisabledSettings);
+        await setMockExtensionMarketplaceSettingsDataset(mockExtensionMarketplaceDisabledSettings);
 
         expect(start).toHaveBeenCalledTimes(1);
         expect(start).toHaveBeenCalledWith(
@@ -315,6 +332,7 @@ describe('ide/init_gitlab_web_ide', () => {
             featureFlags: {
               crossOriginExtensionHost: true,
               languageServerWebIDE: gon.features.webIdeLanguageServer,
+              dedicatedWebIDEOrigin: false,
             },
           }),
         );

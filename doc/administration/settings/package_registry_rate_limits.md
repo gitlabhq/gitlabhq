@@ -18,7 +18,7 @@ publish and share packages, which others can consume as a dependency in downstre
 the [Packages API](../../api/packages.md).
 
 If downstream projects frequently download such dependencies, many requests are made through the
-Packages API. You may therefore reach enforced [user and IP rate limits](../settings/user_and_ip_rate_limits.md).
+Packages API. You may therefore reach enforced [user and IP rate limits](user_and_ip_rate_limits.md).
 To address this issue, you can define specific rate limits for the Packages API:
 
 - [Unauthenticated requests (per IP)](#enable-unauthenticated-request-rate-limit-for-packages-api).

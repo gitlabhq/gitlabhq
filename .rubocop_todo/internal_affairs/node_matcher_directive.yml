@@ -74,7 +74,6 @@ InternalAffairs/NodeMatcherDirective:
     - 'rubocop/cop/migration/ensure_factory_for_table.rb'
     - 'rubocop/cop/migration/migration_record.rb'
     - 'rubocop/cop/migration/migration_with_milestone.rb'
-    - 'rubocop/cop/migration/prevent_adding_attr_encrypted_columns.rb'
     - 'rubocop/cop/migration/prevent_global_enable_lock_retries_with_disable_ddl_transaction.rb'
     - 'rubocop/cop/migration/prevent_index_creation.rb'
     - 'rubocop/cop/migration/prevent_single_statement_with_disable_ddl_transaction.rb'

@@ -4,6 +4,7 @@ namespace :ci do
   desc "Detect changes and generate e2e test pipelines with dynamically scaled parallel jobs"
   task :generate_e2e_pipelines, [:pipeline_path] do |_, args|
     require_relative "helpers/util"
+    require_relative '../../tooling/lib/tooling/events/track_pipeline_events'
 
     include Task::Helpers::Util
     include QA::Tools::Ci::Helpers
@@ -76,6 +77,14 @@ namespace :ci do
     pipelines_for_selective_improved = [:test_on_gdk]
     logger.warn("*** Recreating #{pipelines_for_selective_improved} using spec list based on coverage mappings ***")
     tests_from_mapping = qa_changes.qa_tests(from_code_path_mapping: true)
+    properties = {
+      label: tests_from_mapping.nil? || tests_from_mapping.empty? ? 'non-selective' : 'selective',
+      value: tests_from_mapping.nil? || tests_from_mapping.empty? ? 0 : tests_from_mapping.count
+    }
+    Tooling::Events::TrackPipelineEvents.new(
+      event_name: "e2e_tests_selected_for_execution_gitlab_pipeline",
+      properties: properties
+    ).send_event
     logger.info("Following specs were selected for execution: '#{tests_from_mapping}'")
     QA::Tools::Ci::PipelineCreator.new(tests_from_mapping, **creator_args).create(pipelines_for_selective_improved)
   end

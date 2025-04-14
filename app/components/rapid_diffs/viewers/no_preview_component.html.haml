@@ -6,8 +6,9 @@
     %p.rd-no-preview-paragraph
       = no_preview_reason
   .rd-no-preview-actions
-    - if @diff_file.collapsed? && expandable?
-      = action_button(button_options: { data: { click: 'showChanges' } }) do
+    - if @diff_file.collapsed? && expandable? || @diff_file.whitespace_only?
+      - click = @diff_file.whitespace_only? ? 'showWhitespaceChanges' : 'showChanges'
+      = action_button(button_options: { data: { click: click } }) do
         = _('Show changes')
     - elsif expandable?
       = action_button(button_options: { data: { click: 'showFileContents' } }) do

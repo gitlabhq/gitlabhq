@@ -8,6 +8,7 @@ import {
   setupRootElement,
   handleTracking,
   handleUpdateUrl,
+  isMultiDomainEnabled,
 } from './lib/gitlab_web_ide';
 import { GITLAB_WEB_IDE_FEEDBACK_ISSUE } from './constants';
 import { renderWebIdeError } from './render_web_ide_error';
@@ -65,7 +66,7 @@ export const initGitlabWebIDE = async (el) => {
   try {
     // See ClientOnlyConfig https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L17
     await start(rootEl, {
-      ...getBaseConfig(),
+      ...(await getBaseConfig()),
       nonce,
       httpHeaders,
       auth: oauthConfig,
@@ -86,6 +87,7 @@ export const initGitlabWebIDE = async (el) => {
           extensionMarketplaceSettings,
         ),
         languageServerWebIDE: isLanguageServerEnabled,
+        dedicatedWebIDEOrigin: isMultiDomainEnabled(),
       },
       editorFont,
       // TODO: Use extensionMarketplaceSettings when https://gitlab.com/gitlab-org/gitlab-web-ide/-/merge_requests/425

@@ -42,7 +42,8 @@ module CreatesCommit
         format.json { render json: { message: _("success"), filePath: success_path } }
       end
     else
-      flash[:alert] = format_flash_notice(result[:message])
+      flash[:alert] = flash_message(result, @project, @branch_name, @commit_params)
+
       failure_path = failure_path.call if failure_path.respond_to?(:call)
 
       respond_to do |format|
@@ -76,6 +77,21 @@ module CreatesCommit
   end
 
   private
+
+  def flash_message(result, project, branch_name, commit_params)
+    if result[:status] == :error && commit_params[:revert]
+      {
+        message: format_flash_notice(result[:message]),
+        button_text: _('Create merge request'),
+        button_path: project_new_merge_request_path(
+          project,
+          merge_request: { source_branch: branch_name }
+        )
+      }
+    else
+      format_flash_notice(result[:message])
+    end
+  end
 
   def update_flash_notice(success_notice, success_path)
     changes_link = ActionController::Base.helpers.link_to _('changes'), success_path, class: 'gl-link'

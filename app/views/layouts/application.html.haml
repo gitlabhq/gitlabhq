@@ -1,11 +1,13 @@
 - page_classes = page_class << @html_class
 - page_classes = [user_application_color_mode, user_application_theme, page_classes.flatten.compact]
-- body_classes = [user_tab_width, @body_class, client_class_list, *custom_diff_color_classes]
+- body_classes = [user_tab_width, @body_class, client_class_list, body_scroll_classes, *custom_diff_color_classes]
 
 !!! 5
 %html{ lang: I18n.locale, class: page_classes }
   = render "layouts/head"
   %body{ class: body_classes, data: body_data }
+    -# all tooltips from GitLab UI will mount here by default
+    #js-tooltips-container
     = render "layouts/init_auto_complete" if @gfm_form
     = render "layouts/init_client_detection_flags"
     = render 'peek/bar'

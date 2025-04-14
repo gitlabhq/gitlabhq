@@ -1,12 +1,12 @@
 - title: 'Enforce keyset pagination on audit event API'
-  removal_milestone: '18.0'
+  removal_milestone: '19.0'
   announcement_milestone: '17.8'
   breaking_change: true
   window: 1
   reporter: nrosandich
   stage: Software Supply Chain Security
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382338
-  impact: low
+  impact: medium
   scope: instance, group, project
   body: | # (required) Don't change this line.
     The Audit Event APIs for instances, groups, and projects currently support optional keyset pagination. In GitLab 18.0

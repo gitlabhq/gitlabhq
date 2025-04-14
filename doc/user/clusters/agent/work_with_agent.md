@@ -48,7 +48,7 @@ or shows how to create one.
 
 The agent configuration file manages the various agent features:
 
-- For a GitLab CI/CD workflow. You must [authorize the agent to access your projects](ci_cd_workflow.md#authorize-the-agent), and then
+- For a GitLab CI/CD workflow. You must [authorize the agent to access your projects](ci_cd_workflow.md#authorize-agent-access), and then
   [add `kubectl` commands to your `.gitlab-ci.yml` file](ci_cd_workflow.md#update-your-gitlab-ciyml-file-to-run-kubectl-commands).
 - For [user access](user_access.md) to the cluster from the GitLab UI or from the local terminal.
 - For configuring [operational container scanning](vulnerabilities.md).

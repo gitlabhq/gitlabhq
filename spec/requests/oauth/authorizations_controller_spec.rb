@@ -88,7 +88,7 @@ RSpec.describe Oauth::AuthorizationsController, :with_current_organization, feat
       it 'sets a lower session expiry and redirects to the sign in page' do
         get oauth_authorization_path
 
-        expect(request.env['rack.session.options'][:expire_after]).to eq(
+        expect(request.env['rack.session.options'][:redis_expiry]).to eq(
           Settings.gitlab['unauthenticated_session_expire_delay']
         )
 

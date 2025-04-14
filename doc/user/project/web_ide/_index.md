@@ -28,23 +28,23 @@ For more information, see the history.
 
 {{< /alert >}}
 
-The Web IDE is an advanced editor with commit staging.
-You can use the Web IDE to make changes to multiple files directly from the GitLab UI.
-For a more basic implementation, see [Web Editor](../repository/web_editor.md).
+The Web IDE is an advanced editor where you can edit multiple files, stage changes, and create
+commits directly in the GitLab UI. Unlike the [Web Editor](../repository/web_editor.md), the Web
+IDE provides a full-featured development environment with source control management.
 
 Support for [GitLab Flavored Markdown](../../markdown.md) preview in the Web IDE is proposed in
 [issue 645](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/645).
 
 ## Open the Web IDE
 
-To open the Web IDE:
+You can access the Web IDE through several methods.
+
+### With a keyboard shortcut
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Use the <kbd>.</kbd> keyboard shortcut.
 
 ### From a file or directory
-
-To open the Web IDE from a file or directory:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to your file or directory.
@@ -52,47 +52,58 @@ To open the Web IDE from a file or directory:
 
 ### From a merge request
 
-To open the Web IDE from a merge request:
-
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to your merge request.
 1. In the upper right, select **Code > Open in Web IDE**.
 
-The Web IDE opens new and modified files in separate tabs and displays changes side by side.
+The Web IDE opens new and modified files in separate tabs, and displays changes side by side.
 To reduce load time, only 10 files with the most lines changed open automatically.
 
-The left **Explorer** sidebar adds a merge request icon ({{< icon name="merge-request" >}}) next to new or modified files.
-To view changes to a file, right-click the file and select **Compare with merge request base**.
+The Web IDE interface displays a merge request icon ({{< icon name="merge-request" >}}) next to
+new or modified files in the left sidebar **Explorer** view. To view changes to a file, right-click
+the file and select **Compare with merge request base**.
 
-## Open a file
+## Manage files
+
+You can use the Web IDE to open, edit, and upload multiple files.
+
+### Open a file
 
 To open a file by name in the Web IDE:
 
 1. Press <kbd>Command</kbd>+<kbd>P</kbd>.
 1. In the search box, enter the filename.
 
-## Search open files
+### Search open files
 
 To search across open files in the Web IDE:
 
 1. Press <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>F</kbd>.
 1. In the search box, enter your search term.
 
-## View a list of modified files
+### Upload a file
 
-To view a list of files you modified in the Web IDE:
+To upload a file in the Web IDE:
 
-- On the left activity bar, select **Source Control**, or
-  press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
+1. On the left side of the Web IDE, select **Explorer** ({{< icon name="documents" >}}), or
+   press <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>E</kbd>.
+1. Go to the directory where you want to upload the file.
+   To create a new directory:
 
-Your `CHANGES`, `STAGED CHANGES`, and `MERGE CHANGES` are displayed.
-For more information, see the [VS Code documentation](https://code.visualstudio.com/docs/sourcecontrol/overview#_commit).
+   - In the **Explorer** view, in the upper right,
+     select **New Folder** ({{< icon name="folder-new" >}}).
 
-## Restore uncommitted changes
+1. Right-click the directory and select **Upload**.
+1. Select the file you want to upload.
+
+You can upload multiple files at once.
+The files are uploaded and automatically added to the repository.
+
+### Restore uncommitted changes
 
 You do not have to manually save any file you edit in the Web IDE.
 The Web IDE stages the files you modify, so you can [commit the changes](#commit-changes).
-Uncommitted changes are saved in your browser's local storage, and persist
+Uncommitted changes are saved in your browser's local storage. They persist
 even if you close the browser tab or refresh the Web IDE.
 
 If your uncommitted changes are not available, you can restore the changes from local history.
@@ -102,25 +113,22 @@ To restore uncommitted changes in the Web IDE:
 1. In the search box, enter `Local History: Find Entry to Restore`.
 1. Select the file that contains the uncommitted changes.
 
-## Upload a file
+## Use source control
 
-To upload a file in the Web IDE:
+You can use source control to view modified files, create and switch branches,
+commit changes, and create merge requests.
 
-1. On the left activity bar, select **Explorer**, or
-   press <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>E</kbd>.
-1. Go to the directory where you want to upload the file.
-   To create a new directory:
+### View modified files
 
-   - On the left **Explorer** sidebar, in the upper right,
-     select **New Folder** ({{< icon name="folder-new" >}}).
+To view a list of files you modified in the Web IDE:
 
-1. Right-click the directory and select **Upload**.
-1. Select the file you want to upload.
+- On the left side of the Web IDE, select **Source Control** ({{< icon name="branch" >}}), or
+  press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
 
-You can upload multiple files at once.
-The files are uploaded and automatically added to the repository.
+Your `CHANGES`, `STAGED CHANGES`, and `MERGE CHANGES` are displayed.
+For more information, see the [VS Code documentation](https://code.visualstudio.com/docs/sourcecontrol/overview#_commit).
 
-## Switch branches
+### Switch branches
 
 The Web IDE uses the current branch by default.
 To switch branches in the Web IDE:
@@ -128,7 +136,7 @@ To switch branches in the Web IDE:
 1. On the bottom status bar, on the left, select the current branch name.
 1. Enter or select an existing branch.
 
-## Create a branch
+### Create a branch
 
 To create a branch from the current branch in the Web IDE:
 
@@ -138,16 +146,16 @@ To create a branch from the current branch in the Web IDE:
 
 If you do not have write access to the repository, **Create new branch** is not visible.
 
-## Commit changes
+### Commit changes
 
 To commit changes in the Web IDE:
 
-1. On the left activity bar, select **Source Control**, or
+1. On the left side of the Web IDE, select **Source Control** ({{< icon name="branch" >}}), or
    press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
 1. Enter your commit message.
 1. Commit to the current branch or [create a new branch](#create-a-branch).
 
-## Create a merge request
+### Create a merge request
 
 To create a [merge request](../merge_requests/_index.md) in the Web IDE:
 
@@ -156,7 +164,12 @@ To create a [merge request](../merge_requests/_index.md) in the Web IDE:
 
 For more information, see [View missed notifications](#view-missed-notifications).
 
-## Use the Command Palette
+## Customize the Web IDE
+
+Customize the Web IDE to match your preferences for keyboard shortcuts,
+themes, settings, and synchronization.
+
+### Use the Command Palette
 
 You can use the Command Palette to access many commands.
 To open the Command Palette and run a command in the Web IDE:
@@ -164,7 +177,7 @@ To open the Command Palette and run a command in the Web IDE:
 1. Press <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>.
 1. Enter or select the command.
 
-## Edit settings
+### Edit settings
 
 You can use the settings editor to view and edit your user and workspace settings.
 To open the settings editor in the Web IDE:
@@ -174,7 +187,7 @@ To open the settings editor in the Web IDE:
 
 In the settings editor, you can search for the settings you want to change.
 
-## Edit keyboard shortcuts
+### Edit keyboard shortcuts
 
 You can use the keyboard shortcuts editor to view and change
 the default keybindings for all available commands.
@@ -191,16 +204,7 @@ In the keyboard shortcuts editor, you can search for:
 Keybindings are based on your keyboard layout.
 If you change your keyboard layout, existing keybindings are updated automatically.
 
-### Use Vim keybindings
-
-Use Vim keybindings to navigate and edit text using keyboard shortcuts from the Vim text editor.
-With the [Extensions Marketplace](#extension-marketplace), you can add Vim keybindings to
-the Web IDE.
-
-To enable Vim keybindings, install the [Vim](https://open-vsx.org/extension/vscodevim/vim)
-extension. For more information, see [install an extension](#install-an-extension).
-
-## Change the color theme
+### Change the color theme
 
 You can choose between different color themes for the Web IDE.
 The default theme is **GitLab Dark**.
@@ -214,7 +218,7 @@ To change the color theme in the Web IDE:
 
 The Web IDE stores your active color theme in your [user settings](#edit-settings).
 
-## Configure sync settings
+### Configure sync settings
 
 To configure sync settings in the Web IDE:
 
@@ -232,27 +236,31 @@ To configure sync settings in the Web IDE:
 These settings sync automatically across multiple Web IDE instances.
 You cannot sync user profiles or go back to an earlier version of synced settings.
 
-## View missed notifications
+### View missed notifications
 
 When you perform actions in the Web IDE, notifications appear in the lower right.
 To view any notification you might have missed:
 
-1. On the bottom status bar, on the right, select the bell icon ({{< icon name="notifications" >}}) for a list of notifications.
+1. On the bottom status bar, on the right, select the bell icon ({{< icon name="notifications" >}})
+   for a list of notifications.
 1. Select the notification you want to view.
 
-## Extension marketplace
+## Manage extensions
 
 {{< details >}}
 
-- Offering: GitLab.com
+- Offering: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151352) as a [beta](../../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
-- Feature flags `web_ide_oauth` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) on GitLab.com, GitLab Self-Managed, and GitLab Dedicated, and `web_ide_extensions_marketplace` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) on GitLab.com in GitLab 17.4.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5. Feature flag `web_ide_oauth` removed.
+- `web_ide_oauth` [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) in GitLab 17.4.
+- `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
+- `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/508996) the `vscode_extension_marketplace_settings` [feature flag](../../../administration/feature_flags.md) in GitLab 17.10. Disabled by default.
+- `web_ide_extensions_marketplace` and `vscode_extension_marketplace_settings` [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.11.
 
 {{< /history >}}
 
@@ -263,18 +271,19 @@ For more information, see the history.
 
 {{< /alert >}}
 
-Prerequisites:
+The VS Code Extension Marketplace provides you with access to extensions that enhance the
+functionality of the Web IDE. By default, the GitLab Web IDE instance is configured to use the
+[Open VSX Registry](https://open-vsx.org/).
 
-- In user preferences, you must
-  [enable the extension marketplace](../../profile/preferences.md#integrate-with-the-extension-marketplace).
-- In group settings, users with the Owner role must
-  [enable the extension marketplace](../../enterprise_user/_index.md#enable-the-extension-marketplace-for-the-web-ide-and-workspaces) for enterprise users.
+Before you can manage and use extensions in the Web IDE:
 
-You can use the extension marketplace to download and run VS Code extensions in the Web IDE.
-
-The extension marketplace is preconfigured for GitLab instances,
-and is hardcoded to [`https://open-vsx.org/`](https://open-vsx.org/).
-[Epic 11770](https://gitlab.com/groups/gitlab-org/-/epics/11770) proposes to change this behavior.
+- A GitLab administrator must [enable the extension marketplace](../../../administration/settings/vscode_extension_marketplace.md)
+  in the **Admin** area.
+- You must [enable the extension marketplace](../../profile/preferences.md#integrate-with-the-extension-marketplace)
+  in your user preferences.
+- For enterprise users, a person with the Owner role must
+  [enable the extension marketplace](../../enterprise_user/_index.md#enable-the-extension-marketplace-for-the-web-ide-and-workspaces)
+  in group settings.
 
 ### Install an extension
 
@@ -299,23 +308,13 @@ To uninstall an extension in the Web IDE:
 
 Web IDE extensions may require additional configuration to work with your projects.
 
-#### YAML language support extension
+#### Use Vim keybindings
 
-To validate YAML files that match specified patterns, use
-the Red Hat [YAML](https://open-vsx.org/extension/redhat/vscode-yaml) extension.
+Use Vim keybindings to navigate and edit text using keyboard shortcuts from the Vim text editor.
+With the Extensions Marketplace, you can add Vim keybindings to the Web IDE.
 
-1. [Install the YAML extension](#install-an-extension).
-1. Configure your schema:
-
-   1. On the top menu bar, select **File > Preferences > Settings**, or press
-   <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> and enter `Preferences: Open Settings (JSON)`.
-   1. In the `settings.json` file, add your schema configuration. For local schema paths, add the following prefix: `gitlab-web-ide://~/`. For example:
-
-      ```json
-      "yaml.schemas": {
-         "gitlab-web-ide://~/<path-to-local-schema>.json": ["*.yaml", "*.yml"]
-      }
-      ```
+To enable Vim keybindings, install the [Vim](https://open-vsx.org/extension/vscodevim/vim)
+extension. For more information, see [install an extension](#install-an-extension).
 
 ## Related topics
 

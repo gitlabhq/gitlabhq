@@ -3,6 +3,14 @@
 module Test
   module References
     class MockWithDatabaseRecord < Mock
+      def self.model_klass
+        Class.new do
+          def self.find_by(id:)
+            { id: id }
+          end
+        end
+      end
+
       def model_klass
         self.class.model_klass
       end

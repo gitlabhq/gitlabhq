@@ -157,6 +157,18 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
       end
     end
 
+    context 'when the job interval is optional and defaults to the minimum' do
+      it 'sets the job interval to the minimum value' do
+        expect do
+          migration.queue_batched_background_migration(job_class.name, :events, :id)
+        end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
+
+        created_migration = Gitlab::Database::BackgroundMigration::BatchedMigration.last
+
+        expect(created_migration.interval).to eq(described_class::BATCH_MIN_DELAY)
+      end
+    end
+
     context 'when additional arguments are passed to the method' do
       context 'when the job class provides job_arguments_count' do
         context 'when defined job arguments for the job class does not match provided arguments' do
@@ -627,14 +639,16 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
       end
 
       context 'when DBLAB_ENVIRONMENT is set' do
-        it 'raises an error' do
+        it 'raises an error that the migration with current configuration does not exist' do
           stub_env(lab_key, 'foo')
           expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
 
           create(:batched_background_migration, :active, migration_attributes.merge(gitlab_schema: :gitlab_something_else))
 
+          error_message = format(described_class::MIGRATION_NOT_FOUND_MESSAGE, configuration: configuration)
+
           expect { ensure_batched_background_migration_is_finished }
-            .to raise_error(Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::NonExistentMigrationError)
+            .to raise_error(Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::NonExistentMigrationError, error_message)
         end
       end
     end

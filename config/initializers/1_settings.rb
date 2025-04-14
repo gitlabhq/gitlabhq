@@ -231,6 +231,7 @@ Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['graphql_timeout'] ||= 30
 Settings.gitlab['max_attachment_size'] ||= 100
 Settings.gitlab['session_expire_delay'] ||= 10080
+Settings.gitlab['session_expire_from_init'] ||= false
 Settings.gitlab['unauthenticated_session_expire_delay'] ||= 2.hours.to_i
 Settings.gitlab.default_projects_features['issues']             = true if Settings.gitlab.default_projects_features['issues'].nil?
 Settings.gitlab.default_projects_features['merge_requests']     = true if Settings.gitlab.default_projects_features['merge_requests'].nil?
@@ -250,6 +251,7 @@ Settings.gitlab['max_request_duration_seconds'] ||= 57
 Settings.gitlab['display_initial_root_password'] = false if Settings.gitlab['display_initial_root_password'].nil?
 Settings.gitlab['weak_passwords_digest_set'] ||= YAML.safe_load(File.open(Rails.root.join('config', 'weak_password_digests.yml')), permitted_classes: [String]).to_set.freeze
 Settings.gitlab['log_decompressed_response_bytesize'] = ENV["GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE"].to_i > 0 ? ENV["GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE"].to_i : 0
+Settings.gitlab['initial_gitlab_product_usage_data'] = true if Settings.gitlab['initial_gitlab_product_usage_data'].nil?
 
 Gitlab.ee do
   Settings.gitlab['mirror_max_delay'] ||= 300
@@ -777,9 +779,6 @@ Gitlab.ee do
   Settings.cron_jobs['adjourned_projects_deletion_cron_worker'] ||= {}
   Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['cron'] ||= '0 7 * * *'
   Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['job_class'] = 'AdjournedProjectsDeletionCronWorker'
-  Settings.cron_jobs['banned_user_project_deletion_cron_worker'] ||= {}
-  Settings.cron_jobs['banned_user_project_deletion_cron_worker']['cron'] ||= '0 19 * * *'
-  Settings.cron_jobs['banned_user_project_deletion_cron_worker']['job_class'] = 'AntiAbuse::BannedUserProjectDeletionCronWorker'
   Settings.cron_jobs['geo_verification_cron_worker'] ||= {}
   Settings.cron_jobs['geo_verification_cron_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['geo_verification_cron_worker']['job_class'] ||= 'Geo::VerificationCronWorker'
@@ -855,6 +854,9 @@ Gitlab.ee do
   Settings.cron_jobs['search_elastic_metrics_update_cron_worker'] ||= {}
   Settings.cron_jobs['search_elastic_metrics_update_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['search_elastic_metrics_update_cron_worker']['job_class'] ||= 'Search::Elastic::MetricsUpdateCronWorker'
+  Settings.cron_jobs['search_elastic_migration_cleanup_cron_worker'] ||= {}
+  Settings.cron_jobs['search_elastic_migration_cleanup_cron_worker']['cron'] ||= '0 0 * * 1-5'
+  Settings.cron_jobs['search_elastic_migration_cleanup_cron_worker']['job_class'] ||= 'Search::Elastic::MigrationCleanupCronWorker'
   Settings.cron_jobs['search_zoekt_metrics_update_cron_worker'] ||= {}
   Settings.cron_jobs['search_zoekt_metrics_update_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['search_zoekt_metrics_update_cron_worker']['job_class'] ||= 'Search::Zoekt::MetricsUpdateCronWorker'
@@ -879,9 +881,15 @@ Gitlab.ee do
   Settings.cron_jobs['iterations_generator_worker'] ||= {}
   Settings.cron_jobs['iterations_generator_worker']['cron'] ||= '5 0 * * *'
   Settings.cron_jobs['iterations_generator_worker']['job_class'] = 'Iterations::Cadences::ScheduleCreateIterationsWorker'
+  Settings.cron_jobs['vulnerability_archival_schedule_worker'] ||= {}
+  Settings.cron_jobs['vulnerability_archival_schedule_worker']['cron'] ||= '0 0 1 * *'
+  Settings.cron_jobs['vulnerability_archival_schedule_worker']['job_class'] = 'Vulnerabilities::Archival::ScheduleWorker'
   Settings.cron_jobs['vulnerability_statistics_schedule_worker'] ||= {}
   Settings.cron_jobs['vulnerability_statistics_schedule_worker']['cron'] ||= '15 1,20 * * *'
   Settings.cron_jobs['vulnerability_statistics_schedule_worker']['job_class'] = 'Vulnerabilities::Statistics::ScheduleWorker'
+  Settings.cron_jobs['vulnerability_namespace_statistics_schedule_worker'] ||= {}
+  Settings.cron_jobs['vulnerability_namespace_statistics_schedule_worker']['cron'] ||= '0 8 * * 0'
+  Settings.cron_jobs['vulnerability_namespace_statistics_schedule_worker']['job_class'] = 'Vulnerabilities::NamespaceStatistics::ScheduleWorker'
   Settings.cron_jobs['vulnerability_historical_statistics_deletion_worker'] ||= {}
   Settings.cron_jobs['vulnerability_historical_statistics_deletion_worker']['cron'] ||= '15 3 * * *'
   Settings.cron_jobs['vulnerability_historical_statistics_deletion_worker']['job_class'] = 'Vulnerabilities::HistoricalStatistics::DeletionWorker'
@@ -924,6 +932,9 @@ Gitlab.ee do
   Settings.cron_jobs['compliance_violations_consistency_worker'] ||= {}
   Settings.cron_jobs['compliance_violations_consistency_worker']['cron'] ||= '0 1 * * *'
   Settings.cron_jobs['compliance_violations_consistency_worker']['job_class'] = 'ComplianceManagement::MergeRequests::ComplianceViolationsConsistencyWorker'
+  Settings.cron_jobs['framework_evaluation_scheduler_worker'] ||= {}
+  Settings.cron_jobs['framework_evaluation_scheduler_worker']['cron'] ||= '0 */12 * * *'
+  Settings.cron_jobs['framework_evaluation_scheduler_worker']['job_class'] = 'ComplianceManagement::FrameworkEvaluationSchedulerWorker'
   Settings.cron_jobs['users_delete_unconfirmed_users_worker'] ||= {}
   Settings.cron_jobs['users_delete_unconfirmed_users_worker']['cron'] ||= '0 * * * *'
   Settings.cron_jobs['users_delete_unconfirmed_users_worker']['job_class'] = 'Users::UnconfirmedUsersDeletionCronWorker'
@@ -986,11 +997,14 @@ Gitlab.ee do
   Settings.cron_jobs['members_schedule_prune_deletions_worker']['cron'] ||= "*/5 * * * *"
   Settings.cron_jobs['members_schedule_prune_deletions_worker']['job_class'] = 'Members::SchedulePruneDeletionsWorker'
   Settings.cron_jobs['ai_conversation_cleanup_cron_worker'] ||= {}
-  Settings.cron_jobs['ai_conversation_cleanup_cron_worker']['cron'] ||= '30 2 * * *'
+  Settings.cron_jobs['ai_conversation_cleanup_cron_worker']['cron'] ||= '0 * * * *'
   Settings.cron_jobs['ai_conversation_cleanup_cron_worker']['job_class'] = 'Ai::Conversation::CleanupCronWorker'
   Settings.cron_jobs['ai_active_context_bulk_process_worker'] ||= {}
   Settings.cron_jobs['ai_active_context_bulk_process_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['ai_active_context_bulk_process_worker']['job_class'] ||= 'Ai::ActiveContext::BulkProcessWorker'
+  Settings.cron_jobs['ai_active_context_migration_worker'] ||= {}
+  Settings.cron_jobs['ai_active_context_migration_worker']['cron'] ||= '*/5 * * * *'
+  Settings.cron_jobs['ai_active_context_migration_worker']['job_class'] ||= 'Ai::ActiveContext::MigrationWorker'
   Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker'] ||= {}
   Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker']['cron'] ||= '*/11 * * * *'
   Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker']['job_class'] = 'Namespaces::EnableDescendantsCacheCronWorker'
@@ -1000,6 +1014,9 @@ Gitlab.ee do
   Settings.cron_jobs['analytics_dump_ai_user_metrics_database_write_buffer_cron_worker'] ||= {}
   Settings.cron_jobs['analytics_dump_ai_user_metrics_database_write_buffer_cron_worker']['cron'] ||= "*/10 * * * *"
   Settings.cron_jobs['analytics_dump_ai_user_metrics_database_write_buffer_cron_worker']['job_class'] = 'Analytics::DumpAiUserMetricsWriteBufferCronWorker'
+  Settings.cron_jobs['delete_expired_vulnerability_exports_worker'] ||= {}
+  Settings.cron_jobs['delete_expired_vulnerability_exports_worker']['cron'] ||= '0 4 * * *'
+  Settings.cron_jobs['delete_expired_vulnerability_exports_worker']['job_class'] = 'Vulnerabilities::DeleteExpiredExportsWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}

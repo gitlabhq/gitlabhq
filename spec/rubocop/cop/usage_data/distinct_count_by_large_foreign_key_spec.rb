@@ -9,8 +9,8 @@ RSpec.describe RuboCop::Cop::UsageData::DistinctCountByLargeForeignKey do
   let(:msg) { 'Avoid doing `distinct_count` on foreign keys for large tables having above 100 million rows.' }
   let(:config) do
     RuboCop::Config.new('UsageData/DistinctCountByLargeForeignKey' => {
-                          'AllowedForeignKeys' => allowed_foreign_keys
-                        })
+      'AllowedForeignKeys' => allowed_foreign_keys
+    })
   end
 
   context 'in an usage data file' do
@@ -20,10 +20,10 @@ RSpec.describe RuboCop::Cop::UsageData::DistinctCountByLargeForeignKey do
 
     context 'when counting by disallowed key' do
       it 'registers an offense' do
-        expect_offense(<<~CODE)
+        expect_offense(<<~RUBY)
           distinct_count(Issue, :creator_id)
           ^^^^^^^^^^^^^^ #{msg}
-        CODE
+        RUBY
       end
 
       it 'does not register an offense when batch is false' do
@@ -31,10 +31,10 @@ RSpec.describe RuboCop::Cop::UsageData::DistinctCountByLargeForeignKey do
       end
 
       it 'registers an offense when batch is true' do
-        expect_offense(<<~CODE)
+        expect_offense(<<~RUBY)
           distinct_count(Issue, :creator_id, batch: true)
           ^^^^^^^^^^^^^^ #{msg}
-        CODE
+        RUBY
       end
     end
 

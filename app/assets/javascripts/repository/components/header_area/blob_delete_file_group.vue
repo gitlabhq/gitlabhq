@@ -3,7 +3,6 @@ import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem } from '@gitlab/ui'
 import { uniqueId } from 'lodash';
 import { sprintf, __ } from '~/locale';
 import { showForkSuggestion } from '~/repository/utils/fork_suggestion_utils';
-import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
 import DeleteBlobModal from '~/repository/components/delete_blob_modal.vue';
 import { DEFAULT_BLOB_INFO } from '~/repository/constants';
 
@@ -11,7 +10,6 @@ export default {
   components: {
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
-    ForkSuggestionModal,
     DeleteBlobModal,
   },
   inject: {
@@ -44,11 +42,11 @@ export default {
       type: Object,
       required: true,
     },
-  },
-  data() {
-    return {
-      isModalVisible: false,
-    };
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     deleteFileItem() {
@@ -56,6 +54,7 @@ export default {
         text: __('Delete'),
         extraAttrs: {
           'data-testid': 'delete',
+          disabled: this.disabled,
         },
       };
     },
@@ -71,8 +70,12 @@ export default {
   },
   methods: {
     showModal() {
+      if (this.disabled) {
+        return;
+      }
+
       if (this.shouldShowForkSuggestion) {
-        this.isModalVisible = true;
+        this.$emit('showForkSuggestion');
         return;
       }
 
@@ -85,11 +88,6 @@ export default {
 <template>
   <gl-disclosure-dropdown-group bordered>
     <gl-disclosure-dropdown-item :item="deleteFileItem" variant="danger" @action="showModal" />
-    <fork-suggestion-modal
-      :visible="isModalVisible"
-      :fork-path="blobInfo.forkAndViewPath"
-      @hide="isModalVisible = false"
-    />
     <delete-blob-modal
       :ref="deleteModalId"
       :delete-path="blobInfo.webPath"

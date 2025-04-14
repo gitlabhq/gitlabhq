@@ -12,6 +12,9 @@ describe('ProjectsPipelinesChartsApp', () => {
   const createWrapper = ({ provide, ...options } = {}) => {
     wrapper = shallowMount(App, {
       provide: {
+        glFeatures: {
+          ciImprovedProjectPipelineAnalytics: true,
+        },
         ...provide,
       },
       ...options,
@@ -24,7 +27,7 @@ describe('ProjectsPipelinesChartsApp', () => {
   const findPipelinesDashboardClickhouse = () =>
     wrapper.findComponent(PipelinesDashboardClickhouse);
 
-  describe('when showing only pipelines dashboard', () => {
+  describe('when clickhouse for analytics is disabled', () => {
     beforeEach(() => {
       createWrapper();
     });
@@ -35,26 +38,43 @@ describe('ProjectsPipelinesChartsApp', () => {
     });
 
     it('shows pipelines dashboard', () => {
-      expect(wrapper.findComponent(PipelinesDashboard).exists()).toBe(true);
+      expect(findPipelinesDashboard().exists()).toBe(true);
+      expect(findPipelinesDashboardClickhouse().exists()).toBe(false);
+    });
+  });
+
+  describe('when clickhouse for analytics is enabled', () => {
+    beforeEach(() => {
+      createWrapper({
+        provide: {
+          clickHouseEnabledForAnalytics: true,
+        },
+      });
+    });
+
+    it('does not render tabs', () => {
+      // tabs are only shown in EE
+      expect(findGlTabs().exists()).toBe(false);
+    });
+
+    it('shows pipelines dashboard with clickhouse', () => {
+      expect(findPipelinesDashboardClickhouse().exists()).toBe(true);
+      expect(findPipelinesDashboard().exists()).toBe(false);
     });
   });
 
   describe('ci_improved_project_pipeline_analytics feature flag', () => {
-    describe.each`
-      status   | finderFn
-      ${false} | ${findPipelinesDashboard}
-      ${true}  | ${findPipelinesDashboardClickhouse}
-    `('when flag is $status', ({ status, finderFn }) => {
+    describe('when flag is disabled', () => {
       it('renders component', () => {
         createWrapper({
           provide: {
             glFeatures: {
-              ciImprovedProjectPipelineAnalytics: status,
+              ciImprovedProjectPipelineAnalytics: false,
             },
           },
         });
 
-        expect(finderFn().exists()).toBe(true);
+        expect(findPipelinesDashboard().exists()).toBe(true);
       });
     });
   });

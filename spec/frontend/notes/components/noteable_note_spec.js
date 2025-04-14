@@ -3,6 +3,8 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import { clone } from 'lodash';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import DiffsModule from '~/diffs/store/modules';
@@ -19,9 +21,13 @@ import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_m
 import { SHOW_CLIENT_SIDE_SECRET_DETECTION_WARNING } from '~/lib/utils/secret_detection';
 import { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { noteableDataMock, notesDataMock, note } from '../mock_data';
 
 Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
+
 jest.mock('~/alert');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 confirmAction.mockResolvedValueOnce(false);
@@ -46,6 +52,7 @@ const singleLineNotePosition = {
 
 describe('issue_note', () => {
   let store;
+  let pinia;
   let wrapper;
 
   const REPORT_ABUSE_PATH = '/abuse_reports/add_category';
@@ -72,6 +79,7 @@ describe('issue_note', () => {
 
     wrapper = mountExtended(issueNote, {
       store,
+      pinia,
       propsData: {
         note: noteCopy,
         ...props,
@@ -88,6 +96,11 @@ describe('issue_note', () => {
       },
     });
   };
+
+  beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+  });
 
   describe('mutiline comments', () => {
     beforeEach(() => {
@@ -472,18 +485,10 @@ describe('issue_note', () => {
     );
 
     it("returns the correct diff file from the Diffs store if it's available", () => {
-      createWrapper(
-        {
-          note: { ...note, position: singleLineNotePosition },
-        },
-        (rawStore) => {
-          const updatedStore = { ...rawStore };
-          updatedStore.modules.diffs.state.diffFiles = [
-            { file_hash: 'abc', testId: 'diffFileTest' },
-          ];
-          return updatedStore;
-        },
-      );
+      useLegacyDiffs().diffFiles = [{ file_hash: 'abc', testId: 'diffFileTest' }];
+      createWrapper({
+        note: { ...note, position: singleLineNotePosition },
+      });
 
       expect(findNoteBody().props().file.testId).toBe('diffFileTest');
     });

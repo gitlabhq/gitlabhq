@@ -133,8 +133,10 @@ export default {
     resetRequestData() {
       if (this.glFeatures.feSearchBuildByName) {
         this.requestData = { statuses: null, name: null };
+      } else if (this.glFeatures.populateAndUseBuildSourceTable) {
+        this.requestData = { statuses: null, sources: null };
       } else {
-        this.requestData = { statuses: null };
+        this.requestData = { statuses: null, sources: null };
       }
     },
     resetPagination() {
@@ -181,6 +183,11 @@ export default {
 
         if (filter.type === 'status') {
           this.requestData.statuses = filter.value.data;
+        }
+
+        // Technically, this shouldn't need to check the feature flag because the filter won't be available if the flag is disabled
+        if (this.glFeatures.populateAndUseBuildSourceTable && filter.type === 'jobs-source') {
+          this.requestData.sources = filter.value.data;
         }
       });
 

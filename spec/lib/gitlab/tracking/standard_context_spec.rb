@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
     end
 
     it 'contains standard properties' do
-      standard_properties = [:user_id, :project_id, :namespace_id, :plan]
+      standard_properties = [:user_id, :project_id, :namespace_id, :plan, :unique_instance_id]
       expect(snowplow_context.to_json[:data].keys).to include(*standard_properties)
     end
 
@@ -92,6 +92,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
         expect(json_data[:instance_version]).to eq(version)
         expect(json_data[:correlation_id]).to eq(Labkit::Correlation::CorrelationId.current_or_new_id)
         expect(json_data[:global_user_id]).to eq(Gitlab::GlobalAnonymousId.user_id(user))
+        expect(json_data[:unique_instance_id]).to eq(Gitlab::GlobalAnonymousId.instance_uuid)
       end
     end
 

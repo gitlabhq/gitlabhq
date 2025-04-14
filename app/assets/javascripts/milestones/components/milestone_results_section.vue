@@ -68,7 +68,7 @@ export default {
       </div>
     </gl-dropdown-section-header>
     <template v-if="error">
-      <div class="align-items-start gl-mb-3 gl-ml-4 gl-mr-4 gl-flex gl-text-red-500">
+      <div class="align-items-start gl-mb-3 gl-ml-4 gl-mr-4 gl-flex gl-text-danger">
         <gl-icon name="error" class="gl-mr-2 gl-mt-2 gl-shrink-0" />
         <span>{{ errorMessage }}</span>
       </div>

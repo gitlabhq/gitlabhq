@@ -118,9 +118,9 @@ export default {
     v-if="state !== $options.REGISTRATION_TOKEN_HIDDEN"
     ref="runnerRegistrationDropdown"
     :toggle-text="actionText"
-    toggle-class="!gl-px-3"
     variant="default"
     category="tertiary"
+    size="small"
     v-bind="$attrs"
     icon="ellipsis_v"
     text-sr-only

@@ -5,11 +5,11 @@ import SettingsSection from '~/vue_shared/components/settings/settings_section.v
 import updateDependencyProxySettings from '~/packages_and_registries/settings/group/graphql/mutations/update_dependency_proxy_settings.mutation.graphql';
 import updateDependencyProxyImageTtlGroupPolicy from '~/packages_and_registries/settings/group/graphql/mutations/update_dependency_proxy_image_ttl_group_policy.mutation.graphql';
 import { updateGroupPackageSettings } from '~/packages_and_registries/settings/group/graphql/utils/cache_update';
+import DockerHubAuthenticationSection from '~/packages_and_registries/settings/group/components/docker_hub_authentication_section.vue';
 import {
   updateGroupDependencyProxySettingsOptimisticResponse,
   updateDependencyProxyImageTtlGroupPolicyOptimisticResponse,
 } from '~/packages_and_registries/settings/group/graphql/utils/optimistic_responses';
-
 import {
   DEPENDENCY_PROXY_HEADER,
   DEPENDENCY_PROXY_DESCRIPTION,
@@ -19,6 +19,7 @@ import {
 export default {
   name: 'DependencyProxySettings',
   components: {
+    DockerHubAuthenticationSection,
     GlToggle,
     GlSprintf,
     GlLink,
@@ -31,9 +32,9 @@ export default {
     enabledProxyHelpText: s__(
       'DependencyProxy|To see the image prefix and what is in the cache, visit the %{linkStart}Dependency Proxy%{linkEnd}',
     ),
-    ttlPolicyEnabledLabel: s__('DependencyProxy|Clear the Dependency Proxy cache automatically'),
+    ttlPolicyEnabledLabel: s__('DependencyProxy|Automatic cache cleanup'),
     ttlPolicyEnabledHelpText: s__(
-      'DependencyProxy|When enabled, images older than 90 days will be removed from the cache.',
+      'DependencyProxy|Automatically remove cached images older than 90 days.',
     ),
   },
   links: {
@@ -63,6 +64,9 @@ export default {
       set(enabled) {
         this.updateSettings({ enabled });
       },
+    },
+    showDockerHubAuthenticationSection() {
+      return !this.isLoading && this.enabled;
     },
     ttlEnabled: {
       get() {
@@ -152,6 +156,12 @@ export default {
         </span>
       </template>
     </gl-toggle>
+    <docker-hub-authentication-section
+      v-if="showDockerHubAuthenticationSection"
+      class="gl-mt-5"
+      :form-data="dependencyProxySettings"
+      @success="$emit('success')"
+    />
     <gl-toggle
       v-model="ttlEnabled"
       :disabled="isLoading"

@@ -47,37 +47,5 @@ RSpec.describe Users::BannedUser, feature_category: :user_management do
         end
       end
     end
-
-    describe '.by_user_ids' do
-      before do
-        create(:banned_user)
-      end
-
-      it 'returns banned users that match provided user ids' do
-        expect(described_class.by_user_ids([user.id])).to contain_exactly(banned_user)
-      end
-    end
-
-    describe '.created_before' do
-      it 'returns banned users created before the given interval' do
-        travel_to(25.hours.from_now) do
-          expect(described_class.created_before(1.day.ago)).to contain_exactly(banned_user)
-        end
-      end
-
-      it 'does not return banned users created after the given interval' do
-        travel_to(23.hours.from_now) do
-          expect(described_class.created_before(1.day.ago)).to be_empty
-        end
-      end
-    end
-
-    describe '.without_deleted_projects' do
-      let_it_be(:banned_user1) { create(:banned_user, projects_deleted: true) }
-
-      it 'returns banned users whose projects have not been deleted' do
-        expect(described_class.without_deleted_projects).to contain_exactly(banned_user)
-      end
-    end
   end
 end

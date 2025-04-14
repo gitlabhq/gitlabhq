@@ -18,6 +18,14 @@ RSpec.describe RapidDiffsResource, type: :controller, feature_category: :source_
       def call_diffs_resource
         diffs_resource
       end
+
+      def call_complete_diff_path
+        complete_diff_path
+      end
+
+      def call_email_format_path
+        email_format_path
+      end
     end
   end
 
@@ -50,6 +58,18 @@ RSpec.describe RapidDiffsResource, type: :controller, feature_category: :source_
       expect do
         controller.new.call_diffs_resource
       end.to raise_error(NotImplementedError)
+    end
+  end
+
+  describe '#complete_diff_path' do
+    it 'returns nil' do
+      expect(controller.new.call_complete_diff_path).to be_nil
+    end
+  end
+
+  describe '#email_format_path' do
+    it 'returns nil' do
+      expect(controller.new.call_email_format_path).to be_nil
     end
   end
 end

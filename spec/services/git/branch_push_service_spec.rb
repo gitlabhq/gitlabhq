@@ -87,7 +87,7 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, :services
           ref: ref,
           checkout_sha: SeedRepo::Commit::ID,
           variables_attributes: [],
-          push_options: {}
+          push_options: an_instance_of(::Ci::PipelineCreation::PushOptions)
         }
       ).and_call_original
 

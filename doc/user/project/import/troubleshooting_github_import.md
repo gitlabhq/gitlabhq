@@ -88,6 +88,6 @@ required to perform the import.
 
 ## GitLab instance cannot connect to GitHub
 
-Self-managed instances that run GitLab 15.10 or earlier, and are behind proxies, cannot resolve DNS for `github.com` or `api.github.com`.
+GitLab Self-Managed instances that run GitLab 15.10 or earlier, and are behind proxies, cannot resolve DNS for `github.com` or `api.github.com`.
 The GitLab instance fails to connect to GitHub during the import and you must add `github.com` and `api.github.com`
 entries in the [allowlist for local requests](../../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).

@@ -3,12 +3,7 @@ import { omit } from 'lodash';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { historyPushState, parseBoolean } from '~/lib/utils/common_utils';
-import {
-  refreshCurrentPage,
-  queryToObject,
-  mergeUrlParams,
-  removeParams,
-} from '~/lib/utils/url_utility';
+import { queryToObject, mergeUrlParams, removeParams } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import BoardContent from '~/boards/components/board_content.vue';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
@@ -39,6 +34,7 @@ export default {
     'isGroupBoard',
     'issuableType',
     'boardType',
+    'hasCustomFieldsFeature',
   ],
   data() {
     return {
@@ -93,7 +89,9 @@ export default {
 
   computed: {
     issuesDrawerEnabled() {
-      if (gon.current_user_use_work_items_view) return true;
+      if (gon.current_user_use_work_items_view || this.glFeatures.workItemViewForIssues) {
+        return true;
+      }
       return Boolean(
         this.isIssueBoard ? this.glFeatures.issuesListDrawer : this.glFeatures.epicsListDrawer,
       );
@@ -124,6 +122,7 @@ export default {
         issuableType: this.issuableType,
         filterInfo: FiltersInfo,
         filterFields: FilterFields,
+        options: { hasCustomFieldsFeature: this.hasCustomFieldsFeature },
       });
     },
     isShowingEpicSwimlanesLocalStorageKey() {
@@ -131,11 +130,7 @@ export default {
     },
   },
   created() {
-    window.addEventListener('popstate', refreshCurrentPage);
     this.initIsShowingEpicSwimlanes();
-  },
-  destroyed() {
-    window.removeEventListener('popstate', refreshCurrentPage);
   },
   methods: {
     refetchLists() {

@@ -124,19 +124,4 @@ RSpec.describe 'Environments Folder page', :js, feature_category: :environment_m
       end
     end
   end
-
-  describe 'legacy folders page' do
-    before do
-      stub_feature_flags(environments_folder_new_look: false)
-      sign_in(user)
-      visit folder_project_environments_path(project, folder_name)
-      wait_for_requests
-    end
-
-    it 'user opens folder view' do
-      expect(page).to have_content("Environments / #{folder_name}")
-      expect(page).not_to have_content('production')
-      envs.each { |env| expect(page).to have_content(get_env_name(env)) }
-    end
-  end
 end

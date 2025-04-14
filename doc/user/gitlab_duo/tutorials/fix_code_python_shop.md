@@ -40,7 +40,7 @@ to help you:
 - [Install the latest version of Python](https://www.python.org/downloads/) on your system.
   You can ask Chat how to do that for your operating system.
 - Make sure your organization has purchased a
-  [GitLab Duo add-on subscription (either Duo Pro or Duo Enterprise)](https://about.gitlab.com/gitlab-duo/#pricing),
+  [GitLab Duo add-on subscription (either GitLab Duo Pro or Duo Enterprise)](https://about.gitlab.com/gitlab-duo/#pricing),
   and your administrator has [assigned you a seat](../../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
 - Install an extension in your preferred IDE:
   - [Web IDE](../../project/web_ide/_index.md): Access through your GitLab instance

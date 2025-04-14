@@ -68,12 +68,8 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
       let(:ghost_user) { { id: -1, login: 'Ghost', email: 'ghost_user@gitea_import_dummy_email.com' } }
       let(:raw) { base.merge(user: ghost_user) }
 
-      it 'sets the note author as the project creator' do
-        expect(comment.attributes.fetch(:author_id)).to eq(project.creator_id)
-      end
-
-      it 'returns note with "Created by:" tag line' do
-        expect(comment.attributes.fetch(:note)).to eq("*Created by: Ghost*\n\nI'm having a problem with this.")
+      it 'sets the note author as the gitlab ghost user' do
+        expect(comment.attributes.fetch(:author_id)).to eq(Users::Internal.ghost.id)
       end
     end
 

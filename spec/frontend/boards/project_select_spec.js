@@ -71,6 +71,7 @@ describe('ProjectSelect component', () => {
     });
 
     it('passes down non archived projects to dropdown', async () => {
+      await waitForPromises();
       findGlCollapsibleListBox().vm.$emit('shown');
       await nextTick();
       expect(findGlCollapsibleListBox().props('items').length).toEqual(mockProjects.length - 1);

@@ -262,5 +262,3 @@ events:
   unique: user.id
 - name: i_code_review_saved_replies_use_in_other
   unique: user.id
-- name: i_quickactions_remind_me
-  unique: user.id

@@ -18,7 +18,7 @@ module Types
           description: 'Name of the input.'
 
         field :value,
-          Inputs::ValueInputType,
+          Inputs::ValueType,
           null: true,
           description: 'Value of the input.'
       end

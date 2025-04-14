@@ -1,7 +1,6 @@
 <script>
 import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getProjectEnvironments } from '~/ci/common/private/ci_environments_dropdown';
 import { ADD_MUTATION_ACTION, DELETE_MUTATION_ACTION, UPDATE_MUTATION_ACTION } from '../constants';
 import getProjectVariables from '../graphql/queries/project_variables.query.graphql';
@@ -14,7 +13,6 @@ export default {
   components: {
     CiVariableShared,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['projectFullPath', 'projectId'],
   computed: {
     graphqlId() {

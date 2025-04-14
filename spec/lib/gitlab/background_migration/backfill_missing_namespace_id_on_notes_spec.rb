@@ -173,7 +173,6 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillMissingNamespaceIdOnNotes,
         title: "Example Epic",
         author_id: user_1.id,
         namespace_id: group_namespace.id,
-        correct_work_item_type_id: work_items_type.correct_id,
         work_item_type_id: work_items_type.id
       )
     end

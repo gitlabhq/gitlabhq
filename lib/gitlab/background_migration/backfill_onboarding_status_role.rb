@@ -8,6 +8,12 @@ module Gitlab
 
       scope_to ->(relation) { relation.where.not(role: nil) }
 
+      class UserDetail < ApplicationRecord
+        self.table_name = :user_details
+
+        belongs_to :user
+      end
+
       def perform
         each_sub_batch do |sub_batch|
           UserDetail

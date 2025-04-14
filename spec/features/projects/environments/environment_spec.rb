@@ -184,7 +184,7 @@ RSpec.describe 'Environment', feature_category: :environment_management do
             it 'does allow to play manual action' do
               expect(action).to be_manual
 
-              click_button('Deploy to...')
+              click_button('Deploy to…')
 
               expect { click_button(action.name) }
                 .not_to change { Ci::Pipeline.count }

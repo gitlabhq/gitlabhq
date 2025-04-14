@@ -71,6 +71,7 @@ class IssuePolicy < IssuablePolicy
 
   rule { group_issue & can?(:read_group) }.policy do
     enable :create_note
+    enable :award_emoji
   end
 
   rule { ~notes_widget_enabled }.policy do

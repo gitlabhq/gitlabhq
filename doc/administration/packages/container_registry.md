@@ -55,7 +55,7 @@ but it's not recommended and is beyond the scope of this document.
 
 ### Helm Charts installations
 
-For Helm Charts installations, see [Using the Container Registry](https://docs.gitlab.com/charts/charts/registry/).
+For Helm Charts installations, see [Using the container registry](https://docs.gitlab.com/charts/charts/registry/).
 in the Helm Charts documentation.
 
 ### Self-compiled installations
@@ -76,12 +76,12 @@ The contents of `gitlab.yml` are:
 ```yaml
 registry:
   enabled: true
-  host: registry.gitlab.example.com
-  port: 5005
-  api_url: http://localhost:5000/
-  key: config/registry.key
-  path: shared/registry
-  issuer: gitlab-issuer
+  host: <registry.gitlab.example.com>
+  port: <5005>
+  api_url: <http://localhost:5000/>
+  key: <config/registry.key>
+  path: <shared/registry>
+  issuer: <gitlab-issuer>
 ```
 
 Where:
@@ -107,7 +107,7 @@ as the realm:
 ```yaml
 auth:
   token:
-    realm: https://gitlab.example.com/jwt/auth
+    realm: <https://gitlab.example.com/jwt/auth>
     service: container_registry
     issuer: gitlab-issuer
     rootcertbundle: /root/certs/certbundle
@@ -164,7 +164,7 @@ under the `registry_external_url` line, rather than the port listed under
    path to the existing TLS certificate and key used by GitLab:
 
    ```ruby
-   registry_external_url 'https://gitlab.example.com:5050'
+   registry_external_url '<https://gitlab.example.com:5050>'
    ```
 
    The `registry_external_url` is listening on HTTPS under the
@@ -175,8 +175,8 @@ under the `registry_external_url` line, rather than the port listed under
    below:
 
    ```ruby
-   registry_nginx['ssl_certificate'] = "/path/to/certificate.pem"
-   registry_nginx['ssl_certificate_key'] = "/path/to/certificate.key"
+   registry_nginx['ssl_certificate'] = "</path/to/certificate.pem>"
+   registry_nginx['ssl_certificate_key'] = "</path/to/certificate.key>"
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
@@ -198,7 +198,7 @@ balancer to the registry from ports `80` or `443` to the arbitrary port. This is
 rely on the `docker login` example in the container registry. Here's an example:
 
 ```ruby
-registry_external_url 'https://registry-gitlab.example.com'
+registry_external_url '<https://registry-gitlab.example.com>'
 registry_nginx['redirect_http_to_https'] = true
 registry_nginx['listen_port'] = 5678
 ```
@@ -213,7 +213,7 @@ registry_nginx['listen_port'] = 5678
    ```yaml
    registry:
      enabled: true
-     host: gitlab.example.com
+     host: <gitlab.example.com>
      port: 5050
    ```
 
@@ -228,7 +228,7 @@ Users should now be able to sign in to the container registry with their GitLab
 credentials using:
 
 ```shell
-docker login gitlab.example.com:5050
+docker login <gitlab.example.com:5050>
 ```
 
 ### Configure container registry under its own domain
@@ -250,18 +250,18 @@ Let's assume that you want the container registry to be accessible at
 {{< tab title="Linux package (Omnibus)" >}}
 
 1. Place your TLS certificate and key in
-   `/etc/gitlab/ssl/registry.gitlab.example.com.crt` and
-   `/etc/gitlab/ssl/registry.gitlab.example.com.key` and make sure they have
+   `/etc/gitlab/ssl/<registry.gitlab.example.com>.crt` and
+   `/etc/gitlab/ssl/<registry.gitlab.example.com>.key` and make sure they have
    correct permissions:
 
    ```shell
-   chmod 600 /etc/gitlab/ssl/registry.gitlab.example.com.*
+   chmod 600 /etc/gitlab/ssl/<registry.gitlab.example.com>.*
    ```
 
 1. After the TLS certificate is in place, edit `/etc/gitlab/gitlab.rb` with:
 
    ```ruby
-   registry_external_url 'https://registry.gitlab.example.com'
+   registry_external_url '<https://registry.gitlab.example.com>'
    ```
 
    The `registry_external_url` is listening on HTTPS.
@@ -287,7 +287,7 @@ registry_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/certificate.key"
    ```yaml
    registry:
      enabled: true
-     host: registry.gitlab.example.com
+     host: <registry.gitlab.example.com>
    ```
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
@@ -301,7 +301,7 @@ Users should now be able to sign in to the container registry using their GitLab
 credentials:
 
 ```shell
-docker login registry.gitlab.example.com
+docker login <registry.gitlab.example.com>
 ```
 
 ## Disable container registry site-wide
@@ -455,7 +455,7 @@ The default location where images are stored in Linux package installations is
 1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   gitlab_rails['registry_path'] = "/path/to/registry/storage"
+   gitlab_rails['registry_path'] = "</path/to/registry/storage>"
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
@@ -514,59 +514,63 @@ The S3 storage driver integrates with Amazon S3 or any S3-compatible object stor
 
 {{< alert type="warning" >}}
 
-The S3 storage driver that uses AWS SDK v1 was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523095) in GitLab 17.10 and is planned for removal in GitLab 18.0.
-Use the `s3_v2` driver instead when it becomes available in May 2025. This change is a breaking change.
+The S3 storage driver that uses AWS SDK v1 was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523095) in GitLab 17.10 and is planned for removal in GitLab 19.0.
+
+Use the `s3_v2` driver (in Beta) instead when it becomes available in May 2025. This driver offers improved performance, reliability, and compatibility with AWS authentication requirements. While this is a breaking change, the new driver has been thoroughly tested and is designed to be a drop-in replacement for most configurations.
+
+Make sure to test the new driver in non-production environments before deploying to production to ensure compatibility with your specific setup and usage patterns. This allows you to identify and address any edge cases unique to your environment.
+
+Report any issues or feedback using [issue 525855](https://gitlab.com/gitlab-org/gitlab/-/issues/525855).
 
 {{< /alert >}}
 
 <!--- end_remove -->
 
 ```ruby
-# Deprecated: Will be removed in GitLab 18.0
+# Deprecated: Will be removed in GitLab 19.0
 registry['storage'] = {
   's3' => {
-    'accesskey' => 's3-access-key',
-    'secretkey' => 's3-secret-key-for-access-key',
-    'bucket' => 'your-s3-bucket',
-    'region' => 'your-s3-region',
-    'regionendpoint' => 'your-s3-regionendpoint'
+    'accesskey' => '<s3-access-key>',
+    'secretkey' => '<s3-secret-key-for-access-key>',
+    'bucket' => '<your-s3-bucket>',
+    'region' => '<your-s3-region>',
+    'regionendpoint' => '<your-s3-regionendpoint>'
   }
 }
 
-# Recommended: s3_v2 driver
+# Beta: s3_v2 driver
 registry['storage'] = {
   's3_v2' => {
-    'accesskey' => 's3-access-key',
-    'secretkey' => 's3-secret-key-for-access-key',
-    'bucket' => 'your-s3-bucket',
-    'region' => 'your-s3-region',
-    'regionendpoint' => 'your-s3-regionendpoint'
+    'accesskey' => '<s3-access-key>',
+    'secretkey' => '<s3-secret-key-for-access-key>',
+    'bucket' => '<your-s3-bucket>',
+    'region' => '<your-s3-region>',
+    'regionendpoint' => '<your-s3-regionendpoint>'
   }
 }
 ```
 
-The `s3_v2` driver only supports Signature Version 4 for authentication.
+The `s3_v2` driver (in Beta) uses AWS SDK v2 and only supports Signature Version 4 for authentication. This driver improves performance and reliability while ensuring compatibility with AWS authentication requirements, as they are phasing out support for older signature methods. For more information, see [epic 16272](https://gitlab.com/groups/gitlab-org/-/epics/16272).
 
-To avoid using static credentials, use an IAM role and omit `accesskey` and `secretkey`.
-Make sure that your IAM profile follows the [permissions documented by Docker](https://docs.docker.com/registry/storage-drivers/s3/).
+For improved security, you can use an IAM role instead of static credentials by omitting the `accesskey` and `secretkey` parameters.
 
 For S3 VPC endpoints:
 
 ```ruby
 registry['storage'] = {
-  's3' => {
-    'accesskey' => 's3-access-key',
-    'secretkey' => 's3-secret-key-for-access-key',
-    'bucket' => 'your-s3-bucket',
-    'region' => 'your-s3-region',
-    'regionendpoint' => 'your-s3-vpc-endpoint',
+  's3_v2' => {  # Beta driver
+    'accesskey' => '<s3-access-key>',
+    'secretkey' => '<s3-secret-key-for-access-key>',
+    'bucket' => '<your-s3-bucket>',
+    'region' => '<your-s3-region>',
+    'regionendpoint' => '<your-s3-vpc-endpoint>',
     'pathstyle' => false
   }
 }
 ```
 
 - `regionendpoint` is only required when configuring an S3 compatible service such as MinIO, or when using an AWS S3 VPC Endpoint.
-- `your-s3-bucket` should be the name of a bucket that exists, and can't include subdirectories.
+- `<your-s3-bucket>` should be the name of a bucket that exists, and can't include subdirectories.
 - `pathstyle` should be set to `true` to use host/bucket_name/object style paths instead of bucket_name.host/object. Set to `false` for AWS S3.
 
 You can set a rate limit on connections to S3 to avoid 503 errors from the S3 API:
@@ -574,11 +578,11 @@ You can set a rate limit on connections to S3 to avoid 503 errors from the S3 AP
 ```ruby
 registry['storage'] = {
   's3' => {
-    'accesskey' => 's3-access-key',
-    'secretkey' => 's3-secret-key-for-access-key',
-    'bucket' => 'your-s3-bucket',
-    'region' => 'your-s3-region',
-    'regionendpoint' => 'your-s3-regionendpoint',
+    'accesskey' => '<s3-access-key>',
+    'secretkey' => '<s3-secret-key-for-access-key>',
+    'bucket' => '<your-s3-bucket>',
+    'region' => '<your-s3-region>',
+    'regionendpoint' => '<your-s3-regionendpoint>',
     'maxrequestspersecond' => 100
   }
 }
@@ -593,7 +597,12 @@ The Azure storage driver integrates with Microsoft Azure Blob Storage.
 {{< alert type="warning" >}}
 
 The legacy Azure storage driver was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523096) in GitLab 17.10 and is planned for removal in GitLab 19.0.
-Use the `azure_v2` driver instead. This change is a breaking change.
+
+Use the `azure_v2` driver (in Beta) instead. This driver offers improved performance, reliability, and modern authentication methods. While this is a breaking change, the new driver has been extensively tested to ensure a smooth transition for most configurations.
+
+Make sure to test the new driver in non-production environments before deploying to production to identify and address any edge cases specific to your environment and usage patterns.
+
+Report any issues or feedback using [issue 525855](https://gitlab.com/gitlab-org/gitlab/-/issues/525855).
 
 {{< /alert >}}
 
@@ -607,10 +616,10 @@ registry['storage'] = {
   }
 }
 
-# Recommended: azure_v2 driver
+# Beta: azure_v2 driver
 registry['storage'] = {
   'azure_v2' => {
-    'credentials_type' => 'client_secret',
+    'credentials_type' => '<client_secret>',
     'tenant_id' => '<your_tenant_id>',
     'client_id' => '<your_client_id>',
     'secret' => '<your_secret>',
@@ -631,8 +640,8 @@ The GCS storage driver integrates with Google Cloud Storage.
 ```ruby
 registry['storage'] = {
   'gcs' => {
-    'bucket' => 'BUCKET_NAME',
-    'keyfile' => 'PATH/TO/KEYFILE',
+    'bucket' => '<your_bucket_name>',
+    'keyfile' => '<path/to/keyfile>',
     # If you have the bucket shared with other apps beyond the registry, uncomment the following:
     # 'rootdirectory' => '/gcs/object/name/prefix'
   }
@@ -655,18 +664,18 @@ when you deployed your Docker registry.
 ```yaml
 storage:
   s3:
-    accesskey: 's3-access-key'                # Not needed if IAM role used
-    secretkey: 's3-secret-key-for-access-key' # Not needed if IAM role used
-    bucket: 'your-s3-bucket'
-    region: 'your-s3-region'
-    regionendpoint: 'your-s3-regionendpoint'
+    accesskey: '<s3-access-key>'                # Not needed if IAM role used
+    secretkey: '<s3-secret-key-for-access-key>' # Not needed if IAM role used
+    bucket: '<your-s3-bucket>'
+    region: '<your-s3-region>'
+    regionendpoint: '<your-s3-regionendpoint>'
   cache:
     blobdescriptor: inmemory
   delete:
     enabled: true
 ```
 
-`your-s3-bucket` should be the name of a bucket that exists, and can't include subdirectories.
+`<your-s3-bucket>` should be the name of a bucket that exists, and can't include subdirectories.
 
 #### Migrate to object storage without downtime
 
@@ -693,7 +702,7 @@ you can pull from the container registry, but you cannot push.
    all buckets.
 
    ```shell
-   sudo aws --endpoint-url https://your-object-storage-backend.com s3 ls
+   sudo aws --endpoint-url <https://your-object-storage-backend.com> s3 ls
    ```
 
    If you are using AWS as your back end, you do not need the [`--endpoint-url`](https://docs.aws.amazon.com/cli/latest/reference/#options).
@@ -703,7 +712,7 @@ you can pull from the container registry, but you cannot push.
    command. Make sure to keep the `docker` folder as the top-level folder inside the bucket.
 
    ```shell
-   sudo aws --endpoint-url https://your-object-storage-backend.com s3 sync registry s3://mybucket
+   sudo aws --endpoint-url <https://your-object-storage-backend.com> s3 sync registry s3://mybucket
    ```
 
    {{< alert type="note" >}}
@@ -719,7 +728,7 @@ you can pull from the container registry, but you cannot push.
 1. Sync any changes dating from after the initial data load to your S3 bucket, and delete files that exist in the destination bucket but not in the source:
 
    ```shell
-   sudo aws --endpoint-url https://your-object-storage-backend.com s3 sync registry s3://mybucket --delete --dryrun
+   sudo aws --endpoint-url <https://your-object-storage-backend.com> s3 sync registry s3://mybucket --delete --dryrun
    ```
 
    After verifying the command performs as expected, remove the
@@ -742,7 +751,7 @@ you can pull from the container registry, but you cannot push.
    ```
 
    ```shell
-   sudo aws --endpoint-url https://your-object-storage-backend.com s3 ls s3://mybucket --recursive | wc -l
+   sudo aws --endpoint-url <https://your-object-storage-backend.com> s3 ls s3://<mybucket> --recursive | wc -l
    ```
 
    The output of these commands should match, except for the content in the
@@ -968,7 +977,7 @@ use a JSON Web Token to authenticate with GitLab. The
 ```yaml
 auth:
   token:
-    realm: https://gitlab.example.com/jwt/auth
+    realm: https://<gitlab.example.com>/jwt/auth
     service: container_registry
     issuer: gitlab-issuer
     rootcertbundle: /root/certs/certbundle
@@ -1029,7 +1038,7 @@ You can use GitLab as an auth endpoint with an external container registry.
    Registry pages, set the following configurations:
 
    ```ruby
-   gitlab_rails['registry_host'] = "registry.gitlab.example.com"
+   gitlab_rails['registry_host'] = "<registry.gitlab.example.com>"
    gitlab_rails['registry_port'] = "5005"
    ```
 
@@ -1045,11 +1054,11 @@ You can use GitLab as an auth endpoint with an external container registry.
 
    registry:
      enabled: true
-     host: "registry.gitlab.example.com"
+     host: "<registry.gitlab.example.com>"
      port: "5005"
      api_url: "https://<external_registry_host>:5000"
      path: /var/lib/registry
-     key: /path/to/keyfile
+     key: </path/to/keyfile>
      issuer: gitlab-issuer
    ```
 
@@ -1085,24 +1094,24 @@ To configure a notification endpoint for a Linux package installation:
    ```ruby
    registry['notifications'] = [
      {
-       'name' => 'test_endpoint',
-       'url' => 'https://gitlab.example.com/api/v4/container_registry_event/events',
+       'name' => '<test_endpoint>',
+       'url' => 'https://<gitlab.example.com>/api/v4/container_registry_event/events',
        'timeout' => '500ms',
        'threshold' => 5, # DEPRECATED: use `maxretries` instead.
        'maxretries' => 5,
        'backoff' => '1s',
        'headers' => {
-         "Authorization" => ["AUTHORIZATION_EXAMPLE_TOKEN"]
+         "Authorization" => ["<AUTHORIZATION_EXAMPLE_TOKEN>"]
        }
      }
    ]
 
-   gitlab_rails['registry_notification_secret'] = 'AUTHORIZATION_EXAMPLE_TOKEN' # Must match the auth token in registry['notifications']
+   gitlab_rails['registry_notification_secret'] = '<AUTHORIZATION_EXAMPLE_TOKEN>' # Must match the auth token in registry['notifications']
    ```
 
   {{< alert type="note" >}}
 
-  Replace `AUTHORIZATION_EXAMPLE_TOKEN` with a case-sensitive alphanumeric string
+  Replace `<AUTHORIZATION_EXAMPLE_TOKEN>` with a case-sensitive alphanumeric string
   that starts with a letter. You can generate one with `< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c 32 | sed "s/^[0-9]*//"; echo`
 
   {{< /alert >}}
@@ -1121,9 +1130,9 @@ Example:
 ```yaml
 notifications:
   endpoints:
-    - name: alistener
+    - name: <alistener>
       disabled: false
-      url: https://my.listener.com/event
+      url: https://<my.listener.com>/event
       headers: <http.Header>
       timeout: 500
       threshold: 5 # DEPRECATED: use `maxretries` instead.
@@ -1299,23 +1308,23 @@ Prerequisites:
 Consider the following example, where you first build the image:
 
 ```shell
-# This builds a image with content of sha256:111111
-docker build -t my.registry.com/my.group/my.project:latest .
-docker push my.registry.com/my.group/my.project:latest
+# This builds a image with content of sha256:<111111...>
+docker build -t <my.registry.com>/<my.group>/<my.project>:latest .
+docker push <my.registry.com>/<my.group>/<my.project>:latest
 ```
 
-Now, you do overwrite `:latest` with a new version:
+Now, you do overwrite `latest` with a new version:
 
 ```shell
-# This builds a image with content of sha256:222222
-docker build -t my.registry.com/my.group/my.project:latest .
-docker push my.registry.com/my.group/my.project:latest
+# This builds a image with content of sha256:<222222...>
+docker build -t <my.registry.com>/<my.group>/<my.project>:latest .
+docker push <my.registry.com>/<my.group>/<my.project>:latest
 ```
 
-Now, the `:latest` tag points to manifest of `sha256:222222`.
+Now, the `latest` tag points to manifest of `sha256:<222222...>`.
 Due to the architecture of registry, this data is still accessible when pulling the
-image `my.registry.com/my.group/my.project@sha256:111111`, though it is
-no longer directly accessible via the `:latest` tag.
+image `<my.registry.com>/<my.group>/<my.project>@sha256:<111111...>`, though it is
+no longer directly accessible via the `latest` tag.
 
 ### Remove unreferenced layers
 
@@ -1582,8 +1591,8 @@ To configure GitLab and the container registry on separate nodes:
    # Configure registry settings
    registry['enable'] = true
    registry['registry_http_addr'] = '0.0.0.0:5000'
-   registry['token_realm'] = 'https://gitlab.example.com'
-   registry['http_secret'] = '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b'
+   registry['token_realm'] = 'https://<gitlab.example.com>'
+   registry['http_secret'] = '<6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b>'
 
    # Configure GitLab Rails settings
    gitlab_rails['registry_issuer'] = 'omnibus-gitlab-issuer'
@@ -1598,12 +1607,12 @@ To configure GitLab and the container registry on separate nodes:
    # - Domain: gitlab.example.com
 
    # Configure GitLab URL
-   external_url 'https://gitlab.example.com'
+   external_url 'https://<gitlab.example.com>'
 
    # Configure registry settings
    gitlab_rails['registry_enabled'] = true
-   gitlab_rails['registry_api_url'] = 'http://10.30.227.194:5000'
-   gitlab_rails['registry_host'] = 'registry.example.com'
+   gitlab_rails['registry_api_url'] = '<http://10.30.227.194:5000>'
+   gitlab_rails['registry_host'] = '<registry.example.com>'
    gitlab_rails['registry_port'] = 5000
    gitlab_rails['registry_issuer'] = 'omnibus-gitlab-issuer'
    gitlab_rails['registry_key_path'] = '/etc/gitlab/gitlab-registry.key'

@@ -77,7 +77,7 @@ module Gitlab
       end
 
       def valid?
-        @identifiers && @title && @description && @changed_files
+        @identifiers && @title && @description && @changed_files.present?
       end
     end
   end

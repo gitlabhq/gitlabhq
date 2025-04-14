@@ -9,7 +9,11 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import userAutocompleteWithMRPermissionsQuery from '~/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 
-import { SEARCH_SELECT_REVIEWER_EVENT, SELECT_REVIEWER_EVENT } from '../../constants';
+import {
+  REQUEST_REVIEW_SIMPLE,
+  SEARCH_SELECT_REVIEWER_EVENT,
+  SELECT_REVIEWER_EVENT,
+} from '../../constants';
 
 import UpdateReviewers from './update_reviewers.vue';
 import userPermissionsQuery from './queries/user_permissions.query.graphql';
@@ -56,6 +60,11 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    usage: {
+      type: String,
+      required: false,
+      default: () => 'complex',
     },
   },
   data() {
@@ -178,6 +187,10 @@ export default {
     processReviewers(updateReviewers) {
       this.trackReviewersSelectEvent();
       updateReviewers();
+
+      if (this.usage === 'simple') {
+        this.trackEvent(REQUEST_REVIEW_SIMPLE);
+      }
     },
   },
   i18n: {

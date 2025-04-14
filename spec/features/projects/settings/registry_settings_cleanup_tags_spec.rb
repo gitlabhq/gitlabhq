@@ -65,7 +65,7 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
       end
 
       expect(page).to have_current_path(project_settings_packages_and_registries_path(project))
-      expect(find('.gl-alert-body')).to have_content('Cleanup policy successfully saved.')
+      expect(find_by_testid('registry-update-settings-alert')).to have_content('Cleanup policy successfully saved.')
     end
 
     it 'does not save cleanup policy submit form with invalid regex' do

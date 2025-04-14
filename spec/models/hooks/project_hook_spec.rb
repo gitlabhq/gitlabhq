@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectHook, feature_category: :webhooks do
+RSpec.describe ProjectHook, feature_category: :webhooks, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/532506' do
   include_examples 'a hook that gets automatically disabled on failure' do
     let_it_be(:project) { create(:project) }
 

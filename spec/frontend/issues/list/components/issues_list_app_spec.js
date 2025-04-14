@@ -122,6 +122,7 @@ describe('CE IssuesListApp component', () => {
     hasAnyIssues: true,
     hasAnyProjects: true,
     hasBlockedIssuesFeature: true,
+    hasCustomFieldsFeature: true,
     hasIssueDateFilterFeature: true,
     hasIssuableHealthStatusFeature: true,
     hasIssueWeightsFeature: true,
@@ -143,6 +144,7 @@ describe('CE IssuesListApp component', () => {
     signInPath: 'sign/in/path',
     groupId: '',
     commentTemplatePaths: [],
+    timeTrackingLimitToHours: false,
   };
 
   let defaultQueryResponse = getIssuesQueryResponse;
@@ -460,6 +462,18 @@ describe('CE IssuesListApp component', () => {
     });
 
     describe('sort', () => {
+      describe('when sort is specified in the url params', () => {
+        getParameterByName.mockImplementation((args) =>
+          jest.requireActual('~/lib/utils/url_utility').getParameterByName(args),
+        );
+        it.each(Object.keys(urlSortParams))('sort is set to value %s', (sort) => {
+          setWindowLocation(`?sort=${sort}`);
+          wrapper = mountComponent();
+
+          expect(findIssuableList().props('initialSortBy')).toBe(sort);
+        });
+      });
+
       describe('when initial sort value uses old enum values', () => {
         const oldEnumSortValues = Object.values(urlSortParams);
 
@@ -657,7 +671,7 @@ describe('CE IssuesListApp component', () => {
         wrapper = mountComponent({ provide: { isSignedIn: false } });
       });
 
-      it('does not render My-Reaction or Confidential tokens', () => {
+      it('does not render My reaction or Confidential tokens', () => {
         expect(findIssuableList().props('searchTokens')).not.toMatchObject([
           { type: TOKEN_TYPE_AUTHOR, preloadedUsers: [mockCurrentUser] },
           { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers: [mockCurrentUser] },
@@ -1112,7 +1126,7 @@ describe('CE IssuesListApp component', () => {
   });
 
   describe('when issue drawer is enabled', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       wrapper = mountComponent({
         provide: {
           glFeatures: {
@@ -1120,6 +1134,7 @@ describe('CE IssuesListApp component', () => {
           },
         },
       });
+      await waitForPromises();
     });
 
     it('renders issuable drawer component', () => {
@@ -1394,6 +1409,20 @@ describe('CE IssuesListApp component', () => {
         );
         expect(findWorkItemDrawer().props('open')).toBe(true);
         await router.push({ query: { otherThing: true } });
+        expect(findWorkItemDrawer().props('open')).toBe(false);
+      });
+    });
+    describe('on window `popstate` event', () => {
+      it('sets the `activeIssuable` to null, closing the drawer if show parameter is not present', async () => {
+        findIssuableList().vm.$emit(
+          'select-issuable',
+          getIssuesQueryResponse.data.project.issues.nodes[0],
+        );
+        expect(findWorkItemDrawer().props('open')).toBe(true);
+
+        setWindowLocation('?otherThing=true');
+        window.dispatchEvent(new Event('popstate'));
+        await nextTick();
         expect(findWorkItemDrawer().props('open')).toBe(false);
       });
     });

@@ -33,20 +33,6 @@ RSpec.describe 'groups/edit.html.haml', feature_category: :system_access do
       )
     end
 
-    context 'when pat_expiry_inherited_members_notification FF is disabled' do
-      before do
-        stub_feature_flags(pat_expiry_inherited_members_notification: false)
-      end
-
-      it 'does not render form' do
-        render
-
-        expect(rendered).not_to have_content(
-          _('Expiry notification emails about group and project access tokens within this group should be sent to:')
-        )
-      end
-    end
-
     context 'when parent group has resource_access_token_notify_inherited set to false' do
       before do
         parent_group.namespace_settings.update!(

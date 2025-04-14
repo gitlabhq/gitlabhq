@@ -212,6 +212,18 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
+    describe '.not_only_reviewer' do
+      subject(:merge_requests) { described_class.not_only_reviewer(user1) }
+
+      it { expect(merge_requests).to match_array([merge_request2]) }
+    end
+
+    describe '.no_review_requested_or_only_user' do
+      subject(:merge_requests) { described_class.no_review_requested_or_only_user(user1) }
+
+      it { expect(merge_requests).to match_array([merge_request1, merge_request3, merge_request4]) }
+    end
+
     describe '.by_blob_path' do
       let(:path) { 'bar/branch-test.txt' }
 
@@ -290,6 +302,23 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         merge_request5 = create(:merge_request, :unprepared, :unique_branches, created_at: merge_request3.created_at)
 
         expect(described_class.recently_unprepared).to eq([merge_request3, merge_request5])
+      end
+    end
+
+    describe '.distinct_source_branches' do
+      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:mr1) { create(:merge_request, source_branch: 'feature-1', source_project: project) }
+      let_it_be(:mr2) { create(:merge_request, source_branch: 'feature-2', source_project: project) }
+      let_it_be(:mr3) { create(:merge_request, source_branch: 'feature-1', target_branch: 'another-branch', source_project: project) }
+      let_it_be(:mr4) { create(:merge_request, source_branch: 'feature-3', source_project: project) }
+
+      it 'returns an array of unique source branch names' do
+        expect(described_class.distinct_source_branches).to include('feature-1', 'feature-2', 'feature-3')
+      end
+
+      it 'returns only source branch names once even if used in multiple MRs' do
+        branches = described_class.distinct_source_branches
+        expect(branches.count('feature-1')).to eq(1)
       end
     end
 
@@ -684,6 +713,32 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           merge_request.save!
 
           expect(merge_request.merge_request_diff).not_to be_empty
+        end
+      end
+    end
+
+    describe '#reload_diff_if_branch_changed' do
+      subject(:update_mr) { merge_request.update!(update_params) }
+
+      let(:merge_request) { create(:merge_request, target_branch: 'fix', merge_status: :cannot_be_merged) }
+
+      context 'when the source branch changes' do
+        let(:update_params) { { source_branch: 'feature' } }
+
+        it 'calls reload diff service' do
+          expect(MergeRequests::ReloadDiffsService).to receive(:new).and_call_original
+
+          update_mr
+        end
+      end
+
+      context 'when the target branch changes' do
+        let(:update_params) { { target_branch: 'feature' } }
+
+        it 'calls reload diff service' do
+          expect(MergeRequests::ReloadDiffsService).to receive(:new).and_call_original
+
+          update_mr
         end
       end
     end
@@ -1327,6 +1382,28 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       create(:note, noteable: merge_request, note: "See #{issue_referenced_in_mr_note.to_reference}")
       create(:note, :internal, noteable: merge_request, note: issue_referenced_in_internal_mr_note.to_reference)
+    end
+
+    context 'feature flag: more_commits_from_gitaly' do
+      let_it_be(:user) { create(:user, guest_of: project) }
+
+      it 'loads commits from Gitaly' do
+        expect(merge_request).to receive(:commits).with(load_from_gitaly: true).and_call_original
+
+        related_issues
+      end
+
+      context 'when "more_commits_from_gitaly" is disabled' do
+        before do
+          stub_feature_flags(more_commits_from_gitaly: false)
+        end
+
+        it 'loads commits from DB' do
+          expect(merge_request).to receive(:commits).with(load_from_gitaly: false).and_call_original
+
+          related_issues
+        end
+      end
     end
 
     context 'for guest' do
@@ -6503,15 +6580,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it 'returns true' do
         expect(merge_request.prepared?).to be_truthy
       end
-    end
-  end
-
-  describe 'prepare' do
-    it 'calls NewMergeRequestWorker' do
-      expect(NewMergeRequestWorker).to receive(:perform_async)
-        .with(subject.id, subject.author_id)
-
-      subject.prepare
     end
   end
 

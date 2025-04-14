@@ -5,6 +5,8 @@ module Types
     class PipelineType < BaseObject
       graphql_name 'Pipeline'
 
+      implements PipelineInterface
+
       connection_type_class Types::CountableConnectionType
 
       authorize :read_pipeline
@@ -237,10 +239,6 @@ module Types
 
       def commit_path
         ::Gitlab::Routing.url_helpers.project_commit_path(object.project, object.sha)
-      end
-
-      def path
-        ::Gitlab::Routing.url_helpers.project_pipeline_path(object.project, object)
       end
 
       def warning_messages

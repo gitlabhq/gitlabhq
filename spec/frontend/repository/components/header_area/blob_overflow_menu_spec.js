@@ -9,8 +9,8 @@ import { createAlert } from '~/alert';
 import projectInfoQuery from 'ee_else_ce/repository/queries/project_info.query.graphql';
 import BlobOverflowMenu from '~/repository/components/header_area/blob_overflow_menu.vue';
 import BlobDefaultActionsGroup from '~/repository/components/header_area/blob_default_actions_group.vue';
-import PermalinkDropdownItem from '~/repository/components/header_area/permalink_dropdown_item.vue';
-import BlobButtonGroup from '~/repository/components/header_area/blob_button_group.vue';
+import BlobRepositoryActionsGroup from '~/repository/components/header_area/blob_repository_actions_group.vue';
+import BlobButtonGroup from 'ee_else_ce/repository/components/header_area/blob_button_group.vue';
 import BlobDeleteFileGroup from '~/repository/components/header_area/blob_delete_file_group.vue';
 import createRouter from '~/repository/router';
 import { projectMock, blobControlsDataMock, refMock } from 'ee_else_ce_jest/repository/mock_data';
@@ -38,7 +38,7 @@ describe('Blob Overflow Menu', () => {
   const createComponent = async ({
     propsData = {},
     projectInfoResolver = projectInfoQuerySuccessResolver,
-    provided = {},
+    provide = {},
   } = {}) => {
     fakeApollo = createMockApollo([[projectInfoQuery, projectInfoResolver]]);
 
@@ -48,7 +48,8 @@ describe('Blob Overflow Menu', () => {
       provide: {
         blobInfo: blobControlsDataMock.repository.blobs.nodes[0],
         currentRef: refMock,
-        ...provided,
+        rootRef: 'main',
+        ...provide,
       },
       propsData: {
         projectPath,
@@ -65,7 +66,7 @@ describe('Blob Overflow Menu', () => {
   const findBlobActionsDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findBlobDefaultActionsGroup = () => wrapper.findComponent(BlobDefaultActionsGroup);
   const findBlobButtonGroup = () => wrapper.findComponent(BlobButtonGroup);
-  const findPermalinkDropdownItem = () => wrapper.findComponent(PermalinkDropdownItem);
+  const findBlobRepositoryActionsGroup = () => wrapper.findComponent(BlobRepositoryActionsGroup);
   const findBlobDeleteFileGroup = () => wrapper.findComponent(BlobDeleteFileGroup);
 
   beforeEach(async () => {
@@ -117,6 +118,16 @@ describe('Blob Overflow Menu', () => {
         findBlobDefaultActionsGroup().vm.$emit('copy');
         expect(wrapper.emitted('copy')).toBeUndefined();
       });
+
+      it('proxy showForkSuggestion event from BlobButtonGRoup', () => {
+        findBlobButtonGroup().vm.$emit('showForkSuggestion');
+        expect(wrapper.emitted('showForkSuggestion')).toHaveLength(1);
+      });
+
+      it('proxy showForkSuggestion event from BlobDeleteFileGRoup', () => {
+        findBlobDeleteFileGroup().vm.$emit('showForkSuggestion');
+        expect(wrapper.emitted('showForkSuggestion')).toHaveLength(1);
+      });
     });
   });
 
@@ -127,7 +138,7 @@ describe('Blob Overflow Menu', () => {
 
     it('does not render when blob is archived', () => {
       createComponent({
-        provided: {
+        provide: {
           blobInfo: {
             ...blobControlsDataMock.repository.blobs.nodes[0],
             archived: true,
@@ -153,7 +164,7 @@ describe('Blob Overflow Menu', () => {
 
     it('does not render when blob is archived', () => {
       createComponent({
-        provided: {
+        provide: {
           blobInfo: {
             ...blobControlsDataMock.repository.blobs.nodes[0],
             archived: true,
@@ -172,9 +183,9 @@ describe('Blob Overflow Menu', () => {
     });
   });
 
-  describe('Permalink Dropdown Item', () => {
+  describe('Blob Repository Actions Group', () => {
     it('renders component', () => {
-      expect(findPermalinkDropdownItem().exists()).toBe(true);
+      expect(findBlobRepositoryActionsGroup().exists()).toBe(true);
     });
   });
 });

@@ -88,7 +88,6 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :fleet_visibili
             sort: :contacted_asc,
             creator_id: 'gid://gitlab/User/1',
             creator_username: 'root',
-            owner_wildcard: 'administrator',
             owner_full_path: '',
             version_prefix: '15.'
           }
@@ -106,7 +105,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :fleet_visibili
             sort: 'contacted_asc',
             creator_id: '1',
             creator_username: 'root',
-            owner: { wildcard: 'administrator', full_path: '' },
+            owner_full_path: '',
             version_prefix: '15.'
           }
         end

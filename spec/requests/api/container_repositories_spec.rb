@@ -149,7 +149,7 @@ RSpec.describe API::ContainerRepositories, feature_category: :container_registry
             subject
 
             expect(response).to have_gitlab_http_status(:service_unavailable)
-            expect(json_response['message']).to include('We are having trouble connecting to the Container Registry')
+            expect(json_response['message']).to include('We are having trouble connecting to the container registry')
           end
         end
       end
@@ -194,7 +194,7 @@ RSpec.describe API::ContainerRepositories, feature_category: :container_registry
             subject
 
             expect(response).to have_gitlab_http_status(:service_unavailable)
-            expect(json_response['message']).to include('We are having trouble connecting to the Container Registry')
+            expect(json_response['message']).to include('We are having trouble connecting to the container registry')
           end
         end
 

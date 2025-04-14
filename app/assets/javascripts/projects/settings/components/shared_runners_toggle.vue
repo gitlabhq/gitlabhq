@@ -85,44 +85,47 @@ export default {
 
 <template>
   <div>
-    <section class="gl-mt-5">
-      <identity-verification-required-alert
-        v-if="identityVerificationRequiredError"
-        :title="$options.i18n.REQUIRES_IDENTITY_VERIFICATION_TEXT"
-        class="gl-mb-5"
-      />
+    <identity-verification-required-alert
+      v-if="identityVerificationRequiredError"
+      :title="$options.i18n.REQUIRES_IDENTITY_VERIFICATION_TEXT"
+      class="gl-mb-5"
+    />
 
-      <gl-alert
-        v-if="genericError"
-        data-testid="error-alert"
-        variant="danger"
-        :dismissible="false"
-        class="gl-mb-5"
-      >
-        {{ errorMessage }}
-      </gl-alert>
+    <gl-alert
+      v-if="genericError"
+      data-testid="error-alert"
+      variant="danger"
+      :dismissible="false"
+      class="gl-mb-5"
+    >
+      {{ errorMessage }}
+    </gl-alert>
 
-      <gl-toggle
-        ref="sharedRunnersToggle"
-        :disabled="isDisabledAndUnoverridable"
-        :is-loading="isLoading"
-        :label="__('Enable instance runners for this project')"
-        :value="isSharedRunnerEnabled"
-        data-testid="toggle-shared-runners"
-        @change="toggleSharedRunners"
-      >
-        <template v-if="isDisabledAndUnoverridable" #help>
-          {{ s__('Runners|Instance runners are disabled in the group settings.') }}
-          <gl-sprintf
-            v-if="isGroupSettingsAvailable"
-            :message="s__('Runners|Go to %{groupLink} to enable them.')"
-          >
-            <template #groupLink>
-              <gl-link :href="groupSettingsPath">{{ groupName }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </template>
-      </gl-toggle>
-    </section>
+    <gl-toggle
+      ref="sharedRunnersToggle"
+      :disabled="isDisabledAndUnoverridable"
+      :is-loading="isLoading"
+      label-position="left"
+      :value="isSharedRunnerEnabled"
+      data-testid="toggle-shared-runners"
+      @change="toggleSharedRunners"
+    >
+      <template #label>
+        <span class="gl-text-sm gl-font-normal gl-text-subtle">{{
+          __('Enable instance runners for this project')
+        }}</span>
+      </template>
+      <template v-if="isDisabledAndUnoverridable" #help>
+        {{ s__('Runners|Instance runners are disabled in the group settings.') }}
+        <gl-sprintf
+          v-if="isGroupSettingsAvailable"
+          :message="s__('Runners|Go to %{groupLink} to enable them.')"
+        >
+          <template #groupLink>
+            <gl-link :href="groupSettingsPath">{{ groupName }}</gl-link>
+          </template>
+        </gl-sprintf>
+      </template>
+    </gl-toggle>
   </div>
 </template>

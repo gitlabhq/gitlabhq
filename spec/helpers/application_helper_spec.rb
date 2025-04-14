@@ -760,6 +760,33 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe '#disable_fixed_body_scroll' do
+    it 'disables body scroll' do
+      helper.disable_fixed_body_scroll
+      expect(helper.body_scroll_classes).to eq('')
+    end
+  end
+
+  describe '#body_scroll_classes' do
+    before do
+      stub_feature_flags(force_scrollbar: true)
+    end
+
+    it 'fixes body scroll by default' do
+      expect(helper.body_scroll_classes).to eq('body-fixed-scrollbar')
+    end
+
+    context 'with feature disabled' do
+      before do
+        stub_feature_flags(force_scrollbar: false)
+      end
+
+      it 'does nothing' do
+        expect(helper.body_scroll_classes).to eq('')
+      end
+    end
+  end
+
   describe '#dispensable_render' do
     context 'when an error occurs in the template to be rendered' do
       before do
@@ -934,13 +961,6 @@ RSpec.describe ApplicationHelper do
     context 'when resource is a merge request' do
       let_it_be(:resource) { build(:merge_request) }
       let(:expected_title) { 'This merge request is hidden because its author has been banned.' }
-
-      it_behaves_like 'returns icon with tooltip'
-    end
-
-    context 'when resource is a project' do
-      let_it_be(:resource) { build(:project) }
-      let(:expected_title) { 'This project is hidden because its creator has been banned' }
 
       it_behaves_like 'returns icon with tooltip'
     end

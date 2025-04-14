@@ -33,8 +33,8 @@ glab auth login --stdin < token.txt
 # View a list of issues
 glab issue list
 
-# Create merge request for issue 123
-glab mr for 123
+# Create merge request for issue 123 
+glab mr create 123
 
 # Check out the branch for merge request 243
 glab mr checkout 243
@@ -76,7 +76,8 @@ glab mr merge
 
 {{< details >}}
 
-- Tier: Ultimate with GitLab Duo Enterprise - [Start a trial](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Tier: Ultimate
+- Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - LLM: Anthropic [Claude 3 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-haiku)
 

@@ -31,7 +31,7 @@ the [doorkeeper-openid_connect repository](https://github.com/doorkeeper-gem/doo
 ## Enable OIDC for OAuth applications
 
 To enable OIDC for an OAuth application, you need to select the `openid` scope in the application
-settings. For more information , see [Configure GitLab as an OAuth 2.0 authentication identity provider](oauth_provider.md).
+settings. For more information, see [Configure GitLab as an OAuth 2.0 authentication identity provider](oauth_provider.md).
 
 ## Settings discovery
 

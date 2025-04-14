@@ -8,7 +8,7 @@
 class FlushCounterIncrementsWorker
   include ApplicationWorker
 
-  data_consistency :always
+  data_consistency :delayed
 
   sidekiq_options retry: 3
   loggable_arguments 0, 2

@@ -231,7 +231,7 @@ export default {
     </gl-alert>
     <div
       v-if="isLoading"
-      class="gl-rounded-base gl-border-1 gl-border-solid gl-border-default gl-bg-white gl-py-6"
+      class="gl-rounded-base gl-border-1 gl-border-solid gl-border-default gl-bg-default gl-py-6"
     >
       <gl-skeleton-loader :width="350" :height="44">
         <rect width="200" height="8" x="10" y="0" rx="4" />

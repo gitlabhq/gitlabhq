@@ -6,7 +6,11 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import * as urlUtility from '~/lib/utils/url_utility';
+import { smoothScrollTop } from '~/behaviors/smooth_scroll';
 import ListPage from '~/packages_and_registries/package_registry/pages/list.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/list/package_title.vue';
 import PackageSearch from '~/packages_and_registries/package_registry/components/list/package_search.vue';
@@ -19,6 +23,7 @@ import {
   PACKAGE_HELP_URL,
 } from '~/packages_and_registries/package_registry/constants';
 import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
+import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
 import getGroupPackageSettings from '~/packages_and_registries/package_registry/graphql/queries/get_group_package_settings.query.graphql';
 import destroyPackagesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_packages.mutation.graphql';
@@ -31,8 +36,10 @@ import {
 } from '../mock_data';
 
 jest.mock('~/alert');
+jest.mock('~/behaviors/smooth_scroll');
 
 describe('PackagesListApp', () => {
+  useLocalStorageSpy();
   let wrapper;
   let apolloProvider;
 
@@ -69,6 +76,7 @@ describe('PackagesListApp', () => {
   const findDeletePackages = () => wrapper.findComponent(DeletePackages);
   const findSettingsLink = () => wrapper.findComponent(GlButton);
   const findPagination = () => wrapper.findComponent(PersistedPagination);
+  const findPageSizeSelector = () => wrapper.findComponent(PageSizeSelector);
 
   const mountComponent = ({
     resolver = jest.fn().mockResolvedValue(packagesListQuery()),
@@ -118,12 +126,94 @@ describe('PackagesListApp', () => {
   });
 
   it('has persisted pagination', async () => {
-    const resolver = jest.fn().mockResolvedValue(packagesListQuery());
-
-    mountComponent({ resolver });
+    mountComponent();
     await waitForFirstRequest();
 
     expect(findPagination().props('pagination')).toEqual(pagination());
+  });
+
+  describe('page size', () => {
+    const resolver = jest.fn().mockResolvedValue(packagesListQuery());
+
+    describe('when local storage value is not set', () => {
+      beforeEach(async () => {
+        mountComponent({ resolver });
+        await waitForFirstRequest();
+      });
+
+      it('page size selector prop is set to default value', () => {
+        expect(findPageSizeSelector().props('value')).toBe(GRAPHQL_PAGE_SIZE);
+      });
+
+      it('sets local storage value', () => {
+        expect(localStorage.getItem('packages_page_size')).toBe(String(GRAPHQL_PAGE_SIZE));
+      });
+
+      it('calls the resolver with default page size', () => {
+        expect(resolver).toHaveBeenCalledWith({
+          first: 20,
+          fullPath: 'gitlab-org',
+          groupSort: 'NAME_DESC',
+          isGroupPage: true,
+        });
+      });
+    });
+
+    describe('when localstorage value is set', () => {
+      beforeEach(async () => {
+        localStorage.setItem('packages_page_size', '50');
+
+        mountComponent({ resolver });
+
+        await waitForFirstRequest();
+      });
+
+      it('page size selector prop is set to value from local storage', () => {
+        expect(findPageSizeSelector().props('value')).toBe(50);
+      });
+
+      it('calls the resolver with page size value from local storage', () => {
+        expect(resolver).toHaveBeenCalledWith({
+          first: 50,
+          fullPath: 'gitlab-org',
+          groupSort: 'NAME_DESC',
+          isGroupPage: true,
+        });
+      });
+    });
+
+    describe('is changed', () => {
+      beforeEach(async () => {
+        setWindowLocation('?before=123&name=test');
+        jest.spyOn(urlUtility, 'updateHistory');
+        mountComponent({ resolver });
+        await waitForFirstRequest();
+        await findPageSizeSelector().vm.$emit('input', 100);
+      });
+
+      it('sets local storage value', () => {
+        expect(localStorage.getItem('packages_page_size')).toBe(String(100));
+      });
+
+      it('calls the resolver with default page size', () => {
+        expect(resolver).toHaveBeenLastCalledWith({
+          first: 100,
+          fullPath: 'gitlab-org',
+          groupSort: 'NAME_DESC',
+          isGroupPage: true,
+        });
+      });
+
+      it('updates query params', () => {
+        expect(urlUtility.updateHistory).toHaveBeenCalledWith({
+          url: '?name=test',
+        });
+      });
+
+      it('scrolls to top of page', () => {
+        expect(smoothScrollTop).toHaveBeenCalledTimes(1);
+      });
+    });
   });
 
   it('has a package title', async () => {
@@ -257,6 +347,7 @@ describe('PackagesListApp', () => {
       expect(resolver).toHaveBeenCalledWith(
         expect.objectContaining({ after: pagination().endCursor, first: GRAPHQL_PAGE_SIZE }),
       );
+      expect(smoothScrollTop).toHaveBeenCalledTimes(1);
     });
 
     it('when pagination emits prev event fetches the prev set of records', async () => {
@@ -270,6 +361,7 @@ describe('PackagesListApp', () => {
           last: GRAPHQL_PAGE_SIZE,
         }),
       );
+      expect(smoothScrollTop).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -399,6 +491,10 @@ describe('PackagesListApp', () => {
 
     it('does not request for group package settings', () => {
       expect(groupPackageSettingsResolver).not.toHaveBeenCalled();
+    });
+
+    it('does not render page size selector', () => {
+      expect(findPageSizeSelector().exists()).toBe(false);
     });
   });
 

@@ -208,7 +208,7 @@ export default {
     </gl-form-group>
     <div
       v-if="hasRotateError"
-      class="gl-mb-3 gl-flex gl-items-center gl-font-normal gl-text-red-500"
+      class="gl-mb-3 gl-flex gl-items-center gl-font-normal gl-text-danger"
       data-testid="rotate-error"
     >
       <gl-icon name="warning" class="gl-mr-2" />
@@ -226,7 +226,7 @@ export default {
         "
       >
         <template #projectName>
-          <span class="gl-font-bold gl-text-red-500">{{ projectName }}</span>
+          <span class="gl-font-bold gl-text-danger">{{ projectName }}</span>
         </template>
       </gl-sprintf>
     </p>

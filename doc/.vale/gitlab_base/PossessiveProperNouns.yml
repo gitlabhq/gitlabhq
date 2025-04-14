@@ -1,9 +1,8 @@
 ---
-# Error: gitlab_base.PossessiveProperNouns
-#
-# Try to avoid using possessives ('s) for proper nouns, like organization or product names.
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.PossessiveProperNouns
+description: |
+  Try to avoid using possessives ('s) for proper nouns, like organization or
+  product names.
 extends: existence
 message: "Remove 's from %s."
 level: warning

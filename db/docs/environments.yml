@@ -11,4 +11,4 @@ milestone: '8.9'
 gitlab_schema: gitlab_main_cell
 sharding_key:
   project_id: projects
-table_size: small
+table_size: medium

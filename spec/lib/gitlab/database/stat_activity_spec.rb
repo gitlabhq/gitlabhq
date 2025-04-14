@@ -99,4 +99,89 @@ RSpec.describe Gitlab::Database::StatActivity,
       end
     end
   end
+
+  describe '#non_idle_connections_by_db' do
+    let(:connection_name) { :main }
+    let(:hash_key) { "gitlab:pg_stat_sampler:main:sidekiq:samples" }
+    let(:samples) do
+      [
+        {
+          'created_at' => Time.now.utc.to_i - 60,
+          'payload' => {
+            'WorkerA' => { 'active' => 1, 'idle' => 1 },
+            'WorkerB' => { 'active' => 5, 'idle in transaction' => 5 }
+          }
+        },
+        {
+          'created_at' => Time.now.utc.to_i - 45,
+          'payload' => {
+            'WorkerA' => { 'active' => 2, 'idle' => 1 },
+            'WorkerB' => { 'active' => 5, 'idle in transaction' => 5 }
+          }
+        },
+        {
+          'created_at' => Time.now.utc.to_i - 30,
+          'payload' => {
+            'WorkerA' => { 'active' => 3, 'idle' => 1 },
+            'WorkerB' => { 'active' => 5, 'idle in transaction' => 5 }
+          }
+        },
+        {
+          'created_at' => Time.now.utc.to_i - 15,
+          'payload' => {
+            'WorkerA' => { 'active' => 4, 'idle' => 1 },
+            'WorkerB' => { 'active' => 5, 'idle in transaction' => 5 },
+            'WorkerC' => { 'active' => 1 }
+          }
+        }
+      ]
+    end
+
+    subject(:non_idle_connections_by_db) do
+      described_class.new(connection_name).non_idle_connections_by_db(min_samples)
+    end
+
+    before do
+      allow(Gitlab).to receive(:process_name).and_return('sidekiq')
+      Gitlab::Redis::SharedState.with do |r|
+        r.hset(hash_key, 'gitlabhq_test', ::Gitlab::Json.dump(samples))
+      end
+    end
+
+    context 'with enough samples' do
+      let(:min_samples) { 4 }
+      let(:expected) do
+        {
+          'gitlabhq_test' => {
+            'WorkerA' => 10, # ignores idle
+            'WorkerB' => 40, # includes `idle in transaction`
+            'WorkerC' => 1
+          }
+        }
+      end
+
+      it 'returns aggregated non-idle count' do
+        expect(non_idle_connections_by_db).to eq(expected)
+      end
+    end
+
+    context 'with not enough samples' do
+      let(:min_samples) { 5 }
+      let(:expected) { { 'gitlabhq_test' => {} } }
+
+      it 'returns empty hash' do
+        expect(non_idle_connections_by_db).to eq(expected)
+      end
+    end
+
+    context 'with empty samples' do
+      let(:min_samples) { 1 }
+      let(:samples) { [] }
+      let(:expected) { { 'gitlabhq_test' => {} } }
+
+      it 'returns empty hash' do
+        expect(non_idle_connections_by_db).to eq(expected)
+      end
+    end
+  end
 end

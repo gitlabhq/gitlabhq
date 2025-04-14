@@ -1,11 +1,7 @@
 ---
-# Suggestion: gitlab_base.ReadingLevel
-#
-# Checks the Flesch-Kincaid reading level.
-#
-# https://docs.errata.ai/vale/styles#metric
-#
-# For a list of all options, see https://vale.sh/docs/topics/styles/
+name: gitlab_base.ReadingLevel
+description: |
+  Checks the Flesch-Kincaid reading level.
 extends: metric
 message: "The grade level is %s. Aim for 8th grade or lower by using shorter sentences and words."
 link: https://docs.gitlab.com/development/documentation/testing/vale/#readability-score

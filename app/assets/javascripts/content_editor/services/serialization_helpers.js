@@ -209,7 +209,8 @@ export function preserveUnchangedMark({ open, close, escape = true, ...restConfi
   }
 
   function endBuffer(state, replace) {
-    state.out = state.out.substring(0, bufferStartPos) + replace;
+    const whitespace = state.out.substring(bufferStartPos).match(/^\s+/m)?.[0] || '';
+    state.out = state.out.substring(0, bufferStartPos) + whitespace + replace;
     bufferStartPos = -1;
   }
 

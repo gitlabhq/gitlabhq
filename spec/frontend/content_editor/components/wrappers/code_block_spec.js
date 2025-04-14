@@ -126,9 +126,16 @@ describe('content/components/wrappers/code_block', () => {
       createWrapper({ language: 'plantuml', isDiagram: true, showPreview: true });
 
       await emitEditorEvent({ event: 'transaction', tiptapEditor });
+      // TODO: Vue 3 requires more ticks than Vue 2 to flush changes to the
+      // DOM. There's a nextTick in emitEditorEvent, so there are 4 total
+      // needed for Vue 3, and 2 total for Vue 2.
+      //
+      // See https://gitlab.com/gitlab-org/gitlab/-/issues/525422.
+      await nextTick();
+      await nextTick();
       await nextTick();
 
-      expect(wrapper.find('img').attributes('src')).toBe('url/to/some/diagram');
+      expect(wrapper.find('img').element.src).toBe('url/to/some/diagram');
       expect(wrapper.findByTestId('sandbox-preview').attributes('contenteditable')).toBe(
         String(false),
       );
@@ -140,18 +147,24 @@ describe('content/components/wrappers/code_block', () => {
       contentEditor.renderDiagram.mockResolvedValue(alternateUrl);
 
       await emitEditorEvent({ event: 'transaction', tiptapEditor });
-      await nextTick();
 
-      expect(wrapper.find('img').attributes('src')).toBe('url/to/some/diagram');
+      expect(wrapper.find('img').element.src).toBe('url/to/some/diagram');
     });
 
     it('renders an image with preview for a plantuml/kroki diagram', async () => {
       createWrapper({ language: 'plantuml', isDiagram: true, showPreview: true });
 
       await emitEditorEvent({ event: 'transaction', tiptapEditor });
+      // TODO: Vue 3 requires more ticks than Vue 2 to flush changes to the
+      // DOM. There's a nextTick in emitEditorEvent, so there are 4 total
+      // needed for Vue 3, and 2 total for Vue 2.
+      //
+      // See https://gitlab.com/gitlab-org/gitlab/-/issues/525422.
+      await nextTick();
+      await nextTick();
       await nextTick();
 
-      expect(wrapper.find('img').attributes('src')).toBe('url/to/some/diagram');
+      expect(wrapper.find('img').element.src).toBe('url/to/some/diagram');
       expect(wrapper.findComponent(SandboxedMermaid).exists()).toBe(false);
     });
 

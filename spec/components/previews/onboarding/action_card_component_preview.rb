@@ -9,10 +9,8 @@ module Onboarding
     # @param href url
     # @param description text
     # @param title text
-    # @param variant select {{ Onboarding::ActionCardComponent::VARIANT_OPTIONS }}
     def default(
       icon: :group,
-      variant: :default,
       href: "gitlab.com",
       description: "Groups are the best way to manage projects and members",
       title: "Create a group")
@@ -20,8 +18,7 @@ module Onboarding
         title: title,
         description: description,
         icon: icon,
-        href: href,
-        variant: variant
+        href: href
       )
     end
   end

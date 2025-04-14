@@ -43,7 +43,7 @@ module Gitlab
         def matching_milestone(title)
           return if title.blank?
 
-          params = { title: title, project_ids: project&.id, group_ids: group&.id }
+          params = { title: title, project_ids: project&.id, group_ids: group&.self_and_ancestors_ids }
 
           milestones = MilestonesFinder.new(params).execute
           milestones.first

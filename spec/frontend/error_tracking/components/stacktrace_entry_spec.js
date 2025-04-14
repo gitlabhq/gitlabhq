@@ -15,6 +15,15 @@ describe('Stacktrace Entry', () => {
     [25, '        watchdog(name, \u0026block)\n'],
   ];
 
+  const graphqlLines = [
+    { lineNumber: 22, line: '    def safe_thread(name, \u0026block)\n' },
+    { lineNumber: 23, line: '      Thread.new do\n' },
+    { lineNumber: 24, line: "        Thread.current['sidekiq_label'] = name\n" },
+    { lineNumber: 25, line: '        watchdog(name, \u0026block)\n' },
+  ];
+
+  const findAllContentLines = () => wrapper.findAll('.line_content.old');
+
   function mountComponent(props) {
     wrapper = shallowMount(StackTraceEntry, {
       propsData: {
@@ -41,7 +50,14 @@ describe('Stacktrace Entry', () => {
     mountComponent({ expanded: true, lines });
     expect(wrapper.find('table').exists()).toBe(true);
     expect(wrapper.findAll('tr.line_holder').length).toBe(4);
-    expect(wrapper.findAll('.line_content.old').length).toBe(1);
+    expect(findAllContentLines().length).toBe(1);
+  });
+
+  it('should render stacktrace entry table expanded with GraphQL API data format', () => {
+    mountComponent({ expanded: true, lines: graphqlLines });
+    expect(wrapper.find('table').exists()).toBe(true);
+    expect(wrapper.findAll('tr.line_holder').length).toBe(4);
+    expect(findAllContentLines().length).toBe(1);
   });
 
   it('should render file information if filePath exists', () => {

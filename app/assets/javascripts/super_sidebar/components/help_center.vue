@@ -6,7 +6,7 @@ import { FORUM_URL, PROMO_URL } from '~/constants';
 import { __ } from '~/locale';
 import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import Tracking from '~/tracking';
-import { DROPDOWN_Y_OFFSET, HELP_MENU_TRACKING_DEFAULTS, duoChatGlobalState } from '../constants';
+import { DROPDOWN_Y_OFFSET, HELP_MENU_TRACKING_DEFAULTS } from '../constants';
 
 export default {
   components: {
@@ -42,7 +42,6 @@ export default {
   data() {
     return {
       showWhatsNewNotification: this.shouldShowWhatsNewNotification(),
-      duoChatGlobalState,
       toggleWhatsNewDrawer: null,
     };
   },

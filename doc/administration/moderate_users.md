@@ -343,7 +343,7 @@ To unban a user:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
-1. In the search box , filter by **State=Banned** and press <kbd>Enter</kbd>.
+1. In the search box, filter by **State=Banned** and press <kbd>Enter</kbd>.
 1. Next to the member you want to ban, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. From the dropdown list, select **Unban member**.
 

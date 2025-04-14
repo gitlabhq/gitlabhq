@@ -6,6 +6,8 @@
   reporter: gonzoyumo
   stage: secure
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/439301
+  impact: low
+  scope: project
   body: |  # (required) Don't change this line.
     The CI/CD [artifact report](https://docs.gitlab.com/ci/yaml/artifacts_reports/) type is deprecated in GitLab 16.9, and will be removed in GitLab 18.0. CI/CD configurations using this keyword will stop working in GitLab 18.0.
 

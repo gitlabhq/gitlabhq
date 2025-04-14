@@ -1,5 +1,6 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import CollapsibleCommitInfo from '~/repository/components/collapsible_commit_info.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
@@ -42,6 +43,8 @@ describe('CollapsibleCommitInfo', () => {
   const findCommitRowDescription = () => wrapper.find('pre');
   const findCommitTitle = () => wrapper.findByText('Initial commit');
   const findCommitterName = () => wrapper.findByText('John Doe');
+
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   describe('renders user avatar correctly', () => {
     it('renders avatar link if user has a custom profile photo', () => {
@@ -93,6 +96,12 @@ describe('CollapsibleCommitInfo', () => {
     expect(findCommitId().exists()).toBe(true);
     expect(findHistoryButton().exists()).toBe(true);
     expect(findHistoryButton().attributes('href')).toBe('/project/history');
+  });
+
+  it('should call trackEvent method when clicked on history button', () => {
+    const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+    findHistoryButton().vm.$emit('click');
+    expect(trackEventSpy).toHaveBeenCalledWith('click_history_control_on_blob_page', {}, undefined);
   });
 
   describe('text expander', () => {

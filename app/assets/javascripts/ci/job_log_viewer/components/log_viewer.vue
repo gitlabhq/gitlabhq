@@ -92,7 +92,7 @@ export default {
       </div>
     </div>
     <div v-if="loading" class="loader-animation gl-p-3">
-      <span class="gl-sr-only">{{ __('Loading...') }}</span>
+      <span class="gl-sr-only">{{ __('Loading…') }}</span>
       <div class="dot"></div>
       <div class="dot"></div>
       <div class="dot"></div>

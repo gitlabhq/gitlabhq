@@ -4,6 +4,7 @@ import { createWrapper } from '@vue/test-utils';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import { initEmojiMock, clearEmojiMock } from 'helpers/emoji';
+import waitForPromises from 'helpers/wait_for_promises';
 import * as UserApi from '~/api/user_api';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import { createAlert } from '~/alert';
@@ -235,7 +236,7 @@ describe('SetStatusModalWrapper', () => {
 
       it('displays an error alert', async () => {
         findModal().vm.$emit('primary');
-        await nextTick();
+        await waitForPromises();
 
         expect(createAlert).toHaveBeenCalledWith({
           message: "Sorry, we weren't able to set your status. Please try again later.",
@@ -246,7 +247,7 @@ describe('SetStatusModalWrapper', () => {
         const rootWrapper = createWrapper(wrapper.vm.$root);
 
         findModal().vm.$emit('primary');
-        await nextTick();
+        await waitForPromises();
 
         expect(rootWrapper.emitted(BV_HIDE_MODAL)).toEqual([['set-user-status-modal']]);
       });
@@ -262,7 +263,7 @@ describe('SetStatusModalWrapper', () => {
 
       it('alerts an error message', async () => {
         findModal().vm.$emit('primary');
-        await nextTick();
+        await waitForPromises();
 
         expect(createAlert).toHaveBeenCalledWith({
           message: "Sorry, we weren't able to set your status. Please try again later.",

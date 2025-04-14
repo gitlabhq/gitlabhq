@@ -152,16 +152,16 @@ To restrict runner registration by members in a specific group:
 
 {{< alert type="warning" >}}
 
-The ability to pass a runner registration token, and support for certain configuration arguments
-was deprecated in GitLab 15.6 and will be removed in GitLab 18.0. Runner authentication tokens should be used instead.
-For more information, see [Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
+The option to pass runner registration tokens and support for certain configuration arguments are
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and is planned for removal in GitLab 20.0.
+Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
+to generate an authentication token to register runners. This process provides full
+traceability of runner ownership and enhances your runner fleet's security.
+
+For more information, see
+[Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
 
 {{< /alert >}}
-
-In GitLab 17.0, the use of runner registration tokens to create runners will be disabled in all GitLab instances.
-Users must use runner authentication tokens instead.
-If you have not yet [migrated to the use of runner authentication tokens](../../ci/runners/new_creation_workflow.md),
-you can allow runner registration tokens. This setting and support for runner registration tokens will be removed in GitLab 18.0.
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.
@@ -179,14 +179,14 @@ You can set the maximum size of distinct [job artifacts](../cicd/job_artifacts.m
 - Groups
 
 The default maximum size for each artifact file in a job is 100 MB.
-For GitLab.com, see [Artifacts maximum size](../../user/gitlab_com/_index.md#gitlab-cicd).
+For GitLab.com, see [Artifacts maximum size](../../user/gitlab_com/_index.md#cicd).
 
-Job artifacts defined with `artifacts:reports` can have [different limits](../../administration/instance_limits.md#maximum-file-size-per-type-of-artifact).
+Job artifacts defined with `artifacts:reports` can have [different limits](../instance_limits.md#maximum-file-size-per-type-of-artifact).
 In this case, the smaller value is used.
 
 {{< alert type="note" >}}
 
-This setting applies to individual artifacts in a job, not the final archive file.
+This setting applies to the size of the final archive file, not individual files in a job.
 
 {{< /alert >}}
 
@@ -296,7 +296,7 @@ After that time passes, the jobs are archived in the background and no longer ab
 retried. Make it empty to never expire jobs. It has to be no less than 1 day,
 for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.
 
-For the value set for GitLab.com, see [Scheduled job archiving](../../user/gitlab_com/_index.md#gitlab-cicd).
+For the value set for GitLab.com, see [Scheduled job archiving](../../user/gitlab_com/_index.md#cicd).
 
 ## Protect CI/CD variables by default
 
@@ -367,10 +367,10 @@ It is also possible to specify a [custom CI/CD configuration file for a specific
 You can configure some [CI/CD limits](../instance_limits.md#cicd-limits)
 from the **Admin** area:
 
+<!-- vale gitlab_base.CurrentStatus = NO -->
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
-<!-- vale gitlab_base.CurrentStatus = NO -->
 1. In the **CI/CD limits** section, you can set the following limits:
    - **Maximum number of instance-level CI/CD variables**
    - **Maximum size of a dotenv artifact in bytes**
@@ -401,6 +401,33 @@ for all projects from the **Admin** area.
 1. Expand the **Job token permissions** section.
 1. Enable **Enable and enforce job token allowlist for all projects** setting to
    require all projects to control job token access with the allowlist.
+
+## Job logs
+
+### Incremental logging
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350883) in GitLab 17.11.
+
+{{< /history >}}
+
+Incremental logging uses Redis instead of disk space for temporary caching of job logs.
+When turned on, archived job logs are incrementally uploaded to object storage.
+For more information, see [incremental logging](../cicd/job_logs.md#incremental-logging).
+
+Prerequisites:
+
+- You must [configure object storage](../cicd/job_artifacts.md#using-object-storage)
+  for CI/CD artifacts, logs, and builds.
+
+To turn on incremental logging for all projects:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand **Job logs**.
+1. Select the **Turn on incremental logging** checkbox.
+1. Select **Save changes**.
 
 ## Disable the pipeline suggestion banner
 

@@ -68,9 +68,9 @@ RSpec.describe 'getting project fork details', feature_category: :source_code_ma
 
     before do
       forked_project.update!({
-                               repository_access_level: 'private',
-                               merge_requests_access_level: 'private'
-                             })
+        repository_access_level: 'private',
+        merge_requests_access_level: 'private'
+      })
     end
 
     it 'does not return fork details' do

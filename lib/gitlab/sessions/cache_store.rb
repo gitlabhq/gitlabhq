@@ -10,7 +10,22 @@ module Gitlab
       def initialize(app, options = {})
         super
 
+        @default_options[:redis_expiry] = @cache.options[:expires_in]
+        @default_options[:expire_after] = nil
         @session_cookie_token_prefix = options.fetch(:session_cookie_token_prefix, "") || ""
+      end
+
+      # Overrides https://github.com/rails/rails/blob/v7.2.2.1/actionpack/lib/action_dispatch/middleware/session/cache_store.rb#L37-L46
+      # The only difference is the `expires_in` value is now based on the new option that we set in the intializer above
+      def write_session(_env, sid, session, options)
+        key = cache_key(sid.private_id)
+        if session
+          @cache.write(key, session, expires_in: options[:redis_expiry])
+        else
+          @cache.delete(key)
+        end
+
+        sid
       end
 
       def generate_sid

@@ -34,7 +34,7 @@ module Projects
       # If the block added errors, don't try to save the project
       return update_failed! if project.errors.any?
 
-      if project.update(params.except(:default_branch))
+      if project.update(params.except(*non_assignable_project_params))
         after_update
 
         success
@@ -369,6 +369,10 @@ module Projects
       })
 
       Gitlab::EventStore.publish(event)
+    end
+
+    def non_assignable_project_params
+      [:default_branch]
     end
   end
 end

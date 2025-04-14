@@ -413,10 +413,13 @@ For this tool to automatically remove the usages of the feature flag in your cod
 
 For example you can create a patch file for `config/feature_flags/beta/my_feature_flag.yml` using the following steps:
 
-1. Edit the code locally to remove the feature flag `my_feature_flag` usage assuming that the feature flag is already enabled and we are rolling forward
-1. Run `git diff > config/feature_flags/beta/my_feature_flag.patch`
-1. Undo the changes to the files where you removed the feature flag usage
-1. Commit this file `config/feature_flags/beta/my_feature_flag.patch` file to the branch where you are adding the feature flag
+1. Ensure you have a clean Git working directory.
+1. Delete `config/feature_flags/beta/my_feature_flag.yml`.
+1. Edit the code locally to remove any usage of `my_feature_flag` as though that the feature flag is already enabled and the feature is moving forward.
+1. Run `git diff > config/feature_flags/beta/my_feature_flag.patch`. If your feature flag is not a `beta` flag, ensure your patch file in the same directory as the YAML file that defines your feature flag.
+1. Undo the deletion of `config/feature_flags/beta/my_feature_flag.yml`
+1. Undo the changes to the files you ended to remove the feature flag usage
+1. Commit the patch file to the branch where you are adding the feature flag
 
 Then in future the `gitlab-housekeeper` will automatically clean up your
 feature flag for you by applying this patch.

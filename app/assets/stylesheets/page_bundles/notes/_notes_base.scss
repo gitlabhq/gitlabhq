@@ -377,3 +377,28 @@
     padding: $gl-padding;
   }
 }
+
+// container queries for work item note contents. Only applies to work item notes.
+.work-item-notes .note-container-query-wrapper {
+  container-name: note-container;
+  container-type: inline-size;
+
+  @container note-container (max-width: #{$breakpoint-sm}) {
+    .note-hidden-xs {
+      @apply gl-hidden;
+    }
+  }
+}
+
+// Safari-specific override to avoid container stacking context problems
+  @supports (-webkit-appearance:none) and (stroke-color:transparent) {
+    .work-item-notes .note-container-query-wrapper {
+      container-type: unset;
+
+      @media (max-width: $breakpoint-sm) {
+        .note-hidden-xs {
+          @apply gl-hidden
+        }
+      }
+    }
+  }

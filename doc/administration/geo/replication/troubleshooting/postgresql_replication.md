@@ -243,3 +243,14 @@ If one or more of these values is significantly high, this could indicate a prob
 - The difference in time between `write_lag` and `flush_lag` indicates that WAL bytes have been sent to the underlying storage system, but it has not reported that they were flushed.
   This data is most likely not fully written to a persistent storage, and likely held in some kind of volatile write cache.
 - The difference between `flush_lag` and `replay_lag` indicates WAL bytes that have been successfully persisted to storage, but could not be replayed by the database system.
+
+## Stuck at `Message: pg_basebackup: initiating base backup, waiting for checkpoint to complete`
+
+If the initial replication is stuck at `Message: pg_basebackup: initiating base backup, waiting for checkpoint to complete`, this means that the Primary node
+is not actively used. This mostly happens on a non-production GitLab server or on a brand new GitLab installation.
+
+The workaround is to run the SQL query `CHECKPOINT;` on the database of the primary node:
+
+```shell
+sudo gitlab-psql -xc 'CHECKPOINT;
+```

@@ -56,7 +56,7 @@ postgresql['trust_auth_cidr_addresses'] = %w(123.123.123.123/32 <other_cidrs>)
 
 Due to a [known issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8166) that
 affects versions of GitLab prior to 16.5.0, the automatic failover of PgBouncer nodes does not
-happen after a [Patroni switchover](../postgresql/replication_and_failover.md#manual-failover-procedure-for-patroni). In this
+happen after a [Patroni switchover](replication_and_failover.md#manual-failover-procedure-for-patroni). In this
 example, GitLab failed to detect a paused database, then attempted to `RESUME` a
 not-paused database:
 
@@ -66,7 +66,7 @@ ERROR -- : STDERR: Error running command: GitlabCtl::Errors::ExecutionError
 ERROR -- : STDERR: ERROR: ERROR:  database gitlabhq_production is not paused
 ```
 
-To ensure a [Patroni switchover](../postgresql/replication_and_failover.md#manual-failover-procedure-for-patroni) succeeds,
+To ensure a [Patroni switchover](replication_and_failover.md#manual-failover-procedure-for-patroni) succeeds,
 you must manually restart the PgBouncer service on all PgBouncer nodes with this command:
 
 ```shell
@@ -77,7 +77,7 @@ gitlab-ctl restart pgbouncer
 
 If a replica cannot start or rejoin the cluster, or when it lags behind and cannot catch up, it might be necessary to reinitialize the replica:
 
-1. [Check the replication status](../postgresql/replication_and_failover.md#check-replication-status) to confirm which server
+1. [Check the replication status](replication_and_failover.md#check-replication-status) to confirm which server
    needs to be reinitialized. For example:
 
    ```plaintext
@@ -196,7 +196,7 @@ To fix the problem, ensure the loopback interface is included in the CIDR addres
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-1. Check that [all the replicas are synchronized](../postgresql/replication_and_failover.md#check-replication-status)
+1. Check that [all the replicas are synchronized](replication_and_failover.md#check-replication-status)
 
 ## Error: requested start point is ahead of the Write Ahead Log (WAL) flush position
 
@@ -357,7 +357,7 @@ An example set of symptoms is as follows:
 
 **Important**: This workaround applies when the Patroni cluster is in the following state:
 
-- The [leader has been successfully upgraded to the new major version](../postgresql/replication_and_failover.md#upgrading-postgresql-major-version-in-a-patroni-cluster).
+- The [leader has been successfully upgraded to the new major version](replication_and_failover.md#upgrading-postgresql-major-version-in-a-patroni-cluster).
 - The step to upgrade PostgreSQL on replicas is failing.
 
 This workaround completes the PostgreSQL upgrade on a Patroni replica

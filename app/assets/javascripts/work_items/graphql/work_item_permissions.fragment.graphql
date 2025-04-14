@@ -1,0 +1,12 @@
+fragment WorkItemPermissions on WorkItemPermissions {
+  adminParentLink
+  adminWorkItemLink
+  createNote
+  deleteWorkItem
+  markNoteAsInternal
+  moveWorkItem
+  reportSpam
+  setWorkItemMetadata
+  summarizeComments
+  updateWorkItem
+}

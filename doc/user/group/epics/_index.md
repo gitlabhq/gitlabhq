@@ -45,7 +45,7 @@ The possible relationships between epics and other items are:
 - An epic is the parent of one or more issues.
 - An epic is the parent of one or more [child epics](manage_epics.md#multi-level-child-epics). Ultimate only.
 - An epic is [linked](linked_epics.md) to one or more task, objective, or key result.
-  Your administrator must have [enabled the new look for epics](epic_work_items.md).
+  [The new look for epics](epic_work_items.md) must be enabled.
 
 Example set of relationships:
 
@@ -103,7 +103,7 @@ of the child epics from the epic.
 
 <!-- When epics as work items are generally available, the steps below should be the only ones here. -->
 
-If your administrator [enabled the new look for epics](epic_work_items.md):
+If [the new look for epics](epic_work_items.md) is enabled:
 
 - On the **Child items** section header, select **More actions** ({{< icon name="ellipsis_v" >}}) **> View on a roadmap**.
 

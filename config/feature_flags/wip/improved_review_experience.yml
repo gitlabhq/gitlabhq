@@ -1,0 +1,9 @@
+---
+name: improved_review_experience
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/525841
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185795
+rollout_issue_url:
+milestone: '17.11'
+group: group::code review
+type: wip
+default_enabled: false

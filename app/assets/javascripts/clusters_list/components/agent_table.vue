@@ -69,11 +69,6 @@ export default {
       required: true,
       type: Array,
     },
-    defaultBranchName: {
-      default: '.noBranch',
-      required: false,
-      type: String,
-    },
     maxAgents: {
       default: null,
       required: false,
@@ -423,7 +418,6 @@ export default {
               v-if="action.name === 'delete-agent'"
               :key="action.name"
               :agent="item"
-              :default-branch-name="defaultBranchName"
             />
             <gl-disclosure-dropdown-item
               v-else

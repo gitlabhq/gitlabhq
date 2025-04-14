@@ -45,7 +45,7 @@ RSpec.describe VersionCheckHelper do
     end
 
     it 'when show_version_check? is false it returns nil' do
-      expect(helper.gitlab_version_check).to be nil
+      expect(helper.gitlab_version_check).to be_nil
     end
 
     context 'when show_version_check? is true' do
@@ -63,7 +63,7 @@ RSpec.describe VersionCheckHelper do
         end
 
         it 'returns nil' do
-          expect(helper.gitlab_version_check).to be nil
+          expect(helper.gitlab_version_check).to be_nil
         end
       end
 

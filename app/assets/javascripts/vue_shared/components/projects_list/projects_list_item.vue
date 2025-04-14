@@ -11,7 +11,7 @@ import ProjectListItemInactiveBadge from 'ee_else_ce/vue_shared/components/proje
 import { VISIBILITY_TYPE_ICON, PROJECT_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { FEATURABLE_ENABLED } from '~/featurable/constants';
-import { __, s__ } from '~/locale';
+import { __, s__, n__, sprintf } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
@@ -203,6 +203,46 @@ export default {
     dataTestid() {
       return `projects-list-item-${this.project.id}`;
     },
+    starA11yText() {
+      return sprintf(
+        n__(
+          '%{project} has %{number} star',
+          '%{project} has %{number} stars',
+          this.project.starCount,
+        ),
+        { project: this.project.avatarLabel, number: this.starCount },
+      );
+    },
+    forkA11yText() {
+      return sprintf(
+        n__(
+          '%{project} has %{number} fork',
+          '%{project} has %{number} forks',
+          this.project.forksCount,
+        ),
+        { project: this.project.avatarLabel, number: this.forksCount },
+      );
+    },
+    mrA11yText() {
+      return sprintf(
+        n__(
+          '%{project} has %{number} open merge request',
+          '%{project} has %{number} open merge requests',
+          this.project.openMergeRequestsCount,
+        ),
+        { project: this.project.avatarLabel, number: this.openMergeRequestsCount },
+      );
+    },
+    openIssueA11yText() {
+      return sprintf(
+        n__(
+          '%{project} has %{number} open issue',
+          '%{project} has %{number} open issues',
+          this.project.openIssuesCount,
+        ),
+        { project: this.project.avatarLabel, number: this.openIssuesCount },
+      );
+    },
   },
   methods: {
     onActionDelete() {
@@ -271,6 +311,7 @@ export default {
       <list-item-stat
         :href="starsHref"
         :tooltip-text="$options.i18n.stars"
+        :a11y-text="starA11yText"
         icon-name="star-o"
         :stat="starCount"
         data-testid="stars-btn"
@@ -279,6 +320,7 @@ export default {
         v-if="isForkingEnabled"
         :href="forksHref"
         :tooltip-text="$options.i18n.forks"
+        :a11y-text="forkA11yText"
         icon-name="fork"
         :stat="forksCount"
         data-testid="forks-btn"
@@ -287,6 +329,7 @@ export default {
         v-if="isMergeRequestsEnabled"
         :href="mergeRequestsHref"
         :tooltip-text="$options.i18n.mergeRequests"
+        :a11y-text="mrA11yText"
         icon-name="merge-request"
         :stat="openMergeRequestsCount"
         data-testid="mrs-btn"
@@ -295,6 +338,7 @@ export default {
         v-if="isIssuesEnabled"
         :href="issuesHref"
         :tooltip-text="$options.i18n.issues"
+        :a11y-text="openIssueA11yText"
         icon-name="issues"
         :stat="openIssuesCount"
         data-testid="issues-btn"

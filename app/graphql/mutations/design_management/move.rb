@@ -42,7 +42,7 @@ module Mutations
       end
 
       def not_found(gid)
-        raise Gitlab::Graphql::Errors::ResourceNotAvailable, "Resource not available: #{gid}"
+        raise_resource_not_available_error! "Resource not available: #{gid}"
       end
     end
   end

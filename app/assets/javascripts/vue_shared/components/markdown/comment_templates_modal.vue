@@ -71,7 +71,6 @@ export default {
       shouldFetchCommentTemplates: false,
       savedReplies: {},
       commentTemplateSearch: '',
-      loadingSavedReplies: false,
     };
   },
   computed: {

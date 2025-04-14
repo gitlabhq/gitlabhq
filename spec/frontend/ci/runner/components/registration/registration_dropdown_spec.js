@@ -157,7 +157,18 @@ describe('RegistrationDropdown', () => {
       });
 
       expect(findDropdown().attributes()).toMatchObject({
-        toggleclass: '!gl-px-3',
+        autoclose: 'true',
+        category: 'tertiary',
+        icon: 'ellipsis_v',
+        items: '',
+        nocaret: 'true',
+        placement: 'bottom-start',
+        positioningstrategy: 'absolute',
+        size: 'small',
+        textsronly: 'true',
+        toggleid: 'dropdown-toggle-btn-30',
+        toggletext: 'Register an instance runner',
+        variant: 'default',
       });
     });
 
@@ -306,7 +317,18 @@ describe('RegistrationDropdown', () => {
         });
 
         expect(findDropdown().attributes()).toMatchObject({
-          toggleclass: '!gl-px-3',
+          autoclose: 'true',
+          category: 'tertiary',
+          icon: 'ellipsis_v',
+          items: '',
+          nocaret: 'true',
+          placement: 'bottom-start',
+          positioningstrategy: 'absolute',
+          size: 'small',
+          textsronly: 'true',
+          toggleid: 'dropdown-toggle-btn-74',
+          toggletext: 'Register an instance runner',
+          variant: 'default',
         });
       });
 

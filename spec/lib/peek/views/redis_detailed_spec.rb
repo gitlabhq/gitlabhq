@@ -32,7 +32,7 @@ RSpec.describe Peek::Views::RedisDetailed, :request_store do
           commands: expected_commands,
           cmd: expected_cmd,
           duration: 1000
-                    })
+        })
     end
 
     it 'does not mutate input variable for redacted commands' do

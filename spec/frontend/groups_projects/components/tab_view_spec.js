@@ -47,7 +47,9 @@ describe('TabView', () => {
       [FILTERED_SEARCH_TOKEN_LANGUAGE]: '8',
       [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ACCESS_LEVEL_OWNER_INTEGER,
     },
+    filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
     timestampType: TIMESTAMP_TYPE_CREATED_AT,
+    programmingLanguages,
   };
 
   const createComponent = ({ handler, propsData = {} } = {}) => {
@@ -56,7 +58,6 @@ describe('TabView', () => {
     wrapper = shallowMountExtended(TabView, {
       apolloProvider: mockApollo,
       propsData: { ...defaultPropsData, ...propsData },
-      provide: { programmingLanguages },
     });
 
     apolloClient = mockApollo.defaultClient;
@@ -106,15 +107,15 @@ describe('TabView', () => {
             first: DEFAULT_PER_PAGE,
             before: null,
             after: null,
-            search: defaultPropsData.filters[FILTERED_SEARCH_TERM_KEY],
+            search: defaultPropsData.filters[defaultPropsData.filteredSearchTermKey],
             programmingLanguageName: 'CoffeeScript',
             minAccessLevel: ACCESS_LEVEL_OWNER_STRING,
             ...expectedVariables,
           });
         });
 
-        it('passes projects to `ProjectsList` component', () => {
-          expect(findProjectsList().props('projects')).toEqual(formatProjects(expectedProjects));
+        it('passes items to `ProjectsList` component', () => {
+          expect(findProjectsList().props('items')).toEqual(formatProjects(expectedProjects));
         });
 
         it('passes `timestampType` prop to `ProjectsList` component', () => {
@@ -234,7 +235,7 @@ describe('TabView', () => {
             membership: false,
             archived: 'EXCLUDE',
             sort: defaultPropsData.sort,
-            search: defaultPropsData.filters[FILTERED_SEARCH_TERM_KEY],
+            search: defaultPropsData.filters[defaultPropsData.filteredSearchTermKey],
             programmingLanguageName: 'CoffeeScript',
             minAccessLevel: ACCESS_LEVEL_OWNER_STRING,
           });
@@ -272,7 +273,7 @@ describe('TabView', () => {
             membership: false,
             archived: 'EXCLUDE',
             sort: defaultPropsData.sort,
-            search: defaultPropsData.filters[FILTERED_SEARCH_TERM_KEY],
+            search: defaultPropsData.filters[defaultPropsData.filteredSearchTermKey],
             programmingLanguageName: 'CoffeeScript',
             minAccessLevel: ACCESS_LEVEL_OWNER_STRING,
           });
@@ -292,8 +293,12 @@ describe('TabView', () => {
       });
 
       it('renders an empty state and passes title and description prop', () => {
-        expect(findEmptyState().props('title')).toBe(CONTRIBUTED_TAB.emptyState.title);
-        expect(findEmptyState().props('description')).toBe(CONTRIBUTED_TAB.emptyState.description);
+        expect(findEmptyState().props('title')).toBe(
+          CONTRIBUTED_TAB.emptyStateComponentProps.title,
+        );
+        expect(findEmptyState().props('description')).toBe(
+          CONTRIBUTED_TAB.emptyStateComponentProps.description,
+        );
       });
     });
 

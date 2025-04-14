@@ -4,14 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Sos::DbLoopStatsActivity, feature_category: :database do
   let(:temp_directory) { Dir.mktmpdir }
-  let(:output_file_path) { temp_directory }
   let(:output) { Gitlab::Database::Sos::Output.new(temp_directory, mode: :directory) }
   let(:db_name) { 'test_db' }
   let(:connection) { ApplicationRecord.connection }
   let(:handler) { described_class.new(connection, db_name, output) }
-  let(:query) { { pg_stat_user_indexes: "SELECT * FROM pg_stat_user_indexes;" } }
-  let(:result) { ApplicationRecord.connection.execute(query[:pg_stat_user_indexes]) }
-  let(:timestamp) { Time.zone.now.strftime("%Y%m%d_%H%M%S") }
 
   after do
     FileUtils.remove_entry(temp_directory)

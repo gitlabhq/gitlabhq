@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 require 'declarative_policy'
 require 'request_store'
@@ -12,7 +12,7 @@ require_relative '../../app/models/ability'
 require_relative '../support/ability_check'
 
 RSpec.describe Support::AbilityCheck, feature_category: :system_access do # rubocop:disable RSpec/SpecFilePathFormat
-  let(:user) { :user }
+  let(:user) { User.new }
   let(:child) { Testing::Child.new }
   let(:parent) { Testing::Parent.new(child) }
 

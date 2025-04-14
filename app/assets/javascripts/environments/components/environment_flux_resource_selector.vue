@@ -61,10 +61,7 @@ export default {
     fluxKustomizations: {
       query: fluxKustomizationsQuery,
       variables() {
-        return {
-          configuration: this.configuration,
-          namespace: this.namespace,
-        };
+        return this.variables;
       },
       skip() {
         return !this.namespace;
@@ -85,10 +82,7 @@ export default {
     fluxHelmReleases: {
       query: fluxHelmReleasesQuery,
       variables() {
-        return {
-          configuration: this.configuration,
-          namespace: this.namespace,
-        };
+        return this.variables;
       },
       skip() {
         return !this.namespace;

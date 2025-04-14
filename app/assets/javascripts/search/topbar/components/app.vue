@@ -19,7 +19,7 @@ import { SCOPE_BLOB } from '~/search/sidebar/constants';
 import { SYNTAX_OPTIONS_ADVANCED_DOCUMENT, SYNTAX_OPTIONS_ZOEKT_DOCUMENT } from '../constants';
 
 import SearchTypeIndicator from './search_type_indicator.vue';
-import GlSearchBoxByType from './search_box_by_type.vue';
+import GlobalSearchInput from './global_search_input.vue';
 
 const trackingMixin = InternalEvents.mixin();
 
@@ -34,7 +34,7 @@ export default {
   },
   components: {
     GlButton,
-    GlSearchBoxByType,
+    GlobalSearchInput,
     MarkdownDrawer,
     SearchTypeIndicator,
   },
@@ -130,7 +130,7 @@ export default {
         </div>
         <markdown-drawer ref="markdownDrawer" :document-path="documentBasedOnSearchType" />
       </template>
-      <gl-search-box-by-type
+      <global-search-input
         id="dashboard_search"
         v-model="search"
         name="search"

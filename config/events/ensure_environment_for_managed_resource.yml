@@ -1,0 +1,23 @@
+---
+description: Managed resources ensured
+internal_events: true
+action: ensure_environment_for_managed_resource
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: pricing tier
+  property:
+    description: environment tier
+  value:
+    description: environment id
+product_group: environments
+product_categories:
+- environment_management
+milestone: '17.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184581
+tiers:
+- premium
+- ultimate

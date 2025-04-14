@@ -108,10 +108,6 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item, feature_category: :ci_va
   end
 
   describe '#depends_on' do
-    let(:item) { Gitlab::Ci::Variables::Collection::Item.new(**variable) }
-
-    subject { item.depends_on }
-
     context 'table tests' do
       using RSpec::Parameterized::TableSyntax
 
@@ -141,6 +137,10 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item, feature_category: :ci_va
       end
 
       with_them do
+        let(:item) { Gitlab::Ci::Variables::Collection::Item.new(**variable) }
+
+        subject { item.depends_on }
+
         it 'contains referenced variable names' do
           is_expected.to eq(expected_depends_on)
         end

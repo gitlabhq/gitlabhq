@@ -42,6 +42,8 @@ ActiveSupport::Inflector.inflections do |inflect|
     terraform_state_version_registry
     vulnerabilities_feedback
     vulnerability_feedback
+    wiki_page_meta
+    WikiPage::Meta
   ]
   inflect.acronym 'CDN'
   inflect.acronym 'EE'

@@ -1,0 +1,14 @@
+baseURL = 'https://gitlab-org.gitlab.io/gitlab/rubocop-docs/'
+languageCode = 'en-us'
+title = 'GitLab RuboCop Docs'
+theme = ["github.com/nanxiaobei/hugo-paper"]
+
+[[module.mounts]]
+source = 'content'
+target = 'content'
+
+[params]
+  mainSections = ["doc"]
+
+[permalinks]
+  doc = "/:filename/"

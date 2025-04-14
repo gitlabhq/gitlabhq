@@ -8,7 +8,8 @@ title: Troubleshooting GitLab Duo Self-Hosted
 
 {{< details >}}
 
-- Tier: Ultimate with GitLab Duo Enterprise - [Start a GitLab Duo Enterprise trial on a paid Ultimate subscription](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial)
+- Tier: Ultimate
+- Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
@@ -432,7 +433,7 @@ If problem persists, report the issue to the GitLab support team.
 You might get an error that states
 `I'm sorry, I couldn't respond in time. Please try again. Error code: A1002`.
 
-This error occurs when no events are returned from AI gateway or GitLab failed to parse the events. Check the [AI Gateway logs](../gitlab_duo_self_hosted/logging.md) for any errors.
+This error occurs when no events are returned from AI gateway or GitLab failed to parse the events. Check the [AI Gateway logs](logging.md) for any errors.
 
 ### Error A1003
 
@@ -478,7 +479,7 @@ This error typically occurs due to issues with streaming from the model to the A
 
    If streaming is working, chunked responses should be displayed. If it is not, it will likely show an empty response.
 
-1. Check the [AI gateway logs](../gitlab_duo_self_hosted/logging.md) for specific error messages, because this is usually a model deployment issue.
+1. Check the [AI gateway logs](logging.md) for specific error messages, because this is usually a model deployment issue.
 
 1. To validate the connection, disable the streaming by setting the `AIGW_CUSTOM_MODELS__DISABLE_STREAMING` environment variable in your AI gateway container:
 
@@ -492,6 +493,34 @@ You might get an error that states
 `I'm sorry, I can't generate a response. Please try again. Error code: A9999`.
 
 This error occurs when an unknown error occurs in ReAct agent. Try your request again. If the problem persists, report the issue to the GitLab support team.
+
+## Feature not accessible or feature button not visible
+
+If a feature is not working or a feature button (for example, **`/troubleshoot`**) is not visible:
+
+1. Check if the feature's `unit_primitive` is listed in the [self-hosted models unit primitives list in the `gitlab-cloud-connector` gem configuration](https://gitlab.com/gitlab-org/cloud-connector/gitlab-cloud-connector/-/blob/main/config/services/self_hosted_models.yml).
+
+   If the feature is missing from this file, that could be the reason it's not accessible.
+
+1. Optional. If the feature is not listed, you can verify this is the cause of the issue by setting the following in your GitLab instance:
+
+   ```shell
+   CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1
+   ```
+
+   Then restart GitLab and check if the feature becomes accessible.
+
+   > **Important**: After troubleshooting, restart GitLab **without** this flag set.
+
+   {{< alert type="warning" >}}
+
+   **Do not use `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1` in production.** Development environments should closely mirror production, with no hidden flags or internal-only workarounds.
+
+   {{< /alert >}}
+
+1. To resolve this issue:
+   - If you're a GitLab team member, contact the Custom Models team through the [`#g_custom_models` Slack channel](https://gitlab.enterprise.slack.com/archives/C06DCB3N96F).
+   - If you're a customer, report the issue through [GitLab Support](https://about.gitlab.com/support/).
 
 ## Related topics
 

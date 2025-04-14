@@ -9,12 +9,12 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   include FiltersEvents
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
-  before_action :set_non_archived_param, only: [:index, :starred]
+  before_action :set_non_archived_param, only: [:index]
   before_action :set_sorting
-  skip_cross_project_access_check :index, :starred
+  skip_cross_project_access_check :index
 
   feature_category :groups_and_projects
-  urgency :low, [:starred, :index]
+  urgency :low, [:index]
 
   def index
     return redirect_to personal_dashboard_projects_path if params[:personal] == "true"
@@ -30,8 +30,6 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
       end
     end
   end
-
-  def starred; end
 
   private
 

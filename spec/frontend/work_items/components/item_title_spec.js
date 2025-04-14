@@ -22,7 +22,7 @@ describe('ItemTitle', () => {
 
   it('renders title contents', () => {
     expect(findInputEl().attributes()).toMatchObject({
-      'data-placeholder': 'Add a title...',
+      'data-placeholder': 'Add a title…',
       contenteditable: 'true',
     });
     expect(findInputEl().text()).toBe('Sample title');

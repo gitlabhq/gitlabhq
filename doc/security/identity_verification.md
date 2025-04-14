@@ -65,7 +65,7 @@ Users with phone numbers from unsupported countries can try [credit card verific
 
 ### Partially supported countries
 
-A user might not receive a one-time password (OTP) if their phone number is from an partially supported country. Whether a message is delivered depends on country enforcement and regulation.
+A user might not receive a one-time password (OTP) if their phone number is from a partially supported country. Whether a message is delivered depends on country enforcement and regulation.
 
 The following countries are partially supported:
 

@@ -84,6 +84,10 @@ module Gitlab
         @attributes[:extra_tracking_classes]&.map(&:constantize) || []
       end
 
+      def duo_event?
+        @attributes[:classification] == 'duo'
+      end
+
       def raw_attributes
         @attributes
       end

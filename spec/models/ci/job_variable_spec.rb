@@ -13,6 +13,10 @@ RSpec.describe Ci::JobVariable, feature_category: :continuous_integration do
     it { is_expected.to validate_presence_of(:project_id) }
   end
 
+  it_behaves_like 'encrypted attribute', :value, :db_key_base_32 do
+    let(:record) { create(:ci_job_variable) }
+  end
+
   describe 'partitioning' do
     let(:job_variable) { build(:ci_job_variable, job: ci_build) }
 

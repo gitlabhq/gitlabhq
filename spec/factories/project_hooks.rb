@@ -39,7 +39,7 @@ FactoryBot.define do
     end
 
     trait :permanently_disabled do
-      recent_failures { WebHooks::AutoDisabling::FAILURE_THRESHOLD + 1 }
+      recent_failures { WebHooks::AutoDisabling::PERMANENTLY_DISABLED_FAILURE_THRESHOLD + 1 }
     end
   end
 end

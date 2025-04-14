@@ -179,13 +179,13 @@ export default {
         </gl-badge>
       </div>
     </workload-details-item>
-    <workload-details-item v-if="item.status && !item.fullStatus" :label="$options.i18n.status">
+    <workload-details-item v-if="item.status && !hasFullStatus" :label="$options.i18n.status">
       <gl-badge :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[item.status]">{{
         $options.STATUS_LABELS[item.status]
       }}</gl-badge>
     </workload-details-item>
     <workload-details-item
-      v-if="item.fullStatus"
+      v-if="hasFullStatus"
       :label="$options.i18n.status"
       :is-expanded="expanded.status"
       collapsible

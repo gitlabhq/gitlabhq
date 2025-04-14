@@ -63,6 +63,16 @@ class Upload < ApplicationRecord
         store_class.new.delete_keys_async(keys)
       end
     end
+
+    def destroy_for_associations!(records, uploader = AttachmentUploader)
+      return if records.blank?
+
+      for_model_type_and_id(records.klass, records.pluck_primary_key)
+        .for_uploader(uploader)
+        .then { |uploads| [uploads, uploads.begin_fast_destroy] }
+        .tap { |uploads, _| uploads.delete_all }
+        .tap { |_, files| finalize_fast_destroy(files) }
+    end
   end
 
   def absolute_path

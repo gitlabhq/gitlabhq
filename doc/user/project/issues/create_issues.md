@@ -163,15 +163,25 @@ To link directly to the new issue page with prefilled fields, use query
 string parameters in a URL. You can embed a URL in an external
 HTML page to create issues with certain fields prefilled.
 
-| Field                | URL parameter         | Notes                                                                                                                           |
-| -------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Title                | `issue[title]`        | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths).                                                          |
-| Issue type           | `issue[issue_type]`   | Either `incident` or `issue`.                                                                                                   |
-| Description template (issues, epics, incidents, and merge requests) | `issuable_template`   | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths).                                                          |
-| Description template (tasks, OKRs and epics [with the new look](../../group/epics/epic_work_items.md)). | `description_template`   | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513095) in GitLab 17.9. |
-| Description          | `issue[description]`  | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). If used in combination with `issuable_template` or a [default issue template](../description_templates.md#set-a-default-template-for-merge-requests-and-issues), the `issue[description]` value is appended to the template. |
-| Confidential         | `issue[confidential]` | If `true`, the issue is marked as confidential.                                                                                 |
-| Relate to…           | `add_related_issue`   | A numeric issue ID. If present, the issue form shows a [**Relate to** checkbox](#from-another-issue-or-incident) to optionally link the new issue to the specified existing issue. |
+To build the URL to create an issue with prefilled values, combine:
+
+1. The project's or group's Issues page URL, followed by `/new`.
+   For example: `https://gitlab.com/gitlab-org/gitlab/-/issues/new`
+
+1. `?` to start listing parameters.
+1. URL parameter, followed by `=` and value.
+   For example: `issue[title]=My%20test%20issue`.
+1. Optional. `&` to join more parameters.
+
+| Field        | URL parameter         | Notes |
+| ------------ | --------------------- | ----- |
+| Title        | `issue[title]`        | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). |
+| Issue type   | `issue[issue_type]`   | Either `incident` or `issue`. |
+| Description template (issues, epics, incidents, and merge requests) | `issuable_template`   | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). |
+| Description template (tasks, OKRs, issues [with the new look](issue_work_items.md), and epics [with the new look](../../group/epics/epic_work_items.md)). | `description_template`   | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513095) in GitLab 17.9. |
+| Description  | `issue[description]`  | Must be [URL-encoded](../../../api/rest/_index.md#namespaced-paths). If used in combination with `issuable_template` or a [default issue template](../description_templates.md#set-a-default-template-for-merge-requests-and-issues), the `issue[description]` value is appended to the template. |
+| Confidential | `issue[confidential]` | If `true`, the issue is marked as confidential. |
+| Relate to…   | `add_related_issue`   | A numeric issue ID. If present, the issue form shows a [**Relate to** checkbox](#from-another-issue-or-incident) to optionally link the new issue to the specified existing issue. |
 
 In [GitLab 17.8 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177215),
 when you select an issue template, the URL changes to show the template used.
@@ -215,14 +225,17 @@ the appropriate project and followed up from there.
 When you're creating a new issue, you can complete the following fields:
 
 - Title
+- Project: defaults to the current project
 - Type: either issue (default) or incident
 - [Description template](../description_templates.md): overwrites anything in the Description text box
 - Description: you can use [Markdown](../../markdown.md) and [quick actions](../quick_actions.md)
 - Checkbox to make the issue [confidential](confidential_issues.md)
 - [Assignees](managing_issues.md#assignees)
 - [Weight](issue_weight.md)
-- [Epic](../../group/epics/_index.md)
-- [Due date](due_dates.md)
+- [Epic](../../group/epics/_index.md) (named Parent if [the new look for issues](issue_work_items.md) is enabled)
+- [Due date](due_dates.md) (named Dates if [the new look for issues](issue_work_items.md) is enabled)
 - [Milestone](../milestones/_index.md)
 - [Labels](../labels.md)
 - [Iteration](../../group/iterations/_index.md)
+- [Health status](managing_issues.md#health-status) ([the new look for issues](issue_work_items.md) must be enabled)
+- [Contacts](../../crm/_index.md) ([the new look for issues](issue_work_items.md) must be enabled)

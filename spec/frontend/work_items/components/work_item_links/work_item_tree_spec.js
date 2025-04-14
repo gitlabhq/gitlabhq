@@ -24,22 +24,22 @@ import {
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_VALUE_EPIC,
-  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-  WORK_ITEM_TYPE_VALUE_TASK,
+  WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_TASK,
   WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
   WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
 } from '~/work_items/constants';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import * as utils from '~/work_items/utils';
 import {
+  mockRolledUpCountsByType,
   workItemHierarchyTreeResponse,
   workItemHierarchyPaginatedTreeResponse,
   workItemHierarchyTreeEmptyResponse,
   workItemHierarchyNoUpdatePermissionResponse,
   workItemHierarchyTreeSingleClosedItemResponse,
-  mockRolledUpCountsByType,
-} from '../../mock_data';
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/alert');
 
@@ -138,10 +138,10 @@ describe('WorkItemTree', () => {
   });
 
   it.each`
-    workItemType                      | showTaskWeight
-    ${WORK_ITEM_TYPE_VALUE_EPIC}      | ${false}
-    ${WORK_ITEM_TYPE_VALUE_TASK}      | ${true}
-    ${WORK_ITEM_TYPE_VALUE_OBJECTIVE} | ${true}
+    workItemType                     | showTaskWeight
+    ${WORK_ITEM_TYPE_NAME_EPIC}      | ${false}
+    ${WORK_ITEM_TYPE_NAME_TASK}      | ${true}
+    ${WORK_ITEM_TYPE_NAME_OBJECTIVE} | ${true}
   `(
     'passes `showTaskWeight` as $showTaskWeight when the type is $workItemType',
     async ({ workItemType, showTaskWeight }) => {
@@ -326,8 +326,8 @@ describe('WorkItemTree', () => {
 
     it.each`
       visible | workItemType
-      ${true} | ${WORK_ITEM_TYPE_VALUE_EPIC}
-      ${true} | ${WORK_ITEM_TYPE_VALUE_OBJECTIVE}
+      ${true} | ${WORK_ITEM_TYPE_NAME_EPIC}
+      ${true} | ${WORK_ITEM_TYPE_NAME_OBJECTIVE}
     `('renders when the work item type is $workItemType', async ({ workItemType, visible }) => {
       await createComponent({ workItemType });
 
@@ -488,6 +488,42 @@ describe('WorkItemTree', () => {
       await createComponent();
 
       expect(wrapper.emitted('show-modal')).toBeUndefined();
+    });
+
+    it('emits `show-modal` event with child work item id on window `popstate` event', async () => {
+      const encodedWorkItemId = btoa(JSON.stringify({ id: 31 }));
+      await createComponent();
+
+      expect(wrapper.emitted('show-modal')).toEqual([[{ modalWorkItem: null }]]);
+
+      setWindowLocation(`?show=${encodedWorkItemId}`);
+      window.dispatchEvent(new Event('popstate'));
+
+      await waitForPromises();
+
+      expect(wrapper.emitted('show-modal')).toEqual([
+        [{ modalWorkItem: null }],
+        [{ modalWorkItem: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
+      ]);
+    });
+
+    it('emits `show-modal` event with `null` id on window `popstate` event when there is no show URL parameter', async () => {
+      const encodedWorkItemId = btoa(JSON.stringify({ id: 31 }));
+      setWindowLocation(`?show=${encodedWorkItemId}`);
+      await createComponent();
+
+      expect(wrapper.emitted('show-modal')).toEqual([
+        [{ modalWorkItem: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
+      ]);
+
+      setWindowLocation('?otherThing=true');
+      window.dispatchEvent(new Event('popstate'));
+      await waitForPromises();
+
+      expect(wrapper.emitted('show-modal')).toEqual([
+        [{ modalWorkItem: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
+        [{ modalWorkItem: null }],
+      ]);
     });
   });
 });

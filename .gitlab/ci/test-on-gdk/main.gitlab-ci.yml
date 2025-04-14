@@ -28,6 +28,7 @@ workflow:
     - mv $CI_BUILDS_DIR/*.log $CI_PROJECT_DIR/
 
 .gdk-qa-base:
+  image: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}"
   extends:
     - .e2e-test-base
     # ignore runtime data from gdk because it's significantly slower than cng and runtime data for
@@ -35,7 +36,9 @@ workflow:
     - .with-ignored-runtime-data
   stage: test
   services:
-    - name: docker:${DOCKER_VERSION}-dind
+    - name: "$GL_DOCKER_REGISTRY_MIRROR/docker:${DOCKER_VERSION}-dind"
+      alias: docker
+      entrypoint: ["sh", "-c", "dockerd-entrypoint.sh $GL_DOCKER_DIND_OPTIONS"]
     - name: ${GDK_IMAGE}
       alias: gdk.test
       # CI setup will tail each component in to separate file
@@ -43,14 +46,21 @@ workflow:
       command: [gdk, tail, rails-web]
   tags:
     - e2e
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: clone-gitlab-repo
   variables:
-    QA_DOCKER_NETWORK: host
-    QA_GITLAB_URL: http://gdk.test:3000
-    GITLAB_DEVELOPMENT_USE_PRECOMPILED_ASSETS: "true"
-    GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
-    RSPEC_LAST_RUN_RESULTS_FILE: "$CI_PROJECT_DIR/qa/tmp/examples.txt"
     COVERBAND_ENABLED: "$COVERBAND_ENABLED"  # explicitly define variable so it is passed in to gdk service container
     GITLAB_CRON_JOBS_POLL_INTERVAL: "0"
+    GITLAB_DEVELOPMENT_USE_PRECOMPILED_ASSETS: "true"
+    GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
+    GL_DOCKER_REGISTRY_MIRROR: mirror.gcr.io
+    GL_DOCKER_REGISTRY_MIRROR_ENDPOINT: https://${GL_DOCKER_REGISTRY_MIRROR}
+    GL_DOCKER_DIND_OPTIONS: "--registry-mirror=$GL_DOCKER_REGISTRY_MIRROR_ENDPOINT"
+    QA_DOCKER_NETWORK: host
+    QA_GITLAB_URL: http://gdk.test:3000
+    RSPEC_LAST_RUN_RESULTS_FILE: "$CI_PROJECT_DIR/qa/tmp/examples.txt"
+    GIT_STRATEGY: "none"
   after_script:
     - !reference [.with-gdk-log, after_script]
     - !reference [.gitlab-qa-report, after_script]

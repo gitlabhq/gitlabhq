@@ -79,6 +79,7 @@ export function mountMarkdownEditor(options = {}) {
   const supportsQuickActions = parseBoolean(el.dataset.supportsQuickActions ?? true);
   const enableAutocomplete = parseBoolean(el.dataset.enableAutocomplete ?? true);
   const disableAttachments = parseBoolean(el.dataset.disableAttachments ?? false);
+  const canUseComposer = parseBoolean(el.dataset.canUseComposer ?? false);
   const autofocus = parseBoolean(el.dataset.autofocus ?? true);
   const hiddenInput = el.querySelector('input[type="hidden"]');
   const formFieldName = hiddenInput.getAttribute('name');
@@ -97,6 +98,8 @@ export function mountMarkdownEditor(options = {}) {
 
   componentConfiguration.apolloProvider =
     options.apolloProvider || new VueApollo({ defaultClient: createApolloClient() });
+
+  componentConfiguration.provide.canUseComposer = canUseComposer;
 
   // eslint-disable-next-line no-new
   new Vue({

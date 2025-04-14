@@ -29,6 +29,16 @@ module API
       end
       params do
         use :pagination
+        optional :order_by,
+          type: String,
+          values: %w[id created_at file_name],
+          default: 'id',
+          desc: 'Return package files ordered by `id`, `created_at` or `file_name`'
+        optional :sort,
+          type: String,
+          values: %w[asc desc],
+          default: 'asc',
+          desc: 'Return package files sorted in `asc` or `desc` order.'
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, job_token_policies: :read_packages,
@@ -38,7 +48,8 @@ module API
           .new(user_project, params[:package_id]).execute
 
         package_files = package.installable_package_files
-                               .preload_pipelines.order_id_asc
+                               .preload_pipelines
+                               .order_by(params[:order_by], params[:sort])
 
         present paginate(package_files), with: ::API::Entities::PackageFile
       end

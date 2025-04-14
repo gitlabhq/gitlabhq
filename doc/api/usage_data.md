@@ -12,7 +12,7 @@ title: Service Ping API
 
 {{< /details >}}
 
-The Service Ping API is associated with [Service Ping](../development/internal_analytics/service_ping/_index.md).
+Use this API to interact with the GitLab Service Ping process. For more information, see the [Service Ping development guidelines](../development/internal_analytics/service_ping/_index.md).
 
 ## Export Service Ping data
 

@@ -121,7 +121,6 @@ gitlab-rake "gitlab:uploads:migrate[AvatarUploader, Group, :avatar]"
 gitlab-rake "gitlab:uploads:migrate[AvatarUploader, User, :avatar]"
 
 # Attachments
-gitlab-rake "gitlab:uploads:migrate[AttachmentUploader, Note, :attachment]"
 gitlab-rake "gitlab:uploads:migrate[AttachmentUploader, Appearance, :logo]"
 gitlab-rake "gitlab:uploads:migrate[AttachmentUploader, Appearance, :header_logo]"
 
@@ -153,7 +152,6 @@ sudo -u git -H bundle exec rake "gitlab:uploads:migrate[AvatarUploader, Group, :
 sudo -u git -H bundle exec rake "gitlab:uploads:migrate[AvatarUploader, User, :avatar]"
 
 # Attachments
-sudo -u git -H bundle exec rake "gitlab:uploads:migrate[AttachmentUploader, Note, :attachment]"
 sudo -u git -H bundle exec rake "gitlab:uploads:migrate[AttachmentUploader, Appearance, :logo]"
 sudo -u git -H bundle exec rake "gitlab:uploads:migrate[AttachmentUploader, Appearance, :header_logo]"
 

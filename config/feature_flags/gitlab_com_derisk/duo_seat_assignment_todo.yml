@@ -1,9 +1,0 @@
----
-name: duo_seat_assignment_todo
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/507338
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177019
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514937
-milestone: '17.10'
-group: group::acquisition
-type: gitlab_com_derisk
-default_enabled: false

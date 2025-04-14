@@ -59,7 +59,7 @@ See also [guidelines for heading levels in Markdown](../styleguide/_index.md#hea
 
 ## Related topics
 
-If inline links are not sufficient, you can create a topic called **Related topics**
+If inline links are not sufficient, you can create a section called **Related topics**
 and include an unordered list of related topics. This topic should be above the Troubleshooting section.
 
 Links in this section should be brief and scannable. They are usually not

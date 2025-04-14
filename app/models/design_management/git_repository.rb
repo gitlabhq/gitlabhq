@@ -9,7 +9,7 @@ module DesignManagement
     #
     # Enable all uploaded files to be stored in LFS.
     MANAGED_GIT_ATTRIBUTES = <<~GA.freeze
-      /#{DesignManagement.designs_directory}/* filter=lfs diff=lfs merge=lfs -text
+      /#{DesignManagement.designs_directory}/** filter=lfs diff=lfs merge=lfs -text
     GA
 
     # Override of a method called on Repository instances but sent via

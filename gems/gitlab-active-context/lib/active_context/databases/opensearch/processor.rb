@@ -12,7 +12,7 @@ module ActiveContext
         # @return [Hash] The Opensearch query DSL
         # @example
         #   Processor.transform(ActiveContext::Query.filter(status: 'active'))
-        def self.transform(node)
+        def self.transform(_collection, node)
           new.process(node)
         end
 

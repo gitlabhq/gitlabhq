@@ -47,7 +47,7 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
     it 'has a page title set' do
       visit_container_registry
 
-      expect(page).to have_title _('Container Registry')
+      expect(page).to have_title _('Container registry')
     end
 
     it 'has link to next generation container registry docs' do

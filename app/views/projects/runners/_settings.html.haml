@@ -1,8 +1,7 @@
-= render 'shared/runners/runner_description'
-
-.row
-  .col-sm-6
+- if Feature.enabled?(:vue_project_runners_settings, @project)
+  #js-project-runners-settings{ data: project_runners_settings_data(@project) }
+- else
+  .gl-flex.gl-flex-col.gl-gap-5.gl-mt-5
     = render 'projects/runners/project_runners'
-  .col-sm-6
-    = render 'projects/runners/shared_runners'
     = render 'projects/runners/group_runners'
+    = render 'projects/runners/shared_runners'

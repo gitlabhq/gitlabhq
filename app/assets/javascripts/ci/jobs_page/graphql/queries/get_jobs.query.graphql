@@ -5,6 +5,7 @@ query getJobs(
   $after: String
   $before: String
   $statuses: [CiJobStatus!]
+  $sources: [CiJobSource!]
   $name: String
 ) {
   project(fullPath: $fullPath) {
@@ -15,6 +16,7 @@ query getJobs(
       after: $after
       before: $before
       statuses: $statuses
+      sources: $sources
       name: $name
     ) {
       pageInfo {

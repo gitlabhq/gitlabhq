@@ -18,7 +18,7 @@ When working with Code Quality, you might encounter the following issues.
 
 You are probably using a private runner with the Docker-in-Docker socket-binding configuration.
 You should configure Code Quality checks to run on your worker as documented in
-[Use private runners](../testing/code_quality_codeclimate_scanning.md#use-private-runners).
+[Use private runners](code_quality_codeclimate_scanning.md#use-private-runners).
 
 ## Changing the default configuration has no effect
 
@@ -45,9 +45,16 @@ Missing report on the target branch can be due to:
 
 Verify the presence of report on the base commit by obtaining the `base_sha` using the [merge request API](../../api/merge_requests.md#get-single-mr) and use the [pipelines API with the `sha` attribute](../../api/pipelines.md#list-project-pipelines) to check if pipelines ran.
 
+## No Code Quality symbol in the changes view
+
+If no symbol is displayed in the [changes view](code_quality.md#merge-request-changes-view), ensure that the `location.path` in the code quality report:
+
+- Is using a relative path to the file containing the code quality violation.
+- Is not prefixed with `./`. For example, the `path` should be `somedir/file1.rb` instead of `./somedir/file1.rb`.
+
 ## Only a single Code Quality report is displayed, but more are defined
 
-Code Quality automatically [combines multiple reports](../testing/code_quality.md#scan-code-for-quality-violations).
+Code Quality automatically [combines multiple reports](code_quality.md#scan-code-for-quality-violations).
 
 In GitLab 15.6 and earlier, Code Quality used only the artifact from the latest created job (with the largest job ID). Code Quality artifacts from earlier jobs were ignored.
 

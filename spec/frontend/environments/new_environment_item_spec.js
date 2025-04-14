@@ -184,7 +184,6 @@ describe('~/environments/components/new_environment_item.vue', () => {
         environment: resolvedEnvironment,
         isLastDeployment: true,
         retryUrl: resolvedEnvironment.lastDeployment.deployable.retryPath,
-        graphql: true,
       });
     });
 

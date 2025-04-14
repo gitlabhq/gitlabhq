@@ -25,11 +25,7 @@ module Gitlab
         @email = email
         @gl_id = gl_id
 
-        @timezone = if Feature.enabled?(:add_timezone_to_web_operations)
-                      convert_timezone(timezone)
-                    else
-                      system_timezone
-                    end
+        @timezone = convert_timezone(timezone)
       end
 
       def ==(other)

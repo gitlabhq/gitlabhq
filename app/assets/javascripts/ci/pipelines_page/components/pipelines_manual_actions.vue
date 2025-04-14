@@ -152,7 +152,7 @@ export default {
       <template #list-item>
         <div class="gl-flex">
           <gl-loading-icon class="mr-2" />
-          <span>{{ __('Loading...') }}</span>
+          <span>{{ __('Loading…') }}</span>
         </div>
       </template>
     </gl-disclosure-dropdown-item>

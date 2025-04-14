@@ -205,6 +205,10 @@ RSpec.describe SearchController, type: :request, feature_category: :global_searc
 
     let(:params) { nil }
 
+    before do
+      stub_application_setting(global_search_block_anonymous_searches_enabled: true)
+    end
+
     context 'when user is not signed-in' do
       it { is_expected.to redirect_to(new_user_session_path) }
     end

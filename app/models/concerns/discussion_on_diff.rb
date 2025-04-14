@@ -6,6 +6,8 @@ module DiscussionOnDiff
 
   NUMBER_OF_TRUNCATED_DIFF_LINES = 16
 
+  TruncatedDiffLinesError = Class.new(StandardError)
+
   included do
     delegate :line_code,
       :original_line_code,
@@ -47,7 +49,20 @@ module DiscussionOnDiff
 
     prev_lines = []
 
-    lines[initial_line_index..diff_line.index].each do |line|
+    lines = lines[initial_line_index..diff_line.index]
+
+    if lines.nil?
+      Gitlab::ErrorTracking.track_exception(
+        TruncatedDiffLinesError.new(
+          "Lines is empty. Highlighted lines state: #{highlight}.
+          Initial line index: #{initial_line_index}.
+          Diff line index: #{diff_line&.index}"
+        )
+      )
+      return []
+    end
+
+    lines.each do |line|
       if line.meta?
         prev_lines.clear
       else

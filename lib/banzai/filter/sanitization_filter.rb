@@ -8,6 +8,7 @@ module Banzai
     class SanitizationFilter < Banzai::Filter::BaseSanitizationFilter
       # Styles used by Markdown for table alignment
       TABLE_ALIGNMENT_PATTERN = /text-align: (?<alignment>center|left|right)/
+      ALLOWED_IDIFF_CLASSES = %w[idiff left right deletion addition].freeze
 
       def customize_allowlist(allowlist)
         allowlist[:allow_comments] = context[:allow_comments]
@@ -35,10 +36,12 @@ module Banzai
         allowlist[:attributes]['li'] = %w[id]
         allowlist[:transformers].push(self.class.remove_id_attributes)
 
-        # Remove any `class` property not required for `a`, `div`, or `p`
+        # Remove any `class` property not required for these elements
         allowlist[:attributes]['a'].push('class')
         allowlist[:attributes]['div'] = %w[class]
         allowlist[:attributes]['p'] = %w[class]
+        allowlist[:attributes]['span'].push('class')
+        allowlist[:attributes]['code'].push('class')
         allowlist[:transformers].push(self.class.remove_unsafe_classes)
 
         # Allow section elements with data-footnotes attribute
@@ -78,6 +81,10 @@ module Banzai
               node.remove_attribute('class') if remove_div_class?(node)
             when 'p'
               node.remove_attribute('class') if remove_p_class?(node)
+            when 'span'
+              node.remove_attribute('class') if remove_span_class?(node)
+            when 'code'
+              node.remove_attribute('class') if remove_code_class?(node)
             end
           end
         end
@@ -96,6 +103,16 @@ module Banzai
 
         def remove_p_class?(node)
           node['class'] != 'markdown-alert-title'
+        end
+
+        def remove_span_class?(node)
+          return true unless node['class'].include?('idiff')
+
+          (node['class'].split - ALLOWED_IDIFF_CLASSES).present?
+        end
+
+        def remove_code_class?(node)
+          node['class'] != 'idiff'
         end
 
         def remove_id_attributes

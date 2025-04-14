@@ -7,10 +7,10 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/issuable_blocked_icon.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
+import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { updateHistory } from '~/lib/utils/url_utility';
 import {
@@ -41,16 +41,21 @@ describe('Board card component', () => {
     description: 'test',
   };
 
+  const itemWithNoLinkedItems = {
+    ...mockIssue,
+    linkedWorkItems: { ...mockIssue.linkedWorkItems, nodes: [] },
+  };
+
   let wrapper;
   let issue;
   let list;
 
-  const findIssuableBlockedIcon = () => wrapper.findComponent(IssuableBlockedIcon);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findConfidentialIcon = () => wrapper.findByTestId('confidential-icon');
   const findHiddenIssueIcon = () => wrapper.findByTestId('hidden-icon');
   const findWorkItemIcon = () => wrapper.findComponent(WorkItemTypeIcon);
   const findUserAvatar = () => wrapper.findComponent(UserAvatarLink);
+  const findRelationshipIcons = () => wrapper.findComponent(WorkItemRelationshipIcons);
 
   const mockApollo = createMockApollo();
 
@@ -174,31 +179,21 @@ describe('Board card component', () => {
     });
   });
 
-  describe('blocked', () => {
-    it('renders blocked icon if issue is blocked', () => {
-      createWrapper({
-        props: {
-          item: {
-            ...issue,
-            blocked: true,
-          },
-        },
-      });
+  describe('item relationships', () => {
+    it.each`
+      state                            | assertion | item
+      ${'rendered if item has'}        | ${true}   | ${mockIssue}
+      ${'not rendered if item has no'} | ${false}  | ${itemWithNoLinkedItems}
+    `('relationship icons are $state linked work items', ({ assertion, item }) => {
+      issue = {
+        ...item,
+        labels: [list.label],
+        assignees: [],
+        weight: 1,
+      };
+      createWrapper({ props: issue });
 
-      expect(findIssuableBlockedIcon().exists()).toBe(true);
-    });
-
-    it('does not show blocked icon if issue is not blocked', () => {
-      createWrapper({
-        props: {
-          item: {
-            ...issue,
-            blocked: false,
-          },
-        },
-      });
-
-      expect(findIssuableBlockedIcon().exists()).toBe(false);
+      expect(findRelationshipIcons().exists()).toBe(assertion);
     });
   });
 

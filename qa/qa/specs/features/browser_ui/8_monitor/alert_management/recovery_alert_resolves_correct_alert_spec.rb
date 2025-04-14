@@ -28,7 +28,7 @@ module QA
         'when using HTTP endpoint integration',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/393589',
         quarantine: {
-          only: { pipeline: :nightly },
+          only: { condition: -> { ENV['QA_RUN_TYPE'] == 'e2e-test-on-omnibus-ce' } },
           type: :bug,
           issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/395512'
         }

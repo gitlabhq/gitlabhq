@@ -10,7 +10,7 @@ RSpec.shared_examples 'logs inbound authorizations via job token' do |success_st
         .and_call_original
 
       expect(Ci::JobToken::LogAuthorizationWorker)
-        .to receive(:perform_in).with(5.minutes, accessed_project.id, origin_project.id)
+        .to receive(:perform_in).with(5.minutes, accessed_project.id, origin_project.id, anything)
 
       perform_request
 

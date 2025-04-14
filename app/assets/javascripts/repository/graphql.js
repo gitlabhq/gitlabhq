@@ -6,6 +6,16 @@ import { fetchLogsTree } from './log_tree';
 
 Vue.use(VueApollo);
 
+const typePolicies = {
+  Project: {
+    fields: {
+      userPermissions: {
+        merge: true,
+      },
+    },
+  },
+};
+
 const defaultClient = createDefaultClient(
   {
     Query: {
@@ -34,6 +44,7 @@ const defaultClient = createDefaultClient(
   },
   {
     cacheConfig: {
+      typePolicies,
       dataIdFromObject: (obj) => {
         /* eslint-disable @gitlab/require-i18n-strings */
         // eslint-disable-next-line no-underscore-dangle

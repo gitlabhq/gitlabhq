@@ -2045,6 +2045,22 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.size).to eq(1)
       end
+
+      context 'when per_page is greater than the max_per_page' do
+        before do
+          allow(Kaminari.config).to receive(:max_per_page).and_return(1)
+        end
+
+        it 'returns the correct amount of diffs' do
+          get(
+            api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/diffs", user),
+            params: { per_page: 2 }
+          )
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.size).to eq(1)
+        end
+      end
     end
   end
 
@@ -3157,22 +3173,22 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   end
 
   shared_examples 'merging with auto merge strategies' do
-    it 'does not merge if merge_when_pipeline_succeeds is passed and the pipeline has failed' do
+    it 'does not merge if auto merge request is passed and the pipeline has failed' do
       create(:ci_pipeline,
         :failed,
         sha: merge_request.diff_head_sha,
         merge_requests_as_head_pipeline: [merge_request])
 
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: { merge_when_pipeline_succeeds: true }
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
 
       expect(response).to have_gitlab_http_status(:method_not_allowed)
       expect(merge_request.reload.state).to eq('opened')
     end
 
-    it 'merges if the head pipeline already succeeded and `merge_when_pipeline_succeeds` is passed' do
+    it 'merges if the head pipeline already succeeded and auto merge request is passed' do
       create(:ci_pipeline, :success, sha: merge_request.diff_head_sha, merge_requests_as_head_pipeline: [merge_request])
 
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: { merge_when_pipeline_succeeds: true }
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['state']).to eq('merged')
@@ -3182,7 +3198,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       allow_any_instance_of(MergeRequest).to receive_messages(head_pipeline: pipeline, diff_head_pipeline: pipeline)
       allow(pipeline).to receive(:active?).and_return(true)
 
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: { merge_when_pipeline_succeeds: true }
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['title']).to eq('Test')
@@ -3194,7 +3210,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       allow(pipeline).to receive(:active?).and_return(true)
       project.update_attribute(:only_allow_merge_if_pipeline_succeeds, true)
 
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: { merge_when_pipeline_succeeds: true }
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['title']).to eq('Test')
@@ -3310,7 +3326,17 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       expect(response).to have_gitlab_http_status(:ok)
     end
 
-    it_behaves_like 'merging with auto merge strategies'
+    context 'when the deprecated merge_when_pipeline_succeeds param is used' do
+      let(:params) { { merge_when_pipeline_succeeds: true } }
+
+      it_behaves_like 'merging with auto merge strategies'
+    end
+
+    context 'when the new auto_merge param is used' do
+      let(:params) { { auto_merge: true } }
+
+      it_behaves_like 'merging with auto merge strategies'
+    end
 
     it 'enables auto merge if the MR is not mergeable and only_allow_merge_if_pipeline_succeeds is true' do
       allow_any_instance_of(MergeRequest)

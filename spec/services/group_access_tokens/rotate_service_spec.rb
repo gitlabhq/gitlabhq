@@ -7,6 +7,10 @@ RSpec.describe GroupAccessTokens::RotateService, feature_category: :system_acces
     let_it_be(:group) { create(:group) }
     let_it_be(:token, reload: true) { create(:resource_access_token, resource: group) }
 
+    before_all do
+      token.user.members.first.update!(expires_at: token.expires_at)
+    end
+
     subject(:response) { described_class.new(current_user, token, group).execute }
 
     shared_examples_for 'rotates the token successfully' do
@@ -19,6 +23,15 @@ RSpec.describe GroupAccessTokens::RotateService, feature_category: :system_acces
         expect(new_token.expires_at).to eq(1.week.from_now.to_date)
         expect(new_token.user).to eq(token.user)
         expect(new_token.user.members.first.reload.expires_at).to be_nil
+      end
+
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'rotate_grat' }
+        let(:category) { described_class.name }
+        let(:user) { token.user }
+        let(:namespace) { group }
+        let(:project) { nil }
+        subject(:track_event) { response }
       end
     end
 

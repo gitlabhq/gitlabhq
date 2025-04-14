@@ -23,6 +23,9 @@ module Resolvers
       def resolve(**args)
         finder = Issuable::DiscussionsListService.new(current_user, work_item, params(args))
 
+        # precompute noteable_url once so that it is reused for all notes
+        context.scoped_set!(:noteable_url, ::Gitlab::UrlBuilder.build(object.work_item))
+
         Gitlab::Graphql::ExternallyPaginatedArray.new(
           finder.paginator.cursor_for_previous_page,
           finder.paginator.cursor_for_next_page,

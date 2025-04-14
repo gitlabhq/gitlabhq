@@ -12,7 +12,7 @@ module Uploads
 
     def delete_keys_async(keys_to_delete)
       keys_to_delete.each_slice(BATCH_SIZE) do |batch|
-        DeleteStoredFilesWorker.perform_async(self.class, batch)
+        DeleteStoredFilesWorker.perform_async(self.class.name, batch)
       end
     end
   end

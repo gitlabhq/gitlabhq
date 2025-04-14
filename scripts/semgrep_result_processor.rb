@@ -3,20 +3,27 @@
 require 'json'
 require 'net/http'
 require 'uri'
+require_relative '../gems/gitlab-utils/lib/gitlab/utils/strong_memoize'
 
 # rubocop:disable Layout/LineLength -- we need to construct the URLs
 
 class SemgrepResultProcessor
+  include Gitlab::Utils::StrongMemoize
+
   ALLOWED_PROJECT_DIRS = %w[/builds/gitlab-org/gitlab].freeze
   ALLOWED_API_URLS = %w[https://gitlab.com/api/v4].freeze
-
   UNIQUE_COMMENT_RULES_IDS = %w[builds.sast-custom-rules.appsec-pings.glappsec_ci-job-token builds.sast-custom-rules.secure-coding-guidelines.ruby.glappsec_insecure-regex].freeze
-  # Remove this when the feature is fully working
+  APPSEC_HANDLE = "@gitlab-com/gl-security/appsec"
+
+  MESSAGE_SCG_PING_APPSEC = "#{APPSEC_HANDLE} please review this finding, which is a potential violation of [GitLab's secure coding guidelines](https://docs.gitlab.com/development/secure_coding_guidelines/).".freeze
+  MESSAGE_S1_PING_APPSEC = "#{APPSEC_HANDLE} please review this finding. This MR potentially reintroduces code from a past S1 issue.".freeze
+  MESSAGE_PING_APPSEC = "#{APPSEC_HANDLE} please review this finding.".freeze
+
   MESSAGE_FOOTER = <<~FOOTER
 
 
     <small>
-    This AppSec automation is currently under testing.
+    This automation belongs to AppSec.
     Use ~"appsec-sast::helpful" or ~"appsec-sast::unhelpful" for quick feedback.
     To stop the bot from further commenting, you can use the ~"appsec-sast::stop" label.
     For any detailed feedback, [add a comment here](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/issues/38).
@@ -32,8 +39,8 @@ class SemgrepResultProcessor
     perform_allowlist_check
     semgrep_results = get_sast_results
     unique_results = filter_duplicate_findings(semgrep_results)
-    if sast_stop_label_present?
-      puts "Not adding comments for this MR as it has the appsec-sast::stop label. Here are the new unique findings that would have otherwise been posted: #{unique_results}"
+    if sast_stop_label_present? || pipeline_tier_three_label_present?
+      puts "Not adding comments for this MR as it has the appsec-sast::stop / pipeline::tier-3 label. Here are the new unique findings that would have otherwise been posted: #{unique_results}"
       return
     end
 
@@ -129,8 +136,18 @@ class SemgrepResultProcessor
       message_header = "<!-- #{header_information} -->"
       new_line = finding[:line]
       message = finding[:message]
+      check_id = finding[:check_id]
       uri = URI.parse("#{ENV['CI_API_V4_URL']}/projects/#{ENV['CI_MERGE_REQUEST_PROJECT_ID']}/merge_requests/#{ENV['CI_MERGE_REQUEST_IID']}/discussions")
-      message_from_bot = "#{message_header}\n#{message}\n#{MESSAGE_FOOTER}"
+      suffix = if check_id&.start_with?("builds.sast-custom-rules.secure-coding-guidelines")
+                 "\n#{MESSAGE_SCG_PING_APPSEC}"
+               elsif check_id&.start_with?("builds.sast-custom-rules.s1")
+                 "\n#{MESSAGE_S1_PING_APPSEC}"
+               else
+                 "\n#{MESSAGE_PING_APPSEC}"
+               end
+
+      message_from_bot = "#{message_header}\n#{message}#{suffix}\n#{MESSAGE_FOOTER}"
+
       request = Net::HTTP::Post.new(uri)
       request["PRIVATE-TOKEN"] = ENV['CUSTOM_SAST_RULES_BOT_PAT']
       request.set_form_data(
@@ -148,20 +165,48 @@ class SemgrepResultProcessor
         http.request(request)
       end
 
-      # if response is not 201, exit with error
-      next if response.instance_of?(Net::HTTPCreated)
+      if response.instance_of?(Net::HTTPCreated)
+        apply_label
+        next
+      end
 
       puts "Failed to post inline comment with status code #{response.code}: #{response.body}. Posting normal comment instead."
       post_comment message_from_bot
     end
   end
 
+  private
+
   def sast_stop_label_present?
-    labels = ENV['CI_MERGE_REQUEST_LABELS'] || ""
-    labels.split(',').map(&:strip).include?('appsec-sast::stop')
+    stripped_labels.include?('appsec-sast::stop')
   end
 
-  private
+  def pipeline_tier_three_label_present?
+    stripped_labels.include?('pipeline::tier-3')
+  end
+
+  def stripped_labels
+    labels = ENV['CI_MERGE_REQUEST_LABELS'] || ""
+    labels.split(',').map(&:strip)
+  end
+  strong_memoize_attr :stripped_labels
+
+  def apply_label
+    uri = URI.parse("#{ENV['CI_API_V4_URL']}/projects/#{ENV['CI_MERGE_REQUEST_PROJECT_ID']}/merge_requests/#{ENV['CI_MERGE_REQUEST_IID']}")
+    request = Net::HTTP::Put.new(uri)
+    request["PRIVATE-TOKEN"] = ENV['CUSTOM_SAST_RULES_BOT_PAT']
+    request.set_form_data(
+      "add_labels" => "appsec-sast-ping::unresolved"
+    )
+
+    response = Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http|
+      http.request(request)
+    end
+
+    return if response.instance_of?(Net::HTTPOK)
+
+    puts "Failed to apply labels with status code #{response.code}: #{response.body}"
+  end
 
   def get_existing_comments
     # Retrieve existing comments on the merge request

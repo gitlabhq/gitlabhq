@@ -4,39 +4,94 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { logError } from '~/lib/logger';
+import { visitUrl } from '~/lib/utils/url_utility';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { createAlert } from '~/alert';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { InternalEvents } from '~/tracking';
 import WebIdeLink from 'ee_else_ce/vue_shared/components/web_ide_link.vue';
 import { resetShortcutsForTests } from '~/behaviors/shortcuts';
 import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
+import OverflowMenu from 'ee_else_ce/repository/components/header_area/blob_overflow_menu.vue';
 import BlobControls from '~/repository/components/header_area/blob_controls.vue';
 import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql';
 import userGitpodInfo from '~/repository/queries/user_gitpod_info.query.graphql';
+import applicationInfoQuery from '~/blob/queries/application_info.query.graphql';
 import createRouter from '~/repository/router';
 import { updateElementsVisibility } from '~/repository/utils/dom';
-import OverflowMenu from '~/repository/components/header_area/blob_overflow_menu.vue';
 import OpenMrBadge from '~/repository/components/header_area/open_mr_badge.vue';
-import { blobControlsDataMock, refMock, currentUserDataMock } from '../../mock_data';
+import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
+import {
+  blobControlsDataMock,
+  refMock,
+  currentUserDataMock,
+  applicationInfoMock,
+} from '../../mock_data';
 
 Vue.use(VueApollo);
 jest.mock('~/repository/utils/dom');
 jest.mock('~/behaviors/shortcuts/shortcuts_blob');
 jest.mock('~/blob/blob_line_permalink_updater');
+jest.mock('~/alert');
+jest.mock('~/lib/logger');
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrl: jest.fn(),
+}));
+jest.mock('~/lib/utils/common_utils', () => ({
+  isLoggedIn: jest.fn().mockReturnValue(true),
+}));
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('Blob controls component', () => {
   let router;
   let wrapper;
   let fakeApollo;
 
+  const blobControlsSuccessResolver = jest.fn().mockResolvedValue({
+    data: { project: blobControlsDataMock },
+  });
+  const blobControlsErrorResolver = jest.fn().mockRejectedValue(new Error('Request failed'));
+  const overrideBlobControlsResolver = (blobControlsOverrides = {}) => {
+    return jest.fn().mockResolvedValue({
+      data: {
+        project: {
+          ...blobControlsDataMock,
+          repository: {
+            ...blobControlsDataMock.repository,
+            blobs: {
+              ...blobControlsDataMock.repository.blobs,
+              nodes: [
+                { ...blobControlsDataMock.repository.blobs.nodes[0], ...blobControlsOverrides },
+              ],
+            },
+          },
+        },
+      },
+    });
+  };
+
+  const currentUserSuccessResolver = jest
+    .fn()
+    .mockResolvedValue({ data: { currentUser: currentUserDataMock } });
+  const currentUserErrorResolver = jest.fn().mockRejectedValue(new Error('Request failed'));
+
+  const applicationInfoSuccessResolver = jest.fn().mockResolvedValue({
+    data: { ...applicationInfoMock },
+  });
+  const applicationInfoErrorResolver = jest.fn().mockRejectedValue(new Error('Request failed'));
+
   const createComponent = async ({
     props = {},
-    blobInfoOverrides = {},
+    blobControlsResolver = blobControlsSuccessResolver,
+    currentUserResolver = currentUserSuccessResolver,
+    applicationInfoResolver = applicationInfoSuccessResolver,
     glFeatures = { blobOverflowMenu: false },
     routerOverride = {},
   } = {}) => {
-    Vue.use(VueApollo);
-
     const projectPath = 'some/project';
     router = createRouter(projectPath, refMock);
 
@@ -46,30 +101,12 @@ describe('Blob controls component', () => {
       ...routerOverride,
     });
 
-    const blobControlsMockResolver = jest.fn().mockResolvedValue({
-      data: {
-        project: {
-          ...blobControlsDataMock,
-          repository: {
-            ...blobControlsDataMock.repository,
-            blobs: {
-              ...blobControlsDataMock.repository.blobs,
-              nodes: [{ ...blobControlsDataMock.repository.blobs.nodes[0], ...blobInfoOverrides }],
-            },
-          },
-        },
-      },
-    });
-
-    const currentUserMockResolver = jest
-      .fn()
-      .mockResolvedValue({ data: { currentUser: currentUserDataMock } });
-
     await resetShortcutsForTests();
 
     fakeApollo = createMockApollo([
-      [blobControlsQuery, blobControlsMockResolver],
-      [userGitpodInfo, currentUserMockResolver],
+      [blobControlsQuery, blobControlsResolver],
+      [userGitpodInfo, currentUserResolver],
+      [applicationInfoQuery, applicationInfoResolver],
     ]);
 
     wrapper = shallowMountExtended(BlobControls, {
@@ -78,7 +115,6 @@ describe('Blob controls component', () => {
       provide: {
         glFeatures,
         currentRef: refMock,
-        gitpodEnabled: true,
       },
       propsData: {
         projectPath,
@@ -87,9 +123,9 @@ describe('Blob controls component', () => {
         refType: 'heads',
         ...props,
       },
-      mixins: [{ data: () => ({ ref: refMock }) }, glFeatureFlagMixin()],
+      mixins: [{ data: () => ({ ref: refMock }) }, glFeatureFlagMixin(), InternalEvents.mixin()],
       stubs: {
-        WebIdeLink: false,
+        WebIdeLink,
       },
     });
 
@@ -101,10 +137,12 @@ describe('Blob controls component', () => {
   const findBlameButton = () => wrapper.findByTestId('blame');
   const findPermalinkButton = () => wrapper.findByTestId('permalink');
   const findWebIdeLink = () => wrapper.findComponent(WebIdeLink);
+  const findForkSuggestionModal = () => wrapper.findComponent(ForkSuggestionModal);
   const findOverflowMenu = () => wrapper.findComponent(OverflowMenu);
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   beforeEach(async () => {
+    createAlert.mockClear();
     await createComponent();
   });
 
@@ -154,6 +192,27 @@ describe('Blob controls component', () => {
     expect(BlobLinePermalinkUpdater).toHaveBeenCalled();
   });
 
+  describe('Error handling', () => {
+    it.each`
+      scenario                   | resolverParam                                                | loggedError
+      ${'blobControls query'}    | ${{ blobControlsResolver: blobControlsErrorResolver }}       | ${'Failed to fetch blob controls. See exception details for more information.'}
+      ${'currentUser query'}     | ${{ currentUserResolver: currentUserErrorResolver }}         | ${'Failed to fetch current user. See exception details for more information.'}
+      ${'applicationInfo query'} | ${{ applicationInfoResolver: applicationInfoErrorResolver }} | ${'Failed to fetch application info. See exception details for more information.'}
+    `(
+      'renders an alert and logs the error if the $scenario fails',
+      async ({ resolverParam, loggedError }) => {
+        const mockError = new Error('Request failed');
+        await createComponent(resolverParam);
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'An error occurred while loading the blob controls.',
+        });
+        expect(logError).toHaveBeenCalledWith(loggedError, mockError);
+        expect(Sentry.captureException).toHaveBeenCalledWith(mockError);
+      },
+    );
+  });
+
   describe('MR badge', () => {
     it('should render the badge if `filter_blob_path` flag is on', async () => {
       await createComponent({ glFeatures: { filterBlobPath: true } });
@@ -174,9 +233,9 @@ describe('Blob controls component', () => {
     });
 
     it('triggers a `focusSearchFile` shortcut when the findFile button is clicked', () => {
-      const findFileButton = findFindButton();
       jest.spyOn(Shortcuts, 'focusSearchFile').mockResolvedValue();
-      findFileButton.vm.$emit('click');
+
+      findFindButton().vm.$emit('click');
 
       expect(Shortcuts.focusSearchFile).toHaveBeenCalled();
     });
@@ -187,7 +246,11 @@ describe('Blob controls component', () => {
 
       findFindButton().vm.$emit('click');
 
-      expect(trackEventSpy).toHaveBeenCalledWith('click_find_file_button_on_repository_pages');
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'click_find_file_button_on_repository_pages',
+        {},
+        undefined,
+      );
     });
   });
 
@@ -197,15 +260,18 @@ describe('Blob controls component', () => {
     });
 
     it('does not render blame button when blobInfo.storedExternally is true', async () => {
-      await createComponent({ blobInfoOverrides: { storedExternally: true } });
+      const blobOverwriteResolver = overrideBlobControlsResolver({ storedExternally: true });
+      await createComponent({ blobControlsResolver: blobOverwriteResolver });
 
       expect(findBlameButton().exists()).toBe(false);
     });
 
     it('does not render blame button when blobInfo.externalStorage is "lfs"', async () => {
-      await createComponent({
-        blobInfoOverrides: { storedExternally: true, externalStorage: 'lfs' },
+      const blobOverwriteResolver = overrideBlobControlsResolver({
+        storedExternally: true,
+        externalStorage: 'lfs',
       });
+      await createComponent({ blobControlsResolver: blobOverwriteResolver });
 
       expect(findBlameButton().exists()).toBe(false);
     });
@@ -214,6 +280,14 @@ describe('Blob controls component', () => {
       await createComponent({}, { storedExternally: false, externalStorage: null });
 
       expect(findBlameButton().exists()).toBe(true);
+    });
+
+    it('calls trackEvent method when clicked on blame button', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findBlameButton().vm.$emit('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith('click_blame_control_on_blob_page', {}, undefined);
     });
   });
 
@@ -230,42 +304,125 @@ describe('Blob controls component', () => {
       await createComponent({ glFeatures: { blobOverflowMenu: true } });
     });
 
+    describe('Find file button', () => {
+      it('does not render on mobile layout', () => {
+        expect(findFindButton().classes()).toContain('gl-hidden', 'sm:gl-inline-flex');
+      });
+    });
+
+    describe('Blame button', () => {
+      it('does not render on mobile layout', () => {
+        expect(findBlameButton().classes()).toContain('gl-hidden', 'sm:gl-inline-flex');
+      });
+    });
+
     describe('WebIdeLink component', () => {
       it('renders the WebIdeLink component with the correct props', () => {
         expect(findWebIdeLink().props()).toMatchObject({
           showEditButton: false,
-          editUrl: 'edit/blob/path/file.js',
-          webIdeUrl: 'ide/blob/path/file.js',
+          editUrl: 'https://edit/blob/path/file.js',
+          webIdeUrl: 'https://ide/blob/path/file.js',
           needsToFork: false,
           needsToForkWithWebIde: false,
           showPipelineEditorButton: true,
           pipelineEditorUrl: 'pipeline/editor/path/file.yml',
           gitpodUrl: 'gitpod/blob/url/file.js',
-          showGitpodButton: true,
-          gitpodEnabled: true,
+          isGitpodEnabledForInstance: true,
+          isGitpodEnabledForUser: true,
         });
       });
 
       it('does not render WebIdeLink component if file is archived', async () => {
+        const blobOverwriteResolver = overrideBlobControlsResolver({
+          ...blobControlsDataMock.repository.blobs.nodes[0],
+          archived: true,
+        });
         await createComponent({
-          blobInfoOverrides: {
-            ...blobControlsDataMock.repository.blobs.nodes[0],
-            archived: true,
-          },
+          blobControlsResolver: blobOverwriteResolver,
           glFeatures: { blobOverflowMenu: true },
         });
+
         expect(findWebIdeLink().exists()).toBe(false);
       });
 
       it('does not render WebIdeLink component if file is not editable', async () => {
+        const blobOverwriteResolver = overrideBlobControlsResolver({
+          ...blobControlsDataMock.repository.blobs.nodes[0],
+          editBlobPath: '',
+        });
         await createComponent({
-          blobInfoOverrides: {
-            ...blobControlsDataMock.repository.blobs.nodes[0],
-            editBlobPath: '',
-          },
+          blobControlsResolver: blobOverwriteResolver,
           glFeatures: { blobOverflowMenu: true },
         });
+
         expect(findWebIdeLink().exists()).toBe(false);
+      });
+
+      describe('when can modify blob', () => {
+        it('redirects to WebIDE to edit the file', async () => {
+          findWebIdeLink().vm.$emit('edit', 'ide');
+          await nextTick();
+
+          expect(visitUrl).toHaveBeenCalledWith('https://ide/blob/path/file.js');
+          expect(findForkSuggestionModal().props('visible')).toBe(false);
+        });
+
+        it('redirects to single file editor to edit the file', async () => {
+          findWebIdeLink().vm.$emit('edit', 'simple');
+          await nextTick();
+
+          expect(visitUrl).toHaveBeenCalledWith('https://edit/blob/path/file.js');
+          expect(findForkSuggestionModal().props('visible')).toBe(false);
+        });
+      });
+
+      describe('when user cannot modify blob', () => {
+        it('changes ForkSuggestionModal visibility', async () => {
+          const blobControlsForForkResolver = jest.fn().mockResolvedValue({
+            data: {
+              project: {
+                ...blobControlsDataMock,
+                userPermissions: {
+                  ...blobControlsDataMock.userPermissions,
+                  pushCode: false,
+                  createMergeRequestIn: true,
+                },
+                repository: {
+                  ...blobControlsDataMock.repository,
+                  blobs: {
+                    ...blobControlsDataMock.repository.blobs,
+                    nodes: [
+                      {
+                        ...blobControlsDataMock.repository.blobs.nodes[0],
+                        canModifyBlob: false,
+                        canModifyBlobWithWebIde: false,
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+          });
+          await createComponent({
+            blobControlsResolver: blobControlsForForkResolver,
+            glFeatures: { blobOverflowMenu: true },
+          });
+
+          findWebIdeLink().vm.$emit('edit', 'simple');
+          await nextTick();
+
+          expect(findForkSuggestionModal().props('visible')).toBe(true);
+        });
+      });
+    });
+
+    describe('ForkSuggestionModal component', () => {
+      it('renders ForkSuggestionModal', () => {
+        expect(findForkSuggestionModal().exists()).toBe(true);
+        expect(findForkSuggestionModal().props()).toMatchObject({
+          visible: false,
+          forkPath: 'fork/view/path',
+        });
       });
     });
 
@@ -278,17 +435,13 @@ describe('Blob controls component', () => {
           overrideCopy: true,
           isEmptyRepository: false,
           isUsingLfs: false,
-          userPermissions: {
-            __typename: 'ProjectPermissions',
-            createMergeRequestIn: true,
-            downloadCode: true,
-            forkProject: true,
-            pushCode: true,
-          },
+          eeCanLock: undefined,
+          eeCanModifyFile: undefined,
+          eeIsLocked: undefined,
         });
       });
 
-      it('passes the correct isBinaryFileType value to BlobOverflow when viewing a binary file', async () => {
+      it('passes the correct isBinary value to BlobOverflow when viewing a binary file', async () => {
         await createComponent({
           props: {
             isBinary: true,
@@ -306,6 +459,13 @@ describe('Blob controls component', () => {
         findOverflowMenu().vm.$emit('copy');
 
         expect(navigator.clipboard.writeText).toHaveBeenCalledWith('Example raw text content');
+      });
+
+      it('changes ForkSuggestionModal visibility when receives showForkSuggestion event', async () => {
+        findOverflowMenu().vm.$emit('showForkSuggestion');
+        await nextTick();
+
+        expect(findForkSuggestionModal().props('visible')).toBe(true);
       });
     });
   });

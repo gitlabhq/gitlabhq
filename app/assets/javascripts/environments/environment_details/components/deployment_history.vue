@@ -104,9 +104,6 @@ export default {
     isPaginationDisabled() {
       return this.isLoading || this.isPrefetchingPages;
     },
-    pollingInterval() {
-      return this.graphqlEtagKey ? ENVIRONMENT_DETAILS_QUERY_POLLING_INTERVAL : null;
-    },
     isDirectionAscending() {
       return this.sortDirection === DIRECTION_ASCENDING;
     },
@@ -219,6 +216,6 @@ export default {
       <pagination :page-info="pageInfo" :disabled="isPaginationDisabled" />
     </div>
     <empty-state v-if="!isDeploymentTableShown && !isLoading" />
-    <confirm-rollback-modal :environment="environmentToRollback" graphql @rollback="resetPage" />
+    <confirm-rollback-modal :environment="environmentToRollback" @rollback="resetPage" />
   </div>
 </template>

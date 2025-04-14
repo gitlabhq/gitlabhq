@@ -3,6 +3,7 @@ import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import Vue from 'vue';
 import Sortable from 'sortablejs';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import { toggleCheckbox } from '~/behaviors/markdown/utils';
 import TaskListItemActions from '~/issues/show/components/task_list_item_actions.vue';
 import eventHub from '~/issues/show/event_hub';
 import { InternalEvents } from '~/tracking';
@@ -19,7 +20,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import {
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_TASK,
-  WORK_ITEM_TYPE_VALUE_EPIC,
+  WORK_ITEM_TYPE_NAME_EPIC,
 } from '../constants';
 
 const trackingMixin = InternalEvents.mixin();
@@ -89,7 +90,7 @@ export default {
   },
   computed: {
     childItemType() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC
         ? WORK_ITEM_TYPE_ENUM_ISSUE
         : WORK_ITEM_TYPE_ENUM_TASK;
     },
@@ -312,22 +313,11 @@ export default {
 
         if (!sourcepos) return;
 
-        const [startRange] = sourcepos.split('-');
-        let [startRow] = startRange.split(':');
-        startRow = Number(startRow) - 1;
-
-        const descriptionTextRows = this.descriptionText.split('\n');
-        const newDescriptionText = descriptionTextRows
-          .map((row, index) => {
-            if (startRow === index) {
-              if (target.checked) {
-                return row.replace(/\[ \]/, '[x]');
-              }
-              return row.replace(/\[[x~]\]/i, '[ ]');
-            }
-            return row;
-          })
-          .join('\n');
+        const newDescriptionText = toggleCheckbox({
+          rawMarkdown: this.descriptionText,
+          sourcepos,
+          checkboxChecked: target.checked,
+        });
 
         this.$emit('descriptionUpdated', newDescriptionText);
       }
@@ -392,7 +382,7 @@ export default {
       :show-project-selector="isGroup"
       :title="childTitle"
       :visible="visible"
-      :work-item-type-name="childItemType"
+      :preselected-work-item-type="childItemType"
       @hideModal="visible = false"
       @workItemCreated="handleWorkItemCreated"
     />

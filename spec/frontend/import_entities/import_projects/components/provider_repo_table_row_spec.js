@@ -1,4 +1,4 @@
-import { GlBadge, GlButton } from '@gitlab/ui';
+import { GlBadge, GlButton, GlModal } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
@@ -45,6 +45,7 @@ describe('ProviderRepoTableRow', () => {
   const findImportStatus = () => wrapper.findComponent(ImportStatus);
   const findProviderLink = () => wrapper.findByTestId('provider-link');
   const findMembershipsWarning = () => wrapper.findByTestId('memberships-warning');
+  const findGlModal = () => wrapper.findComponent(GlModal);
 
   const findCancelButton = () => {
     const buttons = wrapper
@@ -107,11 +108,43 @@ describe('ProviderRepoTableRow', () => {
       it('shows memberships warning', () => {
         expect(findMembershipsWarning().isVisible()).toBe(true);
       });
+
+      it('shows modal with warning message when import button is clicked', async () => {
+        findImportButton().vm.$emit('click');
+        await nextTick();
+
+        const modal = findGlModal();
+        expect(modal.props('title')).toBe(
+          'Are you sure you want to import the project to a personal namespace?',
+        );
+        expect(modal.text()).toContain(
+          'Importing a project into a personal namespace results in all contributions being mapped to the same bot user and they cannot be reassigned. To map contributions to actual users, import the project to a group instead.',
+        );
+      });
+
+      it('triggers import when clicking modal primary button', async () => {
+        findImportButton().vm.$emit('click');
+        await nextTick();
+
+        findGlModal().vm.$emit('primary');
+
+        expect(fetchImport).toHaveBeenCalledWith(expect.anything(), {
+          repoId: repo.importSource.id,
+          optionalStages: {},
+        });
+      });
     });
 
     describe('when group namespace is selected as import target', () => {
       it('does not show memberships warning', () => {
         expect(findMembershipsWarning().isVisible()).toBe(false);
+      });
+
+      it('does not show modal when import button is clicked', async () => {
+        findImportButton().vm.$emit('click');
+        await nextTick();
+
+        expect(findGlModal().exists()).toBe(false);
       });
     });
 

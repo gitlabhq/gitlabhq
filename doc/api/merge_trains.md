@@ -238,9 +238,10 @@ Supported attributes:
 |--------------------------|----------------|----------|-------------|
 | `id`                     | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `merge_request_iid`      | integer        | Yes      | The internal ID of the merge request. |
+| `auto_merge`             | boolean        | No       | If true, the merge request is added to the merge train when the checks pass. When false or unspecified, the merge request is added directly to the merge train. |
 | `sha`                    | string         | No       | If present, the SHA must match the `HEAD` of the source branch, otherwise the merge fails. |
 | `squash`                 | boolean        | No       | If true, the commits are squashed into a single commit on merge. |
-| `when_pipeline_succeeds` | boolean        | No       | If true, the merge request is added to the merge train when the pipeline succeeds. When false or unspecified, the merge request is added directly to the merge train. |
+| `when_pipeline_succeeds` | boolean        | No       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/521290) in GitLab 17.11. Use `auto_merge` instead. |
 
 Example request:
 

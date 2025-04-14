@@ -84,7 +84,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
     end
   end
 
-  context 'when provided interpolation argument is invalid' do
+  context 'when provided interpolation arguments are not a hash' do
     let(:header) do
       { spec: { inputs: { website: nil } } }
     end
@@ -94,7 +94,28 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
     end
 
     let(:arguments) do
-      { website: ['gitlab.com'] }
+      'invalid'
+    end
+
+    it 'returns an error' do
+      subject.interpolate!
+
+      expect(subject).not_to be_valid
+      expect(subject.errors).to include 'Given inputs must be a hash'
+    end
+  end
+
+  context 'when provided interpolation argument is invalid' do
+    let(:header) do
+      { spec: { inputs: { number_of_deploy: { type: 'number' } } } }
+    end
+
+    let(:content) do
+      { test: 'deploy $[[ inputs.number_of_deploy ]]' }
+    end
+
+    let(:arguments) do
+      { number_of_deploy: 'hello' }
     end
 
     it 'returns an error' do
@@ -102,7 +123,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
 
       expect(subject).not_to be_valid
       expect(subject.error_message).to eq subject.errors.first
-      expect(subject.errors).to include '`website` input: provided value is not a string'
+      expect(subject.errors).to include '`number_of_deploy` input: provided value is not a number'
     end
   end
 

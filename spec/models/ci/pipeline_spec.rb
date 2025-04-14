@@ -272,12 +272,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         cancel!: 'canceled'
       }.each do |pipeline_event, status|
         context "when transitioning to #{status}" do
-          it_behaves_like 'internal event tracking' do
-            let(:event) { 'completed_pipeline_execution' }
-            let(:additional_properties) { { label: status } }
-            let(:category) { described_class.name }
-
-            subject(:completed_pipeline) { pipeline.public_send(pipeline_event) }
+          it "triggers an internal event" do
+            expect { pipeline.public_send(pipeline_event) }.to trigger_internal_events('completed_pipeline_execution')
+              .with(
+                project: project,
+                user: user,
+                additional_properties: { label: status }
+              )
           end
         end
       end
@@ -288,23 +289,34 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     describe '.track_ci_pipeline_created_event' do
       let(:pipeline) { build(:ci_pipeline, user: user) }
 
-      it_behaves_like 'internal event tracking' do
-        let(:event) { 'create_ci_internal_pipeline' }
-        let(:additional_properties) do
-          {
-            label: 'push',
-            property: 'unknown_source'
-          }
-        end
-
-        subject { pipeline.save! }
+      it "triggers an internal event" do
+        expect { pipeline.save! }.to trigger_internal_events('create_ci_internal_pipeline').with(
+          category: 'InternalEventTracking',
+          project: project,
+          user: user,
+          additional_properties: { label: 'push', property: 'unknown_source' }
+        )
       end
 
       context 'when pipeline is external' do
         let(:pipeline) { build(:ci_pipeline, source: :external) }
 
-        it_behaves_like 'internal event not tracked' do
-          subject { pipeline.save! }
+        it "doesn't trigger an internal event" do
+          expect { pipeline.save! }.to not_trigger_internal_events('create_ci_internal_pipeline')
+        end
+      end
+    end
+  end
+
+  describe '.trigger_pipeline_status_change_subscription' do
+    let(:pipeline) { build(:ci_pipeline, user: user) }
+
+    %w[run! succeed! drop! skip! cancel! block! delay!].each do |action|
+      context "when pipeline receives #{action} event" do
+        it 'triggers GraphQL subscription ciPipelineStatusUpdated' do
+          expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
+
+          pipeline.public_send(action)
         end
       end
     end
@@ -2303,18 +2315,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
-    describe 'pipeline status update subscription trigger' do
-      %w[run! succeed! drop! skip! cancel! block! delay!].each do |action|
-        context "when pipeline receives #{action} event" do
-          it 'triggers GraphQL subscription ciPipelineStatusUpdated' do
-            expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
-
-            pipeline.public_send(action)
-          end
-        end
-      end
-    end
-
     def create_build(name, *traits, queued_at: current, started_from: 0, **opts)
       create(
         :ci_build, *traits,
@@ -2327,28 +2327,33 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe '#ensure_persistent_ref' do
-    subject { pipeline.ensure_persistent_ref }
-
+  describe '#ensure_persistent_ref', :use_clean_rails_memory_store_caching do
     let(:pipeline) { create(:ci_pipeline, project: project) }
 
-    context 'when the persistent ref does not exist' do
-      it 'creates a ref' do
-        expect(pipeline.persistent_ref).to receive(:create).once
+    it 'creates persistent ref' do
+      expect { pipeline.ensure_persistent_ref }
+        .to change { pipeline.persistent_ref.exist? }.from(false).to(true)
+        .and not_change { pipeline.status }
+    end
 
-        subject
+    context 'when persistent ref is already created' do
+      before do
+        pipeline.persistent_ref.create # rubocop:disable Rails/SaveBang -- not ActiveRecord
+      end
+
+      it 'does not create persistent ref' do
+        expect { pipeline.ensure_persistent_ref }
+          .to not_change { pipeline.persistent_ref.exist? }.from(true)
+          .and not_change { pipeline.status }
       end
     end
 
-    context 'when the persistent ref exists' do
-      before do
-        pipeline.persistent_ref.create # rubocop:disable Rails/SaveBang
-      end
-
-      it 'does not create a ref' do
-        expect(pipeline.persistent_ref).not_to receive(:create)
-
-        subject
+    context 'when persistent ref creation raises error' do
+      it 'drops the pipeline' do
+        expect(pipeline.persistent_ref).to receive(:create_ref).and_raise('Error')
+        expect { pipeline.ensure_persistent_ref }
+          .to not_change { pipeline.persistent_ref.exist? }.from(false)
+          .and change { pipeline.status }.to('failed')
       end
     end
   end
@@ -5824,8 +5829,9 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
   context 'loose foreign key on ci_pipelines.user_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
-      let!(:model) { create(:ci_pipeline, user: create(:user)) }
-      let!(:parent) { model.user }
+      let(:lfk_column) { :user_id }
+      let_it_be(:model) { create(:ci_pipeline, user: create(:user)) }
+      let_it_be(:parent) { model.user }
     end
   end
 

@@ -1,0 +1,12 @@
+---
+table_name: organization_push_rules
+classes:
+- OrganizationPushRule
+feature_categories:
+- source_code_management
+description: Store push rules for organizations
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186740
+milestone: '17.11'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  organization_id: organizations

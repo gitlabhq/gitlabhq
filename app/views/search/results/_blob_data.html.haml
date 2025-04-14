@@ -1,11 +1,12 @@
 .js-blob-result.gl-mt-3.gl-mb-5{ data: { testid: 'result-item-content' } }
   .file-holder.file-holder-top-border
     .js-file-title.file-title{ data: { testid: 'file-title-content' } }
-      = link_to blob_link, data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position } do
-        = sprite_icon('document')
-        %strong.gl-text-strong
-          = search_blob_title(project, path)
+      = link_to blob_link, class: 'gl-font-bold !gl-text-link', data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position } do
+        = path
       = copy_file_path_button(path)
+      - unless @project
+        %br
+        = link_to project.full_name, project_path(project), class: 'gl-text-sm !gl-text-subtle'
     - if blob.data
       - if blob.data.size > 0
         .file-content.code.term{ data: { testid: 'file-text-content' } }

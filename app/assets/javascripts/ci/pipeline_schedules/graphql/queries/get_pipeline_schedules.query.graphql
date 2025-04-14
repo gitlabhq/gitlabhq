@@ -60,6 +60,12 @@ query getPipelineSchedulesQuery(
           name
           webPath
         }
+        inputs {
+          nodes {
+            name
+            value
+          }
+        }
         variables {
           nodes {
             id

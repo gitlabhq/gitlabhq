@@ -229,8 +229,7 @@ scheduled after the background migration has completed, which could be several r
          queue_batched_background_migration(
            MIGRATION,
            :merge_request_diffs,
-           :id,
-           job_interval: DELAY_INTERVAL
+           :id
          )
        end
 

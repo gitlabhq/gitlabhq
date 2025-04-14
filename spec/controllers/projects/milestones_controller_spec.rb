@@ -68,11 +68,11 @@ RSpec.describe Projects::MilestonesController, feature_category: :team_planning 
     context "as html" do
       def render_index(project:, page:, search_title: '')
         get :index, params: {
-                      namespace_id: project.namespace.id,
-                      project_id: project.id,
-                      search_title: search_title,
-                      page: page
-                    }
+          namespace_id: project.namespace.id,
+          project_id: project.id,
+          search_title: search_title,
+          page: page
+        }
       end
 
       it "queries only projects milestones" do

@@ -225,7 +225,7 @@ Payload example:
 {{< history >}}
 
 - `type` attribute in `object_attributes` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467415) in GitLab 17.2.
-- Support for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13056) in GitLab 17.3. Your administrator must have [enabled the new look for epics](../../group/epics/epic_work_items.md).
+- Support for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13056) in GitLab 17.3. [The new look for epics](../../group/epics/epic_work_items.md) must be enabled.
 
 {{< /history >}}
 
@@ -1496,8 +1496,11 @@ Payload example:
   "build_stage": "test",
   "build_status": "created",
   "build_created_at": "2021-02-23T02:41:37.886Z",
+  "build_created_at_iso": "2021-02-23T02:41:37Z",
   "build_started_at": null,
+  "build_started_at_iso": null,
   "build_finished_at": null,
+  "build_finished_at_iso": null,
   "build_duration": null,
   "build_queued_duration": 1095.588715, // duration in seconds
   "build_allow_failure": false,
@@ -1522,7 +1525,9 @@ Payload example:
     "status": "created",
     "duration": null,
     "started_at": null,
-    "finished_at": null
+    "started_at_iso": null,
+    "finished_at": null,
+    "finished_at_iso": null
   },
   "repository": {
     "name": "gitlab_test",
@@ -2369,6 +2374,7 @@ Payload example for group:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169701) in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `vulnerabilities_as_webhook_events`. Disabled by default.
 - Creating an event when a vulnerability is created or when an issue is linked to a vulnerability [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176064) in GitLab 17.8.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/528397) in GitLab 17.11. Feature flag `vulnerabilities_as_webhook_events` removed.
 
 {{< /history >}}
 

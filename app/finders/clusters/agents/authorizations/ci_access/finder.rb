@@ -12,8 +12,10 @@ module Clusters
 
           def execute
             # closest, most-specific authorization for a given agent wins
-            (project_authorizations + implicit_authorizations + group_authorizations)
-              .uniq(&:agent_id)
+            authorizations = project_authorizations + implicit_authorizations + group_authorizations
+            authorizations += organization_authorizations if organization_agents_enabled?
+
+            authorizations.uniq(&:agent_id)
           end
 
           private
@@ -75,10 +77,25 @@ module Clusters
             query = query.where(agent_id: agent.id) if agent
             query.to_a
           end
+
+          def organization_authorizations
+            query = Clusters::Agents::Authorizations::CiAccess::OrganizationAuthorization
+              .joins(agent: :project)
+              .preload(agent: :project)
+              .where(cluster_agents: { projects: { organization_id: project.organization_id } })
+              .with_available_ci_access_fields(project)
+
+            query = query.where(agent_id: agent.id) if agent
+            query.to_a
+          end
           # rubocop: enable CodeReuse/ActiveRecord
 
           def all_namespace_ids
             project.root_ancestor.self_and_descendants.select(:id)
+          end
+
+          def organization_agents_enabled?
+            ::Gitlab::CurrentSettings.organization_cluster_agent_authorization_enabled
           end
         end
       end

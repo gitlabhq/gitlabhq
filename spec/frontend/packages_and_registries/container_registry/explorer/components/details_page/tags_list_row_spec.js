@@ -59,7 +59,7 @@ describe('tags list row', () => {
   const findProtectedBadge = () => wrapper.findByTestId('protected-badge');
   const findProtectedPopover = () => wrapper.findByTestId('protected-popover');
 
-  const mountComponent = (propsData = defaultProps, protectedTagsFeatureFlagState = false) => {
+  const mountComponent = (propsData = defaultProps) => {
     wrapper = shallowMountExtended(TagsListRow, {
       stubs: {
         GlSprintf,
@@ -70,11 +70,6 @@ describe('tags list row', () => {
       },
       propsData,
       directives: { GlTooltip: createMockDirective('gl-tooltip') },
-      provide: {
-        glFeatures: {
-          containerRegistryProtectedTags: protectedTagsFeatureFlagState,
-        },
-      },
     });
   };
 
@@ -180,41 +175,35 @@ describe('tags list row', () => {
 
   describe('protected tag', () => {
     it('hidden if tag.protection does not exists', () => {
-      mountComponent(defaultProps, true);
+      mountComponent(defaultProps);
 
       expect(findProtectedBadge().exists()).toBe(false);
     });
 
     it('displays if tag.protection exists', () => {
-      mountComponent(
-        {
-          ...defaultProps,
-          tag: {
-            ...tag,
-            protection: {
-              ...protection,
-            },
+      mountComponent({
+        ...defaultProps,
+        tag: {
+          ...tag,
+          protection: {
+            ...protection,
           },
         },
-        true,
-      );
+      });
 
       expect(findProtectedBadge().exists()).toBe(true);
     });
 
     it('has the correct text for the popover', () => {
-      mountComponent(
-        {
-          ...defaultProps,
-          tag: {
-            ...tag,
-            protection: {
-              ...protection,
-            },
+      mountComponent({
+        ...defaultProps,
+        tag: {
+          ...tag,
+          protection: {
+            ...protection,
           },
         },
-        true,
-      );
+      });
 
       const popoverText = findProtectedPopover().text();
 

@@ -1,5 +1,12 @@
 <script>
-import { GlButton, GlDisclosureDropdownItem, GlLoadingIcon, GlModal, GlLink } from '@gitlab/ui';
+import {
+  GlIcon,
+  GlButton,
+  GlDisclosureDropdownItem,
+  GlLoadingIcon,
+  GlModal,
+  GlLink,
+} from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
 import { __, s__ } from '~/locale';
@@ -13,7 +20,7 @@ import {
   LINKED_CATEGORIES_MAP,
   i18n,
 } from '../constants';
-import { findHierarchyWidgets, findLinkedItemsWidget } from '../utils';
+import { findHierarchyWidget, findLinkedItemsWidget } from '../utils';
 import { updateCountsForParent } from '../graphql/cache_utils';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
@@ -22,6 +29,7 @@ import workItemOpenChildCountQuery from '../graphql/open_child_count.query.graph
 
 export default {
   components: {
+    GlIcon,
     GlButton,
     GlDisclosureDropdownItem,
     GlLoadingIcon,
@@ -141,7 +149,7 @@ export default {
         if (!namespace?.workItem) return 0;
 
         /** @type {Array<{countsByState: { opened : number }}> } */
-        const countsByType = findHierarchyWidgets(namespace.workItem.widgets)?.rolledUpCountsByType;
+        const countsByType = findHierarchyWidget(namespace.workItem)?.rolledUpCountsByType;
 
         if (!countsByType) {
           return 0;
@@ -168,6 +176,9 @@ export default {
           : s__('WorkItem|Comment & reopen %{workItemType}');
       }
       return sprintfWorkItem(baseText, this.workItemType);
+    },
+    toggleWorkItemStateIcon() {
+      return this.isWorkItemOpen ? 'issue-close' : 'issue-open-m';
     },
     tracking() {
       return {
@@ -291,6 +302,7 @@ export default {
           {{ toggleInProgressText }}
         </template>
         <template v-else>
+          <gl-icon :name="toggleWorkItemStateIcon" class="gl-mr-2" variant="subtle" />
           {{ toggleWorkItemStateText }}
         </template>
       </template>

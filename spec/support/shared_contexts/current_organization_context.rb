@@ -2,7 +2,7 @@
 
 # goal of this context: provide an easy process for setting and using the current organization that is set
 # in the middleware for non-feature spec level specs.
-RSpec.shared_context 'with current_organization setting', shared_context: :metadata do # rubocop:disable RSpec/SharedGroupsMetadata -- We are actually using this for easy metadata setting
+RSpec.shared_context 'with current_organization setting' do
   unless method_defined?(:current_organization)
     let_it_be(:current_organization, reload: true) { create(:organization, name: 'Current Organization') }
   end

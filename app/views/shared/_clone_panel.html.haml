@@ -5,7 +5,7 @@
         %span.js-clone-dropdown-label
           = enabled_protocol_button(container, enabled_protocol)
     - else
-      = render Pajamas::ButtonComponent.new(href: '#', button_options: { id: 'clone-dropdown', class: 'input-group-text btn-icon hover:gl-no-underline gl-text-gray-700', data: { toggle: 'dropdown', testid: 'clone-dropdown' } }) do
+      = render Pajamas::ButtonComponent.new(href: '#', button_options: { id: 'clone-dropdown', class: 'input-group-text btn-icon hover:gl-no-underline', data: { toggle: 'dropdown', testid: 'clone-dropdown' } }) do
         %span.js-clone-dropdown-label
           = default_clone_protocol.upcase
         = sprite_icon('chevron-down', css_class: 'gl-icon')

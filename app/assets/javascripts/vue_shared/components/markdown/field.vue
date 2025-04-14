@@ -10,7 +10,6 @@ import axios from '~/lib/utils/axios_utils';
 import { stripHtml } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { MARKDOWN_EDITOR_READY_EVENT } from '~/vue_shared/constants';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
@@ -32,7 +31,6 @@ export default {
     SafeHtml,
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     /**
      * This prop should be bound to the value of the `<textarea>` element
@@ -65,16 +63,6 @@ export default {
       type: Boolean,
       required: false,
       default: true,
-    },
-    addSpacingClasses: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
-    removeBorder: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     supportsQuickActions: {
       type: Boolean,
@@ -196,14 +184,6 @@ export default {
       }
 
       return '';
-    },
-    lineNumber() {
-      let lineNumber;
-      if (this.line) {
-        const { new_line: newLine, old_line: oldLine } = this.line;
-        lineNumber = newLine || oldLine;
-      }
-      return lineNumber;
     },
     lineType() {
       return this.line ? this.line.type : '';

@@ -7,7 +7,7 @@ RSpec.describe 'CiJobTokenScopeAddGroupOrProject', feature_category: :continuous
 
   let_it_be(:project) { create(:project, ci_inbound_job_token_scope_enabled: true) }
 
-  let(:policies) { %w[READ_CONTAINERS] }
+  let(:policies) { %w[READ_DEPLOYMENTS] }
 
   let(:mutation_response) { graphql_mutation_response(:ci_job_token_scope_add_group_or_project) }
 
@@ -82,6 +82,12 @@ RSpec.describe 'CiJobTokenScopeAddGroupOrProject', feature_category: :continuous
 
       expect(mutation_response['errors'])
       .to contain_exactly(::Ci::JobTokenScope::EditScopeValidations::TARGET_DOES_NOT_EXIST)
+    end
+  end
+
+  before do
+    allow_next_found_instance_of(Project) do |project|
+      allow(project).to receive(:job_token_policies_enabled?).and_return(true)
     end
   end
 

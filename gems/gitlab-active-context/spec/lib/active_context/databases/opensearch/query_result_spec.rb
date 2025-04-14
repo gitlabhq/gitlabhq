@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe ActiveContext::Databases::Opensearch::QueryResult do
+  let(:collection) { double(:collection) }
+  let(:user) { double(:user) }
   let(:elasticsearch_result) do
     {
       'hits' => {
@@ -13,7 +15,11 @@ RSpec.describe ActiveContext::Databases::Opensearch::QueryResult do
     }
   end
 
-  subject(:query_result) { described_class.new(elasticsearch_result) }
+  subject(:query_result) { described_class.new(result: elasticsearch_result, collection: collection, user: user) }
+
+  before do
+    allow(collection).to receive_messages(redact_unauthorized_results!: [[], []])
+  end
 
   describe '#count' do
     it 'returns the total number of hits' do

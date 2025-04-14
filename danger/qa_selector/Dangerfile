@@ -49,7 +49,7 @@ if lines_with_testids.any?
   end
 
   markdown(<<~MARKDOWN)
-    If the `e2e:test-on-omnibus` job in the `qa` stage has run automatically, please ensure the tests are passing.
+    If the `e2e:test-on-omnibus-ee` job in the `qa` stage has run automatically, please ensure the tests are passing.
     If the job has not run, please start the `manual:e2e-test-pipeline-generate` job in the `prepare` stage and ensure the tests in `follow-up:e2e:test-on-omnibus-ee` pipeline are passing.
 
     For the list of known failures please refer to [the latest pipeline triage issue](https://gitlab.com/gitlab-org/quality/pipeline-triage/-/issues).
@@ -58,7 +58,7 @@ if lines_with_testids.any?
 
   MARKDOWN
 
-  warn "This merge request contains lines with testid selectors. Please ensure `e2e:test-on-omnibus` job is run."
+  warn "This merge request contains lines with testid selectors. Please ensure `e2e:test-on-omnibus-ee` job is run."
 end
 
 if deprecated_qa_class.any?

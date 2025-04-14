@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :markdown do
   include FilterSpecHelper
+  using RSpec::Parameterized::TableSyntax
 
   it_behaves_like 'default allowlist'
 
@@ -224,12 +225,40 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :markdown d
 
         expect(act.to_html).to eq exp
       end
+    end
 
-      it 'removes class property for non-anchor links' do
-        exp = %q(<a href="#this-is-a-header"></a>)
-        act = filter(%q(<a href="#this-is-a-header" class="some-other-class anchor"></a>))
+    describe 'remove_unsafe_classes' do
+      # rubocop:disable Layout/LineLength -- keep table rows on one line
+      where(:html, :sanitized) do
+        %q(<a href="#this-is-a-header" class="anchor"></a>) | %q(<a href="#this-is-a-header" class="anchor"></a>)
+        %q(<a href="#this-is-a-header" class="some-other-class anchor"></a>) | %q(<a href="#this-is-a-header"></a>)
 
-        expect(act.to_html).to eq exp
+        %q(<div class="markdown-alert markdown-alert-note"></div>) | %q(<div class="markdown-alert markdown-alert-note"></div>)
+        %q(<div class="markdown-alert markdown-alert-tip"></div>) | %q(<div class="markdown-alert markdown-alert-tip"></div>)
+        %q(<div class="markdown-alert markdown-alert-important"></div>) | %q(<div class="markdown-alert markdown-alert-important"></div>)
+        %q(<div class="markdown-alert markdown-alert-warning"></div>) | %q(<div class="markdown-alert markdown-alert-warning"></div>)
+        %q(<div class="markdown-alert markdown-alert-caution"></div>) | %q(<div class="markdown-alert markdown-alert-caution"></div>)
+        %q(<div class="other_class markdown-alert markdown-alert-caution"></div>) | %q(<div></div>)
+
+        %q(<p class="markdown-alert-title"></p>) | %q(<p class="markdown-alert-title"></p>)
+        %q(<p class="markdown-alert-title other_class"></p>) | %q(<p></p>)
+
+        %q(<span class="idiff left right deletion addition"></span>) | %q(<span class="idiff left right deletion addition"></span>)
+        %q(<span class="idiff left addition"></span>) | %q(<span class="idiff left addition"></span>)
+        %q(<span class="idiff left addition other_class"></span>) | %q(<span></span>)
+        %q(<span class="left addition"></span>) | %q(<span></span>)
+
+        %q(<code class="idiff"></code>) | %q(<code class="idiff"></code>)
+        %q(<code class="other_class"></code>) | %q(<code></code>)
+      end
+      # rubocop:enable Layout/LineLength
+
+      with_them do
+        it 'removes classes' do
+          act = filter(html)
+
+          expect(act.to_html).to eq sanitized
+        end
       end
     end
   end

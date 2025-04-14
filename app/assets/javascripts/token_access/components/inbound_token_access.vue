@@ -17,7 +17,6 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { TYPENAME_CI_JOB_TOKEN_ACCESSIBLE_GROUP } from '~/graphql_shared/constants';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import ConfirmActionModal from '~/vue_shared/components/confirm_action_modal.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import inboundRemoveProjectCIJobTokenScopeMutation from '../graphql/mutations/inbound_remove_project_ci_job_token_scope.mutation.graphql';
 import inboundRemoveGroupCIJobTokenScopeMutation from '../graphql/mutations/inbound_remove_group_ci_job_token_scope.mutation.graphql';
 import inboundUpdateCIJobTokenScopeMutation from '../graphql/mutations/inbound_update_ci_job_token_scope.mutation.graphql';
@@ -92,8 +91,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
-  inject: ['enforceAllowlist', 'fullPath', 'projectAllowlistLimit'],
+  inject: ['enforceAllowlist', 'fullPath', 'projectAllowlistLimit', 'isJobTokenPoliciesEnabled'],
   apollo: {
     authLogCount: {
       query: getAuthLogCountQuery,
@@ -188,9 +186,6 @@ export default {
         this.$apollo.queries.groupsAndProjectsWithAccess.loading ||
         this.allowlistLoadingMessage.length > 0
       );
-    },
-    isJobTokenPoliciesEnabled() {
-      return this.glFeatures.addPoliciesToCiJobToken;
     },
     ciJobTokenHelpPage() {
       return helpPagePath('ci/jobs/ci_job_token', {

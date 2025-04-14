@@ -163,3 +163,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::DataBuilder::Pipeline.prepend_mod

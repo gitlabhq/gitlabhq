@@ -273,6 +273,10 @@ An example primary identifier is `CVE`, which is used for Trivy. The identifier 
 Subsequent scans must return the same value for the same finding, even if the location has slightly
 changed.
 
+## Reachability
+
+Reachability indicates whether a [component](#component) listed as a dependency in a project is actually used in the codebase.
+
 ## Report finding
 
 A [finding](#finding) that only exists in a report produced by an analyzer, and is yet to be

@@ -9,7 +9,10 @@ import MoveWorkItemModal from '~/work_items/components/move_work_item_modal.vue'
 import moveIssueMutation from '~/sidebar/queries/move_issue.mutation.graphql';
 import searchUserProjectsToMove from '~/work_items/graphql/search_user_projects_to_move.query.graphql';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
-import { workItemHierarchyTreeResponse, mockHierarchyWidget } from 'jest/work_items/mock_data';
+import {
+  workItemHierarchyTreeResponse,
+  mockHierarchyWidget,
+} from 'ee_else_ce_jest/work_items/mock_data';
 import { stubComponent } from 'helpers/stub_component';
 
 Vue.use(VueApollo);
@@ -140,14 +143,17 @@ describe('MoveWorkItemModal', () => {
 
   describe('project search', () => {
     it('fetches projects when dropdown is shown', () => {
-      expect(searchProjectsSuccessHandler).toHaveBeenCalled();
+      expect(searchProjectsSuccessHandler).toHaveBeenCalledWith({ search: '', sort: 'stars_desc' });
     });
 
     it('updates projects list when search is performed', async () => {
       findDropdown().vm.$emit('search', 'test');
       await nextTick();
 
-      expect(searchProjectsSuccessHandler).toHaveBeenCalledWith({ search: 'test' });
+      expect(searchProjectsSuccessHandler).toHaveBeenCalledWith({
+        search: 'test',
+        sort: 'similarity',
+      });
     });
 
     it('filters out current project from results', () => {

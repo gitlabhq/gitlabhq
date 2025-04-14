@@ -3,6 +3,8 @@ query reviewRequestsCount(
   $reviewState: MergeRequestReviewState
   $reviewStates: [MergeRequestReviewState!]
   $mergedAfter: Time
+  $or: UnionedMergeRequestFilterInput
+  $not: MergeRequestsResolverNegatedParams
 ) {
   currentUser {
     id
@@ -11,6 +13,8 @@ query reviewRequestsCount(
       reviewState: $reviewState
       reviewStates: $reviewStates
       mergedAfter: $mergedAfter
+      or: $or
+      not: $not
     ) {
       count
     }

@@ -5,4 +5,4 @@ feature_category: observability
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174508
 milestone: '17.7'
 queued_migration_version: 20241203081756
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20250407231859'

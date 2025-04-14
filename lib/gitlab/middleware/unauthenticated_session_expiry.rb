@@ -21,11 +21,8 @@ module Gitlab
         user = catch(:warden) { warden && warden.user } # rubocop:disable Cop/BanCatchThrow -- ignore Warden errors since we're outside Warden::Manager
 
         unless user
-          # This works because Rack uses these options every time a request is handled, and redis-store
-          # uses the Rack setting first:
-          # 1. https://github.com/rack/rack/blob/fdcd03a3c5a1c51d1f96fc97f9dfa1a9deac0c77/lib/rack/session/abstract/id.rb#L342
-          # 2. https://github.com/redis-store/redis-store/blob/3acfa95f4eb6260c714fdb00a3d84be8eedc13b2/lib/redis/store/ttl.rb#L32
-          env['rack.session.options'][:expire_after] = Settings.gitlab['unauthenticated_session_expire_delay']
+          # This option is used by Gitlab::Sessions::CacheStore when it persists the session to Redis
+          env['rack.session.options'][:redis_expiry] = Settings.gitlab['unauthenticated_session_expire_delay']
         end
 
         result

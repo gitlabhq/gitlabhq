@@ -3,11 +3,11 @@ import { NAME_SORT_FIELD } from './common';
 
 //  Translations strings
 
-export const CONTAINER_REGISTRY_TITLE = s__('ContainerRegistry|Container Registry');
+export const CONTAINER_REGISTRY_TITLE = s__('ContainerRegistry|Container registry');
 export const SETTINGS_TEXT = s__('ContainerRegistry|Configure in settings');
 export const CONNECTION_ERROR_TITLE = s__('ContainerRegistry|Docker connection error');
 export const CONNECTION_ERROR_MESSAGE = s__(
-  `ContainerRegistry|We are having trouble connecting to the Container Registry. Please try refreshing the page. If this error persists, please review %{docLinkStart}the troubleshooting documentation%{docLinkEnd}.`,
+  `ContainerRegistry|We are having trouble connecting to the container registry. Please try refreshing the page. If this error persists, please review %{docLinkStart}the troubleshooting documentation%{docLinkEnd}.`,
 );
 export const LIST_DELETE_BUTTON_DISABLED = s__(
   'ContainerRegistry|Missing or insufficient permission, delete button disabled',

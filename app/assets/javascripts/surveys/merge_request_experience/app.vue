@@ -133,7 +133,7 @@ export default {
       <transition name="survey-slide-up">
         <div
           v-if="visible"
-          class="mr-experience-survey-body gl-border gl-relative gl-flex gl-flex-col gl-rounded-base gl-bg-white gl-p-5"
+          class="mr-experience-survey-body gl-border gl-relative gl-flex gl-flex-col gl-rounded-base gl-bg-overlap gl-p-5"
         >
           <gl-button
             v-tooltip="$options.i18n.close"

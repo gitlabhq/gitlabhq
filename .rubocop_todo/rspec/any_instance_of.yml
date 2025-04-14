@@ -221,7 +221,6 @@ RSpec/AnyInstanceOf:
     - 'spec/serializers/merge_request_poll_cached_widget_entity_spec.rb'
     - 'spec/serializers/merge_request_poll_widget_entity_spec.rb'
     - 'spec/services/application_settings/update_service_spec.rb'
-    - 'spec/services/auto_merge/merge_when_pipeline_succeeds_service_spec.rb'
     - 'spec/services/ci/create_pipeline_service_spec.rb'
     - 'spec/services/ci/register_job_service_spec.rb'
     - 'spec/services/ci/resource_groups/assign_resource_from_resource_group_service_spec.rb'

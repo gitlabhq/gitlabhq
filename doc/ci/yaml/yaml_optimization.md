@@ -173,7 +173,7 @@ You can see that the hidden jobs are conveniently used as templates, and
 
 {{< history >}}
 
-- Support for anchors with the [`stages`](../yaml/_index.md#stages) keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439451) in GitLab 16.9.
+- Support for anchors with the [`stages`](_index.md#stages) keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439451) in GitLab 16.9.
 
 {{< /history >}}
 

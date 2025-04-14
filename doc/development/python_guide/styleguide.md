@@ -24,12 +24,141 @@ Before writing tests, understand the different testing levels and determine the 
 
 [Learn more about the different testing levels](../testing_guide/testing_levels.md), and how to decide at what level your changes should be tested.
 
-### Recommendation when mocking
+### Recommendations
+
+#### Name test files the same as the files they are testing
+
+For unit tests, naming the test file with `test_{file_being_tested}.py` and placing it in the same directory structure
+helps with later discoverability of tests. This also avoids confusion between files that have the same name, but
+different modules.
+
+```shell
+File: /foo/bar/cool_feature.py
+
+# Bad
+
+Test file: /tests/my_cool_feature.py
+
+# Good
+
+Test file: /tests/foo/bar/test_cool_feature.py
+```
+
+#### Using NamedTuples to define parametrized test cases
+
+[Pytest parametrized tests](https://docs.pytest.org/en/stable/how-to/parametrize.html) effectively reduce code
+repetition, but they rely on tuples for test case definition, unlike Ruby's more readable syntax. As your parameters or
+test cases increase, these tuple-based tests become harder to understand and maintain.
+
+By using Python [NamedTuples](https://docs.python.org/3/library/typing.html#typing.NamedTuple) instead, you can:
+
+- Enforce clearer organization with named fields.
+- Make tests more self-documenting.
+- Easily define default values for parameters.
+- Improve readability in complex test scenarios.
+
+```python
+# Good: Short examples, with small numbers of arguments. Easy to map what each value maps to each argument
+
+@pytest.mark.parametrize(
+    (
+        "argument1",
+        "argument2",
+        "expected_result",
+    ),
+    [
+        # description of case 1,
+        ("value1", "value2", 200),
+        # description of case 2,
+        ...,
+    ],
+)
+def test_get_product_price(argument1, argument2, expected_result):
+    assert get_product_price(value1, value2) == expected_cost
+
+# Bad: difficult to map a value to an argument, and to add or remove arguments when updating test cases
+
+@pytest.mark.parametrize(
+    (
+        "argument1",
+        "argument2",
+        "argument3",
+        "expected_response",
+    ),
+    [
+      # Test case 1:
+      (
+        "value1",
+        {
+          ...
+        },
+        ...
+      ),
+      # Test case 2:
+      ...
+    ]
+)
+
+def test_my_function(argument1, argument2, argument3, expected_response):
+   ...
+
+# Good: NamedTuples improve readibility for larger test scenarios.
+
+from typing import NamedTuple
+
+class TestMyFunction:
+  class Case(NamedTuple):
+      argument1: str
+      argument2: int = 3
+      argument3: dict
+      expected_response: int
+
+  TEST_CASE_1 = Case(
+      argument1="my argument",
+      argument3={
+          "key": "value"
+      },
+      expected_response=2
+  )
+
+  TEST_CASE_2 = Case(
+      ...
+  )
+  @pytest.mark.parametrize(
+      "test_case", [TEST_CASE_1, TEST_CASE_2]
+  )
+  def test_my_function(test_case):
+      assert my_function(case.argument1, case.argument2, case.argument3) == case.expected_response
+```
+
+#### Mocking
 
 - Use `unittest.mock` library.
 - Mock at the right level, for example, at method call boundaries.
 - Mock external services and APIs.
 
-### Testing in Python vs. Ruby on Rails
+## Code style
 
-- [Work item](https://gitlab.com/gitlab-org/gitlab/-/issues/516193)
+It's recommended to use automated tools to ensure code quality and security.
+Consider running the following tools in your CI pipeline as well as locally:
+
+### Formatting tools
+
+- **Black**: Code formatter that enforces a consistent style
+- **isort**: Sorts and organizes import statements
+
+### Linting tools
+
+- **flake8**: Checks for PEP-8 compliance and common errors
+- **pylint**: More comprehensive linter for code quality
+- **mypy**: Static type checker for Python
+
+### Testing tools
+
+- **pytest**: Testing framework with coverage reporting
+
+### Security tools
+
+- **Dependency scanning**: Checks for vulnerabilities in dependencies
+- **Secret detection**: Ensures no secrets are committed to the repository
+- **SAST (semgrep)**: Static Application Security Testing

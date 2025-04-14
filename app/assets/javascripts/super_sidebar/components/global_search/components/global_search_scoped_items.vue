@@ -1,23 +1,21 @@
 <script>
 import { GlIcon, GlDisclosureDropdownGroup } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
-import { mapState, mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import { InternalEvents } from '~/tracking';
-import { s__, sprintf } from '~/locale';
-import { truncate } from '~/lib/utils/text_utility';
 import {
   EVENT_CLICK_ALL_GITLAB_SCOPED_SEARCH_TO_ADVANCED_SEARCH,
   EVENT_CLICK_GROUP_SCOPED_SEARCH_TO_ADVANCED_SEARCH,
   EVENT_CLICK_PROJECT_SCOPED_SEARCH_TO_ADVANCED_SEARCH,
 } from '~/super_sidebar/components/global_search/tracking_constants';
-import { injectRegexSearch } from '~/search/store/utils';
+import { injectRegexSearch, injectUsersScope } from '~/search/store/utils';
 import {
   OVERLAY_SEARCH,
   SCOPE_SEARCH_ALL,
   SCOPE_SEARCH_GROUP,
   SCOPE_SEARCH_PROJECT,
+  USER_HANDLE,
 } from '../command_palette/constants';
-import { SCOPE_TOKEN_MAX_LENGTH } from '../constants';
 import SearchResultHoverLayover from './global_search_hover_overlay.vue';
 
 const trackingMixin = InternalEvents.mixin();
@@ -34,14 +32,14 @@ export default {
     OVERLAY_SEARCH,
   },
   computed: {
-    ...mapState(['search']),
+    ...mapState(['commandChar']),
     ...mapGetters(['scopedSearchGroup']),
     group() {
       return {
         name: this.scopedSearchGroup.name,
         items: this.scopedSearchGroup.items.map((item) => ({
           ...item,
-          href: item.text === SCOPE_SEARCH_PROJECT ? injectRegexSearch(item.href) : item.href,
+          href: this.injectSearchPropsToHref(item),
           scopeName: item.scope || item.description,
           extraAttrs: {
             class: 'show-hover-layover',
@@ -51,14 +49,15 @@ export default {
     },
   },
   methods: {
-    titleLabel(item) {
-      return sprintf(s__('GlobalSearch|in %{scope}'), {
-        search: this.search,
-        scope: item.scope || item.description,
-      });
-    },
-    getTruncatedScope(scope) {
-      return truncate(scope, SCOPE_TOKEN_MAX_LENGTH);
+    injectSearchPropsToHref(item) {
+      if (item.text === SCOPE_SEARCH_PROJECT) {
+        return injectRegexSearch(item.href);
+      }
+      if (this.commandChar === this.$options.USER_HANDLE) {
+        return injectUsersScope(item.href);
+      }
+
+      return item.href;
     },
     trackingTypes({ text }) {
       switch (text) {
@@ -83,6 +82,7 @@ export default {
   SCOPE_SEARCH_ALL,
   SCOPE_SEARCH_GROUP,
   SCOPE_SEARCH_PROJECT,
+  USER_HANDLE,
 };
 </script>
 

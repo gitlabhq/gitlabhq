@@ -33,10 +33,6 @@ module Mutations
         description: 'Number of work items that were successfully updated.'
 
       def ready?(**args)
-        if Feature.disabled?(:bulk_update_work_items_mutation, parent_for!(args[:parent_id]))
-          raise_resource_not_available_error!('`bulk_update_work_items_mutation` feature flag is disabled.')
-        end
-
         if args[:ids].size > MAX_WORK_ITEMS
           raise Gitlab::Graphql::Errors::ArgumentError,
             format(

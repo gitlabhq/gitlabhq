@@ -37,6 +37,8 @@ RSpec.describe GitlabSchema.types['WorkItem'], feature_category: :team_planning 
       name
       duplicatedToWorkItemUrl
       movedToWorkItemUrl
+      showPlanUpgradePromotion
+      hidden
     ]
 
     expect(described_class).to have_graphql_fields(*fields).at_least

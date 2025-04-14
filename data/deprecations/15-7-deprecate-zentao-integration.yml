@@ -1,6 +1,6 @@
 - title: "ZenTao integration"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "The maximum number of characters in a job name will be limited to 250."
   announcement_milestone: "15.7"  # (required) The milestone when this feature was first announced as deprecated.
-  removal_milestone: "18.0"  # (required) The milestone when this feature is planned to be removed
+  removal_milestone: "19.0"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   reporter: arturoherrero  # (required) GitLab username of the person reporting the deprecation
   stage: Foundations  # (required) String value of the stage that the feature was created in. e.g., Growth
