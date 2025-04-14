@@ -287,7 +287,7 @@ External controls have an **asynchronous** workflow. [Compliance scans](complian
 
 ```mermaid
 sequenceDiagram
-    [GitLab->>+External service: Requirement payload
+    GitLab->>+External service: Requirement payload
     External service-->>-GitLab: Control response
     Note over External service,GitLab: Response includes SHA at HEAD
 ```
