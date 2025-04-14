@@ -203,6 +203,12 @@ PHZs are commonly used with reverse PrivateLink to create readable domain names 
 
 In some cases, you can also use PHZs to create aliases that resolve to publicly accessible DNS names. For example, you can create an internal DNS name that resolves to a public endpoint when you need internal systems to access a service through its private name.
 
+{{< alert type="note" >}}
+
+Changes to private hosted zones can disrupt services that use these records for up to five minutes.
+
+{{< /alert >}}
+
 ### PHZ domain structure
 
 When using your GitLab Dedicated instance's domain as part of an alias, you must include two subdomains before the main domain, where:

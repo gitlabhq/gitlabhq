@@ -75,11 +75,10 @@ export default {
         @click="tableRowClick(index)"
       >
         <div class="table-section section-25">
-          <div role="rowheader" class="table-mobile-header gl-font-bold">
+          <div role="rowheader" class="table-mobile-header gl-truncate gl-font-bold">
             {{ __('Suite') }}
           </div>
-          <div class="table-mobile-content underline gl-pl-5 gl-text-default">
-            {{ testSuite.name }}
+          <div class="table-mobile-content underline gl-truncate gl-pl-5 gl-text-default">
             <gl-icon
               v-if="testSuite.suite_error"
               ref="suiteErrorIcon"
@@ -88,6 +87,7 @@ export default {
               :title="testSuite.suite_error"
               class="vertical-align-middle"
             />
+            {{ testSuite.name }}
           </div>
         </div>
 

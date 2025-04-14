@@ -1,5 +1,6 @@
 import {
-  str,
+  tag,
+  tagNoCase,
   regex,
   seq,
   alt,
@@ -10,9 +11,9 @@ import {
 } from '~/glql/core/parser/combinators';
 
 describe('Parser combinators', () => {
-  describe('str', () => {
+  describe('tag', () => {
     it('should parse a string successfully', () => {
-      const parser = str('hello');
+      const parser = tag('hello');
       const result = parser.run('hello world');
       expect(result).toEqual({
         success: true,
@@ -22,12 +23,54 @@ describe('Parser combinators', () => {
     });
 
     it('should fail when string does not match', () => {
-      const parser = str('hello');
+      const parser = tag('hello');
       const result = parser.run('world');
       expect(result).toEqual({
         success: false,
         expected: 'hello',
         got: 'world',
+      });
+    });
+  });
+
+  describe('tagNoCase', () => {
+    it('should parse a string case-insensitively', () => {
+      const parser = tagNoCase('hello');
+      const result = parser.run('HELLO world');
+      expect(result).toEqual({
+        success: true,
+        value: 'HELLO',
+        rest: ' world',
+      });
+    });
+
+    it('should fail when string does not match', () => {
+      const parser = tagNoCase('hello');
+      const result = parser.run('world');
+      expect(result).toEqual({
+        success: false,
+        expected: 'hello',
+        got: 'world',
+      });
+    });
+
+    it('should match mixed case strings', () => {
+      const parser = tagNoCase('hello');
+      const result = parser.run('HeLlO there');
+      expect(result).toEqual({
+        success: true,
+        value: 'HeLlO',
+        rest: ' there',
+      });
+    });
+
+    it('should return the actual input case in the value', () => {
+      const parser = tagNoCase('select');
+      const result = parser.run('SELECT * FROM table');
+      expect(result).toEqual({
+        success: true,
+        value: 'SELECT',
+        rest: ' * FROM table',
       });
     });
   });
@@ -56,7 +99,7 @@ describe('Parser combinators', () => {
 
   describe('seq', () => {
     it('should parse a simple sequence successfully', () => {
-      const parser = seq(str('hello'), str(' '), str('world'));
+      const parser = seq(tag('hello'), tag(' '), tag('world'));
       const result = parser.run('hello world!');
       expect(result).toEqual({
         success: true,
@@ -67,11 +110,11 @@ describe('Parser combinators', () => {
 
     it('should parse a complex sequence with different parser types', () => {
       const parser = seq(
-        str('start'),
+        tag('start'),
         whitespace,
         regex(/^\d+/, 'number'),
-        optional(str('!')),
-        many(str('a')),
+        optional(tag('!')),
+        many(tag('a')),
       );
       const result = parser.run('start 123!aaa end');
       expect(result).toEqual({
@@ -82,7 +125,7 @@ describe('Parser combinators', () => {
     });
 
     it('should fail when any parser in the sequence fails', () => {
-      const parser = seq(str('hello'), str(' '), str('world'), str('!'));
+      const parser = seq(tag('hello'), tag(' '), tag('world'), tag('!'));
       const result = parser.run('hello world');
       expect(result).toEqual({
         success: false,
@@ -92,7 +135,7 @@ describe('Parser combinators', () => {
     });
 
     it('should handle empty input correctly', () => {
-      const parser = seq(str('hello'), str(' '), str('world'));
+      const parser = seq(tag('hello'), tag(' '), tag('world'));
       const result = parser.run('');
       expect(result).toEqual({
         success: false,
@@ -104,7 +147,7 @@ describe('Parser combinators', () => {
 
   describe('alt', () => {
     it('should parse alternatives successfully', () => {
-      const parser = alt(str('hello'), str('hi'), str('hey'));
+      const parser = alt(tag('hello'), tag('hi'), tag('hey'));
       const result = parser.run('hi there');
       expect(result).toEqual({
         success: true,
@@ -115,9 +158,9 @@ describe('Parser combinators', () => {
 
     it('should try all alternatives and succeed with the first match', () => {
       const parser = alt(
-        seq(str('hello'), str(' '), str('world')),
-        seq(str('hi'), str(' '), str('there')),
-        seq(str('hey'), str(' '), str('you')),
+        seq(tag('hello'), tag(' '), tag('world')),
+        seq(tag('hi'), tag(' '), tag('there')),
+        seq(tag('hey'), tag(' '), tag('you')),
       );
       const result = parser.run('hi there friend');
       expect(result).toEqual({
@@ -128,7 +171,7 @@ describe('Parser combinators', () => {
     });
 
     it('should fail when no alternative matches', () => {
-      const parser = alt(str('hello'), str('hi'), str('hey'));
+      const parser = alt(tag('hello'), tag('hi'), tag('hey'));
       const result = parser.run('greetings');
       expect(result).toEqual({
         success: false,
@@ -139,9 +182,9 @@ describe('Parser combinators', () => {
 
     it('should handle complex alternatives with different parser types', () => {
       const parser = alt(
-        seq(str('start'), whitespace, regex(/^\d+/, 'number')),
-        seq(str('begin'), whitespace, many(str('a'))),
-        token(str('end')),
+        seq(tag('start'), whitespace, regex(/^\d+/, 'number')),
+        seq(tag('begin'), whitespace, many(tag('a'))),
+        token(tag('end')),
       );
       const result = parser.run('begin aaa');
       expect(result).toEqual({
@@ -154,7 +197,7 @@ describe('Parser combinators', () => {
 
   describe('many', () => {
     it('should parse multiple occurrences successfully', () => {
-      const parser = many(str('a'));
+      const parser = many(tag('a'));
       const result = parser.run('aaab');
       expect(result).toEqual({
         success: true,
@@ -164,7 +207,7 @@ describe('Parser combinators', () => {
     });
 
     it('should return an empty array when no matches', () => {
-      const parser = many(str('a'));
+      const parser = many(tag('a'));
       const result = parser.run('bbb');
       expect(result).toEqual({
         success: true,
@@ -174,7 +217,7 @@ describe('Parser combinators', () => {
     });
 
     it('should parse complex repeated patterns', () => {
-      const parser = many(seq(str('('), regex(/^[^)]+/, 'content'), str(')')));
+      const parser = many(seq(tag('('), regex(/^[^)]+/, 'content'), tag(')')));
       const result = parser.run('(hello)(world)(!)extra');
       expect(result).toEqual({
         success: true,
@@ -188,7 +231,7 @@ describe('Parser combinators', () => {
     });
 
     it('should handle nested many parsers', () => {
-      const parser = many(seq(str('['), many(regex(/^[^\]]+/, 'item')), str(']')));
+      const parser = many(seq(tag('['), many(regex(/^[^\]]+/, 'item')), tag(']')));
       const result = parser.run('[a][b c][d e f]rest');
       expect(result).toEqual({
         success: true,
@@ -214,7 +257,7 @@ describe('Parser combinators', () => {
 
   describe('optional', () => {
     it('should parse optional element when present', () => {
-      const parser = optional(str('a'));
+      const parser = optional(tag('a'));
       const result = parser.run('ab');
       expect(result).toEqual({
         success: true,
@@ -224,7 +267,7 @@ describe('Parser combinators', () => {
     });
 
     it('should return null when optional element is not present', () => {
-      const parser = optional(str('a'));
+      const parser = optional(tag('a'));
       const result = parser.run('b');
       expect(result).toEqual({
         success: true,
@@ -236,7 +279,7 @@ describe('Parser combinators', () => {
 
   describe('Parser', () => {
     it('should map parser results', () => {
-      const parser = str('hello').map((value) => value.toUpperCase());
+      const parser = tag('hello').map((value) => value.toUpperCase());
       const result = parser.run('hello world');
       expect(result).toEqual({
         success: true,
@@ -246,7 +289,7 @@ describe('Parser combinators', () => {
     });
 
     it('should chain parsers', () => {
-      const parser = str('hello').chain((value) => str(` ${value}`));
+      const parser = tag('hello').chain((value) => tag(` ${value}`));
       const result = parser.run('hello hello');
       expect(result).toEqual({
         success: true,
@@ -287,7 +330,7 @@ describe('Parser combinators', () => {
 
   describe('token', () => {
     it('should parse a token with leading whitespace', () => {
-      const parser = token(str('hello'));
+      const parser = token(tag('hello'));
       const result = parser.run('   hello world');
       expect(result).toEqual({
         success: true,
@@ -297,7 +340,7 @@ describe('Parser combinators', () => {
     });
 
     it('should parse a token without leading whitespace', () => {
-      const parser = token(str('hello'));
+      const parser = token(tag('hello'));
       const result = parser.run('hello world');
       expect(result).toEqual({
         success: true,
@@ -307,7 +350,7 @@ describe('Parser combinators', () => {
     });
 
     it('should fail when the token is not present', () => {
-      const parser = token(str('hello'));
+      const parser = token(tag('hello'));
       const result = parser.run('   world');
       expect(result).toEqual({
         success: false,

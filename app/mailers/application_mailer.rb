@@ -45,7 +45,7 @@ class ApplicationMailer < ActionMailer::Base
     subject << @namespace.name if @namespace && !@project
     subject.concat(extra) if extra.present?
 
-    EmailsHelper.subject_with_suffix(subject)
+    EmailsHelper.subject_with_prefix_and_suffix(subject)
   end
 
   def render_with_default_locale(&block)

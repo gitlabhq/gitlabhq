@@ -1146,7 +1146,7 @@ GET /user_counts
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/user_counts"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user_counts"
 ```
 
 Example response:

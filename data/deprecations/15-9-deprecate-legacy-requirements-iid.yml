@@ -1,6 +1,6 @@
 - title: 'The GitLab legacy requirement IID is deprecated in favor of work item IID'
   announcement_milestone: '15.9'
-  removal_milestone: '18.0'
+  removal_milestone: '19.0'
   breaking_change: true
   reporter: amandarueda
   body: |

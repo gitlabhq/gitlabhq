@@ -383,7 +383,7 @@ To replicate the database:
    sudo -i
    ```
 
-1. Choose a database-friendly name for your secondary site to
+1. Choose a [database-friendly name](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION-SLOTS-MANIPULATION)  for your secondary site to
    use as the replication slot name. For example, if your domain is
    `secondary.geo.example.com`, use `secondary_example` as the slot
    name. Replication slot names must only contain lowercase letters,

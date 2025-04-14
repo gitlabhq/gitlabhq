@@ -44,10 +44,11 @@ GET /projects/:id/access_requests
 Example request:
 
 ```shell
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/:id/access_requests"
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/groups/:id/access_requests"
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/projects/:id/access_requests"
+  --url "https://gitlab.example.com/api/v4/projects/:id/access_requests"
 ```
 
 Example response:
@@ -93,10 +94,12 @@ POST /projects/:id/access_requests
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"  \
---url "https://gitlab.example.com/api/v4/groups/:id/access_requests"
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"  \
---url "https://gitlab.example.com/api/v4/projects/:id/access_requests"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>"  \
+  --url "https://gitlab.example.com/api/v4/groups/:id/access_requests"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>"  \
+  --url "https://gitlab.example.com/api/v4/projects/:id/access_requests"
 ```
 
 Example response:
@@ -130,10 +133,12 @@ PUT /projects/:id/access_requests/:user_id/approve
 Example request:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>"  \
---url "https://gitlab.example.com/api/v4/groups/:id/access_requests/:user_id/approve?access_level=20"
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>"  \
---url "https://gitlab.example.com/api/v4/projects/:id/access_requests/:user_id/approve?access_level=20"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>"  \
+  --url "https://gitlab.example.com/api/v4/groups/:id/access_requests/:user_id/approve?access_level=20"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>"  \
+  --url "https://gitlab.example.com/api/v4/projects/:id/access_requests/:user_id/approve?access_level=20"
 ```
 
 Example response:
@@ -166,8 +171,10 @@ DELETE /projects/:id/access_requests/:user_id
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>"  \
---url "https://gitlab.example.com/api/v4/groups/:id/access_requests/:user_id"
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
---url "https://gitlab.example.com/api/v4/projects/:id/access_requests/:user_id"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>"  \
+  --url "https://gitlab.example.com/api/v4/groups/:id/access_requests/:user_id"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/:id/access_requests/:user_id"
 ```

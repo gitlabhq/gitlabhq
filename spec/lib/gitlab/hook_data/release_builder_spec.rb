@@ -40,7 +40,7 @@ RSpec.describe Gitlab::HookData::ReleaseBuilder do
       let(:builder) { described_class.new(release_with_description) }
 
       it 'sets the image to use an absolute URL' do
-        expected_path = "#{release_with_description.project.path_with_namespace}/uploads/abc/Release_Image.png"
+        expected_path = "-/project/#{release_with_description.project.id}/uploads/abc/Release_Image.png"
 
         expect(data[:description])
           .to eq("test![Release_Image](#{Settings.gitlab.url}/#{expected_path})")

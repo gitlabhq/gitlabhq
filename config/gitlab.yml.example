@@ -106,6 +106,7 @@ production: &base
     email_from: example@example.com
     email_display_name: GitLab
     email_reply_to: noreply@example.com
+    email_subject_prefix: ''
     email_subject_suffix: ''
     email_smime:
       # Uncomment and set to true if you need to enable email S/MIME signing (default: false)

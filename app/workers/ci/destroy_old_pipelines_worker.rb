@@ -18,7 +18,9 @@ module Ci
       Project.find_by_id(fetch_next_project_id).try do |project|
         with_context(project: project) do
           timestamp = project.ci_delete_pipelines_in_seconds.seconds.ago
-          pipelines = Ci::Pipeline.for_project(project.id).created_before(timestamp).limit(LIMIT).to_a
+          pipelines = Ci::Pipeline.for_project(project.id).created_before(timestamp)
+          pipelines = pipelines.not_ref_protected if skip_protected_pipelines?(project)
+          pipelines = pipelines.limit(LIMIT).to_a
 
           Ci::DestroyPipelineService.new(project, nil).unsafe_execute(pipelines)
 
@@ -48,6 +50,10 @@ module Ci
 
     def queue_key
       Ci::ScheduleOldPipelinesRemovalCronWorker::QUEUE_KEY
+    end
+
+    def skip_protected_pipelines?(project)
+      Feature.enabled?(:ci_skip_old_protected_pipelines, project.root_namespace, type: :wip)
     end
   end
 end

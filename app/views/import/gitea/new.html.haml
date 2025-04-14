@@ -2,7 +2,7 @@
 - header_title _("New project"), new_project_path
 - add_to_breadcrumbs s_('ProjectsNew|Import project'), new_project_path(anchor: 'import_project')
 
-- if Feature.enabled?(:new_project_creation_form, @user)
+- if Feature.enabled?(:new_project_creation_form, current_user)
   #js-vue-import-gitea-project-root{ data: {
     back_button_path: new_project_path(anchor: 'import_project'),
     namespace_id: namespace_id_from(params) || @current_user_group&.id,

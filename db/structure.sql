@@ -12353,7 +12353,7 @@ CREATE TABLE cloud_connector_access (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    data jsonb NOT NULL,
+    data jsonb,
     catalog jsonb
 );
 
@@ -33223,7 +33223,7 @@ CREATE INDEX idx_compliance_security_policies_on_framework_id ON compliance_fram
 
 CREATE INDEX idx_compliance_security_policies_on_policy_configuration_id ON compliance_framework_security_policies USING btree (policy_configuration_id);
 
-CREATE INDEX idx_compliance_security_policies_on_security_policy_id ON compliance_framework_security_policies USING btree (security_policy_id);
+CREATE INDEX idx_compliance_security_policies_on_security_policy_and_id ON compliance_framework_security_policies USING btree (security_policy_id, id);
 
 CREATE INDEX idx_component_usages_on_catalog_resource_used_by_proj_used_date ON ONLY p_catalog_resource_component_usages USING btree (catalog_resource_id, used_by_project_id, used_date);
 

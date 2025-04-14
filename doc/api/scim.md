@@ -24,8 +24,9 @@ Prerequisites:
 
 - You must enable [Group SSO](../user/group/saml_sso/_index.md).
 - You must enable [SCIM for Group SSO](../user/group/saml_sso/scim_setup.md).
+- You must authenticate with a [Personal Access Token](../user/profile/personal_access_tokens.md) or [Group Access Token](../user/group/settings/group_access_tokens.md) that has the correct scope.
 
-This API differs from the [internal group SCIM API](../development/internal_api/_index.md#group-scim-api) and the [instance SCIM API](../development/internal_api/_index.md#instance-scim-api):
+This API differs from the [internal group SCIM API](../development/internal_api/_index.md#group-scim-api) and the [internal instance SCIM API](../development/internal_api/_index.md#instance-scim-api) which both require a SCIM token.
 
 - This API:
   - Does not implement the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).

@@ -317,7 +317,7 @@ Enabling Duo for just the root user is sufficient for initial setup and testing.
 
 ![Mapping model and duo feature](img/self_hosted_model/self-hosted-model-mapping_v17_10.png)
 
-These settings establish the connection between your GitLab instance and the self-hosted Ollama model through the AI Gateway, enabling AI-powered features within GitLab.
+These settings establish the connection between your GitLab instance and the self-hosted Ollama model through the AI Gateway, enabling AI-native features within GitLab.
 
 ## Verification
 

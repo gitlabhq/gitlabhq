@@ -26,7 +26,7 @@ title: GitLab Duo Chat
 
 {{< /history >}}
 
-GitLab Duo Chat is an AI-powered assistant that accelerates development with
+GitLab Duo Chat is an AI-native assistant that accelerates development with
 contextual, conversational AI. Chat:
 
 - Explains code and suggests improvements directly in your development environment.
@@ -383,7 +383,7 @@ After Quick Chat opens:
 </figure>
 <!-- Video published on 2023-11-10 -->
 
-For tips and tricks about integrating GitLab Duo Chat into your AI-powered DevSecOps workflows,
+For tips and tricks about integrating GitLab Duo Chat into your AI-native DevSecOps workflows,
 read the blog post:
 [10 best practices for using AI-powered GitLab Duo Chat](https://about.gitlab.com/blog/2024/04/02/10-best-practices-for-using-ai-powered-gitlab-duo-chat/).
 

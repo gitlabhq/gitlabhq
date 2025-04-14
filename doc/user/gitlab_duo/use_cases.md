@@ -2,7 +2,7 @@
 stage: AI-powered
 group: AI Model Validation
 info: This page is maintained by Developer Relations, author @dnsmichi, see https://handbook.gitlab.com/handbook/marketing/developer-relations/developer-advocacy/content/#maintained-documentation
-description: AI-powered features and functionality.
+description: AI-native features and functionality.
 title: GitLab Duo use cases
 ---
 
@@ -24,7 +24,7 @@ If you have GitLab Self-Managed: GitLab Duo requires GitLab 17.2 and later for t
 ### Start with a C# application
 
 In these examples, open your C# IDE, ensure that [GitLab Duo is enabled](turn_on_off.md),
-and explore how to use GitLab Duo AI-powered features for more efficiency.
+and explore how to use GitLab Duo AI-native features for more efficiency.
 
 #### CLI tool for querying the GitLab REST API
 

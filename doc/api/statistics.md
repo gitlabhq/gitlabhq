@@ -45,16 +45,16 @@ Example response:
 
 ```json
 {
-   "forks": "10",
-   "issues": "76",
-   "merge_requests": "27",
-   "notes": "954",
-   "snippets": "50",
-   "ssh_keys": "10",
-   "milestones": "40",
-   "users": "50",
-   "groups": "10",
-   "projects": "20",
-   "active_users": "50"
+   "forks": 10,
+   "issues": 76,
+   "merge_requests": 27,
+   "notes": 954,
+   "snippets": 50,
+   "ssh_keys": 10,
+   "milestones": 40,
+   "users": 50,
+   "groups": 10,
+   "projects": 20,
+   "active_users": 50
 }
 ```

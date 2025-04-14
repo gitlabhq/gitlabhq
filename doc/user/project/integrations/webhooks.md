@@ -580,13 +580,13 @@ If the original image reference in a merge request, comment, or wiki page is:
 The rewritten image reference in the webhook body would be:
 
 ```markdown
-![image](https://gitlab.example.com/example-group/example-project/uploads/<SHA>/image.png)
+![image](https://gitlab.example.com/-/project/:id/uploads/<SHA>/image.png)
 ```
 
 This example assumes:
 
 - GitLab is installed at `gitlab.example.com`.
-- The project is at `example-group/example-project`.
+- The project ID is at `123`.
 
 #### Exceptions to image URL rewriting
 

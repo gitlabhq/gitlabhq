@@ -2,7 +2,7 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: AI-powered features and functionality.
+description: AI-native features and functionality.
 title: GitLab Duo
 ---
 
@@ -14,7 +14,7 @@ title: GitLab Duo
 
 {{< /history >}}
 
-GitLab Duo is a suite of AI-powered features that assist you while you work in GitLab.
+GitLab Duo is a suite of AI-native features that assist you while you work in GitLab.
 These features aim to help increase velocity and solve key pain points across the software development lifecycle.
 
 GitLab Duo features are available in [IDE extensions](../../editor_extensions/_index.md) and the GitLab UI.

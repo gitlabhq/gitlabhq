@@ -13,7 +13,7 @@ title: GitLab Duo add-ons
 
 {{< /details >}}
 
-GitLab Duo add-ons extend your Premium or Ultimate subscription with AI-powered features.
+GitLab Duo add-ons extend your Premium or Ultimate subscription with AI-native features.
 Use GitLab Duo to help accelerate development workflows, reduce repetitive coding tasks,
 and gain deeper insights across your projects.
 

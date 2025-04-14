@@ -57,6 +57,41 @@ describe('GLQL Fields Parser', () => {
       );
     });
 
+    it('handles aliases correctly', () => {
+      const result = parseFields('title as "t", labels("bug") as "l", description as "d"');
+      expect(result).toEqual(
+        ast.collection(
+          ast.fieldName('title').withAlias(ast.string('t')),
+          ast.functionCall('labels', ast.collection(ast.string('bug'))).withAlias(ast.string('l')),
+          ast.fieldName('description').withAlias(ast.string('d')),
+        ),
+      );
+    });
+
+    it('parses AS token for aliases in a case-insesitive manner', () => {
+      const result = parseFields('title As "t", description, createdAt AS "c"');
+      expect(result).toEqual(
+        ast.collection(
+          ast.fieldName('title').withAlias(ast.string('t')),
+          ast.fieldName('description'),
+          ast.fieldName('createdAt').withAlias(ast.string('c')),
+        ),
+      );
+    });
+
+    it('handles aliases with whitespace', () => {
+      const result = parseFields(
+        ' title  as  "t" , labels( "bug" )  as     "l" ,   description as  "d"  ',
+      );
+      expect(result).toEqual(
+        ast.collection(
+          ast.fieldName('title').withAlias(ast.string('t')),
+          ast.functionCall('labels', ast.collection(ast.string('bug'))).withAlias(ast.string('l')),
+          ast.fieldName('description').withAlias(ast.string('d')),
+        ),
+      );
+    });
+
     it('throws an error for invalid input', () => {
       expect(() => parseFields('title,')).toThrow('Parse error');
     });

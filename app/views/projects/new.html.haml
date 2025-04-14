@@ -5,7 +5,7 @@
 - add_page_specific_style 'page_bundles/new_namespace'
 - add_page_specific_style 'page_bundles/projects'
 
-- if Feature.enabled?(:new_project_creation_form, @user)
+- if Feature.enabled?(:new_project_creation_form, current_user)
   #js-vue-new-project-app{ data: {
     namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id_from(params))&.full_path || @current_user_group&.full_path,
     namespace_id: namespace_id_from(params).to_s || @current_user_group&.id.to_s,

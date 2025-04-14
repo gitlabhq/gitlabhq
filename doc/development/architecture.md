@@ -1182,4 +1182,4 @@ millions of users.
 
 ### AI architecture
 
-A [SaaS model gateway](ai_architecture.md) is available to enable AI-powered features.
+A [SaaS model gateway](ai_architecture.md) is available to enable AI-native features.

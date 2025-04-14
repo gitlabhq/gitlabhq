@@ -13,7 +13,7 @@ module Members
 
       mail_with_locale(
         to: member_created_by.notification_email_for(member_source.notification_group),
-        subject: EmailsHelper.subject_with_suffix(['Invitation declined'])
+        subject: EmailsHelper.subject_with_prefix_and_suffix(['Invitation declined'])
       )
     end
 

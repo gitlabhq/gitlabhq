@@ -2,23 +2,23 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: AI-powered features and functionality.
+description: AI-native features and functionality.
 title: Get started with GitLab Duo
 ---
 
-GitLab Duo is your AI-powered assistant. It can help you write, review, and edit code,
+GitLab Duo is your AI-native assistant. It can help you write, review, and edit code,
 along with a variety of other tasks throughout your GitLab workflow.
 It can help you troubleshoot your pipeline, write tests, address vulnerabilities, and more.
 
 ## Step 1: Ensure you have a subscription
 
 Your organization has purchased a GitLab Duo add-on subscription: either GitLab Duo Pro or Duo Enterprise.
-Each subscription includes a set of AI-powered features to help improve your workflow.
+Each subscription includes a set of AI-native features to help improve your workflow.
 
 After your organization purchases a subscription, an administrator must assign seats to users.
 You likely received an email that notified you of your seat.
 
-The AI-powered features you have access to use language models to help streamline
+The AI-native features you have access to use language models to help streamline
 your workflow:
 
 - If you're on GitLab.com, you use default GitLab AI vendor models.

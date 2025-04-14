@@ -60,7 +60,7 @@ Use [GitLab Duo Chat](../user/gitlab_duo_chat/_index.md) to interact with an AI 
 
 ## Feedback and contributions
 
-We value your input on both the traditional and AI-powered features. If you have suggestions, encounter issues,
+We value your input on both the traditional and AI-native features. If you have suggestions, encounter issues,
 or want to contribute to the development of our extensions:
 
 - Report issues in their GitLab projects.

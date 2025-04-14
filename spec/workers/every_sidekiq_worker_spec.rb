@@ -181,7 +181,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Ci::UnlockPipelinesInQueueWorker' => 0,
         'Ci::SyncReportsToReportApprovalRulesWorker' => 3,
         'CleanupContainerRepositoryWorker' => 3,
-        'CloudConnector::SyncServiceTokenWorker' => 12,
+        'CloudConnector::SyncServiceTokenWorker' => 3,
         'ClusterConfigureIstioWorker' => 3,
         'ClusterInstallAppWorker' => 3,
         'ClusterPatchAppWorker' => 3,

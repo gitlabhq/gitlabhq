@@ -34,7 +34,7 @@ Follow these steps for your IDE:
 
 ## Turn on Code Suggestions
 
-If you are assigned a seat, GitLab Duo AI-powered features are turned on by default.
+If you are assigned a seat, GitLab Duo AI-native features are turned on by default.
 However, you can confirm that Code Suggestions is turned on.
 
 ### VS Code

@@ -733,6 +733,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '.not_ref_protected' do
+    subject { described_class.not_ref_protected }
+
+    let_it_be(:protected_pipeline) { create(:ci_pipeline, protected: true) }
+    let_it_be(:unprotected_pipeline) { create(:ci_pipeline, protected: false) }
+    let_it_be(:protected_unspecified_pipeline) { create(:ci_pipeline, protected: nil) }
+
+    it 'contains all unprotected pipelines' do
+      is_expected.to contain_exactly(unprotected_pipeline, protected_unspecified_pipeline)
+    end
+  end
+
   describe '.with_pipeline_source' do
     subject { described_class.with_pipeline_source(source) }
 

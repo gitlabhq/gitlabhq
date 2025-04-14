@@ -100,7 +100,7 @@ Before setting up the GitLab Duo Self-Hosted infrastructure, you must have:
 
 ## Decide on your configuration type
 
-GitLab Self-Managed customers can implement AI-powered features using either of the following options:
+GitLab Self-Managed customers can implement AI-native features using either of the following options:
 
 - [**Self-hosted AI gateway and LLMs**](#self-hosted-ai-gateway-and-llms): Full control over your AI infrastructure.
 - [**GitLab.com AI gateway with default GitLab external vendor LLMs**](#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms): Use GitLab managed AI infrastructure.

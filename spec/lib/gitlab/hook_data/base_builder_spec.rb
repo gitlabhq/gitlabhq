@@ -13,8 +13,8 @@ RSpec.describe Gitlab::HookData::BaseBuilder do
     using RSpec::Parameterized::TableSyntax
 
     context 'with an upload prefix specified' do
-      let(:project_with_path) { double(full_path: 'baz/bar') }
-      let(:object_with_project) { double(project: project_with_path) }
+      let(:project_with_id) { double(id: 123) }
+      let(:object_with_project) { double(project: project_with_id) }
 
       subject { subclass.new(object_with_project) }
 
@@ -26,7 +26,7 @@ RSpec.describe Gitlab::HookData::BaseBuilder do
           },
           'absolute upload URL' => {
             input: '![an image](/uploads/foo.png)',
-            output: "![an image](#{Gitlab.config.gitlab.url}/baz/bar/uploads/foo.png)"
+            output: "![an image](#{Gitlab.config.gitlab.url}/-/project/123/uploads/foo.png)"
           },
           'absolute non-upload URL' => {
             input: '![an image](/downloads/foo.png)',

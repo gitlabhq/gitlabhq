@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Ask GitLab Duo Chat
 ---
 
-As part of GitLab Duo's AI-powered features, GitLab Duo Chat helps you:
+As part of GitLab Duo's AI-native features, GitLab Duo Chat helps you:
 
 - Get explanations of code, errors, and GitLab features.
 - Generate or refactor code, write tests, and fix issues.

@@ -4,13 +4,17 @@ module EmailsHelper
   include AppearancesHelper
   include SafeFormatHelper
 
-  def subject_with_suffix(subject_line)
-    subject_line << Gitlab.config.gitlab.email_subject_suffix if Gitlab.config.gitlab.email_subject_suffix.present?
+  def subject_with_prefix_and_suffix(subject_line)
+    prefix = Gitlab.config.gitlab.email_subject_prefix
+    subject_line.unshift(prefix) if prefix.present?
+
+    suffix = Gitlab.config.gitlab.email_subject_suffix
+    subject_line << suffix if suffix.present?
 
     subject_line.join(' | ')
   end
 
-  module_function :subject_with_suffix
+  module_function :subject_with_prefix_and_suffix
 
   # Google Actions
   # https://developers.google.com/gmail/markup/reference/go-to-action
