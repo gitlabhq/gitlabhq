@@ -5,13 +5,13 @@
 
 # Required environment variables: GITLAB_QA_ACCESS_TOKEN and GITLAB_ADDRESS
 
-# Optional environment variables: TOP_LEVEL_GROUP_NAME (default: 'gitlab-qa-sandbox-group-<current weekday #>'),
-#                                 CLEANUP_ALL_QA_SANDBOX_GROUPS (default: false),
+# Optional environment variables: TOP_LEVEL_GROUP_NAME (default: 'gitlab-e2e-sandbox-group-<current weekday #>'),
+#                                 CLEANUP_ALL_E2E_SANDBOX_GROUPS (default: false),
 #                                 PERMANENTLY_DELETE (default: false),
 #                                 DELETE_BEFORE (default: 1 day ago)
-# - Set TOP_LEVEL_GROUP_NAME to the name of the qa sandbox group that you would like to delete projects under.
-# - Set CLEANUP_ALL_QA_SANDBOX_GROUPS to true if you would like to delete projects under all
-# 'gitlab-qa-sandbox-group-*' groups. Otherwise, this will fall back to TOP_LEVEL_GROUP_NAME.
+# - Set TOP_LEVEL_GROUP_NAME to the name of the e2e sandbox group that you would like to delete projects under.
+# - Set CLEANUP_ALL_E2E_SANDBOX_GROUPS to true if you would like to delete projects under all
+# 'gitlab-e2e-sandbox-group-*' groups. Otherwise, this will fall back to TOP_LEVEL_GROUP_NAME.
 # - Set PERMANENTLY_DELETE to true if you would like to permanently delete subgroups on an environment with
 # deletion protection enabled. Otherwise, subgroups will remain available during the retention period specified
 # in admin settings. On environments with deletion protection disabled, subgroups will always be permanently deleted.
@@ -22,20 +22,20 @@
 module QA
   module Tools
     class DeleteProjects < DeleteResourceBase
-      # @example mark projects for deletion under 'gitlab-qa-sandbox-group-<current weekday #>' older than 1 day
+      # @example mark projects for deletion under 'gitlab-e2e-sandbox-group-<current weekday #>' older than 1 day
       #   GITLAB_ADDRESS=<address> \
       #   GITLAB_QA_ACCESS_TOKEN=<token> bundle exec rake delete_projects
       #
-      # @example permanently delete projects older than 1 day under all gitlab-qa-sandbox-group-* groups
+      # @example permanently delete projects older than 1 day under all gitlab-e2e-sandbox-group-* groups
       #   GITLAB_ADDRESS=<address> \
       #   GITLAB_QA_ACCESS_TOKEN=<token> \
-      #   CLEANUP_ALL_QA_SANDBOX_GROUPS=true \
+      #   CLEANUP_ALL_E2E_SANDBOX_GROUPS=true \
       #   PERMANENTLY_DELETE=true bundle exec rake delete_projects
       #
-      # @example mark projects for deletion under 'gitlab-qa-sandbox-group-2' created before 2023-01-01
+      # @example mark projects for deletion under 'gitlab-e2e-sandbox-group-2' created before 2023-01-01
       #   GITLAB_ADDRESS=<address> \
       #   GITLAB_QA_ACCESS_TOKEN=<token> \
-      #   TOP_LEVEL_GROUP_NAME=<gitlab-qa-sandbox-group-2> \
+      #   TOP_LEVEL_GROUP_NAME=<gitlab-e2e-sandbox-group-2> \
       #   DELETE_BEFORE=2023-01-01 bundle exec rake delete_projects
       #
       # @example - dry run
@@ -48,7 +48,8 @@ module QA
       end
 
       def run
-        if ENV['CLEANUP_ALL_QA_SANDBOX_GROUPS']
+        # TODO: Remove CLEANUP_ALL_QA_SANDBOX_GROUPS once fully transitioned over to e2e groups
+        if ENV['CLEANUP_ALL_QA_SANDBOX_GROUPS'] || ENV['CLEANUP_ALL_E2E_SANDBOX_GROUPS']
           results = SANDBOX_GROUPS.flat_map do |name|
             group_id = fetch_group_id(@api_client, name)
             delete_projects(group_id)

@@ -341,7 +341,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'ee/app/workers/scan_security_report_secrets_worker.rb'
     - 'ee/app/workers/search/elastic/metrics_update_cron_worker.rb'
     - 'ee/app/workers/search/index_curation_worker.rb'
-    - 'ee/app/workers/search/zoekt/namespace_indexer_worker.rb'
     - 'ee/app/workers/search/zoekt/scheduling_worker.rb'
     - 'ee/app/workers/security/create_orchestration_policy_worker.rb'
     - 'ee/app/workers/security/orchestration_policy_rule_schedule_worker.rb'

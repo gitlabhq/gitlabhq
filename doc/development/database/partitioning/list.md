@@ -214,6 +214,14 @@ class PrepareTableConstraintsForListPartitioning < Gitlab::Database::Migration[2
 end
 ```
 
+{{< alert type="note" >}}
+
+`initial_partitioning_value` could be an array of values. It must contain all of the
+values for the existing partitions. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/465859)
+for more details.
+
+{{< /alert >}}
+
 ```ruby
 class ConvertTableToListPartitioning < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers

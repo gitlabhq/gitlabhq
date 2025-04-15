@@ -31,7 +31,7 @@ RSpec.describe QA::Runtime::Namespace do
       let(:dot_com) { true }
 
       it "returns day specific sandbox name" do
-        expect(described_class.sandbox_name).to match(%r{gitlab-qa-sandbox-group-#{time.wday + 1}})
+        expect(described_class.sandbox_name).to match(%r{gitlab-e2e-sandbox-group-#{time.wday + 1}})
       end
     end
 
@@ -39,7 +39,7 @@ RSpec.describe QA::Runtime::Namespace do
       let(:release) { true }
 
       it "returns day specific sandbox name" do
-        expect(described_class.sandbox_name).to match(%r{gitlab-qa-sandbox-group-#{time.wday + 1}})
+        expect(described_class.sandbox_name).to match(%r{gitlab-e2e-sandbox-group-#{time.wday + 1}})
       end
     end
 

@@ -27,6 +27,10 @@
     "AbuseReportNote",
     "Note"
   ],
+  "CiJobInterface": [
+    "CiJob",
+    "CiJobMinimalAccess"
+  ],
   "CiJobTokenScopeTarget": [
     "CiJobTokenAccessibleGroup",
     "CiJobTokenAccessibleProject"

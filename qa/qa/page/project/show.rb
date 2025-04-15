@@ -85,7 +85,7 @@ module QA
         end
 
         def forked_from?(parent_project_name)
-          has_element?('forked-from-link', text: parent_project_name)
+          has_element?('forked-from-link', text: parent_project_name, wait: 60)
         end
 
         def click_file(filename)

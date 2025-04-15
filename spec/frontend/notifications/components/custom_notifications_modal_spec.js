@@ -23,6 +23,14 @@ const mockNotificationSettingsResponses = {
       new_note: true,
     },
   },
+  defaultWithUknownEvent: {
+    level: 'custom',
+    events: {
+      new_release: true,
+      new_note: false,
+      event_without_frontend_translation: true,
+    },
+  },
 };
 
 const mockToastShow = jest.fn();
@@ -88,7 +96,7 @@ describe('CustomNotificationsModal', () => {
 
         mockAxios
           .onGet(endpointUrl)
-          .reply(HTTP_STATUS_OK, mockNotificationSettingsResponses.default);
+          .reply(HTTP_STATUS_OK, mockNotificationSettingsResponses.defaultWithUknownEvent);
 
         wrapper = createComponent();
 
@@ -110,6 +118,12 @@ describe('CustomNotificationsModal', () => {
           expect(checkbox.findComponent(GlLoadingIcon).exists()).toBe(loading);
         },
       );
+
+      it('does not render a checkbox without a known translation (i.e., blank)', () => {
+        findAllCheckboxes().wrappers.forEach((checkbox) => {
+          expect(checkbox.text()).not.toMatch(/^\s*$/);
+        });
+      });
     });
   });
 

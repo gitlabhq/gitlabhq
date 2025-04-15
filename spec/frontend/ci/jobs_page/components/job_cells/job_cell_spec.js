@@ -62,11 +62,24 @@ describe('Job Cell', () => {
   });
 
   describe('Ref of the job', () => {
-    it('displays the ref name and links to the ref', () => {
+    it("renders a LinkCell with href set to the job's refPath", () => {
       createComponent();
 
       expect(findJobRef().text()).toBe(mockJob.refName);
-      expect(findJobRef().attributes('href')).toBe(mockJob.refPath);
+      expect(findJobRef().props('href')).toBe(mockJob.refPath);
+    });
+
+    describe('when URL of the job ref is not available', () => {
+      beforeEach(() => {
+        mockJob.refPath = null;
+
+        createComponent();
+      });
+
+      it('renders a LinkCell with href set to null', () => {
+        expect(findJobRef().text()).toBe(mockJob.refName);
+        expect(findJobRef().props('href')).toBe(null);
+      });
     });
 
     it('displays fork icon when job is not created by tag', () => {
@@ -85,13 +98,24 @@ describe('Job Cell', () => {
   });
 
   describe('Commit of the job', () => {
-    beforeEach(() => {
+    it("renders a LinkCell with href set to the job's refPath", () => {
       createComponent();
+
+      expect(findJobSha().text()).toBe(mockJob.shortSha);
+      expect(findJobSha().props('href')).toBe(mockJob.commitPath);
     });
 
-    it('displays the sha and links to the commit', () => {
-      expect(findJobSha().text()).toBe(mockJob.shortSha);
-      expect(findJobSha().attributes('href')).toBe(mockJob.commitPath);
+    describe('when URL of the job ref is not available', () => {
+      beforeEach(() => {
+        mockJob.commitPath = null;
+
+        createComponent();
+      });
+
+      it('renders a LinkCell with href set to null', () => {
+        expect(findJobSha().text()).toBe(mockJob.shortSha);
+        expect(findJobSha().props('href')).toBe(null);
+      });
     });
   });
 

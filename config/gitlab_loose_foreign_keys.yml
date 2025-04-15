@@ -28,6 +28,10 @@ application_settings:
   - table: namespaces
     column: custom_project_templates_group_id
     on_delete: async_nullify
+approval_merge_request_rules:
+  - table: approval_policy_rules
+    column: approval_policy_rule_id
+    on_delete: async_nullify
 ci_build_report_results:
   - table: projects
     column: project_id

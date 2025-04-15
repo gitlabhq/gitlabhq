@@ -249,7 +249,9 @@ module QA
 
         transformed_values = resources.transform_values! do |v|
           v.reject do |attributes|
-            attributes['info']&.match(/with full_path 'gitlab-qa-sandbox-group(-\d)?'/) ||
+            # TODO: Remove match with qa sandboxes once fully transitioned over to e2e groups
+            (attributes['info']&.match(/with full_path 'gitlab-qa-sandbox-group(-\d)?'/) ||
+              attributes['info']&.match(/with full_path 'gitlab-e2e-sandbox-group(-\d)?'/)) ||
               (attributes['http_method'] == 'get' && !attributes['info']&.include?("with username 'qa-")) ||
               attributes['api_path'] == 'Cannot find resource API path'
           end

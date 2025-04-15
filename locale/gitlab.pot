@@ -40773,6 +40773,9 @@ msgstr ""
 msgid "NotificationEvent|Merge request is reopened"
 msgstr ""
 
+msgid "NotificationEvent|Merge request is set to auto-merge"
+msgstr ""
+
 msgid "NotificationEvent|Merge request receives a push"
 msgstr ""
 

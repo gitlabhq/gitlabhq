@@ -851,8 +851,6 @@
   - 1
 - - search_zoekt_lost_node_event
   - 1
-- - search_zoekt_namespace_indexer
-  - 1
 - - search_zoekt_node_with_negative_unclaimed_storage_event
   - 1
 - - search_zoekt_orphaned_index_event

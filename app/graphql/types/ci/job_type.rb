@@ -7,6 +7,8 @@ module Types
     class JobType < BaseObject
       graphql_name 'CiJob'
 
+      implements ::Types::Ci::JobInterface
+
       present_using ::Ci::BuildPresenter
       field_class Types::Ci::JobBaseField
 
@@ -161,10 +163,6 @@ module Types
         object.tags.map(&:name) if object.is_a?(::Ci::Build)
       end
 
-      def detailed_status
-        object.detailed_status(context[:current_user])
-      end
-
       def artifacts
         object.job_artifacts if object.is_a?(::Ci::Build)
       end
@@ -239,10 +237,6 @@ module Types
         ::Gitlab::Routing.url_helpers.project_commit_path(object.project, object.sha)
       end
 
-      def ref_name
-        object&.ref
-      end
-
       def ref_path
         ::Gitlab::Routing.url_helpers.project_commits_path(object.project, ref_name)
       end
@@ -261,18 +255,6 @@ module Types
 
       def coverage
         object&.coverage
-      end
-
-      def manual_job
-        object.try(:action?)
-      end
-
-      def triggered
-        if Feature.enabled?(:ci_read_trigger_from_ci_pipeline, object.project)
-          object.pipeline.trigger_id.present?
-        else
-          object.try(:trigger_request).present?
-        end
       end
 
       def manual_variables

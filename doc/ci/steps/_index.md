@@ -25,6 +25,14 @@ This experimental feature is still in active development and might have breaking
 changes at any time. Review the [changelog](https://gitlab.com/gitlab-org/step-runner/-/blob/main/CHANGELOG.md)
 for full details on any breaking changes.
 
+{{< alert type="note" >}}
+
+In GitLab Runner 17.11 and later, steps run on the container defined by the job's `image`.
+This replaces the legacy Docker image maintained by the step runner team, `registry.gitlab.com/gitlab-org/step-runner:v0`.
+Support for the legacy Docker image ends in GitLab 18.0.
+
+{{< /alert >}}
+
 ## Step workflow
 
 A step either runs a sequence of steps or executes a command. Each step specifies inputs and outputs, and has
@@ -83,7 +91,7 @@ Name must consist only of alphanumeric characters and underscores, and must not 
 Run a step by providing the [step location](#step-location) using the `step` keyword.
 
 Inputs and environment variables can be passed to the step, and these can contain expressions that interpolate values.
-Steps run in the directory defined by the `CI_BUILDS_DIR` [predefined variable](../variables/predefined_variables.md).
+Steps run in the directory defined by the `CI_PROJECT_DIR` [predefined variable](../variables/predefined_variables.md).
 
 For example, the echo step loaded from the Git repository `gitlab.com/components/echo`
 receives the environment variable `USER: Fred` and the input `message: hello Sally`:
@@ -104,7 +112,7 @@ job:
 ### Run a script
 
 Run a script in a shell with the `script` keyword. Environment variables passed to scripts
-using `env` are set in the shell. Script steps run in the directory defined by the `CI_BUILDS_DIR`
+using `env` are set in the shell. Script steps run in the directory defined by the `CI_PROJECT_DIR`
 [predefined variable](../variables/predefined_variables.md).
 
 For example, the following script prints the GitLab user to the job log:
@@ -116,8 +124,7 @@ my-job:
       script: echo hello ${{job.GITLAB_USER_LOGIN}}
 ```
 
-Script steps always use the `bash` shell. Follow [issue 109](https://gitlab.com/gitlab-org/step-runner/-/issues/109)
-to track when shell fallback is supported.
+Script steps use the `bash` shell, falling back to use `sh` if bash is not found.
 
 ### Run a GitHub action
 
@@ -213,9 +220,6 @@ To specify a folder or file outside the `steps` folder, use the expanded `step` 
             dir: my-steps/sub-directory  # optional, defaults to the repository root
             file: my-step.yml            # optional, defaults to `step.yml`
   ```
-
-Steps can't reference Git repositories using annotated tags. Follow [issue 123](https://gitlab.com/gitlab-org/step-runner/-/issues/123)
-to track when annotated tags are supported.
 
 ### Expressions
 
@@ -368,11 +372,11 @@ To use the output when using the step:
 ```yaml
 run:
   - name: random_generator
-    step: ./random-generator
+    step: ./random_gen
   - name: echo_number
     step: ./echo
     inputs:
-      message: "Random number generated was ${{step.random-generator.outputs.value}}"
+      message: "Random number generated was ${{step.random_generator.outputs.value}}"
 ```
 
 #### Specify delegated outputs
@@ -381,7 +385,7 @@ Instead of specifying output names and types, outputs can be entirely delegated 
 The outputs returned by the sub-step are returned by your step. The `delegate` keyword
 in the step definition determines which sub-step outputs are returned by the step.
 
-For example, the following step returns outputs returned by the `random-generator`.
+For example, the following step returns outputs returned by the `random_gen` step.
 
 ```yaml
 spec:
@@ -389,8 +393,8 @@ spec:
 ---
 run:
   - name: random_generator
-    step: ./random-generator
-delegate: random-generator
+    step: ./random_gen
+delegate: random_generator
 ```
 
 #### Specify no inputs or outputs
@@ -620,3 +624,26 @@ For example, a project could use a component that adds a job to format Go code:
   ```
 
 In this example, the CI/CD component hides the complexity of the steps from the component author.
+
+## Troubleshooting
+
+### Fetching steps from a HTTPS URL
+
+An error message such as `tls: failed to verify certificate: x509: certificate signed by unknown authority` indicates
+that the operating system does not recognize or trust the server hosting the step.
+
+A common cause is when steps are run in a job with a Docker image that doesn't have any trusted root certificates installed.
+Resolve the issue by installing certificates in the container or by baking them into the job `image`.
+
+You can use a `script` step to install dependencies in the container before fetching any steps.
+For example:
+
+```yaml
+ubuntu_job:
+  image: ubuntu:24.04
+  run:
+    - name: install_certs  # Install trusted certificates first
+      script: apt update && apt install --assume-yes --no-install-recommends ca-certificates
+    - name: echo_step      # With trusted certificates, use HTTPS without errors
+      step: https://gitlab.com/user/my_steps/hello_world@main
+```

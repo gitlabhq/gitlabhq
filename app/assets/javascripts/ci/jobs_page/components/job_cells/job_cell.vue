@@ -2,6 +2,7 @@
 import { GlBadge, GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
+import LinkCell from '~/ci/runner/components/cells/link_cell.vue';
 import { SUCCESS_STATUS } from '../../../constants';
 
 export default {
@@ -16,6 +17,7 @@ export default {
     GlBadge,
     GlIcon,
     GlLink,
+    LinkCell,
   },
   props: {
     job: {
@@ -33,6 +35,15 @@ export default {
     },
     jobRef() {
       return this.job?.refName;
+    },
+    jobCommit() {
+      return this.job.shortSha;
+    },
+    jobCommitPath() {
+      return this.job.commitPath;
+    },
+    jobRefPath() {
+      return this.job.refPath;
     },
     jobTags() {
       return this.job.tags;
@@ -102,22 +113,24 @@ export default {
           variant="subtle"
           data-testid="fork-icon"
         />
-        <gl-link
+        <link-cell
+          :href="jobRefPath"
           class="gl-text-sm gl-text-subtle gl-font-monospace hover:gl-text-subtle"
-          :href="job.refPath"
           data-testid="job-ref"
-          >{{ job.refName }}</gl-link
         >
+          {{ jobRef }}
+        </link-cell>
       </div>
       <span v-else>{{ __('none') }}</span>
       <div class="gl-ml-2 gl-flex gl-items-center gl-rounded-base gl-bg-strong gl-px-2">
         <gl-icon class="gl-mx-2" name="commit" :size="$options.iconSize" variant="subtle" />
-        <gl-link
+        <link-cell
+          :href="jobCommitPath"
           class="gl-text-sm gl-text-subtle gl-font-monospace hover:gl-text-subtle"
-          :href="job.commitPath"
           data-testid="job-sha"
-          >{{ job.shortSha }}</gl-link
         >
+          {{ jobCommit }}
+        </link-cell>
       </div>
     </div>
 

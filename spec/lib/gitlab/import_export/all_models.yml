@@ -1158,6 +1158,7 @@ resource_iteration_events:
   - merge_request
   - iteration
   - triggered_by_work_item
+  - namespace
 iterations_cadence:
   - group
   - iterations

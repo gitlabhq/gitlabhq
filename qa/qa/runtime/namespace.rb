@@ -22,7 +22,7 @@ module QA
         #
         # @return [String]
         def sandbox_name
-          return "gitlab-qa-sandbox-group-#{Time.now.wday + 1}" if live_env?
+          return "gitlab-e2e-sandbox-group-#{Time.now.wday + 1}" if live_env?
 
           "e2e-sandbox-#{SecureRandom.hex(6)}"
         end

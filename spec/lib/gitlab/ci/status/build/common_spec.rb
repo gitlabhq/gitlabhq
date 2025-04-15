@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Build::Common do
-  let(:user) { create(:user) }
-  let(:build) { create(:ci_build) }
+RSpec.describe Gitlab::Ci::Status::Build::Common, feature_category: :continuous_integration do
+  let_it_be(:user) { create(:user) }
+  let_it_be(:build) { create(:ci_build) }
   let(:project) { build.project }
 
   subject do
@@ -36,8 +36,24 @@ RSpec.describe Gitlab::Ci::Status::Build::Common do
   end
 
   describe '#details_path' do
-    it 'links to the build details page' do
-      expect(subject.details_path).to include "jobs/#{build.id}"
+    context 'when user has access to read build' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'links to the build details page' do
+        expect(subject.details_path).to include "jobs/#{build.id}"
+      end
+    end
+
+    context 'when user has no access to read build' do
+      before do
+        project.update!(public_builds: false)
+      end
+
+      it 'is nil' do
+        expect(subject.details_path).to be_nil
+      end
     end
   end
 

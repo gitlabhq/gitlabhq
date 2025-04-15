@@ -705,7 +705,6 @@ Layout/LineLength:
     - 'ee/app/services/iterations/cadences/destroy_service.rb'
     - 'ee/app/services/iterations/cadences/update_service.rb'
     - 'ee/app/services/iterations/delete_service.rb'
-    - 'ee/app/services/iterations/roll_over_issues_service.rb'
     - 'ee/app/services/iterations/update_service.rb'
     - 'ee/app/services/jira/jql_builder_service.rb'
     - 'ee/app/services/jira/requests/issues/list_service.rb'

@@ -95,6 +95,8 @@ include:
     ALPINE_IMAGE: "${ALPINE_IMAGE}"
     ALPINE_DIGEST: "${ALPINE_DIGEST}"
     ALPINE_BUILD_ARGS: "${ALPINE_BUILD_ARGS}"
+    # used by rules setup in CNG project
+    PIPELINE_TYPE: "GITLAB_RAILS_UPSTREAM_TRIGGER"
   trigger:
     project: '${CI_PROJECT_NAMESPACE}/$[[ inputs.cng_path ]]'
     branch: $TRIGGER_BRANCH
