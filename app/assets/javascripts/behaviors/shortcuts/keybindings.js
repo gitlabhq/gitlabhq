@@ -564,7 +564,8 @@ export const SIDEBAR_CLOSE_WIDGET = {
 export const WORK_ITEM_TOGGLE_SIDEBAR = {
   id: 'workitems.toggleSidebar',
   description: __('Show or hide sidebar'),
-  defaultKeys: ['mod+/'], // eslint-disable-line @gitlab/require-i18n-strings
+  defaultKeys: ['mod+/', 'shift+mod+7'], // eslint-disable-line @gitlab/require-i18n-strings
+  // Shift+7 is equivalent to forward-slash on some keyboards without a dedicated key
   customizable: false,
 };
 

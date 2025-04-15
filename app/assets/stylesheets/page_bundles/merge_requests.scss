@@ -215,11 +215,7 @@
 
 .diff-tr {
   .timeline-discussion-body {
-    clear: left;
-
-    .note-body {
-      padding: 0 $gl-padding-8 $gl-padding-8 $gl-padding-32;
-    }
+    padding: 0 0 $gl-padding-4 $gl-padding-32;
   }
 
   .timeline-entry img.avatar {

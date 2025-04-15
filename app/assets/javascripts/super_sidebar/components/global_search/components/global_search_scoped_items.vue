@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlDisclosureDropdownGroup } from '@gitlab/ui';
+import { GlIcon, GlDisclosureDropdownGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState } from 'vuex';
 import { InternalEvents } from '~/tracking';
@@ -16,7 +16,7 @@ import {
   SCOPE_SEARCH_PROJECT,
   USER_HANDLE,
 } from '../command_palette/constants';
-import SearchResultHoverLayover from './global_search_hover_overlay.vue';
+import SearchResultFocusLayover from './global_search_focus_overlay.vue';
 
 const trackingMixin = InternalEvents.mixin();
 
@@ -25,7 +25,8 @@ export default {
   components: {
     GlIcon,
     GlDisclosureDropdownGroup,
-    SearchResultHoverLayover,
+    GlDisclosureDropdownItem,
+    SearchResultFocusLayover,
   },
   mixins: [trackingMixin],
   i18n: {
@@ -42,7 +43,7 @@ export default {
           href: this.injectSearchPropsToHref(item),
           scopeName: item.scope || item.description,
           extraAttrs: {
-            class: 'show-hover-layover',
+            class: 'show-focus-layover',
           },
         })),
       };
@@ -90,17 +91,24 @@ export default {
   <div>
     <ul class="gl-m-0 gl-list-none gl-p-0 gl-pb-2" data-testid="scoped-items">
       <gl-disclosure-dropdown-group :group="group" @action="trackingTypes">
-        <template #list-item="{ item }">
-          <search-result-hover-layover :text-message="$options.i18n.OVERLAY_SEARCH">
-            <gl-icon
-              name="search-results"
-              class="-gl-mt-2 gl-mr-2 gl-shrink-0 gl-pt-2 gl-text-subtle"
-            />
-            <span class="gl-grow">
-              {{ item.scopeName }}
-            </span>
-          </search-result-hover-layover>
-        </template>
+        <gl-disclosure-dropdown-item
+          v-for="item in group.items"
+          :key="item.text"
+          :item="item"
+          class="show-on-focus-or-hover--context show-focus-layover"
+        >
+          <template #list-item>
+            <search-result-focus-layover :text-message="$options.i18n.OVERLAY_SEARCH">
+              <gl-icon
+                name="search-results"
+                class="-gl-mt-2 gl-mr-2 gl-shrink-0 gl-pt-2 gl-text-subtle"
+              />
+              <span class="gl-grow">
+                {{ item.scopeName }}
+              </span>
+            </search-result-focus-layover>
+          </template>
+        </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>
     </ul>
   </div>

@@ -28,8 +28,8 @@ For vulnerabilities in the [Common Vulnerabilities and Exposures (CVE)](https://
 catalog, these details also include:
 
 - CVSS score
-- EPSS score
-- KEV status
+- [EPSS score](risk_assessment_data.md#epss)
+- [KEV status](risk_assessment_data.md#kev)
 - [Reachability status](../dependency_scanning/static_reachability.md) (Beta)
 
 For further details on this additional data, see [vulnerability risk assessment data](risk_assessment_data.md).

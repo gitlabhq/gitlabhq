@@ -229,7 +229,6 @@ Rails/StrongParams:
     - 'ee/app/controllers/ee/groups/group_members_controller.rb'
     - 'ee/app/controllers/ee/groups/milestones_controller.rb'
     - 'ee/app/controllers/ee/groups/work_items_controller.rb'
-    - 'ee/app/controllers/ee/groups_controller.rb'
     - 'ee/app/controllers/ee/import/github_controller.rb'
     - 'ee/app/controllers/ee/projects/application_controller.rb'
     - 'ee/app/controllers/ee/projects/cycle_analytics_controller.rb'

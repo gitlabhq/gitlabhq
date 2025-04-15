@@ -129,7 +129,6 @@ Style/SuperArguments:
     - 'lib/banzai/pipeline/description_pipeline.rb'
     - 'lib/banzai/pipeline/email_pipeline.rb'
     - 'lib/banzai/pipeline/note_pipeline.rb'
-    - 'lib/banzai/pipeline/single_line_pipeline.rb'
     - 'lib/gitlab/analytics/cycle_analytics/request_params.rb'
     - 'lib/gitlab/asciidoc/html5_converter.rb'
     - 'lib/gitlab/bitbucket_server_import/importers/pull_request_notes/standalone_notes.rb'

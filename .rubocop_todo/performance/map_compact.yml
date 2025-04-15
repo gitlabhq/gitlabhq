@@ -25,7 +25,6 @@ Performance/MapCompact:
     - 'app/services/cloud_seed/google_cloud/fetch_google_ip_list_service.rb'
     - 'app/services/events/render_service.rb'
     - 'app/services/feature_flags/update_service.rb'
-    - 'app/services/git/base_hooks_service.rb'
     - 'app/services/jira_import/start_import_service.rb'
     - 'app/services/jira_import/users_mapper_service.rb'
     - 'app/services/labels/available_labels_service.rb'

@@ -1,5 +1,5 @@
 <script>
-import { GlDisclosureDropdownGroup } from '@gitlab/ui';
+import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { kebabCase } from 'lodash';
 import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
@@ -15,7 +15,7 @@ import {
   TRACKING_CLICK_COMMAND_PALETTE_ITEM,
   OVERLAY_CHANGE_CONTEXT,
 } from '../command_palette/constants';
-import SearchResultHoverLayover from './global_search_hover_overlay.vue';
+import SearchResultFocusLayover from './global_search_focus_overlay.vue';
 
 const trackingMixin = InternalEvents.mixin();
 
@@ -31,7 +31,8 @@ export default {
   },
   components: {
     GlDisclosureDropdownGroup,
-    SearchResultHoverLayover,
+    GlDisclosureDropdownItem,
+    SearchResultFocusLayover,
   },
   mixins: [trackingMixin],
   inject: ['contextSwitcherLinks'],
@@ -59,7 +60,7 @@ export default {
             'data-qa-places-item': title,
 
             // this is helper class for popover-hint
-            class: 'show-hover-layover',
+            class: 'show-focus-layover',
 
             // Any other data- attributes (e.g., for @rails/ujs)
             ...Object.entries(rest).reduce((acc, [name, value]) => {
@@ -112,10 +113,17 @@ export default {
     :group="group"
     @action="trackingTypes"
   >
-    <template #list-item="{ item }">
-      <search-result-hover-layover :text-message="$options.i18n.OVERLAY_CHANGE_CONTEXT">
-        <span>{{ item.text }}</span>
-      </search-result-hover-layover>
-    </template>
+    <gl-disclosure-dropdown-item
+      v-for="item in group.items"
+      :key="item.text"
+      :item="item"
+      class="show-on-focus-or-hover--context show-focus-layover"
+    >
+      <template #list-item>
+        <search-result-focus-layover :text-message="$options.i18n.OVERLAY_CHANGE_CONTEXT">
+          <span>{{ item.text }}</span>
+        </search-result-focus-layover>
+      </template>
+    </gl-disclosure-dropdown-item>
   </gl-disclosure-dropdown-group>
 </template>

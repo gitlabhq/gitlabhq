@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import CiCdAnalyticsAreaChart from '~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_area_chart.vue';
+import CiCdAnalyticsAreaChart from '~/analytics/ci_cd/components/ci_cd_analytics_area_chart.vue';
 import { transformedAreaChartData } from '../mock_data';
 
 describe('CiCdAnalyticsAreaChart', () => {

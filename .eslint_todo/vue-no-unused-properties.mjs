@@ -7,7 +7,6 @@ export default {
     'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_comment_form.vue',
     'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_edit_note.vue',
     'app/assets/javascripts/admin/statistics_panel/components/app.vue',
-    'app/assets/javascripts/alerts_settings/components/alerts_integrations_list.vue',
     'app/assets/javascripts/analytics/cycle_analytics/components/base.vue',
     'app/assets/javascripts/analytics/shared/components/projects_dropdown_filter.vue',
     'app/assets/javascripts/analytics/usage_trends/components/users_chart.vue',

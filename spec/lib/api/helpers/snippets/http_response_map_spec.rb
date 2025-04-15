@@ -9,7 +9,10 @@ RSpec.describe API::Helpers::Snippets::HttpResponseMap, feature_category: :sourc
         expect(described_class.status_for(:success)).to eq(200)
         expect(described_class.status_for(:error)).to eq(400)
         expect(described_class.status_for(:invalid_params_error)).to eq(422)
+        expect(described_class.status_for(:snippet_access_error)).to eq(403)
+        expect(described_class.status_for(:snippet_not_found_error)).to eq(404)
         expect(described_class.status_for(:failed_to_create_error)).to eq(400)
+        expect(described_class.status_for(:failed_to_delete_error)).to eq(400)
         expect(described_class.status_for(:failed_to_update_error)).to eq(400)
       end
     end

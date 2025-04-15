@@ -13,7 +13,7 @@ import PipelineStatusChart from '~/projects/pipelines/charts/components/pipeline
 import getPipelineAnalyticsQuery from '~/projects/pipelines/charts/graphql/queries/get_pipeline_analytics.query.graphql';
 import { createAlert } from '~/alert';
 import { useFakeDate } from 'helpers/fake_date';
-import { pipelineAnalyticsEmptyData, pipelineAnalyticsData } from '../mock_data';
+import { pipelineAnalyticsEmptyData, pipelineAnalyticsData } from 'jest/analytics/ci_cd/mock_data';
 
 Vue.use(VueApollo);
 jest.mock('~/alert');

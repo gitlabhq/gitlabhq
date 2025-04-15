@@ -441,7 +441,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/diff/file_spec.rb'
     - 'spec/lib/gitlab/diff/line_spec.rb'
     - 'spec/lib/gitlab/diff/position_tracer_spec.rb'
-    - 'spec/lib/gitlab/doctor/secrets_spec.rb'
     - 'spec/lib/gitlab/email/receiver_spec.rb'
     - 'spec/lib/gitlab/email/service_desk_receiver_spec.rb'
     - 'spec/lib/gitlab/error_tracking/processor/sidekiq_processor_spec.rb'

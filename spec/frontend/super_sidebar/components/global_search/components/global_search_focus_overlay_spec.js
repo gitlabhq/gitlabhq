@@ -1,12 +1,12 @@
 import { GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import SearchResultHoverLayover from '~/super_sidebar/components/global_search/components/global_search_hover_overlay.vue';
+import SearchResultFocusLayover from '~/super_sidebar/components/global_search/components/global_search_focus_overlay.vue';
 
-describe('SearchResultHoverLayover', () => {
+describe('SearchResultFocusLayover', () => {
   let wrapper;
 
   const createComponent = (textMessage = 'test') => {
-    wrapper = shallowMountExtended(SearchResultHoverLayover, {
+    wrapper = shallowMountExtended(SearchResultFocusLayover, {
       propsData: {
         textMessage,
       },

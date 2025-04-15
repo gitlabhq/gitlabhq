@@ -1,8 +1,8 @@
 import { nextTick } from 'vue';
 import { GlSegmentedControl } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import CiCdAnalyticsAreaChart from '~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_area_chart.vue';
-import CiCdAnalyticsCharts from '~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue';
+import CiCdAnalyticsAreaChart from '~/analytics/ci_cd/components/ci_cd_analytics_area_chart.vue';
+import CiCdAnalyticsCharts from '~/analytics/ci_cd/components/ci_cd_analytics_charts.vue';
 import { transformedAreaChartData, chartOptions } from '../mock_data';
 
 const charts = [
@@ -33,7 +33,7 @@ const DEFAULT_PROPS = {
   charts,
 };
 
-describe('~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue', () => {
+describe('~/analytics/ci_cd/components/ci_cd_analytics_charts.vue', () => {
   let wrapper;
 
   const createWrapper = (props = {}, slots = {}) =>

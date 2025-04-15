@@ -23008,18 +23008,6 @@ msgstr ""
 msgid "DuoChat|Give feedback"
 msgstr ""
 
-msgid "DuoChat|How do I change my password in GitLab?"
-msgstr ""
-
-msgid "DuoChat|How do I clone a repository?"
-msgstr ""
-
-msgid "DuoChat|How do I create a template?"
-msgstr ""
-
-msgid "DuoChat|How do I fork a project?"
-msgstr ""
-
 msgid "DuoChat|How to use GitLab"
 msgstr ""
 

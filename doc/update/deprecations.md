@@ -1877,6 +1877,27 @@ For migration instructions, see
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="17.11">
+
+## GitLab 17.11
+
+<div class="deprecation breaking-change" data-milestone="17.11">
+
+### OAuth ROPC grant without client credentials is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.11</span>
+- Removal in GitLab <span class="milestone">17.11</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/535298).
+
+</div>
+
+GitLab.com requires client authentication for OAuth Resource Owner Password Credentials (ROPC) OAuth grant as of April 8, 2025. ROPC was omitted by the OAuth working group in RFC Version 2.1. Existing ROPC integrations without client credentials will experience service disruption after this date. If you experience disruption, update your integrations to include client credentials before the deadline. More information can be found [on our blog](https://about.gitlab.com/blog/2025/04/01/improving-oauth-ropc-security-on-gitlab-com/).
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="17.9">
 
 ## GitLab 17.9

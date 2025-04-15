@@ -539,9 +539,10 @@ $command-palette-spacing: px-to-rem(14px);
   }
 
 
-  .show-hover-layover {
-    &:hover {
-      .show-hover-layover-hint {
+  .show-focus-layover {
+    &:focus,
+    &:focus-within {
+      .show-focus-layover-hint {
         @apply gl-opacity-10;
       }
     }

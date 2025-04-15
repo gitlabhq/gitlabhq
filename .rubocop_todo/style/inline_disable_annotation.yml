@@ -2234,7 +2234,6 @@ Style/InlineDisableAnnotation:
     - 'spec/models/ci/build_trace_chunk_spec.rb'
     - 'spec/models/ci/job_token/project_scope_link_spec.rb'
     - 'spec/models/ci/persistent_ref_spec.rb'
-    - 'spec/models/ci/pipeline_spec.rb'
     - 'spec/models/concerns/bulk_insertable_associations_spec.rb'
     - 'spec/models/concerns/legacy_bulk_insert_spec.rb'
     - 'spec/models/concerns/manual_inverse_association_spec.rb'

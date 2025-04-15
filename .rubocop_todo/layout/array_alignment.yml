@@ -153,7 +153,6 @@ Layout/ArrayAlignment:
     - 'spec/lib/gitlab/graphql/loaders/batch_model_loader_spec.rb'
     - 'spec/lib/gitlab/i18n/po_linter_spec.rb'
     - 'spec/lib/gitlab/import_export/attributes_finder_spec.rb'
-    - 'spec/lib/gitlab/import_export/members_mapper_spec.rb'
     - 'spec/lib/gitlab/issuable_sorter_spec.rb'
     - 'spec/lib/gitlab/kroki_spec.rb'
     - 'spec/lib/gitlab/language_detection_spec.rb'

@@ -51,7 +51,6 @@ Performance/StringIdentifierArgument:
     - 'ee/app/services/incident_management/pending_escalations/process_service.rb'
     - 'ee/lib/gitlab/graphql/aggregations/issuables/lazy_links_aggregate.rb'
     - 'ee/spec/controllers/groups/iterations_controller_spec.rb'
-    - 'ee/spec/controllers/groups/security/policies_controller_spec.rb'
     - 'ee/spec/factories/protected_branches.rb'
     - 'ee/spec/graphql/mutations/groups/update_spec.rb'
     - 'ee/spec/helpers/push_rules_helper_spec.rb'

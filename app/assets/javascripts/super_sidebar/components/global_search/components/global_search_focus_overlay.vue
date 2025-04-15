@@ -2,7 +2,7 @@
 import { GlSprintf } from '@gitlab/ui';
 
 export default {
-  name: 'SearchResultHoverLayover',
+  name: 'SearchResultFocusLayover',
   components: {
     GlSprintf,
   },
@@ -21,12 +21,12 @@ export default {
       <slot></slot>
     </span>
     <span
-      class="show-hover-layover-hint gl-hidden gl-items-center gl-justify-end gl-opacity-0 sm:gl-flex"
+      class="show-focus-layover-hint gl-hidden gl-items-center gl-justify-end gl-opacity-0 sm:gl-flex"
     >
-      <span class="gl-whitespace-nowrap gl-text-default" data-testid="overlay-message">
+      <span class="gl-whitespace-nowrap gl-text-subtle" data-testid="overlay-message">
         <gl-sprintf :message="textMessage">
           <template #kbd="{ content }">
-            <kbd class="vertical-align-normalization gl-pb-3 gl-align-middle gl-text-base">
+            <kbd class="-gl-mb-2 -gl-mt-3 gl-pb-3 gl-align-middle gl-text-base">
               {{ content }}
             </kbd>
           </template>

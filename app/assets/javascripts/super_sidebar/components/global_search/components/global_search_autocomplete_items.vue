@@ -1,5 +1,11 @@
 <script>
-import { GlAvatar, GlAlert, GlLoadingIcon, GlDisclosureDropdownGroup } from '@gitlab/ui';
+import {
+  GlAvatar,
+  GlAlert,
+  GlLoadingIcon,
+  GlDisclosureDropdownGroup,
+  GlDisclosureDropdownItem,
+} from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
@@ -32,7 +38,7 @@ import {
   PAGES_GROUP_TITLE,
   GROUPS_GROUP_TITLE,
 } from '../command_palette/constants';
-import SearchResultHoverLayover from './global_search_hover_overlay.vue';
+import SearchResultFocusLayover from './global_search_focus_overlay.vue';
 import GlobalSearchNoResults from './global_search_no_results.vue';
 
 const trackingMixin = InternalEvents.mixin();
@@ -61,7 +67,8 @@ export default {
     GlAlert,
     GlLoadingIcon,
     GlDisclosureDropdownGroup,
-    SearchResultHoverLayover,
+    GlDisclosureDropdownItem,
+    SearchResultFocusLayover,
     GlobalSearchNoResults,
   },
   directives: {
@@ -79,7 +86,7 @@ export default {
             return {
               ...item,
               extraAttrs: {
-                class: 'show-hover-layover gl-flex gl-items-center gl-justify-between',
+                class: 'show-focus-layover gl-flex gl-items-center gl-justify-between',
               },
             };
           }),
@@ -178,32 +185,39 @@ export default {
         bordered
         @action="trackingTypes"
       >
-        <template #list-item="{ item }">
-          <search-result-hover-layover :text-message="overlayText(group.name)">
-            <gl-avatar
-              v-if="item.avatar_url !== undefined"
-              :src="item.avatar_url"
-              :entity-id="item.entity_id"
-              :entity-name="item.entity_name"
-              :size="item.avatar_size"
-              :shape="$options.AVATAR_SHAPE_OPTION_RECT"
-              aria-hidden="true"
-            />
-            <span class="gl-flex gl-min-w-0 gl-grow gl-flex-col">
-              <span
-                v-safe-html="highlightedName(item.text)"
-                class="gl-truncate gl-text-strong"
-                data-testid="autocomplete-item-name"
-              ></span>
-              <span
-                v-if="item.value"
-                v-safe-html="item.namespace"
-                class="gl-truncate gl-text-sm gl-text-subtle"
-                data-testid="autocomplete-item-namespace"
-              ></span>
-            </span>
-          </search-result-hover-layover>
-        </template>
+        <gl-disclosure-dropdown-item
+          v-for="item in group.items"
+          :key="item.id || item.text"
+          :item="item"
+          class="show-on-focus-or-hover--context show-focus-layover gl-flex gl-items-center gl-justify-between"
+        >
+          <template #list-item>
+            <search-result-focus-layover :text-message="overlayText(group)">
+              <gl-avatar
+                v-if="item.avatar_url !== undefined"
+                :src="item.avatar_url"
+                :entity-id="item.entity_id"
+                :entity-name="item.entity_name"
+                :size="item.avatar_size"
+                :shape="$options.AVATAR_SHAPE_OPTION_RECT"
+                aria-hidden="true"
+              />
+              <span class="gl-flex gl-min-w-0 gl-grow gl-flex-col">
+                <span
+                  v-safe-html="highlightedName(item.text)"
+                  class="gl-truncate gl-text-strong"
+                  data-testid="autocomplete-item-name"
+                ></span>
+                <span
+                  v-if="item.value"
+                  v-safe-html="item.namespace"
+                  class="gl-truncate gl-text-sm gl-text-subtle"
+                  data-testid="autocomplete-item-namespace"
+                ></span>
+              </span>
+            </search-result-focus-layover>
+          </template>
+        </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>
     </ul>
 

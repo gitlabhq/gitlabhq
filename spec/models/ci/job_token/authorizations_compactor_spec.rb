@@ -167,12 +167,11 @@ RSpec.describe Ci::JobToken::AuthorizationsCompactor, feature_category: :secrets
           target_project: pns2.project)
       end
 
-      it 'removes them from the compaction process',
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/524014' do
+      it 'removes them from the compaction process' do
         compactor.compact(6)
 
-        expect(compactor.allowlist_groups).to match_array([ns2])
-        expect(compactor.allowlist_projects).to match_array([pns1.project, pns6.project, pns7.project])
+        expect(compactor.allowlist_groups).to match_array([ns2, ns4])
+        expect(compactor.allowlist_projects).to match_array([pns1.project])
       end
     end
   end
