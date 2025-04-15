@@ -2,7 +2,6 @@
   removal_milestone: "Pending"
   announcement_milestone: "17.9"
   breaking_change: true
-  window: 1
   reporter: nagyv-gitlab
   stage: deploy
   issue_url: https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/630

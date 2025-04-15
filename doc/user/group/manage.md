@@ -333,6 +333,13 @@ Additionally, restricted access might block the standard non-overage flows:
 
 ## User cap for groups
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
 {{< history >}}
 
 - [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/9263) in GitLab 16.3.

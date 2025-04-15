@@ -566,6 +566,13 @@ Fruits
 : orange
 ```
 
+{{< alert type="note" >}}
+
+The rich text editor does not support inserting new description lists. To insert a new description list, use the
+plain text editor. For more information, see [issue 535956](https://gitlab.com/gitlab-org/gitlab/-/issues/535956).
+
+{{< /alert >}}
+
 ### Task lists
 
 {{< history >}}
@@ -1584,6 +1591,13 @@ $$
 
 ![Example of math in GitLab](img/markdown_math_v17_2.png)
 
+{{< alert type="note" >}}
+
+The rich text editor does not support inserting new math blocks. To insert a new math block, use the
+plain text editor. For more information, see [issue 366527](https://gitlab.com/gitlab-org/gitlab/-/issues/366527).
+
+{{< /alert >}}
+
 ## Table of contents
 
 A table of contents is an unordered list that links to subheadings in the document.
@@ -2062,6 +2076,13 @@ These are used to force the Vale ReferenceLinks check to skip these examples.
  [^1]: This text is inside a footnote.
 
  [^footnote-42]: This text is another footnote.
+
+{{< alert type="note" >}}
+
+The rich text editor does not support inserting new footnotes. To insert a new footnote, use the
+plain text editor. For more information, see [issue 365265](https://gitlab.com/gitlab-org/gitlab/-/issues/365265).
+
+{{< /alert >}}
 
 ## Inline HTML
 

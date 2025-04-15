@@ -15,15 +15,12 @@ import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
-import { findLabelsWidget, newWorkItemId, newWorkItemFullPath } from '../utils';
-
-function formatLabelForListbox(label) {
-  return {
-    text: label.title || label.text,
-    value: label.id || label.value,
-    color: label.color,
-  };
-}
+import {
+  findLabelsWidget,
+  formatLabelForListbox,
+  newWorkItemId,
+  newWorkItemFullPath,
+} from '../utils';
 
 export default {
   components: {

@@ -50204,6 +50204,9 @@ msgstr ""
 msgid "Remove iteration"
 msgstr ""
 
+msgid "Remove labels"
+msgstr ""
+
 msgid "Remove license"
 msgstr ""
 

@@ -90,6 +90,12 @@ export const findHierarchyWidgetChildren = (workItem) =>
 export const findHierarchyWidgetAncestors = (workItem) =>
   findHierarchyWidget(workItem)?.ancestors?.nodes || [];
 
+export const formatLabelForListbox = (label) => ({
+  text: label.title || label.text,
+  value: label.id || label.value,
+  color: label.color,
+});
+
 export const convertTypeEnumToName = (workItemTypeEnum) =>
   Object.keys(NAME_TO_ENUM_MAP).find((name) => NAME_TO_ENUM_MAP[name] === workItemTypeEnum);
 

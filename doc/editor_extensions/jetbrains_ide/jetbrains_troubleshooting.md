@@ -110,3 +110,17 @@ are running a supported version of PyCharm:
 1. For **Compatibility**, select `PyCharm Community` or `PyCharm Professional`.
 1. For **Channels**, select your desired stability level for the GitLab plugin.
 1. For your version of PyCharm, select **Download** to download the correct GitLab plugin version, and install it.
+
+## JCEF Errors
+
+If you experience issues with GitLab Duo Chat related to JCEF (Java Chromium Embedded Framework), you can try these steps:
+
+1. On the top bar, go to **Help > Find Action** and search for `Registry`.
+1. Find or search for `ide.browser.jcef.sandbox.enable`.
+1. Clear the checkbox to disable this setting.
+1. Close the Registry dialog.
+1. Restart your IDE.
+1. On the top bar, go to **Help > Find Action** and search for `Choose Boot Java Runtime for the IDE`.
+1. Select the boot java runtime version that's the same as your current IDE version, but with JCEF bundled:
+   ![JCEF supporting runtime example](img/jcef_supporting_runtime_example_v17_3.png)
+1. Restart your IDE.

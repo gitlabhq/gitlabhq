@@ -11,7 +11,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import getOpenMrCountForBlobPath from '~/repository/queries/open_mr_count.query.graphql';
 import getOpenMrsForBlobPath from '~/repository/queries/open_mrs.query.graphql';
 import { nDaysBefore } from '~/lib/utils/datetime/date_calculation_utility';
-import { toYmd } from '~/analytics/shared/utils';
+import { formatDate } from '~/lib/utils/datetime/date_format_utility';
 import { logError } from '~/lib/logger';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import MergeRequestListItem from './merge_request_list_item.vue';
@@ -56,7 +56,7 @@ export default {
     },
     createdAfter() {
       const lookbackDate = nDaysBefore(new Date(), OPEN_MR_AGE_LIMIT_DAYS - 1, { utc: true });
-      return toYmd(lookbackDate);
+      return formatDate(lookbackDate, 'yyyy-mm-dd HH:MM:ss Z', true);
     },
     isLoading() {
       return this.$apollo.queries.loading;

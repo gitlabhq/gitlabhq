@@ -49,7 +49,8 @@ are [paginated](rest/_index.md#pagination).
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_repository_storage_moves"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/project_repository_storage_moves"
 ```
 
 Example response:
@@ -93,7 +94,8 @@ Parameters:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/repository_storage_moves"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/repository_storage_moves"
 ```
 
 Example response:
@@ -134,7 +136,8 @@ Parameters:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_repository_storage_moves/1"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/project_repository_storage_moves/1"
 ```
 
 Example response:
@@ -174,7 +177,8 @@ Parameters:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/repository_storage_moves/1"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/repository_storage_moves/1"
 ```
 
 Example response:
@@ -214,9 +218,11 @@ Parameters:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
-     --data '{"destination_storage_name":"storage2"}' \
-     "https://gitlab.example.com/api/v4/projects/1/repository_storage_moves"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{"destination_storage_name":"storage2"}' \
+  --url "https://gitlab.example.com/api/v4/projects/1/repository_storage_moves"
 ```
 
 Example response:
@@ -260,9 +266,11 @@ Parameters:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
-     --data '{"source_storage_name":"default"}' \
-     "https://gitlab.example.com/api/v4/project_repository_storage_moves"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{"source_storage_name":"default"}' \
+  --url "https://gitlab.example.com/api/v4/project_repository_storage_moves"
 ```
 
 Example response:
