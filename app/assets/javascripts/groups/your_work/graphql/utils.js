@@ -28,7 +28,7 @@ export const formatGroup = (group) => ({
   },
   descendantGroupsCount: group.subgroup_count,
   projectsCount: group.project_count,
-  children: group.children ? group.children.map(formatGroup) : [],
+  children: group.children?.length ? group.children.map(formatGroup) : [],
   // Properties below are hard coded for now until API has been
   // updated to support these fields.
   organizationEditPath: '',

@@ -6,6 +6,7 @@ import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { TIMESTAMP_TYPES } from '~/vue_shared/components/resource_lists/constants';
 import { ACCESS_LEVELS_INTEGER_TO_STRING } from '~/access_level/constants';
+import { COMPONENT_NAME as NESTED_GROUPS_PROJECTS_LIST_COMPONENT_NAME } from '~/vue_shared/components/nested_groups_projects_list/constants';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
@@ -156,11 +157,20 @@ export default {
       };
     },
     listComponentProps() {
-      return {
+      const baseProps = {
         items: this.nodes,
         timestampType: this.timestampType,
         ...this.tab.listComponentProps,
       };
+
+      if (this.tab.listComponent.name === NESTED_GROUPS_PROJECTS_LIST_COMPONENT_NAME) {
+        return {
+          ...baseProps,
+          initialExpanded: Boolean(this.search),
+        };
+      }
+
+      return baseProps;
     },
   },
   methods: {
@@ -180,6 +190,55 @@ export default {
         startCursor,
       });
     },
+    findItemById(items, id) {
+      if (!items?.length) {
+        return null;
+      }
+
+      for (let i = 0; i < items.length; i += 1) {
+        const item = items[i];
+
+        // Check if current item has the ID we're looking for
+        if (item.id === id) {
+          return item;
+        }
+
+        // If item has children, recursively search its children
+        if (item.children?.length) {
+          const childItem = this.findItemById(item.children, id);
+
+          if (childItem !== null) {
+            return childItem;
+          }
+        }
+      }
+
+      // Item not found at any level
+      return null;
+    },
+    async onLoadChildren(parentId) {
+      const item = this.findItemById(this.nodes, parentId);
+
+      if (!item) {
+        return;
+      }
+
+      item.childrenLoading = true;
+
+      try {
+        const response = await this.$apollo.query({
+          query: this.tab.query,
+          variables: { parentId },
+        });
+        const { nodes } = get(response.data, this.tab.queryPath);
+
+        item.children = this.tab.formatter(nodes);
+      } catch (error) {
+        createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
+      } finally {
+        item.childrenLoading = false;
+      }
+    },
   },
 };
 </script>
@@ -187,7 +246,12 @@ export default {
 <template>
   <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="md" />
   <div v-else-if="nodes.length">
-    <component :is="tab.listComponent" v-bind="listComponentProps" @refetch="onRefetch" />
+    <component
+      :is="tab.listComponent"
+      v-bind="listComponentProps"
+      @refetch="onRefetch"
+      @load-children="onLoadChildren"
+    />
     <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-mt-5 gl-text-center">
       <gl-keyset-pagination v-bind="pageInfo" @prev="onPrev" @next="onNext" />
     </div>

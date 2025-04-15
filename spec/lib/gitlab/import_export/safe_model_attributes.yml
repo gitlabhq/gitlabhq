@@ -695,6 +695,7 @@ Project:
 - merge_commit_template
 - squash_commit_template
 - issue_branch_template
+- merge_request_title_regex
 Author:
 - name
 ProjectFeature:

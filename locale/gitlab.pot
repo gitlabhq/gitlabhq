@@ -19205,6 +19205,9 @@ msgstr ""
 msgid "CycleAnalytics|Date"
 msgstr ""
 
+msgid "CycleAnalytics|Failed to parse default stages."
+msgstr ""
+
 msgid "CycleAnalytics|Failed to parse stage events."
 msgstr ""
 
@@ -47896,6 +47899,9 @@ msgstr ""
 msgid "ProjectSettings|Publish, store, and view packages in a project."
 msgstr ""
 
+msgid "ProjectSettings|Regex that all merge request titles must match"
+msgstr ""
+
 msgid "ProjectSettings|Relative path:"
 msgstr ""
 
@@ -48026,6 +48032,9 @@ msgid "ProjectSettings|This setting is applied on the server level but has been 
 msgstr ""
 
 msgid "ProjectSettings|This setting will be applied to all projects unless overridden by an admin."
+msgstr ""
+
+msgid "ProjectSettings|Title regex"
 msgstr ""
 
 msgid "ProjectSettings|Topics are publicly visible even on private projects. Do not include sensitive information in topic names. %{linkStart}Learn more%{linkEnd}."
@@ -60908,6 +60917,9 @@ msgstr ""
 msgid "The time period in seconds that the maximum requests per project limit applies to."
 msgstr ""
 
+msgid "The title must match the required regex."
+msgstr ""
+
 msgid "The update action will time out after %{number_of_minutes} minutes. For big repositories, use a clone/push combination."
 msgstr ""
 
@@ -68521,6 +68533,11 @@ msgstr ""
 
 msgid "WorkItem|Issue"
 msgstr ""
+
+msgid "WorkItem|Issue has 1 related vulnerability"
+msgid_plural "WorkItem|Issue has %{itemCount} related vulnerabilities"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "WorkItem|Issues settings"
 msgstr ""

@@ -81,6 +81,7 @@ module API
         optional :squash_option, type: String, values: %w[never always default_on default_off], desc: 'Squash default for project. One of `never`, `always`, `default_on`, or `default_off`.'
         optional :mr_default_target_self, type: Boolean, desc: 'Merge requests of this forked project targets itself by default'
         optional :warn_about_potentially_unwanted_characters, type: Boolean, desc: 'Warn about potentially unwanted characters'
+        optional :merge_request_title_regex, type: String, desc: 'The regex the Merge Request must adhere to'
       end
 
       params :optional_project_params_ee do
@@ -176,6 +177,7 @@ module API
           :merge_requests_template,
           :merge_trains_enabled,
           :merge_method,
+          :merge_request_title_regex,
           :name,
           :only_allow_merge_if_all_discussions_are_resolved,
           :only_allow_merge_if_pipeline_succeeds,

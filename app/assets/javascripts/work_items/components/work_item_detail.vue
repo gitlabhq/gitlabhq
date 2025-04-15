@@ -1230,7 +1230,8 @@ export default {
 
             <work-item-vulnerabilities
               v-if="showWorkItemVulnerabilities"
-              :work-item-id="workItem.id"
+              :work-item-iid="iid"
+              :work-item-full-path="workItemFullPath"
               data-testid="work-item-vulnerabilities"
             />
 

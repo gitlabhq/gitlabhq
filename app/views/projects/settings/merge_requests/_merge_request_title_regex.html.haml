@@ -1,0 +1,11 @@
+- form = local_assigns.fetch(:form)
+- project = local_assigns.fetch(:project)
+
+- if ::Feature.enabled?(:merge_request_title_regex, project)
+  .form-group
+    = form.label :merge_request_title_regex, s_('ProjectSettings|Title regex'), class: 'gl-mb-0'
+    %p.gl-text-subtle
+      %span{ id: :merge_request_title_hint }
+        = s_('ProjectSettings|Regex that all merge request titles must match')
+
+    = form.text_field :merge_request_title_regex, class: "form-control", placeholder: '/title/', aria: { describedby: :merge_request_title_regex_hint }

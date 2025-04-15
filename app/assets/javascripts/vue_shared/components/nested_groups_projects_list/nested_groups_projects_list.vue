@@ -3,6 +3,7 @@ import {
   TIMESTAMP_TYPES,
   TIMESTAMP_TYPE_CREATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
+import { COMPONENT_NAME } from './constants';
 
 /**
  * This component uses circular references.
@@ -16,7 +17,7 @@ import {
  */
 
 export default {
-  name: 'NestedGroupsProjectsList',
+  name: COMPONENT_NAME,
   props: {
     items: {
       type: Array,
@@ -30,6 +31,11 @@ export default {
         return TIMESTAMP_TYPES.includes(value);
       },
     },
+    initialExpanded: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 };
 </script>
@@ -42,6 +48,7 @@ export default {
       :key="`${item.type}-${item.id}`"
       :item="item"
       :timestamp-type="timestampType"
+      :initial-expanded="initialExpanded"
       @load-children="$emit('load-children', $event)"
     />
   </ul>

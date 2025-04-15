@@ -13,7 +13,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include Gitlab::Cache::Helpers
   include MergeRequestsHelper
   include ParseCommitDate
-  include RapidDiffsResource
+  include RapidDiffs::Resource
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]

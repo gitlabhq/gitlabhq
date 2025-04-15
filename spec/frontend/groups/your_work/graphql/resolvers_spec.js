@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import dashboardGroupsResponse from 'test_fixtures/groups/dashboard/index.json';
+import dashboardGroupsWithChildrenResponse from 'test_fixtures/groups/dashboard/index_with_children.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { resolvers } from '~/groups/your_work/graphql/resolvers';
 import memberGroupsQuery from '~/groups/your_work/graphql/queries/member_groups.query.graphql';
@@ -24,7 +24,7 @@ describe('your work groups resolver', () => {
     mockApollo = createMockApollo([], resolvers(endpoint));
 
     mockAxios = new MockAdapter(axios);
-    mockAxios.onGet(endpoint).reply(200, dashboardGroupsResponse);
+    mockAxios.onGet(endpoint).reply(200, dashboardGroupsWithChildrenResponse);
   });
 
   afterEach(() => {
@@ -44,9 +44,9 @@ describe('your work groups resolver', () => {
       },
     } = await makeQuery();
 
-    const mockGroup = dashboardGroupsResponse[1];
+    const [mockGroup] = dashboardGroupsWithChildrenResponse;
 
-    expect(nodes[1]).toMatchObject({
+    expect(nodes[0]).toMatchObject({
       __typename: TYPENAME_GROUP,
       id: convertToGraphQLId(TYPENAME_GROUP, mockGroup.id),
       fullPath: '/frontend-fixtures-group',
@@ -56,7 +56,7 @@ describe('your work groups resolver', () => {
       organizationEditPath: '',
       descriptionHtml: '',
       avatarUrl: null,
-      descendantGroupsCount: 0,
+      descendantGroupsCount: 1,
       projectsCount: 2,
       groupMembersCount: 0,
       visibility: 'public',
@@ -64,6 +64,20 @@ describe('your work groups resolver', () => {
       updatedAt: mockGroup.updated_at,
       userPermissions: { removeGroup: true, viewEditPage: true },
       maxAccessLevel: { integerValue: 50 },
+      children: [
+        {
+          id: convertToGraphQLId(TYPENAME_GROUP, mockGroup.children[0].id),
+          avatarUrl: null,
+          descendantGroupsCount: 1,
+          children: [
+            {
+              id: convertToGraphQLId(TYPENAME_GROUP, mockGroup.children[0].children[0].id),
+              avatarUrl: null,
+              descendantGroupsCount: 0,
+            },
+          ],
+        },
+      ],
       isLinkedToSubscription: false,
     });
   });

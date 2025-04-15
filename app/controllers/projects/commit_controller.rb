@@ -9,7 +9,7 @@ class Projects::CommitController < Projects::ApplicationController
   include DiffForPath
   include DiffHelper
   include SourcegraphDecorator
-  include RapidDiffsResource
+  include RapidDiffs::Resource
 
   # Authorize
   before_action :require_non_empty_project

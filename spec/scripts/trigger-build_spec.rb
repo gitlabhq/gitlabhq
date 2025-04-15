@@ -20,6 +20,7 @@ RSpec.describe Trigger, feature_category: :tooling do
       'CI_COMMIT_SHA' => 'ci_commit_sha',
       'CI_MERGE_REQUEST_PROJECT_ID' => 'ci_merge_request_project_id',
       'CI_MERGE_REQUEST_IID' => 'ci_merge_request_iid',
+      'CI_MERGE_REQUEST_TARGET_BRANCH_NAME' => 'master',
       'PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE' => 'bot-token',
       'CI_JOB_TOKEN' => 'job-token',
       'GITLAB_USER_NAME' => 'gitlab_user_name',

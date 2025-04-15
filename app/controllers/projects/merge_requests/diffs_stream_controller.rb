@@ -3,7 +3,7 @@
 module Projects
   module MergeRequests
     class DiffsStreamController < Projects::MergeRequests::ApplicationController
-      include StreamDiffs
+      include RapidDiffs::StreamingResource
 
       private
 

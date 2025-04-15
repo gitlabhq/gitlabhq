@@ -8018,35 +8018,6 @@ GitLab 16.1 introduced [API endpoints for the job token scope](https://gitlab.co
 
 <div class="deprecation breaking-change">
 
-### Workspaces `editor` GraphQL field is deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.8</span>
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/508155).
-
-</div>
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
-
-The `editor` field is not used internally. It will be deprecated in the following GraphQL elements:
-
-- `Workspace` type.
-- Input to `workspaceCreate` mutation.
-
-To prepare for this change:
-
-- Review and update your GraphQL queries that interact with the `Workspace` type.
-- Remove any references to the `editor` field.
-- Adjust your application logic accordingly.
-
-</div>
-
-<div class="deprecation breaking-change">
-
 ### `ciJobTokenScopeAddProject` GraphQL mutation is deprecated
 
 <div class="deprecation-notes">

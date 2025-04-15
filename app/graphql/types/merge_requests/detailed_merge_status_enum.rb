@@ -69,6 +69,9 @@ module Types
       value 'SECURITY_POLICIES_VIOLATIONS',
         value: :security_policy_violations,
         description: 'All policy rules must be satisfied.'
+      value 'TITLE_NOT_MATCHING',
+        value: :title_regex,
+        description: 'Merge request title does not match required regex.'
     end
   end
 end

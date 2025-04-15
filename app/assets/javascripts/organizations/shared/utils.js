@@ -32,6 +32,7 @@ export const formatGroups = (groups) =>
       userPermissions,
       organizationEditPath: editPath,
       descendantGroupsCount,
+      children,
       ...group
     }) => ({
       ...group,
@@ -44,7 +45,7 @@ export const formatGroups = (groups) =>
       editPath,
       availableActions: availableGroupActions(userPermissions),
       descendantGroupsCount,
-      children: [],
+      children: children?.length ? formatGroups(children) : [],
       childrenLoading: false,
       hasChildren: Boolean(descendantGroupsCount),
     }),

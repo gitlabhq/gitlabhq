@@ -58,7 +58,8 @@ module Projects
           :merge_method,
           :merge_commit_template_or_default,
           :squash_commit_template_or_default,
-          :suggestion_commit_message
+          :suggestion_commit_message,
+          :merge_request_title_regex
         ] + [project_setting_attributes: project_setting_attributes]
       end
     end

@@ -2,7 +2,7 @@
 
 module Projects
   class CompareDiffsStreamController < Projects::CompareController
-    include StreamDiffs
+    include RapidDiffs::StreamingResource
 
     private
 

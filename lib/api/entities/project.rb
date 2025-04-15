@@ -161,6 +161,7 @@ module API
       expose :remove_source_branch_after_merge, documentation: { type: 'boolean' }
       expose :printing_merge_request_link_enabled, documentation: { type: 'boolean' }
       expose :merge_method, documentation: { type: 'string', example: 'merge' }
+      expose :merge_request_title_regex, documentation: { type: 'string', example: '/Title of merge request/' }
       expose :squash_option, documentation: { type: 'string', example: 'default_off' }
       expose :enforce_auth_checks_on_uploads, documentation: { type: 'boolean' }
       expose :suggestion_commit_message, documentation: { type: 'string', example: 'Suggestion message' }

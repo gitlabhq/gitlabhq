@@ -38,6 +38,17 @@ RSpec.describe 'Groups (JavaScript fixtures)', feature_category: :groups_and_pro
 
       expect(response).to be_successful
     end
+
+    context 'when group has subgroups' do
+      let_it_be(:subgroup) { create(:group, parent: group) }
+      let_it_be(:nested_subgroup) { create(:group, parent: subgroup, name: 'foo bar baz') }
+
+      it 'groups/dashboard/index_with_children.json' do
+        get :index, format: :json, params: { filter: 'foo bar baz' }
+
+        expect(response).to be_successful
+      end
+    end
   end
 
   describe API::Groups, '(JavaScript fixtures)', type: :request do

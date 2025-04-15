@@ -1302,6 +1302,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         warn_about_potentially_unwanted_characters?
         enforce_auth_checks_on_uploads
         enforce_auth_checks_on_uploads?
+        merge_request_title_regex
       ].each do |method|
         it { is_expected.to delegate_method(method).to(:project_setting).allow_nil }
       end
@@ -1312,6 +1313,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         show_default_award_emojis=
         warn_about_potentially_unwanted_characters=
         enforce_auth_checks_on_uploads=
+        merge_request_title_regex=
       ].each do |method|
         it { is_expected.to delegate_method(method).to(:project_setting).with_arguments(:args).allow_nil }
       end

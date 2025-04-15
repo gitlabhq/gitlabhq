@@ -234,6 +234,7 @@ export const LINKED_ITEMS_ANCHOR = 'linkeditems';
 export const CHILD_ITEMS_ANCHOR = 'childitems';
 export const TASKS_ANCHOR = 'tasks';
 export const DEVELOPMENT_ITEMS_ANCHOR = 'developmentitems';
+export const VULNERABILITIES_ITEMS_ANCHOR = 'vulnerabilitiesitems';
 
 export const ISSUABLE_EPIC = 'issue-type-epic';
 

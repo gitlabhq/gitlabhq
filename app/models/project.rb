@@ -91,6 +91,7 @@ class Project < ApplicationRecord
 
   MAX_SUGGESTIONS_TEMPLATE_LENGTH = 255
   MAX_COMMIT_TEMPLATE_LENGTH = 500
+  MAX_MERGE_REQUEST_TITLE_REGEX = 255
 
   INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET = 5
 
@@ -600,6 +601,7 @@ class Project < ApplicationRecord
       delegate :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=
       delegate :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=
       delegate :duo_features_enabled, :duo_features_enabled=
+      delegate :merge_request_title_regex, :merge_request_title_regex=
     end
   end
 

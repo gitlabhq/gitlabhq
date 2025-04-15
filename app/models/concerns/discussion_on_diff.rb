@@ -54,7 +54,10 @@ module DiscussionOnDiff
     if lines.nil?
       Gitlab::ErrorTracking.track_exception(
         TruncatedDiffLinesError.new(
-          "Lines is empty. Highlighted lines state: #{highlight}.
+          "Lines is empty.
+           Highlighted lines state: #{highlight}.
+           Diff lines empty: #{diff_lines&.empty?}.
+           Highlighted diff lines empty: #{highlighted_diff_lines&.empty?}.
           Initial line index: #{initial_line_index}.
           Diff line index: #{diff_line&.index}"
         )

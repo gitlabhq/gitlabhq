@@ -4823,6 +4823,20 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['topics']).to eq(%w[topic2])
       end
 
+      it 'updates the merge_request_title_regex' do
+        project3.update!(merge_request_title_regex: nil)
+
+        project_param = { merge_request_title_regex: '/aaa/' }
+
+        expect { put api("/projects/#{project3.id}", user), params: project_param }
+          .to change { project3.reload.merge_request_title_regex }
+          .from(nil)
+          .to(/aaa/)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['merge_request_title_regex']).to eq("/aaa/")
+      end
+
       it 'updates enforce_auth_checks_on_uploads' do
         project3.update!(enforce_auth_checks_on_uploads: false)
 

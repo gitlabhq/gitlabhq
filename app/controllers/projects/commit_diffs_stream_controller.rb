@@ -2,7 +2,7 @@
 
 module Projects
   class CommitDiffsStreamController < Projects::CommitController
-    include StreamDiffs
+    include RapidDiffs::StreamingResource
 
     private
 

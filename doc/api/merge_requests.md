@@ -936,6 +936,7 @@ Use `detailed_merge_status` instead of `merge_status` to account for all potenti
   - `unchecked`: Git has not yet tested if a valid merge is possible.
   - `locked_paths`: Paths locked by other users must be unlocked before merging to default branch.
   - `locked_lfs_files`: LFS files locked by other users must be unlocked before merge.
+  - `title_regex`: Checks whether the title matches the expected regex, if configured in project settings.
 
 ### Preparation steps
 

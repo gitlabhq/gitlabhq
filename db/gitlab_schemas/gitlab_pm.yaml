@@ -5,4 +5,4 @@ allow_cross_joins:
 allow_cross_transactions:
   - gitlab_internal
   - gitlab_shared
-require_sharding_key: true
+require_sharding_key: false

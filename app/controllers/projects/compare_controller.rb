@@ -7,7 +7,7 @@ class Projects::CompareController < Projects::ApplicationController
   include DiffHelper
   include RendersCommits
   include CompareHelper
-  include RapidDiffsResource
+  include RapidDiffs::Resource
 
   # Authorize
   before_action :require_non_empty_project

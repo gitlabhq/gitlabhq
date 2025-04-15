@@ -26,10 +26,15 @@ export default {
         return TIMESTAMP_TYPES.includes(value);
       },
     },
+    initialExpanded: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
-      isExpanded: false,
+      isExpanded: this.initialExpanded,
     };
   },
   computed: {
@@ -38,6 +43,15 @@ export default {
     },
     nestedItemsContainerId() {
       return `nested-items-container-${this.item.id}`;
+    },
+    nestedItemsContainerClasses() {
+      const baseClasses = ['gl-pl-6'];
+
+      if (!this.showChildren) {
+        return [...baseClasses, 'gl-hidden'];
+      }
+
+      return baseClasses;
     },
     itemProps() {
       const sharedProps = {
@@ -73,11 +87,7 @@ export default {
       };
     },
     nestedGroupsProjectsListItems() {
-      if (this.showChildren) {
-        return this.item.children;
-      }
-
-      return [];
+      return this.item.children;
     },
   },
   methods: {
@@ -103,7 +113,8 @@ export default {
         :id="nestedItemsContainerId"
         :items="nestedGroupsProjectsListItems"
         :timestamp-type="timestampType"
-        class="gl-pl-6"
+        :initial-expanded="initialExpanded"
+        :class="nestedItemsContainerClasses"
         @load-children="$emit('load-children', $event)"
       />
     </template>

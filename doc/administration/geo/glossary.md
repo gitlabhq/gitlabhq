@@ -19,12 +19,14 @@ these definitions yet.
 
 {{< /alert >}}
 
- These are the defined terms to describe all aspects of Geo. Using a set of clearly
- defined terms helps us to communicate efficiently and avoids confusion. The language
- on this page aims to be [ubiquitous](https://handbook.gitlab.com/handbook/communication/#ubiquitous-language)
- and [as simple as possible](https://handbook.gitlab.com/handbook/communication/#simple-language).
+These are the defined terms to describe all aspects of Geo. Using a set of clearly
+defined terms helps us to communicate efficiently and avoids confusion. The language
+on this page aims to be [ubiquitous](https://handbook.gitlab.com/handbook/communication/#ubiquitous-language)
+and [as simple as possible](https://handbook.gitlab.com/handbook/communication/#simple-language).
 
- We provide example diagrams and statements to demonstrate correct usage of terms.
+## Main terms
+
+We provide [example diagrams and statements](#examples) to demonstrate correct usage of terms.
 
 | Term                   | Definition                                                                                                                                                                                | Scope        | Discouraged synonyms                            |
 |------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|-------------------------------------------------|
@@ -44,6 +46,39 @@ these definitions yet.
 | Unified URL            | A single external URL used for all Geo sites. Allows requests to be routed to either the primary Geo site or any secondary Geo sites.                                                     | Geo-specific |                                                 |
 | Geo proxying           | A mechanism where secondary Geo sites transparently forward operations to the primary site, except for certain operations that can be handled locally by the secondary sites.             | Geo-specific |                                                 |
 | Blob                   | Geo-related data type which can be replicated to cover various GitLab components.                                                                                                         | Geo-specific | file                                            |
+
+## Replicator terms
+
+Geo uses *replicators* to replicate data of individual GitLab components
+between primary and secondary sites. They define how the individual [data types](replication/datatypes.md#data-types)
+of these components have to be processed and verified. For example, data of the
+GitLab container registry has to be handled differently than CI job artifacts.
+Some components may have more than one replicator which are potentially also
+named differently. As such, the following table describes the replicator names
+and to which GitLab component they belong.
+
+The same replicator names are also visible in the Geo section of the Admin area
+or when using Geo-related console commands.
+
+| Geo replicator name            | GitLab component name                  |
+|--------------------------------|----------------------------------------|
+| Ci Secure Files                | CI Secure Files                        |
+| Container Repositories         | Container registry                     |
+| Dependency Proxy Blobs         | Dependency Proxy Images                |
+| Dependency Proxy Manifests     | Dependency Proxy Images                |
+| Design Management Repositories | Project designs repository             |
+| Group Wiki Repositories        | Group wiki repository                  |
+| Job Artifacts                  | CI job artifacts                       |
+| Lfs Objects                    | LFS objects                            |
+| Merge Request Diffs            | External merge request diffs           |
+| Package Files                  | Package registry                       |
+| Pages Deployments              | Pages                                  |
+| Pipeline Artifacts             | Pipeline artifacts                     |
+| Project Repositories           | Project repository                     |
+| Project Wiki Repositories      | Project wiki repository                |
+| Snippet Repositories           | Personal Snippets and Project Snippets |
+| Terraform State Versions       | Versioned Terraform State              |
+| Uploads                        | User uploads                           |
 
 ## Examples
 

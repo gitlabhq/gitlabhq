@@ -5,7 +5,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   include DiffHelper
   include RendersCommits
   include ProductAnalyticsTracking
-  include RapidDiffsResource
+  include RapidDiffs::Resource
 
   skip_before_action :merge_request
   before_action :authorize_create_merge_request_from!

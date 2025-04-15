@@ -7744,6 +7744,32 @@ Input type: `LdapAdminRoleLinkCreateInput`
 | <a id="mutationldapadminrolelinkcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationldapadminrolelinkcreateldapadminrolelink"></a>`ldapAdminRoleLink` | [`LdapAdminRoleLink`](#ldapadminrolelink) | Created instance-level LDAP link. |
 
+### `Mutation.ldapAdminRoleLinkDestroy`
+
+Destroys an instance-level custom admin role LDAP link.
+
+{{< details >}}
+**Introduced** in GitLab 18.0.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `LdapAdminRoleLinkDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationldapadminrolelinkdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationldapadminrolelinkdestroyid"></a>`id` | [`AuthzLdapAdminRoleLinkID!`](#authzldapadminrolelinkid) | Global ID of the instance-level LDAP link to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationldapadminrolelinkdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationldapadminrolelinkdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationldapadminrolelinkdestroyldapadminrolelink"></a>`ldapAdminRoleLink` | [`LdapAdminRoleLink`](#ldapadminrolelink) | Deleted instance-level LDAP link. |
+
 ### `Mutation.markAsSpamSnippet`
 
 Input type: `MarkAsSpamSnippetInput`
@@ -34535,6 +34561,7 @@ Project-level settings for product analytics provider.
 | <a id="projectmarkedfordeletionon"></a>`markedForDeletionOn` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 16.10. **Status**: Experiment. Date when project was scheduled to be deleted. |
 | <a id="projectmaxaccesslevel"></a>`maxAccessLevel` | [`AccessLevel!`](#accesslevel) | Maximum access level of the current user in the project. |
 | <a id="projectmergecommittemplate"></a>`mergeCommitTemplate` | [`String`](#string) | Template used to create merge commit message in merge requests. |
+| <a id="projectmergerequesttitleregex"></a>`mergeRequestTitleRegex` | [`String`](#string) | Regex used to validate the title of merge requests. |
 | <a id="projectmergerequestsaccesslevel"></a>`mergeRequestsAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for merge requests access. |
 | <a id="projectmergerequestsdisablecommittersapproval"></a>`mergeRequestsDisableCommittersApproval` | [`Boolean!`](#boolean) | Indicates that committers of the given merge request cannot approve. |
 | <a id="projectmergerequestsenabled"></a>`mergeRequestsEnabled` | [`Boolean`](#boolean) | Indicates if Merge requests are enabled for the current user. |
@@ -42944,6 +42971,7 @@ Detailed representation of whether a GitLab merge request can be merged.
 | <a id="detailedmergestatuspreparing"></a>`PREPARING` | Merge request diff is being created. |
 | <a id="detailedmergestatusrequested_changes"></a>`REQUESTED_CHANGES` | Indicates a reviewer has requested changes. |
 | <a id="detailedmergestatussecurity_policies_violations"></a>`SECURITY_POLICIES_VIOLATIONS` | All policy rules must be satisfied. |
+| <a id="detailedmergestatustitle_not_matching"></a>`TITLE_NOT_MATCHING` | Merge request title does not match required regex. |
 | <a id="detailedmergestatusunchecked"></a>`UNCHECKED` | Merge status has not been checked. |
 
 ### `DiffPositionType`
@@ -43909,6 +43937,7 @@ Representation of mergeability check identifier.
 | <a id="mergeabilitycheckidentifierrequested_changes"></a>`REQUESTED_CHANGES` | Checks whether the merge request has changes requested. |
 | <a id="mergeabilitycheckidentifiersecurity_policy_violations"></a>`SECURITY_POLICY_VIOLATIONS` | Checks whether the security policies are satisfied. |
 | <a id="mergeabilitycheckidentifierstatus_checks_must_pass"></a>`STATUS_CHECKS_MUST_PASS` | Checks whether the external status checks pass. |
+| <a id="mergeabilitycheckidentifiertitle_regex"></a>`TITLE_REGEX` | Checks whether the title matches the expected regex. |
 
 ### `MergeabilityCheckStatus`
 
@@ -45755,6 +45784,12 @@ An example `AuditEventsStreamingHeaderID` is: `"gid://gitlab/AuditEvents::Stream
 A `AuditEventsStreamingInstanceHeaderID` is a global ID. It is encoded as a string.
 
 An example `AuditEventsStreamingInstanceHeaderID` is: `"gid://gitlab/AuditEvents::Streaming::InstanceHeader/1"`.
+
+### `AuthzLdapAdminRoleLinkID`
+
+A `AuthzLdapAdminRoleLinkID` is a global ID. It is encoded as a string.
+
+An example `AuthzLdapAdminRoleLinkID` is: `"gid://gitlab/Authz::LdapAdminRoleLink/1"`.
 
 ### `AwardableID`
 
