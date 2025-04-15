@@ -65,7 +65,7 @@ export default {
     :is="isModal ? 'h2' : 'h1'"
     v-else
     data-testid="work-item-title"
-    class="gl-heading-1 !gl-m-0 gl-w-full"
+    class="gl-heading-1 !gl-m-0 gl-w-full gl-wrap-anywhere"
   >
     {{ title }}
   </component>

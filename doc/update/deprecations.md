@@ -1453,6 +1453,67 @@ To prepare for this change, we recommend reviewing and updating your GraphQL que
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Fallback support for GitLab NGINX chart controller image v1.3.1
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.6</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5794).
+
+</div>
+
+{{< alert type="note" >}}
+This change affects you only if you're using the
+[GitLab NGINX chart](https://docs.gitlab.com/charts/charts/nginx/), and
+you have set your own NGINX RBAC rules.
+
+If you're using your own
+[external NGINX chart](https://docs.gitlab.com/charts/advanced/external-nginx/),
+or you're using the GitLab NGINX chart without any NGINX RBAC rules
+changes, this deprecation doesn't apply to you.
+{{< /alert >}}
+
+In GitLab 17.6 (Helm chart 8.6), the GitLab chart updated the default NGINX
+controller image from version 1.3.1 to 1.11.2. This new version requires new
+RBAC rules that were added to our GitLab NGINX chart, so you'll need to
+ultimately create those rules. This change is also backported to:
+
+- GitLab 17.5.1 (Helm chart 8.5.1)
+- GitLab 17.4.3 (Helm chart 8.4.3)
+- GitLab 17.3.6 (Helm chart 8.3.6)
+
+{{< alert type="note" >}}
+
+The latest patch versions of Helm chart 8.3 to 8.7 contain the NGINX
+controller version 1.11.2.
+Later chart versions include version 1.11.5, since it contains various
+security fixes. GitLab 18.0 will default to controller version 1.11.5.
+
+{{< /alert >}}
+
+If you manage your own NGINX RBAC rules, it means that you have set
+`nginx-ingress.rbac.create` to `false`. In that case, from GitLab 17.3 (Helm
+chart 8.3) up until GitLab 17.11 (Helm chart 8.11), there's a fallback
+mechanism that detects that change and uses the old controller image,
+which means you don't need to make any RBAC rules changes.
+
+Starting with GitLab 18.0 (Helm chart 9.0), this fallback mechanism will
+be removed, so the new controller image will be used and the new RBAC
+rules must exist.
+
+If you want to take advantage of the new NGINX controller image before it's
+enforced in GitLab 18.0:
+
+1. Add the new RBAC rules to your cluster [see an example](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/3901/diffs?commit_id=93a3cbdb5ad83db95e12fa6c2145df0800493d8b).
+1. Set `nginx-ingress.controller.image.disableFallback` to `true`.
+
+For more information, see the [charts release page](https://docs.gitlab.com/charts/releases/8_0/#upgrade-to-86x-851-843-836).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### GitLab Advanced SAST will be enabled by default
 
 <div class="deprecation-notes">
@@ -1473,38 +1534,6 @@ An automated process migrates results from previous scanners after the first sca
 Because it scans your project in more detail, Advanced SAST may take more time to scan your project.
 If needed, you can [disable GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast#disable-gitlab-advanced-sast-scanning) by setting the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `false`.
 You can set this variable in your project, group, or policy now to prevent Advanced SAST from being enabled by default in GitLab 18.0.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
-### GitLab chart use of NGINX controller image v1.3.1
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.6</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5794).
-
-</div>
-
-In GitLab 17.6, the GitLab chart updated the default NGINX controller image to v1.11.2. This new version requires new RBAC rules that were added to our Ingress
-NGINX-bundled subchart.
-
-This change is being backported to 17.5.1, 17.4.3, and 17.3.6.
-
-Some users prefer to manage RBAC rules themselves by setting the Helm key `nginx-ingress.rbac.create` to `false`. To give time for users who manage their own RBAC rules to
-add the new required rules before they adopt the new v1.11.2 version, we've implemented a fallback mechanism to detect `nginx-ingress.rbac.create: false` and force the chart
-to keep using NGINX image v1.3.1, which does not need the new RBAC rules.
-
-If you manage your own NGINX RBAC rules, but you also want to take advantage of the new NGINX controller image v1.11.2 immediately:
-
-1. Add the new RBAC rules to your cluster [like we did](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/3901/diffs?commit_id=93a3cbdb5ad83db95e12fa6c2145df0800493d8b).
-1. Set `nginx-ingress.controller.image.disableFallback` to true.
-
-We plan to remove this fallback support and support for NGINX controller image v1.3.1 in GitLab 18.0.
-
-You can read more about it in the [charts release page](https://docs.gitlab.com/charts/releases/8_0/#upgrade-to-86x-851-843-836).
 
 </div>
 

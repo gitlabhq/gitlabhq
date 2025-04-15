@@ -25771,6 +25771,9 @@ msgstr ""
 msgid "Failed to assign a user because no user was found."
 msgstr ""
 
+msgid "Failed to assign custom admin role. Try again or select a different role."
+msgstr ""
+
 msgid "Failed to assign the framework to project %{project_name}"
 msgstr ""
 
@@ -53763,6 +53766,9 @@ msgstr ""
 msgid "Secrets|Secrets can be items like API tokens, database credentials, or private keys. Unlike CI/CD variables, secrets must be explicitly requested by a job."
 msgstr ""
 
+msgid "Secrets|Secure your sensitive information"
+msgstr ""
+
 msgid "Secrets|Select a reminder interval"
 msgstr ""
 
@@ -53770,6 +53776,9 @@ msgid "Secrets|Stored secrets"
 msgstr ""
 
 msgid "Secrets|The name should be unique within this project."
+msgstr ""
+
+msgid "Secrets|Use the Secrets Manager to store your sensitive credentials, and then safely use them in your processes."
 msgstr ""
 
 msgid "Secure Code Warrior"

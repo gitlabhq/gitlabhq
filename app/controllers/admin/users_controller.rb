@@ -215,12 +215,13 @@ class Admin::UsersController < Admin::ApplicationController
     opts[:organization_id] ||= Current.organization&.id
 
     response = Users::CreateService.new(current_user, opts).execute
-
     @user = response.payload[:user]
+
+    after_successful_create_hook(@user) if response.success?
 
     respond_to do |format|
       if response.success?
-        format.html { redirect_to default_route, notice: _('User was successfully created.') }
+        format.html { redirect_to default_route, after_successful_create_flash }
         format.json { render json: @user, status: :created, location: @user }
       else
         if @user&.errors&.any?
@@ -258,8 +259,10 @@ class Admin::UsersController < Admin::ApplicationController
         prepare_user_for_update(user)
       end
 
+      after_successful_update_hook(result[:user]) if result[:status] == :success
+
       if result[:status] == :success
-        format.html { redirect_to [:admin, user], notice: _('User was successfully updated.') }
+        format.html { redirect_to [:admin, user], after_successful_update_flash }
         format.json { head :ok }
       else
         # restore username to keep form action url.
@@ -442,6 +445,20 @@ class Admin::UsersController < Admin::ApplicationController
   def prepare_user_for_update(user)
     user.skip_reconfirmation!
     user.send_only_admin_changed_your_password_notification! if admin_making_changes_for_another_user?
+  end
+
+  # method overridden in EE
+  def after_successful_create_hook(user); end
+
+  # method overridden in EE
+  def after_successful_update_hook(user); end
+
+  def after_successful_create_flash
+    { notice: _('User was successfully created.') }
+  end
+
+  def after_successful_update_flash
+    { notice: _('User was successfully updated.') }
   end
 end
 

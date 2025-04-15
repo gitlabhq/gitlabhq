@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_relative '../../config/initializers/01_secret_token'
+require_relative '../../config/initializers/2_secret_token'
 
 # rubocop:disable RSpec/SpecFilePathFormat -- The initializer name starts with `01` because we want to run it ASAP
 # rubocop:disable RSpec/FeatureCategory -- This is a shared responsibility
@@ -269,7 +269,7 @@ RSpec.describe SecretsInitializer do
         Rails.application.credentials.db_key_base = 'db_key_base'
       end
 
-      it 'sets Rails.application.credentials properly, issue a warning and writes config.secrets.yml' do
+      it 'sets Rails.application.credentials properly, issue a warning and writes config.secrets.yml', :freeze_time do
         expect(File).to receive(:write).with(fake_secret_file.path, any_args) do |_filename, contents, _options|
           new_secrets = YAML.safe_load(contents)[rails_env_name]
 
@@ -282,7 +282,13 @@ RSpec.describe SecretsInitializer do
             "The secret will be generated and stored in config/secrets.yml."
         )
 
-        expect(FileUtils).to receive(:mv).with(fake_secret_file.path, anything)
+        backup_pathname = Pathname.new('/my/backup/path')
+        expect(Settings).to receive_message_chain(:backup, :path).and_return(backup_pathname)
+        expect(FileUtils).to receive(:mkdir_p)
+
+        expected_backup_path = backup_pathname.join("#{File.basename(fake_secret_file.path)}.orig.#{Time.now.to_i}")
+        expect(FileUtils).to receive(:mv).with(fake_secret_file.path, expected_backup_path)
+
         initializer.execute!
 
         expect(Rails.application.credentials.secret_key_base).to eq('env_key')

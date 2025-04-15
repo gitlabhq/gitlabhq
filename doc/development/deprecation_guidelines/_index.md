@@ -175,6 +175,12 @@ edited, or removed:
    bin/rake gitlab:docs:compile_windows
    ```
 
+1. Update the deprecations documentation:
+
+   ```shell
+   bin/rake gitlab:docs:compile_deprecations
+   ```
+
 1. If needed, you can verify the documentation is up to date with:
 
    ```shell

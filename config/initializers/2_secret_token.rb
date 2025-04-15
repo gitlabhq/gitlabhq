@@ -3,8 +3,8 @@
 # WARNING: Before you make a change to secrets.yml, read the development guide for GitLab secrets
 # doc/development/application_secrets.md.
 #
-# This file needs to be loaded BEFORE any initializers that attempt to
-# prepend modules that require access to secrets (e.g. EE's 0_as_concern.rb).
+# This file needs to be loaded BEFORE any initializers that require access
+# to secrets (e.g. config/initializers/asset_proxy_settings.rb).
 #
 # Be sure to restart your server when you modify this file.
 require 'securerandom'
@@ -118,14 +118,21 @@ class SecretsInitializer
     end
   end
 
+  def backup_pathname
+    @backup_pathname ||= Pathname(Settings.backup.path)
+  end
+
   def write_secrets_yml!(missing_secrets)
     secrets_from_file[rails_env.to_s] ||= {}
     secrets_from_file[rails_env.to_s].merge!(missing_secrets)
 
-    backup_file = "#{secrets_file_path}.orig.#{Time.now.to_i}"
     if File.exist?(secrets_file_path)
-      warn "Creating a backup of secrets file: #{secrets_file_path}: #{backup_file}"
-      FileUtils.mv(secrets_file_path, backup_file)
+      FileUtils.mkdir_p(backup_pathname)
+
+      backup_path = backup_pathname.join("#{File.basename(secrets_file_path)}.orig.#{Time.now.to_i}")
+
+      warn "Creating a backup of secrets file #{secrets_file_path} at #{backup_path}"
+      FileUtils.mv(secrets_file_path, backup_path)
     end
 
     File.write(
