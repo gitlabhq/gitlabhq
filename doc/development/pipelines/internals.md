@@ -229,34 +229,30 @@ and included in `rules` definitions via [YAML anchors](../../ci/yaml/yaml_optimi
 
 ### `if:` conditions
 
-<!-- vale gitlab_base.Substitutions = NO -->
-
-| `if:` conditions | Description | Notes |
-|------------------|-------------|-------|
-| `if-not-canonical-namespace`                                 | Matches if the project isn't in the canonical (`gitlab-org/` and `gitlab-cn/`) or security (`gitlab-org/security`) namespace. | Use to create a job for forks (by using `when: on_success` or `when: manual`), or **not** create a job for forks (by using `when: never`). |
-| `if-not-ee`                                                  | Matches if the project isn't EE (that is, project name isn't `gitlab` or `gitlab-ee`). | Use to create a job only in the FOSS project (by using `when: on_success` or `when: manual`), or **not** create a job if the project is EE (by using `when: never`). |
-| `if-not-foss`                                                | Matches if the project isn't FOSS (that is, project name isn't `gitlab-foss`, `gitlab-ce`, or `gitlabhq`). | Use to create a job only in the EE project (by using `when: on_success` or `when: manual`), or **not** create a job if the project is FOSS (by using `when: never`). |
-| `if-default-refs`                                            | Matches if the pipeline is for `master`, `main`, `/^[\d-]+-stable(-ee)?$/` (stable branches), `/^\d+-\d+-auto-deploy-\d+$/` (auto-deploy branches), `/^security\//` (security branches), merge requests, and tags. | Note that jobs aren't created for branches with this default configuration. |
-| `if-master-refs`                                             | Matches if the current branch is `master` or `main`. | |
-| `if-master-push`                                             | Matches if the current branch is `master` or `main` and pipeline source is `push`. | |
-| `if-master-schedule-maintenance`                                | Matches if the current branch is `master` or `main` and pipeline runs on a 2-hourly schedule. | |
-| `if-master-schedule-nightly`                                 | Matches if the current branch is `master` or `main` and pipeline runs on a nightly schedule. | |
-| `if-auto-deploy-branches`                                    | Matches if the current branch is an auto-deploy one. | |
-| `if-master-or-tag`                                           | Matches if the pipeline is for the `master` or `main` branch or for a tag. | |
-| `if-merge-request`                                           | Matches if the pipeline is for a merge request. | |
-| `if-merge-request-title-as-if-foss`                          | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:run-as-if-foss" | |
-| `if-merge-request-title-update-caches`                       | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:update-cache". | |
-| `if-merge-request-labels-run-all-rspec`                      | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:run-all-rspec". | |
-| `if-merge-request-labels-run-cs-evaluation`                  | Matches if the pipeline is for a merge request and the MR has label ~"pipeline:run-CS-evaluation". | |
-| `if-security-merge-request`                                  | Matches if the pipeline is for a security merge request. | |
-| `if-security-schedule`                                       | Matches if the pipeline is for a security scheduled pipeline. | |
-| `if-nightly-master-schedule`                                 | Matches if the pipeline is for a `master` scheduled pipeline with `$NIGHTLY` set. | |
-| `if-dot-com-gitlab-org-schedule`                             | Limits jobs creation to scheduled pipelines for the `gitlab-org` group on GitLab.com. | |
-| `if-dot-com-gitlab-org-master`                               | Limits jobs creation to the `master` or `main` branch for the `gitlab-org` group on GitLab.com. | |
-| `if-dot-com-gitlab-org-merge-request`                        | Limits jobs creation to merge requests for the `gitlab-org` group on GitLab.com. | |
-| `if-dot-com-ee-schedule`                                     | Limits jobs to scheduled pipelines for the `gitlab-org/gitlab` project on GitLab.com. | |
-
-<!-- vale gitlab_base.Substitutions = YES -->
+| `if:` conditions                            | Description | Notes |
+|---------------------------------------------|-------------|-------|
+| `if-not-canonical-namespace`                | Matches if the project isn't in the canonical (`gitlab-org/` and `gitlab-cn/`) or security (`gitlab-org/security`) namespace. | Use to create a job for forks (by using `when: on_success` or `when: manual`), or **not** create a job for forks (by using `when: never`). |
+| `if-not-ee`                                 | Matches if the project isn't EE (that is, project name isn't `gitlab` or `gitlab-ee`). | Use to create a job only in the FOSS project (by using `when: on_success` or `when: manual`), or **not** create a job if the project is EE (by using `when: never`). |
+| `if-not-foss`                               | Matches if the project isn't FOSS (that is, project name isn't `gitlab-foss`, `gitlab-ce`, or `gitlabhq`). | Use to create a job only in the EE project (by using `when: on_success` or `when: manual`), or **not** create a job if the project is FOSS (by using `when: never`). |
+| `if-default-refs`                           | Matches if the pipeline is for `master`, `main`, `/^[\d-]+-stable(-ee)?$/` (stable branches), `/^\d+-\d+-auto-deploy-\d+$/` (auto-deploy branches), `/^security\//` (security branches), merge requests, and tags. | Note that jobs aren't created for branches with this default configuration. |
+| `if-master-refs`                            | Matches if the current branch is `master` or `main`. | |
+| `if-master-push`                            | Matches if the current branch is `master` or `main` and pipeline source is `push`. | |
+| `if-master-schedule-maintenance`            | Matches if the current branch is `master` or `main` and pipeline runs on a 2-hourly schedule. | |
+| `if-master-schedule-nightly`                | Matches if the current branch is `master` or `main` and pipeline runs on a nightly schedule. | |
+| `if-auto-deploy-branches`                   | Matches if the current branch is an auto-deploy one. | |
+| `if-master-or-tag`                          | Matches if the pipeline is for the `master` or `main` branch or for a tag. | |
+| `if-merge-request`                          | Matches if the pipeline is for a merge request. | |
+| `if-merge-request-title-as-if-foss`         | Matches if the pipeline is for a merge request and the MR has label `~"pipeline:run-as-if-foss"`. | |
+| `if-merge-request-title-update-caches`      | Matches if the pipeline is for a merge request and the MR has label `~"pipeline:update-cache"`. | |
+| `if-merge-request-labels-run-all-rspec`     | Matches if the pipeline is for a merge request and the MR has label `~"pipeline:run-all-rspec"`. | |
+| `if-merge-request-labels-run-cs-evaluation` | Matches if the pipeline is for a merge request and the MR has label `~"pipeline:run-CS-evaluation"`. | |
+| `if-security-merge-request`                 | Matches if the pipeline is for a security merge request. | |
+| `if-security-schedule`                      | Matches if the pipeline is for a security scheduled pipeline. | |
+| `if-nightly-master-schedule`                | Matches if the pipeline is for a `master` scheduled pipeline with `$NIGHTLY` set. | |
+| `if-dot-com-gitlab-org-schedule`            | Limits jobs creation to scheduled pipelines for the `gitlab-org` group on GitLab.com. | |
+| `if-dot-com-gitlab-org-master`              | Limits jobs creation to the `master` or `main` branch for the `gitlab-org` group on GitLab.com. | |
+| `if-dot-com-gitlab-org-merge-request`       | Limits jobs creation to merge requests for the `gitlab-org` group on GitLab.com. | |
+| `if-dot-com-ee-schedule`                    | Limits jobs to scheduled pipelines for the `gitlab-org/gitlab` project on GitLab.com. | |
 
 ### `changes:` patterns
 

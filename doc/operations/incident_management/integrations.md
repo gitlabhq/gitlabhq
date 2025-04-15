@@ -84,7 +84,7 @@ side of the integrations list.
 #### Map fields in custom alerts
 
 You can integrate your monitoring tool's alert format with GitLab alerts. To show the
-correct information in the [Alert list](alerts.md) and the
+correct information in the [Alert list](alerts.md#alert-list) and the
 [Alert Details page](alerts.md#alert-details-page), map your alert's fields to
 GitLab fields when you [create an HTTP endpoint](#http-endpoints):
 

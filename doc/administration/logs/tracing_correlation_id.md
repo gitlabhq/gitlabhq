@@ -197,11 +197,9 @@ You can then view the database details for this request:
 
    ![A highlighted example request in an open Request Selector dropdown list](img/select-request-id-from-request-selector-drop-down-menu_v14_3.png)
 
-   <!-- vale gitlab_base.Substitutions = NO -->
 1. Select the `pg` link in the Progress Bar to view the database queries executed by the API request:
 
    ![GitLab API database details: 29ms / 34 queries](img/view-pg-details_v14_3.png)
-   <!-- vale gitlab_base.Substitutions = YES -->
 
    The database query dialog is displayed:
 

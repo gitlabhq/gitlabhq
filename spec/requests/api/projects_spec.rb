@@ -1043,6 +1043,33 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
+    context 'when using the marked_for_deletion_on filter' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:group) { create(:group, owners: user) }
+      let_it_be(:marked_for_deletion_project) do
+        create(:project, marked_for_deletion_at: Date.parse('2024-01-01'), group: group)
+      end
+
+      it 'returns groups marked for deletion on the specified date' do
+        get api("/projects", user), params: { marked_for_deletion_on: Date.parse('2024-01-01') }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |project| project["id"] }).to contain_exactly(marked_for_deletion_project.id)
+        expect(json_response.map { |project| project["marked_for_deletion_on"] }).to contain_exactly(Date.parse('2024-01-01').iso8601)
+      end
+
+      it 'returns all projects when marked_for_deletion_on is not specified' do
+        get api("/projects", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |project| project["id"] }).to contain_exactly(public_project.id, marked_for_deletion_project.id)
+      end
+    end
+
     context 'filtering by repository_storage' do
       before do
         [project, project3].each { |proj| proj.update_columns(repository_storage: 'nfs-11') }

@@ -167,6 +167,7 @@ class Projects::CommitController < Projects::ApplicationController
     @diffs_slice = @commit.first_diffs_slice(streaming_offset, commit_diff_options)
     @diff_files_endpoint = diff_files_metadata_namespace_project_commit_path
     @diffs_stats_endpoint = diffs_stats_namespace_project_commit_path
+    @update_current_user_path = expose_path(api_v4_user_preferences_path)
 
     show
   end

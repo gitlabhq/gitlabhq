@@ -217,6 +217,18 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
         end
       end
     end
+
+    describe 'for exclude_forks' do
+      let(:params) { ActionController::Parameters.new(group_id: 123, search: search, exclude_forks: input) }
+
+      include_context 'with inputs'
+
+      with_them do
+        it 'transforms param' do
+          expect(search_params[:exclude_forks]).to eq(expected)
+        end
+      end
+    end
   end
 
   describe 'converts not params' do

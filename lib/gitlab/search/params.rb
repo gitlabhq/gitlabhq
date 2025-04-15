@@ -123,6 +123,10 @@ module Gitlab
           converted_params[:include_forked] = Gitlab::Utils.to_boolean(converted_params[:include_forked])
         end
 
+        if converted_params.key?(:exclude_forks)
+          converted_params[:exclude_forks] = Gitlab::Utils.to_boolean(converted_params[:exclude_forks])
+        end
+
         converted_params
       end
     end

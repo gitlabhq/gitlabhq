@@ -129,17 +129,12 @@ on GitLab.com
 
 {{< /alert >}}
 
-<!-- vale gitlab_base.Substitutions = NO -->
-
 On GitLab.com, entries from the [Redis slow log](https://redis.io/docs/latest/commands/slowlog/) are available in the
 `pubsub-redis-inf-gprd*` index with the [`redis.slowlog` tag](https://log.gprd.gitlab.net/app/kibana#/discover?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-1d,to:now))&_a=(columns:!(json.type,json.command,json.exec_time_s),filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,index:AWSQX_Vf93rHTYrsexmk,key:json.tag,negate:!f,params:(query:redis.slowlog),type:phrase),query:(match:(json.tag:(query:redis.slowlog,type:phrase))))),index:AWSQX_Vf93rHTYrsexmk)).
 This shows commands that have taken a long time and may be a performance
 concern.
 
-<!-- vale gitlab_base.Substitutions = YES -->
-
-The
-[`fluent-plugin-redis-slowlog`](https://gitlab.com/gitlab-org/ruby/gems/fluent-plugin-redis-slowlog)
+The [`fluent-plugin-redis-slowlog`](https://gitlab.com/gitlab-org/ruby/gems/fluent-plugin-redis-slowlog)
 project is responsible for taking the `slowlog` entries from Redis and
 passing to Fluentd (and ultimately Elasticsearch).
 

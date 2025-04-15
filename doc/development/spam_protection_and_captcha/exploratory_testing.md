@@ -65,18 +65,14 @@ in an area of the application which already has CAPTCHA support, such as:
 After you force Spam Flagging + CAPTCHA using the steps above, you can test the
 behavior with any spam-protected model/controller action.
 
-### Test with CAPTCHA enabled (CONDITIONAL_ALLOW verdict)
+### Test with CAPTCHA enabled (`CONDITIONAL_ALLOW` verdict)
 
 If CAPTCHA is enabled in these areas, you must solve the CAPTCHA popup modal before you can resubmit the form:
 
 - **Admin -> Settings -> Reporting -> Spam**
 - **Anti-bot Protection -> Enable reCAPTCHA**
 
-<!-- vale gitlab_base.Substitutions = NO -->
-
-### Testing with CAPTCHA disabled ("DISALLOW" verdict)
-
-<!-- vale gitlab_base.Substitutions = YES -->
+### Testing with CAPTCHA disabled (`DISALLOW` verdict)
 
 If CAPTCHA is disabled in **Admin -> Settings -> Reporting -> Spam** and **Anti-bot Protection -> Enable reCAPTCHA**,
 no CAPTCHA popup displays. You are prevented from submitting the form at all.

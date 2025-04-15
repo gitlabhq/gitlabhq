@@ -834,9 +834,11 @@ module API
       finder_params[:user] = params.delete(:user) if params[:user]
       finder_params[:id_after] = sanitize_id_param(params[:id_after]) if params[:id_after]
       finder_params[:id_before] = sanitize_id_param(params[:id_before]) if params[:id_before]
-      finder_params[:updated_after] = declared_params[:updated_after] if declared_params[:updated_after]
-      finder_params[:updated_before] = declared_params[:updated_before] if declared_params[:updated_before]
-      finder_params[:include_pending_delete] = declared_params[:include_pending_delete] if declared_params[:include_pending_delete]
+
+      %i[updated_after updated_before include_pending_delete marked_for_deletion_on].each do |param|
+        finder_params[param] = declared_params[param] if declared_params[param]
+      end
+
       finder_params
     end
 

@@ -85,7 +85,7 @@ where needed.
 To check all existing queries and mutations, on the right side of GraphiQL, select **Documentation explorer**.
 To check the execution of the queries and mutations you've written, in the upper-left corner, select **Execute query**.
 
-![GraphiQL interface](img/graphiql_explorer_v12_4.png)
+![GraphiQL interface showing an entry in the Documentation Explorer](img/graphiql_explorer_v12_4.png)
 
 ## Apollo Client
 

