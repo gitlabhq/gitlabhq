@@ -25,6 +25,7 @@ RSpec/MultipleMemoizedHelpers:
     - 'spec/requests/api/issues/issues_spec.rb'
     - 'spec/requests/api/issues/put_projects_issues_spec.rb'
     - 'spec/requests/api/maven_packages_spec.rb'
+    - 'spec/requests/api/todos_spec.rb'
     - 'spec/requests/api/users_spec.rb'
     - 'spec/services/boards/issues/list_service_spec.rb'
     - 'spec/services/labels/promote_service_spec.rb'
