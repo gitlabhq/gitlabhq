@@ -10,14 +10,14 @@ title: Custom fields
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
+- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/479571) in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `custom_fields_feature`.
-  Disabled by default.
-  Enabled on GitLab.com for a subset of users.
+  Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
 
 {{< /history >}}
 
@@ -25,7 +25,6 @@ title: Custom fields
 
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
