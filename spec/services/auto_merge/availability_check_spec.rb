@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe AutoMerge::AvailabilityCheck, feature_category: :shared do
+  context 'with invalid status' do
+    it { expect { described_class.new(status: :invalid) }.to raise_error(ArgumentError, 'Invalid status') }
+  end
+
   describe '.success' do
     it 'creates a success response without an unavailable_reason or unsuccessful_check' do
       expect(described_class.success).to be_truthy
@@ -26,8 +30,10 @@ RSpec.describe AutoMerge::AvailabilityCheck, feature_category: :shared do
     end
 
     context 'without an unavailable reason' do
-      it 'raises an argument error' do
-        expect { described_class.error }.to raise_error(ArgumentError)
+      it 'returns the default error' do
+        response = described_class.error
+
+        expect(response.unavailable_reason).to eq(:default)
       end
     end
   end

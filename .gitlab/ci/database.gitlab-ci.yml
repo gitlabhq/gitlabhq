@@ -144,6 +144,7 @@ db:check-schema:
       function db_check_schema() {
         bundle exec rake db:drop db:create db:migrate
         scripts/validate_migration_timestamps
+        scripts/validate_migration_checksum
       }
 
       run_with_custom_exit_code db_check_schema

@@ -1,9 +1,10 @@
 - project = local_assigns[:project].nil? || local_assigns[:project]
-- assigned = false unless local_assigns[:assigned] == true
+- is_owner = false unless local_assigns[:is_owner] == true
+- is_assigned = false unless local_assigns[:is_assigned] == true
 
 %li
   .gl-flex.gl-gap-3
-    - if assigned
+    - if is_assigned
       .gl-min-w-6.gl-w-6
         = sprite_icon('status-success', variant: 'success', css_class: 'gl-mt-3')
     - else
@@ -13,6 +14,8 @@
     .gl-grow.gl-self-center
       %h3.gl-m-0.gl-text-base
         = project.full_name
+        - if is_owner
+          = render Pajamas::BadgeComponent.new(s_('Runners|Owner'), variant: 'info')
       - if project.description
         %p.gl-mb-0.gl-text-sm.gl-text-subtle
           = project.description

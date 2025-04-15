@@ -494,7 +494,8 @@ module Trigger
         "GITLAB_SIDEKIQ_TAG" => container_versions["gitlab-sidekiq-#{edition}"],
         "GITLAB_WEBSERVICE_TAG" => container_versions["gitlab-webservice-#{edition}"],
         "GITLAB_WORKHORSE_TAG" => container_versions["gitlab-workhorse-#{edition}"],
-        "GITLAB_KAS_TAG" => container_versions["gitlab-kas"]
+        "GITLAB_KAS_TAG" => container_versions["gitlab-kas"],
+        "GITLAB_CONTAINER_REGISTRY_TAG" => container_versions["gitlab-container-registry"]
       }
     end
 

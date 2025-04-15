@@ -46,9 +46,9 @@ module AutoMerge
     override :availability_details
     def availability_details(merge_request)
       super do
-        default_reason = AutoMerge::AvailabilityCheck.error(unavailable_reason: :default)
-        next default_reason if merge_request.project.merge_trains_enabled?
-        next default_reason if merge_request.mergeable? && !merge_request.diff_head_pipeline_considered_in_progress?
+        default_error = AutoMerge::AvailabilityCheck.error
+        next default_error if merge_request.project.merge_trains_enabled?
+        next default_error if merge_request.mergeable? && !merge_request.diff_head_pipeline_considered_in_progress?
 
         AutoMerge::AvailabilityCheck.success
       end

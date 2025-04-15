@@ -34670,7 +34670,7 @@ msgstr[1] ""
 msgid "Job|Are you sure you want to erase this job log and artifacts?"
 msgstr ""
 
-msgid "Job|Are you sure you want to force cancel this job? This will immediately mark the job as canceled, even if the runner is unresponsive."
+msgid "Job|Are you sure you want to force cancel this job? This will immediately mark the job as canceled, even if the job is still running."
 msgstr ""
 
 msgid "Job|Browse"
@@ -51123,9 +51123,6 @@ msgstr ""
 msgid "Restrict membership by email domain"
 msgstr ""
 
-msgid "Restrict projects for this runner"
-msgstr ""
-
 msgid "Restricted access"
 msgstr ""
 
@@ -51557,6 +51554,12 @@ msgid "Runners|Architecture"
 msgstr ""
 
 msgid "Runners|Are you sure you want to disable instance runners for %{groupName}?"
+msgstr ""
+
+msgid "Runners|Assign"
+msgstr ""
+
+msgid "Runners|Assign this runner to projects"
 msgstr ""
 
 msgid "Runners|Assigned Group"
@@ -52398,6 +52401,9 @@ msgid "Runners|Top projects consuming runners"
 msgstr ""
 
 msgid "Runners|UTC Time"
+msgstr ""
+
+msgid "Runners|Unassign"
 msgstr ""
 
 msgid "Runners|Understand how long it takes for runners to pick up a job. %{linkStart}How is this calculated?%{linkEnd}"

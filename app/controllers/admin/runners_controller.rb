@@ -69,7 +69,7 @@ class Admin::RunnersController < Admin::ApplicationController
   def assign_projects
     @projects =
       if params[:search].present?
-        ::Project.search(params[:search])
+        ::Project.search(params[:search], include_namespace: true)
       else
         Project.all
       end

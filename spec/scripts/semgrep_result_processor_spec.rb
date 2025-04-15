@@ -176,13 +176,6 @@ RSpec.describe SemgrepResultProcessor, feature_category: :tooling do
   describe SemgrepResultProcessor do
     describe '#perform_allowlist_check' do
       let(:processor) { described_class.new }
-      let(:original_env) { ENV.to_hash }
-
-      after do
-        # Restore original environment after each test
-        ENV.clear
-        original_env.each { |k, v| stub_env(k, v) }
-      end
 
       context 'when CI_PROJECT_DIR is not allowlisted' do
         before do

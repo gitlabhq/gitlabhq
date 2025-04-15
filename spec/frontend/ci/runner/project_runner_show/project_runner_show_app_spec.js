@@ -29,7 +29,7 @@ const mockRunnerSha = mockRunner.shortSha;
 Vue.use(VueApollo);
 Vue.use(VueRouter);
 
-describe('AdminRunnerShowApp', () => {
+describe('ProjectRunnerShowApp', () => {
   let wrapper;
   let mockRunnerQuery;
 

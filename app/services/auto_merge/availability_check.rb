@@ -13,13 +13,15 @@ module AutoMerge # rubocop:disable Gitlab/BoundedContexts -- Existing module
       default: 'this merge request cannot be added to the merge train.'
     }.freeze
 
+    VALID_STATUSES = %i[available unavailable].freeze
+
     def self.success
       new(
         status: :available
       )
     end
 
-    def self.error(unavailable_reason:, unsuccessful_check: nil)
+    def self.error(unavailable_reason: :default, unsuccessful_check: nil)
       new(
         status: :unavailable,
         unavailable_reason: unavailable_reason,
@@ -30,6 +32,8 @@ module AutoMerge # rubocop:disable Gitlab/BoundedContexts -- Existing module
     attr_reader :status, :unavailable_reason, :unsuccessful_check
 
     def initialize(status:, unavailable_reason: nil, unsuccessful_check: nil)
+      raise ArgumentError, "Invalid status" unless VALID_STATUSES.include?(status)
+
       self.status = status
       self.unavailable_reason = unavailable_reason
       self.unsuccessful_check = unsuccessful_check

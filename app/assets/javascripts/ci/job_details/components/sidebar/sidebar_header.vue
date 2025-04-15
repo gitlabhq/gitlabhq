@@ -23,7 +23,7 @@ export default {
     forceCancelJobButtonLabel: s__('Job|Force cancel'),
     forceCancelJobButtonTooltip: s__('Job|Force cancel a job stuck in `canceling` state'),
     forceCancelJobConfirmText: s__(
-      'Job|Are you sure you want to force cancel this job? This will immediately mark the job as canceled, even if the runner is unresponsive.',
+      'Job|Are you sure you want to force cancel this job? This will immediately mark the job as canceled, even if the job is still running.',
     ),
   },
   forwardDeploymentFailureModalId,

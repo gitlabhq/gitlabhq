@@ -8081,7 +8081,7 @@ This change has been removed from its original milestone and is being reassessed
 
 {{< /alert >}}
 
-In GitLab 18.0, we'll remove support for the `kpt`-based installation of the agent for Kubernetes.
+We'll remove support for the `kpt`-based installation of the agent for Kubernetes.
 Instead, you should install the agent with one of the supported installation methods:
 
 - Helm (recommended)

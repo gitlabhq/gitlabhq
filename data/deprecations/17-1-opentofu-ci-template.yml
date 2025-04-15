@@ -13,7 +13,6 @@
   scope: project
   resolution_role: Maintainer
   manual_task: true
-  window: 1
   body: |  # (required) Don't change this line.
     We introduced the OpenTofu CI/CD template in 16.8 as CI/CD components were not available for GitLab Self-Managed yet.
     With the introduction of [GitLab CI/CD components for GitLab Self-Managed](https://docs.gitlab.com/ci/components/#use-a-gitlabcom-component-in-a-self-managed-instance)
