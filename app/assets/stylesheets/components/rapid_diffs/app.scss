@@ -5,12 +5,12 @@
 }
 
 .rd-app {
-  --rd-app-sticky-top-with-padding: calc(var(--rd-app-sticky-top, 0) + #{constants.$app-sticky-top-padding});
+  --rd-app-sticky-top-with-padding: calc(var(--rd-app-sticky-top, 0) + #{constants.$app-header-vertical-padding});
 }
 
 .rd-app-header {
   display: flex;
-  padding: $gl-spacing-scale-3 0;
+  padding: constants.$app-header-vertical-padding 0;
   min-height: 3rem;
 }
 

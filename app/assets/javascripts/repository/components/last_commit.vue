@@ -2,6 +2,8 @@
 import { GlTooltipDirective, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
 import { InternalEvents } from '~/tracking';
 import { HISTORY_BUTTON_CLICK } from '~/tracking/constants';
+import { logError } from '~/lib/logger';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -60,6 +62,9 @@ export default {
         };
       },
       error(error) {
+        logError(`Unexpected error while fetching projectInfo query`, error);
+        captureException(error);
+
         throw error;
       },
       pollInterval: POLL_INTERVAL,

@@ -13,7 +13,7 @@ module ContainerExpirationPolicies
     queue_namespace :container_repository
     feature_category :container_registry
     urgency :low
-    worker_resource_boundary :unknown
+    worker_resource_boundary :cpu
     idempotent!
 
     LOG_ON_DONE_FIELDS = %i[

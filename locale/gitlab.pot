@@ -48945,6 +48945,9 @@ msgstr ""
 msgid "ProtectedBranch|Code owner approval"
 msgstr ""
 
+msgid "ProtectedBranch|Couldn't find any matching branches."
+msgstr ""
+
 msgid "ProtectedBranch|Create wildcard"
 msgstr ""
 
@@ -48970,6 +48973,9 @@ msgid "ProtectedBranch|Learn more."
 msgstr ""
 
 msgid "ProtectedBranch|Manage branch related settings in one area with branch rules."
+msgstr ""
+
+msgid "ProtectedBranch|Matching Branches"
 msgstr ""
 
 msgid "ProtectedBranch|New Protected Tag"

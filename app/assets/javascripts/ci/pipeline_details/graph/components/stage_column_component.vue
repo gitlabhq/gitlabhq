@@ -252,7 +252,7 @@ export default {
       <div
         v-if="nonFailedJobs.length > 0"
         class="gl-px-2"
-        :class="{ 'gl-border-t': failedJobs.length > 0 }"
+        :class="{ 'gl-border-t gl-pt-2': failedJobs.length > 0 }"
       >
         <div
           v-for="group in nonFailedJobs"

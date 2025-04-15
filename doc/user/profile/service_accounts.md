@@ -12,38 +12,43 @@ title: Service accounts
 
 {{< /details >}}
 
-A service account is a type of machine user that is not tied to an individual human
-user.
+Service accounts are user accounts that represent non-human entities rather than individual people.
+You can use service accounts to perform automated actions, access data, or run scheduled processes.
+Service accounts are commonly used in pipelines or third-party integrations where credentials must
+remain stable and unaffected by changes in human user membership.
 
-A service account:
+You authenticate as a service account with a [personal access token](personal_access_tokens.md).
+Service accounts have the same abilities as human users, and can perform actions
+like interacting with [package and container registries](../packages/_index.md),
+performing [Git operations](personal_access_tokens.md#clone-repository-using-personal-access-token),
+and accessing the API.
 
-- Does not use a licensed seat, but is not available on [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com?&glm_content=free-user-limit-faq/ee/user/free_user_limit.html) on GitLab.com. It is available on trial versions on GitLab Self-Managed.
-- Is not a:
-  - Billable user.
-  - Bot user.
-- Is listed in group membership as a service account.
+There are two types of service accounts:
+
+| Account type                    | Description |
+| ------------------------------- | ----------- |
+| Instance-level service accounts | Associated with an entire GitLab instance<br>Must be created by an administrator for the instance.<br>Unavailable on GitLab.com. |
+| Group-level service accounts    | Associated with a specific top-level group<br>Must be created by an Owner for a top-level group.<br>Can only be associated with a single top-level group. |
+
+Service accounts:
+
+- Do not use a seat.
 - Cannot sign in to GitLab through the UI.
-- Does not receive notification emails because it is a non-human account with an invalid email unless the email address is set to a valid address.
-
-You should use service accounts in pipelines or integrations where credentials must be
-set up and maintained without being impacted by changes in human user membership.
-
-You can authenticate as a service account with a [personal access token](personal_access_tokens.md).
-Service account users with a personal access token have the same abilities as a standard user.
-This includes interacting with [registries](../packages/_index.md) and using the personal access
-token for [Git operations](personal_access_tokens.md#clone-repository-using-personal-access-token).
-
-[Rate limits](../../security/rate_limits.md) apply to service accounts:
-
-- On GitLab.com, there are [GitLab.com-specific rate limits](../gitlab_com/_index.md#rate-limits-on-gitlabcom).
-- On GitLab Self-Managed and GitLab Dedicated, there are both:
-  - [Configurable rate limits](../../security/rate_limits.md#configurable-limits).
-  - [Non-configurable rate limits](../../security/rate_limits.md#non-configurable-limits).
+- Are identified in the group and project membership as service accounts.
+- Do not receive notification emails without [additional configuration](../../api/user_service_accounts.md#specify-a-custom-email-address).
+- Are not [billable users](../../subscriptions/self_managed/_index.md#billable-users) or [internal users](../../administration/internal_users.md).
+- Cannot be used with [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com&glm_content=free-user-limit-faq/ee/user/free_user_limit.html) of GitLab.com.
+- Can be used with trial versions of GitLab Self-Managed and GitLab Dedicated.
 
 You can also manage service accounts through the API.
 
 - For instance-level service accounts, use the [service account users API](../../api/user_service_accounts.md).
 - For group-level service accounts, use the [group service accounts API](../../api/group_service_accounts.md).
+
+## Prerequisites
+
+- For instance-level service accounts, you must be an administrator for the instance.
+- For group-level service accounts, you must have the Owner role in a top-level group.
 
 ## View and manage service accounts
 
@@ -58,10 +63,6 @@ The Service Accounts page displays information about service accounts in your to
 
 {{< tab title="Instance-level service accounts" >}}
 
-Prerequisites:
-
-- You must be an administrator for the instance.
-
 To view the Service Accounts page:
 
 1. On the left sidebar, at the bottom, select **Admin**.
@@ -70,10 +71,6 @@ To view the Service Accounts page:
 {{< /tab >}}
 
 {{< tab title="Group-level service accounts" >}}
-
-Prerequisites:
-
-- You must have the Owner role in a top-level group.
 
 To view the Service Accounts page:
 
@@ -84,7 +81,7 @@ To view the Service Accounts page:
 
 {{< /tabs >}}
 
-## Create a service account
+### Create a service account
 
 {{< history >}}
 
@@ -103,24 +100,20 @@ accounts allowed under your license:
 
 Prerequisites:
 
-- For instance-level service accounts, you must be an administrator for the instance.
-- For group-level service accounts:
-  - You must have the Owner role in a top-level group.
-  - For GitLab Self-Managed or GitLab Dedicated, you must be [allowed to create service accounts](../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
+- For group-level service accounts on GitLab Self-Managed or GitLab Dedicated, you must be [allowed to create service accounts](../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
+
+To create a service account:
 
 1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
 1. Select **Add service account**.
 1. Enter a name for the service account. A username is automatically generated based on the name. You can modify the username if needed.
 1. Select **Create service account**.
 
-## Edit a service account
+### Edit a service account
 
-You can view, delete or edit an existing service account.
+You can edit the name or username of a service account.
 
-Prerequisites:
-
-- For instance-level service accounts, you must be an administrator for the instance.
-- For group-level service accounts, you must have the Owner role in a top-level group.
+To edit a service account:
 
 1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
 1. Identify a service account.
@@ -128,16 +121,29 @@ Prerequisites:
 1. Edit the name or username for the service account.
 1. Select **Save changes**.
 
-## Delete a service account
+### Service account access to groups and projects
+
+Service accounts are similar to [external users](../../administration/external_users.md). When first
+created, they have limited access to groups and projects. To give a service account access to
+resources, you must add it to each group or project.
+
+There is no limit to the number of service accounts you can add to a group or project. Service accounts
+can have different roles in each group, subgroup, or project they are a member of.
+However, group-level service accounts can only belong to one top-level group.
+
+You can manage service account access to groups and projects the same way you manage access for
+human users. For more information, see
+[groups](../group/_index.md#add-users-to-a-group) and [members of a project](../project/members/_index.md#add-users-to-a-project).
+
+You can also manage group and project assignments with the [members API](../../api/members.md).
+
+### Delete a service account
 
 When you delete a service account, any contributions made by the account are retained and ownership
 is transfered to a system-wide ghost user account. These contributions can include activity such as
 merge requests, issues, projects, and groups.
 
-Prerequisites:
-
-- For instance-level service accounts, you must be an administrator for the instance.
-- For group-level service accounts, you must have the Owner role in a top-level group.
+To delete a service account:
 
 1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
 1. Identify a service account.
@@ -158,26 +164,6 @@ You can also delete service accounts through the API.
 
 - For instance-level service accounts, use the [users API](../../api/users.md#delete-a-user).
 - For group-level service accounts, use the [group service accounts API](../../api/group_service_accounts.md#delete-a-service-account-user).
-
-## Service account access to groups and projects
-
-Prerequisites:
-
-- For instance-level service accounts, you must be an administrator for the instance.
-- For group-level service accounts, you must have the Owner role in a top-level group.
-
-Service accounts are similar to [external users](../../administration/external_users.md). When first
-created, they have limited access to groups and projects. To give a service account access to
-resources, you must add it to each group or project.
-
-There is no limit to the number of service accounts you can add to a group or project. Service accounts
-can have different roles in each group, subgroup, or project they are a member of.
-However, group-level service accounts can only belong to one top-level group.
-
-Access to groups and projects is the same for both human and service users. For more information, see
-[groups](../group/_index.md#add-users-to-a-group) and [members of a project](../project/members/_index.md#add-users-to-a-project).
-
-You can also manage group and project assignments with the [members API](../../api/members.md).
 
 ## View and manage personal access tokens for a service account
 
@@ -202,12 +188,7 @@ To view the personal access tokens page for a service account:
 
 To use a service account, you must create a personal access token to authenticate requests.
 
-Prerequisites:
-
-- For instance-level service accounts, you must be an administrator for the instance.
-- For group-level service accounts, you must have the Owner role in a top-level group.
-
-To create a personal access token:
+To create a personal access token for a service account:
 
 1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
 1. Identify a service account.
@@ -224,10 +205,15 @@ To create a personal access token:
 
 ### Rotate a personal access token
 
-Prerequisites:
+You can rotate a personal access token to invalidate the current token and generate a new value.
 
-- For instance-level service accounts, you must be an administrator for the instance.
-- For group-level service accounts, you must have the Owner role in a top-level group.
+{{< alert type="warning" >}}
+
+This cannot be undone. Any services that rely on the rotated token will stop working.
+
+{{< /alert >}}
+
+To rotate a personal access token for a service account:
 
 1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
 1. Identify a service account.
@@ -237,16 +223,30 @@ Prerequisites:
 
 ### Revoke a personal access token
 
-Prerequisites:
+You can rotate a personal access token to invalidate the current token.
 
-- For instance-level service accounts, you must be an administrator for the instance.
-- For group-level service accounts, you must have the Owner role in a top-level group.
+{{< alert type="warning" >}}
+
+This cannot be undone. Any services that rely on the revoked token will stop working.
+
+{{< /alert >}}
+
+To revoke a personal access token for a service account:
 
 1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
 1. Identify a service account.
 1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Manage Access Tokens**.
 1. Select **Revoke**.
 1. On the confirmation dialog, select **Revoke**.
+
+## Rate limits
+
+[Rate limits](../../security/rate_limits.md) apply to service accounts:
+
+- On GitLab.com, [GitLab.com-specific rate limits](../gitlab_com/_index.md#rate-limits-on-gitlabcom) apply.
+- On GitLab Self-Managed and GitLab Dedicated, these rate limits apply:
+  - [Configurable rate limits](../../security/rate_limits.md#configurable-limits)
+  - [Non-configurable rate limits](../../security/rate_limits.md#non-configurable-limits)
 
 ## Related topics
 

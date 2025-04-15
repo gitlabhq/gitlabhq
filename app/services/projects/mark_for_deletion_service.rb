@@ -29,7 +29,7 @@ module Projects
     private
 
     def send_project_deletion_notification
-      return unless project.adjourned_deletion? && project.marked_for_deletion?
+      return unless project.adjourned_deletion?
 
       ::NotificationService.new.project_scheduled_for_deletion(project)
     end

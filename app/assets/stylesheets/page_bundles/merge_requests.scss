@@ -269,7 +269,7 @@ $diff-file-header-top: 11px;
 .diff-tree-list-floating .diff-tree-list-floating-wrapper {
   position: fixed;
   background-color: var(--gl-background-color-default);
-  box-shadow: $gl-spacing-scale-4 ($diff-file-header-top * -1) var(--gl-background-color-default);
+  box-shadow: $gl-spacing-scale-4 0 var(--gl-background-color-default);
 }
 
 .diff-tree-list-resizer {

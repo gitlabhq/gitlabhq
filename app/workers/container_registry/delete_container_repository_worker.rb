@@ -12,7 +12,7 @@ module ContainerRegistry
     queue_namespace :container_repository_delete
     feature_category :container_registry
     urgency :low
-    worker_resource_boundary :unknown
+    worker_resource_boundary :cpu
     idempotent!
 
     MAX_CAPACITY = 2

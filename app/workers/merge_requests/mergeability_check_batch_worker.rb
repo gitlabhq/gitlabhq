@@ -9,6 +9,7 @@ module MergeRequests
     sidekiq_options retry: 3
 
     feature_category :code_review_workflow
+    worker_resource_boundary :cpu
     idempotent!
 
     def logger

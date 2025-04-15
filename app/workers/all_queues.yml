@@ -199,7 +199,7 @@
   :feature_category: :container_registry
   :has_external_dependencies: false
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent: true
   :tags: []
@@ -220,7 +220,7 @@
   :feature_category: :container_registry
   :has_external_dependencies: false
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent: true
   :tags:
@@ -3703,7 +3703,7 @@
   :feature_category: :not_owned
   :has_external_dependencies: true
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent: false
   :tags: []
@@ -4186,7 +4186,7 @@
   :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent: true
   :tags: []

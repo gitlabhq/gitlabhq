@@ -24,8 +24,8 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 
 | Deprecation | Impact | Stage | Scope | Check potential impact |
 |-------------|--------|-------|-------|------------------------|
-| [CI/CD job token - **Limit access from your project** setting removal](deprecations.md#cicd-job-token---limit-access-from-your-project-setting-removal) | High | Software supply chain security | Project |  |
-| [CI/CD job token - **Authorized groups and projects** allowlist enforcement](deprecations.md#cicd-job-token---authorized-groups-and-projects-allowlist-enforcement) | High | Software supply chain security | Project | Use the [Authentication Log](../ci/jobs/ci_job_token.md#job-token-authentication-log) to verify which projects are authenticating with your project. |
+| [CI/CD job token - **Limit access from your project** setting removal](deprecations.md#cicd-job-token---limit-access-from-your-project-setting-removal) | High | Software supply chain security | Project | Refer to the [Understanding this change](https://gitlab.com/gitlab-org/gitlab/-/issues/395708#understanding-this-change) section for details. |
+| [CI/CD job token - **Authorized groups and projects** allowlist enforcement](deprecations.md#cicd-job-token---authorized-groups-and-projects-allowlist-enforcement) | High | Software supply chain security | Project | Refer to the [Understanding this change](https://gitlab.com/gitlab-org/gitlab/-/issues/383084#understanding-this-change) section for details. |
 | [Replace `add_on_purchase` GraphQL field with `add_on_purchases`](deprecations.md#replace-add_on_purchase-graphql-field-with-add_on_purchases) | Low | Fulfillment | Instance, group |  |
 | [Replace namespace `add_on_purchase` GraphQL field with `add_on_purchases`](deprecations.md#replace-namespace-add_on_purchase-graphql-field-with-add_on_purchases) | Low | Fulfillment | Instance, group |  |
 | [Limit number of scan execution policy actions allowed per policy](deprecations.md#limit-number-of-scan-execution-policy-actions-allowed-per-policy) | Low | Security risk management | Instance, group, project |  |
