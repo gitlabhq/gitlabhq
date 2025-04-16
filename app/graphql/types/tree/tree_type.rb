@@ -25,7 +25,10 @@ module Types
         calls_gitaly: true
 
       field :permalink_path, GraphQL::Types::String, null: true,
-        description: 'Web path to tree permalink.',
+        description: "Web path to tree permalink. " \
+          "The `permalinkPath` field returns a string that represents the web path to a specific version of " \
+          "a directory, identified by its commit SHA. Use this path to create permanent links to directories at " \
+          "specific points in your repository's history.",
         calls_gitaly: true,
         experiment: { milestone: '17.11' }
 

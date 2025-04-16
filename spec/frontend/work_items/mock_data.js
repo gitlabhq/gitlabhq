@@ -996,13 +996,10 @@ export const workItemDevelopmentMRNodes = [
       headPipeline: null,
       milestone: null,
       project: {
-        name: 'Flight',
+        name: 'My Project',
         id: 'gid://gitlab/Project/1',
-        path: 'flight',
-        namespace: {
-          path: 'flightjs',
-          __typename: 'Namespace',
-        },
+        path: 'my-project',
+        fullPath: 'top-group/subgroup/my-project',
         __typename: 'Project',
       },
       assignees: {
@@ -1040,10 +1037,7 @@ export const workItemDevelopmentMRNodes = [
         id: 'gid://gitlab/Project/1',
         name: 'Flight',
         path: 'flight',
-        namespace: {
-          path: 'flightjs',
-          __typename: 'Namespace',
-        },
+        fullPath: 'flightjs/flight',
         __typename: 'Project',
       },
       assignees: {
@@ -1071,10 +1065,7 @@ export const workItemDevelopmentMRNodes = [
         id: 'gid://gitlab/Project/1',
         name: 'Flight',
         path: 'flight',
-        namespace: {
-          path: 'flightjs',
-          __typename: 'Namespace',
-        },
+        fullPath: 'flightjs/flight',
         __typename: 'Project',
       },
       assignees: {
@@ -1102,10 +1093,7 @@ export const workItemDevelopmentMRNodes = [
         id: 'gid://gitlab/Project/1',
         name: 'Flight',
         path: 'flight',
-        namespace: {
-          path: 'flightjs',
-          __typename: 'Namespace',
-        },
+        fullPath: 'flightjs/flight',
         __typename: 'Project',
       },
       assignees: {
@@ -1143,10 +1131,7 @@ export const workItemDevelopmentMRNodes = [
         id: 'gid://gitlab/Project/1',
         name: 'Flight',
         path: 'flight',
-        namespace: {
-          path: 'flightjs',
-          __typename: 'Namespace',
-        },
+        fullPath: 'flightjs/flight',
         __typename: 'Project',
       },
       assignees: {

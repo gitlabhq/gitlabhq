@@ -8,6 +8,9 @@ class DiffNote < Note
   include DiffPositionableNote
   include Gitlab::Utils::StrongMemoize
 
+  # Duplicate ignore_column from Note to make the db:check-migrations job pass
+  ignore_column :attachment, remove_with: '18.1', remove_after: '2025-05-15'
+
   self.allow_legacy_sti_class = true
 
   def self.noteable_types

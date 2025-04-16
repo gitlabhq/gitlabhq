@@ -132,7 +132,7 @@ export default {
   <gl-disclosure-dropdown :items="items" class="gl-block" placement="bottom" @shown="onShown">
     <template #toggle>
       <button
-        class="user-bar-button organization-switcher-button gl-flex gl-w-full gl-items-center gl-gap-3 gl-rounded-base gl-border-none gl-p-3 gl-text-left gl-leading-1"
+        class="user-bar-button organization-switcher-button gl-flex gl-w-full gl-items-center gl-gap-3 gl-rounded-base gl-border-none gl-p-2 gl-text-left gl-leading-1"
         data-testid="toggle-button"
       >
         <gl-avatar
@@ -150,7 +150,7 @@ export default {
     <template #list-item="{ item }">
       <gl-loading-icon v-if="item.id === $options.ITEM_LOADING.id" />
       <span v-else-if="item.id === $options.ITEM_EMPTY.id">{{ item.text }}</span>
-      <div v-else class="gl-flex gl-items-center gl-gap-3">
+      <div v-else class="-gl-m-2 gl-flex gl-items-center gl-gap-3">
         <gl-avatar
           :size="24"
           :shape="$options.AVATAR_SHAPE_OPTION_RECT"

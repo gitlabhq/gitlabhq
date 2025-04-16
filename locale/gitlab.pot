@@ -55093,6 +55093,12 @@ msgstr ""
 msgid "SecurityOrchestration|The following branches do not exist on this development project: %{branches}. Please review all protected branches to ensure the values are accurate before updating this policy."
 msgstr ""
 
+msgid "SecurityOrchestration|The schedule is snoozed until %{until} for reason: %{reason}."
+msgstr ""
+
+msgid "SecurityOrchestration|The schedule is snoozed until %{until}."
+msgstr ""
+
 msgid "SecurityOrchestration|Then automatically set the status of these vulnerabilities to %{type}."
 msgstr ""
 

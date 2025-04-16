@@ -50,6 +50,7 @@ This window takes place on May 5 - 7, 2025 from 09:00 UTC to 22:00 UTC.
 
 | Deprecation | Impact | Stage | Scope | Check potential impact |
 |-------------|--------|-------|-------|------------------------|
+| [Deprecate Terraform CI/CD templates](deprecations.md#deprecate-terraform-cicd-templates) | Medium | Deploy | Project |  |
 | [Deprecate license metadata format V1](deprecations.md#deprecate-license-metadata-format-v1) | Low | Secure | Instance |  |
 | [The `direction` GraphQL argument for `ciJobTokenScopeRemoveProject` is deprecated](deprecations.md#the-direction-graphql-argument-for-cijobtokenscoperemoveproject-is-deprecated) | Low | Govern | Project |  |
 | [Dependency Proxy token scope enforcement](deprecations.md#dependency-proxy-token-scope-enforcement) | High | Package | Group |  |

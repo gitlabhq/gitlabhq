@@ -4,6 +4,11 @@
   announcement_milestone: "16.9"
   # Change breaking_change to false if needed.
   breaking_change: true
+  window: 3
+  scope: project
+  impact: medium
+  resolution_role: developer
+  manual_task: true
   # The stage and GitLab username of the person reporting the change,
   # and a link to the deprecation issue
   reporter: timofurrer

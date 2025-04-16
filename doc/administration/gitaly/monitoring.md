@@ -30,13 +30,6 @@ Gitaly can be configured to limit requests based on:
 - Concurrency of requests.
 - A rate limit.
 
-Monitor Gitaly request limiting with the `gitaly_requests_dropped_total` Prometheus metric. This metric provides a total count
-of requests dropped due to request limiting. The `reason` label indicates why a request was dropped:
-
-- `rate`, due to rate limiting.
-- `max_size`, because the concurrency queue size was reached.
-- `max_time`, because the request exceeded the maximum queue wait time as configured in Gitaly.
-
 <!--- end_remove -->
 
 ## Monitor Gitaly concurrency limiting
@@ -69,6 +62,9 @@ In Prometheus, look for the following metrics:
 - `gitaly_concurrency_limiting_in_progress` indicates how many concurrent requests are being processed.
 - `gitaly_concurrency_limiting_queued` indicates how many requests for an RPC for a given repository are waiting due to the concurrency limit being reached.
 - `gitaly_concurrency_limiting_acquiring_seconds` indicates how long a request has to wait due to concurrency limits before being processed.
+- `gitaly_requests_dropped_total` provides a total count of requests dropped due to request limiting. The `reason` label indicates why a request was dropped:
+  - `max_size`, because the concurrency queue size was reached.
+  - `max_time`, because the request exceeded the maximum queue wait time as configured in Gitaly.
 
 ## Monitor Gitaly pack-objects concurrency limiting
 
@@ -110,8 +106,14 @@ In Prometheus, look for the following metrics:
 
 You can observe specific behavior of [adaptive concurrency limiting](concurrency_limiting.md#adaptive-concurrency-limiting) using Gitaly logs and Prometheus.
 
+Adaptive concurrency limiting is an extension of static concurrency limiting, so all metrics and logs applicable to [static concurrency limiting](#monitor-gitaly-concurrency-limiting) are also relevant when monitoring adaptive limits. In addition, adaptive limiting introduces several specific metrics that help monitor the dynamic adjustment of limits.
+
+### Adaptive limiting logs
+
 In the [Gitaly logs](../logs/_index.md#gitaly-logs), you can identify logs related to the adaptive concurrency limiting when the current limits are adjusted.
 You can filter the content of the logs (`msg`) for "Multiplicative decrease" and "Additive increase" messages.
+
+These debug logs are only available at debug severity level and can be verbose, but they provide detailed insights into adaptive limit adjustments.
 
 | Log Field | Description |
 |:---|:---|
@@ -138,12 +140,24 @@ Example log:
 }
 ```
 
+### Adaptive limiting metrics
+
 In Prometheus, look for the following metrics:
 
-- `gitaly_concurrency_limiting_current_limit` The current limit value of an adaptive concurrency limit.
-- `gitaly_concurrency_limiting_watcher_errors_total` indicates the total number of watcher errors while fetching resource metrics.
-- `gitaly_concurrency_limiting_backoff_events_total` indicates the total number of backoff events, which are when the limits being
-  adjusted due to resource pressure.
+General concurrency limiting metrics, applicable to both static and adaptive limits:
+
+- `gitaly_concurrency_limiting_in_progress` - Number of requests being processed.
+- `gitaly_concurrency_limiting_queued` - Number of requests waiting in the queue due to concurrency limits.
+- `gitaly_concurrency_limiting_acquiring_seconds` - Time spent by requests waiting due to concurrency limits before processing begins.
+
+Adaptive concurrency limiting specific metrics:
+
+- `gitaly_concurrency_limiting_current_limit` - A gauge showing the current limit value of an adaptive concurrency limit for each RPC type. Only adaptive limits are included in this metric.
+- `gitaly_concurrency_limiting_backoff_events_total` - Counter indicating the total number of backoff events, representing when and why limits are reduced due to resource pressure.
+- `gitaly_concurrency_limiting_watcher_errors_total` - Counter tracking errors that occur when Gitaly fails to retrieve resource data, which may impact the ability for
+  Gitaly to evaluate the current resource situation.
+
+When investigating issues with adaptive limiting, correlate these metrics with the general concurrency limiting metrics and logs to get a complete picture of system behavior.
 
 ## Monitor Gitaly cgroups
 

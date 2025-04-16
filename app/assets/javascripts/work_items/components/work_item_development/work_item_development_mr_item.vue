@@ -79,14 +79,11 @@ export default {
       }
       return '';
     },
-    mrFullPath() {
-      return `${this.itemContent.project.namespace.path}/${this.itemContent.project.path}`;
-    },
     showPath() {
-      return this.mrFullPath !== this.workItemFullPath;
+      return this.itemContent.project.fullPath !== this.workItemFullPath;
     },
     fullReferenceWithPath() {
-      return `${this.mrFullPath}${this.itemContent?.reference}`;
+      return `${this.itemContent.project.fullPath}${this.itemContent?.reference}`;
     },
     detailedStatus() {
       return this.itemContent?.headPipeline?.detailedStatus;

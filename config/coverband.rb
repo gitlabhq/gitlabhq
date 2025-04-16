@@ -12,4 +12,7 @@ Coverband.configure do |config|
 
   config.verbose = false # this spams logfile a lot, set to true for debugging locally
   config.logger = Gitlab::AppLogger.primary_logger
+  # By default Puma starts in the tmp directory to mimic Omnibus GitLab, but
+  # this root path needs to be set for Coverband to identify application code.
+  config.root = Rails.root.to_s
 end

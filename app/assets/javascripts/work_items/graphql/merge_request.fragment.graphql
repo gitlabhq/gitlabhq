@@ -24,9 +24,7 @@ fragment MergeRequestFragment on MergeRequest {
     id
     name
     path
-    namespace {
-      path
-    }
+    fullPath
   }
   assignees {
     nodes {

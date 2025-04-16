@@ -22,7 +22,7 @@ describe('WorkItemDevelopmentMRItem', () => {
   const createComponent = ({
     mergeRequest = openMergeRequest,
     mountFn = shallowMount,
-    workItemFullPath = 'flightjs/flight',
+    workItemFullPath = 'top-group/subgroup/my-project',
   } = {}) => {
     wrapper = mountFn(WorkItemDevelopmentMRItem, {
       propsData: {
@@ -82,7 +82,7 @@ describe('WorkItemDevelopmentMRItem', () => {
   });
 
   describe('MR references', () => {
-    const expectedFullPath = `${openMergeRequest.project.namespace.path}/${openMergeRequest.project.path}${openMergeRequest.reference}`;
+    const expectedFullPath = `${openMergeRequest.project.fullPath}${openMergeRequest.reference}`;
 
     it('should show only the reference when in same namespace', () => {
       createComponent();

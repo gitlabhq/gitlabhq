@@ -8,9 +8,11 @@ class ProjectGroupLink < ApplicationRecord
   belongs_to :project
   belongs_to :group
 
+  before_validation :prevent_concurrent_inserts
+
   validates :project_id, presence: true
   validates :group, presence: true
-  validates :group_id, uniqueness: { scope: [:project_id], message: N_("already shared with this group") }
+  validates :project_id, uniqueness: { scope: [:group_id], message: N_("already shared with this group") }
   validates :group_access, inclusion: { in: Gitlab::Access.all_values }, presence: true
   validate :different_group
 
@@ -34,6 +36,20 @@ class ProjectGroupLink < ApplicationRecord
   end
 
   private
+
+  # This method will block while another database transaction attempts to insert the same data.
+  # After the lock is released by the other transaction, the uniqueness validation may fail
+  # with record not unique validation error.
+
+  # Without this block the uniqueness validation wouldn't be able to detect duplicated
+  # records as transactions can't see each other's changes.
+  def prevent_concurrent_inserts
+    return if project_id.nil? || group_id.nil?
+
+    lock_key = ['project_group_links', project_id, group_id].join('-')
+    lock_expression = "hashtext(#{connection.quote(lock_key)})"
+    connection.execute("SELECT pg_advisory_xact_lock(#{lock_expression})")
+  end
 
   def different_group
     return unless self.group && self.project

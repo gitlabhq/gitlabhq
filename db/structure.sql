@@ -18348,7 +18348,6 @@ CREATE TABLE notes (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     project_id bigint,
-    attachment character varying,
     line_code character varying,
     commit_id character varying,
     noteable_id bigint,
