@@ -25,6 +25,10 @@
   z-index: 1;
 }
 
+.rd-diff-file-header:has([data-options-toggle] button[aria-expanded='true']) {
+  z-index: 10;
+}
+
 .rd-diff-file[data-collapsed] .rd-diff-file-header {
   border-radius: var(--rd-diff-file-border-radius);
 }

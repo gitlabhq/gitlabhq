@@ -632,7 +632,6 @@ export default {
               v-if="!restrictedToolBarItems.includes('collapsible-section')"
               v-show="!previewMarkdown"
               :tag="mdCollapsibleSection"
-              :prepend="true"
               tag-select="Click to expand"
               :button-title="__('Add a collapsible section')"
               icon="details-block"

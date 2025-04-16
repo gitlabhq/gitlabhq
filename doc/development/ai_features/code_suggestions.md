@@ -128,7 +128,7 @@ After purchasing the Duo add-on, existing eligible users can be assigned/un-assi
 
 1. [Duo users management UI](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats)
 1. [GraphQL endpoint](../../api/graphql/assign_gitlab_duo_seats.md)
-1. [Rake task](../../administration/raketasks/user_management.md#bulk-assign-users-to-gitlab-duo-pro)
+1. [Rake task](../../administration/raketasks/user_management.md#bulk-assign-users-to-gitlab-duo)
 
 The above methods make use of the [BulkAssignService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/services/gitlab_subscriptions/duo/bulk_assign_service.rb)/[BulkUnassignService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/services/gitlab_subscriptions/duo/bulk_unassign_service.rb), which evaluates eligibility criteria preliminarily before assigning/un-assigning the passed users in a single SQL operation.
 

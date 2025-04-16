@@ -77,7 +77,7 @@ The following directories are created as you go through the installation steps:
 - `/home/git/gitlab-shell` - Core add-on component of GitLab. Maintains SSH
   cloning and other functionality.
 - `/home/git/repositories` - Bare repositories for all projects organized by
-  namespace. This is where the Git repositories which are pushed/pulled are
+  namespace. This directory is where the Git repositories which are pushed/pulled are
   maintained for all projects. **This area contains critical data for projects.
   [Keep a backup](../administration/backup_restore/_index.md).**
 

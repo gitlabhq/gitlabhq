@@ -13504,9 +13504,6 @@ msgstr ""
 msgid "ClusterAgents|%{agentName} successfully created."
 msgstr ""
 
-msgid "ClusterAgents|%{linkStart}View the documentation%{linkEnd} for advanced installation. Ensure you have your access token available."
-msgstr ""
-
 msgid "ClusterAgents|%{name} successfully deleted"
 msgstr ""
 
@@ -13532,9 +13529,6 @@ msgid "ClusterAgents|%{tokenName} revoked"
 msgstr ""
 
 msgid "ClusterAgents|Access tokens"
-msgstr ""
-
-msgid "ClusterAgents|Advanced installation methods"
 msgstr ""
 
 msgid "ClusterAgents|Agent"
@@ -13729,7 +13723,7 @@ msgstr ""
 msgid "ClusterAgents|If you're %{linkStart}bootstrapping the agent with Flux%{linkEnd}, you can close this dialog."
 msgstr ""
 
-msgid "ClusterAgents|Install using Helm (recommended)"
+msgid "ClusterAgents|Install using Helm"
 msgstr ""
 
 msgid "ClusterAgents|Instance wide settings for the GitLab Agent for Kubernetes."
@@ -43099,6 +43093,9 @@ msgstr ""
 msgid "PackageRegistry|Gradle Kotlin DSL install command"
 msgstr ""
 
+msgid "PackageRegistry|Group-level"
+msgstr ""
+
 msgid "PackageRegistry|Helm"
 msgstr ""
 
@@ -48870,9 +48867,6 @@ msgstr ""
 msgid "Protected Tag"
 msgstr ""
 
-msgid "Protected Tags"
-msgstr ""
-
 msgid "Protected branches"
 msgstr ""
 
@@ -49259,9 +49253,6 @@ msgid "ProtectedTag|Protected tags"
 msgstr ""
 
 msgid "ProtectedTag|What are protected tags?"
-msgstr ""
-
-msgid "ProtectedTag|default"
 msgstr ""
 
 msgid "Provide Feedback"

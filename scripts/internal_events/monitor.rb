@@ -211,6 +211,26 @@ begin
 rescue Errno::ECONNREFUSED
   # Start the mock server if Snowplow Micro is not running
   server = Thread.start { Server.new.start }
+  retry
+rescue Errno::ECONNRESET, EOFError
+  puts <<~TEXT
+
+    Error: No events server available!
+
+    This is often caused by mismatched hostnames. To resolve this issue, you can do one of:
+
+      1) When GDK has a hostname alias, update `config/gitlab.yml` to
+         use localhost for the snowplow_micro settings. For example:
+          |                             -->                              |
+          |  snowplow_micro:             |  snowplow_micro:              |
+          |    address: 'gdk.test:9090'  |    address: 'localhost:9090'  |
+
+      2) Set up Snowplow Micro in your GDK
+         https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/snowplow_micro.md
+
+  TEXT
+
+  exit 1
 end
 
 reader = TTY::Reader.new
@@ -234,8 +254,8 @@ begin
 
     sleep 1
   end
-rescue Interrupt
-  server&.exit
 rescue Errno::ECONNREFUSED
   # Ignore this error, caused by the server being killed before the loop due to working on a child thread
+ensure
+  server&.exit
 end

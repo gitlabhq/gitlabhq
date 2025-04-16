@@ -22,7 +22,7 @@ exports[`NpmInstallation renders all the messages 1`] = `
     checked="instance"
     disabledfield="disabled"
     htmlfield="html"
-    options="[object Object],[object Object]"
+    options="[object Object],[object Object],[object Object]"
     textfield="text"
     valuefield="value"
   />

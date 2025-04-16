@@ -3530,7 +3530,6 @@ Gitlab/BoundedContexts:
     - 'ee/lib/bulk_imports/projects/pipelines/push_rule_pipeline.rb'
     - 'ee/lib/bulk_imports/projects/pipelines/vulnerabilities_pipeline.rb'
     - 'ee/lib/delay.rb'
-    - 'ee/lib/duo_pro/bulk_user_assignment.rb'
     - 'ee/lib/ee/bulk_imports/groups/stage.rb'
     - 'ee/lib/ee/bulk_imports/projects/pipelines/issues_pipeline.rb'
     - 'ee/lib/ee/bulk_imports/projects/stage.rb'

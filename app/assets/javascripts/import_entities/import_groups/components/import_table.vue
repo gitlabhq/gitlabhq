@@ -812,7 +812,7 @@ export default {
           class="import-table-bar gl-sticky gl-z-3 gl-flex-col gl-bg-subtle gl-px-5 md:gl-flex md:gl-flex-row md:gl-items-center md:gl-justify-between"
         >
           <div class="gl-flex gl-w-full gl-items-center gl-gap-4 gl-pb-4">
-            <span data-test-id="selection-count">
+            <span data-testid="selection-count">
               <gl-sprintf :message="__('%{count} selected')">
                 <template #count>
                   {{ selectedGroupsIds.length }}
@@ -885,7 +885,7 @@ export default {
             />
           </template>
           <template #head(importTarget)="data">
-            <span data-test-id="new-path-col">
+            <span data-testid="new-path-col">
               <span class="gl-mr-2">{{ data.label }}</span
               ><gl-icon
                 v-gl-tooltip="s__('BulkImport|Path of the new group.')"

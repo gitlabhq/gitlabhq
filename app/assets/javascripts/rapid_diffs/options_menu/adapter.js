@@ -7,28 +7,29 @@ function getMenuItems(container) {
 
 export const OptionsMenuAdapter = {
   clicks: {
-    toggleOptionsMenu(event) {
-      const button = event.target.closest('.js-options-button');
-      const menuContainer = button.parentElement;
+    toggleOptionsMenu(event, button) {
+      const menuContainer = this.diffElement.querySelector('[data-options-menu]');
       const items = getMenuItems(menuContainer);
-
-      if (!this.sink.optionsMenu) {
-        this.sink.optionsMenu = new Vue({
-          el: Vue.version.startsWith('2') ? button : menuContainer,
-          name: 'GlDisclosureDropdown',
-          render: (createElement = Vue.h) =>
-            createElement(GlDisclosureDropdown, {
-              props: {
-                icon: 'ellipsis_v',
-                startOpened: true,
-                noCaret: true,
-                category: 'tertiary',
-                size: 'small',
-                items,
-              },
-            }),
-        });
-      }
+      // eslint-disable-next-line no-new
+      new Vue({
+        el: Vue.version.startsWith('2') ? button : menuContainer,
+        name: 'GlDisclosureDropdown',
+        render(h) {
+          return h(GlDisclosureDropdown, {
+            props: {
+              icon: 'ellipsis_v',
+              startOpened: true,
+              noCaret: true,
+              category: 'tertiary',
+              size: 'small',
+              items,
+            },
+            attrs: {
+              'data-options-toggle': true,
+            },
+          });
+        },
+      });
     },
   },
 };

@@ -79,7 +79,6 @@ Layout/LineBreakAfterFinalMixin:
     - 'ee/lib/api/dependency_proxy/packages/maven.rb'
     - 'ee/lib/api/resource_iteration_events.rb'
     - 'ee/lib/api/resource_weight_events.rb'
-    - 'ee/lib/duo_pro/bulk_user_assignment.rb'
     - 'ee/lib/ee/api/entities/project_push_rule.rb'
     - 'ee/lib/ee/gitlab/background_migration/create_compliance_standards_adherence.rb'
     - 'ee/lib/gitlab/auth/group_saml/identity_linker.rb'

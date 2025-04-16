@@ -13,7 +13,7 @@
 
 - view_title = _('View file @ %{commitSha}') % { commitSha: Commit.truncate_sha(@diff_file.content_sha) }
 - view_href = project_blob_path(@diff_file.repository.project, helpers.tree_join(@diff_file.content_sha, @diff_file.new_path))
-- options_menu_items = [ { "text": "#{view_title}", "href": "#{view_href}" } ].to_json
+- options_menu_items = [{ "text": "#{view_title}", "href": "#{view_href}" }].to_json
 
 .rd-diff-file-header{ data: { testid: 'rd-diff-file-header' } }
   .rd-diff-file-toggle<
@@ -54,8 +54,11 @@
         %span>= "&#x2212;".html_safe
         %span{ "data-testid" => "js-file-deletion-line" }= @diff_file.removed_lines
     .rd-diff-file-options-menu
-      .js-options-menu
-        -# <script> here is likely the most effective way to minimize bytes: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182850#note_2387011092
+      %div{ data: { options_menu: true } }
+        -# <script> here is likely the most effective way to minimize bytes:
+        -# https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182850#note_2387011092
+        -# haml-lint:disable InlineJavaScript
         %script{ type: "application/json" }
           = options_menu_items.html_safe
-        = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'ellipsis_v', button_options: { class: 'js-options-button', data: { click: 'toggleOptionsMenu' }, aria: { label: _('Options') } })
+        - button_params = { icon: 'ellipsis_v', button_options: { data: { click: 'toggleOptionsMenu' }, aria: { label: _('Options') } } }
+        = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, **button_params)

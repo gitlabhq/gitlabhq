@@ -190,6 +190,7 @@ project_setting:
     - product_analytics_configurator_connection_string
     - code_suggestions
     - duo_features_enabled
+    - auto_duo_code_review_enabled
     - require_reauthentication_to_approve
     - observability_alerts_enabled
     - spp_repository_pipeline_access

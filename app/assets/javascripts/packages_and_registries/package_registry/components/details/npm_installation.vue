@@ -12,6 +12,7 @@ import {
   NPM_PACKAGE_MANAGER,
   YARN_PACKAGE_MANAGER,
   PROJECT_PACKAGE_ENDPOINT_TYPE,
+  GROUP_PACKAGE_ENDPOINT_TYPE,
   INSTANCE_PACKAGE_ENDPOINT_TYPE,
   NPM_HELP_PATH,
 } from '~/packages_and_registries/package_registry/constants';
@@ -26,7 +27,7 @@ export default {
     GlSprintf,
     GlFormRadioGroup,
   },
-  inject: ['npmInstanceUrl'],
+  inject: ['npmInstanceUrl', 'npmGroupUrl'],
   props: {
     packageEntity: {
       type: Object,
@@ -63,12 +64,18 @@ export default {
 
       return `${instruction} ${this.packageEntity.name}`;
     },
+    npmPath(endpointType) {
+      const endpointMap = {
+        [INSTANCE_PACKAGE_ENDPOINT_TYPE]: this.npmInstanceUrl,
+        [GROUP_PACKAGE_ENDPOINT_TYPE]: this.npmGroupUrl,
+      };
+
+      return endpointMap[endpointType] || this.packageEntity.npmUrl;
+    },
     npmSetupCommand(type, endpointType) {
       const scope = this.packageEntity.name.substring(0, this.packageEntity.name.indexOf('/'));
-      const npmPathForEndpoint =
-        endpointType === INSTANCE_PACKAGE_ENDPOINT_TYPE
-          ? this.npmInstanceUrl
-          : this.packageEntity.npmUrl;
+
+      const npmPathForEndpoint = this.npmPath(endpointType);
 
       if (type === NPM_PACKAGE_MANAGER) {
         return `echo ${scope}:registry=${npmPathForEndpoint}/ >> .npmrc`;
@@ -99,6 +106,7 @@ export default {
   ],
   packageEndpointTypeOptions: [
     { value: INSTANCE_PACKAGE_ENDPOINT_TYPE, text: s__('PackageRegistry|Instance-level') },
+    { value: GROUP_PACKAGE_ENDPOINT_TYPE, text: s__('PackageRegistry|Group-level') },
     { value: PROJECT_PACKAGE_ENDPOINT_TYPE, text: s__('PackageRegistry|Project-level') },
   ],
 };

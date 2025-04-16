@@ -168,6 +168,7 @@ export const NPM_PACKAGE_MANAGER = 'npm';
 export const YARN_PACKAGE_MANAGER = 'yarn';
 
 export const PROJECT_PACKAGE_ENDPOINT_TYPE = 'project';
+export const GROUP_PACKAGE_ENDPOINT_TYPE = 'group';
 export const INSTANCE_PACKAGE_ENDPOINT_TYPE = 'instance';
 
 export const GRAPHQL_PAGE_SIZE = 20;

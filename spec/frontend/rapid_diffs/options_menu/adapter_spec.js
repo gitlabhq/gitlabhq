@@ -8,11 +8,11 @@ describe('Diff File Options Menu', () => {
       <div class="rd-diff-file">
         <div class="rd-diff-file-header" data-testid="rd-diff-file-header">
         <div class="rd-diff-file-options-menu gl-ml-2">
-          <div class="js-options-menu">
+          <div data-options-menu>
             <script type="application/json">
               [{"text": "${item1.text}", "href": "${item1.path}"}]
             </script>
-            <button class="js-options-button" data-click="toggleOptionsMenu" type="button"></button>
+            <button data-click="toggleOptionsMenu" type="button"></button>
           </div>
         </div>
       </div>
@@ -24,8 +24,8 @@ describe('Diff File Options Menu', () => {
   function get(element) {
     const elements = {
       file: () => document.querySelector('diff-file'),
-      container: () => get('file').querySelector('.js-options-menu'),
-      serverButton: () => get('container').querySelector('.js-options-button'),
+      container: () => get('file').querySelector('[data-options-menu]'),
+      serverButton: () => get('container').querySelector('[data-click="toggleOptionsMenu"]'),
       vueButton: () => get('container').querySelector('[data-testid="base-dropdown-toggle"]'),
       menuItems: () =>
         get('container').querySelectorAll('[data-testid="disclosure-dropdown-item"]'),

@@ -4,6 +4,7 @@ import { mapState } from 'vuex';
 import { __, s__ } from '~/locale';
 import getBlobSearchQuery from '~/search/graphql/blob_search_zoekt.query.graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { logError } from '~/lib/logger';
 import { DEFAULT_FETCH_CHUNKS } from '../constants';
 import { RECEIVE_NAVIGATION_COUNT } from '../../store/mutation_types';
 import EmptyResult from './result_empty.vue';
@@ -30,7 +31,6 @@ export default {
     return {
       hasError: false,
       blobSearch: {},
-      hasResults: true,
     };
   },
   apollo: {
@@ -40,30 +40,40 @@ export default {
       },
       errorPolicy: 'none',
       variables() {
-        return {
-          search: this.query.search,
-          groupId: this.query.group_id && `gid://gitlab/Group/${this.query.group_id}`,
-          projectId: this.query.project_id && `gid://gitlab/Project/${this.query.project_id}`,
+        const variables = {
+          search: this.query.search || '',
           page: this.currentPage,
           chunkCount: DEFAULT_FETCH_CHUNKS,
-          regex: parseBoolean(this.query.regex),
-          includeArchived: parseBoolean(this.query.include_archived),
-          includeForked: parseBoolean(this.query.include_forked),
+          regex: parseBoolean(this.query?.regex),
+          includeArchived: parseBoolean(this.query?.include_archived),
+          includeForked: parseBoolean(this.query?.include_forked),
         };
+
+        if (this.query?.group_id) {
+          variables.groupId = `gid://gitlab/Group/${this.query.group_id}`;
+        }
+
+        if (this.query?.project_id) {
+          variables.projectId = `gid://gitlab/Project/${this.query.project_id}`;
+        }
+
+        return variables;
+      },
+      skip() {
+        return !this.query.search;
       },
       result({ data }) {
         this.hasError = false;
         this.blobSearch = data?.blobSearch;
-        this.hasResults = data?.blobSearch?.files?.length > 0;
         this.$store.commit(RECEIVE_NAVIGATION_COUNT, {
           key: 'blobs',
           count: data?.blobSearch?.matchCount.toString(),
         });
       },
       debounce: 500,
-      error() {
+      error(error) {
+        logError(error);
         this.hasError = true;
-        this.hasResults = false;
       },
     },
   },
@@ -74,6 +84,9 @@ export default {
     },
     isLoading() {
       return this.$apollo.queries.blobSearch.loading;
+    },
+    hasResults() {
+      return this.blobSearch?.files?.length > 0;
     },
   },
 };
@@ -86,7 +99,7 @@ export default {
       <status-bar v-if="!isLoading" :blob-search="blobSearch" />
       <empty-result v-if="!hasResults && !isLoading" />
       <zoekt-blob-results
-        v-if="hasResults"
+        v-if="hasResults || isLoading"
         :blob-search="blobSearch"
         :has-results="hasResults"
         :is-loading="isLoading"

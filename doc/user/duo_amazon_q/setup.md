@@ -125,7 +125,7 @@ After you set up the IAM role, you cannot change the AWS account that's associat
             },
             "Condition": {
                 "StringEquals": {
-                    "auth.token.gitlab.com/cc/oidc/<Instance_ID>": "gitlab-cc-<Instance_ID>"
+                    "auth.token.gitlab.com/cc/oidc/<Instance_ID>:aud": "gitlab-cc-<Instance_ID>"
                 },
 
             }

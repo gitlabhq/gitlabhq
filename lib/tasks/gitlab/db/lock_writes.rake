@@ -8,7 +8,8 @@ namespace :gitlab do
       logger.level = Gitlab::Utils.to_boolean(ENV['VERBOSE']) ? Logger::INFO : Logger::WARN
       Gitlab::Database::TablesLocker.new(
         logger: logger,
-        dry_run: Gitlab::Utils.to_boolean(ENV['DRY_RUN'], default: false)
+        dry_run: Gitlab::Utils.to_boolean(ENV['DRY_RUN'], default: false),
+        include_partitions: Gitlab::Utils.to_boolean(ENV['INCLUDE_PARTITIONS'], default: true)
       ).lock_writes
     end
 
@@ -18,7 +19,8 @@ namespace :gitlab do
       logger.level = Gitlab::Utils.to_boolean(ENV['VERBOSE']) ? Logger::INFO : Logger::WARN
       Gitlab::Database::TablesLocker.new(
         logger: logger,
-        dry_run: Gitlab::Utils.to_boolean(ENV['DRY_RUN'], default: false)
+        dry_run: Gitlab::Utils.to_boolean(ENV['DRY_RUN'], default: false),
+        include_partitions: Gitlab::Utils.to_boolean(ENV['INCLUDE_PARTITIONS'], default: true)
       ).unlock_writes
     end
   end

@@ -2674,3 +2674,20 @@ Example response:
   ...
 }
 ```
+
+## Troubleshooting
+
+### Unexpected `restrict_user_defined_variables` value in response
+
+If you set conflicting values for `restrict_user_defined_variables` and `ci_pipeline_variables_minimum_override_role`,
+the response values might differ from what you expect because the `pipeline_variables_minimum_override_role`
+setting has higher priority.
+
+For example, if you:
+
+- Set `restrict_user_defined_variables` to `true` and `ci_pipeline_variables_minimum_override_role` to `developer`,
+  the response returns `restrict_user_defined_variables: false`. Setting `ci_pipeline_variables_minimum_override_role`
+  to `developer` takes precedence and variables are not restricted.
+- Set `restrict_user_defined_variables` to `false` and `ci_pipeline_variables_minimum_override_role` to `maintainer`,
+  The response returns `restrict_user_defined_variables: true` because setting `ci_pipeline_variables_minimum_override_role`
+  to `maintainer` takes precedence and variables are restricted.

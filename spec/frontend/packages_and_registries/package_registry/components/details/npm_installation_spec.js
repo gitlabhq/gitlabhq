@@ -14,6 +14,7 @@ import {
   NPM_PACKAGE_MANAGER,
   YARN_PACKAGE_MANAGER,
   PROJECT_PACKAGE_ENDPOINT_TYPE,
+  GROUP_PACKAGE_ENDPOINT_TYPE,
   INSTANCE_PACKAGE_ENDPOINT_TYPE,
   NPM_HELP_PATH,
 } from '~/packages_and_registries/package_registry/constants';
@@ -36,6 +37,7 @@ describe('NpmInstallation', () => {
     wrapper = shallowMountExtended(NpmInstallation, {
       provide: {
         npmInstanceUrl: 'npmInstanceUrl',
+        npmGroupUrl: 'npmGroupUrl',
       },
       propsData: {
         packageEntity,
@@ -69,6 +71,7 @@ describe('NpmInstallation', () => {
       expect(findEndPointTypeSector().props()).toMatchObject({
         options: [
           { value: INSTANCE_PACKAGE_ENDPOINT_TYPE, text: 'Instance-level' },
+          { value: GROUP_PACKAGE_ENDPOINT_TYPE, text: 'Group-level' },
           { value: PROJECT_PACKAGE_ENDPOINT_TYPE, text: 'Project-level' },
         ],
       });
@@ -130,12 +133,22 @@ describe('NpmInstallation', () => {
         trackingAction: TRACKING_ACTION_COPY_NPM_SETUP_COMMAND,
       });
 
+      findEndPointTypeSector().vm.$emit('change', GROUP_PACKAGE_ENDPOINT_TYPE);
+
+      await nextTick();
+
+      expect(findCodeInstructions().at(1).props()).toMatchObject({
+        instruction: 'echo @gitlab-org:registry=npmGroupUrl/ >> .npmrc',
+        multiline: false,
+        trackingAction: TRACKING_ACTION_COPY_NPM_SETUP_COMMAND,
+      });
+
       findEndPointTypeSector().vm.$emit('change', INSTANCE_PACKAGE_ENDPOINT_TYPE);
 
       await nextTick();
 
       expect(findCodeInstructions().at(1).props()).toMatchObject({
-        instruction: `echo @gitlab-org:registry=npmInstanceUrl/ >> .npmrc`,
+        instruction: 'echo @gitlab-org:registry=npmInstanceUrl/ >> .npmrc',
         multiline: false,
         trackingAction: TRACKING_ACTION_COPY_NPM_SETUP_COMMAND,
       });
@@ -173,6 +186,10 @@ describe('NpmInstallation', () => {
         multiline: false,
         trackingAction: TRACKING_ACTION_COPY_YARN_SETUP_COMMAND,
       });
+
+      findEndPointTypeSector().vm.$emit('change', GROUP_PACKAGE_ENDPOINT_TYPE);
+
+      await nextTick();
 
       findEndPointTypeSector().vm.$emit('change', INSTANCE_PACKAGE_ENDPOINT_TYPE);
 

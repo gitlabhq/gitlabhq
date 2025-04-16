@@ -166,12 +166,3 @@
   font-size: $default-icon-size;
   line-height: 42px;
 }
-
-.settings-message {
-  padding: 5px;
-  line-height: 1.3;
-  color: var(--gray-900, $gray-900);
-  background-color: var(--orange-50, $orange-50);
-  border: 1px solid var(--orange-200, $orange-200);
-  border-radius: $gl-border-radius-base;
-}

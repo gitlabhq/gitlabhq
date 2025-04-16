@@ -54,8 +54,7 @@ describe('import table', () => {
     },
   };
 
-  const findImportSelectedDropdown = () =>
-    wrapper.find('[data-testid="import-selected-groups-dropdown"]');
+  const findImportSelectedDropdown = () => wrapper.findByTestId('import-selected-groups-dropdown');
   const findRowImportDropdownAtIndex = (idx) =>
     wrapper.findAll('tbody td button').wrappers.filter((w) => w.text() === 'Import with projects')[
       idx
@@ -64,8 +63,8 @@ describe('import table', () => {
   const findTargetNamespaceInput = (rowWrapper) =>
     extendedWrapper(rowWrapper).findByTestId('target-namespace-input');
   const findPaginationDropdownText = () => findPaginationDropdown().find('button').text();
-  const findSelectionCount = () => wrapper.find('[data-test-id="selection-count"]');
-  const findNewPathCol = () => wrapper.find('[data-test-id="new-path-col"]');
+  const findSelectionCount = () => wrapper.findByTestId('selection-count');
+  const findNewPathCol = () => wrapper.findByTestId('new-path-col');
   const findHistoryLink = () => wrapper.findByTestId('history-link');
   const findUnavailableFeaturesWarning = () => wrapper.findByTestId('unavailable-features-alert');
   const findImportProjectsWarning = () => wrapper.findByTestId('import-projects-warning');

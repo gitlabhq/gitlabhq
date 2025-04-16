@@ -274,7 +274,23 @@ module Gitlab
 
         def max_relative_position
           Rails.cache.fetch("import:#{@importable.model_name.plural}:#{@importable.id}:hierarchy_max_issues_relative_position", expires_in: 24.hours) do
-            ::RelativePositioning.mover.context(Issue.in_projects(@importable.root_ancestor.all_projects).first)&.max_relative_position || ::Gitlab::RelativePositioning::START_POSITION
+            inner_sql = Issue
+                          .select(:id)
+                          .where(::Project.arel_table[:id].eq(Issue.arel_table[:project_id]))
+                          .order(iid: :asc)
+                          .limit(1)
+                          .to_sql
+
+            anchor_issue_id = @importable
+              .root_ancestor
+              .all_project_ids
+              .joins("INNER JOIN LATERAL (#{inner_sql}) issues ON TRUE")
+              .order(Issue.arel_table[:id].asc)
+              .pick(Issue.arel_table[:id])
+
+            ::RelativePositioning
+              .mover
+              .context(Issue.find_by(id: anchor_issue_id))&.max_relative_position || 0
           end
         end
 

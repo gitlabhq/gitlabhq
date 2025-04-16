@@ -23,6 +23,20 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
     end
   end
 
+  describe '#package_registry_group_url' do
+    context 'when registry_type is not provided' do
+      subject { helper.package_registry_group_url(1) }
+
+      it { is_expected.to eq("#{base_url}groups/1/-/packages/maven") }
+    end
+
+    context 'when registry_type is provided' do
+      subject { helper.package_registry_group_url(1, :npm) }
+
+      it { is_expected.to eq("#{base_url}groups/1/-/packages/npm") }
+    end
+  end
+
   describe '#package_registry_project_url' do
     it 'returns maven registry url when registry_type is not provided' do
       url = helper.package_registry_project_url(1)

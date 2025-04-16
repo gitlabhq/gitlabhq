@@ -1170,6 +1170,10 @@ in the rendered output.
 Embed images using inline or reference links.
 To see title text, hover over the image.
 
+The text in square brackets (`[ ]`) becomes the image alt text.
+To learn about creating accessible alt text, see
+[Accessible images and videos](#accessible-images-and-videos).
+
 <!--
 The following examples use HTML to skip the Vale ReferenceLinks test.
 Do not change it back to a markdown codeblocks.
@@ -1189,18 +1193,18 @@ Inline-style:
 
 <!-- markdownlint-disable proper-names -->
 
-<pre class="highlight"><code>![alt text](img/markdown_logo_v17_11.png "Title Text")
+<pre class="highlight"><code>![GitLab logo](img/markdown_logo_v17_11.png "Title Text")
 </code></pre>
 
-![alt text](img/markdown_logo_v17_11.png "Title Text")
+![GitLab logo](img/markdown_logo_v17_11.png "Title Text")
 
 Reference-style:
 
-<pre class="highlight"><code>![alt text1][logo]
+<pre class="highlight"><code>![GitLab logo][logo]
 &#91;logo]: img/markdown_logo_v17_11.png "Title Text"
 </code></pre>
 
-![alt text](img/markdown_logo_v17_11.png "Title Text")
+![GitLab logo](img/markdown_logo_v17_11.png "Title Text")
 
 <!-- markdownlint-enable proper-names -->
 
@@ -1237,12 +1241,12 @@ The value must an integer with a unit of either `px` (default) or `%`.
 For example
 
 ```markdown
-![alt text](img/markdown_logo_v17_11.png "Title Text"){width=100 height=100px}
+![GitLab logo](img/markdown_logo_v17_11.png "Title Text"){width=100 height=100px}
 
-![alt text](img/markdown_logo_v17_11.png "Title Text"){width=75%}
+![GitLab logo](img/markdown_logo_v17_11.png "Title Text"){width=75%}
 ```
 
-![alt text](img/markdown_logo_v17_11.png "Title Text"){width=100 height=100px}
+![GitLab logo](img/markdown_logo_v17_11.png "Title Text"){width=100 height=100px}
 
 You can also use the `img` HTML tag instead of Markdown and set its `height` and
 `width` parameters.
