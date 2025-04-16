@@ -302,39 +302,21 @@ describe('PlaceholdersTabApp', () => {
   });
 
   describe('reassign CSV button', () => {
-    describe('when the feature flag is enabled', () => {
-      beforeEach(() => {
-        createComponent({
-          provide: {
-            glFeatures: { importerUserMappingReassignmentCsv: true },
-          },
-          mountFn: mountExtended,
-        });
-      });
-
-      it('renders the button and the modal', () => {
-        expect(findReassignCsvButton().exists()).toBe(true);
-        expect(findCsvModal().exists()).toBe(true);
-      });
-
-      it('shows modal when button is clicked', async () => {
-        findReassignCsvButton().trigger('click');
-
-        await nextTick();
-
-        expect(findCsvModal().findComponent(GlModal).isVisible()).toBe(true);
-      });
+    beforeEach(() => {
+      createComponent({ mountFn: mountExtended });
     });
 
-    describe('when the feature flag is disabled', () => {
-      beforeEach(() => {
-        createComponent({ provide: { glFeatures: { importerUserMappingReassignmentCsv: false } } });
-      });
+    it('renders the button and the modal', () => {
+      expect(findReassignCsvButton().exists()).toBe(true);
+      expect(findCsvModal().exists()).toBe(true);
+    });
 
-      it('does not render the button and the modal', () => {
-        expect(findReassignCsvButton().exists()).toBe(false);
-        expect(findCsvModal().exists()).toBe(false);
-      });
+    it('shows modal when button is clicked', async () => {
+      findReassignCsvButton().trigger('click');
+
+      await nextTick();
+
+      expect(findCsvModal().findComponent(GlModal).isVisible()).toBe(true);
     });
   });
 

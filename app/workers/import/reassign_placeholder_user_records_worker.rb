@@ -29,7 +29,8 @@ module Import
         return self.class.perform_in(BACKOFF_PERIOD, import_source_user.id, params)
       end
 
-      Import::DeletePlaceholderUserWorker.perform_async(import_source_user.id)
+      Import::DeletePlaceholderUserWorker.perform_async(import_source_user.placeholder_user_id,
+        type: 'placeholder_user')
     end
 
     def perform_failure(exception, import_source_user_id)

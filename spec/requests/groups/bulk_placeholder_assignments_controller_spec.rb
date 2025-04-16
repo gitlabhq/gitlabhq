@@ -58,18 +58,6 @@ RSpec.describe Groups::BulkPlaceholderAssignmentsController, feature_category: :
           expect(flash[:alert]).to eq('my error message')
         end
       end
-
-      context 'when :importer_user_mapping_reassignment_csv is disabled' do
-        before do
-          stub_feature_flags(importer_user_mapping_reassignment_csv: false)
-        end
-
-        it 'responds with 404' do
-          request
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
     end
   end
 
@@ -141,18 +129,6 @@ RSpec.describe Groups::BulkPlaceholderAssignmentsController, feature_category: :
             'message' => 'The following errors are preventing the sheet from ' \
               'being processed: This is wrong. That is wrong.'
           })
-        end
-      end
-
-      context 'when :importer_user_mapping_reassignment_csv is disabled' do
-        before do
-          stub_feature_flags(importer_user_mapping_reassignment_csv: false)
-        end
-
-        it 'responds with 404' do
-          request
-
-          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end

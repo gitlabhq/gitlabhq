@@ -3,6 +3,7 @@
 module MergeRequests
   class RefreshService < MergeRequests::BaseService
     include Gitlab::Utils::StrongMemoize
+
     attr_reader :push
 
     def execute(oldrev, newrev, ref)

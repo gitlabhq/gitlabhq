@@ -14,7 +14,6 @@ import {
   GlLink,
   GlSprintf,
 } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __, n__, sprintf } from '~/locale';
 import { queryToObject, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -79,7 +78,6 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['group'],
   data() {
     return {
@@ -140,9 +138,6 @@ export default {
       }
 
       return PLACEHOLDER_USER_STATUS.REASSIGNED;
-    },
-    isCsvReassignmentEnabled() {
-      return this.glFeatures.importerUserMappingReassignmentCsv;
     },
     sortOptions() {
       return [
@@ -403,17 +398,15 @@ export default {
 
       <template #tabs-end>
         <div class="gl-ml-auto gl-flex gl-gap-2">
-          <template v-if="isCsvReassignmentEnabled">
-            <gl-button
-              v-gl-modal="$options.uploadCsvModalId"
-              variant="link"
-              icon="media"
-              data-testid="reassign-csv-button"
-            >
-              {{ s__('UserMapping|Reassign with CSV file') }}
-            </gl-button>
-            <csv-upload-modal :modal-id="$options.uploadCsvModalId" />
-          </template>
+          <gl-button
+            v-gl-modal="$options.uploadCsvModalId"
+            variant="link"
+            icon="media"
+            data-testid="reassign-csv-button"
+          >
+            {{ s__('UserMapping|Reassign with CSV file') }}
+          </gl-button>
+          <csv-upload-modal :modal-id="$options.uploadCsvModalId" />
           <gl-disclosure-dropdown
             icon="ellipsis_v"
             placement="bottom-end"

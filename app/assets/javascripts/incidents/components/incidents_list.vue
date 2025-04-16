@@ -424,9 +424,10 @@ export default {
               <gl-icon
                 v-if="isClosed(item)"
                 name="issue-close"
-                class="gl-ml-2 gl-shrink-0 gl-fill-blue-500"
+                class="gl-ml-2 gl-shrink-0"
                 :size="16"
                 data-testid="incident-closed"
+                variant="info"
               />
             </div>
           </template>

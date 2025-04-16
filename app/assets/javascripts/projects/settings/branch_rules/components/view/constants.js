@@ -90,9 +90,6 @@ export const ALL_BRANCHES_WILDCARD = '*';
 export const REQUIRED_ICON = 'check-circle-filled';
 export const NOT_REQUIRED_ICON = 'status-failed';
 
-export const REQUIRED_ICON_CLASS = 'gl-fill-green-500';
-export const NOT_REQUIRED_ICON_CLASS = 'gl-text-danger';
-
 export const DELETE_RULE_MODAL_ID = 'delete-branch-rule-modal';
 
 export const projectUsersOptions = { push_code: true, active: true };

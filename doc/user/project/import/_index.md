@@ -416,16 +416,10 @@ Before a user accepts the reassignment, you can [cancel the request](#cancel-rea
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455901) in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `importer_user_mapping_reassignment_csv`. [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/478022).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455901) in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `importer_user_mapping_reassignment_csv`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/478022) in GitLab 18.0. Feature flag `importer_user_mapping_reassignment_csv` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 Prerequisites:
 

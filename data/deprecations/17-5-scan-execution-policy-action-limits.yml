@@ -2,7 +2,7 @@
   removal_milestone: "18.0"
   announcement_milestone: "17.5"
   breaking_change: true
-  window: 1
+  window: 2
   reporter: g.hickman
   stage: security risk management
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/510897

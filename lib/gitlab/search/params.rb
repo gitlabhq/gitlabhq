@@ -8,6 +8,7 @@ module Gitlab
       SEARCH_CHAR_LIMIT = 4096
       SEARCH_TERM_LIMIT = 64
       MIN_TERM_LENGTH = 2
+      BOOLEAN_PARAMS = %i[confidential exclude_forks include_archived include_forked].freeze
 
       # Generic validation
       validates :query_string, length: { maximum: SEARCH_CHAR_LIMIT }
@@ -36,6 +37,10 @@ module Gitlab
         else
           raw_params[key]
         end
+      end
+
+      def slice(*keys)
+        keys.index_with { |key| self[key] }.with_indifferent_access
       end
 
       def abusive?
@@ -93,7 +98,8 @@ module Gitlab
       end
 
       def process_params(params)
-        processed_params = convert_all_boolean_params(params)
+        processed_params = params.is_a?(Hash) ? params.with_indifferent_access : params.dup
+        processed_params = convert_all_boolean_params(processed_params)
         convert_not_params(processed_params)
       end
 
@@ -109,25 +115,11 @@ module Gitlab
       end
 
       def convert_all_boolean_params(params)
-        converted_params = params.is_a?(Hash) ? params.with_indifferent_access : params.dup
-
-        if converted_params.key?(:confidential)
-          converted_params[:confidential] = Gitlab::Utils.to_boolean(converted_params[:confidential])
+        BOOLEAN_PARAMS.each do |key|
+          params[key] = Gitlab::Utils.to_boolean(params[key]) if params.key?(key)
         end
 
-        if converted_params.key?(:include_archived)
-          converted_params[:include_archived] = Gitlab::Utils.to_boolean(converted_params[:include_archived])
-        end
-
-        if converted_params.key?(:include_forked)
-          converted_params[:include_forked] = Gitlab::Utils.to_boolean(converted_params[:include_forked])
-        end
-
-        if converted_params.key?(:exclude_forks)
-          converted_params[:exclude_forks] = Gitlab::Utils.to_boolean(converted_params[:exclude_forks])
-        end
-
-        converted_params
+        params
       end
     end
   end

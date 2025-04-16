@@ -58,6 +58,10 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 /spec/frontend_integration/
 /ee/spec/frontend_integration/
 
+[Data Seeder] @gl-dx
+/ee/db/seeds/data_seeder/
+/scripts/data_seeder/
+
 [Clickhouse] @gitlab-org/maintainers/clickhouse
 /db/click_house/
 /ee/db/click_house/

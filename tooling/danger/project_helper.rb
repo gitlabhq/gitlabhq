@@ -93,6 +93,7 @@ module Tooling
           \.gitlab/ci/frontend\.gitlab-ci\.yml
         )\z}x => %i[frontend tooling],
 
+        %r{\Aee/db/seeds/data_seeder/} => [:backend],
         %r{\A((ee|jh)/)?db/(geo/)?(?!click_house|fixtures)[^/]+} => [:database],
         %r{\A((ee|jh)/)?db/[^/]+\z} => [:database], # db/ root files
         %r{\Adb/docs/.+\.yml\z} => [:database],

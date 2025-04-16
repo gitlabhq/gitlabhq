@@ -147,6 +147,7 @@ RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
       'lib/gitlab/sql/foo'                                                             | [:database, :backend]
       'rubocop/cop/migration/foo'                                                      | [:database]
 
+      'ee/db/seeds/data_seeder/foo_seed.db'                | [:backend]
       'db/fixtures/foo.rb'                                 | [:backend]
       'ee/db/fixtures/foo.rb'                              | [:backend]
 

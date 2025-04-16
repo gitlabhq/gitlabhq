@@ -1,12 +1,7 @@
 <script>
 import { GlToggle, GlIcon, GlSprintf, GlLink } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import {
-  REQUIRED_ICON,
-  NOT_REQUIRED_ICON,
-  REQUIRED_ICON_CLASS,
-  NOT_REQUIRED_ICON_CLASS,
-} from './constants';
+import { REQUIRED_ICON, NOT_REQUIRED_ICON } from './constants';
 
 export default {
   components: {
@@ -60,8 +55,8 @@ export default {
     iconName() {
       return this.isProtected ? REQUIRED_ICON : NOT_REQUIRED_ICON;
     },
-    iconClass() {
-      return this.isProtected ? REQUIRED_ICON_CLASS : NOT_REQUIRED_ICON_CLASS;
+    iconVariant() {
+      return this.isProtected ? 'success' : 'danger';
     },
     iconDataTestId() {
       // eslint-disable-next-line @gitlab/require-i18n-strings
@@ -102,7 +97,7 @@ export default {
   </div>
   <div v-else class="gl-mb-5">
     <div class="gl-flex gl-items-center">
-      <gl-icon :data-testid="iconDataTestId" :size="14" :name="iconName" :class="iconClass" />
+      <gl-icon :data-testid="iconDataTestId" :size="14" :name="iconName" :variant="iconVariant" />
       <strong class="gl-ml-2">{{ iconTitle }}</strong>
     </div>
     <gl-sprintf v-if="hasDescription" :message="description" data-testid="protection-description">

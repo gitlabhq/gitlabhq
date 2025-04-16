@@ -174,9 +174,10 @@ module API
         destroy_conditionally!(snippet) do |snippet|
           service = ::Snippets::DestroyService.new(current_user, snippet)
           response = service.execute
+          http_status = Helpers::Snippets::HttpResponseMap.status_for(response.reason)
 
           if response.error?
-            render_api_error!({ error: response.message }, response.reason)
+            render_api_error!({ error: response.message }, http_status)
           end
         end
       end
