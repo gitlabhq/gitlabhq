@@ -440,7 +440,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           category: nil,
           duration: 1800,
           user_id: developer.id,
-          spent_at: Date.parse(date)
+          spent_at: Date.parse(date).midday
         })
       end
     end

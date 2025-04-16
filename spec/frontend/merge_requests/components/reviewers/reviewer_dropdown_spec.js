@@ -6,6 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import ReviewerDropdown from '~/merge_requests/components/reviewers/reviewer_dropdown.vue';
 import UpdateReviewers from '~/merge_requests/components/reviewers/update_reviewers.vue';
 import userPermissionsQuery from '~/merge_requests/components/reviewers/queries/user_permissions.query.graphql';
@@ -234,6 +235,7 @@ describe('Reviewer dropdown component', () => {
           'user_selects_reviewer_from_mr_sidebar',
           {
             value: 1,
+            suggested_position: 0,
             selectable_reviewers_count: 2,
           },
           undefined,
@@ -255,6 +257,7 @@ describe('Reviewer dropdown component', () => {
           'user_selects_reviewer_from_mr_sidebar',
           {
             value: 1,
+            suggested_position: 0,
             selectable_reviewers_count: 1,
           },
           undefined,
@@ -270,6 +273,7 @@ describe('Reviewer dropdown component', () => {
           'user_selects_reviewer_from_mr_sidebar_after_search',
           {
             value: 2,
+            suggested_position: 0,
             selectable_reviewers_count: 2,
           },
           undefined,
@@ -302,6 +306,95 @@ describe('Reviewer dropdown component', () => {
           expect(trackEventSpy).toHaveBeenCalledWith(
             'user_requests_review_from_mr_simple_sidebar',
             {},
+            undefined,
+          );
+        });
+      });
+
+      describe('"suggested" historical position', () => {
+        it('reports the correct prior suggested position', async () => {
+          createComponent(true, {
+            selectedReviewers: [],
+          });
+
+          await waitForPromises();
+
+          findDropdown().vm.$emit('shown');
+
+          await waitForPromises();
+
+          findDropdown().vm.$emit('select', ['root']);
+          findDropdown().vm.$emit('hidden');
+
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'user_selects_reviewer_from_mr_sidebar',
+            {
+              value: 1,
+              suggested_position: 1,
+              selectable_reviewers_count: 2,
+            },
+            undefined,
+          );
+        });
+
+        it('reports the correct prior suggested position - discounting already selected reviewers', async () => {
+          createComponent(true, {
+            selectedReviewers: [createMockUser()],
+          });
+
+          await waitForPromises();
+
+          findDropdown().vm.$emit('shown');
+
+          await waitForPromises();
+
+          findDropdown().vm.$emit('select', ['bob']);
+          findDropdown().vm.$emit('hidden');
+
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'user_selects_reviewer_from_mr_sidebar',
+            {
+              value: 1,
+              suggested_position: 1,
+              selectable_reviewers_count: 1,
+            },
+            undefined,
+          );
+        });
+
+        it("reports 0 as the prior suggested position of the reviewer if they weren't in the initial suggested list", async () => {
+          createComponent(true, {
+            selectedReviewers: [],
+          });
+
+          await waitForPromises();
+
+          findDropdown().vm.$emit('shown');
+          await waitForPromises();
+
+          autocompleteUsersMock.mockReset();
+          autocompleteUsersMock.mockResolvedValue({
+            data: {
+              workspace: {
+                id: 1,
+                users: [createMockUser({ id: 3, name: 'Friend', username: 'coolguy' })],
+              },
+            },
+          });
+          findDropdown().vm.$emit('search', 'coolguy');
+          jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+          await waitForPromises();
+
+          findDropdown().vm.$emit('select', ['coolguy']);
+          findDropdown().vm.$emit('hidden');
+
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'user_selects_reviewer_from_mr_sidebar_after_search',
+            {
+              value: 1,
+              suggested_position: 0,
+              selectable_reviewers_count: 1,
+            },
             undefined,
           );
         });

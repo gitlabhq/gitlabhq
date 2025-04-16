@@ -503,6 +503,12 @@
 .frontend-predictive-patterns: &frontend-predictive-patterns
   - "{,ee/,jh/}{app/assets/javascripts,spec/frontend}/**/*"
 
+.frontend-code-patterns: &frontend-code-patterns
+  - "**/{package.json,yarn.lock}"
+  - "**/*.{js,cjs,mjs,vue,graphql}"
+  # match the .rc config files like .browserslistrc, .stylelintrc etc.,
+  - "{.,}*rc"
+
 # Code patterns + .ci-patterns
 .code-patterns: &code-patterns
   - ".{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
@@ -1386,6 +1392,23 @@
       changes: *code-backstage-qa-patterns
     - <<: *if-default-refs
       changes: *workhorse-patterns
+
+.frontend:rules:eslint-changed-files:
+  rules:
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-default-branch-refs
+      when: never
+    - !reference [".prevent-tier-2-and-above", "rules"]
+    - <<: *if-merge-request-no-tier
+      changes: *frontend-code-patterns
+    - <<: *if-merge-request-tier-1
+      changes: *frontend-code-patterns
+
+.frontend:rules:eslint-default:
+  rules:
+    - !reference [".prevent-tier-1", "rules"]
+    - !reference [.frontend:rules:default-frontend-jobs, rules]
 
 .frontend:rules:default-frontend-jobs:
   rules:

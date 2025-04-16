@@ -235,7 +235,9 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
       Dir.glob('qa/.{,**/}*') +
       Dir.glob('qa/**/.gitlab-ci.yml') +
       Dir.glob('shared/**/*') +
-      Dir.glob('workhorse/.*')
+      Dir.glob('workhorse/.*') +
+      Dir.glob('.idea/**/*', File::FNM_DOTMATCH) +
+      Dir.glob('.yarn-cache/**/*', File::FNM_DOTMATCH)
     ).freeze
     no_matching_needed_files_ci_specific = (
       [

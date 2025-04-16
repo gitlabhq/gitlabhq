@@ -208,7 +208,7 @@ describe('Create Timelog Form', () => {
         expect(rejectedMutationMock).toHaveBeenCalledWith({
           input: {
             timeSpent,
-            spentAt: '2022-11-20',
+            spentAt: '2022-11-20T12:00:00Z',
             summary,
             issuableId: convertToGraphQLId(typeConstant, '1'),
           },
@@ -300,7 +300,7 @@ describe('Create Timelog Form', () => {
           id: 'gid://gitlab/WorkItem/1',
           timeTrackingWidget: {
             timelog: {
-              spentAt: '2020-07-06',
+              spentAt: '2020-07-06T12:00:00Z',
               summary: '',
               timeSpent: '2d',
             },

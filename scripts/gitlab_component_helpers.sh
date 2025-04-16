@@ -232,7 +232,62 @@ export FINGERPRINTS_PACKAGE_URL="${API_PACKAGES_BASE_URL}/auto-explain-logs/mast
 
 function extract_and_upload_fingerprints() {
   echo "Extracting SQL query fingerprints from ${RSPEC_AUTO_EXPLAIN_LOG_PATH}"
-  ruby scripts/extract_fingerprints "${RSPEC_AUTO_EXPLAIN_LOG_PATH}" "${FINGERPRINTS_FILE}"
+  ruby scripts/extract_fingerprints "${RSPEC_AUTO_EXPLAIN_LOG_PATH}" "${FINGERPRINTS_FILE}.new"
+
+  # Check if any new fingerprints were found
+  new_count=$(wc -l < "${FINGERPRINTS_FILE}.new")
+  if [ "$new_count" -eq 0 ]; then
+    echo "No fingerprints found in current run, exiting early"
+    rm "${FINGERPRINTS_FILE}.new"
+    return 0
+  fi
+
+  echo "Found ${new_count} fingerprints in current run"
+
+  # Attempt to download the previous package directly
+  echo "Attempting to download previous fingerprints package..."
+  if curl -s -f "${FINGERPRINTS_PACKAGE_URL}" -o latest_fingerprints.tar.gz; then
+    echo "Previous fingerprints package downloaded successfully"
+
+    # Extract the package
+    mkdir -p temp_fingerprints
+    if tar -xzf latest_fingerprints.tar.gz -C temp_fingerprints; then
+
+      if [ -f "temp_fingerprints/${FINGERPRINTS_FILE}" ]; then
+        echo "Merging with existing fingerprints..."
+        # Combine both files and remove duplicates
+        cat "temp_fingerprints/${FINGERPRINTS_FILE}" "${FINGERPRINTS_FILE}.new" | sort | uniq > "${FINGERPRINTS_FILE}"
+
+        # Count and report stats
+        old_count=$(wc -l < "temp_fingerprints/${FINGERPRINTS_FILE}")
+        new_total=$(wc -l < "${FINGERPRINTS_FILE}")
+        added_count=$((new_total - old_count))
+
+        if [ "$added_count" -eq 0 ]; then
+          echo "No new unique fingerprints found, exiting early"
+          rm -rf temp_fingerprints latest_fingerprints.tar.gz "${FINGERPRINTS_FILE}.new" "${FINGERPRINTS_FILE}"
+          return 0
+        fi
+
+        echo "Previous fingerprints: ${old_count}"
+        echo "Newly added fingerprints: ${added_count}"
+        echo "Total unique fingerprints: ${new_total}"
+      else
+        echo "No fingerprints file found in package, using new ones only"
+        mv "${FINGERPRINTS_FILE}.new" "${FINGERPRINTS_FILE}"
+      fi
+    else
+      echo "Failed to extract package, using new fingerprints only"
+      mv "${FINGERPRINTS_FILE}.new" "${FINGERPRINTS_FILE}"
+    fi
+
+    # Clean up
+    rm -rf temp_fingerprints latest_fingerprints.tar.gz
+  else
+    echo "No previous fingerprints package found or unable to download, using new fingerprints only"
+    mv "${FINGERPRINTS_FILE}.new" "${FINGERPRINTS_FILE}"
+  fi
+
   create_package "${FINGERPRINTS_PACKAGE}" "${FINGERPRINTS_FILE}"
   upload_package "${FINGERPRINTS_PACKAGE}" "${FINGERPRINTS_PACKAGE_URL}"
 }

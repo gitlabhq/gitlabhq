@@ -66452,6 +66452,12 @@ msgstr ""
 msgid "VirtualRegistry|Maven"
 msgstr ""
 
+msgid "VirtualRegistry|Maven virtual registries"
+msgstr ""
+
+msgid "VirtualRegistry|New maven virtual registry"
+msgstr ""
+
 msgid "VirtualRegistry|Virtual registries"
 msgstr ""
 

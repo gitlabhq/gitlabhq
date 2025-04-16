@@ -36163,6 +36163,11 @@ paths:
         - embedding
         - geo
         required: false
+      - in: query
+        name: job_class_name
+        description: Filter migrations by job class name.
+        type: string
+        required: false
       responses:
         '200':
           description: Get the list of batched background migrations

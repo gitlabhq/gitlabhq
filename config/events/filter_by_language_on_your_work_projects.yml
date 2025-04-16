@@ -6,9 +6,9 @@ identifiers:
 - user
 additional_properties:
   label:
-    description: Tab name (e.g. "Contributed")
+    description: Tab name (e.g. "contributed")
   property:
-    description: Language
+    description: Language ID
 product_group: organizations
 product_categories:
 - groups_and_projects

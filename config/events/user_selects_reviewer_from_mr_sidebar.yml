@@ -9,6 +9,8 @@ identifiers:
 additional_properties:
   value:
     description: List position of the selected user
+  suggested_position:
+    description: The original position of this user in the suggested list, or 0 if they weren't included
   selectable_reviewers_count:
     description: The total number of selectable reviewers in the list this reviewer was selected from
 product_group: code_review

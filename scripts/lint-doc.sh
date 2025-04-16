@@ -223,7 +223,7 @@ then
   # shellcheck disable=2059
   printf "${COLOR_GREEN}INFO: Merge request pipeline detected, but no markdown files found. Skipping.${COLOR_RESET}\n"
 else
-  if ! yarn markdownlint ${MD_DOC_PATH};
+  if ! markdownlint-cli2 ${MD_DOC_PATH};
   then
     # shellcheck disable=2059
     printf "${COLOR_RED}ERROR: Markdownlint failed with errors!${COLOR_RESET}\n" >&2

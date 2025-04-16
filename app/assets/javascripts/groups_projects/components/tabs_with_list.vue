@@ -270,7 +270,7 @@ export default {
         return;
       }
 
-      this.trackEvent(this.eventTracking.tabs, { label: tab.text });
+      this.trackEvent(this.eventTracking.tabs, { label: tab.value });
     },
     tabCount(tab) {
       return this.tabCounts[tab.value];
@@ -296,7 +296,7 @@ export default {
         return;
       }
 
-      this.trackEvent(this.eventTracking.sort, { label: this.activeTab.text, property: sort });
+      this.trackEvent(this.eventTracking.sort, { label: this.activeTab.value, property: sort });
     },
     onFilter(filters) {
       const { sort } = this.$route.query;
@@ -317,38 +317,14 @@ export default {
         // Don't record the value when using text search.
         // Only record with pre-set values (e.g language or access level).
         if (filter === this.filteredSearchTermKey) {
-          this.trackEvent(event, { label: this.activeTab.text });
+          this.trackEvent(event, { label: this.activeTab.value });
 
-          return;
-        }
-
-        const filteredSearchToken = this.filteredSearchTokens.find(
-          (token) => token.type === filter,
-        );
-
-        if (!filteredSearchToken) {
-          return;
-        }
-
-        const optionTitles = filterValues.flatMap((filterValue) => {
-          const optionTitle = filteredSearchToken.options.find(
-            ({ value }) => filterValue === value,
-          )?.title;
-
-          if (!optionTitle) {
-            return [];
-          }
-
-          return [optionTitle];
-        });
-
-        if (!optionTitles.length) {
           return;
         }
 
         this.trackEvent(event, {
-          label: this.activeTab.text,
-          property: optionTitles.join(','),
+          label: this.activeTab.value,
+          property: filterValues.join(','),
         });
       });
     },
@@ -362,7 +338,7 @@ export default {
       }
 
       this.trackEvent(this.eventTracking.pagination, {
-        label: this.activeTab.text,
+        label: this.activeTab.value,
         property: pagination.startCursor === null ? 'next' : 'previous',
       });
     },

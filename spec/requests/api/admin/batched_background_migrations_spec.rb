@@ -162,6 +162,19 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
           end
         end
       end
+
+      context 'when filtering by job class name' do
+        let!(:my_job) { create(:batched_background_migration, job_class_name: "MyJob") }
+
+        let(:params) { { job_class_name: "MyJob" } }
+
+        it 'returns only relevant records' do
+          get api(path, admin, admin_mode: true), params: params
+
+          expect(json_response.count).to eq(1)
+          expect(json_response.first['id']).to eq(my_job.id)
+        end
+      end
     end
   end
 

@@ -38,7 +38,7 @@ module Gitlab
         return DateTime.current unless date_present?
 
         string_date = @spend_arg.match(DATE_REGEX)[0]
-        Date.parse(string_date)
+        Date.parse(string_date).midday
       end
 
       def date_present?

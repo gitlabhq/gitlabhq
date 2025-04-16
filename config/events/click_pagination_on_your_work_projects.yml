@@ -6,7 +6,7 @@ identifiers:
 - user
 additional_properties:
   label:
-    description: Tab name (e.g. "Contributed")
+    description: Tab name (e.g. "contributed")
   property:
     description: Direction
 product_group: organizations

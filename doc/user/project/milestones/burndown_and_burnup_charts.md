@@ -12,9 +12,51 @@ title: Burndown and burnup charts
 
 {{< /details >}}
 
-[Burndown](#burndown-charts) and [burnup](#burnup-charts) charts show the progress of completing a milestone.
+[Burndown](#burndown-charts) and [burnup](#burnup-charts) show progress toward completing a milestone.
+Burndown charts show the remaining issues (burndown) over the course of a project [milestone](_index.md).
+Burnup charts show the total number of issues against completed issues.
 
 ![burndown and burnup chart](img/burndown_and_burnup_charts_v15_3.png)
+
+### Similarities and differences
+
+Burndown and burnup charts share some general features.
+Both burndown and burnup charts:
+
+- Show the total number of issues for each day of the current milestone.
+- Have a [toggle](#switch-between-number-of-issues-and-issue-weight) between the total number of
+  issues or the total [weight](../issues/issue_weight.md) of issues for each day of the milestone.
+
+Differences between burndown and burnup charts are:
+
+- Burnup charts contain a separate line representing completed issues over a milestone.
+- Burnup charts reflect the difference between an issue being moved to another milestone
+  (**Total** issues line goes down) and an issue being closed (**Total** issues line remains unchanged).
+- Burndown charts measure "total issues minus closed issues" for each day while burnup charts measure
+  the total issues (open *and* closed) separately from the issues resolved for each day.
+
+### Switch between number of issues and issue weight
+
+To switch between the two settings, select either **Issues** or **Issue weight** above the charts.
+
+When sorting by weight, make sure all your issues have a weight assigned, because issues with no weight are not represented in the remaining weight totals.
+
+### When to use burndown and burnup charts
+
+Burndown and burnup charts provide valuable insights when tracking milestone progress. 
+Their use depends on [how you structure your milestones](_index.md) in your workflow.
+
+These charts help teams:
+
+- Visualize progress in real time throughout a milestone period.
+- Identify potential delays early by comparing actual progress to ideal progress.
+- Communicate status to stakeholders with easy-to-understand visual data.
+- Make data-driven decisions about resource allocation and prioritization.
+
+Use burndown charts to focus on remaining work.
+Use burnup charts to track both completed work and scope changes over time.
+Burnup charts are particularly useful for monitoring scope creep (uncontrolled additions to a
+project's scope) by showing spikes in the chart's total issues.
 
 ## Burndown charts
 
@@ -43,30 +85,9 @@ To view a group's burndown chart:
 1. Select **Plan > Milestones**.
 1. Select a milestone from the list.
 
-### Use cases for burndown charts
-
-Burndown charts are generally used for tracking and analyzing the completion of
-a milestone. Therefore, their use cases are tied to the
-[use you are assigning your milestone to](_index.md).
-
-For example, suppose you lead a team of developers in a large company,
-and you follow this workflow:
-
-- Your company set the goal for the quarter to deliver 10 new features for your app
-  in the upcoming major release.
-- You create a milestone, and remind your team to assign that milestone to every new issue
-  and merge request that's part of the launch of your app.
-- Every week, you open the milestone, visualize the progress, identify the gaps,
-  and help your team to get their work done.
-- Every month, you check in with your supervisor, and show the progress of that milestone
-  from the burndown chart.
-- By the end of the quarter, your team successfully delivered 100% of that milestone, as
-  it was taken care of closely throughout the whole quarter.
-
 ### How burndown charts work
 
-A burndown chart is available for every project or group milestone that has been attributed a **start
-date** and a **due date**.
+A burndown chart is available for every project or group milestone that has been attributed a **start date** and a **due date**.
 
 {{< alert type="note" >}}
 
@@ -124,22 +145,16 @@ To view a group's burnup chart:
 
 ### How burnup charts work
 
-Burnup charts have separate lines for total work and completed work. The total line
-shows changes to the scope of a milestone. When an open issue is moved to another
-milestone, the "total issues" goes down but the "completed issues" stays the same.
-The completed work is a count of issues closed. When an issue is closed, the "total
-issues" remains the same and "completed issues" goes up.
+Burnup charts have separate lines for total work and completed work:
 
-## Switch between number of issues and issue weight
+- The **Total** line reflects changes to the scope of a milestone by measuring the number of issues assigned to that milestone.
+- The **Completed** line measures that milestone's number of closed issues.
 
-In both burndown or burnup charts you can view them
-either by the total number of issues
-or the total weight for each day of the milestone.
+When an open issue is moved to another milestone, the **Total** line goes down but the **Completed**
+line stays the same.
+The **Completed** line remains unchanged because it only tracks issues that are closed.
 
-To switch between the two settings, select either **Issues** or **Issue weight** above the charts.
-
-When sorting by weight, make sure all your issues
-have weight assigned, because issues with no weight don't show on the chart.
+When an issue is closed, the **Total** line remains the same and the **Completed** line goes up.
 
 ## Roll up weights
 

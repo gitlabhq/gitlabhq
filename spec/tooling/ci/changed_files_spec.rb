@@ -6,74 +6,6 @@ require_relative '../../../tooling/ci/changed_files'
 RSpec.describe CI::ChangedFiles, feature_category: :tooling do
   let(:instance) { described_class.new }
 
-  describe '#should_run_checks_for_changed_files' do
-    # The mock values are based on allowed values from the docs
-    # https://docs.gitlab.com/ci/variables/predefined_variables/
-    let(:pipeline_source) { 'merge_request_event' }
-    let(:merge_request_event_type) { 'merged_result' }
-    let(:commit_ref_name) { 'feature-branch' }
-
-    before do
-      stub_env('CI_PIPELINE_SOURCE', pipeline_source)
-      stub_env('CI_MERGE_REQUEST_EVENT_TYPE', merge_request_event_type)
-      stub_env('CI_COMMIT_REF_NAME', commit_ref_name)
-    end
-
-    context 'when in a valid merge request environment' do
-      it 'returns true when no tier labels exist' do
-        stub_env('CI_MERGE_REQUEST_LABELS', nil)
-        expect(instance.should_run_checks_for_changed_files).to be true
-      end
-
-      it 'returns true when tier-1 label exists' do
-        stub_env('CI_MERGE_REQUEST_LABELS', 'pipeline::tier-1,other-label')
-        expect(instance.should_run_checks_for_changed_files).to be true
-      end
-
-      it 'returns false when other tier label exists' do
-        stub_env('CI_MERGE_REQUEST_LABELS', 'pipeline::tier-2,other-label')
-        expect(instance.should_run_checks_for_changed_files).to be false
-      end
-    end
-
-    context 'when not in a valid merge request environment' do
-      context 'when the merge request event type is merge_train' do
-        let(:merge_request_event_type) { 'merge_train' }
-
-        it 'returns false' do
-          expect(instance.should_run_checks_for_changed_files).to be false
-        end
-      end
-
-      context 'when the pipeline source is not merged_request_event' do
-        let(:pipeline_source) { 'push' }
-
-        it 'returns false when pipeline source is push' do
-          expect(instance.should_run_checks_for_changed_files).to be false
-        end
-      end
-
-      context 'when the current branch is CI_DEFAULT_BRANCH' do
-        let(:commit_ref_name) { 'master' }
-
-        it 'returns false' do
-          stub_env('CI_DEFAULT_BRANCH', 'master')
-          expect(instance.should_run_checks_for_changed_files).to be false
-        end
-      end
-
-      context 'when the environment variables are not set' do
-        let(:pipeline_source) { nil }
-        let(:merge_request_event_type) { nil }
-        let(:commit_ref_name) { nil }
-
-        it 'returns false' do
-          expect(instance.should_run_checks_for_changed_files).to be false
-        end
-      end
-    end
-  end
-
   describe '#get_changed_files_in_merged_results_pipeline' do
     let(:git_diff_output) { "file1.js\nfile2.rb\nfile3.vue" }
 
@@ -100,17 +32,15 @@ RSpec.describe CI::ChangedFiles, feature_category: :tooling do
   end
 
   describe '#filter_and_get_changed_files_in_mr' do
-    context 'when checks should run for changed files' do \
-      let(:changed_files_output) { ['file1.js', 'file2.rb', 'file3.vue'] }
+    let(:changed_files_output) { ['file1.js', 'file2.rb', 'file3.vue'] }
 
-      before do
-        allow(instance).to receive_messages(
-          should_run_checks_for_changed_files: true,
-          get_changed_files_in_merged_results_pipeline: changed_files_output
-        )
-      end
+    before do
+      allow(instance).to receive(
+        :get_changed_files_in_merged_results_pipeline).and_return(changed_files_output)
+    end
 
-      context 'when changed files exist' do
+    context 'when there are changed files' do
+      context 'when filter value matches' do
         it 'returns filtered files' do
           expect(instance.filter_and_get_changed_files_in_mr(filter_pattern: /\.(js|vue)$/))
           .to match_array(['file1.js', 'file3.vue'])
@@ -120,47 +50,43 @@ RSpec.describe CI::ChangedFiles, feature_category: :tooling do
           expect(instance.filter_and_get_changed_files_in_mr)
           .to match_array(changed_files_output)
         end
+      end
 
-        it 'returns empty array and prints warning when no files match filter' do
-          allow(instance).to receive(:get_changed_files_in_merged_results_pipeline).and_return(['file1.txt',
-            'file2.rb'])
-          expect(instance).to receive(:puts).with('No files were changed. Skipping...')
+      context 'when filter does not match' do
+        let(:changed_files_output) { ['file1.txt', 'file2.rb'] }
 
+        it 'returns empty array when no files match filter' do
           expect(instance.filter_and_get_changed_files_in_mr(filter_pattern: /\.(js|vue)$/)).to eq([])
         end
       end
     end
 
-    context 'when checks should not run for changed files' do
-      before do
-        allow(instance).to receive(:should_run_checks_for_changed_files).and_return(false)
-      end
+    context 'when there are no changed files' do
+      let(:changed_files_output) { [] }
 
-      it 'returns ["."] and prints warning' do
-        expect(instance).to receive(:puts).with("Changed file criteria didn't match... Command will run for all files")
-
-        expect(instance.filter_and_get_changed_files_in_mr(filter_pattern: /\.(js|vue)$/)).to eq(['.'])
+      it 'returns an empty array' do
+        expect(instance.filter_and_get_changed_files_in_mr).to eq([])
       end
     end
   end
 
   describe '#run_eslint_for_changed_files' do
-    let(:files) { ['file1.js', 'file2.vue'] }
     let(:eslint_command) do
       ['yarn', 'run', 'lint:eslint', '--no-warn-ignored', '--format', 'gitlab', 'file1.js', 'file2.vue']
     end
 
-    before do
-      allow(instance).to receive(:puts).with('Running ESLint...')
-    end
+    let(:console_message) { /Running ESLint for changed files.../i }
 
     context 'when there are changed files to lint' do
+      let(:files) { ['file1.js', 'file2.vue'] }
+
       before do
         allow(instance).to receive(:filter_and_get_changed_files_in_mr).and_return(files)
       end
 
       it 'runs eslint with the correct arguments and returns exit 0 on success' do
         expect(instance).to receive(:system).with(*eslint_command).and_return(true)
+        expect(instance).to receive(:puts).with(console_message)
 
         status = instance_double(Process::Status, exitstatus: 0)
         allow(instance).to receive(:last_command_status).and_return(status)
@@ -179,10 +105,15 @@ RSpec.describe CI::ChangedFiles, feature_category: :tooling do
     end
 
     context 'when there are no changed files to lint' do
+      let(:no_files_msg) { /No files were changed. Skipping/i }
+
       it 'does not run eslint and returns exit code 0' do
         allow(instance).to receive(:filter_and_get_changed_files_in_mr).and_return([])
-        expect(instance).not_to receive(:system)
 
+        expect(instance).to receive(:puts).with(console_message).ordered
+        expect(instance).to receive(:puts).with(no_files_msg).ordered
+
+        expect(instance).not_to receive(:system)
         expect(instance.run_eslint_for_changed_files).to eq(0)
       end
     end

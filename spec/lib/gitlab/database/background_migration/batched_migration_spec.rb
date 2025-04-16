@@ -880,6 +880,15 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     end
   end
 
+  describe '.for_job_class' do
+    let(:other_migration) { create(:batched_background_migration) }
+    let(:my_migration) { create(:batched_background_migration, job_class_name: "MyJob") }
+
+    it 'returns migrations matching the job class name' do
+      expect(described_class.for_job_class("MyJob")).to eq([my_migration])
+    end
+  end
+
   describe '.for_configuration' do
     let!(:attributes) do
       {

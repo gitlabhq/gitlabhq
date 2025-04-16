@@ -72,7 +72,7 @@ RSpec.describe Gitlab::QuickActions::SpendTimeAndDateSeparator, feature_category
       let(:raw_time) { '10m' }
       let(:raw_date) { '2016-02-02' }
       let(:valid_arg) { "#{raw_time} #{raw_date}" }
-      let(:date) { Date.parse(raw_date) }
+      let(:date) { Date.parse(raw_date).midday }
       let(:time) { Gitlab::TimeTrackingFormatter.parse(raw_time) }
       let(:expected_response) { [time, date, nil] }
 
@@ -91,7 +91,7 @@ RSpec.describe Gitlab::QuickActions::SpendTimeAndDateSeparator, feature_category
         let(:raw_time) { '2m 10m 1h 3d' }
         let(:raw_date) { '2016/02/02' }
         let(:valid_arg) { "#{raw_time} #{raw_date}" }
-        let(:date) { Date.parse(raw_date) }
+        let(:date) { Date.parse(raw_date).midday }
         let(:time) { Gitlab::TimeTrackingFormatter.parse(raw_time) }
         let(:expected_response) { [time, date, nil] }
       end

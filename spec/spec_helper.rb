@@ -613,28 +613,26 @@ RedisClient.register(RedisCommands::Instrumentation)
 module UsersInternalAllowExclusiveLease
   extend ActiveSupport::Concern
 
-  class_methods do
-    def unique_internal(scope, username, email_pattern, &block)
-      # this lets skip transaction checks when Users::Internal bots are created in
-      # let_it_be blocks during test set-up.
-      #
-      # Users::Internal bot creation within examples are still checked since the RSPec.current_scope is :example
-      if ::RSpec.respond_to?(:current_scope) && ::RSpec.current_scope == :before_all
-        Gitlab::ExclusiveLease.skipping_transaction_check { super }
-      else
-        super
-      end
-    end
-
-    # TODO: Until https://gitlab.com/gitlab-org/gitlab/-/issues/442780 is resolved we're creating internal users in the
-    # first organization as a temporary workaround. Many specs lack an organization in the database, causing foreign key
-    # constraint violations when creating internal users. We're not seeding organizations before all specs for
-    # performance.
-    def create_unique_internal(scope, username, email_pattern, &creation_block)
-      Organizations::Organization.first || FactoryBot.create(:organization)
-
+  def unique_internal(scope, username, email_pattern, &block)
+    # this lets skip transaction checks when Users::Internal bots are created in
+    # let_it_be blocks during test set-up.
+    #
+    # Users::Internal bot creation within examples are still checked since the RSPec.current_scope is :example
+    if ::RSpec.respond_to?(:current_scope) && ::RSpec.current_scope == :before_all
+      Gitlab::ExclusiveLease.skipping_transaction_check { super }
+    else
       super
     end
+  end
+
+  # TODO: Until https://gitlab.com/gitlab-org/gitlab/-/issues/442780 is resolved we're creating internal users in the
+  # first organization as a temporary workaround. Many specs lack an organization in the database, causing foreign key
+  # constraint violations when creating internal users. We're not seeding organizations before all specs for
+  # performance.
+  def create_unique_internal(scope, username, email_pattern, &creation_block)
+    Organizations::Organization.first || FactoryBot.create(:organization)
+
+    super
   end
 end
 

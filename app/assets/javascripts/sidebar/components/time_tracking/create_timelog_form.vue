@@ -10,7 +10,7 @@ import {
 } from '@gitlab/ui';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { issuableTypeText, TYPE_ISSUE } from '~/issues/constants';
-import { toISODateFormat } from '~/lib/utils/datetime_utility';
+import { toISOStringWithoutMilliseconds } from '~/lib/utils/datetime_utility';
 import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
@@ -115,6 +115,13 @@ export default {
       this.isLoading = true;
       this.saveError = '';
 
+      let isoSpentAt = null;
+      if (this.spentAt) {
+        const spentAtMidday = this.spentAt;
+        spentAtMidday.setHours(spentAtMidday.getHours() + 12);
+        isoSpentAt = toISOStringWithoutMilliseconds(spentAtMidday);
+      }
+
       if (this.workItemId) {
         return this.$apollo
           .mutate({
@@ -124,7 +131,7 @@ export default {
                 id: this.workItemId,
                 timeTrackingWidget: {
                   timelog: {
-                    spentAt: this.spentAt ? toISODateFormat(this.spentAt) : null,
+                    spentAt: isoSpentAt,
                     summary: this.summary,
                     timeSpent: this.timeSpent,
                   },
@@ -155,7 +162,7 @@ export default {
           variables: {
             input: {
               timeSpent: this.timeSpent,
-              spentAt: this.spentAt ? toISODateFormat(this.spentAt) : null,
+              spentAt: isoSpentAt,
               summary: this.summary,
               issuableId: this.getIssuableId(),
             },
