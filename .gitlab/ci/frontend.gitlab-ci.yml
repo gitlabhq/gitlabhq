@@ -55,8 +55,7 @@ compile-production-assets:
     name: webpack-report
     expire_in: 31d
     paths:
-      # These assets are used in multiple locations:
-      # - in `build-assets-image` job to create assets image for packaging systems
+      # These assets are used in:
       # - GitLab UI for integration tests: https://gitlab.com/gitlab-org/gitlab-ui/-/blob/e88493b3c855aea30bf60baee692a64606b0eb1e/.storybook/preview-head.pug#L1
       - cached-assets-hash.txt
       - public/assets/

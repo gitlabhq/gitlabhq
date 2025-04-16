@@ -22,6 +22,14 @@ RSpec.describe ViteHelper, feature_category: :tooling do
 
       it { expect(helper.vite_page_entrypoint_paths).to eq(result) }
     end
+
+    context 'with js_action_name instance variable set' do
+      it 'accepts custom action name' do
+        allow(helper.controller).to receive(:controller_path).and_return('some_path')
+        allow(helper.controller).to receive(:action_name).and_return('new')
+        expect(helper.vite_page_entrypoint_paths('new_2')).to eq(%w[pages.some_path.js pages.some_path.new_2.js])
+      end
+    end
   end
 
   describe '#universal_stylesheet_link_tag' do

@@ -23,7 +23,6 @@ class GenerateAsIfFossEnv
   # Map job names to environment variables. One job can match multiple variables.
   # For example: "rspec unit 1/2" returns `ENABLE_RSPEC` and `ENABLE_RSPEC_UNIT`.
   JOB_VARIABLES = {
-    'build-assets-image' => 'ENABLE_BUILD_ASSETS_IMAGE',
     'build-qa-image' => 'ENABLE_BUILD_QA_IMAGE',
     'compile-production-assets' => 'ENABLE_COMPILE_PRODUCTION_ASSETS',
     'compile-storybook' => 'ENABLE_COMPILE_STORYBOOK',

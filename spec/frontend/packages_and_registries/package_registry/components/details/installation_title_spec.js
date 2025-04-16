@@ -9,7 +9,7 @@ describe('InstallationTitle', () => {
   const defaultProps = { packageType: 'foo', options: [{ value: 'foo', label: 'bar' }] };
 
   const findPersistedDropdownSelection = () => wrapper.findComponent(PersistedDropdownSelection);
-  const findTitle = () => wrapper.find('h3');
+  const findTitle = () => wrapper.find('h2');
 
   function createComponent({ props = {} } = {}) {
     wrapper = shallowMount(InstallationTitle, {

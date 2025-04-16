@@ -127,6 +127,10 @@ export default {
       required: false,
       default: false,
     },
+    uploadsPath: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -473,6 +477,7 @@ export default {
             v-bind="workItemCommentFormProps"
             :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
             :is-group-work-item="isGroupWorkItem"
+            :uploads-path="uploadsPath"
             @startEditing="$emit('startEditing')"
             @stopEditing="$emit('stopEditing')"
             @error="$emit('error', $event)"
@@ -505,7 +510,7 @@ export default {
               :is-work-item-confidential="isWorkItemConfidential"
               :is-expanded-on-load="isDiscussionExpandedOnLoad(discussion)"
               :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
-              :is-group-work-item="isGroupWorkItem"
+              :uploads-path="uploadsPath"
               @deleteNote="showDeleteNoteModal($event, discussion)"
               @reportAbuse="reportAbuse(true, $event)"
               @error="$emit('error', $event)"
@@ -524,6 +529,7 @@ export default {
             v-bind="workItemCommentFormProps"
             :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
             :is-group-work-item="isGroupWorkItem"
+            :uploads-path="uploadsPath"
             @startEditing="$emit('startEditing')"
             @stopEditing="$emit('stopEditing')"
             @error="$emit('error', $event)"

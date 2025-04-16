@@ -273,6 +273,9 @@ export default {
         visitUrl(isIdeTarget(target) ? ideEditPath : editBlobPath);
       }
     },
+    onLockedFile(event) {
+      this.$emit('lockedFile', event);
+    },
   },
 };
 </script>
@@ -363,6 +366,7 @@ export default {
       :is-using-lfs="isUsingLfs"
       @copy="onCopy"
       @showForkSuggestion="onShowForkSuggestion"
+      @lockedFile="onLockedFile"
     />
   </div>
 </template>

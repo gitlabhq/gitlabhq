@@ -23,7 +23,7 @@ exports[`History Item renders the correct markup 1`] = `
         class="note-header"
       >
         <div
-          class="note-header-info"
+          class="gl-mt-1 note-header-info"
         >
           <div
             data-testid="default-slot"

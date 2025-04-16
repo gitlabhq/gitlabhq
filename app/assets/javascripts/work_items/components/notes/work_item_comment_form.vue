@@ -176,10 +176,9 @@ export default {
       required: false,
       default: false,
     },
-    isGroupWorkItem: {
-      type: Boolean,
-      required: false,
-      default: false,
+    uploadsPath: {
+      type: String,
+      required: true,
     },
   },
   data() {
@@ -250,11 +249,6 @@ export default {
         return ['full-screen'];
       }
       return [];
-    },
-    uploadsPath() {
-      return this.isGroupWorkItem
-        ? `/groups/${this.fullPath}/-/uploads`
-        : `/${this.fullPath}/uploads`;
     },
   },
   apollo: {

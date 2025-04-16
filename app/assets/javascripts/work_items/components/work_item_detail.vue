@@ -580,6 +580,10 @@ export default {
         truncationEnabled: this.truncationEnabled,
       };
     },
+    uploadsPath() {
+      const rootPath = this.workItem?.namespace?.webUrl || '';
+      return this.isGroupWorkItem ? `${rootPath}/-/uploads` : `${rootPath}/uploads`;
+    },
   },
   mounted() {
     addShortcutsExtension(ShortcutsWorkItems);
@@ -1088,6 +1092,7 @@ export default {
                 :without-heading-anchors="isDrawer"
                 :hide-fullscreen-markdown-button="isDrawer"
                 :truncation-enabled="truncationEnabled"
+                :uploads-path="uploadsPath"
                 @updateWorkItem="updateWorkItem"
                 @updateDraft="updateDraft('description', $event)"
                 @cancelEditing="cancelEditing"
@@ -1254,6 +1259,7 @@ export default {
               :small-header-style="isModal"
               :parent-id="parentWorkItemId"
               :hide-fullscreen-markdown-button="isDrawer"
+              :uploads-path="uploadsPath"
               @error="updateError = $event"
               @openReportAbuse="openReportAbuseModal"
               @startEditing="isAddingNotes = true"

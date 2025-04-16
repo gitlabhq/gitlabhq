@@ -1146,27 +1146,6 @@
     - <<: *if-merge-request
       changes: *code-qa-patterns
 
-.build-images:rules:build-assets-image:
-  rules:
-    - <<: *if-not-canonical-namespace
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - if: '$ENABLE_BUILD_ASSETS_IMAGE == "true"'
-    - <<: *if-tag
-    - <<: *if-sync-changes-on-stable-branches
-    - !reference [".frontend:rules:assets-shared", rules]
-    # Always build on stable branches to serve release-environments pipeline
-    # Do not refer directly to .release-environments:rules:start-release-environments-security-pipeline
-    # to avoid the side effect of "never" rules
-    - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
-
-.build-images:rules:build-assets-image-as-if-foss:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - !reference [".build-images:rules:build-assets-image", "rules"]
-
 #################
 # Caching rules #
 #################
@@ -3144,7 +3123,6 @@
 # We want to start this for any FOSS jobs we want to run. For example:
 # (This is not an exhaustive list and can be outdated!)
 # .build-images:rules:build-qa-image-merge-requests
-# .build-images:rules:build-assets-image
 # .frontend:rules:compile-production-assets
 # .rails:rules:single-db
 # .rails:rules:single-db-ci-connection

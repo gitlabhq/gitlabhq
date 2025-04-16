@@ -1,9 +1,10 @@
-import { GlAlert, GlSprintf, GlLink, GlCard, GlSkeletonLoader } from '@gitlab/ui';
+import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import component from '~/packages_and_registries/settings/project/components/container_expiration_policy.vue';
 import {
   CONTAINER_CLEANUP_POLICY_TITLE,
@@ -37,18 +38,18 @@ describe('Container expiration policy project settings', () => {
     helpPagePath: 'helpPagePath',
   };
 
-  const findCard = () => wrapper.findComponent(GlCard);
-  const findHeader = () => findCard().find('h2');
-  const findDescription = () => wrapper.findByTestId('description');
+  const findCrud = () => wrapper.findComponent(CrudComponent);
+  const findHeader = () => findCrud().find('h2');
+  const findDescription = () => wrapper.findByTestId('crud-description');
   const findButton = () => wrapper.findByTestId('rules-button');
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEnabledText = () => wrapper.findComponent(ContainerExpirationPolicyEnabledText);
-  const findLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
   const mountComponent = (provide = defaultProvidedValues, config) => {
     wrapper = shallowMountExtended(component, {
       stubs: {
         GlSprintf,
+        CrudComponent,
       },
       provide,
       ...config,
@@ -76,7 +77,7 @@ describe('Container expiration policy project settings', () => {
     expect(findDescription().text()).toMatchInterpolatedText(CONTAINER_CLEANUP_POLICY_DESCRIPTION);
     expect(findButton().text()).toMatchInterpolatedText(CONTAINER_CLEANUP_POLICY_EDIT_RULES);
     expect(findButton().attributes('href')).toBe(defaultProvidedValues.cleanupSettingsPath);
-    expect(findLoader().exists()).toBe(false);
+    expect(findCrud().props('isLoading')).toBe(false);
     expect(findEnabledText().props('nextRunAt')).toBe(
       containerTagsExpirationPolicyData().nextRunAt,
     );
@@ -87,8 +88,8 @@ describe('Container expiration policy project settings', () => {
       resolver: jest.fn().mockResolvedValue(),
     });
 
-    expect(findCard().exists()).toBe(true);
-    expect(findLoader().exists()).toBe(true);
+    expect(findCrud().exists()).toBe(true);
+    expect(findCrud().props('isLoading')).toBe(true);
     expect(findAlert().exists()).toBe(false);
     expect(findButton().exists()).toBe(false);
   });
@@ -140,7 +141,7 @@ describe('Container expiration policy project settings', () => {
     });
 
     it('show the card', () => {
-      expect(findCard().exists()).toBe(true);
+      expect(findCrud().exists()).toBe(true);
     });
 
     it('the button is hidden', () => {
@@ -167,7 +168,7 @@ describe('Container expiration policy project settings', () => {
       });
       await waitForPromises();
 
-      expect(findCard().exists()).toBe(true);
+      expect(findCrud().exists()).toBe(true);
       if (isShown) {
         expect(findButton().text()).toMatchInterpolatedText(CONTAINER_CLEANUP_POLICY_SET_RULES);
         expect(findButton().attributes('href')).toBe(defaultProvidedValues.cleanupSettingsPath);

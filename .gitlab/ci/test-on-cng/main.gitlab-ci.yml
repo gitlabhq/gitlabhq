@@ -95,8 +95,6 @@ build-cng-env:
   needs:
     - pipeline: $PARENT_PIPELINE_ID
       job: clone-gitlab-repo
-    - pipeline: $PARENT_PIPELINE_ID
-      job: compile-production-assets
   variables:
     CNG_COMMIT_SHA: $GITLAB_CNG_MIRROR_REF
     CNG_ACCESS_TOKEN: $CNG_MIRROR_ACCESS_TOKEN

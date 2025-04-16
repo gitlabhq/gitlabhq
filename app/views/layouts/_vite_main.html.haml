@@ -1,7 +1,7 @@
 - if Rails.env.development?
   = vite_client_tag
 
-- ['main.js', *vite_page_entrypoint_paths].each do |entrypoint|
+- ['main.js', *vite_page_entrypoint_paths(@js_action_name)].each do |entrypoint|
   = vite_javascript_tag(entrypoint, data: { vite: entrypoint })
 
 -# Vite can oversaturate browser networking during development due to the sheer amount of network requests

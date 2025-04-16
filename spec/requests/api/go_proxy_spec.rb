@@ -172,16 +172,6 @@ RSpec.describe API::GoProxy, feature_category: :package_registry do
       it_behaves_like 'a module version list resource', 'v2.0.0', path: '/v2'
     end
 
-    context 'with a URL encoded relative path component' do
-      before do
-        # TODO: remove spec once the feature flag is removed
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/415460
-        stub_feature_flags(check_path_traversal_middleware_reject_requests: false)
-      end
-
-      it_behaves_like 'a missing module version list resource', path: '/%2E%2E%2Fxyz'
-    end
-
     context 'with the feature disabled' do
       before do
         stub_feature_flags(go_proxy: false)

@@ -36,12 +36,7 @@ To set up infrastructure for workspaces:
 1. In the Kubernetes cluster:
    1. Verify that a [default storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/)
       is defined so that volumes can be dynamically provisioned for each workspace.
-   1. Install an Ingress controller of your choice (for example, `ingress-nginx`).
-   1. [Install](../clusters/agent/install/_index.md) and [configure](gitlab_agent_configuration.md) the GitLab agent.
-   1. Point [`dns_zone`](settings.md#dns_zone) and `*.<dns_zone>`
-      to the load balancer exposed by the Ingress controller.
-      This load balancer must support WebSockets.
-   1. [Set up the GitLab workspaces proxy](set_up_gitlab_agent_and_proxies.md).
+1. Complete all steps in the [Tutorial: Set up GitLab agent and proxies](set_up_gitlab_agent_and_proxies.md).
 1. Optional. [Configure sudo access for a workspace](#configure-sudo-access-for-a-workspace).
 1. Optional. [Build and run containers in a workspace](#build-and-run-containers-in-a-workspace).
 1. Optional. [Configure support for private container registries](#configure-support-for-private-container-registries).

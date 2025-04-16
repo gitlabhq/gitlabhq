@@ -53,7 +53,7 @@ module Gitlab
           correlation_id: Labkit::Correlation::CorrelationId.current_or_new_id,
           plan: plan_name,
           extra: extra,
-          user_id: user&.id,
+          user_id: tracked_user_id,
           global_user_id: global_user_id,
           is_gitlab_team_member: gitlab_team_member?(user&.id),
           namespace_id: namespace_id,
@@ -66,6 +66,12 @@ module Gitlab
           instance_version: Gitlab.version_info.to_s,
           context_generated_at: Time.current
         }
+      end
+
+      def tracked_user_id
+        return unless user.is_a? User
+
+        Gitlab::CryptoHelper.sha256(user.id)
       end
 
       def check_argument_type(argument_name, argument_value, allowed_classes)

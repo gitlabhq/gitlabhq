@@ -212,7 +212,7 @@ e2e-test-pipeline-generate:
 
 # This is the start of the chain of E2E jobs for CE
 # After playing this, it'll follow up with:
-# compile-production-assets as-if-foss -> build-assets-image as-if-foss --\
+# compile-production-assets as-if-foss --\
 #                                                                         \-> e2e:test-on-omnibus-ce
 # build-qa-image as-if-foss ----------------------------------------------/
 e2e-test-pipeline-generate as-if-foss:

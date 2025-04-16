@@ -61,7 +61,7 @@ describe('HeaderArea', () => {
         historyLink: '/history',
         refType: 'branch',
         projectId: '123',
-        refSelectorValue: 'refs/heads/main',
+        currentRef: 'main',
         ...props,
       },
       stubs: {

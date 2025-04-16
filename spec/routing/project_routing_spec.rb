@@ -237,16 +237,6 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
     it_behaves_like 'redirecting a legacy path',
       '/gitlab/gitlabhq/refs/stable/logs_tree/new%0A%0Aline.txt',
       '/gitlab/gitlabhq/-/refs/stable/logs_tree/new%0A%0Aline.txt'
-
-    it_behaves_like 'redirecting a legacy path',
-      '/gitlab/gitlabhq/refs/feature%2345/logs_tree/../../../../../@example.com/tree/a',
-      '/gitlab/gitlabhq/-/refs/feature#45/logs_tree/../../../../../-/example.com/tree/a' do
-      before do
-        # TODO: remove spec once the feature flag is removed
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/415460
-        stub_feature_flags(check_path_traversal_middleware_reject_requests: false)
-      end
-    end
   end
 
   describe Projects::MergeRequestsController, 'routing' do

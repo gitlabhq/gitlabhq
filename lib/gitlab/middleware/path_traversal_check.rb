@@ -39,17 +39,10 @@ module Gitlab
 
         return @app.call(env) unless path_traversal_attempt?(request, log_params)
 
-        if Feature.enabled?(:check_path_traversal_middleware_reject_requests, Feature.current_request)
-          result = REJECT_RESPONSE
-          log_params[:request_rejected] = true
-        else
-          result = @app.call(env)
-          log_params[:status] = result.first
-        end
-
+        log_params[:request_rejected] = true
         log(log_params)
 
-        result
+        REJECT_RESPONSE
       end
 
       private
@@ -61,19 +54,16 @@ module Gitlab
 
           decoded_fullpath = CGI.unescape(request.fullpath)
 
-          if Gitlab::PathTraversal.path_traversal?(decoded_fullpath, match_new_line: false)
-            metric_labels[:request_rejected] =
-              Feature.enabled?(:check_path_traversal_middleware_reject_requests, Feature.current_request)
+          path_traversal_attempt = Gitlab::PathTraversal.path_traversal?(decoded_fullpath, match_new_line: false)
 
+          metric_labels[:request_rejected] = path_traversal_attempt
+          if path_traversal_attempt
             log_params[:method] = request.request_method
             log_params[:fullpath] = original_fullpath
             log_params[:message] = PATH_TRAVERSAL_MESSAGE
-
-            true
-          else
-            metric_labels[:request_rejected] = false
-            false
           end
+
+          path_traversal_attempt
         end
       end
 

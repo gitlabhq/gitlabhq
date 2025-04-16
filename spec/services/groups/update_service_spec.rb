@@ -599,62 +599,6 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     end
   end
 
-  context 'when setting enable_namespace_descendants_cache' do
-    let(:params) { { enable_namespace_descendants_cache: true } }
-
-    subject(:result) { described_class.new(public_group, user, params).execute }
-
-    context 'when the group_hierarchy_optimization feature flag is enabled' do
-      before do
-        stub_feature_flags(group_hierarchy_optimization: true)
-      end
-
-      context 'when enabling the setting' do
-        it 'creates the initial Namespaces::Descendants record' do
-          expect { result }.to change { public_group.reload.namespace_descendants.present? }.from(false).to(true)
-
-          expect(public_group.namespace_descendants.outdated_at).to be_present
-        end
-      end
-
-      context 'when accidentally enabling the setting again' do
-        it 'does nothing' do
-          namespace_descendants = create(:namespace_descendants, namespace: public_group)
-
-          expect { result }.not_to change { namespace_descendants.reload }
-        end
-      end
-
-      context 'when disabling the setting' do
-        before do
-          params[:enable_namespace_descendants_cache] = false
-        end
-
-        it 'removes the Namespaces::Descendants record' do
-          create(:namespace_descendants, namespace: public_group)
-
-          expect { result }.to change { public_group.reload.namespace_descendants }.to(nil)
-        end
-
-        context 'when the Namespaces::Descendants record is missing' do
-          it 'does not raise error' do
-            expect { result }.not_to raise_error
-          end
-        end
-      end
-    end
-
-    context 'when the group_hierarchy_optimization feature flag is disabled' do
-      before do
-        stub_feature_flags(group_hierarchy_optimization: false)
-      end
-
-      it 'does nothing' do
-        expect { result }.not_to change { public_group.reload.namespace_descendants.present? }.from(false)
-      end
-    end
-  end
-
   context 'EventStore' do
     let(:service) { described_class.new(group, user, **params) }
     let(:root_group) { create(:group, path: 'root') }

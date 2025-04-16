@@ -65,12 +65,4 @@
         description: s_("GroupSettings|The group from which to source contacts for issues in this group and its subgroups.")
       } }
 
-    - if Feature.enabled?(:group_hierarchy_optimization, @group, type: :beta)
-      %h5= _('Performance')
-      .form-group.gl-mb-3
-        = f.gitlab_ui_checkbox_component :enable_namespace_descendants_cache,
-            s_('GroupSettings|Enable caching of hierarchical objects (subgroups and projects) to improve the performance of group-level features within a large group.'),
-            checkbox_options: { checked: @group.namespace_descendants.present? },
-            help_text: s_('GroupSettings|Building the cache is asynchronous, happens in a background job. The cache invalidation is synchronous with strong consistency guarantees.')
-
   = f.submit _('Save changes'), pajamas_button: true, class: 'gl-mt-3', data: { testid: 'save-permissions-changes-button' }

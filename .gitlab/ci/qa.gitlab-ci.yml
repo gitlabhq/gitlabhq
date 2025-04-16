@@ -191,7 +191,7 @@ e2e:test-on-omnibus-ce:
     - e2e:test-on-omnibus-ee
     - .qa:rules:test-on-omnibus-ce:follow-up
   needs:
-    - build-assets-image as-if-foss
+    - compile-production-assets as-if-foss
     - build-qa-image as-if-foss
     - e2e-test-pipeline-generate as-if-foss
   variables:

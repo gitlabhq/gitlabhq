@@ -45,11 +45,21 @@ RSpec.describe Environments::StopService, feature_category: :continuous_delivery
         end
       end
 
-      context 'when an environment has already been stopped' do
+      context 'when the environment has already been stopped' do
         let!(:environment) { create(:environment, :stopped, project: project) }
 
-        it 'does not play the stop action' do
+        it 'does not play the stop action and returns a success status' do
           expect { subject }.not_to change { stop_review_job.reload.status }
+          expect(subject.status).to eq(:success)
+        end
+      end
+
+      context 'when the environment is currently stopping' do
+        let!(:environment) { create(:environment, :stopping, project: project) }
+
+        it 'does not change the environment state and returns a success status' do
+          expect { subject }.not_to change { environment.state }
+          expect(subject.status).to eq(:success)
         end
       end
     end

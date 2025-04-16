@@ -43,6 +43,8 @@ export default {
     WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
     LockDirectoryButton: () =>
       import('ee_component/repository/components/lock_directory_button.vue'),
+    HeaderLockIcon: () =>
+      import('ee_component/repository/components/header_area/header_lock_icon.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -114,6 +116,13 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      directoryLocked: false,
+      fileLocked: false,
+      lockAuthor: undefined,
+    };
+  },
   computed: {
     isTreeView() {
       return this.$route.name !== 'blobPathDecoded';
@@ -131,6 +140,9 @@ export default {
     },
     fileIconName() {
       return this.isTreeView ? 'folder-open' : this.directoryName;
+    },
+    isLocked() {
+      return this.isTreeView ? this.directoryLocked : this.fileLocked;
     },
     getRefType() {
       return this.$route.query.ref_type;
@@ -187,6 +199,14 @@ export default {
       InternalEvents.trackEvent(FIND_FILE_BUTTON_CLICK);
       Shortcuts.focusSearchFile();
     },
+    onLockedDirectory({ isLocked, lockAuthor }) {
+      this.directoryLocked = isLocked;
+      this.lockAuthor = lockAuthor;
+    },
+    onLockedFile({ isLocked, lockAuthor }) {
+      this.fileLocked = isLocked;
+      this.lockAuthor = lockAuthor;
+    },
   },
 };
 </script>
@@ -232,7 +252,7 @@ export default {
     >
       <h1
         v-if="!isReadmeView && !isProjectOverview"
-        class="gl-mt-0 gl-flex-1 gl-break-words gl-text-size-h1 sm:gl-my-0"
+        class="gl-mt-0 gl-inline-flex gl-flex-1 gl-items-center gl-gap-3 gl-break-words gl-text-size-h1 sm:gl-my-0"
         data-testid="repository-heading"
       >
         <file-icon
@@ -240,9 +260,15 @@ export default {
           :folder="isTreeView"
           opened
           aria-hidden="true"
-          class="gl-mr-3 gl-inline-flex"
+          class="gl-inline-flex"
           :class="{ 'gl-text-subtle': isTreeView }"
         />{{ directoryName }}
+        <header-lock-icon
+          v-if="!isRoot"
+          :is-tree-view="isTreeView"
+          :is-locked="isLocked"
+          :lock-author="lockAuthor"
+        />
       </h1>
 
       <!-- Tree controls -->
@@ -267,7 +293,12 @@ export default {
           :new-dir-path="newDirPath"
         />
         <!-- EE: = render_if_exists 'projects/tree/lock_link' -->
-        <lock-directory-button v-if="!isRoot" :project-path="projectPath" :path="currentPath" />
+        <lock-directory-button
+          v-if="!isRoot"
+          :project-path="projectPath"
+          :path="currentPath"
+          @lockedDirectory="onLockedDirectory"
+        />
         <gl-button
           v-gl-tooltip.html="findFileTooltip"
           :aria-keyshortcuts="findFileShortcutKey"
@@ -377,6 +408,7 @@ export default {
         :project-id-as-number="projectIdAsNumber"
         :ref-type="getRefType"
         :is-binary="isBinary"
+        @lockedFile="onLockedFile"
       />
     </div>
   </section>

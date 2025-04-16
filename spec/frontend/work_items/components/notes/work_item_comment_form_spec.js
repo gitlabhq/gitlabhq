@@ -102,6 +102,7 @@ describe('Work item comment form component', () => {
         isSubmitting,
         initialValue,
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
+        uploadsPath: 'http://127.0.0.1:3000/test-project-path/uploads',
         autocompleteDataSources: {},
         isNewDiscussion,
         isDiscussionResolvable,
@@ -480,18 +481,4 @@ describe('Work item comment form component', () => {
 
     expect(findWorkItemToggleStateButton().props('parentId')).toBe('example-id');
   });
-
-  it.each`
-    isGroupWorkItem | uploadsPath
-    ${true}         | ${`/groups/${fullPath}/-/uploads`}
-    ${false}        | ${`/${fullPath}/uploads`}
-  `(
-    'passes correct uploads path for markdown editor when isGroupWorkItem is $isGroupWorkItem',
-    async ({ isGroupWorkItem, uploadsPath }) => {
-      createComponent({ isGroupWorkItem });
-      await waitForPromises();
-
-      expect(findMarkdownEditor().props('uploadsPath')).toBe(uploadsPath);
-    },
-  );
 });

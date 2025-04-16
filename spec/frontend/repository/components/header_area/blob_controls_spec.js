@@ -467,6 +467,13 @@ describe('Blob controls component', () => {
 
         expect(findForkSuggestionModal().props('visible')).toBe(true);
       });
+
+      it('proxy locked-file event', async () => {
+        findOverflowMenu().vm.$emit('lockedFile', true);
+        await nextTick();
+
+        expect(wrapper.emitted('lockedFile')).toEqual([[true]]);
+      });
     });
   });
 });

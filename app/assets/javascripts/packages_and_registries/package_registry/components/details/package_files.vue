@@ -41,6 +41,7 @@ import {
   DELETE_ALL_PACKAGE_FILES_MODAL_CONTENT,
   DELETE_LAST_PACKAGE_FILE_MODAL_CONTENT,
 } from '~/packages_and_registries/package_registry/constants';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import getPackageFilesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_package_files.query.graphql';
 import destroyPackageFilesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_package_files.mutation.graphql';
 
@@ -61,6 +62,7 @@ export default {
     FileIcon,
     TimeAgoTooltip,
     FileSha,
+    CrudComponent,
   },
   mixins: [Tracking.mixin()],
   trackingActions: {
@@ -171,6 +173,7 @@ export default {
           label: '',
           hide: !this.canDelete,
           thClass: 'gl-w-4',
+          tdClass: 'gl-text-right',
         },
       ].filter((c) => !c.hide);
     },
@@ -363,20 +366,26 @@ export default {
 </script>
 
 <template>
-  <div class="gl-pt-6">
-    <div class="gl-flex gl-items-center gl-justify-between">
-      <h3 class="gl-mt-5 gl-text-lg">{{ __('Assets') }}</h3>
+  <crud-component
+    :title="__('Assets')"
+    :count="filesTableRows.length"
+    icon="doc-compressed"
+    class="gl-mt-6"
+  >
+    <template #actions>
       <gl-button
         v-if="!fetchPackageFilesError && canDelete"
         :disabled="isLoading || !areFilesSelected"
         category="secondary"
         variant="danger"
+        size="small"
         data-testid="delete-selected"
         @click="handleFileDeleteSelected"
       >
         {{ $options.i18n.deleteSelected }}
       </gl-button>
-    </div>
+    </template>
+
     <gl-alert
       v-if="fetchPackageFilesError"
       variant="danger"
@@ -394,6 +403,7 @@ export default {
         selectable
         select-mode="multi"
         selected-variant="primary"
+        stacked="sm"
         :tbody-tr-attr="{ 'data-testid': 'file-row' }"
         @row-selected="updateSelectedReferences"
       >
@@ -531,5 +541,5 @@ export default {
         </template>
       </gl-sprintf>
     </gl-modal>
-  </div>
+  </crud-component>
 </template>

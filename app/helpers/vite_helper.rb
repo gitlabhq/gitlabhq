@@ -16,11 +16,12 @@ module ViteHelper
     ViteRuby.env['VITE_HMR_HTTP_URL']
   end
 
-  def vite_page_entrypoint_paths
-    action = case controller.action_name
+  def vite_page_entrypoint_paths(custom_action_name = nil)
+    action_name = custom_action_name || controller.action_name
+    action = case action_name
              when 'create' then 'new'
              when 'update' then 'edit'
-             else controller.action_name
+             else action_name
              end
 
     parts = (controller.controller_path.split('/') << action)

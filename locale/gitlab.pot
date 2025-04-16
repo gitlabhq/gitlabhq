@@ -22511,6 +22511,9 @@ msgstr ""
 msgid "Direction"
 msgstr ""
 
+msgid "Directory locked"
+msgstr ""
+
 msgid "Directory name"
 msgstr ""
 
@@ -26411,6 +26414,9 @@ msgstr ""
 msgid "File is too big (%{fileSize}MiB). Max filesize: %{maxFileSize}MiB."
 msgstr ""
 
+msgid "File locked"
+msgstr ""
+
 msgid "File mode changed from %{a_mode} to %{b_mode}"
 msgstr ""
 
@@ -29883,9 +29889,6 @@ msgstr ""
 msgid "GroupSettings|Be careful. Changing a group's parent can have unintended side effects. %{learn_more_link_start}Learn more.%{learn_more_link_end}"
 msgstr ""
 
-msgid "GroupSettings|Building the cache is asynchronous, happens in a background job. The cache invalidation is synchronous with strong consistency guarantees."
-msgstr ""
-
 msgid "GroupSettings|Cannot update the path because there are projects under this group that contain Docker images in their container registry. Please remove the images from your projects first and try again."
 msgstr ""
 
@@ -29935,9 +29938,6 @@ msgid "GroupSettings|Enable JWT format for CI/CD job tokens"
 msgstr ""
 
 msgid "GroupSettings|Enable JWT format for the CI_JOB_TOKEN variable. When disabled, it uses the legacy database format."
-msgstr ""
-
-msgid "GroupSettings|Enable caching of hierarchical objects (subgroups and projects) to improve the performance of group-level features within a large group."
 msgstr ""
 
 msgid "GroupSettings|Enable email notifications"
@@ -43849,9 +43849,6 @@ msgid "Perform code reviews and enhance collaboration with merge requests."
 msgstr ""
 
 msgid "Perform common operations on GitLab project"
-msgstr ""
-
-msgid "Performance"
 msgstr ""
 
 msgid "Performance optimization"

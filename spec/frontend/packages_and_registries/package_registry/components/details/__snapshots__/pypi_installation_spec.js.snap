@@ -5,11 +5,11 @@ exports[`PypiInstallation renders all the messages 1`] = `
   <div
     class="gl-flex gl-items-center gl-justify-between"
   >
-    <h3
-      class="gl-text-lg"
+    <h2
+      class="gl-heading-2"
     >
       Installation
-    </h3>
+    </h2>
     <div>
       <div
         class="gl-new-dropdown"

@@ -70,6 +70,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
       let(:plan_name) { "plan name" }
       let(:hostname) { 'example.com' }
       let(:version) { '17.3.0' }
+      let(:json_data) { snowplow_context.to_json.fetch(:data) }
 
       before do
         allow(Gitlab.config.gitlab).to receive(:host).and_return(hostname)
@@ -81,9 +82,6 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
       end
 
       it 'holds the correct values', :aggregate_failures do
-        json_data = snowplow_context.to_json.fetch(:data)
-
-        expect(json_data[:user_id]).to eq(user.id)
         expect(json_data[:is_gitlab_team_member]).to eq(nil)
         expect(json_data[:project_id]).to eq(project_id)
         expect(json_data[:namespace_id]).to eq(namespace_id)
@@ -93,6 +91,38 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
         expect(json_data[:correlation_id]).to eq(Labkit::Correlation::CorrelationId.current_or_new_id)
         expect(json_data[:global_user_id]).to eq(Gitlab::GlobalAnonymousId.user_id(user))
         expect(json_data[:unique_instance_id]).to eq(Gitlab::GlobalAnonymousId.instance_uuid)
+      end
+
+      describe 'user_id' do
+        let(:hashed_user_id) { 'sha256_of_user_id' }
+
+        before do
+          allow(Gitlab::CryptoHelper).to receive(:sha256).and_return(hashed_user_id)
+        end
+
+        context 'when user is nil' do
+          subject { described_class.new(user: nil) }
+
+          it 'pass it to the context' do
+            expect(json_data[:user_id]).to be_nil
+          end
+        end
+
+        context 'when user is not of User class' do
+          subject { described_class.new(user: build_stubbed(:deploy_token)) }
+
+          it 'passes nil to the context' do
+            expect(json_data[:user_id]).to be_nil
+          end
+        end
+
+        context 'when user is an instance of User' do
+          it 'hold the pseudonymized user id value', :aggregate_failures do
+            expect(json_data[:user_id]).to eq(hashed_user_id)
+            expect(json_data[:user_id]).not_to eq(user.id)
+            expect(Gitlab::CryptoHelper).to have_received(:sha256).with(user.id)
+          end
+        end
       end
     end
 

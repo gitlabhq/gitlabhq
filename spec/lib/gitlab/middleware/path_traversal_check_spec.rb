@@ -183,68 +183,6 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
       end
     end
 
-    context 'with check_path_traversal_middleware_reject_requests disabled' do
-      before do
-        stub_feature_flags(check_path_traversal_middleware_reject_requests: false)
-      end
-
-      shared_examples 'path traversal' do
-        it 'logs and accepts the request' do
-          expect(::Gitlab::PathTraversal)
-            .to receive(:path_traversal?)
-                  .with(decoded_fullpath, match_new_line: false)
-                  .and_call_original
-          expect(::Gitlab::AppLogger)
-            .to receive(:warn)
-                  .with(hash_including(
-                    class_name: described_class.name,
-                    message: described_class::PATH_TRAVERSAL_MESSAGE,
-                    fullpath: fullpath,
-                    method: method.upcase,
-                    status: fake_response_status
-                  )).and_call_original
-          expect(::Gitlab::Instrumentation::Middleware::PathTraversalCheck)
-            .to receive(:duration=).with(an_instance_of(Float))
-          expect(::Gitlab::Metrics::Middleware::PathTraversalCheck)
-            .to receive(:increment).with(
-              labels: { request_rejected: false },
-              duration: an_instance_of(Float)
-            )
-
-          expect(subject).to eq(fake_response)
-        end
-      end
-
-      where(:path, :query_params, :shared_example_name) do
-        '/foo/bar'            | {}                          | 'no issue'
-        '/foo/../bar'         | {}                          | 'path traversal'
-        '/foo%2Fbar'          | {}                          | 'no issue'
-        '/foo%2F..%2Fbar'     | {}                          | 'path traversal'
-        '/foo%252F..%252Fbar' | {}                          | 'no issue'
-        '/foo/bar'            | { x: 'foo' }                | 'no issue'
-        '/foo/bar'            | { x: 'foo/../bar' }         | 'path traversal'
-        '/foo/bar'            | { x: 'foo%2Fbar' }          | 'no issue'
-        '/foo/bar'            | { x: 'foo%2F..%2Fbar' }     | 'path traversal'
-        '/foo/bar'            | { x: 'foo%252F..%252Fbar' } | 'no issue'
-        '/search'             | { x: 'foo/../bar' }         | 'path traversal'
-        '/search'             | { x: 'foo%2F..%2Fbar' }     | 'path traversal'
-        '/search'             | { x: 'foo%252F..%252Fbar' } | 'no issue'
-        '%2Fsearch'           | { x: 'foo/../bar' }         | 'path traversal'
-        '%2Fsearch'           | { x: 'foo%2F..%2Fbar' }     | 'path traversal'
-        '%2Fsearch'           | { x: 'foo%252F..%252Fbar' } | 'no issue'
-      end
-
-      with_them do
-        %w[get post put patch delete].each do |http_method|
-          context "when using #{http_method}" do
-            let(:method) { http_method }
-
-            it_behaves_like params[:shared_example_name]
-          end
-        end
-      end
-    end
-
     # Can't use params.to_query as #to_query will encode values
     def querify(params)
       params.map { |k, v| "#{k}=#{v}" }.join('&')

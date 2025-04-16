@@ -26,7 +26,7 @@ export default {
 
 <template>
   <div class="gl-flex gl-items-center gl-justify-between">
-    <h3 class="gl-text-lg">{{ __('Installation') }}</h3>
+    <h2 class="gl-heading-2">{{ __('Installation') }}</h2>
     <div>
       <persisted-dropdown-selection
         :storage-key="storageKey"

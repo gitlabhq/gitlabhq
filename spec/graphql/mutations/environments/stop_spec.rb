@@ -31,7 +31,7 @@ RSpec.describe Mutations::Environments::Stop, feature_category: :environment_man
 
     context 'when service cannot change the status without force' do
       before do
-        environment.update!(state: 'stopping')
+        environment.update!(auto_stop_setting: :with_action)
       end
 
       it 'returns an error' do

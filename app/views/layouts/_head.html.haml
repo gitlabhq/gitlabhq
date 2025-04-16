@@ -68,7 +68,7 @@
   - if vite_enabled?
     = render 'layouts/vite_main'
   - else
-    = webpack_controller_bundle_tags
+    = webpack_controller_bundle_tags(@js_action_name)
 
   = yield :page_specific_javascripts
 

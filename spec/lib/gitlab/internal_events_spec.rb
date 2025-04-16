@@ -91,7 +91,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   def validate_standard_context(standard_context, expected_namespace, extra)
     namespace = expected_namespace || project&.namespace
     expect(standard_context).not_to eq(nil)
-    expect(standard_context[:data][:user_id]).to eq(user&.id)
+    expect(standard_context[:data][:user_id]).to eq(Gitlab::CryptoHelper.sha256(user&.id)) if user
     expect(standard_context[:data][:namespace_id]).to eq(namespace&.id)
     expect(standard_context[:data][:project_id]).to eq(project&.id)
     expect(standard_context[:data][:extra]).to eq(extra)

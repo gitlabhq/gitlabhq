@@ -25,6 +25,7 @@ fragment WorkItem on WorkItem {
     fullPath
     name
     fullName
+    webUrl
   }
   author {
     ...Author
