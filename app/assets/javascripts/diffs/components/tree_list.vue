@@ -14,7 +14,6 @@ import { RecycleScroller } from 'vendor/vue-virtual-scroller';
 import { isElementClipped } from '~/lib/utils/common_utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import DiffFileRow from './diff_file_row.vue';
-import TreeListHeight from './tree_list_height.vue';
 
 const MODIFIER_KEY = getModifierKey();
 
@@ -26,7 +25,6 @@ export default {
     GlBadge,
     GlButtonGroup,
     GlButton,
-    TreeListHeight,
     DiffFileRow,
     RecycleScroller,
     GlSearchBoxByType,
@@ -45,6 +43,10 @@ export default {
       type: [Number, String],
       default: undefined,
       required: false,
+    },
+    rowHeight: {
+      type: Number,
+      required: true,
     },
   },
   data() {
@@ -158,19 +160,27 @@ export default {
   watch: {
     currentDiffFileId(hash) {
       if (hash) {
-        this.scrollVirtualScrollerToFileHash(hash);
         this.openFileTree(hash);
+        this.preventClippingSelectedFile(hash);
       }
     },
   },
   methods: {
     ...mapActions(useLegacyDiffs, ['toggleTreeOpen', 'setRenderTreeList', 'setTreeOpen']),
+    preventClippingSelectedFile(hash) {
+      // let the layout stabilize, we need to wait for:
+      // scroll to file, sticky elements update, file browser height update
+      // file browser height might be shrunk, so we need to scroll to the selected file
+      setTimeout(() => {
+        this.scrollVirtualScrollerToFileHash(hash);
+      }, 20);
+    },
     scrollVirtualScrollerToFileHash(hash) {
       const item = document.querySelector(`[data-file-row="${hash}"]`);
       if (item && !isElementClipped(item, this.$refs.scroller.$el)) return;
       const index = this.treeList.findIndex((f) => f.fileHash === hash);
       if (index !== -1) {
-        this.$refs.scroller.scrollToItem?.(index);
+        this.$refs.scroller?.scrollToItem?.(index);
       }
     },
     openFileTree(hash) {
@@ -192,7 +202,7 @@ export default {
 </script>
 
 <template>
-  <div class="tree-list-holder flex-column gl-flex" data-testid="file-tree-container">
+  <div class="tree-list-holder gl-flex gl-flex-col" data-testid="file-tree-container">
     <div class="gl-mb-3 gl-flex gl-items-center">
       <h5 class="gl-my-0 gl-inline-block">{{ __('Files') }}</h5>
       <gl-badge v-if="totalFilesCount != null" class="gl-ml-2" data-testid="file-count">{{
@@ -229,44 +239,39 @@ export default {
       :clear-button-title="__('Clear search')"
       class="gl-mb-3"
     />
-    <tree-list-height class="gl-min-h-0 gl-grow" :items-count="treeList.length">
-      <template #default="{ scrollerHeight, rowHeight }">
-        <div :class="{ 'tree-list-blobs': !renderTreeList || search }" class="mr-tree-list">
-          <recycle-scroller
-            v-if="treeList.length"
-            ref="scroller"
-            :style="{ height: `${scrollerHeight}px` }"
-            :items="treeList"
-            :item-size="rowHeight"
-            :buffer="100"
-            key-field="key"
-          >
-            <template #default="{ item }">
-              <diff-file-row
-                :file="item"
-                :level="item.level"
-                :viewed-files="viewedDiffFileIds"
-                :hide-file-stats="hideFileStats"
-                :current-diff-file-id="currentDiffFileId"
-                :style="{ '--level': item.level }"
-                :class="{ 'tree-list-parent': item.level > 0 }"
-                :tabindex="item.loading ? -1 : 0"
-                class="gl-relative !gl-m-1"
-                :data-file-row="item.fileHash"
-                @toggleTreeOpen="toggleTreeOpen"
-                @clickFile="!item.loading && $emit('clickFile', $event)"
-              />
-            </template>
-            <template #after>
-              <div class="tree-list-gutter"></div>
-            </template>
-          </recycle-scroller>
-          <p v-else class="prepend-top-20 append-bottom-20 text-center">
-            {{ s__('MergeRequest|No files found') }}
-          </p>
-        </div>
-      </template>
-    </tree-list-height>
+    <div :class="{ 'tree-list-blobs': !renderTreeList || search }" class="mr-tree-list">
+      <recycle-scroller
+        v-if="treeList.length"
+        ref="scroller"
+        :items="treeList"
+        :item-size="rowHeight"
+        :buffer="100"
+        key-field="key"
+      >
+        <template #default="{ item }">
+          <diff-file-row
+            :file="item"
+            :level="item.level"
+            :viewed-files="viewedDiffFileIds"
+            :hide-file-stats="hideFileStats"
+            :current-diff-file-id="currentDiffFileId"
+            :style="{ '--level': item.level }"
+            :class="{ 'tree-list-parent': item.level > 0 }"
+            :tabindex="item.loading ? -1 : 0"
+            class="gl-relative !gl-m-1"
+            :data-file-row="item.fileHash"
+            @toggleTreeOpen="toggleTreeOpen"
+            @clickFile="!item.loading && $emit('clickFile', $event)"
+          />
+        </template>
+        <template #after>
+          <div class="tree-list-gutter"></div>
+        </template>
+      </recycle-scroller>
+      <p v-else class="prepend-top-20 append-bottom-20 text-center">
+        {{ s__('MergeRequest|No files found') }}
+      </p>
+    </div>
   </div>
 </template>
 

@@ -722,6 +722,14 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
     end
   end
 
+  describe 'reset_pool_repositories' do
+    it 'delegates to Tasks::Gitlab::Backup#reset_pool_repositories!' do
+      expect(Tasks::Gitlab::Backup).to receive(:reset_pool_repositories!)
+
+      run_rake_task('gitlab:backup:repo:reset_pool_repositories')
+    end
+  end
+
   def expect_logger_to_receive_messages(messages)
     [Gitlab::BackupLogger, Gitlab::Backup::JsonLogger].each do |log_class|
       expect_any_instance_of(log_class) do |logger|

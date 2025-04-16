@@ -35,6 +35,7 @@ module DesignManagement
 
     belongs_to :issue
     belongs_to :author, class_name: 'User'
+    belongs_to :namespace
     has_many :actions
     has_many :designs,
       through: :actions,
@@ -47,6 +48,7 @@ module DesignManagement
     validates :sha, uniqueness: { case_sensitive: false, scope: :issue_id }
     validates :author, presence: true
     validates :issue, presence: true, unless: :importing?
+    validates :namespace, presence: true
 
     sha_attribute :sha
 
@@ -84,7 +86,7 @@ module DesignManagement
       raise NotSameIssue, 'All designs must belong to the same issue!' if not_uniq
 
       transaction do
-        version = new(sha: sha, issue_id: issue_id, author: author)
+        version = new(sha: sha, issue_id: issue_id, author: author, namespace: Issue.find_by_id(issue_id)&.namespace)
         version.save(validate: false) # We need it to have an ID. Validate later when designs are present
 
         rows = design_actions.map { |action| action.row_attrs(version) }

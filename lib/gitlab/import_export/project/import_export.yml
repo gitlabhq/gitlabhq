@@ -619,6 +619,7 @@ included_attributes:
     - :created_at
     - :sha
     - :author_id
+    - :namespace_id
   issue_assignees:
     - :user_id
   merge_request_assignees:

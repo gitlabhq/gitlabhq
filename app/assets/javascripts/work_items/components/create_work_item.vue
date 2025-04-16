@@ -247,7 +247,7 @@ export default {
       },
       variables() {
         return {
-          fullPath: this.fullPath,
+          fullPath: this.selectedProjectFullPath,
         };
       },
       update(data) {
@@ -276,7 +276,7 @@ export default {
 
         for await (const workItemType of this.workItemTypes) {
           await setNewWorkItemCache(
-            this.fullPath,
+            this.selectedProjectFullPath,
             workItemType?.widgetDefinitions,
             workItemType.name,
             workItemType.id,
@@ -305,7 +305,7 @@ export default {
   },
   computed: {
     newWorkItemPath() {
-      return newWorkItemFullPath(this.fullPath, this.selectedWorkItemTypeName);
+      return newWorkItemFullPath(this.selectedProjectFullPath, this.selectedWorkItemTypeName);
     },
     isLoading() {
       return (
@@ -313,13 +313,13 @@ export default {
       );
     },
     skipWorkItemQuery() {
-      return !this.fullPath || !this.selectedWorkItemTypeName;
+      return !this.selectedProjectFullPath || !this.selectedWorkItemTypeName;
     },
     hasWidgets() {
       return this.workItem?.widgets?.length > 0;
     },
     relatedItemReference() {
-      return getDisplayReference(this.fullPath, this.relatedItem.reference);
+      return getDisplayReference(this.selectedProjectFullPath, this.relatedItem.reference);
     },
     relatedItemType() {
       return WORK_ITEM_TYPE_NAME_LOWERCASE_MAP[this.relatedItem?.type];
@@ -620,7 +620,7 @@ export default {
           mutation: updateNewWorkItemMutation,
           variables: {
             input: {
-              fullPath: this.fullPath,
+              fullPath: this.selectedProjectFullPath,
               workItemType: this.selectedWorkItemTypeName,
               [type]: value,
             },
@@ -643,7 +643,7 @@ export default {
       const workItemCreateInput = {
         title: this.workItemTitle,
         workItemTypeId: this.selectedWorkItemTypeId,
-        namespacePath: this.selectedProjectFullPath || this.fullPath,
+        namespacePath: this.selectedProjectFullPath,
         confidential: this.workItem.confidential,
         descriptionWidget: {
           description: this.workItemDescription || '',
@@ -805,7 +805,10 @@ export default {
           numberOfDiscussionsResolved: this.numberOfDiscussionsResolved,
         });
 
-        const autosaveKey = getNewWorkItemAutoSaveKey(this.fullPath, this.selectedWorkItemTypeName);
+        const autosaveKey = getNewWorkItemAutoSaveKey(
+          this.selectedProjectFullPath,
+          this.selectedWorkItemTypeName,
+        );
         clearDraft(autosaveKey);
       } catch {
         this.error = this.createErrorText;
@@ -825,13 +828,16 @@ export default {
       }
     },
     handleDiscardDraft() {
-      const autosaveKey = getNewWorkItemAutoSaveKey(this.fullPath, this.selectedWorkItemTypeName);
+      const autosaveKey = getNewWorkItemAutoSaveKey(
+        this.selectedProjectFullPath,
+        this.selectedWorkItemTypeName,
+      );
       clearDraft(autosaveKey);
 
       const selectedWorkItemWidgets = this.selectedWorkItemType?.widgetDefinitions || [];
 
       setNewWorkItemCache(
-        this.fullPath,
+        this.selectedProjectFullPath,
         selectedWorkItemWidgets,
         this.selectedWorkItemTypeName,
         this.selectedWorkItemTypeId,
@@ -892,7 +898,7 @@ export default {
           @updateDraft="updateDraftData('title', $event)"
         />
         <title-suggestions
-          :project-path="fullPath"
+          :project-path="selectedProjectFullPath"
           :search="workItemTitle"
           :help-text="$options.i18n.similarWorkItemHelpText"
           :title="$options.i18n.suggestionTitle"
@@ -904,7 +910,7 @@ export default {
               is-create-flow
               :autofocus="false"
               :description="description"
-              :full-path="fullPath"
+              :full-path="selectedProjectFullPath"
               :show-buttons-below-field="false"
               :hide-fullscreen-markdown-button="isModal"
               :work-item-id="workItemId"
@@ -959,7 +965,7 @@ export default {
               v-if="workItemAssignees"
               class="js-assignee work-item-attributes-item"
               :can-update="canUpdate"
-              :full-path="fullPath"
+              :full-path="selectedProjectFullPath"
               :is-group="isGroup"
               :work-item-id="workItemId"
               :assignees="workItemAssignees.assignees.nodes"
@@ -974,7 +980,7 @@ export default {
               v-if="workItemLabels"
               class="js-labels work-item-attributes-item"
               :can-update="canUpdate"
-              :full-path="fullPath"
+              :full-path="selectedProjectFullPath"
               :is-group="isGroup"
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
@@ -984,7 +990,7 @@ export default {
             <work-item-iteration
               v-if="workItemIteration"
               class="work-item-attributes-item"
-              :full-path="fullPath"
+              :full-path="selectedProjectFullPath"
               :is-group="isGroup"
               :iteration="workItemIteration.iteration"
               :can-update="canUpdate"
@@ -997,7 +1003,7 @@ export default {
               v-if="workItemMilestone"
               class="js-milestone work-item-attributes-item"
               :is-group="isGroup"
-              :full-path="fullPath"
+              :full-path="selectedProjectFullPath"
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
               :work-item-milestone="workItemMilestone.milestone"
@@ -1009,7 +1015,7 @@ export default {
               v-if="workItemWeight"
               class="work-item-attributes-item"
               :can-update="canUpdate"
-              :full-path="fullPath"
+              :full-path="selectedProjectFullPath"
               :widget="workItemWeight"
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
@@ -1020,7 +1026,7 @@ export default {
               v-if="workItemStartAndDueDate"
               class="work-item-attributes-item"
               :can-update="canUpdate"
-              :full-path="fullPath"
+              :full-path="selectedProjectFullPath"
               :start-date="workItemStartAndDueDate.startDate"
               :due-date="workItemStartAndDueDate.dueDate"
               :is-fixed="workItemStartAndDueDate.isFixed"
@@ -1035,14 +1041,14 @@ export default {
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
               :work-item-type="selectedWorkItemTypeName"
-              :full-path="fullPath"
+              :full-path="selectedProjectFullPath"
               @error="$emit('error', $event)"
             />
             <work-item-color
               v-if="workItemColor"
               class="work-item-attributes-item"
               :work-item="workItem"
-              :full-path="fullPath"
+              :full-path="selectedProjectFullPath"
               :can-update="canUpdate"
               @error="$emit('error', $event)"
             />
@@ -1051,7 +1057,7 @@ export default {
               :work-item-id="workItemId"
               :work-item-type="selectedWorkItemTypeName"
               :custom-fields="workItemCustomFields"
-              :full-path="fullPath"
+              :full-path="selectedProjectFullPath"
               :is-group="isGroup"
               :can-update="canUpdate"
               @error="$emit('error', $event)"
@@ -1063,7 +1069,7 @@ export default {
               :work-item-id="workItemId"
               :work-item-type="selectedWorkItemTypeName"
               :group-path="groupPath"
-              :full-path="fullPath"
+              :full-path="selectedProjectFullPath"
               :parent="workItemParent"
               :is-group="isGroup"
               @error="$emit('error', $event)"
@@ -1071,7 +1077,7 @@ export default {
             <work-item-crm-contacts
               v-if="workItemCrmContacts"
               class="work-item-attributes-item"
-              :full-path="fullPath"
+              :full-path="selectedProjectFullPath"
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
               :work-item-type="selectedWorkItemTypeName"

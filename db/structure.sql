@@ -8846,7 +8846,6 @@ CREATE TABLE application_settings (
     prevent_merge_requests_committers_approval boolean DEFAULT false NOT NULL,
     email_restrictions_enabled boolean DEFAULT false NOT NULL,
     email_restrictions text,
-    npm_package_requests_forwarding boolean DEFAULT true NOT NULL,
     container_expiration_policies_enable_historic_entries boolean DEFAULT false NOT NULL,
     issues_create_limit integer DEFAULT 0 NOT NULL,
     push_rule_id bigint,
@@ -8932,7 +8931,6 @@ CREATE TABLE application_settings (
     usage_ping_features_enabled boolean DEFAULT false NOT NULL,
     encrypted_customers_dot_jwt_signing_key bytea,
     encrypted_customers_dot_jwt_signing_key_iv bytea,
-    pypi_package_requests_forwarding boolean DEFAULT true NOT NULL,
     throttle_unauthenticated_files_api_requests_per_period integer DEFAULT 125 NOT NULL,
     throttle_unauthenticated_files_api_period_in_seconds integer DEFAULT 15 NOT NULL,
     throttle_authenticated_files_api_requests_per_period integer DEFAULT 500 NOT NULL,
@@ -8971,7 +8969,6 @@ CREATE TABLE application_settings (
     max_ssh_key_lifetime integer,
     static_objects_external_storage_auth_token_encrypted text,
     future_subscriptions jsonb DEFAULT '[]'::jsonb NOT NULL,
-    packages_cleanup_package_file_worker_capacity smallint DEFAULT 2 NOT NULL,
     runner_token_expiration_interval integer,
     group_runner_token_expiration_interval integer,
     project_runner_token_expiration_interval integer,
@@ -8999,7 +8996,6 @@ CREATE TABLE application_settings (
     inactive_projects_delete_after_months integer DEFAULT 2 NOT NULL,
     inactive_projects_min_size_mb integer DEFAULT 0 NOT NULL,
     inactive_projects_send_warning_email_after_months integer DEFAULT 1 NOT NULL,
-    maven_package_requests_forwarding boolean DEFAULT true NOT NULL,
     arkose_labs_namespace text DEFAULT 'client'::text NOT NULL,
     max_export_size integer DEFAULT 0,
     encrypted_slack_app_signing_secret bytea,
@@ -9028,7 +9024,6 @@ CREATE TABLE application_settings (
     git_rate_limit_users_allowlist text[] DEFAULT '{}'::text[] NOT NULL,
     error_tracking_access_token_encrypted text,
     invitation_flow_enforcement boolean DEFAULT false NOT NULL,
-    package_registry_cleanup_policies_worker_capacity integer DEFAULT 2 NOT NULL,
     deactivate_dormant_users_period integer DEFAULT 90 NOT NULL,
     auto_ban_user_on_excessive_projects_download boolean DEFAULT false NOT NULL,
     max_pages_custom_domains_per_project integer DEFAULT 0 NOT NULL,
@@ -9038,9 +9033,6 @@ CREATE TABLE application_settings (
     dashboard_limit_enabled boolean DEFAULT false NOT NULL,
     dashboard_limit integer DEFAULT 0 NOT NULL,
     can_create_group boolean DEFAULT true NOT NULL,
-    lock_maven_package_requests_forwarding boolean DEFAULT false NOT NULL,
-    lock_pypi_package_requests_forwarding boolean DEFAULT false NOT NULL,
-    lock_npm_package_requests_forwarding boolean DEFAULT false NOT NULL,
     jira_connect_proxy_url text,
     password_expiration_enabled boolean DEFAULT false NOT NULL,
     password_expires_in_days integer DEFAULT 90 NOT NULL,
@@ -9096,7 +9088,6 @@ CREATE TABLE application_settings (
     gitlab_shell_operation_limit integer DEFAULT 600,
     protected_paths_for_get_request text[] DEFAULT '{}'::text[] NOT NULL,
     namespace_storage_forks_cost_factor double precision DEFAULT 1.0 NOT NULL,
-    package_registry_allow_anyone_to_pull_option boolean DEFAULT true NOT NULL,
     bulk_import_max_download_file_size bigint DEFAULT 5120 NOT NULL,
     max_import_remote_file_size bigint DEFAULT 10240 NOT NULL,
     max_decompressed_archive_size integer DEFAULT 25600 NOT NULL,
@@ -9192,8 +9183,6 @@ CREATE TABLE application_settings (
     CONSTRAINT app_settings_max_login_attempts_positive CHECK ((max_login_attempts > 0)),
     CONSTRAINT app_settings_max_pages_custom_domains_per_project_check CHECK ((max_pages_custom_domains_per_project >= 0)),
     CONSTRAINT app_settings_max_terraform_state_size_bytes_check CHECK ((max_terraform_state_size_bytes >= 0)),
-    CONSTRAINT app_settings_p_cleanup_package_file_worker_capacity_positive CHECK ((packages_cleanup_package_file_worker_capacity >= 0)),
-    CONSTRAINT app_settings_pkg_registry_cleanup_pol_worker_capacity_gte_zero CHECK ((package_registry_cleanup_policies_worker_capacity >= 0)),
     CONSTRAINT app_settings_protected_paths_max_length CHECK ((cardinality(protected_paths_for_get_request) <= 100)),
     CONSTRAINT app_settings_registry_exp_policies_worker_capacity_positive CHECK ((container_registry_expiration_policies_worker_capacity >= 0)),
     CONSTRAINT app_settings_registry_repair_worker_max_concurrency_positive CHECK ((container_registry_data_repair_detail_worker_max_concurrency >= 0)),
@@ -19457,6 +19446,7 @@ CREATE TABLE packages_npm_metadata (
     package_id bigint NOT NULL,
     package_json jsonb DEFAULT '{}'::jsonb NOT NULL,
     project_id bigint,
+    CONSTRAINT check_8d2e047947 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT chk_rails_e5cbc301ae CHECK ((char_length((package_json)::text) < 20000))
 );
 
@@ -24673,7 +24663,9 @@ CREATE TABLE virtual_registries_packages_maven_registry_upstreams (
     registry_id bigint NOT NULL,
     upstream_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    "position" smallint DEFAULT 1 NOT NULL,
+    CONSTRAINT check_8e8de60b63 CHECK (((1 <= "position") AND ("position" <= 20)))
 );
 
 CREATE SEQUENCE virtual_registries_packages_maven_registry_upstreams_id_seq
@@ -29221,9 +29213,6 @@ ALTER TABLE description_versions
 ALTER TABLE ONLY group_type_ci_runners
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);
 
-ALTER TABLE packages_npm_metadata
-    ADD CONSTRAINT check_8d2e047947 CHECK ((project_id IS NOT NULL)) NOT VALID;
-
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;
 
@@ -33575,6 +33564,8 @@ CREATE INDEX idx_user_details_on_provisioned_by_group_id_user_id ON user_details
 CREATE INDEX idx_user_member_roles_on_member_role_id ON user_member_roles USING btree (member_role_id);
 
 CREATE UNIQUE INDEX idx_user_member_roles_on_user_id_unique ON user_member_roles USING btree (user_id);
+
+CREATE UNIQUE INDEX idx_vreg_pkgs_mvn_reg_upst_on_unique_regid_pos ON virtual_registries_packages_maven_registry_upstreams USING btree (registry_id, "position");
 
 CREATE INDEX idx_vuln_reads_for_filtering ON vulnerability_reads USING btree (project_id, state, dismissal_reason, severity DESC, vulnerability_id DESC NULLS LAST);
 
@@ -38861,8 +38852,6 @@ CREATE INDEX user_uploads_store_idx ON user_uploads USING btree (store);
 CREATE INDEX user_uploads_uploaded_by_user_id_idx ON user_uploads USING btree (uploaded_by_user_id);
 
 CREATE INDEX user_uploads_uploader_path_idx ON user_uploads USING btree (uploader, path);
-
-CREATE UNIQUE INDEX virtual_reg_packages_maven_reg_upstreams_on_unique_reg_ids ON virtual_registries_packages_maven_registry_upstreams USING btree (registry_id);
 
 CREATE UNIQUE INDEX virtual_reg_packages_maven_reg_upstreams_on_unique_upstream_ids ON virtual_registries_packages_maven_registry_upstreams USING btree (upstream_id);
 

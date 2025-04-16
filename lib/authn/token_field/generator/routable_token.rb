@@ -65,7 +65,7 @@ module Authn
         end
 
         def encode_payload(payload, random_bytes)
-          encodable_payload = "#{payload}#{random_bytes}#{[random_bytes.size].pack('C')}"
+          encodable_payload = "#{random_bytes}#{payload}#{[payload.size].pack('C')}"
           base64_payload = Base64.urlsafe_encode64(encodable_payload, padding: false)
           base64_payload_length = base64_payload.size.to_s(36).rjust(BASE64_PAYLOAD_LENGTH_HOLDER_BYTES, '0')
           "#{prefix}#{base64_payload}.#{base64_payload_length}"

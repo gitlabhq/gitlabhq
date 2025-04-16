@@ -933,6 +933,7 @@ DesignManagement::Version:
 - created_at
 - sha
 - author_id
+- namespace_id
 ZoomMeeting:
 - id
 - project_id

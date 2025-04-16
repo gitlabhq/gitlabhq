@@ -723,6 +723,7 @@
 {"name":"state_machines","version":"0.5.0","platform":"ruby","checksum":"23e6249d374a920b528dccade403518b4abbd83841a3e2c9ef13e6f1a009b102"},
 {"name":"state_machines-activemodel","version":"0.8.0","platform":"ruby","checksum":"e932dab190d4be044fb5f9cab01a3ea0b092c5f113d4676c6c0a0d49bf738d2c"},
 {"name":"state_machines-activerecord","version":"0.8.0","platform":"ruby","checksum":"072fb701b8ab03de0608297f6c55dc34ed096e556fa8f77e556f3c461c71aab6"},
+{"name":"state_machines-rspec","version":"0.6.0","platform":"ruby","checksum":"2ba57a45df57d0c97f79146e2e0f65f519b52e65e182805ef79cb73b1fe5c0bd"},
 {"name":"stringio","version":"3.1.6","platform":"java","checksum":"dbdb1ee4e6d75782bbc7e8cc7d84cd05e592df50494f363011cc7cd48153bbf7"},
 {"name":"stringio","version":"3.1.6","platform":"ruby","checksum":"292c495d1657adfcdf0a32eecf12a60e6691317a500c3112ad3b2e31068274f5"},
 {"name":"strings","version":"0.2.1","platform":"ruby","checksum":"933293b3c95cf85b81eb44b3cf673e3087661ba739bbadfeadf442083158d6fb"},

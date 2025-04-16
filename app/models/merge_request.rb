@@ -1839,6 +1839,10 @@ class MergeRequest < ApplicationRecord
     "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/train"
   end
 
+  def rebase_on_merge_path
+    "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/rebase_on_merge"
+  end
+
   def schedule_cleanup_refs(only: :all)
     if Feature.enabled?(:merge_request_delete_gitaly_refs_in_batches, target_project)
       async_cleanup_refs(only: only)
@@ -1854,6 +1858,7 @@ class MergeRequest < ApplicationRecord
     target_refs << ref_path       if %i[all head].include?(only)
     target_refs << merge_ref_path if %i[all merge].include?(only)
     target_refs << train_ref_path if %i[all train].include?(only)
+    target_refs << rebase_on_merge_path if %i[all rebase_on_merge_path].include?(only)
     target_refs
   end
 

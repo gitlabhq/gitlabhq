@@ -21,6 +21,8 @@
 
 .rd-app-body {
   display: flex;
+  // allow for the file browser to consume more height even when the diff list is very small
+  min-height: 50dvh;
 
   @include media-breakpoint-down(constants.$app-vertical-breakpoint) {
     flex-direction: column;
@@ -59,6 +61,7 @@
   }
 
   @include media-breakpoint-down(constants.$app-vertical-breakpoint) {
+    --tree-list-max-height: calc(var(--file-row-height) * 8);
     flex: 1;
     margin: 0;
     // override .diff-tree-list, remove when fully switched to Rapid Diffs

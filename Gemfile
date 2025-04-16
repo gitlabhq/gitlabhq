@@ -602,6 +602,7 @@ group :test do
   gem 'rspec_junit_formatter', feature_category: :shared
   gem 'guard-rspec', feature_category: :shared
   gem 'axe-core-rspec', '~> 4.10.0', feature_category: :tooling
+  gem 'state_machines-rspec', '~> 0.6', feature_category: :shared
 
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
   gem 'derailed_benchmarks', require: false, feature_category: :shared

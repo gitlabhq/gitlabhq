@@ -23,8 +23,52 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
       expect(page).to have_content("Changes merged into #{merge_request.target_branch} with #{merge_request.short_merged_commit_sha}")
     end
 
+    context 'when merge method is set to semi linear merge' do
+      let(:project) { create(:project, :public, :repository, merge_requests_ff_only_enabled: false, merge_requests_rebase_enabled: true) }
+
+      it 'accepts a merge request when devirged' do
+        merge_request = create(:merge_request, :diverged, source_project: project)
+
+        visit(merge_request_path(merge_request))
+
+        click_merge_button
+
+        expect(page).to have_content("Changes merged into #{merge_request.target_branch} with #{merge_request.short_merged_commit_sha}")
+      end
+
+      it 'accepts a merge request with rebase and merge' do
+        merge_request = create(:merge_request, :rebased, source_project: project)
+
+        visit(merge_request_path(merge_request))
+
+        click_merge_button
+
+        expect(page).to have_content("Changes merged into #{merge_request.target_branch} with #{merge_request.short_merged_commit_sha}")
+      end
+
+      it 'accepts a merge request with squash and merge' do
+        merge_request = create(:merge_request, :rebased, source_project: project, squash: true)
+
+        visit(merge_request_path(merge_request))
+
+        click_merge_button
+
+        expect(page).to have_content("Changes merged into #{merge_request.target_branch} with #{merge_request.short_merged_commit_sha}")
+      end
+    end
+
     context 'when merge method is set to fast-forward merge' do
       let(:project) { create(:project, :public, :repository, merge_requests_ff_only_enabled: true) }
+
+      it 'accepts a merge request when devirged' do
+        merge_request = create(:merge_request, :diverged, source_project: project)
+
+        visit(merge_request_path(merge_request))
+
+        click_merge_button
+
+        expect(page).to have_content("Changes merged into #{merge_request.target_branch} with #{merge_request.short_merged_commit_sha}")
+      end
 
       it 'accepts a merge request with rebase and merge' do
         merge_request = create(:merge_request, :rebased, source_project: project)

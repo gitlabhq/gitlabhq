@@ -243,6 +243,13 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
     end
 
     context 'when restoring object pools' do
+      let(:pool_result) { ::Backup::Restore::PoolRepositories::Result }
+      let(:mock_scheduled) { pool_result.new(disk_path: 'aa/bb/repo1.git', status: :scheduled, error_message: nil) }
+      let(:mock_skipped) { pool_result.new(disk_path: 'cc/dd/repo2.git', status: :skipped, error_message: nil) }
+      let(:mock_failed) do
+        pool_result.new(disk_path: 'ee/ff/repo3.git', status: :failed, error_message: 'Error message')
+      end
+
       it 'schedules restoring of the pool', :sidekiq_might_not_need_inline do
         pool_repository = create(:pool_repository, :failed)
         pool_repository.delete_object_pool
@@ -262,6 +269,22 @@ RSpec.describe Backup::Targets::Repositories, feature_category: :backup_restore 
 
         pool_repository.reload
         expect(pool_repository).to be_obsolete
+      end
+
+      it 'displays operation status', :sidekiq_might_not_need_inline do
+        expect(::Backup::Restore::PoolRepositories).to receive(:reinitialize_pools!)
+                                                         .and_yield(mock_scheduled)
+                                                         .and_yield(mock_skipped)
+                                                         .and_yield(mock_failed)
+
+        logger = repositories.send(:logger)
+
+        expect(logger).to receive(:info).with("Object pool aa/bb/repo1.git...")
+        expect(logger).to receive(:info).with("Object pool cc/dd/repo2.git... [SKIPPED]")
+        expect(logger).to receive(:info).with("Object pool ee/ff/repo3.git... [FAILED]")
+        expect(logger).to receive(:error).with("Object pool ee/ff/repo3.git failed to reinitialize (Error message)")
+
+        repositories.restore(destination, backup_id)
       end
     end
 

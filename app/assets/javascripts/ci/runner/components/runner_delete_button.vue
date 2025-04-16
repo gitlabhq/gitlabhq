@@ -72,7 +72,7 @@ export default {
       <gl-button
         v-gl-tooltip="loading ? '' : tooltip"
         :aria-label="ariaLabel"
-        :icon="icon"
+        :icon="loading ? '' : icon"
         :class="buttonClass"
         :loading="loading"
         variant="danger"

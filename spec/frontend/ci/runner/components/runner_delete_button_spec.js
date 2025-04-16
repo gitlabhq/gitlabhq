@@ -131,6 +131,11 @@ describe('RunnerDeleteButton', () => {
         });
       });
 
+      it('displays the "loading" icon', () => {
+        expect(findBtn().props('loading')).toBe(true);
+        expect(findBtn().props('icon')).toBe('');
+      });
+
       it('The stale tooltip is removed', () => {
         expect(getTooltip()).toBe('');
       });

@@ -295,6 +295,7 @@ Each feature flag is defined in a separate YAML file consisting of a number of f
 | Field               | Required | Description                                                    |
 |---------------------|----------|----------------------------------------------------------------|
 | `name`              | yes      | Name of the feature flag.                                      |
+| `description`       | yes      | A short description of the reason for the feature flag.        |
 | `type`              | yes      | Type of feature flag.                                          |
 | `default_enabled`   | yes      | The default state of the feature flag.                         |
 | `introduced_by_url` | yes      | The URL to the merge request that introduced the feature flag. |
@@ -385,7 +386,9 @@ To create a feature flag that is only used in EE, add the `--ee` flag: `bin/feat
 
 When choosing a name for a new feature flag, consider the following guidelines:
 
-- A long, descriptive name is better than a short but confusing one.
+- Describe the feature the feature flag is holding
+  - A long, **descriptive** name is better than a short but confusing one.
+- Avoid names that indicates state/phase of the feature like `_mvc`, `_alpha`, `_beta`, etc
 - Write the name in snake case (`my_cool_feature_flag`).
 - Avoid using `disable` in the name to avoid having to think (or [document](../documentation/feature_flags.md))
   with double negatives. Consider starting the name with `hide_`, `remove_`, or `disallow_`.

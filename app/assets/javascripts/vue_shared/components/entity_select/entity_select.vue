@@ -100,7 +100,7 @@ export default {
       return item || this.initialSelectedItem;
     },
     toggleText() {
-      return this.selectedItem?.text ?? this.defaultToggleText;
+      return this.selected ? this.selectedItem.text : this.defaultToggleText;
     },
     resetButtonLabel() {
       return this.clearable ? RESET_LABEL : '';

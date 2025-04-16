@@ -224,6 +224,7 @@ RSpec.configure do |config|
   config.include OrphanFinalArtifactsCleanupHelpers, :orphan_final_artifacts_cleanup
   config.include ClickHouseHelpers, :click_house
   config.include WorkItems::DataSync::AssociationsHelpers
+  config.include StateMachinesRspec::Matchers
 
   config.include_context 'when rendered has no HTML escapes', type: :view
   config.include_context 'with STI disabled', type: :model

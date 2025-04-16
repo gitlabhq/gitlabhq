@@ -213,6 +213,26 @@ describe('EntitySelect', () => {
         expect(wrapper.emitted('input')[2][0]).toEqual({});
       });
     });
+
+    describe('with initially selection', () => {
+      it('on reset, falls back to the default toggle text', async () => {
+        fetchInitialSelectionMock = jest.fn().mockImplementation(() => itemMock);
+        createComponent({
+          props: {
+            fetchInitialSelection: fetchInitialSelectionMock,
+            initialSelection: itemMock.value,
+          },
+        });
+        await nextTick();
+
+        expect(findListbox().props('toggleText')).toBe(itemMock.text);
+
+        findListbox().vm.$emit('reset');
+        await nextTick();
+
+        expect(findListbox().props('toggleText')).toBe(defaultToggleText);
+      });
+    });
   });
 
   describe('search', () => {

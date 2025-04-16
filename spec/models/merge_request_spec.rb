@@ -4041,18 +4041,41 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         )
       end
 
-      where(:should_be_rebased, :skip_rebase_check, :expected_mergeable) do
-        false | false | true
-        false | true  | true
-        true  | false | false
-        true  | true  | true
+      context 'when rebase_on_merge_automatic is true' do
+        where(:should_be_rebased, :skip_rebase_check) do
+          false | false
+          false | true
+          true  | false
+          true  | true
+        end
+
+        with_them do
+          it 'does not take into account the mergeability check and always returns true' do
+            allow(subject).to receive(:should_be_rebased?) { should_be_rebased }
+
+            expect(subject.mergeable?(skip_rebase_check: skip_rebase_check)).to eq(true)
+          end
+        end
       end
 
-      with_them do
-        it 'overrides should_be_rebased?' do
-          allow(subject).to receive(:should_be_rebased?) { should_be_rebased }
+      context 'when rebase_on_merge_automatic is false' do
+        before do
+          stub_feature_flags(rebase_on_merge_automatic: false)
+        end
 
-          expect(subject.mergeable?(skip_rebase_check: skip_rebase_check)).to eq(expected_mergeable)
+        where(:should_be_rebased, :skip_rebase_check, :expected_mergeable) do
+          false | false | true
+          false | true  | true
+          true  | false | false
+          true  | true  | true
+        end
+
+        with_them do
+          it 'overrides should_be_rebased?' do
+            allow(subject).to receive(:should_be_rebased?) { should_be_rebased }
+
+            expect(subject.mergeable?(skip_rebase_check: skip_rebase_check)).to eq(expected_mergeable)
+          end
         end
       end
     end
@@ -6008,7 +6031,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it 'deletes all refs from the target project' do
         expect(merge_request.target_project.repository)
           .to receive(:delete_refs)
-          .with(merge_request.ref_path, merge_request.merge_ref_path, merge_request.train_ref_path)
+          .with(merge_request.ref_path, merge_request.merge_ref_path, merge_request.train_ref_path,
+            merge_request.rebase_on_merge_path)
 
         subject
       end
@@ -6021,6 +6045,18 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(merge_request.target_project.repository)
           .to receive(:delete_refs)
           .with(merge_request.train_ref_path)
+
+        subject
+      end
+    end
+
+    context 'when removing only rebase_on_merge_path ref' do
+      let(:only) { :rebase_on_merge_path }
+
+      it 'deletes train ref from the target project' do
+        expect(merge_request.target_project.repository)
+          .to receive(:delete_refs)
+          .with(merge_request.rebase_on_merge_path)
 
         subject
       end

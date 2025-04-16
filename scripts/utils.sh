@@ -508,11 +508,12 @@ function log_disk_usage() {
 
   available_space=$(df -h | awk 'NR==2 {print $4}') # value at the 2nd row 4th column of the df -h output
 
+  section_start "log_disk_usage" "Disk usage detail"
+
   echo "*******************************************************"
   echo "This runner currently has ${available_space} free disk space."
   echo "*******************************************************"
 
-  section_start "log_disk_usage" "Disk usage detail" "true"
   echo -e "df -h"
   df -h
   section_end "log_disk_usage"

@@ -1,0 +1,15 @@
+# multiline_patterns.yml
+- pattern: "Failed examples:,expected\\(:| # | \\[\\)"
+  failure_category: "rspec_valid_rspec_errors_or_flaky_tests"
+
+- pattern: "Failed examples:,Failure/Error:"
+  failure_category: "rspec_valid_rspec_errors_or_flaky_tests"
+
+- pattern: "Ran all test suites,Command failed with exit code 1"
+  failure_category: "jest"
+
+- pattern: "Ran all test suites,exited with status 1"
+  failure_category: "jest"
+
+- pattern: "DANGER_GITLAB_API_TOKEN,Errors:"
+  failure_category: "danger"

@@ -10,6 +10,7 @@ import { TREE_LIST_WIDTH_STORAGE_KEY } from '~/diffs/constants';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import * as types from '~/diffs/store/mutation_types';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import FileBrowserHeight from '~/diffs/components/file_browser_height.vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
 Vue.use(PiniaVuePlugin);
@@ -40,6 +41,11 @@ describe('DiffsFileTree', () => {
   beforeEach(() => {
     pinia = createTestingPinia();
     useLegacyDiffs();
+  });
+
+  it('renders inside file browser height', () => {
+    createComponent();
+    expect(wrapper.findComponent(FileBrowserHeight).exists()).toBe(true);
   });
 
   it('re-emits clickFile event', () => {
@@ -145,9 +151,8 @@ describe('DiffsFileTree', () => {
       createComponent({ floatingResize: true });
       wrapper.findComponent(PanelResizer).vm.$emit('resize-start');
       await nextTick();
-      const rootStyle = getRootStyle();
       const style = getWrapperStyle();
-      expect(rootStyle.height).toBe('200px');
+      expect(style.height).toBe('200px');
       expect(style.width).toBe('350px');
       expect(style.top).toBe('100px');
     });
@@ -194,11 +199,19 @@ describe('DiffsFileTree', () => {
     });
   });
 
-  it('passes down props to tree list', () => {
+  it('passes down props to tree list', async () => {
     const loadedFiles = { foo: true };
     const totalFilesCount = '20';
+    const rowHeight = 30;
+    jest.spyOn(window, 'getComputedStyle').mockReturnValue({
+      getPropertyValue() {
+        return `${rowHeight}px`;
+      },
+    });
     createComponent({ loadedFiles, totalFilesCount });
+    await nextTick();
     expect(wrapper.findComponent(TreeList).props('loadedFiles')).toBe(loadedFiles);
     expect(wrapper.findComponent(TreeList).props('totalFilesCount')).toBe(totalFilesCount);
+    expect(wrapper.findComponent(TreeList).props('rowHeight')).toBe(rowHeight);
   });
 });

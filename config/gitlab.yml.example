@@ -1240,7 +1240,7 @@ production: &base
     # keep_time: 604800   # default: 0 (forever) (in seconds)
     # pg_schema: public     # default: nil, it means that all schemas will be backed up
     # upload:
-    #   # Fog storage connection settings, see https://fog.io/storage/ .
+    #   # Fog storage connection settings, see https://fog.github.io/storage/ .
     #   connection:
     #     provider: AWS
     #     region: eu-west-1

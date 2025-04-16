@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-require 'net/http'
-require 'uri'
-require 'json'
-require_relative '../../../../../gems/gitlab-rspec/lib/gitlab/rspec/stub_env'
+require 'gitlab/rspec/stub_env'
 require_relative '../../../../../tooling/lib/tooling/events/track_pipeline_events'
 
 RSpec.describe Tooling::Events::TrackPipelineEvents, feature_category: :tooling do
   include StubENV
+
   let(:event_name) { "e2e_tests_selected_for_execution_gitlab_pipeline" }
   let(:additional_properties) { { label: 'label', property: 'property', value: 10 } }
   let(:access_token) { 'test-admin-token' }
@@ -90,9 +88,9 @@ RSpec.describe Tooling::Events::TrackPipelineEvents, feature_category: :tooling 
         end
 
         it 'prints an error message and returns' do
-          send_event
-          expect($stdout).to have_received(:puts)
-                               .with("ERROR: Cannot send event '#{event_name}'. Missing project access token.")
+          expect do
+            send_event
+          end.to output("Error: Cannot send event '#{event_name}'. Missing project access token.\n").to_stderr
         end
       end
     end

@@ -135,4 +135,46 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
       let_it_be(:model) { create(:pool_repository, source_project: parent) }
     end
   end
+
+  context 'with state machine' do
+    subject!(:pool_repository) { create(:pool_repository) }
+
+    it { is_expected.to have_states :none, :scheduled, :ready, :failed, :obsolete }
+    it { is_expected.to handle_events :schedule, when: :none }
+    it { is_expected.to handle_events :mark_ready, when: :scheduled }
+    it { is_expected.to handle_events :mark_ready, when: :failed }
+    it { is_expected.to handle_events :mark_failed, :mark_obsolete, :reinitialize }
+
+    it 'starts as none' do
+      expect(pool_repository).to be_none
+    end
+  end
+
+  describe '#reinitialize' do
+    context 'when object_pool exists' do
+      subject(:pool_repository) { create(:pool_repository, :ready) }
+
+      it 'does not reinitialize' do
+        expect { pool_repository.reinitialize }.to not_change { pool_repository.state }
+      end
+    end
+
+    context 'when object_pool does not exist' do
+      subject(:pool_repository) { create(:pool_repository, :ready) }
+
+      it 'allows reinitializing the state machine' do
+        pool_repository.delete_object_pool
+
+        expect { pool_repository.reinitialize }.to change { pool_repository.state }.from('ready').to('none')
+      end
+    end
+
+    context 'when object_pool is already scheduled' do
+      subject(:pool_repository) { create(:pool_repository, :scheduled) }
+
+      it 'does not reinitialize' do
+        expect { pool_repository.reinitialize }.to not_change { pool_repository.state }
+      end
+    end
+  end
 end

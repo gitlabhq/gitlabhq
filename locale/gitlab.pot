@@ -64605,9 +64605,6 @@ msgstr ""
 msgid "Upstream Gitaly has been exhausted. Try again later"
 msgstr ""
 
-msgid "Upstream already exists"
-msgstr ""
-
 msgid "Upvotes"
 msgstr ""
 

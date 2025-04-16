@@ -439,9 +439,21 @@ span.idiff {
   display: none;
 }
 
-.mr-tree-list:not(.tree-list-blobs) {
-  overflow: hidden;
+.mr-tree-list {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: var(--tree-list-max-height);
 
+  .vue-recycle-scroller {
+    // make virtual scroller a scroll container
+    height: 100%;
+    min-height: 0;
+    flex: 1;
+  }
+}
+
+.mr-tree-list:not(.tree-list-blobs) {
   .tree-list-parent::before {
     content: '';
     position: absolute;

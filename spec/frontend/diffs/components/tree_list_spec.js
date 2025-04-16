@@ -27,7 +27,7 @@ describe('Diffs tree list component', () => {
   const createComponent = ({ hideFileStats = false, ...rest } = {}) => {
     wrapper = shallowMountExtended(TreeList, {
       pinia,
-      propsData: { hideFileStats, ...rest },
+      propsData: { hideFileStats, rowHeight: 30, ...rest },
       stubs: {
         // eslint will fail if we import the real component
         RecycleScroller: stubComponent(
@@ -298,6 +298,7 @@ describe('Diffs tree list component', () => {
       wrapper.vm.$refs.scroller.scrollToItem = jest.fn();
       useLegacyDiffs().currentDiffFileId = '05.txt';
       await nextTick();
+      jest.runAllTimers();
 
       expect(wrapper.vm.currentDiffFileId).toBe('05.txt');
       expect(wrapper.vm.$refs.scroller.scrollToItem).toHaveBeenCalledWith(5);

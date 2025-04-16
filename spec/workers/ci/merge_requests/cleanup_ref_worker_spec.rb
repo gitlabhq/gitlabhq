@@ -17,7 +17,8 @@ RSpec.describe MergeRequests::CleanupRefWorker, :sidekiq_inline, feature_categor
     expect(MergeRequest).to receive(:find_by_id).with(merge_request.id).and_return(merge_request)
     expect(merge_request.target_project.repository)
       .to receive(:delete_refs)
-      .with(merge_request.ref_path, merge_request.merge_ref_path, merge_request.train_ref_path)
+      .with(merge_request.ref_path, merge_request.merge_ref_path, merge_request.train_ref_path,
+        merge_request.rebase_on_merge_path)
 
     subject
   end

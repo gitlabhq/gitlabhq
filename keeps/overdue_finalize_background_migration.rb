@@ -78,7 +78,11 @@ module Keeps
         'maintenance::removal'
       ]
 
-      change.reviewers = groups_helper.pick_reviewer_for_feature_category(feature_category, change.identifiers)
+      change.reviewers = groups_helper.pick_reviewer_for_feature_category(
+        feature_category,
+        change.identifiers,
+        fallback_feature_category: 'database'
+      )
 
       change
     end
@@ -92,16 +96,18 @@ module Keeps
       [batched background migration chatops commands](https://docs.gitlab.com/ee/development/database/batched_background_migrations.html#monitor-the-progress-and-status-of-a-batched-background-migration).
         To confirm it is finished you can run:
 
-        ```
+      ```
       /chatops run batched_background_migrations status #{migration_record.id} --database #{database_name(migration_record)}
       ```
 
-      The last time this background migration was triggered was in [#{last_migration_file}](https://gitlab.com/gitlab-org/gitlab/-/blob/master/#{last_migration_file})
+      The last time this background migration was triggered was in
+      [#{last_migration_file}](https://gitlab.com/gitlab-org/gitlab/-/blob/master/#{last_migration_file})
 
-        You can read more about the process for finalizing batched background migrations in
+      You can read more about the process for finalizing batched background migrations in
       https://docs.gitlab.com/ee/development/database/batched_background_migrations.html .
 
-        As part of our process we want to ensure all batched background migrations have had at least one
+      As part of our process we want to ensure all batched background migrations
+      have had at least one
       [required stop](https://docs.gitlab.com/ee/development/database/required_stops.html)
       to process the migration. Therefore we can finalize any batched background migration that was added before the
       last required stop.

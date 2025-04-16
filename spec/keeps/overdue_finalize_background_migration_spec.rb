@@ -28,7 +28,7 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
         .and_return([])
 
       allow(groups_helper).to receive(:pick_reviewer_for_feature_category)
-        .with(feature_category, identifiers)
+        .with(feature_category, identifiers, fallback_feature_category: 'database')
         .and_return("random-engineer")
 
       allow(keep).to receive(:groups_helper).and_return(groups_helper)

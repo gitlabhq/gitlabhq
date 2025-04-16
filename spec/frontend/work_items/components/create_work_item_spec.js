@@ -405,6 +405,20 @@ describe('Create work item component', () => {
       });
     });
 
+    it('correct fullPath is provided to components when project is selected', async () => {
+      const fullPath = 'chosen/full/path';
+      createComponent({ props: { showProjectSelector: true } });
+      await waitForPromises();
+
+      expect(findAssigneesWidget().props('fullPath')).toBe('full-path');
+
+      findProjectsSelector().vm.$emit('selectProject', fullPath);
+
+      await nextTick();
+
+      expect(findAssigneesWidget().props('fullPath')).toBe(fullPath);
+    });
+
     it('does not commit when title is empty', async () => {
       createComponent();
       await waitForPromises();
@@ -595,7 +609,7 @@ describe('Create work item component', () => {
   describe('With related item', () => {
     const id = 'gid://gitlab/WorkItem/1';
     const type = 'Epic';
-    const reference = 'full-path#1';
+    const reference = 'related-full-path#1';
     const webUrl = 'web/url';
 
     beforeEach(async () => {
@@ -621,7 +635,13 @@ describe('Create work item component', () => {
     it('provides the related item fullPath to the project listbox', () => {
       const listbox = findProjectsSelector();
 
-      expect(listbox.props('selectedProjectFullPath')).toBe('full-path');
+      expect(listbox.props('selectedProjectFullPath')).toBe('related-full-path');
+    });
+
+    it('provides the related item fullPath to the widget components', () => {
+      const assigneesWidget = findAssigneesWidget();
+
+      expect(assigneesWidget.props('fullPath')).toBe('related-full-path');
     });
 
     it('includes the related item in the create work item request', async () => {

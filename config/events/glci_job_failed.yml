@@ -1,0 +1,21 @@
+---
+description: CI job failed in the gitlab.com/gitlab-org namespace
+internal_events: true
+action: glci_job_failed
+identifiers:
+- project
+- namespace
+additional_properties:
+  # Refer https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/quick_start/
+  # label, value and property are fixed keys we can use to store anything needed
+  label:
+    description: job ID
+  property:
+    description: failure category
+product_group: development_analytics
+milestone: '17.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187501
+tiers:
+- free
+- premium
+- ultimate

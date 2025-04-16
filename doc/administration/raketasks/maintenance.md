@@ -409,26 +409,78 @@ should be below 30%.
 Prerequisites:
 
 - This feature requires PostgreSQL 12 or later.
-- These index types are not supported: expression indexes, partitioned indexes,
-  and indexes used for constraint exclusion.
+- These index types are **not supported**: expression indexes and indexes used for constraint exclusion.
+- Not enabled by default. A feature flag must be set for this task to work: `Feature.enable("database_reindexing")`
 
-To manually rebuild a database index:
+### Run reindexing
 
-1. Optional. To send annotations to a Grafana (4.6 or later) endpoint, enable annotations
-   with these custom environment variables (see [setting custom environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html)):
+The following task rebuilds only the two indexes in each database with the highest bloat. To rebuild more than two indexes, run the task again until all desired indexes have been rebuilt.
 
-   1. `GRAFANA_API_URL`: The base URL for Grafana, such as `http://some-host:3000`.
-   1. `GRAFANA_API_KEY`: A Grafana API key with at least `Editor role`.
-
-1. Run the Rake task to rebuild the two indexes with the highest estimated bloat:
+1. Run the reindexing task:
 
    ```shell
    sudo gitlab-rake gitlab:db:reindex
    ```
 
-1. The reindexing task (`gitlab:db:reindex`) rebuilds only the two indexes in each database
-   with the highest bloat. To rebuild more than two indexes, run the task again
-   until all desired indexes have been rebuilt.
+1. Check [application_json.log](../../administration/logs/_index.md#application_jsonlog) to verify execution or to troubleshoot.
+
+### Customize reindexing settings
+
+For smaller instances or to adjust reindexing behavior, you can modify these settings using the Rails console:
+
+```shell
+sudo gitlab-rails console
+```
+
+Then customize the configuration:
+
+```ruby
+# Lower minimum index size to 100 MB (default is 1GB)
+ApplicationSetting.current.update!(database_reindexing: { reindexing_minimum_index_size: 100.megabytes })
+
+# Change minimum bloat threshold to 30% (default is 20%, there is no benefit from setting it lower)
+ApplicationSetting.current.update!(database_reindexing: { reindexing_minimum_relative_bloat_size: 0.3 })
+```
+
+### Automated reindexing
+
+For larger instances with significant database size, automate database reindexing by scheduling it to run during periods of low activity.
+
+#### Schedule with crontab
+
+For packaged GitLab installations, use crontab:
+
+1. Edit the crontab:
+
+   ```shell
+   sudo crontab -e
+   ```
+
+1. Add an entry based on your preferred schedule:
+
+   1. Option 1: Run daily during quiet periods
+
+   ```shell
+   # Run database reindexing every day at 21:12
+   # The log will be rotated by the packaged logrotate daemon
+   12 21 * * * /opt/gitlab/bin/gitlab-rake gitlab:db:reindex >> /var/log/gitlab/gitlab-rails/cron_reindex.log 2>&1
+   ```
+
+   1. Option 2: Run on weekends only
+
+   ```shell
+   # Run database reindexing at 01:00 AM on weekends
+   0 1 * * 0,6 /opt/gitlab/bin/gitlab-rake gitlab:db:reindex >> /var/log/gitlab/gitlab-rails/cron_reindex.log 2>&1
+   ```
+
+   1. Option 3: Run frequently during low-traffic hours
+
+   ```shell
+   # Run database reindexing every 3 hours during night hours (22:00-07:00)
+   0 22,1,4,7 * * * /opt/gitlab/bin/gitlab-rake gitlab:db:reindex >> /var/log/gitlab/gitlab-rails/cron_reindex.log 2>&1
+   ```
+
+For Kubernetes deployments, you can create a similar schedule using the CronJob resource to run the reindexing task.
 
 ### Notes
 
@@ -440,6 +492,8 @@ To manually rebuild a database index:
   task cleans up the temporary indexes.
 - The time it takes for database index rebuilding to complete depends on the size
   of the target database. It can take between several hours and several days.
+- The task uses Redis locks, it's safe to schedule it to run frequently.
+  It's a no-op if another reindexing task is already running.
 
 ## Dump the database schema
 

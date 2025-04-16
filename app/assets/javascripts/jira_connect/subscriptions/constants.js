@@ -42,7 +42,7 @@ export const OAUTH_SELF_MANAGED_DOC_LINK = helpPagePath('administration/settings
   anchor: 'set-up-oauth-authentication',
 });
 export const SET_UP_INSTANCE_DOC_LINK = helpPagePath('administration/settings/jira_cloud_app', {
-  anchor: 'set-up-your-instance',
+  anchor: 'set-up-your-instance-for-atlassian-marketplace-installation',
 });
 export const JIRA_USER_REQUIREMENTS_DOC_LINK = helpPagePath(
   'administration/settings/jira_cloud_app',

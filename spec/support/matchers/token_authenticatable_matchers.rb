@@ -22,16 +22,17 @@ module TokenAuthenticatableMatchers
       [0-9a-z]{7} # crc
       \z
     }mx
+
+  RANDOM_BYTES_LENGTH = Authn::TokenField::Generator::RoutableToken::RANDOM_BYTES_LENGTH
   BASE64_PAYLOAD_LENGTH_HOLDER_BYTES =
     Authn::TokenField::Generator::RoutableToken::BASE64_PAYLOAD_LENGTH_HOLDER_BYTES
   CRC_BYTES = Authn::TokenField::Generator::RoutableToken::CRC_BYTES
 
   def generate_routable_token(routing_payload, random_bytes:, prefix: '')
     base64_payload = Base64.urlsafe_encode64(
-      "#{routing_payload}#{random_bytes}#{[random_bytes.size].pack('C')}", padding: false
+      "#{random_bytes}#{routing_payload}#{[routing_payload.size].pack('C')}", padding: false
     )
-    base64_payload_length = base64_payload.size.to_s(36)
-      .rjust(BASE64_PAYLOAD_LENGTH_HOLDER_BYTES, '0')
+    base64_payload_length = base64_payload.size.to_s(36).rjust(BASE64_PAYLOAD_LENGTH_HOLDER_BYTES, '0')
     checksummable_payload = "#{prefix}#{base64_payload}.#{base64_payload_length}"
     crc = Zlib.crc32(checksummable_payload).to_s(36).rjust(CRC_BYTES, '0')
 
@@ -53,24 +54,17 @@ module TokenAuthenticatableMatchers
 
   def decoded_random_bytes(token)
     payload = decoded_payload(token)
-    random_bytes_length = random_bytes_length(payload)
-    offset = random_bytes_length + 1
-
-    payload[-offset, random_bytes_length]
+    payload.first(RANDOM_BYTES_LENGTH)
   end
 
-  def random_bytes_length(payload)
+  def payload_length(payload)
     payload[-1].unpack1("C")
   end
 
   def decoded_routing_payload(token)
     payload = decoded_payload(token)
 
-    payload[0, routing_payload_length(payload)]
-  end
-
-  def routing_payload_length(payload)
-    payload.size - random_bytes_length(payload) - 1
+    payload[-payload_length(payload) - 1..-2]
   end
 
   def token_crc(token)

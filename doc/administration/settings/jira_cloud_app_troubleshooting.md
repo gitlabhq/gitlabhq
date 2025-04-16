@@ -177,7 +177,7 @@ To resolve this issue, set the reverse proxy FQDN as an
 ### Debugging Jira Connect Proxy issues
 
 If you set **Jira Connect Proxy URL** to `https://gitlab.com` when you
-[set up your instance](jira_cloud_app.md#set-up-your-instance), you can:
+[set up your instance](jira_cloud_app.md#set-up-your-instance-for-atlassian-marketplace-installation), you can:
 
 - Inspect the network traffic in your browser's development tools.
 - Reproduce the `Failed to update the GitLab instance` error for more information.
@@ -237,7 +237,7 @@ For the second log, you might have one of the following scenarios:
   - `json.message` is `Proxy lifecycle event received error response` or similar.
   - `json.jira_status_code` and `json.jira_body` might contain the response received from the GitLab Self-Managed instance or a proxy in front of the instance.
   - If `json.jira_status_code` is `401 Unauthorized` and `json.jira_body` is `(empty)`:
-    - [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) might not be set to `https://gitlab.com`.
+    - [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance-for-atlassian-marketplace-installation) might not be set to `https://gitlab.com`.
     - The GitLab Self-Managed instance might be blocking outgoing connections. Ensure that your
       GitLab Self-Managed instance can connect to both `connect-install-keys.atlassian.com`
       and `gitlab.com`.
@@ -320,7 +320,7 @@ To resolve this issue:
    ```
 
 1. If you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace),
-   ensure [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) is set to `https://gitlab.com` with no trailing slash.
+   ensure [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance-for-atlassian-marketplace-installation) is set to `https://gitlab.com` with no trailing slash.
 
 ## Error: `Missing required parameter: client_id`
 

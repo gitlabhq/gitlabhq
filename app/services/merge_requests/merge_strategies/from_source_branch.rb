@@ -18,10 +18,14 @@ module MergeRequests
       end
 
       def validate!
-        raise_error('No source for merge') if source_sha.blank?
+        if use_create_ref_service?
+          raise_error('No source for merge') if merge_request.diff_head_sha.blank?
+        else
+          raise_error('No source for merge') if source_sha.blank?
 
-        if merge_request.should_be_rebased?
-          raise_error('Only fast-forward merge is allowed for your project. Please update your source branch')
+          if merge_request.should_be_rebased?
+            raise_error('Only fast-forward merge is allowed for your project. Please update your source branch')
+          end
         end
 
         raise_error('Merge request is not mergeable') unless mergeable?
@@ -32,21 +36,49 @@ module MergeRequests
       end
 
       def execute_git_merge!
-        result =
-          if project.merge_requests_ff_only_enabled
-            fast_forward!
-          else
-            merge_commit!
-          end
+        if use_create_ref_service?
+          create_ref_result = MergeRequests::CreateRefService.new(
+            current_user: current_user,
+            merge_request: merge_request,
+            source_sha: merge_request.diff_head_sha,
+            target_ref: merge_request.rebase_on_merge_path,
+            first_parent_ref: merge_request.target_branch_ref
+          ).execute
 
-        result[:squash_commit_sha] = source_sha if merge_request.squash_on_merge?
+          payload = create_ref_result.payload
 
-        result
+          src_sha = payload[:commit_sha]
+
+          payload[:commit_sha] = fast_forward!(src_sha)[:commit_sha]
+
+          merge_request.schedule_cleanup_refs(only: [:rebase_on_merge_path])
+
+          payload
+        else
+          result = if project.merge_requests_ff_only_enabled
+                     fast_forward!(source_sha)
+                   else
+                     merge_commit!
+                   end
+
+          result[:squash_commit_sha] = source_sha if merge_request.squash_on_merge?
+
+          result
+        end
       end
 
       private
 
       attr_reader :merge_request, :current_user, :merge_params, :options, :project
+
+      # We only want to use the service when we can not directly fast_forward
+      # and when ff merge must be possible
+      def use_create_ref_service?
+        Feature.enabled?(:rebase_on_merge_automatic, project) &&
+          project.ff_merge_must_be_possible? &&
+          merge_request.should_be_rebased?
+      end
+      strong_memoize_attr :use_create_ref_service?
 
       def source_sha
         if merge_request.squash_on_merge?
@@ -73,10 +105,10 @@ module MergeRequests
         end
       end
 
-      def fast_forward!
+      def fast_forward!(src_sha)
         commit_sha = repository.ff_merge(
           current_user,
-          source_sha,
+          src_sha,
           merge_request.target_branch,
           merge_request: merge_request
         )

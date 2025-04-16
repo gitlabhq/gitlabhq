@@ -109,7 +109,12 @@ include:
     # in unit tests again.
     - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag ~quarantine --tag ~level:background_migration --tag ~click_house"
   after_script:
+    # We need this at the very top, because the section_start/section_end logic is defined there.
     - source scripts/utils.sh
+    - |
+      section_start "failure-analyzer" "Report failure category"
+      tooling/lib/tooling/glci/failure_analyzer.rb $CI_JOB_ID || true
+      section_end "failure-analyzer"
     - log_disk_usage  # https://gitlab.com/gitlab-org/gitlab/-/issues/478880
     - bundle exec gem list gitlab_quality-test_tooling
     - |

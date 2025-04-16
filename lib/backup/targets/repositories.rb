@@ -134,18 +134,16 @@ module Backup
       end
 
       def restore_object_pools
-        PoolRepository.includes(:source_project).find_each do |pool|
-          logger.info " - Object pool #{pool.disk_path}..."
-
-          unless pool.source_project
-            logger.info " - Object pool #{pool.disk_path}... [SKIPPED]"
-            next
+        ::Backup::Restore::PoolRepositories.reinitialize_pools! do |pool|
+          case pool.status
+          when :scheduled
+            logger.info "Object pool #{pool.disk_path}..."
+          when :skipped
+            logger.info "Object pool #{pool.disk_path}... [SKIPPED]"
+          when :failed
+            logger.info "Object pool #{pool.disk_path}... [FAILED]"
+            logger.error "Object pool #{pool.disk_path} failed to reinitialize (#{pool.error_message})"
           end
-
-          pool.state = 'none'
-          pool.save
-
-          pool.schedule
         end
       end
     end

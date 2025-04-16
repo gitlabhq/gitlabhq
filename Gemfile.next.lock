@@ -1860,6 +1860,10 @@ GEM
     state_machines-activerecord (0.8.0)
       activerecord (>= 5.1)
       state_machines-activemodel (>= 0.8.0)
+    state_machines-rspec (0.6.0)
+      activesupport
+      rspec (~> 3.3)
+      state_machines
     stringio (3.1.6)
     strings (0.2.1)
       strings-ansi (~> 0.2)
@@ -2371,6 +2375,7 @@ DEPENDENCIES
   ssh_data (~> 1.3)
   stackprof (~> 0.2.26)
   state_machines-activerecord (~> 0.8.0)
+  state_machines-rspec (~> 0.6)
   sys-filesystem (~> 1.4.3)
   tanuki_emoji (~> 0.13)
   telesignenterprise (~> 2.2)

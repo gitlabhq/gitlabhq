@@ -245,12 +245,15 @@
 $diff-file-header-top: 11px;
 
 .diff-tree-list {
-
+  --file-row-height: 32px;
+  --file-tree-min-height: 300px;
+  // can't use rems here because they won't compute to pixels when using `getComputedStyle(el).getPropertyValue()`
+  --file-tree-bottom-padding: 16px;
   position: sticky;
   top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{$diff-file-header-top});
-  // height calc is fully delegated to the tree_list_height.vue component
+  // height calc is fully delegated to the file_browser_height.vue component
   height: 100%;
-  min-height: 300px;
+  min-height: var(--file-tree-min-height);
 
   .drag-handle {
     bottom: 16px;
@@ -287,7 +290,6 @@ $diff-file-header-top: 11px;
 }
 
 .tree-list-holder {
-  --file-row-height: 32px;
   height: 100%;
 
   .file-row {
@@ -309,6 +311,7 @@ $diff-file-header-top: 11px;
 @media (max-width: map-get($grid-breakpoints, lg)-1) {
   .diffs .files {
     .diff-tree-list {
+      --tree-list-max-height: calc(var(--file-row-height) * 8);
       position: relative;
       // height is fully handled on the javascript side in narrow view
       min-height: 0;

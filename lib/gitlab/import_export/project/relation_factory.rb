@@ -123,6 +123,7 @@ module Gitlab
           when :merge_requests, :MergeRequest, :merge_request then setup_merge_request
           when :approvals then setup_approval
           when :events then setup_event
+          when :'DesignManagement::Version' then setup_design_management_version
           end
 
           update_project_references
@@ -259,6 +260,10 @@ module Gitlab
           target_branch = @importable.protected_branches.find_by(name: source_branch_name)
 
           @relation_hash['protected_branch'] = target_branch
+        end
+
+        def setup_design_management_version
+          @relation_hash['namespace_id'] = @importable.project_namespace_id
         end
 
         def compute_relative_position

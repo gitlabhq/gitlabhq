@@ -22,7 +22,8 @@ module Gitlab
 
       ALLOWED_REFERENCES_PER_CLASS = {
         'Vulnerabilities::Scanner': ['external_id'],
-        'Vulnerabilities::Identifier': ['external_id']
+        'Vulnerabilities::Identifier': ['external_id'],
+        'DesignManagement::Version': ['namespace_id']
       }.freeze
 
       def self.clean(*args, **kwargs)
