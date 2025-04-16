@@ -939,9 +939,7 @@ In other cases:
 
 </div>
 
-In GitLab 18.0, CI/CD job tokens will switch from a string token format to the JWT token format. This changes impacts new and existing CI/CD job tokens in all projects. If you experience issues, you can still [use the legacy format for your CI/CD tokens](https://docs.gitlab.com/ci/jobs/ci_job_token#use-legacy-format-for-cicd-tokens) until the GitLab 19.0 release.
-
-In GitLab 19.0, all CI/CD job tokens must use the JWT standard. Before this release, you can temporarily revert your tokens back to the legacy job token format.
+In GitLab 19.0, CI/CD job tokens will switch from a string token format to the JWT token format. This changes impacts new and existing CI/CD job tokens in all projects. If you experience issues, you can still [use the legacy format for your CI/CD tokens](https://docs.gitlab.com/ci/jobs/ci_job_token#use-legacy-format-for-cicd-tokens) until the GitLab 20.0 release.
 
 Known issues:
 
@@ -7669,31 +7667,6 @@ The following changes have been removed from their original milestone and are be
 
 <div class="deprecation breaking-change">
 
-### Container Scanning default severity threshold set to `medium`
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.9</span>
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/515358).
-
-</div>
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
-
-The Container Scanning security feature generates a lot of security findings and this volume is often difficult for engineering teams to manage.
-By changing the severity threshold to `medium`, we provide a more reasonable default to our users, where any findings with a severity below `medium` are not reported.
-Starting with GitLab 18.0, the default value for the `CS_SEVERITY_THRESHOLD` environment variable is set to `medium` instead of `unknown`. As a result, the security findings with the `low` and `unknown`
-severity levels will no longer be reported by default. Consequently, any vulnerablity with these severities that were previously reported on the default branch will be marked as no longer detected
-upon the next execution of Container Scanning.
-To continue showing these findings, you must configure the `CS_SEVERITY_THRESHOLD` variable to the desired level.
-
-</div>
-
-<div class="deprecation breaking-change">
-
 ### GitLab.com certificate-based integration with Kubernetes
 
 <div class="deprecation-notes">
@@ -8070,6 +8043,31 @@ use `count` from `cars` in `MergeTrains::TrainType` instead.
 ## Cancelled changes
 
 The following changes have been cancelled.
+
+<div class="deprecation breaking-change">
+
+### Container Scanning default severity threshold set to `medium`
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.9</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/515358).
+
+</div>
+{{< alert type="note" >}}
+
+This change has been cancelled.
+
+{{< /alert >}}
+
+The Container Scanning security feature generates a lot of security findings and this volume is often difficult for engineering teams to manage.
+By changing the severity threshold to `medium`, we provide a more reasonable default to our users, where any findings with a severity below `medium` are not reported.
+Starting with GitLab 18.0, the default value for the `CS_SEVERITY_THRESHOLD` environment variable is set to `medium` instead of `unknown`. As a result, the security findings with the `low` and `unknown`
+severity levels will no longer be reported by default. Consequently, any vulnerablity with these severities that were previously reported on the default branch will be marked as no longer detected
+upon the next execution of Container Scanning.
+To continue showing these findings, you must configure the `CS_SEVERITY_THRESHOLD` variable to the desired level.
+
+</div>
 
 <div class="deprecation breaking-change">
 
