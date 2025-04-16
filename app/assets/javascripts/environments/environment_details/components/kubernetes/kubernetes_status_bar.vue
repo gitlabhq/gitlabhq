@@ -8,7 +8,6 @@ import {
   GlButton,
   GlResizeObserverDirective,
 } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__ } from '~/locale';
 import {
   CLUSTER_HEALTH_SUCCESS,
@@ -41,7 +40,6 @@ export default {
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     clusterHealthStatus: {
       required: false,

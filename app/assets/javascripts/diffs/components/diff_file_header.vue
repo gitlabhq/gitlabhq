@@ -23,7 +23,6 @@ import { truncateSha } from '~/lib/utils/text_utility';
 import { sanitize } from '~/lib/dompurify';
 import { __, s__, sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { createFileUrl, fileContentsId } from '~/diffs/components/diff_row_utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
@@ -53,7 +52,6 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [glFeatureFlagsMixin()],
   i18n: {
     ...DIFF_FILE_HEADER,
     compareButtonLabel: __('Compare submodule commit revisions'),

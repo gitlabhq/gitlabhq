@@ -38191,6 +38191,8 @@ CREATE INDEX index_wiki_repository_states_on_verification_state ON wiki_reposito
 
 CREATE INDEX index_wiki_repository_states_pending_verification ON wiki_repository_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
+CREATE INDEX index_work_item_current_statuses_on_custom_status_id ON work_item_current_statuses USING btree (custom_status_id);
+
 CREATE INDEX index_work_item_current_statuses_on_namespace_id ON work_item_current_statuses USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_work_item_current_statuses_on_work_item_id ON work_item_current_statuses USING btree (work_item_id);
@@ -42144,6 +42146,9 @@ ALTER TABLE ONLY analytics_devops_adoption_segments
 
 ALTER TABLE ONLY project_statistics
     ADD CONSTRAINT fk_198ad46fdc FOREIGN KEY (root_namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY work_item_current_statuses
+    ADD CONSTRAINT fk_1bb76463e0 FOREIGN KEY (custom_status_id) REFERENCES work_item_custom_statuses(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY approval_policy_rule_project_links
     ADD CONSTRAINT fk_1c78796d52 FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE;

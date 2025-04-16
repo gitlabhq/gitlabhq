@@ -9,7 +9,6 @@ import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import { clearDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MultilineCommentForm from '~/notes/components/multiline_comment_form.vue';
 import { commentLineOptions, formatLineRange } from '~/notes/components/multiline_comment_utils';
 import NoteForm from '~/notes/components/note_form.vue';
@@ -29,7 +28,7 @@ export default {
     NoteForm,
     MultilineCommentForm,
   },
-  mixins: [diffLineNoteFormMixin, glFeatureFlagsMixin()],
+  mixins: [diffLineNoteFormMixin],
   props: {
     diffFileHash: {
       type: String,

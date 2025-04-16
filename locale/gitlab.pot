@@ -23451,7 +23451,7 @@ msgstr ""
 msgid "Edit description"
 msgstr ""
 
-msgid "Edit diagram description"
+msgid "Edit diagram URL and alt text"
 msgstr ""
 
 msgid "Edit environment"
@@ -36358,6 +36358,9 @@ msgid "Make adjustments to how your GitLab instance is set up."
 msgstr ""
 
 msgid "Make and review changes in the browser with the Web IDE"
+msgstr ""
+
+msgid "Make changes to the diagram"
 msgstr ""
 
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."

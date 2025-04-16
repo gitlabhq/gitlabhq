@@ -6,7 +6,6 @@ import { throttle } from 'lodash';
 import { IdState } from 'vendor/vue-virtual-scroller';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import draftCommentsMixin from '~/diffs/mixins/draft_comments';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getCommentedLines } from '~/notes/components/multiline_comment_utils';
 import { hide } from '~/tooltips';
 import { countLinesInBetween } from '~/diffs/utils/diff_file';
@@ -24,11 +23,7 @@ export default {
     DiffCommentCell,
     DraftNote,
   },
-  mixins: [
-    draftCommentsMixin,
-    IdState({ idProp: (vm) => vm.diffFile.file_hash }),
-    glFeatureFlagsMixin(),
-  ],
+  mixins: [draftCommentsMixin, IdState({ idProp: (vm) => vm.diffFile.file_hash })],
   props: {
     diffFile: {
       type: Object,

@@ -6,7 +6,6 @@ import { debounce, throttle } from 'lodash';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { mapState as mapPiniaState, mapActions as mapPiniaActions } from 'pinia';
 import FindingsDrawer from 'ee_component/diffs/components/shared/findings_drawer.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import {
   keysFor,
@@ -91,7 +90,7 @@ export default {
     GlSprintf,
     GlAlert,
   },
-  mixins: [glFeatureFlagsMixin(), InternalEvents.mixin()],
+  mixins: [InternalEvents.mixin()],
   alerts: {
     ALERT_OVERFLOW_HIDDEN,
     ALERT_MERGE_CONFLICT,

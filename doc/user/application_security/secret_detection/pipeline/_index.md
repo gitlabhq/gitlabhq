@@ -83,6 +83,9 @@ can take a long time, especially for larger repositories with lengthy Git histor
 completing an initial historic scan, use only standard pipeline secret detection as part of your
 pipeline.
 
+If you enable pipeline secret detection with a [scan execution policy](../../policies/scan_execution_policies.md#scanner-behavior),
+by default the first scheduled scan is a historic scan.
+
 To run a historic scan:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -184,6 +187,7 @@ your GitLab CI/CD configuration file is complex.
 1. Select **Commit changes**.
 
 Pipelines now include a pipeline secret detection job.
+Consider [running a historic scan](#run-a-historic-scan) after you enable the analyzer.
 
 ### Use an automatically configured merge request
 

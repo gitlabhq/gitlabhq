@@ -12,7 +12,6 @@ import {
   WEBIDE_MEASURE_BEFORE_VUE,
 } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { modalTypes } from '../constants';
 import eventHub from '../eventhub';
@@ -53,7 +52,6 @@ export default {
     GlLink,
     GlSprintf,
   },
-  mixins: [glFeatureFlagsMixin()],
   data() {
     return {
       loadDeferred: false,

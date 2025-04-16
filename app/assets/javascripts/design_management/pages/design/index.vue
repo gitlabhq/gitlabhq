@@ -7,7 +7,6 @@ import { keysFor, ISSUE_CLOSE_DESIGN } from '~/behaviors/shortcuts/keybindings';
 import { createAlert } from '~/alert';
 import { fetchPolicies } from '~/lib/graphql';
 import { updateGlobalTodoCount } from '~/sidebar/utils';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DesignDestroyer from '../../components/design_destroyer.vue';
 import DesignReplyForm from '../../components/design_notes/design_reply_form.vue';
 import DesignPresentation from '../../components/design_presentation.vue';
@@ -56,7 +55,7 @@ export default {
     GlAlert,
     DesignSidebar,
   },
-  mixins: [allVersionsMixin, glFeatureFlagsMixin()],
+  mixins: [allVersionsMixin],
   beforeRouteUpdate(to, from, next) {
     // reset scale when the active design changes
     this.scale = DEFAULT_SCALE;

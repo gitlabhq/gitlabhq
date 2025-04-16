@@ -5,7 +5,6 @@
  */
 import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import FileRowStats from './file_row_stats.vue';
 
 export default {
@@ -15,7 +14,6 @@ export default {
     FileRowStats,
     ChangedFileIcon,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     file: {
       type: Object,

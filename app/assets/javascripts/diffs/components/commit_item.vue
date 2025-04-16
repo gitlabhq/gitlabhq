@@ -6,7 +6,6 @@ import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_sta
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 /**
  * CommitItem
@@ -36,7 +35,6 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     isSelectable: {
       type: Boolean,
