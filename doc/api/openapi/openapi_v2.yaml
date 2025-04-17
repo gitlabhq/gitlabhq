@@ -43589,6 +43589,8 @@ definitions:
             type: string
           uploads_size:
             type: string
+      marked_for_deletion_on:
+        type: string
       root_storage_statistics:
         "$ref": "#/definitions/API_Entities_Namespace_RootStorageStatistics"
       ldap_cn:
@@ -43600,8 +43602,6 @@ definitions:
       saml_group_links:
         "$ref": "#/definitions/EE_API_Entities_SamlGroupLink"
       file_template_project_id:
-        type: string
-      marked_for_deletion_on:
         type: string
       wiki_access_level:
         type: string
@@ -44236,6 +44236,8 @@ definitions:
             type: string
           uploads_size:
             type: string
+      marked_for_deletion_on:
+        type: string
       root_storage_statistics:
         "$ref": "#/definitions/API_Entities_Namespace_RootStorageStatistics"
       ldap_cn:
@@ -44247,8 +44249,6 @@ definitions:
       saml_group_links:
         "$ref": "#/definitions/EE_API_Entities_SamlGroupLink"
       file_template_project_id:
-        type: string
-      marked_for_deletion_on:
         type: string
       wiki_access_level:
         type: string

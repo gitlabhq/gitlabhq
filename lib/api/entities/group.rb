@@ -47,6 +47,10 @@ module API
         end
       end
 
+      expose :marked_for_deletion_on, if: ->(group, _) {
+        group.adjourned_deletion?
+      }
+
       expose :root_storage_statistics, using: Entities::Namespace::RootStorageStatistics,
         if: ->(group, opts) {
               expose_root_storage_statistics?(group, opts)

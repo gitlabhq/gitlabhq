@@ -27,7 +27,7 @@ export default {
   },
   i18n: {
     COPY_COMMIT_SHA: __('Copy commit SHA'),
-    MANUALLY_PUBLISHED: s__('PackageRegistry|Manually Published'),
+    MANUALLY_PUBLISHED: s__('PackageRegistry|Manually published'),
   },
 };
 </script>
@@ -55,7 +55,6 @@ export default {
     </template>
 
     <template v-else>
-      <gl-icon name="upload" class="gl-mr-2" />
       <span data-testid="manually-published">
         {{ $options.i18n.MANUALLY_PUBLISHED }}
       </span>

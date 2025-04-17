@@ -70,6 +70,11 @@ class GroupChildEntity < Grape::Entity
     markdown_description
   end
 
+  # For both group and project
+  expose :marked_for_deletion do |instance|
+    instance.self_or_ancestor_marked_for_deletion.present?
+  end
+
   private
 
   def access_group_counts?(group)

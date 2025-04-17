@@ -39,7 +39,7 @@ describe('publish_method', () => {
       expect(findPipelineRef().exists()).toBe(false);
       expect(findPipelineSha().exists()).toBe(false);
       expect(findManualPublish().exists()).toBe(true);
-      expect(findManualPublish().text()).toBe('Manually Published');
+      expect(findManualPublish().text()).toBe('Manually published');
     });
   });
 });

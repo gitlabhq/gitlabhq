@@ -43138,7 +43138,7 @@ msgstr ""
 msgid "PackageRegistry|Manage storage used by package assets"
 msgstr ""
 
-msgid "PackageRegistry|Manually Published"
+msgid "PackageRegistry|Manually published"
 msgstr ""
 
 msgid "PackageRegistry|Maven"

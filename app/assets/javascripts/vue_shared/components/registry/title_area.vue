@@ -64,7 +64,7 @@ export default {
 
 <template>
   <div class="gl-flex gl-flex-col">
-    <page-heading>
+    <page-heading inline-actions>
       <template #heading>
         <slot name="title">{{ title }}</slot>
         <gl-avatar v-if="avatar" :src="avatar" :shape="$options.AVATAR_SHAPE_OPTION_RECT" />

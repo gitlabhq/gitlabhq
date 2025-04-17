@@ -199,4 +199,36 @@ RSpec.describe GroupChildEntity do
       expect(json[:can_edit]).to eq(false)
     end
   end
+
+  describe 'marked_for_deletion' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, name: 'subgroup', parent: group) }
+    let_it_be(:sub_subgroup) { create(:group, name: 'subsubgroup', parent: subgroup) }
+    let_it_be(:project) { create(:project, name: 'project 1', group: group) }
+
+    before do
+      stub_licensed_features(adjourned_deletion_for_projects_and_groups: true)
+      stub_application_setting(deletion_adjourned_period: 14)
+    end
+
+    context 'when group is marked for deletion' do
+      before_all do
+        create(:group_deletion_schedule, group: group, marked_for_deletion_on: Time.zone.today, deleting_user: user)
+      end
+
+      it 'returns true for child projects and groups' do
+        [group, subgroup, sub_subgroup, project].each do |object|
+          expect(described_class.new(object, request: request).as_json[:marked_for_deletion]).to eq(true)
+        end
+      end
+    end
+
+    context 'when group is not marked for deletion' do
+      it 'returns false for child projects and groups' do
+        [group, subgroup, sub_subgroup, project].each do |object|
+          expect(described_class.new(object, request: request).as_json[:marked_for_deletion]).to eq(false)
+        end
+      end
+    end
+  end
 end

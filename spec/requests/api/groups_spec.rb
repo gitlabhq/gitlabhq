@@ -992,6 +992,32 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         end
       end
     end
+
+    context 'marked_for_deletion_on attribute' do
+      context 'when the downtier_delayed_deletion feature flag is enabled' do
+        before do
+          stub_feature_flags(downtier_delayed_deletion: true)
+        end
+
+        it 'is exposed' do
+          get api("/groups/#{group1.id}", user1)
+
+          expect(json_response).to have_key 'marked_for_deletion_on'
+        end
+      end
+
+      context 'when the downtier_delayed_deletion feature flag is not enabled' do
+        before do
+          stub_feature_flags(downtier_delayed_deletion: false)
+        end
+
+        it 'is not exposed' do
+          get api("/groups/#{group1.id}", user1)
+
+          expect(json_response).not_to have_key 'marked_for_deletion_on'
+        end
+      end
+    end
   end
 
   describe 'PUT /groups/:id' do
