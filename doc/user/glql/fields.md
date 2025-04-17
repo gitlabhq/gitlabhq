@@ -184,14 +184,12 @@ format `field operator value`.
 
 **Field name**: `author`
 
-**Allowed operators**: `=`, `in`, `!=`
+**Allowed operators**: `=`, `!=`
 
 **Allowed value types**:
 
 - `String`
 - `User` (for example, `@username`)
-- `List` (containing `String` or `User` values)
-- `Nullable` (either of `null`, `none`, or `any`)
 
 **Supported for object types**:
 
@@ -199,30 +197,12 @@ format `field operator value`.
 - Work item types like `Task` or `Objective`
 - `MergeRequest`
 
-**Additional details**:
-
-- Because an issue can have only one author, the `=` operator cannot be used with `List` type for
-  the `author` field.
-- `List` values and the `in` operator are not supported for `MergeRequest` types.
-
 **Examples**:
 
 - List all issues where author is `@johndoe`:
 
   ```plaintext
   author = @johndoe
-  ```
-
-- List all issues where author is either of `@johndoe` or `@janedoe`:
-
-  ```plaintext
-  author in (@johndoe, @janedoe)
-  ```
-
-- List all issues where author is neither of `@johndoe` or `@janedoe`:
-
-  ```plaintext
-  author != (@johndoe, @janedoe)
   ```
 
 - List all merge requests where author is `@johndoe`:

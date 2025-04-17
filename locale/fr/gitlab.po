@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-04-16 16:44\n"
+"PO-Revision-Date: 2025-04-17 10:56\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} à %{end}"
@@ -13504,9 +13504,6 @@ msgstr "%{agentName} créé avec succès"
 msgid "ClusterAgents|%{agentName} successfully created."
 msgstr "%{agentName} créé avec succès."
 
-msgid "ClusterAgents|%{linkStart}View the documentation%{linkEnd} for advanced installation. Ensure you have your access token available."
-msgstr "%{linkStart}Voir la documentation%{linkEnd} de l'installation avancée. Assurez-vous d'être en possession de votre jeton d'accès."
-
 msgid "ClusterAgents|%{name} successfully deleted"
 msgstr "%{name} supprimé avec succès"
 
@@ -13533,9 +13530,6 @@ msgstr "%{tokenName} révoqué"
 
 msgid "ClusterAgents|Access tokens"
 msgstr "Jetons d'accès"
-
-msgid "ClusterAgents|Advanced installation methods"
-msgstr "Méthodes d'installation avancées"
 
 msgid "ClusterAgents|Agent"
 msgstr "Agent"
@@ -13729,8 +13723,8 @@ msgstr "Si Flux est installé dans le cluster, vous pouvez installer et enregist
 msgid "ClusterAgents|If you're %{linkStart}bootstrapping the agent with Flux%{linkEnd}, you can close this dialog."
 msgstr "Si vous %{linkStart}amorcez l'agent avec Flux%{linkEnd}, vous pouvez fermer cette boîte de dialogue."
 
-msgid "ClusterAgents|Install using Helm (recommended)"
-msgstr "Effectuer l'installation avec Helm (recommandé)"
+msgid "ClusterAgents|Install using Helm"
+msgstr ""
 
 msgid "ClusterAgents|Instance wide settings for the GitLab Agent for Kubernetes."
 msgstr "Paramètres d'instance pour l’agent GitLab pour Kubernetes."
@@ -43144,8 +43138,8 @@ msgstr "Chargé(e) de maintenance (par défaut)"
 msgid "PackageRegistry|Manage storage used by package assets"
 msgstr "Gérez le stockage utilisé par les ressources des paquets"
 
-msgid "PackageRegistry|Manually Published"
-msgstr "Publié manuellement"
+msgid "PackageRegistry|Manually published"
+msgstr ""
 
 msgid "PackageRegistry|Maven"
 msgstr "Maven"
@@ -53029,6 +53023,9 @@ msgstr "Modifier la liste noire"
 msgid "ScanResultPolicy|Except"
 msgstr "Sauf"
 
+msgid "ScanResultPolicy|Exceptions that do not require approval"
+msgstr ""
+
 msgid "ScanResultPolicy|Exceptions that require approval"
 msgstr "Exceptions nécessitant une approbation"
 
@@ -54359,9 +54356,6 @@ msgstr "Ajouter une règle"
 msgid "SecurityOrchestration|Add project full path after @ to following branches: %{branches}"
 msgstr "Ajouter le chemin d'accès complet au projet après @ aux branches suivantes : %{branches}"
 
-msgid "SecurityOrchestration|Add project full path after @ to following exceptions: %{exceptions}"
-msgstr "Ajouter le chemin d'accès complet au projet après @ aux exceptions suivantes : %{exceptions}"
-
 msgid "SecurityOrchestration|Add protected branches"
 msgstr "Ajouter des branches protégées"
 
@@ -55186,8 +55180,8 @@ msgstr "Utilisez une stratégie d'exécution d'analyse pour créer des règles q
 msgid "SecurityOrchestration|Use default mode for scoping"
 msgstr "Utiliser le mode par défaut pour définir la portée"
 
-msgid "SecurityOrchestration|Use the format %{schemaStart}path-to-package@package-version%{schemaEnd}. For multiple packages, separate paths with commas. For example: path/file1.yaml@1.1.1, path/file2.yaml@2.2.2"
-msgstr "Utilisez le format %{schemaStart}path-to-package@package-version%{schemaEnd}. En présence de plusieurs paquets, séparez les chemins d'accès par des virgules. Par exemple : path/file1.yaml@1.1.1, path/file2.yaml@2.2.2"
+msgid "SecurityOrchestration|Use the format %{schemaStart}path-to-package@package-version%{schemaEnd}. For multiple packages, separate paths with commas. For example: npm/lodash@4.17.21, maven/org.apache.commons/commons-lang3@3.12.0, pypi/requests"
+msgstr ""
 
 msgid "SecurityOrchestration|Users can skip pipelines"
 msgstr "Les utilisateurs et utilisatrices peuvent ignorer des pipelines"
@@ -66456,6 +66450,12 @@ msgid "VirtualRegistries|Virtual Registries"
 msgstr "Registres virtuels"
 
 msgid "VirtualRegistry|Maven"
+msgstr ""
+
+msgid "VirtualRegistry|Maven virtual registries"
+msgstr ""
+
+msgid "VirtualRegistry|New maven virtual registry"
 msgstr ""
 
 msgid "VirtualRegistry|Virtual registries"

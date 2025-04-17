@@ -64,6 +64,30 @@ RSpec.describe 'Admin > Users > Impersonation Tokens', :js, feature_category: :s
 
       expect(active_access_tokens).to have_text(personal_access_token.expires_at.strftime('%b %-d'))
     end
+
+    context 'when token has no Last Used IPs' do
+      it 'shows "-" as the value' do
+        visit admin_user_impersonation_tokens_path(user_id: user.username)
+
+        expect(active_access_tokens).to have_selector('td[data-label="Last Used IPs"]', text: '-')
+      end
+    end
+
+    context 'when token has Last Used IPs' do
+      let(:current_ip_address) { '127.0.0.1' }
+
+      before do
+        impersonation_token.last_used_ips << Authn::PersonalAccessTokenLastUsedIp.new(
+          organization: impersonation_token.organization,
+          ip_address: current_ip_address)
+      end
+
+      it 'shows the current_ip_address in last_used_ips' do
+        visit admin_user_impersonation_tokens_path(user_id: user.username)
+
+        expect(active_access_tokens).to have_selector('td[data-label="Last Used IPs"]', text: current_ip_address)
+      end
+    end
   end
 
   describe "inactive tokens" do

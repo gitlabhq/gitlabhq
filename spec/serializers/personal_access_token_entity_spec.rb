@@ -24,6 +24,7 @@ RSpec.describe PersonalAccessTokenEntity do
         description: token.description,
         scopes: token.scopes,
         user_id: token.user_id,
+        last_used_ips: token.last_used_ips,
         revoke_path: expected_revoke_path,
         rotate_path: expected_rotate_path
       ))

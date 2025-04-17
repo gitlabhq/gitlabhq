@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-04-16 16:44\n"
+"PO-Revision-Date: 2025-04-17 10:57\n"
 
 msgid " %{start} to %{end}"
 msgstr "%{start}から%{end}まで"
@@ -94,7 +94,7 @@ msgstr[0] "%d個の承認"
 
 msgid "%d Artifact"
 msgid_plural "%d Artifacts"
-msgstr[0] ""
+msgstr[0] "%d個のアーティファクト"
 
 msgid "%d Module"
 msgid_plural "%d Modules"
@@ -1646,7 +1646,7 @@ msgstr "+ %{numberOfHiddenAssignees} 以上"
 
 msgid "+ %{n} more deployment"
 msgid_plural "+ %{n} more deployments"
-msgstr[0] ""
+msgstr[0] "%{n}件以上のデプロイ"
 
 msgid "+%d more"
 msgid_plural "+%d more"
@@ -13288,9 +13288,6 @@ msgstr "%{agentName}は正常に作成されました"
 msgid "ClusterAgents|%{agentName} successfully created."
 msgstr "%{agentName}は正常に作成されました。"
 
-msgid "ClusterAgents|%{linkStart}View the documentation%{linkEnd} for advanced installation. Ensure you have your access token available."
-msgstr "高度なインストールについては、%{linkStart}ドキュメントを参照%{linkEnd}してください。アクセストークンが利用可能であることを確認してください。"
-
 msgid "ClusterAgents|%{name} successfully deleted"
 msgstr "%{name}が正常に削除されました"
 
@@ -13317,9 +13314,6 @@ msgstr "%{tokenName} 取消済み"
 
 msgid "ClusterAgents|Access tokens"
 msgstr "アクセストークン"
-
-msgid "ClusterAgents|Advanced installation methods"
-msgstr "高度なインストールメソッド"
 
 msgid "ClusterAgents|Agent"
 msgstr "エージェント"
@@ -13513,8 +13507,8 @@ msgstr "Flux がクラスター内にインストールされていた場合、�
 msgid "ClusterAgents|If you're %{linkStart}bootstrapping the agent with Flux%{linkEnd}, you can close this dialog."
 msgstr "%{linkStart}Flux でエージェントをブートストラップする%{linkEnd}場合、このダイアログを閉じても構いません。"
 
-msgid "ClusterAgents|Install using Helm (recommended)"
-msgstr "Helmを使用してインストール(推奨)"
+msgid "ClusterAgents|Install using Helm"
+msgstr ""
 
 msgid "ClusterAgents|Instance wide settings for the GitLab Agent for Kubernetes."
 msgstr "GitLab Agent for Kubernetesのインスタンス全体の設定。"
@@ -16446,7 +16440,7 @@ msgid "Configure feature \"%{name}\""
 msgstr ""
 
 msgid "Configure import sources and settings related to import and export features."
-msgstr "インポートソースとインポートおよびエクスポート機能に関連する設定を構成します。"
+msgstr "ソースのインポートとインポートとエクスポート機能を設定します。"
 
 msgid "Configure it later"
 msgstr "あとで設定する"
@@ -42826,8 +42820,8 @@ msgstr ""
 msgid "PackageRegistry|Manage storage used by package assets"
 msgstr "パッケージアセットで使用されたストレージを管理"
 
-msgid "PackageRegistry|Manually Published"
-msgstr "手動で公開"
+msgid "PackageRegistry|Manually published"
+msgstr ""
 
 msgid "PackageRegistry|Maven"
 msgstr "Maven"
@@ -52681,6 +52675,9 @@ msgstr "拒否リストを編集"
 msgid "ScanResultPolicy|Except"
 msgstr "次を除く"
 
+msgid "ScanResultPolicy|Exceptions that do not require approval"
+msgstr ""
+
 msgid "ScanResultPolicy|Exceptions that require approval"
 msgstr "承認が必要な例外"
 
@@ -53994,9 +53991,6 @@ msgstr "新規ルールを追加する"
 msgid "SecurityOrchestration|Add project full path after @ to following branches: %{branches}"
 msgstr "次のブランチの@の後に、プロジェクトのフルパスを追加してください。%{branches}"
 
-msgid "SecurityOrchestration|Add project full path after @ to following exceptions: %{exceptions}"
-msgstr "次の例外の@の後に、プロジェクトのフルパスを追加してください。%{exceptions}"
-
 msgid "SecurityOrchestration|Add protected branches"
 msgstr "保護ブランチを追加する"
 
@@ -54820,7 +54814,7 @@ msgstr ""
 msgid "SecurityOrchestration|Use default mode for scoping"
 msgstr "スコープの適用にデフォルトモードを使用する"
 
-msgid "SecurityOrchestration|Use the format %{schemaStart}path-to-package@package-version%{schemaEnd}. For multiple packages, separate paths with commas. For example: path/file1.yaml@1.1.1, path/file2.yaml@2.2.2"
+msgid "SecurityOrchestration|Use the format %{schemaStart}path-to-package@package-version%{schemaEnd}. For multiple packages, separate paths with commas. For example: npm/lodash@4.17.21, maven/org.apache.commons/commons-lang3@3.12.0, pypi/requests"
 msgstr ""
 
 msgid "SecurityOrchestration|Users can skip pipelines"
@@ -66031,6 +66025,12 @@ msgid "VirtualRegistries|Virtual Registries"
 msgstr ""
 
 msgid "VirtualRegistry|Maven"
+msgstr ""
+
+msgid "VirtualRegistry|Maven virtual registries"
+msgstr ""
+
+msgid "VirtualRegistry|New maven virtual registry"
 msgstr ""
 
 msgid "VirtualRegistry|Virtual registries"

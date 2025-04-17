@@ -2684,6 +2684,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :terraform
+- :name: todos_destroyer:todos_delete_all_done
+  :worker_name: Todos::DeleteAllDoneWorker
+  :feature_category: :notifications
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :todos_destroyer
 - :name: todos_destroyer:todos_destroyer_confidential_issue
   :worker_name: TodosDestroyer::ConfidentialIssueWorker
   :feature_category: :notifications

@@ -10,7 +10,6 @@ title: GitLab Duo with Amazon Q
 - Tier: Ultimate
 - Add-on: GitLab Duo with Amazon Q
 - Offering: GitLab Self-Managed
-- Status: Preview/Beta
 
 {{< /details >}}
 
@@ -18,6 +17,7 @@ title: GitLab Duo with Amazon Q
 
 - Introduced as [beta](../../policy/development_stages_support.md#beta) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `amazon_q_integration`. Disabled by default.
 - Feature flag `amazon_q_integration` removed in GitLab 17.8.
+- Generally available in GitLab 17.11.
 
 {{< /history >}}
 
@@ -30,12 +30,10 @@ If you have a GitLab Duo Pro or Duo Enterprise add-on, this feature is not avail
 At Re:Invent 2024, Amazon announced the GitLab Duo with Amazon Q integration.
 With this integration, you can automate tasks and increase productivity.
 
-Select GitLab customers have been invited to a test GitLab instance
-so they can start to experiment right away.
-
 ## Set up GitLab Duo with Amazon Q
 
 To access GitLab Duo with Amazon Q, request [access to a lab environment](https://about.gitlab.com/partners/technology-partners/aws/#interest).
+
 Alternately, if you have GitLab 17.8 or later, you can
 [set it up on your GitLab Self-Managed instance](setup.md).
 

@@ -1013,6 +1013,8 @@
   - 1
 - - vulnerabilities_process_bulk_dismissed_events
   - 1
+- - vulnerabilities_process_bulk_redetected_events
+  - 1
 - - vulnerabilities_process_transfer_events
   - 1
 - - vulnerabilities_remove_all_vulnerabilities

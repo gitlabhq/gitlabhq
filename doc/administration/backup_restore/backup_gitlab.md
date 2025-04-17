@@ -1119,7 +1119,7 @@ For self-compiled installations:
    If you are using [a managed identity](../object_storage.md#azure-workload-and-managed-identities), omit `azure_storage_access_key`:
 
    ```ruby
-   gitlab_rails['object_store']['connection'] = {
+   gitlab_rails['backup_upload_connection'] = {
      'provider' => 'AzureRM',
      'azure_storage_account_name' => '<AZURE STORAGE ACCOUNT NAME>',
      'azure_storage_domain' => '<AZURE STORAGE DOMAIN>' # Optional

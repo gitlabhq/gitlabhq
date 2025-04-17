@@ -5,6 +5,8 @@ module Integrations
     extend ActiveSupport::Concern
 
     included do
+      include Gitlab::EncryptedAttribute
+
       belongs_to :integration, inverse_of: self.table_name.to_sym, foreign_key: :integration_id, optional: true
 
       belongs_to :instance_integration,
@@ -21,7 +23,7 @@ module Integrations
     class_methods do
       def encryption_options
         {
-          key: Settings.attr_encrypted_db_key_base_32,
+          key: :db_key_base_32,
           encode: true,
           mode: :per_attribute_iv,
           algorithm: 'aes-256-gcm'

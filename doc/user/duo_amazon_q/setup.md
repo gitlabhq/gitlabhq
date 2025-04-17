@@ -10,7 +10,6 @@ title: Set up GitLab Duo with Amazon Q
 - Tier: Ultimate
 - Add-on: GitLab Duo with Amazon Q
 - Offering: GitLab Self-Managed
-- Status: Preview/Beta
 
 {{< /details >}}
 
@@ -18,6 +17,7 @@ title: Set up GitLab Duo with Amazon Q
 
 - Introduced as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `amazon_q_integration`. Disabled by default.
 - Feature flag `amazon_q_integration` removed in GitLab 17.8.
+- Generally available in GitLab 17.11.
 
 {{< /history >}}
 

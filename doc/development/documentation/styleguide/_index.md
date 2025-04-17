@@ -25,9 +25,10 @@ The GitLab documentation is the SSoT for all product information related to impl
 use, and troubleshooting. The documentation evolves continuously. It is updated with
 new products and features, and with improvements for clarity, accuracy, and completeness.
 
-This policy prevents information silos, making it easier to find information
-about GitLab products. It also informs decisions about the kinds of content
-included in the documentation.
+This policy:
+
+- Prevents information silos and makes it easier to find information about GitLab products.
+- Does not mean that content cannot be duplicated in multiple places in the documentation.
 
 ## Topic types
 
@@ -869,10 +870,10 @@ If you use consecutive numbers, you must disable Markdown rule `029`:
 
 ## Links
 
-Links help the docs adhere to the
-[single source of truth](#documentation-is-the-single-source-of-truth-ssot) principle.
+Links are an important way to help readers find what they need.
 
-However, you should avoid putting too many links on any page. Too many links can hinder readability.
+However, most content is found by searching, and you should avoid putting too many links on any page.
+Too many links can hinder readability.
 
 - Do not duplicate links on the same page. For example, on **Page A**, do not link to **Page B** multiple times.
 - Do not use links in headings. Headings that contain links cause errors.

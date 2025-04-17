@@ -71,9 +71,9 @@ any stage in the process. The technical writing team reviews all
 documentation changes, regardless, and can move content if there is a better
 place for it.
 
-## Avoid duplication
+## Avoid duplication when possible
 
-Do not include the same information in multiple places.
+When possible, do not include the same information in multiple places.
 Link to a single source of truth instead.
 
 For example, if you have code in a repository other than the [primary repositories](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/architecture.md),

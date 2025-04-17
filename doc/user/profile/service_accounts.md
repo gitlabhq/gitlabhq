@@ -175,7 +175,7 @@ The personal access tokens page displays information about the personal access t
 
 You can also manage personal access tokens for service accounts through the API.
 
-- For instance-level service accounts, use the [personal access tokens API](../../api/user_service_accounts.md).
+- For instance-level service accounts, use the [personal access tokens API](../../api/personal_access_tokens.md).
 - For group-level service accounts, use the [group service accounts API](../../api/group_service_accounts.md).
 
 To view the personal access tokens page for a service account:

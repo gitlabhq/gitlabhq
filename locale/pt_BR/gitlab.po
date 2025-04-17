@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: pt-BR\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-04-16 16:48\n"
+"PO-Revision-Date: 2025-04-17 10:57\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} até %{end}"
@@ -693,7 +693,7 @@ msgid "%{chartTitle} no data series"
 msgstr "%{chartTitle} sem série de dados"
 
 msgid "%{child_reference} has already been added to parent %{parent_reference}."
-msgstr ""
+msgstr "%{child_reference} já foi adicionado ao pai %{parent_reference}."
 
 msgid "%{codeStart}$%{codeEnd} will be treated as the start of a reference to another variable."
 msgstr "%{codeStart}$%{codeEnd} será tratado como o início de uma referência a outra variável."
@@ -1088,7 +1088,7 @@ msgid "%{labelStart}Unmodified response:%{labelEnd} %{headers}"
 msgstr "%{labelStart}Resposta não modificada:%{labelEnd} %{headers}"
 
 msgid "%{labelStart}Validity check:%{labelEnd} %{validityCheck}"
-msgstr ""
+msgstr "%{labelStart}Verificação de validade:%{labelEnd} %{validityCheck}"
 
 msgid "%{label_for_message} unavailable"
 msgstr "%{label_for_message} indisponível"
@@ -2243,7 +2243,7 @@ msgid "A rule must have at least a minimum access role for push or delete."
 msgstr "Uma regra deve ter, pelo menos, uma função de acesso mínima para push ou exclusão."
 
 msgid "A rule requires at least the Maintainer role for either push or delete."
-msgstr ""
+msgstr "Uma regra exige a função de Mantenedor, no mínimo, para fazer push ou excluir."
 
 msgid "A sign-in to your account has been made from the following IP address: %{ip}"
 msgstr "Um login foi feito na sua conta a partir do seguinte endereço IP: %{ip}"
@@ -2492,7 +2492,7 @@ msgid "API key"
 msgstr "Chave de API"
 
 msgid "API security"
-msgstr ""
+msgstr "Segurança da API"
 
 msgid "API token of the Packagist server."
 msgstr "Token da API do servidor do Packagist."
@@ -3927,7 +3927,7 @@ msgid "AdherenceReport|There was an error loading adherence report."
 msgstr "Ocorreu um erro ao carregar o relatório de aderência."
 
 msgid "AdherenceReport|We are replacing the standards adherence report with the compliance status report, which includes new features to enhance your compliance workflow."
-msgstr ""
+msgstr "Estamos substituindo o relatório de aderência às normas pelo relatório de status de conformidade, que inclui novos recursos para melhorar seu fluxo de trabalho de conformidade."
 
 msgid "Adjust how frequently the GitLab UI polls for updates."
 msgstr "Ajuste a frequência com que as pesquisas de IU do GitLab são atualizadas."
@@ -3978,7 +3978,7 @@ msgid "AdminAIPoweredFeatures|An error occurred while loading the AI feature set
 msgstr "Ocorreu um erro ao carregar as configurações do recurso de IA. Tente novamente."
 
 msgid "AdminAIPoweredFeatures|Apply to all sub-features"
-msgstr ""
+msgstr "Aplicar a todos os sub-recursos"
 
 msgid "AdminAIPoweredFeatures|Assists developers by providing real-time code completions and recommendations. %{linkStart}Learn more.%{linkEnd}"
 msgstr "Auxilia os desenvolvedores fornecendo preenchimentos e recomendações de código em tempo real. %{linkStart}Saiba mais.%{linkEnd}"
@@ -4275,16 +4275,16 @@ msgid "AdminSelfHostedModels|An error occurred while loading the self-hosted mod
 msgstr "Ocorreu um erro ao carregar o modelo auto-hospedado. Por favor, tente novamente."
 
 msgid "AdminSelfHostedModels|An error occurred while updating the %{mainFeature} sub-feature settings. Please try again."
-msgstr ""
+msgstr "Ocorreu um erro ao atualizar as configurações dos sub-recursos de %{mainFeature}. Por favor, tente novamente."
 
 msgid "AdminSelfHostedModels|An error occurred while updating the self-hosted model, please try again."
 msgstr "Ocorreu um erro ao atualizar o modelo auto-hospedado. Por favor, tente novamente."
 
 msgid "AdminSelfHostedModels|Apply to all %{mainFeature} sub-features"
-msgstr ""
+msgstr "Aplicar a todos os sub-recursos de %{mainFeature}"
 
 msgid "AdminSelfHostedModels|Assign a setting to the %{subFeatureTitle} sub-feature before applying to all"
-msgstr ""
+msgstr "Atribuir uma configuração ao sub-recurso %{subFeatureTitle} antes de aplicar a todos"
 
 msgid "AdminSelfHostedModels|Create self-hosted model"
 msgstr "Criar modelo auto-hospedado"
@@ -5691,13 +5691,13 @@ msgid "AiPowered|Always off"
 msgstr "Sempre desativado"
 
 msgid "AiPowered|Amazon Q Setup"
-msgstr ""
+msgstr "Configuração do Amazon Q"
 
 msgid "AiPowered|Assign seats"
 msgstr "Atribuir assentos"
 
 msgid "AiPowered|Automatic Code Reviews"
-msgstr ""
+msgstr "Revisões automáticas de código"
 
 msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr "Ao ativar esse recurso, você concorda com o %{linkStart}Contrato de teste do GitLab%{linkEnd}."
@@ -5745,10 +5745,10 @@ msgid "AiPowered|Experiment and beta features"
 msgstr "Recursos experimentais e beta"
 
 msgid "AiPowered|Expire conversation based on time conversation was created."
-msgstr ""
+msgstr "A expiração da conversa se baseia no horário de criação dela."
 
 msgid "AiPowered|Expire conversation based on time conversation was last updated."
-msgstr ""
+msgstr "A expiração da conversa se baseia no horário em que ela foi atualizada pela última vez."
 
 msgid "AiPowered|Features are available. However, any group, subgroup, or project can turn them off."
 msgstr "Recursos estão disponíveis. No entanto, qualquer grupo, subgrupo ou projeto pode desativá-los."
@@ -5760,13 +5760,13 @@ msgid "AiPowered|Features are not available. However, any group, subgroup, or pr
 msgstr "Recursos não estão disponíveis. No entanto, qualquer grupo, subgrupo ou projeto pode ativá-los."
 
 msgid "AiPowered|GitLab Duo Chat conversation expiration"
-msgstr ""
+msgstr "Expiração das conversas do GitLab Duo Chat"
 
 msgid "AiPowered|GitLab Duo seat assignment is now located in GitLab Duo settings."
 msgstr "Agora, a atribuição de assentos do GitLab Duo está localizada nas configurações do GitLab Duo."
 
 msgid "AiPowered|GitLab Duo with Amazon Q"
-msgstr ""
+msgstr "GitLab Duo com Amazon Q"
 
 msgid "AiPowered|Help make the next releases of GitLab better. As a member of the GitLab Early Access Program, you can take part in shaping GitLab by letting us know what you think of GitLab Duo experimental and beta features. How does this program work?"
 msgstr "Ajude a melhorar as próximas versões do GitLab. Como membro do GitLab Early Access Program, você pode participar da formação do GitLab nos contando o que acha dos recursos experimentais e beta do GitLab Duo. Como esse programa funciona?"
@@ -6454,7 +6454,7 @@ msgid "Amazon Q"
 msgstr "Amazon Q"
 
 msgid "Amazon Q connectivity check failed: %{message}"
-msgstr ""
+msgstr "Falha na verificação de conectividade do Amazon Q: %{message}"
 
 msgid "AmazonQ|Active cloud connector token not found."
 msgstr "O token do conector de nuvem ativo não foi encontrado."
@@ -6610,7 +6610,7 @@ msgid "AmazonQ|Remove IAM role's ARN"
 msgstr "Remover o ARN da função de IAM"
 
 msgid "AmazonQ|Request ID: %{request_id}"
-msgstr ""
+msgstr "ID da requisição: %{request_id}"
 
 msgid "AmazonQ|Review merge request for code quality and security issues"
 msgstr "Revisar a solicitação de mesclagem em busca de issues de segurança e qualidade do código"
@@ -7607,13 +7607,13 @@ msgid "Appearance was successfully updated."
 msgstr "A aparência foi atualizada com sucesso."
 
 msgid "AppearanceSettings|Changes must be saved to appear."
-msgstr ""
+msgstr "Para aparecerem, as mudanças precisam ser salvas."
 
 msgid "AppearanceSettings|Last edit"
 msgstr "Última edição"
 
 msgid "AppearanceSettings|Preview active settings:"
-msgstr ""
+msgstr "Pré-visualizar configurações ativas:"
 
 msgid "Append the hostname of your GitLab instance to the status check name."
 msgstr "Adicione o nome do host da sua instância do GitLab ao nome da verificação de status."
@@ -8265,7 +8265,7 @@ msgid "Archived in this version"
 msgstr "Arquivado nesta versão"
 
 msgid "Archiving projects"
-msgstr ""
+msgstr "Arquivando projetos"
 
 msgid "Archiving the project makes it entirely read-only. It is hidden from the dashboard and doesn't display in searches. %{strong_start}The repository cannot be committed to, and no issues, comments, or other entities can be created.%{strong_end} %{link_start}Learn more.%{link_end}"
 msgstr "O arquivamento do projeto a torna totalmente somente leitura. Ele fica oculto no painel e não é exibido nas pesquisas. %{strong_start}O repositório não pode ser comprometido e nenhum problema, comentário ou outras entidades podem ser criados.%{strong_end} %{link_start}Saiba mais.%{link_end}"
@@ -11484,7 +11484,7 @@ msgid "CI/CD configuration file"
 msgstr "Arquivo de configuração CI/CD"
 
 msgid "CI/CD job token"
-msgstr ""
+msgstr "Token de tarefa CI/CD"
 
 msgid "CI/CD job token permissions for '%{projectName}' were successfully updated."
 msgstr "As permissões de token de tarefa CI/CD para '%{projectName}' foram atualizadas com sucesso."
@@ -11493,7 +11493,7 @@ msgid "CI/CD limits"
 msgstr "Limites de CI/CD"
 
 msgid "CI/CD pipeline configuration"
-msgstr ""
+msgstr "Configuração de pipeline CI/CD"
 
 msgid "CICDAnalytics|%{percent}%{percentSymbol}"
 msgstr "%{percent}%{percentSymbol}"
@@ -11996,10 +11996,10 @@ msgid "Cannot assign a confidential epic to a non-confidential issue. Make the i
 msgstr "Não é possível atribuir um épico confidencial a um problema não confidencial. Torne o problema confidencial e tente novamente"
 
 msgid "Cannot assign a confidential parent item to a non-confidential child item. Make the child item confidential and try again."
-msgstr ""
+msgstr "Não é possível atribuir um item pai confidencial a um item filho não confidencial. Torne o item filho confidencial e tente novamente."
 
 msgid "Cannot assign this child type to parent type."
-msgstr ""
+msgstr "Não é possível atribuir esse tipo de item filho a um tipo de pai."
 
 msgid "Cannot be merged automatically"
 msgstr "Não pode ser mesclado automaticamente"
@@ -12434,7 +12434,7 @@ msgid "Checking group path availability…"
 msgstr "Verificando a disponibilidade do caminho do grupo…"
 
 msgid "Checking if %{message} failed: %{error}"
-msgstr ""
+msgstr "Verificando se houve falha de %{message}: %{error}"
 
 msgid "Checking if merge request can be merged…"
 msgstr "Verificando se a solicitação de mesclagem pode ser realizada…"
@@ -13504,9 +13504,6 @@ msgstr "%{agentName} criado com sucesso"
 msgid "ClusterAgents|%{agentName} successfully created."
 msgstr "%{agentName} criado com sucesso."
 
-msgid "ClusterAgents|%{linkStart}View the documentation%{linkEnd} for advanced installation. Ensure you have your access token available."
-msgstr "%{linkStart}Veja a documentação%{linkEnd} para instalação avançada. Certifique-se de ter seu token de acesso disponível."
-
 msgid "ClusterAgents|%{name} successfully deleted"
 msgstr "%{name} excluído com sucesso"
 
@@ -13533,9 +13530,6 @@ msgstr "%{tokenName} revogado"
 
 msgid "ClusterAgents|Access tokens"
 msgstr "Tokens de acesso"
-
-msgid "ClusterAgents|Advanced installation methods"
-msgstr "Métodos avançados de instalação"
 
 msgid "ClusterAgents|Agent"
 msgstr "Agente"
@@ -13729,8 +13723,8 @@ msgstr "Se o Flux estiver instalado no cluster, você poderá instalar e registr
 msgid "ClusterAgents|If you're %{linkStart}bootstrapping the agent with Flux%{linkEnd}, you can close this dialog."
 msgstr "Se você estiver %{linkStart}inicializando o agente com o Flux%{linkEnd}, poderá fechar esta caixa de diálogo."
 
-msgid "ClusterAgents|Install using Helm (recommended)"
-msgstr "Instale usando o Helm (recomendado)"
+msgid "ClusterAgents|Install using Helm"
+msgstr ""
 
 msgid "ClusterAgents|Instance wide settings for the GitLab Agent for Kubernetes."
 msgstr "Configurações de toda a instância para o Agente do GitLab para Kubernetes."
@@ -14527,10 +14521,10 @@ msgid "CodeSuggestions|Enterprise"
 msgstr "Enterprise"
 
 msgid "CodeSuggestions|Get started with GitLab Duo Pro today by %{duo_ide_setup_page_link_start}setting up your IDE for success%{duo_ide_setup_page_link_end}."
-msgstr ""
+msgstr "%{duo_ide_setup_page_link_start}Configure seu IDE para o sucesso%{duo_ide_setup_page_link_end} e comece a usar o GitLab Duo Pro hoje mesmo."
 
 msgid "CodeSuggestions|Get started with GitLab Duo Pro today."
-msgstr ""
+msgstr "Comece a usar o GitLab Duo Pro hoje mesmo."
 
 msgid "CodeSuggestions|GitLab Duo Enterprise"
 msgstr "GitLab Duo Enterprise"
@@ -14575,7 +14569,7 @@ msgid "CodeSuggestions|Seats used"
 msgstr "Estações usadas"
 
 msgid "CodeSuggestions|See Duo Pro in action in a Code Suggestions %{code_suggestions_demo_link_start}click-through demo%{code_suggestions_demo_link_end}."
-msgstr ""
+msgstr "Veja o Duo Pro em ação e uma %{code_suggestions_demo_link_start}demonstração interativa%{code_suggestions_demo_link_end} das Sugestões de código."
 
 msgid "CodeSuggestions|Subscription"
 msgstr "Assinatura"
@@ -14611,16 +14605,16 @@ msgid "CodeSuggestions|Welcome to GitLab Duo Pro!"
 msgstr "Boas-vindas ao GitLab Duo Pro!"
 
 msgid "CodeSuggestions|You have been assigned a GitLab Duo Pro seat"
-msgstr ""
+msgstr "Um assento do GitLab Duo Pro foi atribuído a você"
 
 msgid "CodeSuggestions|You have successfully added a license that activates on %{date}."
 msgstr "Você adicionou com sucesso uma licença que será ativada em%{date}."
 
 msgid "CodeSuggestions|You now have access to GitLab Duo Pro, which features %{code_suggestions_link_start}Code Suggestions%{code_suggestions_link_end} and %{chat_link_start}Chat%{chat_link_end}, which boost your efficiency and effectiveness by reducing the time required to write and understand code."
-msgstr ""
+msgstr "Agora você tem acesso ao GitLab Duo Pro, que inclui %{code_suggestions_link_start}Sugestões de código%{code_suggestions_link_end} e %{chat_link_start}Bate-papo%{chat_link_end}. Esses recursos aumentam sua eficiência, reduzindo o tempo necessário para escrever e entender o código."
 
 msgid "CodeSuggestions|You now have access to GitLab Duo Pro, which features Code Suggestions and Chat, which boost your efficiency and effectiveness by reducing the time required to write and understand code."
-msgstr ""
+msgstr "Agora você tem acesso ao GitLab Duo Pro, que inclui Sugestões de código e Bate-papo. Esses recursos aumentam sua eficiência, reduzindo o tempo necessário para escrever e entender o código."
 
 msgid "CodeSuggestions|Your GitLab Duo Pro trial has expired"
 msgstr "Sua avaliação do GitLab Duo Pro expirou"
@@ -14649,7 +14643,7 @@ msgid "CodeownersValidation|Entries with spaces"
 msgstr "Entradas com espaços"
 
 msgid "CodeownersValidation|Group has no members with permission to approve merge requests"
-msgstr ""
+msgstr "O grupo não tem membros com permissão para aprovar as solicitações de mesclagem"
 
 msgid "CodeownersValidation|Group needs at least Developer access to the project for its members to approve merge requests"
 msgstr "O grupo precisa de acesso de Desenvolvedor ao projeto, no mínimo, para seus membros aprovarem solicitações de mesclagem"
@@ -15215,7 +15209,7 @@ msgid "Compliance Center|Frameworks"
 msgstr "Estruturas"
 
 msgid "Compliance Center|Report and manage compliance status, violations, and compliance frameworks for the group. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
+msgstr "Reporte e gerencie o status de conformidade, as violações e os frameworks de conformidade para o grupo. %{linkStart}Saiba mais%{linkEnd}."
 
 msgid "Compliance Center|Violations"
 msgstr "Violações"
@@ -15233,7 +15227,7 @@ msgid "Compliance requirement control successfully deleted"
 msgstr "O controle do requisito de conformidade foi excluído com sucesso"
 
 msgid "Compliance requirement status successfully refreshed."
-msgstr ""
+msgstr "O status do requisito de conformidade foi atualizado com sucesso."
 
 msgid "Compliance requirement successfully deleted"
 msgstr "O requisito de conformidade foi excluído com sucesso"
@@ -15248,7 +15242,7 @@ msgid "ComplianceFrameworksReport|Compliance framework ID"
 msgstr ""
 
 msgid "ComplianceFrameworksReport|Control ID copied to clipboard."
-msgstr ""
+msgstr "ID do controle copiada para a área de transferência."
 
 msgid "ComplianceFrameworksReport|Controls"
 msgstr "Controles"
@@ -15365,7 +15359,7 @@ msgid "ComplianceFrameworks|Compliance frameworks that have a scoped policy can'
 msgstr "Não é possível excluir frameworks de conformidade que têm uma política com escopo"
 
 msgid "ComplianceFrameworks|Compliance pipeline configuration (deprecated)"
-msgstr ""
+msgstr "Configuração do pipeline de conformidade (descontinuado)"
 
 msgid "ComplianceFrameworks|Compliance pipeline configuration (optional)"
 msgstr "Configuração do pipeline de conformidade (opcional)"
@@ -15404,13 +15398,13 @@ msgid "ComplianceFrameworks|Description"
 msgstr "Descrição"
 
 msgid "ComplianceFrameworks|Description (max %{maxLength} characters)"
-msgstr ""
+msgstr "Descrição (máx. %{maxLength} caracteres)"
 
 msgid "ComplianceFrameworks|Description is required"
 msgstr "A descrição é obrigatória"
 
 msgid "ComplianceFrameworks|Description is required and must be less than %{maxLength} characters"
-msgstr ""
+msgstr "A descrição é obrigatória e deve ter menos de %{maxLength} caracteres"
 
 msgid "ComplianceFrameworks|Edit compliance framework"
 msgstr "Editar estrutura de conformidade"
@@ -15461,7 +15455,7 @@ msgid "ComplianceFrameworks|Name"
 msgstr "Nome"
 
 msgid "ComplianceFrameworks|Name (max %{maxLength} characters)"
-msgstr ""
+msgstr "Nome (máx. %{maxLength} caracteres)"
 
 msgid "ComplianceFrameworks|Name is required"
 msgstr "O nome é obrigatório"
@@ -15497,7 +15491,7 @@ msgid "ComplianceFrameworks|No projects found that match filters"
 msgstr "Nenhum projeto encontrado que corresponda aos filtros"
 
 msgid "ComplianceFrameworks|No projects selected"
-msgstr ""
+msgstr "Nenhum projeto selecionado"
 
 msgid "ComplianceFrameworks|Note: This report was truncated to adhere to filesize limits of %{size}."
 msgstr "Observação: este relatório foi truncado para aderir aos limites de tamanho de arquivo de %{size}."
@@ -15572,7 +15566,7 @@ msgid "ComplianceFrameworks|Set compliance pipeline configuration for projects t
 msgstr "Defina a configuração do pipeline de conformidade para projetos que usam essa estrutura. %{linkStart}Como faço para criar a configuração?%{linkEnd}"
 
 msgid "ComplianceFrameworks|Show only selected"
-msgstr ""
+msgstr "Mostrar apenas os selecionados"
 
 msgid "ComplianceFrameworks|Subgroup"
 msgstr "Subgrupo"
@@ -15635,10 +15629,10 @@ msgid "ComplianceFramework|After a framework is added to %{linkStart}%{groupName
 msgstr "Depois que uma estrutura for adicionada a %{linkStart}%{groupName}%{linkEnd}, ela aparecerá aqui."
 
 msgid "ComplianceFramework|Create a new compliance framework from scratch to define your compliance requirements."
-msgstr ""
+msgstr "Crie um novo framework de conformidade do zero para definir seus requisitos de conformidade."
 
 msgid "ComplianceFramework|Create blank framework"
-msgstr ""
+msgstr "Criar framework em branco"
 
 msgid "ComplianceFramework|Create new framework"
 msgstr "Criar novo framework"
@@ -15647,19 +15641,19 @@ msgid "ComplianceFramework|Edit compliance framework"
 msgstr "Editar estrutura de conformidade"
 
 msgid "ComplianceFramework|Failed to import framework file."
-msgstr ""
+msgstr "Falha ao importar arquivo de framework."
 
 msgid "ComplianceFramework|Framework imported successfully."
-msgstr ""
+msgstr "Framework importado com sucesso."
 
 msgid "ComplianceFramework|Import an existing compliance framework from a JSON file."
-msgstr ""
+msgstr "Importe um framework de conformidade existente a partir de um arquivo JSON."
 
 msgid "ComplianceFramework|Import framework"
 msgstr "Importar framework"
 
 msgid "ComplianceFramework|Looking for a template? Need an example JSON schema? Look through our %{linkStart}examples here.%{linkEnd}"
-msgstr ""
+msgstr "Está procurando um modelo? Precisa de um exemplo de esquema JSON? Confira nossos %{linkStart}exemplos aqui.%{linkEnd}"
 
 msgid "ComplianceFramework|New compliance framework"
 msgstr "Nova estrutura de conformidade"
@@ -15668,7 +15662,7 @@ msgid "ComplianceFramework|No compliance frameworks are set up yet"
 msgstr "Nenhuma estrutura de conformidade está configurada ainda"
 
 msgid "ComplianceFramework|Unable to determine the correct upload URL. Please try again."
-msgstr ""
+msgstr "Não foi possível determinar o URL de envio correto. Por favor, tente novamente."
 
 msgid "ComplianceManagement|Framework"
 msgstr "Framework"
@@ -15817,16 +15811,16 @@ msgid "ComplianceStandardsAdherence|A rule is configured to require two approval
 msgstr "Uma regra é configurada para exigir duas aprovações."
 
 msgid "ComplianceStandardsAdherence|Add adequate administrators"
-msgstr ""
+msgstr "Adicionar administradores adequados"
 
 msgid "ComplianceStandardsAdherence|Add multiple administrators"
-msgstr ""
+msgstr "Adicionar vários administradores"
 
 msgid "ComplianceStandardsAdherence|Adjust permissions to control who can merge changes to the default branch."
-msgstr ""
+msgstr "Ajuste as permissões para controlar quem pode mesclar mudanças na ramificação padrão."
 
 msgid "ComplianceStandardsAdherence|Adjust permissions to control who can push directly to the default branch."
-msgstr ""
+msgstr "Ajuste as permissões para controlar quem pode fazer push diretamente para a ramificação padrão."
 
 msgid "ComplianceStandardsAdherence|All attached frameworks"
 msgstr ""
@@ -15838,10 +15832,10 @@ msgid "ComplianceStandardsAdherence|At least two approvals"
 msgstr "Pelo menos duas aprovações"
 
 msgid "ComplianceStandardsAdherence|Change your project visibility settings to comply with organizational security requirements."
-msgstr ""
+msgstr "Mude as configurações de visibilidade do seu projeto para cumprir os requisitos de segurança organizacional."
 
 msgid "ComplianceStandardsAdherence|Change your project visibility to private or internal as per security requirements."
-msgstr ""
+msgstr "Mude a visibilidade do seu projeto para privada ou interna conforme os requisitos de segurança."
 
 msgid "ComplianceStandardsAdherence|Check"
 msgstr "Verificação"
@@ -15850,115 +15844,115 @@ msgid "ComplianceStandardsAdherence|Checks"
 msgstr "Verificações"
 
 msgid "ComplianceStandardsAdherence|Checks if project is archived (typically false is compliant)."
-msgstr ""
+msgstr "Verifica se o projeto está arquivado (em geral, falso é compatível)."
 
 msgid "ComplianceStandardsAdherence|Checks if project is marked for deletion (false is compliant)."
-msgstr ""
+msgstr "Verifica se o projeto está marcado para exclusão (falso é compatível)."
 
 msgid "ComplianceStandardsAdherence|Configure DAST in your CI/CD pipeline to automatically test your application for security issues."
-msgstr ""
+msgstr "Configure o DAST no seu pipeline de CI/CD para testar automaticamente se há issues de segurança no seu aplicativo."
 
 msgid "ComplianceStandardsAdherence|Configure DAST scanning"
 msgstr "Configurar a verificação DAST"
 
 msgid "ComplianceStandardsAdherence|Configure Infrastructure as Code scanning to detect misconfigurations before deployment."
-msgstr ""
+msgstr "Configure a verificação da Infraestrutura como Código para detectar problemas de configuração antes da implantação."
 
 msgid "ComplianceStandardsAdherence|Configure SAST scanning"
-msgstr ""
+msgstr "Configurar a verificação SAST"
 
 msgid "ComplianceStandardsAdherence|Configure access controls to limit who can access build artifacts and outputs."
-msgstr ""
+msgstr "Configure os controles de acesso para limitar quem pode acessar artefatos e saídas de construção."
 
 msgid "ComplianceStandardsAdherence|Configure access restrictions"
-msgstr ""
+msgstr "Configurar restrições de acesso"
 
 msgid "ComplianceStandardsAdherence|Configure approval requirements"
 msgstr "Configurar os requisitos de aprovação"
 
 msgid "ComplianceStandardsAdherence|Configure branch protection to prevent accidental or unauthorized branch deletion."
-msgstr ""
+msgstr "Configure a proteção da ramificação para evitar a exclusão acidental ou não autorizada de ramificações."
 
 msgid "ComplianceStandardsAdherence|Configure branch protection to prevent direct pushes to the default branch."
-msgstr ""
+msgstr "Configure a proteção da ramificação para evitar pushes diretos para a ramificação padrão."
 
 msgid "ComplianceStandardsAdherence|Configure branch protection to prevent force pushes to repository branches."
-msgstr ""
+msgstr "Configure a proteção da ramificação para evitar pushes forçados para as ramificações do repositório."
 
 msgid "ComplianceStandardsAdherence|Configure branch update requirements"
-msgstr ""
+msgstr "Configurar os requisitos de atualização da ramificação"
 
 msgid "ComplianceStandardsAdherence|Configure code owners to ensure appropriate review of specific code sections."
-msgstr ""
+msgstr "Configure os proprietários de código para garantir a revisão adequada de seções específicas do código."
 
 msgid "ComplianceStandardsAdherence|Configure issue tracking to organize and prioritize project work."
-msgstr ""
+msgstr "Configure o rastreamento de issues para organizar e priorizar o trabalho do projeto."
 
 msgid "ComplianceStandardsAdherence|Configure job token scope"
-msgstr ""
+msgstr "Configure o escopo do token de tarefa."
 
 msgid "ComplianceStandardsAdherence|Configure linear history"
-msgstr ""
+msgstr "Configurar o histórico linear"
 
 msgid "ComplianceStandardsAdherence|Configure merge permissions"
-msgstr ""
+msgstr "Configurar as permissões de mesclagem"
 
 msgid "ComplianceStandardsAdherence|Configure merge requests to require approval from designated code owners."
-msgstr ""
+msgstr "Configure as solicitações de mesclagem para garantir a aprovação dos proprietários de código designados."
 
 msgid "ComplianceStandardsAdherence|Configure merge requests to reset approvals when new commits are added."
-msgstr ""
+msgstr "Configure as solicitações de mesclagem para redefinir as aprovações quando novos commits forem adicionados."
 
 msgid "ComplianceStandardsAdherence|Configure organization settings to require Multi-Factor Authentication for all users."
-msgstr ""
+msgstr "Defina as configurações da organização para exigir a autenticação multifatorial para todos os usuários."
 
 msgid "ComplianceStandardsAdherence|Configure pipeline settings to restrict public access to CI/CD pipelines."
-msgstr ""
+msgstr "Defina as configurações do pipeline para restringir o acesso público a pipelines de CI/CD."
 
 msgid "ComplianceStandardsAdherence|Configure project settings to allow only maintainers to create CI/CD variables."
-msgstr ""
+msgstr "Defina as configurações do projeto para permitir que somente mantenedores criem variáveis de CI/CD."
 
 msgid "ComplianceStandardsAdherence|Configure push permissions"
-msgstr ""
+msgstr "Configurar permissões de push"
 
 msgid "ComplianceStandardsAdherence|Configure push rules to prevent sensitive information from being committed."
-msgstr ""
+msgstr "Configure regras de push para evitar que informações sensíveis sejam consolidadas."
 
 msgid "ComplianceStandardsAdherence|Configure settings to prevent editing of merge request approval rules."
-msgstr ""
+msgstr "Defina as configurações para evitar a edição das regras de aprovação de solicitações de mesclagem."
 
 msgid "ComplianceStandardsAdherence|Configure status checks"
-msgstr ""
+msgstr "Configurar verificações de status"
 
 msgid "ComplianceStandardsAdherence|Configure status page"
-msgstr ""
+msgstr "Configurar página de status"
 
 msgid "ComplianceStandardsAdherence|Configure strict permissions"
-msgstr ""
+msgstr "Configurar permissões rigorosas"
 
 msgid "ComplianceStandardsAdherence|Configure your project settings to prevent merge request authors from approving their own changes."
-msgstr ""
+msgstr "Defina as configurações do projeto para evitar que os autores de solicitações de mesclagem aprovem as próprias alterações."
 
 msgid "ComplianceStandardsAdherence|Configure your project to require all contributors to use Multi-Factor Authentication."
-msgstr ""
+msgstr "Configure seu projeto para exigir que todos os colaboradores usem a autenticação multifatorial."
 
 msgid "ComplianceStandardsAdherence|Configure your project to require all discussions be resolved before merging."
-msgstr ""
+msgstr "Configure seu projeto para exigir que todas as discussões sejam resolvidas antes da mesclagem."
 
 msgid "ComplianceStandardsAdherence|Configure your project to require at least two approvals on merge requests to improve code quality and security."
-msgstr ""
+msgstr "Configure seu projeto para exigir pelo menos duas aprovações nas solicitações de mesclagem de forma a melhorar a qualidade e a segurança do código."
 
 msgid "ComplianceStandardsAdherence|Configure your project to reset approvals when new changes are pushed."
-msgstr ""
+msgstr "Configure seu projeto para redefinir as aprovações quando novas mudanças forem enviadas por push."
 
 msgid "ComplianceStandardsAdherence|Controls whether users can merge changes to the default branch."
-msgstr ""
+msgstr "Controla se os usuários podem mesclar mudanças na ramificação padrão."
 
 msgid "ComplianceStandardsAdherence|Controls whether users can push directly to the default branch."
-msgstr ""
+msgstr "Controla se os usuários podem fazer push diretamente para a ramificação padrão."
 
 msgid "ComplianceStandardsAdherence|Create valid CI configuration"
-msgstr ""
+msgstr "Criar configuração de CI válida"
 
 msgid "ComplianceStandardsAdherence|DAST scan"
 msgstr "Escaneamento DAST"
@@ -15973,10 +15967,10 @@ msgid "ComplianceStandardsAdherence|Date since last status change"
 msgstr "Data desde a última alteração de status"
 
 msgid "ComplianceStandardsAdherence|Disable branch deletion"
-msgstr ""
+msgstr "Desativar exclusão de ramificação"
 
 msgid "ComplianceStandardsAdherence|Disable force pushing"
-msgstr ""
+msgstr "Desativar push forçado"
 
 msgid "ComplianceStandardsAdherence|Enable DAST scanner"
 msgstr "Ativar o escaneamento DAST"
@@ -15991,205 +15985,205 @@ msgid "ComplianceStandardsAdherence|Enable SAST scanner in the project's securit
 msgstr "Ative o escaneamento SAST na configuração de segurança do projeto para cumprir esse requisito."
 
 msgid "ComplianceStandardsAdherence|Enable SSO authentication"
-msgstr ""
+msgstr "Ativar autenticação de SSO"
 
 msgid "ComplianceStandardsAdherence|Enable Terraform integration"
-msgstr ""
+msgstr "Ativar integração do Terraform"
 
 msgid "ComplianceStandardsAdherence|Enable approval reset on commit"
-msgstr ""
+msgstr "Ativar redefinição da aprovação no commit"
 
 msgid "ComplianceStandardsAdherence|Enable branch protection"
-msgstr ""
+msgstr "Ativar proteção da ramificação"
 
 msgid "ComplianceStandardsAdherence|Enable code quality scanning"
 msgstr "Ativar a verificação de qualidade do código"
 
 msgid "ComplianceStandardsAdherence|Enable code quality scanning to improve code maintainability and reduce technical debt."
-msgstr ""
+msgstr "Ative a verificação de qualidade do código para melhorar a capacidade de manutenção do código e reduzir a dívida técnica."
 
 msgid "ComplianceStandardsAdherence|Enable dependency scanning"
 msgstr "Ativar a verificação de dependência"
 
 msgid "ComplianceStandardsAdherence|Enable dependency scanning to automatically detect vulnerable libraries in your application."
-msgstr ""
+msgstr "Ative a verificação de dependência para detectar automaticamente as bibliotecas vulneráveis no seu aplicativo."
 
 msgid "ComplianceStandardsAdherence|Enable error tracking"
-msgstr ""
+msgstr "Ativar o rastreamento de erros"
 
 msgid "ComplianceStandardsAdherence|Enable issue tracking"
-msgstr ""
+msgstr "Ativar o rastreamento de issues"
 
 msgid "ComplianceStandardsAdherence|Enable license compliance scanning"
-msgstr ""
+msgstr "Ativar a verificação de conformidade da licença"
 
 msgid "ComplianceStandardsAdherence|Enable organization-wide MFA"
-msgstr ""
+msgstr "Ativar a MFA em toda a organização"
 
 msgid "ComplianceStandardsAdherence|Enable push protection"
-msgstr ""
+msgstr "Ativar a proteção de push"
 
 msgid "ComplianceStandardsAdherence|Enable reset approvals on push"
-msgstr ""
+msgstr "Ativar as aprovações de redefinição em push"
 
 msgid "ComplianceStandardsAdherence|Enable stale branch cleanup"
-msgstr ""
+msgstr "Ativar a limpeza de ramificações obsoletas"
 
 msgid "ComplianceStandardsAdherence|Enable version control"
-msgstr ""
+msgstr "Ativar o controle de versão"
 
 msgid "ComplianceStandardsAdherence|Enforce MFA for contributors"
-msgstr ""
+msgstr "Forçar a MFA para colaboradores"
 
 msgid "ComplianceStandardsAdherence|Ensure each repository has at least two administrators assigned for redundancy."
-msgstr ""
+msgstr "É importante que, pelo menos, dois administradores sejam atribuídos a cada repositório, por uma questão de redundância."
 
 msgid "ComplianceStandardsAdherence|Ensure version control is properly configured for your project."
-msgstr ""
+msgstr "Verifique se o controle de versão foi configurado de forma adequada para seu projeto."
 
 msgid "ComplianceStandardsAdherence|Ensure your project has an appropriate number of administrators assigned."
-msgstr ""
+msgstr "Verifique se um número adequado de administradores foi atribuído ao seu projeto."
 
 msgid "ComplianceStandardsAdherence|Ensures API security scanning is configured and running in the project pipelines."
-msgstr ""
+msgstr "Garante que a verificação de segurança de API esteja configurada e em execução nos pipelines do projeto."
 
 msgid "ComplianceStandardsAdherence|Ensures CI/CD job token scope restrictions are enabled."
-msgstr ""
+msgstr "Garante que as restrições do escopo do token de tarefa CI/CD estejam ativadas."
 
 msgid "ComplianceStandardsAdherence|Ensures Dynamic Application Security Testing (DAST) is configured and running in the project pipelines."
-msgstr ""
+msgstr "Garante que o teste de segurança de aplicativo dinâmico (DAST) esteja configurado e em execução nos pipelines do projeto."
 
 msgid "ComplianceStandardsAdherence|Ensures Infrastructure as Code (IaC) scanning is configured and running in the project pipelines."
-msgstr ""
+msgstr "Garante que a verificação da Infraestrutura como Código (IaC) esteja configurada e em execução nos pipelines do projeto."
 
 msgid "ComplianceStandardsAdherence|Ensures Multi-Factor Authentication is required at the organization level."
-msgstr ""
+msgstr "Garante que a autenticação multifatorial seja obrigatória no nível da organização."
 
 msgid "ComplianceStandardsAdherence|Ensures Single Sign-On (SSO) authentication is enabled for the project."
-msgstr ""
+msgstr "Garante que a autenticação de login único (SSO) esteja ativada para o projeto."
 
 msgid "ComplianceStandardsAdherence|Ensures Static Application Security Testing (SAST) is configured and running in the project pipelines."
-msgstr ""
+msgstr "Garante que o teste de segurança de aplicativo estático (SAST) esteja configurado e em execução nos pipelines do projeto."
 
 msgid "ComplianceStandardsAdherence|Ensures Terraform integration is enabled for the project."
-msgstr ""
+msgstr "Garante que a integração com Terraform esteja ativada para o projeto."
 
 msgid "ComplianceStandardsAdherence|Ensures a linear commit history by forbidding merge commits."
-msgstr ""
+msgstr "Proíbe a mesclagem de commits para garantir um histórico de commits linear."
 
 msgid "ComplianceStandardsAdherence|Ensures a minimum number of administrators are assigned to the project."
-msgstr ""
+msgstr "Garante a atribuição de um número mínimo de administradores ao projeto."
 
 msgid "ComplianceStandardsAdherence|Ensures a status page is configured for the project."
-msgstr ""
+msgstr "Garante a configuração de uma página de status para o projeto."
 
 msgid "ComplianceStandardsAdherence|Ensures all discussions must be resolved before merging is allowed."
-msgstr ""
+msgstr "Garante que todas as discussões devam ser resolvidas antes de permitir a mesclagem."
 
 msgid "ComplianceStandardsAdherence|Ensures all package hunter findings are triaged."
-msgstr ""
+msgstr "Garante que a triagem de todas as descobertas do hunter de pacotes seja realizada."
 
 msgid "ComplianceStandardsAdherence|Ensures approvals are reset when new commits are pushed to the merge request."
-msgstr ""
+msgstr "Garante a redefinição das aprovações quando novos commits são enviados por push à solicitação de mesclagem."
 
 msgid "ComplianceStandardsAdherence|Ensures at least two administrators are assigned to each repository."
-msgstr ""
+msgstr "Garante a atribuição de, pelo menos, dois administradores a cada repositório."
 
 msgid "ComplianceStandardsAdherence|Ensures automatic cleanup of stale branches is enabled."
-msgstr ""
+msgstr "Garante a ativação da limpeza automática de ramificações obsoletas."
 
 msgid "ComplianceStandardsAdherence|Ensures code changes require approval from code owners."
-msgstr ""
+msgstr "Garante aprovação obrigatória dos proprietários de código para mudanças de código."
 
 msgid "ComplianceStandardsAdherence|Ensures code quality scanning is configured and running in the project pipelines."
-msgstr ""
+msgstr "Garante que a verificação da qualidade do código esteja configurada e em execução nos pipelines do projeto."
 
 msgid "ComplianceStandardsAdherence|Ensures container scanning is configured and running in the project pipelines."
-msgstr ""
+msgstr "Garante que a verificação de contêiner esteja configurada e em execução nos pipelines do projeto."
 
 msgid "ComplianceStandardsAdherence|Ensures contributors have Multi-Factor Authentication enabled."
-msgstr ""
+msgstr "Garante que a autenticação multifatorial esteja ativada para os colaboradores."
 
 msgid "ComplianceStandardsAdherence|Ensures dependency scanning is configured and running in the project pipelines."
-msgstr ""
+msgstr "Garante que a verificação de dependência esteja configurada e em execução nos pipelines do projeto."
 
 msgid "ComplianceStandardsAdherence|Ensures error tracking is enabled for the project."
-msgstr ""
+msgstr "Garante que o rastreamento de erros esteja ativado para o projeto."
 
 msgid "ComplianceStandardsAdherence|Ensures fuzz testing is configured and running in the project pipelines."
-msgstr ""
+msgstr "Garante que o teste de fuzz esteja configurado e em execução nos pipelines do projeto."
 
 msgid "ComplianceStandardsAdherence|Ensures inactive users are reviewed and removed."
-msgstr ""
+msgstr "Garante a revisão e remoção de usuários inativos."
 
 msgid "ComplianceStandardsAdherence|Ensures issue tracking functionality is enabled for the project."
-msgstr ""
+msgstr "Garante que a funcionalidade de rastreamento de erros esteja ativada para o projeto."
 
 msgid "ComplianceStandardsAdherence|Ensures license compliance scanning is configured and running in the project pipelines."
-msgstr ""
+msgstr "Garante que a verificação de conformidade da licença esteja configurada e em execução nos pipelines do projeto."
 
 msgid "ComplianceStandardsAdherence|Ensures merge requests require approval from code owners."
-msgstr ""
+msgstr "Garante aprovação obrigatória dos proprietários de código para solicitações de mesclagem."
 
 msgid "ComplianceStandardsAdherence|Ensures new commits to merge requests reset approvals."
-msgstr ""
+msgstr "Garante aprovações de redefinição para novos commits em solicitações de mesclagem."
 
 msgid "ComplianceStandardsAdherence|Ensures project pipelines are not publicly visible."
-msgstr ""
+msgstr "Garante que os pipelines do projeto não estejam visíveis para o público."
 
 msgid "ComplianceStandardsAdherence|Ensures projects are not set to internal visibility."
-msgstr ""
+msgstr "Garante que os projetos não estejam configurados para visibilidade interna."
 
 msgid "ComplianceStandardsAdherence|Ensures projects are not set to public visibility."
-msgstr ""
+msgstr "Garante que os projetos não estejam configurados para visibilidade pública."
 
 msgid "ComplianceStandardsAdherence|Ensures push protection is enabled for sensitive files."
-msgstr ""
+msgstr "Garante que a proteção de push esteja ativada para arquivos sensíveis."
 
 msgid "ComplianceStandardsAdherence|Ensures secret detection scanning is configured and running in the project pipelines."
-msgstr ""
+msgstr "Garante que a verificação de detecção de senhas esteja configurada e em execução nos pipelines do projeto."
 
 msgid "ComplianceStandardsAdherence|Ensures stale repositories are reviewed and archived."
-msgstr ""
+msgstr "Garante a revisão e arquivamento de repositórios obsoletos."
 
 msgid "ComplianceStandardsAdherence|Ensures status checks must pass before merging is allowed."
-msgstr ""
+msgstr "Garante que seja preciso passar nas verificações de status antes de permitir a mesclagem."
 
 msgid "ComplianceStandardsAdherence|Ensures strict permissions are set for repository access."
-msgstr ""
+msgstr "Garante a configuração de permissões rigorosas para acesso ao repositório."
 
 msgid "ComplianceStandardsAdherence|Ensures that merge requests require at least two approvals before merging."
-msgstr ""
+msgstr "Garante que pelo menos duas aprovações sejam obrigatórias para solicitações de mesclagem antes da mesclagem."
 
 msgid "ComplianceStandardsAdherence|Ensures that the author of a merge request cannot approve their own changes."
-msgstr ""
+msgstr "Garante que o autor de uma solicitação de mesclagem não possa aprovar as próprias alterações."
 
 msgid "ComplianceStandardsAdherence|Ensures the GitLab instance is using an Ultimate license level."
-msgstr ""
+msgstr "Garante que a instância do GitLab esteja usando um nível de licença Ultimate."
 
 msgid "ComplianceStandardsAdherence|Ensures the default branch has protection rules enabled."
-msgstr ""
+msgstr "Garante que as regras de proteção estejam ativadas na ramificação padrão."
 
 msgid "ComplianceStandardsAdherence|Ensures the project has a valid CI/CD configuration."
-msgstr ""
+msgstr "Garante que o projeto tenha uma configuração de CI/CD válida."
 
 msgid "ComplianceStandardsAdherence|Ensures the source branch is up to date with the target branch before merging."
-msgstr ""
+msgstr "Garante que a ramificação de origem esteja atualizada com a ramificação de destino antes da mesclagem."
 
 msgid "ComplianceStandardsAdherence|Ensures version control functionality is enabled for the project."
-msgstr ""
+msgstr "Garante que a funcionalidade de controle de versão esteja ativada para o projeto."
 
 msgid "ComplianceStandardsAdherence|Ensures vulnerabilities are addressed within SLO thresholds."
-msgstr ""
+msgstr "Garante que as vulnerabilidades sejam atendidas dentro dos limites de SLO."
 
 msgid "ComplianceStandardsAdherence|Ensures webhooks are securely configured."
-msgstr ""
+msgstr "Garante que os webhooks sejam configurados com segurança."
 
 msgid "ComplianceStandardsAdherence|Establish a process to periodically review and archive inactive repositories."
-msgstr ""
+msgstr "Estabeleça um processo para revisar e arquivar repositórios inativos de maneira periódica."
 
 msgid "ComplianceStandardsAdherence|Establish a process to periodically review and remove inactive users."
-msgstr ""
+msgstr "Estabeleça um processo para revisar e remover usuários inativos de maneira periódica."
 
 msgid "ComplianceStandardsAdherence|External control"
 msgstr "Controle externo"
@@ -16246,28 +16240,28 @@ msgid "ComplianceStandardsAdherence|Implement API security testing"
 msgstr "Implementar testes de segurança de API"
 
 msgid "ComplianceStandardsAdherence|Implement API security testing to protect your application interfaces from attacks."
-msgstr ""
+msgstr "Implemente testes de segurança de API para proteger as interfaces do seu aplicativo de ataques."
 
 msgid "ComplianceStandardsAdherence|Implement repository review process"
-msgstr ""
+msgstr "Implementar processo de revisão de repositório"
 
 msgid "ComplianceStandardsAdherence|Implement secret detection"
 msgstr "Implementar a detecção de senhas"
 
 msgid "ComplianceStandardsAdherence|Implement secret detection scanning in your CI/CD pipeline to identify and remove exposed credentials."
-msgstr ""
+msgstr "Implemente a verificação da detecção de senhas no seu pipeline de CI/CD para identificar e remover credenciais expostas."
 
 msgid "ComplianceStandardsAdherence|Implement user review process"
-msgstr ""
+msgstr "Implementar processo de revisão de usuário"
 
 msgid "ComplianceStandardsAdherence|Implement vulnerability SLOs"
-msgstr ""
+msgstr "Implementar SLOs de vulnerabilidade"
 
 msgid "ComplianceStandardsAdherence|Last scanned"
 msgstr "Última verificação"
 
 msgid "ComplianceStandardsAdherence|Lock approval rules"
-msgstr ""
+msgstr "Regras de aprovação de bloqueio"
 
 msgid "ComplianceStandardsAdherence|Merge request approval rules"
 msgstr "Regras de aprovação de solicitação de mesclagem"
@@ -16321,19 +16315,19 @@ msgid "ComplianceStandardsAdherence|Prevent committers as approvers"
 msgstr "Impedir committers como aprovadores"
 
 msgid "ComplianceStandardsAdherence|Prevents deletion of branches."
-msgstr ""
+msgstr "Impede a exclusão de ramificações."
 
 msgid "ComplianceStandardsAdherence|Prevents direct pushes to the default branch."
-msgstr ""
+msgstr "Impede pushes diretos para a ramificação padrão."
 
 msgid "ComplianceStandardsAdherence|Prevents editing of merge request approval rules."
-msgstr ""
+msgstr "Impede a edição das regras de aprovação de solicitações de mesclagem."
 
 msgid "ComplianceStandardsAdherence|Prevents force pushing to repositories."
-msgstr ""
+msgstr "Impede o push forçado para repositórios."
 
 msgid "ComplianceStandardsAdherence|Prevents users who have committed to a merge request from approving it."
-msgstr ""
+msgstr "Impede os usuários consolidados em uma solicitação de mesclagem de aprová-la."
 
 msgid "ComplianceStandardsAdherence|Project"
 msgstr "Projeto"
@@ -16348,10 +16342,10 @@ msgid "ComplianceStandardsAdherence|Raw text search is not currently supported. 
 msgstr "A busca de texto bruto não é aceita. Use os filtros disponíveis."
 
 msgid "ComplianceStandardsAdherence|Require code owner approval"
-msgstr ""
+msgstr "Exigir a aprovação do proprietário de código"
 
 msgid "ComplianceStandardsAdherence|Require resolved discussions"
-msgstr ""
+msgstr "Exigir discussões resolvidas"
 
 msgid "ComplianceStandardsAdherence|Requirement"
 msgstr "Requisito"
@@ -16360,40 +16354,40 @@ msgid "ComplianceStandardsAdherence|Requirements"
 msgstr "Requisitos"
 
 msgid "ComplianceStandardsAdherence|Restrict pipeline access"
-msgstr ""
+msgstr "Restringir o acesso ao pipeline"
 
 msgid "ComplianceStandardsAdherence|Restrict pipeline visibility"
-msgstr ""
+msgstr "Restringir a visibilidade do pipeline"
 
 msgid "ComplianceStandardsAdherence|Restrict variable creation"
-msgstr ""
+msgstr "Restringir a criação de variável"
 
 msgid "ComplianceStandardsAdherence|Restricts access to build artifacts and pipeline outputs."
-msgstr ""
+msgstr "Restringe o acesso a artefatos de construção e saídas de pipeline."
 
 msgid "ComplianceStandardsAdherence|Restricts creation of project variables to maintainers only."
-msgstr ""
+msgstr "Restringe a criação de variáveis do projeto somente para mantenedores."
 
 msgid "ComplianceStandardsAdherence|Restricts who can push to or merge into protected branches."
-msgstr ""
+msgstr "Restringe quem pode fazer push ou mesclar em ramificações protegidas."
 
 msgid "ComplianceStandardsAdherence|Review and secure all webhook configurations to prevent unauthorized access."
-msgstr ""
+msgstr "Revise e proteja todas as configurações do webhook para impedir o acesso não autorizado."
 
 msgid "ComplianceStandardsAdherence|Review and triage all package hunter findings to assess and address potential risks."
-msgstr ""
+msgstr "Revise e faça a triagem de todas as descobertas do hunter de pacotes para avaliar e resolver possíveis riscos."
 
 msgid "ComplianceStandardsAdherence|Review and update the project status to ensure it is not marked for deletion."
-msgstr ""
+msgstr "Revise e atualize o status do projeto para garantir que ele não seja marcado para exclusão."
 
 msgid "ComplianceStandardsAdherence|Review archive status"
-msgstr ""
+msgstr "Revisar o status do arquivo"
 
 msgid "ComplianceStandardsAdherence|Review project status"
-msgstr ""
+msgstr "Revisar o status do projeto"
 
 msgid "ComplianceStandardsAdherence|Review the project archive status and unarchive if necessary for active projects."
-msgstr ""
+msgstr "Revise o status do arquivo do projeto e desarquive, se necessário, para projetos ativos."
 
 msgid "ComplianceStandardsAdherence|SAST scan"
 msgstr "Escaneamento SAST"
@@ -16405,73 +16399,73 @@ msgid "ComplianceStandardsAdherence|SAST scanner is not configured in the pipeli
 msgstr "O scanner SAST não está definido na configuração de pipeline para a ramificação padrão."
 
 msgid "ComplianceStandardsAdherence|Secure webhook configurations"
-msgstr ""
+msgstr "Proteger as configurações do webhook"
 
 msgid "ComplianceStandardsAdherence|Set up CI/CD job token scope restrictions to enhance pipeline security."
-msgstr ""
+msgstr "Configure as restrições do escopo do token de tarefa CI/CD para aumentar a segurança do pipeline."
 
 msgid "ComplianceStandardsAdherence|Set up IaC scanning"
-msgstr ""
+msgstr "Configurar verificação de IaC"
 
 msgid "ComplianceStandardsAdherence|Set up SAST in your CI/CD pipeline to automatically detect code vulnerabilities."
-msgstr ""
+msgstr "Configure o SAST no seu pipeline CI/CD para detectar vulnerabilidades de código automaticamente."
 
 msgid "ComplianceStandardsAdherence|Set up Service Level Objectives for addressing identified vulnerabilities within defined timeframes."
-msgstr ""
+msgstr "Configure Objetivos de Nível de Serviço para resolver vulnerabilidades identificadas dentro de prazos definidos."
 
 msgid "ComplianceStandardsAdherence|Set up Single Sign-On authentication to improve security and user management."
-msgstr ""
+msgstr "Configure a autenticação de login único para melhorar a segurança e o gerenciamento de usuários."
 
 msgid "ComplianceStandardsAdherence|Set up Terraform integration for your project to manage infrastructure as code."
-msgstr ""
+msgstr "Configure a integração do Terraform para seu projeto para gerenciar a infraestrutura como código."
 
 msgid "ComplianceStandardsAdherence|Set up a properly configured CI/CD pipeline for your project."
-msgstr ""
+msgstr "Configure adequadamente um pipeline CI/CD para seu projeto."
 
 msgid "ComplianceStandardsAdherence|Set up a status page to communicate project availability and incidents."
-msgstr ""
+msgstr "Configure uma página de status para comunicar a disponibilidade e incidentes do projeto."
 
 msgid "ComplianceStandardsAdherence|Set up automatic cleanup of stale branches to maintain repository hygiene."
-msgstr ""
+msgstr "Configure a limpeza automática de ramificações obsoletas para manter a higiene do repositório."
 
 msgid "ComplianceStandardsAdherence|Set up branch protection"
 msgstr "Configurar a proteção da ramificação"
 
 msgid "ComplianceStandardsAdherence|Set up branch protection rules for your default branch to enforce quality standards."
-msgstr ""
+msgstr "Configure regras de proteção de ramificação para sua ramificação padrão de modo a forçar as normas de qualidade."
 
 msgid "ComplianceStandardsAdherence|Set up branch protection rules to restrict push and merge access to protected branches."
-msgstr ""
+msgstr "Configure regras de proteção de ramificação para restringir o push e mesclar o acesso às ramificações protegidas."
 
 msgid "ComplianceStandardsAdherence|Set up code owners"
-msgstr ""
+msgstr "Configurar proprietários de código"
 
 msgid "ComplianceStandardsAdherence|Set up container scanning"
 msgstr "Configurar a verificação de contêiner"
 
 msgid "ComplianceStandardsAdherence|Set up container scanning in your pipeline to identify vulnerabilities in your container images."
-msgstr ""
+msgstr "Configure a verificação de contêiner no seu pipeline para identificar vulnerabilidades nas imagens do contêiner."
 
 msgid "ComplianceStandardsAdherence|Set up error tracking to monitor and address application errors."
-msgstr ""
+msgstr "Configure o rastreamento de erros para monitorar e resolver erros em aplicativos."
 
 msgid "ComplianceStandardsAdherence|Set up fuzz testing"
 msgstr "Configurar testes de fuzz"
 
 msgid "ComplianceStandardsAdherence|Set up fuzz testing in your pipeline to identify edge cases and potential crashes."
-msgstr ""
+msgstr "Configure o teste de fuzz no seu pipeline para identificar casos de borda e falhas em potencial."
 
 msgid "ComplianceStandardsAdherence|Set up license compliance scanning to identify potentially problematic open source licenses."
-msgstr ""
+msgstr "Configure a verificação da conformidade de licença para identificar licenças de código aberto potencialmente problemáticas."
 
 msgid "ComplianceStandardsAdherence|Set up required status checks to ensure code quality before merging."
-msgstr ""
+msgstr "Configure verificações de status obrigatórias para garantir a qualidade do código antes da mesclagem."
 
 msgid "ComplianceStandardsAdherence|Set up requirements for branches to be up to date before merging."
-msgstr ""
+msgstr "Configure requisitos de atualização das ramificações antes da mesclagem."
 
 msgid "ComplianceStandardsAdherence|Set up strict permission controls for repository access."
-msgstr ""
+msgstr "Configure controles de permissão rigorosos para acesso ao repositório."
 
 msgid "ComplianceStandardsAdherence|Set up your project to maintain a clean, linear commit history."
 msgstr ""
@@ -39820,7 +39814,7 @@ msgid "New branch unavailable"
 msgstr "Novo branch indisponível"
 
 msgid "New chat conversation."
-msgstr "Novo chat de conversa."
+msgstr ""
 
 msgid "New code quality findings"
 msgstr "Nova descobertas de qualidade de código"
@@ -43144,8 +43138,8 @@ msgstr "Mantenedor (padrão)"
 msgid "PackageRegistry|Manage storage used by package assets"
 msgstr "Gerenciar o armazenamento usado pelos ativos do pacote"
 
-msgid "PackageRegistry|Manually Published"
-msgstr "Publicado manualmente"
+msgid "PackageRegistry|Manually published"
+msgstr ""
 
 msgid "PackageRegistry|Maven"
 msgstr ""
@@ -53029,6 +53023,9 @@ msgstr "Editar lista negra"
 msgid "ScanResultPolicy|Except"
 msgstr "Exceto"
 
+msgid "ScanResultPolicy|Exceptions that do not require approval"
+msgstr ""
+
 msgid "ScanResultPolicy|Exceptions that require approval"
 msgstr ""
 
@@ -54359,9 +54356,6 @@ msgstr "Adicionar nova regra"
 msgid "SecurityOrchestration|Add project full path after @ to following branches: %{branches}"
 msgstr "Adicione o caminho completo do projeto após @ aos seguintes branches: %{branches}"
 
-msgid "SecurityOrchestration|Add project full path after @ to following exceptions: %{exceptions}"
-msgstr "Adicione o caminho completo do projeto após @ a estas exceções: %{exceptions}"
-
 msgid "SecurityOrchestration|Add protected branches"
 msgstr "Adicione branches protegidos"
 
@@ -55186,7 +55180,7 @@ msgstr "Use uma política de execução de análise para criar regras que %{stro
 msgid "SecurityOrchestration|Use default mode for scoping"
 msgstr "Use o modo padrão para definição de escopo"
 
-msgid "SecurityOrchestration|Use the format %{schemaStart}path-to-package@package-version%{schemaEnd}. For multiple packages, separate paths with commas. For example: path/file1.yaml@1.1.1, path/file2.yaml@2.2.2"
+msgid "SecurityOrchestration|Use the format %{schemaStart}path-to-package@package-version%{schemaEnd}. For multiple packages, separate paths with commas. For example: npm/lodash@4.17.21, maven/org.apache.commons/commons-lang3@3.12.0, pypi/requests"
 msgstr ""
 
 msgid "SecurityOrchestration|Users can skip pipelines"
@@ -66456,6 +66450,12 @@ msgid "VirtualRegistries|Virtual Registries"
 msgstr ""
 
 msgid "VirtualRegistry|Maven"
+msgstr ""
+
+msgid "VirtualRegistry|Maven virtual registries"
+msgstr ""
+
+msgid "VirtualRegistry|New maven virtual registry"
 msgstr ""
 
 msgid "VirtualRegistry|Virtual registries"

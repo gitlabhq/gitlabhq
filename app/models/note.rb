@@ -64,6 +64,9 @@ class Note < ApplicationRecord
   # Attribute used to determine whether keep_around_commits will be skipped for diff notes.
   attr_accessor :skip_keep_around_commits
 
+  # Attribute used to skip updates of `updated_at` for the noteable when it could impact database health.
+  attr_accessor :skip_touch_noteable
+
   attribute :system, default: false
 
   attr_spammable :note, spam_description: true
@@ -183,7 +186,7 @@ class Note < ApplicationRecord
   # https://gitlab.com/gitlab-org/gitlab/-/issues/367923
   before_create :set_internal_flag
   after_save :keep_around_commit, if: :for_project_noteable?, unless: -> { importing? || skip_keep_around_commits }
-  after_save :touch_noteable, unless: :importing?
+  after_save :touch_noteable, if: :touch_noteable?
   after_commit :notify_after_create, on: :create
   after_commit :notify_after_destroy, on: :destroy
 
@@ -714,6 +717,10 @@ class Note < ApplicationRecord
   end
 
   private
+
+  def touch_noteable?
+    !importing? && !skip_touch_noteable
+  end
 
   def trigger_note_subscription?
     for_issue? && noteable

@@ -58,6 +58,8 @@ class Todo < ApplicationRecord
     SSH_KEY_EXPIRING_SOON
   ].freeze
 
+  BATCH_DELETE_SIZE = 100
+
   belongs_to :author, class_name: "User"
   belongs_to :note
   belongs_to :project

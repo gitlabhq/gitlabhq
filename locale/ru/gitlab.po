@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ru\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-04-16 16:44\n"
+"PO-Revision-Date: 2025-04-17 10:57\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} по %{end}"
@@ -13936,9 +13936,6 @@ msgstr "%{agentName} успешно создан"
 msgid "ClusterAgents|%{agentName} successfully created."
 msgstr "%{agentName} успешно создан."
 
-msgid "ClusterAgents|%{linkStart}View the documentation%{linkEnd} for advanced installation. Ensure you have your access token available."
-msgstr "%{linkStart}Просмотрите документацию%{linkEnd} для расширенной установки. Убедитесь, что у вас есть токен доступа."
-
 msgid "ClusterAgents|%{name} successfully deleted"
 msgstr ""
 
@@ -13965,9 +13962,6 @@ msgstr ""
 
 msgid "ClusterAgents|Access tokens"
 msgstr "Токены доступа"
-
-msgid "ClusterAgents|Advanced installation methods"
-msgstr "Расширенные методы установки"
 
 msgid "ClusterAgents|Agent"
 msgstr "Агент"
@@ -14161,8 +14155,8 @@ msgstr "Если Flux установлен в кластере, вы может�
 msgid "ClusterAgents|If you're %{linkStart}bootstrapping the agent with Flux%{linkEnd}, you can close this dialog."
 msgstr "Если вы %{linkStart}инициализируете агента с Flux%{linkEnd}, вы можете закрыть этот диалог."
 
-msgid "ClusterAgents|Install using Helm (recommended)"
-msgstr ""
+msgid "ClusterAgents|Install using Helm"
+msgstr "Установка с помощью Helm"
 
 msgid "ClusterAgents|Instance wide settings for the GitLab Agent for Kubernetes."
 msgstr "Настройки для агента GitLab для Kubernetes на уровне экземпляра."
@@ -16845,34 +16839,34 @@ msgid "ComplianceStandardsAdherence|SAST scanner is not configured in the pipeli
 msgstr "Сканер SAST не настроен в конфигурации конвейера для основной ветки."
 
 msgid "ComplianceStandardsAdherence|Secure webhook configurations"
-msgstr ""
+msgstr "Обеспечьте безопасность конфигураций вебхуков"
 
 msgid "ComplianceStandardsAdherence|Set up CI/CD job token scope restrictions to enhance pipeline security."
-msgstr ""
+msgstr "Настройте ограничения области токенов заданий CI/CD для повышения безопасности конвейеров."
 
 msgid "ComplianceStandardsAdherence|Set up IaC scanning"
-msgstr ""
+msgstr "Настройте сканирование IaC"
 
 msgid "ComplianceStandardsAdherence|Set up SAST in your CI/CD pipeline to automatically detect code vulnerabilities."
-msgstr ""
+msgstr "Настройте SAST в вашем конвейере CI/CD для автоматического обнаружения уязвимостей в коде."
 
 msgid "ComplianceStandardsAdherence|Set up Service Level Objectives for addressing identified vulnerabilities within defined timeframes."
-msgstr ""
+msgstr "Настройте цели уровня обслуживания (SLO) для устранения выявленных уязвимостей в пределах определённых временных рамок."
 
 msgid "ComplianceStandardsAdherence|Set up Single Sign-On authentication to improve security and user management."
-msgstr ""
+msgstr "Настройте аутентификацию с единой точкой входа (SSO) для повышения безопасности и упрощения управления пользователями."
 
 msgid "ComplianceStandardsAdherence|Set up Terraform integration for your project to manage infrastructure as code."
-msgstr ""
+msgstr "Настройте интеграцию с Terraform для вашего проекта, чтобы управлять инфраструктурой как кодом."
 
 msgid "ComplianceStandardsAdherence|Set up a properly configured CI/CD pipeline for your project."
-msgstr ""
+msgstr "Корректно настройте конвейер CI/CD для вашего проекта."
 
 msgid "ComplianceStandardsAdherence|Set up a status page to communicate project availability and incidents."
-msgstr ""
+msgstr "Настройте страницу статуса для отслеживания доступности проекта и инцидентов."
 
 msgid "ComplianceStandardsAdherence|Set up automatic cleanup of stale branches to maintain repository hygiene."
-msgstr ""
+msgstr "Настройте автоматическую очистку неактивных веток для поддержания порядка в репозитории."
 
 msgid "ComplianceStandardsAdherence|Set up branch protection"
 msgstr ""
@@ -43780,8 +43774,8 @@ msgstr ""
 msgid "PackageRegistry|Manage storage used by package assets"
 msgstr "Управление хранилищем, используемым ресурсами пакетов."
 
-msgid "PackageRegistry|Manually Published"
-msgstr "Опубликовано вручную"
+msgid "PackageRegistry|Manually published"
+msgstr ""
 
 msgid "PackageRegistry|Maven"
 msgstr "Maven"
@@ -53725,6 +53719,9 @@ msgstr "Редактировать чёрный список"
 msgid "ScanResultPolicy|Except"
 msgstr ""
 
+msgid "ScanResultPolicy|Exceptions that do not require approval"
+msgstr ""
+
 msgid "ScanResultPolicy|Exceptions that require approval"
 msgstr "Исключения, требующие одобрения"
 
@@ -55089,9 +55086,6 @@ msgstr "Добавить новое правило"
 msgid "SecurityOrchestration|Add project full path after @ to following branches: %{branches}"
 msgstr ""
 
-msgid "SecurityOrchestration|Add project full path after @ to following exceptions: %{exceptions}"
-msgstr ""
-
 msgid "SecurityOrchestration|Add protected branches"
 msgstr "Добавить защищённые ветки"
 
@@ -55918,8 +55912,8 @@ msgstr "Используйте политику выполнения скани�
 msgid "SecurityOrchestration|Use default mode for scoping"
 msgstr ""
 
-msgid "SecurityOrchestration|Use the format %{schemaStart}path-to-package@package-version%{schemaEnd}. For multiple packages, separate paths with commas. For example: path/file1.yaml@1.1.1, path/file2.yaml@2.2.2"
-msgstr "Используйте формат %{schemaStart}путь-к-пакету@версия-пакета%{schemaEnd}. Для нескольких пакетов разделяйте пути запятыми. Например: path/file1.yaml@1.1.1, path/file2.yaml@2.2.2"
+msgid "SecurityOrchestration|Use the format %{schemaStart}path-to-package@package-version%{schemaEnd}. For multiple packages, separate paths with commas. For example: npm/lodash@4.17.21, maven/org.apache.commons/commons-lang3@3.12.0, pypi/requests"
+msgstr ""
 
 msgid "SecurityOrchestration|Users can skip pipelines"
 msgstr "Пользователи могут пропускать конвейеры"
@@ -67306,6 +67300,12 @@ msgid "VirtualRegistries|Virtual Registries"
 msgstr ""
 
 msgid "VirtualRegistry|Maven"
+msgstr ""
+
+msgid "VirtualRegistry|Maven virtual registries"
+msgstr ""
+
+msgid "VirtualRegistry|New maven virtual registry"
 msgstr ""
 
 msgid "VirtualRegistry|Virtual registries"

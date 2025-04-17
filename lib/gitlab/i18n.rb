@@ -59,7 +59,7 @@ module Gitlab
       'nb_NO' => 14,
       'nl_NL' => 0,
       'pl_PL' => 1,
-      'pt_BR' => 91,
+      'pt_BR' => 93,
       'ro_RO' => 45,
       'ru' => 67,
       'si_LK' => 8,

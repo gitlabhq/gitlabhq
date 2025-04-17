@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: de\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-04-16 16:48\n"
+"PO-Revision-Date: 2025-04-17 10:56\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} bis %{end}"
@@ -13504,9 +13504,6 @@ msgstr ""
 msgid "ClusterAgents|%{agentName} successfully created."
 msgstr ""
 
-msgid "ClusterAgents|%{linkStart}View the documentation%{linkEnd} for advanced installation. Ensure you have your access token available."
-msgstr "%{linkStart}In der Dokumentation%{linkEnd} findest du weitere Infos zur erweiterten Installation. Vergewissere dich, dass du dein Zugriffstoken zur Verfügung hast."
-
 msgid "ClusterAgents|%{name} successfully deleted"
 msgstr "%{name} erfolgreich gelöscht"
 
@@ -13533,9 +13530,6 @@ msgstr "%{tokenName} widerrufen"
 
 msgid "ClusterAgents|Access tokens"
 msgstr "Zugriffstoken"
-
-msgid "ClusterAgents|Advanced installation methods"
-msgstr "Erweiterte Installationsmethoden"
 
 msgid "ClusterAgents|Agent"
 msgstr "Agent"
@@ -13729,8 +13723,8 @@ msgstr "Wenn Flux im Cluster installiert ist, kannst du den Agenten über die Be
 msgid "ClusterAgents|If you're %{linkStart}bootstrapping the agent with Flux%{linkEnd}, you can close this dialog."
 msgstr "Wenn du den %{linkStart}Agenten mit Flux bootstrapst%{linkEnd}, kannst du den Dialog schließen."
 
-msgid "ClusterAgents|Install using Helm (recommended)"
-msgstr "Installation mit Helm (empfohlen)"
+msgid "ClusterAgents|Install using Helm"
+msgstr ""
 
 msgid "ClusterAgents|Instance wide settings for the GitLab Agent for Kubernetes."
 msgstr "Instanzweite Einstellungen für den GitLab-Agent für Kubernetes."
@@ -43144,8 +43138,8 @@ msgstr ""
 msgid "PackageRegistry|Manage storage used by package assets"
 msgstr "Verwalte Speicher, der von Paketdateien verwendet wird"
 
-msgid "PackageRegistry|Manually Published"
-msgstr "Manuell veröffentlicht"
+msgid "PackageRegistry|Manually published"
+msgstr ""
 
 msgid "PackageRegistry|Maven"
 msgstr "Maven"
@@ -53029,6 +53023,9 @@ msgstr "Sperrliste bearbeiten"
 msgid "ScanResultPolicy|Except"
 msgstr "Außer"
 
+msgid "ScanResultPolicy|Exceptions that do not require approval"
+msgstr ""
+
 msgid "ScanResultPolicy|Exceptions that require approval"
 msgstr "Ausnahmen, die eine Genehmigung erfordern"
 
@@ -54359,9 +54356,6 @@ msgstr "Neue Regel hinzufügen"
 msgid "SecurityOrchestration|Add project full path after @ to following branches: %{branches}"
 msgstr "Vollständigen Projektpfad nach @ zu folgenden Branches hinzufügen: %{branches}"
 
-msgid "SecurityOrchestration|Add project full path after @ to following exceptions: %{exceptions}"
-msgstr "Füge den vollständigen Projektpfad nach @ zu den folgenden Ausnahmen hinzu: %{exceptions}"
-
 msgid "SecurityOrchestration|Add protected branches"
 msgstr "Geschützte Branches hinzufügen"
 
@@ -55186,8 +55180,8 @@ msgstr "Verwende eine Scan-Ausführungsrichtlinie, um Regeln zu erstellen, die %
 msgid "SecurityOrchestration|Use default mode for scoping"
 msgstr "Standardmodus für Scoping verwenden"
 
-msgid "SecurityOrchestration|Use the format %{schemaStart}path-to-package@package-version%{schemaEnd}. For multiple packages, separate paths with commas. For example: path/file1.yaml@1.1.1, path/file2.yaml@2.2.2"
-msgstr "Verwende das Format %{schemaStart}pfad-zum-paket@paketversion%{schemaEnd}. Trenne bei mehreren Paketen die Pfade durch Kommas. Beispiel: pfad/datei1.yaml@1.1.1, pfad/datei2.yaml@2.2.2"
+msgid "SecurityOrchestration|Use the format %{schemaStart}path-to-package@package-version%{schemaEnd}. For multiple packages, separate paths with commas. For example: npm/lodash@4.17.21, maven/org.apache.commons/commons-lang3@3.12.0, pypi/requests"
+msgstr ""
 
 msgid "SecurityOrchestration|Users can skip pipelines"
 msgstr "Benutzer(innen) können Pipelines überspringen"
@@ -66456,6 +66450,12 @@ msgid "VirtualRegistries|Virtual Registries"
 msgstr ""
 
 msgid "VirtualRegistry|Maven"
+msgstr ""
+
+msgid "VirtualRegistry|Maven virtual registries"
+msgstr ""
+
+msgid "VirtualRegistry|New maven virtual registry"
 msgstr ""
 
 msgid "VirtualRegistry|Virtual registries"

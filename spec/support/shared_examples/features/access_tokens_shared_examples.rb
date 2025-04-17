@@ -122,6 +122,30 @@ RSpec.shared_examples 'active resource access tokens' do
       expect(active_access_tokens).to have_text(PersonalAccessToken.last.expires_at.strftime('%b %-d'))
     end
   end
+
+  context 'when token has no Last Used IPs' do
+    it 'shows "-" as the value' do
+      visit resource_settings_access_tokens_path
+
+      expect(active_access_tokens).to have_selector('td[data-label="Last Used IPs"]', text: '-')
+    end
+  end
+
+  context 'when token has Last Used IPs' do
+    let(:current_ip_address) { '127.0.0.1' }
+
+    before do
+      resource_access_token.last_used_ips << Authn::PersonalAccessTokenLastUsedIp.new(
+        organization: resource_access_token.organization,
+        ip_address: current_ip_address)
+    end
+
+    it 'shows the current_ip_address in last_used_ips' do
+      visit resource_settings_access_tokens_path
+
+      expect(active_access_tokens).to have_selector('td[data-label="Last Used IPs"]', text: current_ip_address)
+    end
+  end
 end
 
 RSpec.shared_examples 'inactive resource access tokens' do |no_active_tokens_text|

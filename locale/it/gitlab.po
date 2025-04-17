@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: it\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-04-16 16:44\n"
+"PO-Revision-Date: 2025-04-17 10:57\n"
 
 msgid " %{start} to %{end}"
 msgstr " Dal giorno %{start} al giorno %{end}"
@@ -13504,9 +13504,6 @@ msgstr "%{agentName} creato correttamente"
 msgid "ClusterAgents|%{agentName} successfully created."
 msgstr "%{agentName} creato correttamente."
 
-msgid "ClusterAgents|%{linkStart}View the documentation%{linkEnd} for advanced installation. Ensure you have your access token available."
-msgstr ""
-
 msgid "ClusterAgents|%{name} successfully deleted"
 msgstr "%{name} eliminato correttamente"
 
@@ -13533,9 +13530,6 @@ msgstr "%{tokenName} revocato"
 
 msgid "ClusterAgents|Access tokens"
 msgstr "Token di accesso"
-
-msgid "ClusterAgents|Advanced installation methods"
-msgstr "Metodi di installazione avanzati"
 
 msgid "ClusterAgents|Agent"
 msgstr "Agente"
@@ -13729,7 +13723,7 @@ msgstr "In caso di installazione di Flux nel cluster, puoi installare e registra
 msgid "ClusterAgents|If you're %{linkStart}bootstrapping the agent with Flux%{linkEnd}, you can close this dialog."
 msgstr "Se stai %{linkStart}eseguendo il bootstrap dell'agente con Flux%{linkEnd}, puoi chiudere questa finestra di dialogo."
 
-msgid "ClusterAgents|Install using Helm (recommended)"
+msgid "ClusterAgents|Install using Helm"
 msgstr ""
 
 msgid "ClusterAgents|Instance wide settings for the GitLab Agent for Kubernetes."
@@ -43144,8 +43138,8 @@ msgstr "Gestore (predefinito)"
 msgid "PackageRegistry|Manage storage used by package assets"
 msgstr "Gestisci lo spazio di archiviazione utilizzato dagli asset dei pacchetti"
 
-msgid "PackageRegistry|Manually Published"
-msgstr "Pubblicato manualmente"
+msgid "PackageRegistry|Manually published"
+msgstr ""
 
 msgid "PackageRegistry|Maven"
 msgstr "Maven"
@@ -53029,6 +53023,9 @@ msgstr "Modifica lista bloccati"
 msgid "ScanResultPolicy|Except"
 msgstr "Tranne"
 
+msgid "ScanResultPolicy|Exceptions that do not require approval"
+msgstr ""
+
 msgid "ScanResultPolicy|Exceptions that require approval"
 msgstr "Eccezioni che richiedono approvazione"
 
@@ -54359,9 +54356,6 @@ msgstr "Aggiungi nuova regola"
 msgid "SecurityOrchestration|Add project full path after @ to following branches: %{branches}"
 msgstr "Aggiungi il percorso completo del progetto dopo @ ai seguenti rami: %{branches}"
 
-msgid "SecurityOrchestration|Add project full path after @ to following exceptions: %{exceptions}"
-msgstr "Aggiungi il percorso completo del progetto dopo @ alle seguenti eccezioni: %{exceptions}"
-
 msgid "SecurityOrchestration|Add protected branches"
 msgstr "Aggiungi rami protetti"
 
@@ -55186,8 +55180,8 @@ msgstr "Utilizza una policy di esecuzione della scansione per creare regole che 
 msgid "SecurityOrchestration|Use default mode for scoping"
 msgstr "Usa modalità predefinita per l'ambito"
 
-msgid "SecurityOrchestration|Use the format %{schemaStart}path-to-package@package-version%{schemaEnd}. For multiple packages, separate paths with commas. For example: path/file1.yaml@1.1.1, path/file2.yaml@2.2.2"
-msgstr "Utilizza il formato %{schemaStart}path-to-package@package-version%{schemaEnd}. Per più pacchetti, separa i percorsi con virgole. Ad esempio: path/file1.yaml@1.1.1, path/file2.yaml@2.2.2"
+msgid "SecurityOrchestration|Use the format %{schemaStart}path-to-package@package-version%{schemaEnd}. For multiple packages, separate paths with commas. For example: npm/lodash@4.17.21, maven/org.apache.commons/commons-lang3@3.12.0, pypi/requests"
+msgstr ""
 
 msgid "SecurityOrchestration|Users can skip pipelines"
 msgstr "Gli utenti possono ignorare le pipeline"
@@ -66456,6 +66450,12 @@ msgid "VirtualRegistries|Virtual Registries"
 msgstr "Registri virtuali"
 
 msgid "VirtualRegistry|Maven"
+msgstr ""
+
+msgid "VirtualRegistry|Maven virtual registries"
+msgstr ""
+
+msgid "VirtualRegistry|New maven virtual registry"
 msgstr ""
 
 msgid "VirtualRegistry|Virtual registries"

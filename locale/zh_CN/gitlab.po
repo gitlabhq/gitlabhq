@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-04-16 16:43\n"
+"PO-Revision-Date: 2025-04-17 10:56\n"
 
 msgid " %{start} to %{end}"
 msgstr "从%{start}到%{end}"
@@ -13288,9 +13288,6 @@ msgstr "成功创建 %{agentName}"
 msgid "ClusterAgents|%{agentName} successfully created."
 msgstr "成功创建 %{agentName}"
 
-msgid "ClusterAgents|%{linkStart}View the documentation%{linkEnd} for advanced installation. Ensure you have your access token available."
-msgstr "%{linkStart}查看高级安装文档%{linkEnd} 。请确保您有可用的访问令牌。"
-
 msgid "ClusterAgents|%{name} successfully deleted"
 msgstr "%{name} 已成功删除"
 
@@ -13317,9 +13314,6 @@ msgstr "%{tokenName} 已撤销"
 
 msgid "ClusterAgents|Access tokens"
 msgstr "访问令牌"
-
-msgid "ClusterAgents|Advanced installation methods"
-msgstr "高级安装方法"
 
 msgid "ClusterAgents|Agent"
 msgstr "代理"
@@ -13513,8 +13507,8 @@ msgstr "如果 Flux 已安装在集群中，您可以从命令行安装和注册
 msgid "ClusterAgents|If you're %{linkStart}bootstrapping the agent with Flux%{linkEnd}, you can close this dialog."
 msgstr "如果您正在使用 Flux%{linkStart}引导代理%{linkEnd}，您可以关闭此对话框。"
 
-msgid "ClusterAgents|Install using Helm (recommended)"
-msgstr "使用 Helm 安装（推荐）"
+msgid "ClusterAgents|Install using Helm"
+msgstr ""
 
 msgid "ClusterAgents|Instance wide settings for the GitLab Agent for Kubernetes."
 msgstr "极狐GitLab Kubernetes 代理的实例范围设置。"
@@ -42826,8 +42820,8 @@ msgstr ""
 msgid "PackageRegistry|Manage storage used by package assets"
 msgstr "管理软件包 assets 使用的存储"
 
-msgid "PackageRegistry|Manually Published"
-msgstr "手动发布"
+msgid "PackageRegistry|Manually published"
+msgstr ""
 
 msgid "PackageRegistry|Maven"
 msgstr "Maven"
@@ -52681,6 +52675,9 @@ msgstr "编辑拒绝列表"
 msgid "ScanResultPolicy|Except"
 msgstr "除外"
 
+msgid "ScanResultPolicy|Exceptions that do not require approval"
+msgstr ""
+
 msgid "ScanResultPolicy|Exceptions that require approval"
 msgstr ""
 
@@ -53994,9 +53991,6 @@ msgstr "添加新规则"
 msgid "SecurityOrchestration|Add project full path after @ to following branches: %{branches}"
 msgstr "在以下分支后添加项目的完整路径： %{branches}"
 
-msgid "SecurityOrchestration|Add project full path after @ to following exceptions: %{exceptions}"
-msgstr "允许以下异常中的这些软件包的全路径后跟@：%{exceptions}"
-
 msgid "SecurityOrchestration|Add protected branches"
 msgstr "添加保护分支"
 
@@ -54820,7 +54814,7 @@ msgstr ""
 msgid "SecurityOrchestration|Use default mode for scoping"
 msgstr "使用默认模式进行范围限定"
 
-msgid "SecurityOrchestration|Use the format %{schemaStart}path-to-package@package-version%{schemaEnd}. For multiple packages, separate paths with commas. For example: path/file1.yaml@1.1.1, path/file2.yaml@2.2.2"
+msgid "SecurityOrchestration|Use the format %{schemaStart}path-to-package@package-version%{schemaEnd}. For multiple packages, separate paths with commas. For example: npm/lodash@4.17.21, maven/org.apache.commons/commons-lang3@3.12.0, pypi/requests"
 msgstr ""
 
 msgid "SecurityOrchestration|Users can skip pipelines"
@@ -66031,6 +66025,12 @@ msgid "VirtualRegistries|Virtual Registries"
 msgstr ""
 
 msgid "VirtualRegistry|Maven"
+msgstr ""
+
+msgid "VirtualRegistry|Maven virtual registries"
+msgstr ""
+
+msgid "VirtualRegistry|New maven virtual registry"
 msgstr ""
 
 msgid "VirtualRegistry|Virtual registries"

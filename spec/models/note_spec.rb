@@ -268,6 +268,40 @@ RSpec.describe Note, feature_category: :team_planning do
   end
 
   describe 'callbacks' do
+    describe '#touch_noteable' do
+      let_it_be_with_reload(:noteable) { create(:issue) }
+
+      it 'calls #touch on the noteable' do
+        note = build(:note, project: noteable.project, noteable: noteable)
+
+        expect(note).to receive(:touch_noteable).and_call_original
+        expect(note.noteable).to receive(:touch)
+
+        note.save!
+      end
+
+      shared_examples_for 'skips #touch_noteable' do
+        it 'skips #touch_noteable' do
+          expect(note).not_to receive(:touch_noteable)
+          expect(note.noteable).not_to receive(:touch)
+
+          note.save!
+        end
+      end
+
+      context "when 'importing' is true" do
+        let(:note) { build(:note, project: noteable.project, noteable: noteable, importing: true) }
+
+        it_behaves_like 'skips #touch_noteable'
+      end
+
+      context "when 'skip_touch_noteable' is true" do
+        let(:note) { build(:note, project: noteable.project, noteable: noteable, skip_touch_noteable: true) }
+
+        it_behaves_like 'skips #touch_noteable'
+      end
+    end
+
     describe '#keep_around_commit' do
       let!(:noteable) { create(:issue) }
 
