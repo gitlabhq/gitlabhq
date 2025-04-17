@@ -40,9 +40,9 @@ To set up GitLab Duo with Amazon Q, you must:
 - [Create a profile in the Amazon Q Developer console](#create-a-profile-in-the-amazon-q-developer-console)
 - [Create an identity provider](#create-an-iam-identity-provider)
 - [Create an IAM role](#create-an-iam-role)
-- [Add the policy](#add-the-policy)
-- [Allow administrators to use customer managed keys](#allow-administrators-to-use-customer-managed-keys)
+- [Edit the role](#edit-the-role)
 - [Enter the ARN in GitLab and enable Amazon Q](#enter-the-arn-in-gitlab-and-enable-amazon-q)
+- [Allow administrators to use customer managed keys](#allow-administrators-to-use-customer-managed-keys)
 
 ### Prerequisites
 
@@ -110,7 +110,14 @@ After you set up the IAM role, you cannot change the AWS account that's associat
 1. Select **Web identity**.
 1. For **Web identity**, select the provider URL you entered earlier.
 1. For **Audience**, select the audience value you entered earlier.
-1. Skip **Permissions policies** by selecting **Next**. You will create an inline policy later.
+1. Select **Next**.
+1. On the **Add permissions** page:
+   - To use a managed policy, for **Permissions policies**, search for and
+     select `GitLabDuoWithAmazonQPermissionsPolicy`.
+   - To create an inline policy, skip **Permissions policies** by selecting **Next**.
+     You will create a policy later.
+1. Select **Next**.
+1. Name the role, for example `QDeveloperAccess`.
 1. Ensure the trust policy is correct. It should look like this:
 
    ```json
@@ -134,20 +141,11 @@ After you set up the IAM role, you cannot change the AWS account that's associat
    }
    ```
 
-1. Name the role, for example `QDeveloperAccess`, and select **Create role**.
+1. Select **Create role**.
 
-### Add the policy
+### Create an inline policy (optional)
 
-Now edit the role and add the policy:
-
-1. Find the role that you just created and select it.
-1. Change the session time to 12 hours. The `AssumeRoleWithWebIdentity` will fail
-   in the AI Gateway if the session is not set to 12 hours or more.
-
-   1. In the **Roles search** field, enter the name of your IAM role and then choose the role name.
-   1. In **Summary**, choose **Edit** to edit the session duration.
-   1. Choose the **Maximum session duration** dropdown menu, and then choose **12 hours**.
-   1. Choose **Save changes**.
+To create an inline policy, rather than using a managed policy:
 
 1. Select **Permissions > Add permissions > Create inline policy**.
 1. Select **JSON** and paste the following in the editor:
@@ -196,13 +194,60 @@ Now edit the role and add the policy:
 1. Select **Actions > Optimize for readability** to make AWS format and parse the JSON.
 1. Select **Next**.
 1. Name the policy `gitlab-duo-amazon-q-policy` and select **Create policy**.
+
+### Edit the role
+
+Now edit the role:
+
+1. Find the role that you just created and select it.
+1. Change the session time to 12 hours. The `AssumeRoleWithWebIdentity` will fail
+   in the AI Gateway if the session is not set to 12 hours or more.
+
+   1. In the **Roles search** field, enter the name of your IAM role and then choose the role name.
+   1. In **Summary**, choose **Edit** to edit the session duration.
+   1. Choose the **Maximum session duration** dropdown list, and then choose **12 hours**.
+   1. Choose **Save changes**.
+
 1. Copy the ARN listed on the page. It will look similar to this:
 
    ```plaintext
    arn:aws:iam::123456789:role/QDeveloperAccess
    ```
 
-#### Allow administrators to use customer managed keys
+### Enter the ARN in GitLab and enable Amazon Q
+
+Now, enter the ARN into GitLab and determine which groups and projects can access the feature.
+
+Prerequisites:
+
+- You must be a GitLab administrator.
+
+To finish setting up GitLab Duo with Amazon Q:
+
+1. Sign in to GitLab.
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand **GitLab Duo with Amazon Q**.
+1. Select **View configuration setup**.
+1. Under **IAM role's ARN**, paste the ARN.
+1. To determine which groups and projects can use GitLab Duo with Amazon Q, choose an option:
+   - To turn it on for the instance, but let groups and projects turn it off, select **On by default**.
+     - Optional. To configure Amazon Q to automatically review code in merge requests, select **Have Amazon Q review code in merge requests automatically**.
+   - To turn it off for the instance, but let groups and projects turn it on, select **Off by default**.
+   - To turn it off for the instance, and to prevent groups or projects from ever turning it on, select **Always off**.
+
+1. Select **Save changes**.
+
+When you save, an API should contact the AI Gateway to create an OAuth application on Amazon Q.
+
+To confirm that it was successful:
+
+- In the Amazon CloudWatch console log, check for a `204` status code. For more information, see
+  [What is Amazon CloudWatch](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html)?
+- In GitLab, a notification that says `Amazon Q settings have been saved` is displayed.
+- In GitLab, on the left sidebar, select **Applications**. The Amazon Q OAuth application is displayed.
+
+## Allow administrators to use customer managed keys
 
 If you are an administrator, you can use AWS Key Management Service (AWS KMS)
 customer managed keys (CMKs) to encrypt customer data.
@@ -244,37 +289,6 @@ With the condition key, you can limit who can use CMK for encrypting or decrypti
 
 For more information, see
 [`kms:ViaService` in the AWS KMS Developer Guide](https://docs.aws.amazon.com/kms/latest/developerguide/conditions-kms.html#conditions-kms-via-service).
-
-### Enter the ARN in GitLab and enable Amazon Q
-
-Now, enter the ARN into GitLab and determine which groups and projects can access the feature.
-
-Prerequisites:
-
-- You must be a GitLab administrator.
-
-1. Sign in to GitLab.
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
-1. Expand **GitLab Duo with Amazon Q**.
-1. Select **View configuration setup**.
-1. Under **IAM role's ARN**, paste the ARN.
-1. To determine which groups and projects can use GitLab Duo with Amazon Q, choose an option:
-   - To turn it on for the instance, but let groups and projects turn it off, select **On by default**.
-     - Optional. To configure Amazon Q to automatically review code in merge requests, select **Have Amazon Q review code in merge requests automatically**.
-   - To turn it off for the instance, but let groups and projects turn it on, select **Off by default**.
-   - To turn it off for the instance, and to prevent groups or projects from ever turning it on, select **Always off**.
-
-1. Select **Save changes**.
-
-When you save, an API should contact the AI Gateway to create an OAuth application on Amazon Q.
-
-To confirm that it was successful:
-
-- In the Amazon CloudWatch console log, check for a `204` status code. For more information, see
-  [What is Amazon CloudWatch](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html)?
-- In GitLab, a notification that says `Amazon Q settings have been saved` is displayed.
-- In GitLab, on the left sidebar, select **Applications**. The Amazon Q OAuth application is displayed.
 
 ## Turn off GitLab Duo with Amazon Q
 

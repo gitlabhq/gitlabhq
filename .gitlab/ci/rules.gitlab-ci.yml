@@ -321,6 +321,15 @@
   - "scripts/frontend/lint_docs_links.mjs"
   - "tooling/eslint-config/eslint-local-rules/**/*"
 
+.docs-i18n-patterns: &docs-i18n-patterns
+  - "doc-locale/**/*"
+  - "scripts/lint-i18n-doc.sh"
+
+.if-tech-docs-localization: &if-tech-docs-localization
+  if: '($CI_PROJECT_PATH == "gitlab-com/localization" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH) ||
+      ($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") ||
+      ($CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^docs-i18n-/ || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /-docs-i18n$/)'
+
 .docs-deprecations-and-removals-patterns: &docs-deprecations-and-removals-patterns
   - "doc/update/breaking_windows.md"
   - "doc/update/deprecations.md"
@@ -1265,6 +1274,11 @@
   rules:
     - <<: *if-default-refs
       changes: *docs-patterns
+
+.docs:rules:docs-i18n-lint:
+  rules:
+    - <<: *if-tech-docs-localization
+      changes: *docs-i18n-patterns
 
 .docs:rules:deprecations-and-removals:
   rules:

@@ -18,7 +18,7 @@ import {
 } from 'jest/issues/list/mock_data';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { STATUS_CLOSED, STATUS_OPEN, TYPE_ISSUE } from '~/issues/constants';
+import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import { CREATED_DESC, UPDATED_DESC } from '~/issues/list/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
@@ -52,6 +52,8 @@ import {
   DETAIL_VIEW_QUERY_PARAM_NAME,
   STATE_CLOSED,
   WORK_ITEM_TYPE_ENUM_EPIC,
+  WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_ISSUE,
 } from '~/work_items/constants';
 import { createRouter } from '~/work_items/router';
 import {
@@ -145,7 +147,7 @@ describeSkipVue3(skipReason, () => {
 
     mountComponent({
       provide: {
-        workItemType: TYPE_ISSUE,
+        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
         glFeatures: {
           issuesListDrawer: true,
         },
@@ -251,8 +253,7 @@ describeSkipVue3(skipReason, () => {
 
   describe('when workItemType is provided', () => {
     it('filters work items by workItemType', async () => {
-      const type = 'EPIC';
-      mountComponent({ provide: { workItemType: type } });
+      mountComponent({ provide: { workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
 
       await waitForPromises();
 
@@ -262,16 +263,15 @@ describeSkipVue3(skipReason, () => {
           includeDescendants: true,
           sort: CREATED_DESC,
           state: STATUS_OPEN,
-          types: type,
+          types: WORK_ITEM_TYPE_ENUM_EPIC,
         }),
       );
     });
   });
 
-  describe('when workItemType EPIC is provided', () => {
+  describe('when workItemType Epic is provided', () => {
     it('sends excludeProjects variable in GraphQL query', async () => {
-      const type = 'EPIC';
-      mountComponent({ provide: { workItemType: type } });
+      mountComponent({ provide: { workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
 
       await waitForPromises();
 
@@ -343,7 +343,7 @@ describeSkipVue3(skipReason, () => {
 
     describe('when workItemType is defined', () => {
       it('renders all tokens except "Type"', async () => {
-        mountComponent({ provide: { workItemType: 'EPIC' } });
+        mountComponent({ provide: { workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
         await waitForPromises();
         const tokens = findIssuableList()
           .props('searchTokens')
@@ -659,7 +659,7 @@ describeSkipVue3(skipReason, () => {
                 issuesListDrawer: true,
                 epicsListDrawer: false,
               },
-              workItemType: WORK_ITEM_TYPE_ENUM_EPIC,
+              workItemType: WORK_ITEM_TYPE_NAME_EPIC,
             },
           });
           await waitForPromises();
@@ -676,7 +676,7 @@ describeSkipVue3(skipReason, () => {
                 issuesListDrawer: false,
                 epicsListDrawer: true,
               },
-              workItemType: WORK_ITEM_TYPE_ENUM_EPIC,
+              workItemType: WORK_ITEM_TYPE_NAME_EPIC,
             },
           });
           await waitForPromises();
@@ -706,7 +706,7 @@ describeSkipVue3(skipReason, () => {
         getParameterByName.mockReturnValue(show);
         mountComponent({
           provide: {
-            workItemType: TYPE_ISSUE,
+            workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
             glFeatures: {
               issuesListDrawer: true,
             },

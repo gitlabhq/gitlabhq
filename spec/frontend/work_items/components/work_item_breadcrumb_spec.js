@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlBreadcrumb } from '@gitlab/ui';
 import WorkItemBreadcrumb from '~/work_items/components/work_item_breadcrumb.vue';
-import { WORK_ITEM_TYPE_ENUM_EPIC } from '~/work_items/constants';
+import { WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
 
 describe('WorkItemBreadcrumb', () => {
   let wrapper;
@@ -36,7 +36,7 @@ describe('WorkItemBreadcrumb', () => {
 
   describe('when the workspace is a group', () => {
     it('renders a href to the legacy epics page if the workItemEpicsList feature is disabled', () => {
-      createComponent({ workItemType: WORK_ITEM_TYPE_ENUM_EPIC, workItemEpicsList: false });
+      createComponent({ workItemType: WORK_ITEM_TYPE_NAME_EPIC, workItemEpicsList: false });
 
       expect(findBreadcrumb().props('items')).toEqual([
         {
@@ -61,7 +61,7 @@ describe('WorkItemBreadcrumb', () => {
     });
 
     it('renders root `Epics` breadcrumb on epics list page', () => {
-      createComponent({ workItemType: WORK_ITEM_TYPE_ENUM_EPIC });
+      createComponent({ workItemType: WORK_ITEM_TYPE_NAME_EPIC });
 
       expect(findBreadcrumb().props('items')).toEqual([
         {

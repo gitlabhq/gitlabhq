@@ -1248,6 +1248,10 @@ lib/gitlab/checks/**
 /doc/user/workspace/ @brendan777
 # End rake-managed-docs-block
 
+# i18n Docs
+[Localization Team] @gitlab-com/localization/maintainers
+/doc-locale/**
+
 [Authorization] @gitlab-org/software-supply-chain-security/authorization/approvers
 /config/initializers/declarative_policy.rb
 /config/initializers/declarative_policy_cached_attributes.rb

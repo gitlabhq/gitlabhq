@@ -1,5 +1,5 @@
 - title: "GitLab Advanced SAST will be enabled by default"
-  removal_milestone: "18.0"
+  removal_milestone: "19.0"
   announcement_milestone: "17.9"
   breaking_change: true
   window: 1
@@ -12,7 +12,7 @@
   resolution_role: Developer
   manual_task: true
   body: |  # (required) Don't change this line.
-    In GitLab 18.0, we will update the [SAST CI/CD templates](https://docs.gitlab.com/user/application_security/sast#stable-vs-latest-sast-templates) to enable [GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast) by default in projects with GitLab Ultimate.
+    In GitLab 19.0, we will update the [SAST CI/CD templates](https://docs.gitlab.com/user/application_security/sast#stable-vs-latest-sast-templates) to enable [GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast) by default in projects with GitLab Ultimate.
     Before this change, the GitLab Advanced SAST analyzer was enabled only if you set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true`.
 
     Advanced SAST delivers more accurate results by using cross-file, cross-function scanning and a new ruleset.

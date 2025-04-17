@@ -1,0 +1,9 @@
+---
+name: allow_ldap_users_to_authenticate_with_gitlab_username
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/215357
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186848
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/536008
+milestone: '18.0'
+group: group::authentication
+type: beta
+default_enabled: true

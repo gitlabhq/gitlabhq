@@ -75,7 +75,7 @@ After setting up WIF, you must grant the WIF principal access to the secrets in 
 
    - `PROJECT_NUMBER`: Your Google Cloud project number (not ID) which can be found in the
      [Project's dashboard](https://console.cloud.google.com/home/dashboard).
-   - `POOL_ID`: The ID (not name) of the Workload Identity Pool created in the first section,
+   - `POOL_ID`: The ID (not name) of the workload identity pool created in the first section,
      for example `gitlab-pool`.
    - `GITLAB_PROJECT_ID`: The GitLab project ID found on the [project overview page](../../user/project/working_with_projects.md#access-a-project-by-using-the-project-id).
 

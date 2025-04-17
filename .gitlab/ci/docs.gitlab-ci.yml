@@ -137,3 +137,22 @@ docs-lint redirects:
     - source scripts/utils.sh
   script:
     - run_with_custom_exit_code ./scripts/lint-docs-redirects.rb
+
+docs-i18n-lint markdown:
+  extends:
+    - .default-retry
+    - .docs:rules:docs-i18n-lint
+    - .docs-markdown-lint-image
+    - .yarn-cache
+  stage: lint
+  needs: []
+  script:
+    - source ./scripts/utils.sh
+    - |
+      function docs_lint_markdown() {
+        yarn_install_script
+        install_gitlab_gem
+        scripts/lint-i18n-doc.sh
+      }
+
+      run_with_custom_exit_code docs_lint_markdown

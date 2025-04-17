@@ -87,6 +87,13 @@ pipelines:
 These jobs check links, including anchor links, and report any problems. Any link that requires a network
 connection is skipped.
 
+## Translation documentation tests
+
+We also run tests on documentation translations documentation. Merge requests containing changes to
+Markdown (`.md`) files in the `/doc-locale/` directory run these CI/CD jobs:
+
+- `docs-i18n-lint markdown`: Runs `scripts/lint-i18n-doc.sh` which runs Vale and markdownlint.
+
 ## Install documentation linters
 
 To help adhere to the [documentation style guidelines](../styleguide/_index.md), and

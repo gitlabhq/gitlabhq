@@ -86,10 +86,12 @@ import DateToken from '~/vue_shared/components/filtered_search_bar/tokens/date_t
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 import {
   DETAIL_VIEW_QUERY_PARAM_NAME,
+  NAME_TO_ENUM_MAP,
   STATE_CLOSED,
   STATE_OPEN,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_ENUM_ISSUE,
+  WORK_ITEM_TYPE_NAME_EPIC,
 } from '../constants';
 import getWorkItemsQuery from '../graphql/list/get_work_items.query.graphql';
 import getWorkItemStateCountsQuery from '../graphql/list/get_work_item_state_counts.query.graphql';
@@ -264,7 +266,7 @@ export default {
       return this.isEpicsList ? this.glFeatures.epicsListDrawer : this.glFeatures.issuesListDrawer;
     },
     isEpicsList() {
-      return this.workItemType === WORK_ITEM_TYPE_ENUM_EPIC;
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     hasSearch() {
       return Boolean(this.searchQuery);
@@ -280,6 +282,7 @@ export default {
     },
     queryVariables() {
       const hasGroupFilter = Boolean(this.urlFilterParams.group_path);
+      const singleWorkItemType = this.workItemType ? NAME_TO_ENUM_MAP[this.workItemType] : null;
       return {
         fullPath: this.fullPath,
         sort: this.sortKey,
@@ -289,7 +292,7 @@ export default {
         ...this.pageParams,
         excludeProjects: hasGroupFilter || this.isEpicsList,
         includeDescendants: !hasGroupFilter,
-        types: this.apiFilterParams.types || this.workItemType || this.defaultWorkItemTypes,
+        types: this.apiFilterParams.types || singleWorkItemType || this.defaultWorkItemTypes,
         isGroup: this.isGroup,
       };
     },
@@ -550,10 +553,8 @@ export default {
     enableClientSideBoardsExperiment() {
       return this.glFeatures.workItemsClientSideBoards;
     },
-    workItemTypeName() {
-      return this.workItemType === WORK_ITEM_TYPE_ENUM_EPIC
-        ? WORK_ITEM_TYPE_ENUM_EPIC
-        : WORK_ITEM_TYPE_ENUM_ISSUE;
+    preselectedWorkItemType() {
+      return this.isEpicsList ? WORK_ITEM_TYPE_ENUM_EPIC : WORK_ITEM_TYPE_ENUM_ISSUE;
     },
   },
   watch: {
@@ -919,7 +920,7 @@ export default {
         <template #new-issue-button>
           <create-work-item-modal
             :is-group="isGroup"
-            :preselected-work-item-type="workItemTypeName"
+            :preselected-work-item-type="preselectedWorkItemType"
             @workItemCreated="handleWorkItemCreated"
           />
         </template>

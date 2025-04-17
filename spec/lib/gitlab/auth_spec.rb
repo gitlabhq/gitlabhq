@@ -1319,27 +1319,199 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
     end
 
-    context "with ldap enabled" do
+    context 'with LDAP enabled' do
+      include LdapHelpers
+
+      let(:provider) { 'ldapmain' }
+
       before do
-        allow(Gitlab::Auth::Ldap::Config).to receive(:enabled?).and_return(true)
+        stub_ldap_setting(enabled: true)
+        allow(Devise).to receive(:omniauth_providers).and_return([provider.to_sym])
       end
 
-      it 'does not try to authenticate with LDAP for local users' do
+      it 'does not try to authenticate with LDAP fallback for local users' do
         expect(Gitlab::Auth::Ldap::Authentication).not_to receive(:login)
 
         expect(gl_auth.find_with_user_password(username, user.password)).to eq(user)
       end
 
-      it "does not find user by using ldap as fallback to for authentication" do
+      it 'does not find user by using LDAP fallback for authentication' do
         expect(Gitlab::Auth::Ldap::Authentication).to receive(:login).and_return(nil)
 
         expect(gl_auth.find_with_user_password('ldap_user', 'password')).to be_nil
       end
 
-      it "finds a user by using ldap as a fallback for authentication" do
+      it 'finds a user by using LDAP fallback for authentication' do
         expect(Gitlab::Auth::Ldap::Authentication).to receive(:login).and_return(user)
 
         expect(gl_auth.find_with_user_password('ldap_user', 'password')).to eq(user)
+      end
+
+      context 'for LDAP users' do
+        subject(:authentication) { gl_auth.find_with_user_password(login, password) }
+
+        let(:uid) { 'john-ldap' }
+        let(:gitlab_username) { 'john-gitlab' }
+        let(:dn) { user_dn(uid) }
+        let(:user) { create(:omniauth_user, :ldap, username: gitlab_username, extern_uid: dn) }
+        let(:password) { 'password' }
+
+        let(:adapter) { instance_double(OmniAuth::LDAP::Adaptor) }
+
+        before do
+          allow_next_instance_of(Gitlab::Auth::Ldap::Authentication) do |instance|
+            allow(instance).to receive(:adapter).and_return(adapter)
+          end
+        end
+
+        context 'when LDAP UID does not match GitLab username' do
+          context 'with LDAP UID' do
+            let(:login) { uid }
+
+            it 'finds a user by using LDAP fallback for authentication' do
+              expect(Gitlab::Auth::Ldap::Authentication).to receive(:login).with(login, password).and_return(user)
+
+              expect(authentication).to eq(user)
+            end
+          end
+
+          context 'with GitLab username' do
+            let(:login) { gitlab_username }
+
+            it "uses LDAP authentication based on the user's LDAP identity" do
+              expect(Gitlab::Auth::Ldap::Authentication).not_to receive(:login)
+              ldap_authentication = instance_double(Gitlab::Auth::Ldap::Authentication)
+              expect(Gitlab::Auth::Ldap::Authentication).to receive(:new).with(provider, user).and_return(ldap_authentication)
+              expect(ldap_authentication).to receive(:login).with(login, password).and_return(user)
+
+              expect(authentication).to eq(user)
+            end
+
+            it "identifies the user's LDAP UID and uses it for authentication" do
+              stub_ldap_person_find_by_dn(ldap_user_entry(uid), provider)
+
+              expect(adapter).to receive(:bind_as).with(
+                filter: Net::LDAP::Filter.equals(Gitlab::Auth::Ldap::Config.new(provider).uid, uid),
+                size: 1,
+                password: password
+              ).and_return(ldap_user_entry(uid))
+
+              expect(authentication).to eq(user)
+            end
+
+            context 'when allow_ldap_users_to_authenticate_with_gitlab_username FF is disabled' do
+              before do
+                stub_feature_flags(allow_ldap_users_to_authenticate_with_gitlab_username: false)
+              end
+
+              it "does not try to identify the user's LDAP UID and and uses specified login for authentication" do
+                expect(::Gitlab::Auth::Ldap::Person).not_to receive(:find_by_dn)
+
+                expect(adapter).to receive(:bind_as).with(
+                  filter: Net::LDAP::Filter.equals(Gitlab::Auth::Ldap::Config.new(provider).uid, login),
+                  size: 1,
+                  password: password
+                )
+
+                expect(authentication).to be_nil
+              end
+            end
+          end
+        end
+
+        context 'when LDAP UID matches GitLab username' do
+          let(:gitlab_username) { uid }
+          let(:login) { uid }
+
+          it "uses LDAP authentication based on the user's LDAP identity" do
+            expect(Gitlab::Auth::Ldap::Authentication).not_to receive(:login)
+            ldap_authentication = instance_double(Gitlab::Auth::Ldap::Authentication)
+            expect(Gitlab::Auth::Ldap::Authentication).to receive(:new).with(provider, user).and_return(ldap_authentication)
+            expect(ldap_authentication).to receive(:login).with(login, password).and_return(user)
+
+            expect(authentication).to eq(user)
+          end
+
+          it "identifies the user's LDAP UID and uses it for authentication" do
+            stub_ldap_person_find_by_dn(ldap_user_entry(uid), provider)
+
+            expect(adapter).to receive(:bind_as).with(
+              filter: Net::LDAP::Filter.equals(Gitlab::Auth::Ldap::Config.new(provider).uid, uid),
+              size: 1,
+              password: password
+            ).and_return(ldap_user_entry(uid))
+
+            expect(authentication).to eq(user)
+          end
+
+          context 'when allow_ldap_users_to_authenticate_with_gitlab_username FF is disabled' do
+            before do
+              stub_feature_flags(allow_ldap_users_to_authenticate_with_gitlab_username: false)
+            end
+
+            it "does not try to identify the user's LDAP UID and and uses specified login for authentication" do
+              expect(::Gitlab::Auth::Ldap::Person).not_to receive(:find_by_dn)
+
+              expect(adapter).to receive(:bind_as).with(
+                filter: Net::LDAP::Filter.equals(Gitlab::Auth::Ldap::Config.new(provider).uid, login),
+                size: 1,
+                password: password
+              ).and_return(ldap_user_entry(login))
+
+              expect(authentication).to eq(user)
+            end
+          end
+        end
+
+        context 'when LDAP UID matches GitLab username of another user' do
+          let!(:another_user) { create(:user, username: uid) }
+
+          context 'with LDAP UID' do
+            let(:login) { uid }
+
+            it 'tries to autheticate as another user' do
+              expect(Gitlab::Auth::Ldap::Authentication).not_to receive(:login)
+              expect(Gitlab::Auth::Ldap::Authentication).not_to receive(:new)
+              expect(Gitlab::Auth::Database::Authentication).to receive(:new).with('database', another_user).and_call_original
+
+              expect(authentication).to be_nil
+            end
+          end
+
+          context 'with GitLab username' do
+            let(:login) { gitlab_username }
+
+            it "identifies the user's LDAP UID and uses it for authentication" do
+              stub_ldap_person_find_by_dn(ldap_user_entry(uid), provider)
+
+              expect(adapter).to receive(:bind_as).with(
+                filter: Net::LDAP::Filter.equals(Gitlab::Auth::Ldap::Config.new(provider).uid, uid),
+                size: 1,
+                password: password
+              ).and_return(ldap_user_entry(uid))
+
+              expect(authentication).to eq(user)
+            end
+
+            context 'when allow_ldap_users_to_authenticate_with_gitlab_username FF is disabled' do
+              before do
+                stub_feature_flags(allow_ldap_users_to_authenticate_with_gitlab_username: false)
+              end
+
+              it "does not try to identify the user's LDAP UID and and uses specified login for authentication" do
+                expect(::Gitlab::Auth::Ldap::Person).not_to receive(:find_by_dn)
+
+                expect(adapter).to receive(:bind_as).with(
+                  filter: Net::LDAP::Filter.equals(Gitlab::Auth::Ldap::Config.new(provider).uid, login),
+                  size: 1,
+                  password: password
+                )
+
+                expect(authentication).to be_nil
+              end
+            end
+          end
+        end
       end
     end
 
