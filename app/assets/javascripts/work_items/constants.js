@@ -329,7 +329,7 @@ export const ALLOWED_CONVERSION_TYPES = [
   WORK_ITEM_TYPE_NAME_ISSUE,
 ];
 
-export const WORK_ITEM_TYPE_NAME_MAP = {
+export const NAME_TO_TEXT_MAP = {
   [WORK_ITEM_TYPE_NAME_EPIC]: s__('WorkItem|Epic'),
   [WORK_ITEM_TYPE_NAME_INCIDENT]: s__('WorkItem|Incident'),
   [WORK_ITEM_TYPE_NAME_ISSUE]: s__('WorkItem|Issue'),
@@ -341,7 +341,7 @@ export const WORK_ITEM_TYPE_NAME_MAP = {
   [WORK_ITEM_TYPE_NAME_TICKET]: s__('WorkItem|Ticket'),
 };
 
-export const WORK_ITEM_TYPE_NAME_LOWERCASE_MAP = {
+export const NAME_TO_LOWERCASE_TEXT_MAP = {
   [WORK_ITEM_TYPE_NAME_EPIC]: s__('WorkItem|epic'),
   [WORK_ITEM_TYPE_NAME_INCIDENT]: s__('WorkItem|incident'),
   [WORK_ITEM_TYPE_NAME_ISSUE]: s__('WorkItem|issue'),

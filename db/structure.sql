@@ -231,12 +231,10 @@ CREATE TABLE namespaces (
     last_ci_minutes_notification_at timestamp with time zone,
     last_ci_minutes_usage_notification_level integer,
     subgroup_creation_level integer DEFAULT 1,
-    emails_disabled boolean,
     max_pages_size integer,
     max_artifacts_size integer,
     mentions_disabled boolean,
     default_branch_protection smallint,
-    unlock_membership_to_ldap boolean,
     max_personal_access_token_lifetime integer,
     push_rule_id bigint,
     shared_runners_enabled boolean DEFAULT true NOT NULL,
@@ -33620,6 +33618,8 @@ CREATE INDEX idx_wi_type_custom_lifecycles_on_lifecycle_id ON work_item_type_cus
 CREATE UNIQUE INDEX idx_wi_type_custom_lifecycles_on_namespace_type_lifecycle ON work_item_type_custom_lifecycles USING btree (namespace_id, work_item_type_id, lifecycle_id);
 
 CREATE INDEX idx_wi_type_custom_lifecycles_on_work_item_type_id ON work_item_type_custom_lifecycles USING btree (work_item_type_id);
+
+CREATE INDEX idx_workflows_status_updated_at_id ON duo_workflows_workflows USING btree (status, updated_at, id);
 
 CREATE INDEX idx_zoekt_last_indexed_at_gt_used_storage_bytes_updated_at ON zoekt_indices USING btree (used_storage_bytes_updated_at) WHERE (last_indexed_at >= used_storage_bytes_updated_at);
 

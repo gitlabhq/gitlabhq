@@ -5,10 +5,10 @@ import { __, s__ } from '~/locale';
 import { isMetaClick } from '~/lib/utils/common_utils';
 import { convertTypeEnumToName, newWorkItemPath } from '~/work_items/utils';
 import {
+  NAME_TO_LOWERCASE_TEXT_MAP,
   sprintfWorkItem,
   ROUTES,
   RELATED_ITEM_ID_URL_QUERY_PARAM,
-  WORK_ITEM_TYPE_NAME_LOWERCASE_MAP,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   NAME_TO_ENUM_MAP,
 } from '../constants';
@@ -136,7 +136,7 @@ export default {
       });
     },
     selectedWorkItemTypeLowercase() {
-      return WORK_ITEM_TYPE_NAME_LOWERCASE_MAP[this.selectedWorkItemTypeName];
+      return NAME_TO_LOWERCASE_TEXT_MAP[this.selectedWorkItemTypeName];
     },
     newWorkItemButtonText() {
       return this.alwaysShowWorkItemTypeSelect && this.selectedWorkItemTypeName

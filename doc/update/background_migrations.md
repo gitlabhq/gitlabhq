@@ -397,6 +397,34 @@ Gitlab::Database::SharedModel.using_connection(connection) do
 end
 ```
 
+#### Run all background migrations synchronously
+
+There may be cases where you want to force background migrations to run in the foreground during a maintenance window.
+
+Note that this script may timeout/exit before all migrations are completed. You can run it again until all migrations are complete.
+
+```ruby
+# Start the rails console
+
+databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
+
+Gitlab::Database.database_base_models.each do |database_name, model|
+  Gitlab::Database::SharedModel.using_connection(model.connection) do
+    Gitlab::Database::BackgroundMigration::BatchedMigration.with_status([:paused, :active]).find_each(batch_size: 100) do |migration|
+      puts "#{database_name}: Finalizing migration #{migration.job_class_name} (ID: #{migration.id})... "
+      Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.finalize(
+        migration.job_class_name,
+        migration.table_name,
+        migration.column_name,
+        Gitlab::Json.parse(migration.job_arguments),
+        connection: model.connection
+      )
+      puts("done!\n")
+    end
+  end
+end
+```
+
 <!--- start_remove The following content will be removed on remove_date: '2025-05-10' -->
 <!-- This page needs significant revision after 15.0 becomes unsupported -->
 <!--- end_remove -->

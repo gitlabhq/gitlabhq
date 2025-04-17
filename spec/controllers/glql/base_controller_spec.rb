@@ -164,6 +164,15 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
         expect(current_rate_limit_value(query_sha)).to be_nil
       end
     end
+
+    context 'when load balancing enabled', :db_load_balancing do
+      it 'uses the replica' do
+        expect(Gitlab::Database::LoadBalancing::SessionMap)
+          .to receive(:with_sessions).with(Gitlab::Database::LoadBalancing.base_models).and_call_original
+
+        execute_request
+      end
+    end
   end
 
   describe '#append_info_to_payload' do

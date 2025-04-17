@@ -36,7 +36,7 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
 
     it 'returns a Gitlab::Housekeeper::Change', :aggregate_failures do
       expect(change).to be_a(::Gitlab::Housekeeper::Change)
-      expect(change.title).to eq("Finalize migration #{job_name}")
+      expect(change.title).to eq("Finalize BBM #{job_name}")
       expect(change.identifiers).to eq(identifiers)
       expect(change.labels).to eq(['maintenance::removal'])
       expect(change.reviewers).to eq(['random-engineer'])

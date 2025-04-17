@@ -1,8 +1,8 @@
 ---
 table_name: namespaces
 classes:
-- Group
 - Namespace
+- Group
 - Namespaces::ProjectNamespace
 - Namespaces::UserNamespace
 feature_categories:

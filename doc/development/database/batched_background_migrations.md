@@ -203,13 +203,27 @@ These database indicators are checked to throttle a migration. Upon receiving a
 stop signal, the migration is paused for a set time (10 minutes):
 
 - WAL queue pending archival crossing the threshold.
-- Active autovacuum on the tables on which the migration works on.
+- Active autovacuum on the tables on which the migration works on (enabled by default as of GitLab 18.0).
 - Patroni apdex SLI dropping below the SLO.
 - WAL rate crossing the threshold.
 
 There is an ongoing effort to add more indicators to further enhance the
 database health check framework. For more details, see
 [epic 7594](https://gitlab.com/groups/gitlab-org/-/epics/7594).
+
+#### How to disable/enable autovacuum indicator on tables
+
+As of GitLab 18.0, this health indicator is enabled by default. To disable it, please run the following command on the rails console:
+
+```ruby
+Feature.disable(:batched_migrations_health_status_autovacuum)
+```
+
+Alternatively, if you want to enable it again, run the following command in rails console:
+
+```ruby
+Feature.enable(:batched_migrations_health_status_autovacuum)
+```
 
 ### Isolation
 

@@ -67,7 +67,7 @@ module Keeps
     def initialize_change(migration, migration_record, job_name, last_migration_file)
       # Finalize the migration
       change = ::Gitlab::Housekeeper::Change.new
-      change.title = "Finalize migration #{job_name}"
+      change.title = "Finalize BBM #{job_name}"
 
       change.identifiers = [self.class.name.demodulize, job_name]
       change.description = change_description(migration_record, job_name, last_migration_file)

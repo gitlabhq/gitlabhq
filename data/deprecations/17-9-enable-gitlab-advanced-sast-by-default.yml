@@ -7,6 +7,7 @@
   stage: application security testing
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/513685
   impact: medium
+  check_impact: Refer to the [Understanding this change](https://gitlab.com/gitlab-org/gitlab/-/issues/513685#understanding-this-change) section for details.
   scope: instance
   resolution_role: Developer
   manual_task: true

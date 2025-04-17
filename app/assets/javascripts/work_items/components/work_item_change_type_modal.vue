@@ -6,13 +6,13 @@ import { __, s__, sprintf } from '~/locale';
 import { findDesignsWidget, getParentGroupName, isMilestoneWidget } from '~/work_items/utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
+  NAME_TO_TEXT_MAP,
   ALLOWED_CONVERSION_TYPES,
   sprintfWorkItem,
   WIDGET_TYPE_DESIGNS,
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_MILESTONE,
   WORK_ITEM_TYPE_NAME_EPIC,
-  WORK_ITEM_TYPE_NAME_MAP,
   WORK_ITEM_WIDGETS_NAME_MAP,
 } from '../constants';
 
@@ -151,16 +151,15 @@ export default {
       );
     },
     selectOptions() {
-      return [
-        {
-          id: null,
-          name: __('Select type'),
-        },
-        ...this.allowedConversionTypes,
-      ].map((item) => ({
-        text: item.text || item.name,
+      const selectOptions = this.allowedConversionTypes.map((item) => ({
+        text: item.text || NAME_TO_TEXT_MAP[item.name],
         value: item.id,
       }));
+      selectOptions.unshift({
+        text: __('Select type'),
+        value: null,
+      });
+      return selectOptions;
     },
     workItemsAlphaEnabled() {
       return this.glFeatures.workItemsAlpha;
@@ -372,7 +371,7 @@ export default {
             'WorkItem|%{workItemType} does not support the %{childItemType} child item types. Remove child items to change type.',
           ),
           {
-            workItemType: WORK_ITEM_TYPE_NAME_MAP[this.selectedWorkItemType.name],
+            workItemType: NAME_TO_TEXT_MAP[this.selectedWorkItemType.name],
             childItemType: this.allowedChildTypes?.[0]?.name?.toLocaleLowerCase(),
           },
         );

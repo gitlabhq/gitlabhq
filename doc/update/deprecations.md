@@ -358,17 +358,17 @@ If your pipeline relies on forwarding protected variables, update your configura
 
 </div>
 
-In GitLab 18.0, we will remove CodeClimate-based Code Quality scanning.
+In GitLab 19.0, we will remove CodeClimate-based Code Quality scanning.
 In its place, you should use quality tools directly in your CI/CD pipeline and [provide the tool's report as an artifact](https://docs.gitlab.com/ci/testing/code_quality/#import-code-quality-results-from-a-cicd-job).
 Many tools already support the required report format, and you can integrate them by following the [documented steps](https://docs.gitlab.com/ci/testing/code_quality/#integrate-common-tools-with-code-quality).
 
 We expect to implement this change by:
 
-1. Changing the [`Code-Quality.gitlab-ci.yml` CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml) to no longer execute scans. Today, this template runs CodeClimate-based scans. (We plan to change the template rather than delete it to reduce the impact on any pipelines that still `include` the template after 18.0.)
+1. Changing the [`Code-Quality.gitlab-ci.yml` CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml) to no longer execute scans. Today, this template runs CodeClimate-based scans. (We plan to change the template rather than delete it to reduce the impact on any pipelines that still `include` the template after 19.0.)
 1. No longer running CodeClimate-based scanning as part of Auto DevOps.
 
 Effective immediately, CodeClimate-based scanning will receive only [limited updates](https://docs.gitlab.com/update/terminology/#deprecation).
-After End of Support in GitLab 18.0, we won't provide further updates.
+After End of Support in GitLab 19.0, we won't provide further updates.
 However, we won't delete previously published container images or remove the ability to run them by using custom CI/CD pipeline job definitions.
 
 For more details, see [Scan code for quality violations](https://docs.gitlab.com/ci/testing/code_quality/#scan-code-for-quality-violations).

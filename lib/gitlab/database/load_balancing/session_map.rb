@@ -28,6 +28,10 @@ module Gitlab
           with_sessions(Gitlab::Database::LoadBalancing.base_models).ignore_writes(&)
         end
 
+        def self.use_replica_if_available(&)
+          with_sessions(Gitlab::Database::LoadBalancing.base_models).use_replicas_for_read_queries(&)
+        end
+
         def self.cached_instance
           RequestStore[CACHE_KEY] ||= new
         end

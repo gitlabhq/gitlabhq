@@ -14,7 +14,10 @@ module Glql
     # failures within the time window trigger throttling.
     def execute
       start_time = Gitlab::Metrics::System.monotonic_time
-      super
+
+      ::Gitlab::Database::LoadBalancing::SessionMap.use_replica_if_available do
+        super
+      end
     rescue StandardError => error
       # We catch all errors here so they are tracked by SLIs.
       # But we only increment the rate limiter failure count for ActiveRecord::QueryAborted.

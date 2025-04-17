@@ -22,11 +22,11 @@ class Namespace < ApplicationRecord
   include SafelyChangeColumnDefault
   include Todoable
 
-  ignore_column :unlock_membership_to_ldap, remove_with: '16.7', remove_after: '2023-11-16'
+  ignore_column :unlock_membership_to_ldap, remove_with: '18.1', remove_after: '2025-05-20'
 
   cross_database_ignore_tables %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424277'
 
-  ignore_column :emails_disabled, remove_with: '17.0', remove_after: '2024-04-24'
+  ignore_column :emails_disabled, remove_with: '18.1', remove_after: '2025-05-20'
 
   columns_changing_default :organization_id
 

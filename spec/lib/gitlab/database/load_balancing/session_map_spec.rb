@@ -114,7 +114,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SessionMap, feature_category: :d
     end
   end
 
-  describe '.without_sticky_writes' do
+  context 'when wrapping queries with load balancing sessions' do
     let(:dbs) { Gitlab::Database.database_base_models.values }
     let(:names) { dbs.map { |m| m.load_balancer.name }.uniq }
 
@@ -125,16 +125,28 @@ RSpec.describe Gitlab::Database::LoadBalancing::SessionMap, feature_category: :d
       # This makes the spec more robust in single-db scenarios
       allow(Gitlab::Database::LoadBalancing).to receive(:names).and_return([:main, :ci])
       described_class.current(::ApplicationRecord.load_balancer)
+
+      allow(Gitlab::Database::LoadBalancing::ScopedSessions)
+        .to receive(:new).with(names, RequestStore[described_class::CACHE_KEY].session_map).and_return(scoped_session)
     end
 
-    it 'initialises ScopedSessions with all valid lb names and calls ignore_writes' do
-      expect(Gitlab::Database::LoadBalancing::ScopedSessions)
-        .to receive(:new).with(names, RequestStore[described_class::CACHE_KEY].session_map).and_return(scoped_session)
+    describe '.without_sticky_writes' do
+      it 'initialises ScopedSessions with all valid lb names and calls ignore_writes' do
+        expect(scoped_session).to receive(:ignore_writes).and_yield
 
-      expect(scoped_session).to receive(:ignore_writes).and_yield
+        described_class.without_sticky_writes do
+          # exact logic for ignore_writes is tested in `.with_sessions` test suite
+        end
+      end
+    end
 
-      described_class.without_sticky_writes do
-        # exact logic for ignore_writes is tested in `.with_sessions` test suite
+    describe '.use_replica_if_available' do
+      it 'initialises ScopedSessions with all valid lb names and calls use_replicas_for_read_queries' do
+        expect(scoped_session).to receive(:use_replicas_for_read_queries).and_yield
+
+        described_class.use_replica_if_available do
+          # exact logic for use_replicas_for_read_queries is tested in `.with_sessions` test suite
+        end
       end
     end
   end

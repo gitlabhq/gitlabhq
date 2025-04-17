@@ -1018,6 +1018,9 @@ Gitlab.ee do
   Settings.cron_jobs['delete_expired_vulnerability_exports_worker'] ||= {}
   Settings.cron_jobs['delete_expired_vulnerability_exports_worker']['cron'] ||= '0 4 * * *'
   Settings.cron_jobs['delete_expired_vulnerability_exports_worker']['job_class'] = 'Vulnerabilities::DeleteExpiredExportsWorker'
+  Settings.cron_jobs['ai_duo_workflows_fail_stuck_workflows_worker'] ||= {}
+  Settings.cron_jobs['ai_duo_workflows_fail_stuck_workflows_worker']['cron'] ||= '*/30 * * * *'
+  Settings.cron_jobs['ai_duo_workflows_fail_stuck_workflows_worker']['job_class'] ||= 'Ai::DuoWorkflows::FailStuckWorkflowsWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}
