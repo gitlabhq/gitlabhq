@@ -884,6 +884,22 @@ The `Project.services` GraphQL field is deprecated. A `Project.integrations` fie
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### The `ci_job_token_scope_enabled` projects API attribute is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">16.4</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423091).
+
+</div>
+
+GitLab 16.1 introduced [API endpoints for the job token scope](https://gitlab.com/gitlab-org/gitlab/-/issues/351740). In the [projects API](https://docs.gitlab.com/api/projects/), the `ci_job_token_scope_enabled` attribute is deprecated, and will be removed in 17.0. You should use the [job token scope APIs](https://docs.gitlab.com/api/project_job_token_scopes/) instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### The `heroku/builder:22` image is deprecated
 
 <div class="deprecation-notes">
@@ -962,6 +978,22 @@ Known issues:
 
 The [ZenTao product integration](https://docs.gitlab.com/user/project/integrations/zentao/) has been deprecated
 and will be moved to the JiHu GitLab codebase.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
+### `ciJobTokenScopeAddProject` GraphQL mutation is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.5</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/474175).
+
+</div>
+
+With the [upcoming default behavior change to the CI/CD job token](https://docs.gitlab.com/update/deprecations/#default-cicd-job-token-ci_job_token-scope-changed) in GitLab 18.0, we are also deprecating the associated `ciJobTokenScopeAddProject` GraphQL mutation in favor of `ciJobTokenScopeAddGroupOrProject`.
 
 </div>
 
@@ -7944,46 +7976,6 @@ If you mirror the `agentk` container to a local registry, you should change your
 
 If you use the official [GitLab Agent Helm chart](https://gitlab.com/gitlab-org/charts/gitlab-agent/),
 the new `agentk` image will start deploying from the new location seamlessly in GitLab 18.0.
-
-</div>
-
-<div class="deprecation breaking-change">
-
-### The `ci_job_token_scope_enabled` projects API attribute is deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">16.4</span>
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423091).
-
-</div>
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
-
-GitLab 16.1 introduced [API endpoints for the job token scope](https://gitlab.com/gitlab-org/gitlab/-/issues/351740). In the [projects API](https://docs.gitlab.com/api/projects/), the `ci_job_token_scope_enabled` attribute is deprecated, and will be removed in 17.0. You should use the [job token scope APIs](https://docs.gitlab.com/api/project_job_token_scopes/) instead.
-
-</div>
-
-<div class="deprecation breaking-change">
-
-### `ciJobTokenScopeAddProject` GraphQL mutation is deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.5</span>
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/474175).
-
-</div>
-{{< alert type="note" >}}
-
-This change has been removed from its original milestone and is being reassessed.
-
-{{< /alert >}}
-
-With the [upcoming default behavior change to the CI/CD job token](https://docs.gitlab.com/update/deprecations/#default-cicd-job-token-ci_job_token-scope-changed) in GitLab 18.0, we are also deprecating the associated `ciJobTokenScopeAddProject` GraphQL mutation as the associated feature will be no longer be available.
 
 </div>
 

@@ -58,7 +58,7 @@ export default {
     <div class="issue-details issuable-details">
       <div
         v-if="modelVersion.descriptionHtml"
-        class="detail-page-description js-detail-page-description gl-pt-4"
+        class="detail-page-description js-detail-page-description"
       >
         <issuable-description
           data-testid="description"
@@ -67,6 +67,7 @@ export default {
           :can-edit="canEditRequirement"
           :data-update-url="dataUpdateUrl"
           :task-list-update-path="taskListUpdatePath"
+          class="gl-leading-20"
         />
       </div>
       <div v-else class="gl-text-subtle" data-testid="emptyDescriptionState">

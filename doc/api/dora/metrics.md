@@ -2,7 +2,7 @@
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: DevOps Research and Assessment (DORA) key metrics API
+title: DevOps Research and Assessment (DORA) metrics API
 ---
 
 {{< details >}}
@@ -12,9 +12,13 @@ title: DevOps Research and Assessment (DORA) key metrics API
 
 {{< /details >}}
 
-You can also retrieve [DORA metrics](../../user/analytics/dora_metrics.md) with the [GraphQL API](../graphql/reference/_index.md).
+Use this API to retrieve details of [DORA metrics](../../user/analytics/dora_metrics.md) for your groups and projects.
 
-All methods require at least the Reporter role.
+Additional endpoints are available with the [GraphQL API](../graphql/reference/_index.md).
+
+Prerequisites:
+
+- You must have at least the Reporter role.
 
 ## Get project-level DORA metrics
 

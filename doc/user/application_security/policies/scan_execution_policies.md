@@ -113,6 +113,7 @@ the following sections and tables provide an alternative.
 
 {{< history >}}
 
+- Feature flags for action limits [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/535605) in GitLab 18.0 [with flags](../../../administration/feature_flags.md) named `scan_execution_policy_action_limit` (for projects) and `scan_execution_policy_action_limit_group` (for groups).
 - Limit of actions per policy [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/472213) in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `scan_execution_policy_action_limit` (for projects) and `scan_execution_policy_action_limit_group` (for groups). Disabled by default.
 
 {{< /history >}}

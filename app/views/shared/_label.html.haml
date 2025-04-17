@@ -6,7 +6,7 @@
 - toggle_subscription_path = toggle_subscription_label_path(label, @project) if current_user
 - tooltip_title = label_status_tooltip(label, status) if status
 
-%li.js-label-list-item.gl-list-none.gl-border-b.last-of-type:gl-border-b-0{ id: label_css_id, data: { id: label.id } }
+%li.js-label-list-item.gl-list-none.gl-border-b.gl-border-section.last-of-type:gl-border-b-0{ id: label_css_id, data: { id: label.id } }
   .label-content.gl-pl-5.gl-pr-3.gl-py-4.gl-rounded-base{ class: "#{ 'gl-py-3' if force_priority }" }
     = render "shared/label_row", label: label, force_priority: force_priority
     %ul.label-actions-list

@@ -2,7 +2,7 @@
 stage: Monitor
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Error Tracking settings API
+title: Error Tracking API
 ---
 
 {{< details >}}
@@ -12,12 +12,15 @@ title: Error Tracking settings API
 
 {{< /details >}}
 
-## Error Tracking project settings
+Use this API to interact with the Error Tracking feature for projects. For more information, see [Error Tracking](../operations/error_tracking.md).
 
-The project settings API allows you to retrieve the [Error Tracking](../operations/error_tracking.md)
-settings for a project. Only for users with Maintainer role for the project.
+Prerequisites:
 
-### Get Error Tracking settings
+- You must have at least the Maintainer role.
+
+## Get Error Tracking settings
+
+Gets the Error Tracking settings for a specified project.
 
 ```plaintext
 GET /projects/:id/error_tracking/settings
@@ -44,7 +47,7 @@ Example response:
 }
 ```
 
-### Create Error Tracking settings
+## Create Error Tracking settings
 
 {{< history >}}
 
@@ -52,8 +55,7 @@ Example response:
 
 {{< /history >}}
 
-The API allows you to create Error Tracking settings for a project. Only for users with Maintainer role for
-the project.
+Creates Error Tracking settings for a specified project.
 
 {{< alert type="note" >}}
 
@@ -92,10 +94,9 @@ Example response:
 }
 ```
 
-### Enable or disable the Error Tracking project settings
+## Activate the Error Tracking project settings
 
-The API allows you to enable or disable the Error Tracking settings for a project. Only for users with the
-Maintainer role for the project.
+Activates or deactivates Error Tracking settings for a specified project.
 
 ```plaintext
 PATCH /projects/:id/error_tracking/settings
@@ -124,12 +125,9 @@ Example response:
 }
 ```
 
-## Error Tracking client keys
+## List all project client keys
 
-For [integrated error tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/329596) feature. Only for users with the
-Maintainer role for the project.
-
-### List project client keys
+Lists all [integrated error tracking](../operations/integrated_error_tracking.md) client keys for a specified project.
 
 ```plaintext
 GET /projects/:id/error_tracking/client_keys
@@ -163,9 +161,9 @@ Example response:
 ]
 ```
 
-### Create a client key
+## Create a client key
 
-Creates a new client key for a project. The public key attribute is generated automatically.
+Creates an [integrated error tracking](../operations/integrated_error_tracking.md) client key for a specified project. The public key attribute is generated automatically.
 
 ```plaintext
 POST /projects/:id/error_tracking/client_keys
@@ -193,9 +191,9 @@ Example response:
 }
 ```
 
-### Delete a client key
+## Delete a client key
 
-Removes a client key from the project.
+Deletes an [integrated error tracking](../operations/integrated_error_tracking.md) client key from a specified project.
 
 ```plaintext
 DELETE /projects/:id/error_tracking/client_keys/:key_id

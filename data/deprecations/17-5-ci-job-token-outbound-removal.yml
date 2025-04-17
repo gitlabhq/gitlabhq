@@ -2,22 +2,21 @@
 
 - title: "`ciJobTokenScopeAddProject` GraphQL mutation is deprecated"
   # The milestones for the deprecation announcement, and the removal.
-  removal_milestone: "Pending"
+  removal_milestone: "19.0"
   announcement_milestone: "17.5"
   # Change breaking_change to false if needed.
   breaking_change: true
   # The stage and GitLab username of the person reporting the change,
   # and a link to the deprecation issue
-  window: 3
   reporter: jocelynjane
-  stage: Govern
+  stage: Software Supply Chain Security
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/474175
   impact: low  # Can be one of: [critical, high, medium, low]
   scope: project  # Can be one or a combination of: [instance, group, project]
   resolution_role: Developer  # Can be one of: [Admin, Owner, Maintainer, Developer]
   manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   body: |  # (required) Don't change this line.
-    With the [upcoming default behavior change to the CI/CD job token](https://docs.gitlab.com/update/deprecations/#default-cicd-job-token-ci_job_token-scope-changed) in GitLab 18.0, we are also deprecating the associated `ciJobTokenScopeAddProject` GraphQL mutation as the associated feature will be no longer be available.
+    With the [upcoming default behavior change to the CI/CD job token](https://docs.gitlab.com/update/deprecations/#default-cicd-job-token-ci_job_token-scope-changed) in GitLab 18.0, we are also deprecating the associated `ciJobTokenScopeAddProject` GraphQL mutation in favor of `ciJobTokenScopeAddGroupOrProject`.
 
 # ==============================
 # OPTIONAL END-OF-SUPPORT FIELDS

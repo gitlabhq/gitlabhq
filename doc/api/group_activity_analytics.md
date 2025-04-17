@@ -2,7 +2,7 @@
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Group Activity Analytics API
+title: Group activity analytics API
 ---
 
 {{< details >}}
@@ -11,6 +11,8 @@ title: Group Activity Analytics API
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
+
+Use this API to retrieve information about group activities. For more information, see [group activity analytics](../user/group/manage.md#group-activity-analytics).
 
 ## Get count of recently created issues for group
 

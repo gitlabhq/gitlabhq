@@ -6,7 +6,7 @@ description: Documentation for the REST API for Code Suggestions.
 title: Code Suggestions API
 ---
 
-Use the Code Suggestions API to access the Code Suggestions feature.
+Use this API to access the [Code Suggestions](../user/project/repository/code_suggestions/_index.md) feature.
 
 ## Generate code completions
 

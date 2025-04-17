@@ -128,7 +128,7 @@ export default {
         this.protectionRulesQueryPageInfo.hasNextPage
       );
     },
-    showTopLevelLoadingIcon() {
+    showTopLevelLoading() {
       return this.isLoadingprotectionRules && !this.containsTableItems;
     },
     containerRepositoryMinimumAccessLevelOptions() {
@@ -293,7 +293,7 @@ export default {
       ref="containerProtectionCrud"
       :title="$options.i18n.settingBlockTitle"
       :description="$options.i18n.settingBlockDescription"
-      :is-loading="showTopLevelLoadingIcon"
+      :is-loading="showTopLevelLoading"
       :toggle-text="s__('ContainerRegistry|Add protection rule')"
     >
       <template #form>

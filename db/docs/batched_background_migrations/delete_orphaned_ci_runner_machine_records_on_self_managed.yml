@@ -1,0 +1,11 @@
+---
+migration_job_name: DeleteOrphanedCiRunnerMachineRecordsOnSelfManaged
+description: >
+  Removes ci_runner_machines records that don't have a matching ci_runners record.
+  This can happen because there was a period in time where a FK didn't exist.
+  The equivalent operation has already been done on .com by 20241112165507
+feature_category: fleet_visibility
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188083
+milestone: '18.0'
+queued_migration_version: 20250414101015
+finalized_by: # version of the migration that finalized this BBM

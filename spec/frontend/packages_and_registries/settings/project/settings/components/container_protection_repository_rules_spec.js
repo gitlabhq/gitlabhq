@@ -95,7 +95,7 @@ describe('Container protection repository rules project settings', () => {
     });
   };
 
-  it('renders the setting block with table', async () => {
+  it('renders the setting block with title, description and table', async () => {
     createComponent();
 
     await waitForPromises();
@@ -103,6 +103,8 @@ describe('Container protection repository rules project settings', () => {
     expect(findCrudComponent().props()).toMatchObject({
       title: 'Protected container repositories',
       toggleText: 'Add protection rule',
+      description:
+        'When a container repository is protected, only users with specific roles can push and delete container images. This helps prevent unauthorized modifications.',
     });
     expect(findTable().exists()).toBe(true);
   });

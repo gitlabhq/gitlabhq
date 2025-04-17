@@ -165,18 +165,4 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
       end
     end
   end
-
-  describe '#permanent_deletion_date' do
-    let(:date) { Time.current }
-    let(:adjourned_period) { 7 }
-
-    before do
-      stub_application_setting(deletion_adjourned_period: adjourned_period)
-    end
-
-    it 'returns the date plus the configured adjourned period in days', :freeze_time do
-      expected_date = date + adjourned_period.days
-      expect(project.permanent_deletion_date(date)).to eq(expected_date)
-    end
-  end
 end

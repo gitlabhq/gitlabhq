@@ -2,7 +2,7 @@
 stage: Fulfillment
 group: Utilization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: License
+title: License API
 ---
 
 {{< details >}}
@@ -12,8 +12,11 @@ title: License
 
 {{< /details >}}
 
-To interact with license endpoints, you need to authenticate yourself as an
-administrator.
+Use this API to interact with license endpoints. For more information, see [activate GitLab EE with a license file or key](../administration/license_file.md).
+
+Prerequisites:
+
+- You must have administrator access to the instance.
 
 ## Retrieve information about the current license
 

@@ -30,10 +30,6 @@ module Namespaces
       ancestors(hierarchy_order: :asc).joins(:deletion_schedule).first
     end
 
-    def permanent_deletion_date(date)
-      date + deletion_adjourned_period.days
-    end
-
     def deletion_adjourned_period
       ::Gitlab::CurrentSettings.deletion_adjourned_period
     end

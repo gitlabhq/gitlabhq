@@ -260,7 +260,7 @@ export default {
           <template #metadata-versions-count>
             <div
               v-if="showCreatedDetail"
-              class="detail-page-header-body mb-3 gl-flex-wrap gl-gap-x-2"
+              class="detail-page-header-body gl-flex-wrap gl-gap-x-2"
               data-testid="metadata"
             >
               <gl-icon name="machine-learning" />
@@ -300,7 +300,7 @@ export default {
     <div class="gl-grid gl-gap-3 md:gl-grid-cols-4">
       <div class="md:gl-col-span-3 md:gl-pr-8">
         <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
-          <gl-tabs class="gl-mt-4" :value="tabIndex">
+          <gl-tabs :value="tabIndex">
             <gl-tab
               :title="$options.i18n.tabs.modelVersionCard"
               @click="goTo($options.ROUTE_DETAILS)"
@@ -315,12 +315,13 @@ export default {
               :title="$options.i18n.tabs.performance"
               @click="goTo($options.ROUTE_PERFORMANCE)"
             />
+
+            <router-view :model-version="modelVersion" import-path allow-artifact-import />
           </gl-tabs>
-          <router-view :model-version="modelVersion" import-path allow-artifact-import />
         </load-or-error-or-show>
       </div>
 
-      <div class="gl-pt-6 md:gl-col-span-1">
+      <div class="gl-pt-4 md:gl-col-span-1">
         <div class="gl-text-lg gl-font-bold">{{ $options.i18n.authorTitle }}</div>
         <div class="gl-mt-3 gl-text-subtle" data-testid="sidebar-author">
           <gl-link

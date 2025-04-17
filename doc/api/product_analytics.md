@@ -32,6 +32,8 @@ This feature is not ready for production use.
 
 {{< /alert >}}
 
+Use this API to track user behavior and application usage. For more information, see [product analytics](../development/internal_analytics/product_analytics.md).
+
 {{< alert type="note" >}}
 
 Make sure to define the `cube_api_base_url` and `cube_api_key` application settings first using [the API](settings.md).

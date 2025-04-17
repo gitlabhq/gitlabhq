@@ -90,13 +90,15 @@ describe('Packages protection rules project settings', () => {
     });
   };
 
-  it('renders the crud component with table', async () => {
+  it('renders the crud component with title, description and table', async () => {
     createComponent();
 
     await waitForPromises();
 
     expect(findCrudComponent().props()).toMatchObject({
       title: 'Protected packages',
+      description:
+        'When a package is protected, only certain user roles can push, update, and delete the protected package, which helps to avoid tampering with the package.',
       toggleText: 'Add protection rule',
     });
     expect(findTable().exists()).toBe(true);

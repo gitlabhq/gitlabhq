@@ -5,6 +5,7 @@ import ModelVersionArtifacts from '~/ml/model_registry/components/model_version_
 import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
 import ImportArtifactZone from '~/ml/model_registry/components/import_artifact_zone.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import getPackageFiles from '~/packages_and_registries/package_registry/graphql/queries/get_package_files.query.graphql';
 import { packageFilesQuery } from 'jest/packages_and_registries/package_registry/mock_data';
 import { modelVersionWithCandidate } from '../graphql_mock_data';
@@ -38,6 +39,7 @@ const createWrapper = (modelVersion = modelVersionWithCandidate, props = {}, pro
     },
     stubs: {
       PackageFiles,
+      CrudComponent,
     },
   });
 };

@@ -353,7 +353,7 @@ Example response:
   "silent_mode_enabled": false,
   "security_policy_global_group_approvers_enabled": true,
   "security_approval_policies_limit": 5,
-  "scan_execution_policies_action_limit": 10,
+  "scan_execution_policies_action_limit": 0,
   "scan_execution_policies_schedule_limit": 0,
   "package_registry_allow_anyone_to_pull_option": true,
   "bulk_import_max_download_file_size": 5120,
@@ -694,7 +694,7 @@ to configure other related settings. These requirements are
 | `session_expire_from_init`               | boolean          | no                                   | If `true`, sessions expire a number of minutes after the session was created rather than after the last activity. This lifetime of a session is defined by `session_expire_delay`. |
 | `security_policy_global_group_approvers_enabled` | boolean  | no                                   | Whether to look up merge request approval policy approval groups globally or within project hierarchies. |
 | `security_approval_policies_limit`       | integer          | no                                   | Maximum number of active merge request approval policies per security policy project. Default: 5. Maximum: 20 |
-| `scan_execution_policies_action_limit`   | integer          | no                                   | Maximum number of `actions` per scan execution policy. Default: 10 from GitLab 18.0. Maximum: 20 |
+| `scan_execution_policies_action_limit`   | integer          | no                                   | Maximum number of `actions` per scan execution policy. Default: 0. Maximum: 20 |
 | `scan_execution_policies_schedule_limit` | integer          | no                                   | Maximum number of `type: schedule` rules per scan execution policy. Default: 0. Maximum: 20 |
 | `security_txt_content`                    | string          | no                                   | [Public security contact information](../administration/settings/security_contact_information.md). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433210) in GitLab 16.7. |
 | `service_access_tokens_expiration_enforced` | boolean       | no                                   | Flag to indicate if token expiry date can be optional for service account users |

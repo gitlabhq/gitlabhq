@@ -12,8 +12,8 @@ title: Users API
 
 {{< /details >}}
 
-You can [manage your account](../user/profile/_index.md) and
-[manage other users](../user/profile/account/create_accounts.md) by using the REST API.
+Use this API to interact with user accounts on GitLab. These endpoints can help manage [your account](../user/profile/_index.md) or
+[accounts for other users](../administration/administer_users.md).
 
 ## List users
 

@@ -370,7 +370,7 @@ export default {
     :title="__('Assets')"
     :count="filesTableRows.length"
     icon="doc-compressed"
-    class="gl-mt-6"
+    class="gl-mt-5"
   >
     <template #actions>
       <gl-button
@@ -501,15 +501,19 @@ export default {
           </div>
         </template>
       </gl-table>
-      <div class="gl-flex gl-justify-center">
-        <gl-keyset-pagination
-          :disabled="isLoading"
-          v-bind="pageInfo"
-          class="gl-mt-3"
-          @prev="fetchPreviousFilesPage"
-          @next="fetchNextFilesPage"
-        />
-      </div>
+    </template>
+
+    <template #pagination>
+      <gl-keyset-pagination
+        :disabled="isLoading"
+        v-bind="pageInfo"
+        class="gl-mt-3"
+        @prev="fetchPreviousFilesPage"
+        @next="fetchNextFilesPage"
+      />
+    </template>
+
+    <template #footer>
       <slot name="upload" :refetch="refetchPackageFiles"></slot>
     </template>
 
