@@ -29,7 +29,7 @@ describe('CRUD Component', () => {
   const findFormToggle = () => wrapper.findByTestId('crud-form-toggle');
   const findActions = () => wrapper.findByTestId('crud-actions');
   const findForm = () => wrapper.findByTestId('crud-form');
-  const findLoadingIcon = () => wrapper.findByTestId('crud-loading');
+  const findSkeletonLoader = () => wrapper.findByTestId('crud-loading');
   const findEmpty = () => wrapper.findByTestId('crud-empty');
   const findBody = () => wrapper.findByTestId('crud-body');
   const findFooter = () => wrapper.findByTestId('crud-footer');
@@ -111,21 +111,23 @@ describe('CRUD Component', () => {
   it("doesn't render content while loading", () => {
     createComponent({ isLoading: true }, { default: '<p>Body slot</p>' });
 
-    expect(findLoadingIcon().exists()).toBe(true);
+    expect(findSkeletonLoader().exists()).toBe(true);
+    expect(findCount().exists()).toBe(false);
+    expect(findIcon().exists()).toBe(false);
     expect(findBody().text()).toBe('');
   });
 
   it('renders `empty` slot', () => {
     createComponent({}, { empty: '<span>Empty message</span>' });
 
-    expect(findLoadingIcon().exists()).toBe(false);
+    expect(findSkeletonLoader().exists()).toBe(false);
     expect(findEmpty().text()).toBe('Empty message');
   });
 
   it('renders `body` slot', () => {
     createComponent({}, { default: '<p>Body slot</p>' });
 
-    expect(findLoadingIcon().exists()).toBe(false);
+    expect(findSkeletonLoader().exists()).toBe(false);
     expect(findBody().text()).toBe('Body slot');
   });
 

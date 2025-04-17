@@ -9,7 +9,13 @@ export default () => {
     return null;
   }
 
-  const { url: initialUrl, urlVariables, customHeaders } = el.dataset;
+  const {
+    name: initialName,
+    description: initialDescription,
+    url: initialUrl,
+    urlVariables,
+    customHeaders,
+  } = el.dataset;
 
   return new Vue({
     el,
@@ -17,6 +23,8 @@ export default () => {
     render(createElement) {
       return createElement(WebhookFormApp, {
         props: {
+          initialName,
+          initialDescription,
           initialUrl,
           initialUrlVariables: JSON.parse(urlVariables),
           initialCustomHeaders: JSON.parse(customHeaders),

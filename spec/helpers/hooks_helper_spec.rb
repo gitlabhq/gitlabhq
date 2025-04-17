@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe HooksHelper do
+RSpec.describe HooksHelper, feature_category: :integrations do
   let(:project) { build_stubbed(:project) }
   let(:project_hook) { build_stubbed(:project_hook, project: project) }
   let(:service_hook) { build_stubbed(:service_hook, integration: build_stubbed(:drone_ci_integration)) }
@@ -14,6 +14,8 @@ RSpec.describe HooksHelper do
     context 'when there are no URL variables' do
       it 'returns proper data' do
         expect(subject).to match(
+          name: project_hook.name,
+          description: project_hook.description,
           url: project_hook.url,
           url_variables: "[]",
           custom_headers: "[]"
@@ -26,6 +28,8 @@ RSpec.describe HooksHelper do
 
       it 'returns proper data' do
         expect(subject).to match(
+          name: project_hook.name,
+          description: project_hook.description,
           url: project_hook.url,
           url_variables: Gitlab::Json.dump([{ key: 'abc' }, { key: 'def' }]),
           custom_headers: "[]"
@@ -38,6 +42,8 @@ RSpec.describe HooksHelper do
 
       it 'returns proper data' do
         expect(subject).to match(
+          name: project_hook.name,
+          description: project_hook.description,
           url: project_hook.url,
           url_variables: "[]",
           custom_headers: Gitlab::Json.dump([{ key: 'test', value: WebHook::SECRET_MASK }])

@@ -1,5 +1,28 @@
 # Getting started
 
+## Unit Primitives
+
+See [glossary](../../../doc/development/ai_features/glossary.md#unit-primitive) for what a unit primitive is.
+
+Consider creating separate unit primitives (e.g., `semantic_search_code`, `semantic_search_issue`, `semantic_search_documentation`) when:
+
+- Different features will exist in different product tiers
+- You need different entitlements for different search types
+- You plan to package sub-features separately
+- You require more granular end-user permissions
+- You need to track usage separately for billing purposes
+
+Use a single unit primitive (e.g., `semantic_search`) when:
+
+- All features share the same entitlement level
+- There's no need for tier-specific access control
+- You want to reduce implementation complexity
+- The feature is still in flux or experimental
+
+Keep in mind that splitting or adding primitives increases implementation effort. See [documentation](../../../doc/development/cloud_connector/configuration.md).
+
+Follow the [Cloud Connector guidance for adding a new feature](https://docs.gitlab.com/development/cloud_connector/#register-new-feature-for-gitlab-self-managed-dedicated-and-gitlabcom-customers).
+
 ## Configuration
 
 Add an initializer with the following options:

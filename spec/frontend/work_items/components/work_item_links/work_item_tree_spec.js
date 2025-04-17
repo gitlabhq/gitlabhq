@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert } from '@gitlab/ui';
 import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/namespace_work_item_types.query.graphql.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -56,7 +56,6 @@ describe('WorkItemTree', () => {
     .mockResolvedValue(namespaceWorkItemTypesQueryResponse);
 
   const findEmptyState = () => wrapper.findByTestId('crud-empty');
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findToggleFormSplitButton = () => wrapper.findComponent(WorkItemActionsSplitButton);
   const findForm = () => wrapper.findComponent(WorkItemLinksForm);
   const findErrorMessage = () => wrapper.findComponent(GlAlert);
@@ -127,7 +126,7 @@ describe('WorkItemTree', () => {
   it('displays loading-icon while children are being loaded', () => {
     createComponent();
 
-    expect(findLoadingIcon().exists()).toBe(true);
+    expect(findCrudComponent().props('isLoading')).toBe(true);
   });
 
   it('renders hierarchy widget children container', async () => {

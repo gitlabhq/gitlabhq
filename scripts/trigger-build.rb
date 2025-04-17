@@ -551,7 +551,13 @@ module Trigger
         false
       end
 
-      existing_tags.keys
+      jobs_to_skip = existing_tags.keys
+      return jobs_to_skip unless jobs == jobs_to_skip
+
+      # Trigger job will fail with no error message if downstream pipeline has no jobs or only skipped/manual jobs.
+      # Trigger gitlab-rails job if that is the case for downstream pipeline to work correctly.
+      logger.warn("Retaining gitlab-rails job to avoid empty downstream pipeline to not fail trigger job!")
+      jobs_to_skip.reject { |name| name.start_with?("gitlab-rails") }
     end
 
     # rubocop:disable Gitlab/HTTParty -- CI script

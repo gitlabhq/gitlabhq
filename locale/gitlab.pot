@@ -42047,6 +42047,9 @@ msgstr ""
 msgid "One and only one of %{params} is required"
 msgstr ""
 
+msgid "One and only one of [cn, filter] arguments is required"
+msgstr ""
+
 msgid "One more item"
 msgid_plural "%d more items"
 msgstr[0] ""

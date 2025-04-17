@@ -19770,9 +19770,9 @@ CREATE TABLE packages_terraform_module_metadata (
     fields jsonb NOT NULL,
     semver_major integer,
     semver_minor integer,
-    semver_patch integer,
+    semver_patch_convert_to_bigint integer,
     semver_prerelease text,
-    semver_patch_convert_to_bigint bigint,
+    semver_patch bigint,
     CONSTRAINT check_46aa6c883a CHECK ((char_length(semver_prerelease) <= 255)),
     CONSTRAINT chk_rails_49f7b485ae CHECK ((char_length((fields)::text) <= 10485760))
 );

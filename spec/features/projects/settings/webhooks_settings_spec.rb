@@ -71,6 +71,8 @@ RSpec.describe 'Projects > Settings > Webhook Settings', feature_category: :webh
         visit webhooks_path
 
         click_link 'Edit'
+        fill_in 'Name (optional)', with: 'Existing project hook'
+        fill_in 'Description (optional)', with: 'An existing project hook for testing'
         fill_in 'URL', with: url
         check 'Enable SSL verification'
         click_button 'Save changes'

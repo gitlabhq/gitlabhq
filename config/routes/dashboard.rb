@@ -13,7 +13,11 @@ resource :dashboard, controller: 'dashboard', only: [] do
     resources :milestones, only: [:index]
     resources :labels, only: [:index]
 
-    resources :groups, only: [:index]
+    resources :groups, only: [:index] do
+      collection do
+        get :member, :inactive, to: 'groups#index'
+      end
+    end
     resources :snippets, only: [:index]
 
     resources :todos, only: [:index, :destroy]

@@ -48,6 +48,8 @@ RSpec.describe 'Admin::Hooks', feature_category: :webhooks do
       visit admin_hooks_path
 
       click_button 'Add new webhook'
+      fill_in 'Name (optional)', with: 'New system hook'
+      fill_in 'Description (optional)', with: 'A new system hook for testing'
       fill_in 'hook_url', with: url
       check 'Enable SSL verification'
 
@@ -66,6 +68,8 @@ RSpec.describe 'Admin::Hooks', feature_category: :webhooks do
       visit admin_hooks_path
 
       click_link 'Edit'
+      fill_in 'Name (optional)', with: 'Existing system hook'
+      fill_in 'Description (optional)', with: 'An existing system hook for testing'
       fill_in 'hook_url', with: new_url
       check 'Enable SSL verification'
       click_button 'Save changes'

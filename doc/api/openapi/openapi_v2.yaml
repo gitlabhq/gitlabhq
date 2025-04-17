@@ -50208,7 +50208,16 @@ definitions:
         example: '2017-05-19T13:40:17.727Z'
       owner:
         "$ref": "#/definitions/API_Entities_UserBasic"
+      inputs:
+        "$ref": "#/definitions/API_Entities_Ci_Input"
     description: API_Entities_Ci_PipelineSchedule model
+  API_Entities_Ci_Input:
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        type: string
   API_Entities_Ci_PipelineScheduleDetails:
     type: object
     properties:
@@ -50245,6 +50254,8 @@ definitions:
         example: '2017-05-19T13:40:17.727Z'
       owner:
         "$ref": "#/definitions/API_Entities_UserBasic"
+      inputs:
+        "$ref": "#/definitions/API_Entities_Ci_Input"
       last_pipeline:
         "$ref": "#/definitions/API_Entities_Ci_PipelineBasic"
       variables:
@@ -50275,6 +50286,30 @@ definitions:
         description: The activation of pipeline schedule
         default: true
         example: true
+      inputs:
+        type: array
+        description: Inputs for the pipeline schedule
+        example:
+        - name: array_input
+          value:
+          - 1
+          - 2
+        - name: boolean_input
+          value: true
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The name of the input
+              example: deploy_strategy
+            value:
+              type: string
+              description: The value of the input
+              example: blue-green
+          required:
+          - name
+          - value
     required:
     - description
     - ref
@@ -50303,6 +50338,30 @@ definitions:
         type: boolean
         description: The activation of pipeline schedule
         example: true
+      inputs:
+        type: array
+        description: Inputs for the pipeline schedule
+        example:
+        - name: deploy_strategy
+          value: blue-green
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The name of the input
+              example: deploy_strategy
+            destroy:
+              type: boolean
+              description: Whether to delete the input
+              default: false
+            value:
+              type: string
+              description: The value of the input
+              example: blue-green
+          required:
+          - name
+          - value
     description: Edit a pipeline schedule
   postApiV4ProjectsIdPipelineSchedulesPipelineScheduleIdVariables:
     type: object

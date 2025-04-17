@@ -386,6 +386,58 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
         end
       end
 
+      context 'with inputs' do
+        let(:input_params) do
+          attributes_for(:ci_pipeline_schedule).merge(
+            inputs: [
+              { name: 'STRING_INPUT', value: 'string value' },
+              { name: 'BOOL_INPUT', value: true },
+              { name: 'NUMBER_INPUT', value: 42 },
+              { name: 'ARRAY_INPUT', value: %w[one two three] },
+              { name: 'COMPLEX_ARRAY', value: [{ foo: 1 }, { bar: 2 }] }
+            ]
+          )
+        end
+
+        it 'creates pipeline_schedule with inputs' do
+          expect do
+            post api("/projects/#{project.id}/pipeline_schedules", developer),
+              params: input_params
+          end.to change { project.pipeline_schedules.count }.by(1)
+             .and change { Ci::PipelineScheduleInput.count }.by(5)
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(response).to match_response_schema('pipeline_schedule')
+
+          schedule = Ci::PipelineSchedule.last
+          expect(schedule.inputs.count).to eq(5)
+          expect(schedule.inputs.find_by(name: 'BOOL_INPUT').value).to be_truthy
+          expect(schedule.inputs.find_by(name: 'NUMBER_INPUT').value).to eq('42')
+          expect(schedule.inputs.find_by(name: 'ARRAY_INPUT').value).to match_array(%w[one two three])
+          expect(schedule.inputs.find_by(name: 'COMPLEX_ARRAY').value).to match_array([{ 'foo' => '1', 'bar' => '2' }])
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ci_inputs_for_pipelines: false)
+          end
+
+          it 'creates pipeline_schedule without inputs' do
+            expect do
+              post api("/projects/#{project.id}/pipeline_schedules", developer),
+                params: input_params
+            end.to change { project.pipeline_schedules.count }.by(1)
+               .and not_change { Ci::PipelineScheduleInput.count }
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(response).to match_response_schema('pipeline_schedule')
+
+            schedule = Ci::PipelineSchedule.last
+            expect(schedule.inputs).to be_empty
+          end
+        end
+      end
+
       context 'when ref has validation error' do
         it 'does not create pipeline_schedule' do
           post api("/projects/#{project.id}/pipeline_schedules", developer),
@@ -427,6 +479,77 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('pipeline_schedule')
         expect(json_response['cron']).to eq('1 2 3 4 *')
+      end
+
+      context 'with inputs' do
+        let!(:pipeline_schedule_input) do
+          create(:ci_pipeline_schedule_input,
+            name: 'EXISTING_INPUT',
+            value: 'old_value',
+            pipeline_schedule: pipeline_schedule)
+        end
+
+        it 'adds a new input' do
+          expect do
+            put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
+              params: { inputs: [{ name: 'NEW_INPUT', value: 'new_value' }] }
+          end.to change { pipeline_schedule.inputs.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(pipeline_schedule.inputs.find_by(name: 'NEW_INPUT').value).to eq('new_value')
+        end
+
+        it 'updates an existing input' do
+          expect do
+            put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
+              params: { inputs: [{ name: 'EXISTING_INPUT', value: 'updated_value' }] }
+          end.not_to change { pipeline_schedule.inputs.count }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(pipeline_schedule.inputs.find_by(name: 'EXISTING_INPUT').value).to eq('updated_value')
+        end
+
+        it 'deletes an existing input' do
+          expect do
+            put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
+              params: { inputs: [{ name: 'EXISTING_INPUT', destroy: true }] }
+          end.to change { pipeline_schedule.inputs.count }.by(-1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(pipeline_schedule.inputs.find_by(name: 'EXISTING_INPUT')).to be_nil
+        end
+
+        it 'performs multiple operations at once' do
+          expect do
+            put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
+              params: {
+                inputs: [
+                  { name: 'EXISTING_INPUT', value: 'updated_value' },
+                  { name: 'NEW_INPUT', value: 'brand_new' },
+                  { name: 'TO_DELETE', value: 'anything', destroy: true }
+                ]
+              }
+          end.to change { pipeline_schedule.inputs.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(pipeline_schedule.inputs.find_by(name: 'EXISTING_INPUT').value).to eq('updated_value')
+          expect(pipeline_schedule.inputs.find_by(name: 'NEW_INPUT').value).to eq('brand_new')
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ci_inputs_for_pipelines: false)
+          end
+
+          it 'ignores input parameters' do
+            expect do
+              put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
+                params: { inputs: [{ name: 'NEW_INPUT', value: 'new_value' }] }
+            end.not_to change { pipeline_schedule.inputs.count }
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
       end
 
       context 'when cron has validation error' do

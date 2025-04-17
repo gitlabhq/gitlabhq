@@ -523,12 +523,23 @@ RSpec.describe Trigger, feature_category: :tooling do
           }
         end
 
+        let(:base_tag) { "32a931c622f7ef7728bf8255cca9e8a46d472e85" }
+        let(:rails_tag) { "583f93fe69560d7b158073a17a58e723aea598a3" }
+
+        let(:registry_repositories_response) do
+          double(auto_paginate: [
+            double(name: 'registry/gitlab-base', id: 1), double(name: 'registry/gitlab-rails-ee', id: 2)
+          ])
+        end
+
         before do
           stub_env('CNG_SKIP_REDUNDANT_JOBS', 'true')
           stub_env('CNG_BRANCH', ref)
           stub_env('CNG_PROJECT_PATH', downstream_project_path)
           stub_env('CI_PROJECT_PATH_SLUG', 'project-path')
           stub_env('GITLAB_DEPENDENCY_PROXY', '')
+
+          allow(Trigger).to receive(:ee?).and_return(true)
 
           # mock repo tree and file fetching
           allow(downstream_gitlab_client).to receive(:repo_tree).with(
@@ -569,31 +580,36 @@ RSpec.describe Trigger, feature_category: :tooling do
               "ALPINE_DIGEST" => image_digest
             }),
             /bash -c 'source (\S+) && get_all_versions'/
-          ).and_return(["gitlab-base=32a931c622f7ef7728bf8255cca9e8a46d472e85\n", double(success?: true)])
+          ).and_return(["gitlab-base=#{base_tag}\ngitlab-rails-ee=#{rails_tag}\n", double(success?: true)])
 
           # mock existing tag check
           allow(downstream_gitlab_client).to receive(:registry_repositories).with(
-            downstream_project_path,
-            per_page: 100
-          ).and_return(double(auto_paginate: [double(name: 'registry/gitlab-base', id: 1)]))
+            downstream_project_path, per_page: 100
+          ).and_return(registry_repositories_response)
           allow(downstream_gitlab_client).to receive(:registry_repository_tag).with(
-            downstream_project_path,
-            1,
-            "32a931c622f7ef7728bf8255cca9e8a46d472e85"
+            downstream_project_path, 2, rails_tag
           ).and_return({})
         end
 
-        it 'includes additional variables for skipping redundant jobs' do
-          expect(subject.variables).to include({
-            "SKIP_IMAGE_TAGGING" => "true",
-            "SKIP_JOB_REGEX" => "/final-images-listing|alpine-stable|debian-stable|gitlab-base/",
-            "DEBIAN_IMAGE" => "#{debian_image}@#{image_digest}",
-            "DEBIAN_DIGEST" => image_digest,
-            "DEBIAN_BUILD_ARGS" => "--build-arg DEBIAN_IMAGE=#{debian_image}@#{image_digest}",
-            "ALPINE_IMAGE" => "#{alpine_image}@#{image_digest}",
-            "ALPINE_DIGEST" => image_digest,
-            "ALPINE_BUILD_ARGS" => "--build-arg ALPINE_IMAGE=#{alpine_image}@#{image_digest}"
-          })
+        context "when all of the jobs would be skipped" do
+          before do
+            allow(downstream_gitlab_client).to receive(:registry_repository_tag).with(
+              downstream_project_path, 1, base_tag
+            ).and_return({})
+          end
+
+          it 'does not skip gitlab-rails job' do
+            expect(subject.variables).to include({
+              "SKIP_IMAGE_TAGGING" => "true",
+              "SKIP_JOB_REGEX" => "/final-images-listing|alpine-stable|debian-stable|gitlab-base/",
+              "DEBIAN_IMAGE" => "#{debian_image}@#{image_digest}",
+              "DEBIAN_DIGEST" => image_digest,
+              "DEBIAN_BUILD_ARGS" => "--build-arg DEBIAN_IMAGE=#{debian_image}@#{image_digest}",
+              "ALPINE_IMAGE" => "#{alpine_image}@#{image_digest}",
+              "ALPINE_DIGEST" => image_digest,
+              "ALPINE_BUILD_ARGS" => "--build-arg ALPINE_IMAGE=#{alpine_image}@#{image_digest}"
+            })
+          end
         end
 
         context 'when tag does not exist in repository' do
@@ -606,14 +622,14 @@ RSpec.describe Trigger, feature_category: :tooling do
           end
 
           before do
-            allow(downstream_gitlab_client).to receive(:registry_repository_tag).and_raise(
-              Gitlab::Error::NotFound.new(response)
-            )
+            allow(downstream_gitlab_client).to receive(:registry_repository_tag).with(
+              downstream_project_path, 1, base_tag
+            ).and_raise(Gitlab::Error::NotFound.new(response))
           end
 
           it 'does not skip jobs with non existing tags' do
             expect(subject.variables).to include({
-              "SKIP_JOB_REGEX" => "/final-images-listing|alpine-stable|debian-stable/"
+              "SKIP_JOB_REGEX" => "/final-images-listing|alpine-stable|debian-stable|gitlab-rails-ee/"
             })
           end
         end

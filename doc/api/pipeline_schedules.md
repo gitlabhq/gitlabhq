@@ -104,6 +104,16 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
             "value": "TEST_1",
             "raw": false
         }
+    ],
+    "inputs": [
+        {
+            "name": "deploy_strategy",
+            "value": "blue-green"
+        },
+        {
+            "name": "feature_flags",
+            "value": ["flag1", "flag2"]
+        }
     ]
 }
 ```
@@ -168,6 +178,12 @@ Example response:
 
 ## Create a new pipeline schedule
 
+{{< history >}}
+
+- `inputs` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525504) in GitLab 17.11 [with a flag](../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Enabled by default.
+
+{{< /history >}}
+
 Create a new pipeline schedule of a project.
 
 ```plaintext
@@ -182,12 +198,17 @@ POST /projects/:id/pipeline_schedules
 | `ref`           | string         | Yes      | The branch or tag name that is triggered. Both the short (e.g. `main`) and full (e.g. `refs/heads/main` or `refs/tags/main`) ref versions are accepted. If a short version is provided, it is automatically expanded to the full ref version but, if the ref is [ambiguous](../ci/pipelines/schedules.md#ambiguous-refs), it will be rejected |
 | `active`        | boolean        | No       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated (default: `true`).                                                                                                                                                               |
 | `cron_timezone` | string         | No       | The time zone supported by `ActiveSupport::TimeZone`, for example: `Pacific Time (US & Canada)` (default: `UTC`).                                                                                                                                                                     |
+| `inputs`        | hash          | No       | An array of [inputs](../ci/inputs/_index.md#for-a-pipeline) to pass to the pipeline schedule. Each input contains a `name` and `value`. Values can be strings, arrays, numbers, or booleans.                                                                                                                             |
+
+Example request:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      --form description="Build packages" --form ref="main" --form cron="0 1 * * 5" --form cron_timezone="UTC" \
      --form active="true" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules"
 ```
+
+Example response:
 
 ```json
 {
@@ -212,6 +233,16 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
+Example request with `inputs`:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form description="Build packages" --form ref="main" --form cron="0 1 * * 5" --form cron_timezone="UTC" \
+     --form active="true" \
+     --form "inputs[][name]=deploy_strategy" --form "inputs[][value]=blue-green" \
+     "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules"
+```
+
 ## Edit a pipeline schedule
 
 Updates the pipeline schedule of a project. After the update is done, it is rescheduled automatically.
@@ -229,11 +260,16 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | `cron`                 | string         | No       | The [cron](https://en.wikipedia.org/wiki/Cron) schedule, for example: `0 1 * * *`.                                                                                                                                                                                                                                                            |
 | `description`          | string         | No       | The description of the pipeline schedule.                                                                                                                                                                                                                                                                                                     |
 | `ref`                  | string         | No       | The branch or tag name that is triggered. Both the short (e.g. `main`) and full (e.g. `refs/heads/main` or `refs/tags/main`) ref versions are accepted. If a short version is provided, it is automatically expanded to the full ref version but, if the ref is [ambiguous](../ci/pipelines/schedules.md#ambiguous-refs), it will be rejected |
+| `inputs`               | hash          | No       | An array of [inputs](../ci/inputs/_index.md) to pass to the pipeline schedule. Each input contains a `name` and `value`. To delete an existing input, include the `name` field and set `destroy` to `true`. Values can be strings, arrays, numbers, or booleans.                                                                                                 |
+
+Example request:
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
      --form cron="0 2 * * *" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
 ```
+
+Example response:
 
 ```json
 {
@@ -261,6 +297,16 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
         "web_url": "https://gitlab.example.com/root"
     }
 }
+```
+
+Example request with `inputs`:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form cron="0 2 * * *" \
+     --form "inputs[][name]=deploy_strategy" --form "inputs[][value]=rolling" \
+     --form "inputs[][name]=existing_input"  --form "inputs[][_destroy]=true" \
+     "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
 ```
 
 ## Take ownership of a pipeline schedule

@@ -124,6 +124,30 @@
       "items": {
         "$ref": "pipeline_schedule_variable.json"
       }
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": [
+              "string",
+              "array",
+              "number",
+              "boolean",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ]
+      }
     }
   },
   "required": [

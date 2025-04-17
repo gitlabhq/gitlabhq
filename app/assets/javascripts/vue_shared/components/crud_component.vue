@@ -1,5 +1,12 @@
 <script>
-import { GlButton, GlIcon, GlBadge, GlLoadingIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlButton,
+  GlIcon,
+  GlBadge,
+  GlSkeletonLoader,
+  GlLink,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { __ } from '~/locale';
 
 export default {
@@ -7,7 +14,7 @@ export default {
     GlButton,
     GlIcon,
     GlBadge,
-    GlLoadingIcon,
+    GlSkeletonLoader,
     GlLink,
   },
   directives: {
@@ -121,7 +128,7 @@ export default {
     },
     displayedCount() {
       if (this.isLoading) {
-        return '...';
+        return null;
       }
 
       return this.icon && !this.count ? '0' : this.count;
@@ -276,7 +283,8 @@ export default {
       :class="[bodyClass, { 'gl-rounded-b-base': !$scopedSlots.footer }]"
       data-testid="crud-body"
     >
-      <gl-loading-icon v-if="isLoading" size="sm" data-testid="crud-loading" />
+      <gl-skeleton-loader v-if="isLoading" :width="400" :lines="3" data-testid="crud-loading" />
+
       <span v-else-if="$scopedSlots.empty" class="gl-text-subtle" data-testid="crud-empty">
         <slot name="empty"></slot>
       </span>
