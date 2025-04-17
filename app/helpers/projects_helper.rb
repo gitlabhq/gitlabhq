@@ -586,6 +586,7 @@ module ProjectsHelper
 
   def show_archived_project_banner?(project)
     return false unless project.present? && project.saved?
+    return false if project.marked_for_deletion?
 
     project.archived?
   end

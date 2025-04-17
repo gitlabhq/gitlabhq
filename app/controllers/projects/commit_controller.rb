@@ -308,11 +308,11 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def complete_diff_path
-    project_commit_path(project, commit, format: :patch)
+    project_commit_path(project, commit, format: :diff)
   end
 
   def email_format_path
-    project_commit_path(project, commit, format: :diff)
+    project_commit_path(project, commit, format: :patch)
   end
 end
 

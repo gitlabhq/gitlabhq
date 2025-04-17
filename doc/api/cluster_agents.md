@@ -604,10 +604,10 @@ Example response:
 
 ```json
 {
-"id": 1,
-"agent_id": 5,
-"url": "grpcs://agent.example.com:4242",
-"public_key": "..."
+  "id": 1,
+  "agent_id": 5,
+  "url": "grpcs://agent.example.com:4242",
+  "public_key": "..."
 }
 ```
 
@@ -667,10 +667,10 @@ Example response for JWT authentication:
 
 ```json
 {
-"id": 1,
-"agent_id": 5,
-"url": "grpcs://agent.example.com:4242",
-"public_key": "..."
+  "id": 1,
+  "agent_id": 5,
+  "url": "grpcs://agent.example.com:4242",
+  "public_key": "..."
 }
 ```
 
@@ -686,10 +686,10 @@ Example response for mTLS:
 
 ```json
 {
-"id": 1,
-"agent_id": 5,
-"url": "grpcs://agent.example.com:4242",
-"client_cert": "..."
+  "id": 1,
+  "agent_id": 5,
+  "url": "grpcs://agent.example.com:4242",
+  "client_cert": "..."
 }
 ```
 

@@ -95,8 +95,15 @@ Example response:
       "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
     ],
     "web_url": "https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746",
-    "trailers": { "Cc": "Jane Doe <janedoe@gitlab.com>" },
-    "extended_trailers": { "Cc": ["John Doe <johndoe@gitlab.com>", "Jane Doe <janedoe@gitlab.com>"] }
+    "trailers": {
+      "Cc": "Jane Doe <janedoe@gitlab.com>"
+    },
+    "extended_trailers": {
+      "Cc": [
+        "John Doe <johndoe@gitlab.com>",
+        "Jane Doe <janedoe@gitlab.com>"
+      ]
+    }
   }
 ]
 ```
@@ -268,7 +275,7 @@ Example response:
   "parent_ids": [
     "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
   ],
-  "last_pipeline" : {
+  "last_pipeline": {
     "id": 8,
     "ref": "main",
     "sha": "2dc6aa325a317eda67812f05600bdf0fcdc70ab0",
@@ -310,12 +317,23 @@ Example response:
 
 ```json
 [
-  {"type": "branch", "name": "'test'"},
-  {"type": "branch", "name": "add-balsamiq-file"},
-  {"type": "branch", "name": "wip"},
-  {"type": "tag", "name": "v1.1.0"}
- ]
-
+  {
+    "type": "branch",
+    "name": "'test'"
+  },
+  {
+    "type": "branch",
+    "name": "add-balsamiq-file"
+  },
+  {
+    "type": "branch",
+    "name": "wip"
+  },
+  {
+    "type": "tag",
+    "name": "v1.1.0"
+  }
+]
 ```
 
 ## Get the sequence of a commit
@@ -460,18 +478,20 @@ Example response:
 
 ```json
 {
-  "id":"8b090c1b79a14f2bd9e8a738f717824ff53aebad",
+  "id": "8b090c1b79a14f2bd9e8a738f717824ff53aebad",
   "short_id": "8b090c1b",
-  "title":"Revert \"Feature added\"",
-  "created_at":"2018-11-08T15:55:26.000Z",
-  "parent_ids":["a738f717824ff53aebad8b090c1b79a14f2bd9e8"],
-  "message":"Revert \"Feature added\"\n\nThis reverts commit a738f717824ff53aebad8b090c1b79a14f2bd9e8",
-  "author_name":"Administrator",
-  "author_email":"admin@example.com",
-  "authored_date":"2018-11-08T15:55:26.000Z",
-  "committer_name":"Administrator",
-  "committer_email":"admin@example.com",
-  "committed_date":"2018-11-08T15:55:26.000Z",
+  "title": "Revert \"Feature added\"",
+  "created_at": "2018-11-08T15:55:26.000Z",
+  "parent_ids": [
+    "a738f717824ff53aebad8b090c1b79a14f2bd9e8"
+  ],
+  "message": "Revert \"Feature added\"\n\nThis reverts commit a738f717824ff53aebad8b090c1b79a14f2bd9e8",
+  "author_name": "Administrator",
+  "author_email": "admin@example.com",
+  "authored_date": "2018-11-08T15:55:26.000Z",
+  "committer_name": "Administrator",
+  "committer_email": "admin@example.com",
+  "committed_date": "2018-11-08T15:55:26.000Z",
   "web_url": "https://gitlab.example.com/janedoe/gitlab-foss/-/commit/8b090c1b79a14f2bd9e8a738f717824ff53aebad"
 }
 ```
@@ -627,19 +647,19 @@ Example response:
 
 ```json
 {
-   "author" : {
-      "web_url" : "https://gitlab.example.com/janedoe",
-      "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/jane-doe-400-400.png",
-      "username" : "janedoe",
-      "state" : "active",
-      "name" : "Jane Doe",
-      "id" : 28
-   },
-   "created_at" : "2016-01-19T09:44:55.600Z",
-   "line_type" : "new",
-   "path" : "README.md",
-   "line" : 11,
-   "note" : "Nice picture!"
+  "author": {
+    "web_url": "https://gitlab.example.com/janedoe",
+    "avatar_url": "https://gitlab.example.com/uploads/user/avatar/28/jane-doe-400-400.png",
+    "username": "janedoe",
+    "state": "active",
+    "name": "Jane Doe",
+    "id": 28
+  },
+  "created_at": "2016-01-19T09:44:55.600Z",
+  "line_type": "new",
+  "path": "README.md",
+  "line": 11,
+  "note": "Nice picture!"
 }
 ```
 
@@ -676,13 +696,13 @@ Example response:
         "type": null,
         "body": "Nice piece of code!",
         "attachment": null,
-        "author" : {
-          "id" : 28,
-          "name" : "Jane Doe",
-          "username" : "janedoe",
-          "web_url" : "https://gitlab.example.com/janedoe",
-          "state" : "active",
-          "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/jane-doe-400-400.png"
+        "author": {
+          "id": 28,
+          "name": "Jane Doe",
+          "username": "janedoe",
+          "web_url": "https://gitlab.example.com/janedoe",
+          "state": "active",
+          "avatar_url": "https://gitlab.example.com/uploads/user/avatar/28/jane-doe-400-400.png"
         },
         "created_at": "2020-04-30T18:48:11.432Z",
         "updated_at": "2020-04-30T18:48:11.432Z",
@@ -697,7 +717,6 @@ Example response:
     ]
   }
 ]
-
 ```
 
 ## Commit status
@@ -740,52 +759,50 @@ Example response:
 
 ```json
 [
-   ...
-
-   {
-      "status" : "pending",
-      "created_at" : "2016-01-19T08:40:25.934Z",
-      "started_at" : null,
-      "name" : "bundler:audit",
-      "allow_failure" : true,
-      "author" : {
-         "username" : "janedoe",
-         "state" : "active",
-         "web_url" : "https://gitlab.example.com/janedoe",
-         "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/jane-doe-400-400.png",
-         "id" : 28,
-         "name" : "Jane Doe"
-      },
-      "description" : null,
-      "sha" : "18f3e63d05582537db6d183d9d557be09e1f90c8",
-      "target_url" : "https://gitlab.example.com/janedoe/gitlab-foss/builds/91",
-      "finished_at" : null,
-      "id" : 91,
-      "ref" : "main"
-   },
-   {
-      "started_at" : null,
-      "name" : "test",
-      "allow_failure" : false,
-      "status" : "pending",
-      "created_at" : "2016-01-19T08:40:25.832Z",
-      "target_url" : "https://gitlab.example.com/janedoe/gitlab-foss/builds/90",
-      "id" : 90,
-      "finished_at" : null,
-      "ref" : "main",
-      "sha" : "18f3e63d05582537db6d183d9d557be09e1f90c8",
-      "author" : {
-         "id" : 28,
-         "name" : "Jane Doe",
-         "username" : "janedoe",
-         "web_url" : "https://gitlab.example.com/janedoe",
-         "state" : "active",
-         "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/jane-doe-400-400.png"
-      },
-      "description" : null
-   },
-
-   ...
+  ...
+  {
+    "status": "pending",
+    "created_at": "2016-01-19T08:40:25.934Z",
+    "started_at": null,
+    "name": "bundler:audit",
+    "allow_failure": true,
+    "author": {
+      "username": "janedoe",
+      "state": "active",
+      "web_url": "https://gitlab.example.com/janedoe",
+      "avatar_url": "https://gitlab.example.com/uploads/user/avatar/28/jane-doe-400-400.png",
+      "id": 28,
+      "name": "Jane Doe"
+    },
+    "description": null,
+    "sha": "18f3e63d05582537db6d183d9d557be09e1f90c8",
+    "target_url": "https://gitlab.example.com/janedoe/gitlab-foss/builds/91",
+    "finished_at": null,
+    "id": 91,
+    "ref": "main"
+  },
+  {
+    "started_at": null,
+    "name": "test",
+    "allow_failure": false,
+    "status": "pending",
+    "created_at": "2016-01-19T08:40:25.832Z",
+    "target_url": "https://gitlab.example.com/janedoe/gitlab-foss/builds/90",
+    "id": 90,
+    "finished_at": null,
+    "ref": "main",
+    "sha": "18f3e63d05582537db6d183d9d557be09e1f90c8",
+    "author": {
+      "id": 28,
+      "name": "Jane Doe",
+      "username": "janedoe",
+      "web_url": "https://gitlab.example.com/janedoe",
+      "state": "active",
+      "avatar_url": "https://gitlab.example.com/uploads/user/avatar/28/jane-doe-400-400.png"
+    },
+    "description": null
+  }
+  ...
 ]
 ```
 
@@ -820,26 +837,26 @@ Example response:
 
 ```json
 {
-   "author" : {
-      "web_url" : "https://gitlab.example.com/janedoe",
-      "name" : "Jane Doe",
-      "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/jane-doe-400-400.png",
-      "username" : "janedoe",
-      "state" : "active",
-      "id" : 28
-   },
-   "name" : "default",
-   "sha" : "18f3e63d05582537db6d183d9d557be09e1f90c8",
-   "status" : "success",
-   "coverage": 100.0,
-   "description" : null,
-   "id" : 93,
-   "target_url" : null,
-   "ref" : null,
-   "started_at" : null,
-   "created_at" : "2016-01-19T09:05:50.355Z",
-   "allow_failure" : false,
-   "finished_at" : "2016-01-19T09:05:50.365Z"
+  "author": {
+    "web_url": "https://gitlab.example.com/janedoe",
+    "name": "Jane Doe",
+    "avatar_url": "https://gitlab.example.com/uploads/user/avatar/28/jane-doe-400-400.png",
+    "username": "janedoe",
+    "state": "active",
+    "id": 28
+  },
+  "name": "default",
+  "sha": "18f3e63d05582537db6d183d9d557be09e1f90c8",
+  "status": "success",
+  "coverage": 100.0,
+  "description": null,
+  "id": 93,
+  "target_url": null,
+  "ref": null,
+  "started_at": null,
+  "created_at": "2016-01-19T09:05:50.355Z",
+  "allow_failure": false,
+  "finished_at": "2016-01-19T09:05:50.365Z"
 }
 ```
 
@@ -865,51 +882,51 @@ Example response:
 
 ```json
 [
-   {
-      "id":45,
-      "iid":1,
-      "project_id":35,
-      "title":"Add new file",
-      "description":"",
-      "state":"opened",
-      "created_at":"2018-03-26T17:26:30.916Z",
-      "updated_at":"2018-03-26T17:26:30.916Z",
-      "target_branch":"main",
-      "source_branch":"test-branch",
-      "upvotes":0,
-      "downvotes":0,
-      "author" : {
-        "web_url" : "https://gitlab.example.com/janedoe",
-        "name" : "Jane Doe",
-        "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/jane-doe-400-400.png",
-        "username" : "janedoe",
-        "state" : "active",
-        "id" : 28
-      },
-      "assignee":null,
-      "source_project_id":35,
-      "target_project_id":35,
-      "labels":[ ],
-      "draft":false,
-      "work_in_progress":false,
-      "milestone":null,
-      "merge_when_pipeline_succeeds":false,
-      "merge_status":"can_be_merged",
-      "sha":"af5b13261899fb2c0db30abdd0af8b07cb44fdc5",
-      "merge_commit_sha":null,
-      "squash_commit_sha":null,
-      "user_notes_count":0,
-      "discussion_locked":null,
-      "should_remove_source_branch":null,
-      "force_remove_source_branch":false,
-      "web_url":"https://gitlab.example.com/root/test-project/merge_requests/1",
-      "time_stats":{
-         "time_estimate":0,
-         "total_time_spent":0,
-         "human_time_estimate":null,
-         "human_total_time_spent":null
-      }
-   }
+  {
+    "id": 45,
+    "iid": 1,
+    "project_id": 35,
+    "title": "Add new file",
+    "description": "",
+    "state": "opened",
+    "created_at": "2018-03-26T17:26:30.916Z",
+    "updated_at": "2018-03-26T17:26:30.916Z",
+    "target_branch": "main",
+    "source_branch": "test-branch",
+    "upvotes": 0,
+    "downvotes": 0,
+    "author": {
+      "web_url": "https://gitlab.example.com/janedoe",
+      "name": "Jane Doe",
+      "avatar_url": "https://gitlab.example.com/uploads/user/avatar/28/jane-doe-400-400.png",
+      "username": "janedoe",
+      "state": "active",
+      "id": 28
+    },
+    "assignee": null,
+    "source_project_id": 35,
+    "target_project_id": 35,
+    "labels": [],
+    "draft": false,
+    "work_in_progress": false,
+    "milestone": null,
+    "merge_when_pipeline_succeeds": false,
+    "merge_status": "can_be_merged",
+    "sha": "af5b13261899fb2c0db30abdd0af8b07cb44fdc5",
+    "merge_commit_sha": null,
+    "squash_commit_sha": null,
+    "user_notes_count": 0,
+    "discussion_locked": null,
+    "should_remove_source_branch": null,
+    "force_remove_source_branch": false,
+    "web_url": "https://gitlab.example.com/root/test-project/merge_requests/1",
+    "time_stats": {
+      "time_estimate": 0,
+      "total_time_spent": 0,
+      "human_time_estimate": null,
+      "human_total_time_spent": null
+    }
+  }
 ]
 ```
 

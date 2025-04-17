@@ -119,6 +119,77 @@ class MigrationName < Elastic::Migration
 end
 ```
 
+### Spec support helpers
+
+The following helper methods are available in `ElasticsearchHelpers` in `ee/spec/support/helpers/elasticsearch_helpers.rb`.
+`ElasticsearchHelpers` is automatically included when using any of
+the [Elasticsearch specs metadata](../testing_guide/best_practices.md#elasticsearch-specs)
+
+#### `assert_names_in_query`
+
+Validate that [named queries](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/query-dsl-bool-query.html#named-queries)
+exist (`with`) or do not exist (`without`) in an Elasticsearch query. 
+
+#### `assert_fields_in_query`
+
+Validate that an Elasticsearch query contains the specified fields.
+
+#### `assert_named_queries`
+
+{{< alert type="warning" >}}
+
+This method requires sending a search request to Elasticsearch. Use `assert_names_in_query` to test
+the queries generated directly. 
+
+{{< /alert >}}
+
+Validate that a request was made to Elasticsearch with [named queries](https://www.elastic.co/guide/en/elasticsearch/reference/8.18/query-dsl-bool-query.html#named-queries)
+Use `without` to validate the named query was not in the request.
+
+#### `assert_routing_field`
+
+Validate that a request was made to Elasticsearch
+with [a specific routing](https://www.elastic.co/docs/reference/elasticsearch/mapping-reference/mapping-routing-field).
+
+#### `ensure_elasticsearch_index!`
+
+Runs `execute` for all `Elastic::ProcessBookkeepingService` classes and calls `refresh_index!`. This method indexes any
+records that have been queued for indexing using the `track!` method.
+
+#### `refresh_index!`
+
+Performs an Elasticsearch index refresh on all indices (including the migrations index). This makes recent operations
+performed on an index available for search. 
+
+#### `set_elasticsearch_migration_to`
+
+Set the current migration in the migrations index to a specific migration (by name or version). The migration is
+marked as completed by default and can set to pending by sending `including: false`. 
+
+#### `es_helper`
+
+Provides an instance of `Gitlab::Elastic::Helper.default`
+
+#### `warm_elasticsearch_migrations_cache!`
+
+Primes the `::Elastic::DataMigrationService` migration cache by calling `migration_has_finished?` for each migration.
+
+#### `elastic_wiki_indexer_worker_random_delay_range`
+
+Returns a random delay between 0 and `ElasticWikiIndexerWorker::MAX_JOBS_PER_HOUR`
+
+#### `elastic_delete_group_wiki_worker_random_delay_range`
+
+Returns a random delay between 0 and `Search::Wiki::ElasticDeleteGroupWikiWorker::MAX_JOBS_PER_HOUR`
+
+#### `elastic_group_association_deletion_worker_random_delay_range`
+
+Returns a random delay between 0 and `Search::ElasticGroupAssociationDeletionWorker::MAX_JOBS_PER_HOUR`
+
+#### `items_in_index`
+
+Returns an array of `id` that exist in the provided index name.
+
 ### Migration helpers
 
 The following migration helpers are available in `ee/app/workers/concerns/elastic/`:

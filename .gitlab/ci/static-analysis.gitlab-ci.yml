@@ -129,19 +129,12 @@ haml-lint:
     - .ruby-cache
     - .static-analysis:rules:haml-lint
   script:
-    - bundle exec haml-lint --parallel app/views
+    - bundle exec haml-lint --parallel
   artifacts:
     expire_in: 31d
     when: always
     paths:
       - tmp/feature_flags/
-
-haml-lint ee:
-  extends:
-    - "haml-lint"
-    - .static-analysis:rules:haml-lint-ee
-  script:
-    - bundle exec haml-lint --parallel ee/app/views
 
 rubocop:
   extends:

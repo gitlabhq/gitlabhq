@@ -1,0 +1,59 @@
+- name: Customize compliance frameworks with requirements and compliance controls
+  description: |  # Do not modify this line, instead modify the lines below.
+    Previously, compliance frameworks in GitLab could be created as a label to identify that your project has certain compliance requirements or needs additional oversight. This label could then be used as a scoping mechanism to ensure that security policies could be enforced on all projects within a group. In this release, we are introducing a new way for compliance managers to get more in-depth compliance monitoring in GitLab through 'requirements'. With requirements, as part of a custom compliance framework, you can define specific requirements from a number of different compliance standards, laws, and regulations that must be followed as an organization. We are also expanding the number of compliance controls (previously known as compliance checks) that we offer from five to over 50! These 50 out-of-the-box (OOTB) controls can be mapped to the compliance framework requirements. These controls check particular project, security, and merge request settings across your GitLab instance to help you meet requirements under a number of different compliance standards, laws, and regulations such as SOC2, NIST, ISO 27001, and the GitLab CIS Benchmark. Adherence to these controls is reflected in standard adherence report, which is redesigned to take into account requirements and the mapping of controls to those requirements. In addition to expanding our OOTB controls, we now allow users to map requirements to external controls, which can be for items, programs, or systems that exist outside the GitLab platform. These mappings allow you to use the GitLab compliance centre as the single source of truth when it comes to your compliance monitoring and audit evidence needs.
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/compliance/compliance_center/compliance_status_report
+  image_url: https://about.gitlab.com/images/17_11/custom_compliance_frameworks.png
+  published_at: 2025-04-17
+  release: 17.11
+- name: More AI features on GitLab Duo Self-Hosted
+  description: |  # Do not modify this line, instead modify the lines below.
+    You can now use more [GitLab Duo](https://about.gitlab.com/gitlab-duo/) features with GitLab Duo Self-Hosted in your GitLab Self-Managed instance. The following features are available in beta:
+
+      - [Root Cause Analysis](https://docs.gitlab.com/user/gitlab_duo_chat/examples/#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)
+      - [Vulnerability Explanation](https://docs.gitlab.com/user/application_security/vulnerabilities/#explaining-a-vulnerability)
+      - [Vulnerability Resolution](https://docs.gitlab.com/user/application_security/vulnerabilities/#vulnerability-resolution)
+      - [AI Impact Dashboard](https://docs.gitlab.com/user/analytics/ai_impact_analytics/)
+      - [Discussion Summary](https://docs.gitlab.com/user/discussions/#summarize-issue-discussions-with-duo-chat)
+      - [Merge Request Commit Message](https://docs.gitlab.com/user/project/merge_requests/duo_in_merge_requests/#generate-a-merge-commit-message)
+      - [Merge Request Summary](https://docs.gitlab.com/user/project/merge_requests/duo_in_merge_requests/#generate-a-description-by-summarizing-code-changes)
+      - [GitLab Duo for the CLI](https://docs.gitlab.com/editor_extensions/gitlab_cli/#gitlab-duo-for-the-cli)
+
+      [Code Review Summary](https://docs.gitlab.com/user/project/merge_requests/duo_in_merge_requests/#summarize-a-code-review) is also available on GitLab Duo Self-Hosted as an experiment.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: false
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/administration/gitlab_duo_self_hosted/#supported-gitlab-duo-features
+  image_url: https://about.gitlab.com/images/17_11/ResizedExpandedDuoFeaturesImage.jpg
+  published_at: 2025-04-17
+  release: 17.11
+- name: Epic, issue, and task custom fields
+  description: |  # Do not modify this line, instead modify the lines below.
+    With this release, you can configure text, number, single-select, and multi-select custom fields for issues, epics, tasks, objectives, and key results. While labels have been the primary way to categorize work items up to this point, custom fields provide a more user-friendly approach for adding structured metadata to your planning artifacts.
+
+    Custom fields are configured in your top-level group and cascade to all subgroups and projects. You can map fields to one or more work item types and filter by custom field values in the issues and epics lists.
+  stage: plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/work_items/custom_fields
+  image_url: https://about.gitlab.com/images/17_11/work-items-custom-fields.png
+  published_at: 2025-04-17
+  release: 17.11
+- name: CI/CD pipeline inputs
+  description: |  # Do not modify this line, instead modify the lines below.
+    CI/CD variables are essential for dynamic CI/CD workflows, and are used for many things, including as environment variables, context variables, tool configuration, and matrix variables. But developers sometimes rely on CI/CD variables to inject [pipeline variables](https://docs.gitlab.com/ci/variables/#use-pipeline-variables) into pipelines to manually modify pipeline behavior, which have some risks due to the higher precedence of pipeline variables.
+
+    In GitLab 17.11 and later, you can now use `inputs` to safely modify pipeline behavior instead of using pipeline variables, including in scheduled pipelines, downstream pipelines, triggered pipelines, and other cases. Inputs provide developers with a more structured and flexible solution for injecting dynamic content at CI/CD job runtime. After you switch to inputs, you can completely [disable access to pipeline variables](https://docs.gitlab.com/ci/variables/#restrict-pipeline-variables).
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ci/inputs/#for-a-pipeline
+  image_url: https://about.gitlab.com/images/17_11/run_new_pipeline_spec_input.png
+  published_at: 2025-04-17
+  release: 17.11

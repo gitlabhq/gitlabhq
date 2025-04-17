@@ -709,11 +709,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def complete_diff_path
-    merge_request_path(merge_request, format: :patch)
+    merge_request_path(merge_request, format: :diff)
   end
 
   def email_format_path
-    merge_request_path(merge_request, format: :diff)
+    merge_request_path(merge_request, format: :patch)
   end
 end
 

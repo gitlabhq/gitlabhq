@@ -155,8 +155,8 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
           let(:expected_stats) do
             {
               visible_count: 6,
-              email_path: "/#{project.full_path}/-/commit/#{sha}.diff",
-              diff_path: "/#{project.full_path}/-/commit/#{sha}.patch"
+              email_path: "/#{project.full_path}/-/commit/#{sha}.patch",
+              diff_path: "/#{project.full_path}/-/commit/#{sha}.diff"
             }
           end
         end

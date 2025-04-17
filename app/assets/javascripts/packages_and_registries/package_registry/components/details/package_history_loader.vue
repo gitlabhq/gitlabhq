@@ -5,20 +5,18 @@ export default {
   components: {
     GlSkeletonLoader,
   },
-  loader: {
-    width: 580,
-    height: 80,
-  },
 };
 </script>
 
 <template>
-  <div class="gl-ml-5 md:gl-max-w-7/10">
-    <gl-skeleton-loader :width="$options.loader.width" :height="$options.loader.height">
-      <rect x="49" y="9" width="531" height="16" rx="4" />
-      <circle cx="16" cy="16" r="16" />
-      <rect x="49" y="57" width="302" height="16" rx="4" />
-      <circle cx="16" cy="64" r="16" />
-    </gl-skeleton-loader>
+  <div class="gl-my-5 gl-ml-2 gl-flex gl-h-11 gl-max-w-30 gl-flex-col gl-gap-5">
+    <div class="-gl-mt-1">
+      <gl-skeleton-loader :width="240" :height="64">
+        <circle cx="12" cy="12" r="12" />
+        <rect x="32" y="4" :width="208" height="16" rx="4" />
+        <circle cx="12" cy="52" r="12" />
+        <rect x="32" y="44" :width="200" height="16" rx="4" />
+      </gl-skeleton-loader>
+    </div>
   </div>
 </template>

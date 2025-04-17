@@ -244,6 +244,10 @@ InitializerConnections.raise_if_new_database_connection do
       get '/external_redirect' => 'external_redirect/external_redirect#index'
 
       post '/collect_events', to: 'event_forward/event_forward#forward', as: :event_forwarding
+
+      if Gitlab::Utils.to_boolean(ENV['COVERBAND_ENABLED'], default: false)
+        mount Coverband::Reporters::Web.new, at: '/coverage'
+      end
     end
     # End of the /-/ scope.
 

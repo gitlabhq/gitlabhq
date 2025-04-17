@@ -1353,6 +1353,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
           expect(project.present?).to be(true)
           expect(project.saved?).to be(true)
           expect(project.archived?).to be(true)
+          expect(project.marked_for_deletion?).to be(false)
           expect(helper.show_archived_project_banner?(project)).to be(true)
           expect(helper.show_inactive_project_deletion_banner?(project)).to be(false)
         end

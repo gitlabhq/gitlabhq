@@ -426,7 +426,7 @@ The payload must include both the name and size of the file.
   "conan_package.tgz": 5412,
   "conanmanifest.txt": 130,
   "conaninfo.txt": 210
-  }
+}
 ```
 
 ```shell

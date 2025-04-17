@@ -69,7 +69,7 @@
 
         = render 'export', project: @project
 
-        = render_if_exists 'projects/settings/archive'
+        = render 'projects/settings/archive'
 
         = render Pajamas::CardComponent.new do |c|
           - c.with_header do
@@ -107,7 +107,7 @@
         = render 'delete'
 - else
   - if can?(current_user, :archive_project, @project)
-    = render_if_exists 'projects/settings/archive'
+    = render 'projects/settings/archive'
   - if can?(current_user, :remove_project, @project)
     = render 'delete'
 

@@ -617,8 +617,6 @@ rspec:feature-flags:
   needs:
     - job: "feature-flags-usage"
     - job: "haml-lint"
-    - job: "haml-lint ee"
-      optional: true
   before_script:
     - source scripts/utils.sh
   script:

@@ -336,30 +336,30 @@ curl --request PUT \
 Example response:
 
 ```json
-  {
-    "id": 202,
-    "package_id": 48,
-    "created_at": "2025-03-19T10:06:53.626Z",
-    "updated_at": "2025-03-19T10:06:53.626Z",
-    "size": 208,
-    "file_store": 1,
-    "file_md5": "bf996313bbdd75944b58f8c673661d99",
-    "file_sha1": "02c8adf14c94135fb95d472f96525063efe09ee8",
-    "file_name": "conaninfo.txt",
-    "file": {
-        "url": "/94/00/9400f1b21cb527d7fa3d3eabba93557a18ebe7a2ca4e471cfe5e4c5b4ca7f767/packages/48/files/202/conaninfo.txt"
-    },
-    "file_sha256": null,
-    "verification_retry_at": null,
-    "verified_at": null,
-    "verification_failure": null,
-    "verification_retry_count": null,
-    "verification_checksum": null,
-    "verification_state": 0,
-    "verification_started_at": null,
-    "status": "default",
-    "file_final_path": null,
-    "project_id": 9,
-    "new_file_path": null
-  }
+{
+  "id": 202,
+  "package_id": 48,
+  "created_at": "2025-03-19T10:06:53.626Z",
+  "updated_at": "2025-03-19T10:06:53.626Z",
+  "size": 208,
+  "file_store": 1,
+  "file_md5": "bf996313bbdd75944b58f8c673661d99",
+  "file_sha1": "02c8adf14c94135fb95d472f96525063efe09ee8",
+  "file_name": "conaninfo.txt",
+  "file": {
+      "url": "/94/00/9400f1b21cb527d7fa3d3eabba93557a18ebe7a2ca4e471cfe5e4c5b4ca7f767/packages/48/files/202/conaninfo.txt"
+  },
+  "file_sha256": null,
+  "verification_retry_at": null,
+  "verified_at": null,
+  "verification_failure": null,
+  "verification_retry_count": null,
+  "verification_checksum": null,
+  "verification_state": 0,
+  "verification_started_at": null,
+  "status": "default",
+  "file_final_path": null,
+  "project_id": 9,
+  "new_file_path": null
+}
 ```

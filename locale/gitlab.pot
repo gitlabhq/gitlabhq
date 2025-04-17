@@ -3306,6 +3306,9 @@ msgstr ""
 msgid "Account and limit"
 msgstr ""
 
+msgid "Account:"
+msgstr ""
+
 msgid "Account: %{account}"
 msgstr ""
 
@@ -5693,6 +5696,9 @@ msgstr ""
 msgid "AiPowered|Amazon Q Setup"
 msgstr ""
 
+msgid "AiPowered|Are you sure you want to turn off GitLab Duo Workflow?"
+msgstr ""
+
 msgid "AiPowered|Assign seats"
 msgstr ""
 
@@ -5750,6 +5756,12 @@ msgstr ""
 msgid "AiPowered|Expire conversation based on time conversation was last updated."
 msgstr ""
 
+msgid "AiPowered|Failed to disable GitLab Duo Workflow."
+msgstr ""
+
+msgid "AiPowered|Failed to enable GitLab Duo Workflow."
+msgstr ""
+
 msgid "AiPowered|Features are available. However, any group, subgroup, or project can turn them off."
 msgstr ""
 
@@ -5760,6 +5772,15 @@ msgid "AiPowered|Features are not available. However, any group, subgroup, or pr
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Chat conversation expiration"
+msgstr ""
+
+msgid "AiPowered|GitLab Duo Workflow"
+msgstr ""
+
+msgid "AiPowered|GitLab Duo Workflow has successfully been turned off."
+msgstr ""
+
+msgid "AiPowered|GitLab Duo Workflow is now on for the instance and the service account (%{accountId}) was created. To use Workflow in your groups, you must turn on AI features for specific groups."
 msgstr ""
 
 msgid "AiPowered|GitLab Duo seat assignment is now located in GitLab Duo settings."
@@ -5810,6 +5831,15 @@ msgstr ""
 msgid "AiPowered|Start date: %{startDate}"
 msgstr ""
 
+msgid "AiPowered|Turn off GitLab Duo Workflow"
+msgstr ""
+
+msgid "AiPowered|Turn off Workflow"
+msgstr ""
+
+msgid "AiPowered|Turn on GitLab Duo Workflow"
+msgstr ""
+
 msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
 msgstr ""
 
@@ -5822,6 +5852,9 @@ msgstr ""
 msgid "AiPowered|View configuration"
 msgstr ""
 
+msgid "AiPowered|What is this service account?"
+msgstr ""
+
 msgid "AiPowered|When GitLab Duo is not available, experiment and beta features cannot be turned on."
 msgstr ""
 
@@ -5829,6 +5862,15 @@ msgid "AiPowered|When you save, GitLab Duo will be turned for all groups, subgro
 msgstr ""
 
 msgid "AiPowered|When you save, GitLab Duo will be turned off for all groups, subgroups, and projects."
+msgstr ""
+
+msgid "AiPowered|When you turn off Workflow, users can no longer use it to solve coding tasks. Are you sure?"
+msgstr ""
+
+msgid "AiPowered|When you turn on GitLab Duo Workflow, a service account is created."
+msgstr ""
+
+msgid "AiPowered|Workflow is an AI-powered coding agent in the Visual Studio Code (VS Code) IDE."
 msgstr ""
 
 msgid "Akismet"
@@ -6454,6 +6496,12 @@ msgid "Amazon Q"
 msgstr ""
 
 msgid "Amazon Q connectivity check failed: %{message}"
+msgstr ""
+
+msgid "Amazon Q could not call your GitLab instance. Please review your configuration and try again. Detail: %{error}"
+msgstr ""
+
+msgid "Amazon Q successfully received the callback request from your GitLab instance."
 msgstr ""
 
 msgid "AmazonQ|Active cloud connector token not found."
@@ -12431,9 +12479,6 @@ msgid "Checking branch validity…"
 msgstr ""
 
 msgid "Checking group path availability…"
-msgstr ""
-
-msgid "Checking if %{message} failed: %{error}"
 msgstr ""
 
 msgid "Checking if merge request can be merged…"
@@ -18772,6 +18817,9 @@ msgid "Creator"
 msgstr ""
 
 msgid "Credentials"
+msgstr ""
+
+msgid "Credentials stored in Amazon Q are valid and functioning correctly."
 msgstr ""
 
 msgid "CredentialsInventory|Deleted user"
@@ -27929,9 +27977,6 @@ msgstr ""
 msgid "GitLab container registry API not supported"
 msgstr ""
 
-msgid "GitLab credentials used by Amazon Q are valid"
-msgstr ""
-
 msgid "GitLab detected an attempt to sign in to your %{host} account using an incorrect verification code"
 msgstr ""
 
@@ -27954,9 +27999,6 @@ msgid "GitLab group: %{source_link}"
 msgstr ""
 
 msgid "GitLab informs you if a new version is available. %{link_start}What information does GitLab Inc. collect?%{link_end}"
-msgstr ""
-
-msgid "GitLab instance is reachable by Amazon Q"
 msgstr ""
 
 msgid "GitLab is a complete DevOps platform, delivered as a single application, fundamentally changing the way Development, Security, and Ops teams collaborate"
@@ -60322,6 +60364,9 @@ msgstr ""
 msgid "The CSV export will be created in the background. Once finished, it will be sent to %{email} in an attachment."
 msgstr ""
 
+msgid "The GitLab instance can be reached but the credentials stored in Amazon Q are not valid. Please disconnect and start over."
+msgstr ""
+
 msgid "The GitLab subscription service (customers.gitlab.com) is currently experiencing an outage. You can monitor the status and get updates at %{linkStart}status.gitlab.com%{linkEnd}."
 msgstr ""
 
@@ -68173,6 +68218,9 @@ msgid "WorkItemCustomField|Options"
 msgstr ""
 
 msgid "WorkItemCustomField|Remove"
+msgstr ""
+
+msgid "WorkItemCustomField|To add multiple options at once, paste a list of items, one per line."
 msgstr ""
 
 msgid "WorkItemCustomField|Type"

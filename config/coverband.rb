@@ -15,4 +15,8 @@ Coverband.configure do |config|
   # By default Puma starts in the tmp directory to mimic Omnibus GitLab, but
   # this root path needs to be set for Coverband to identify application code.
   config.root = Rails.root.to_s
+  # This effectively disables Content Security Policy (CSP) rules for the /-/coverage endpoint.
+  # https://github.com/danmayer/coverband/issues/585 is needed to enforce CSP.
+  config.csp_policy = true
+  config.web_enable_clear = true
 end

@@ -2626,17 +2626,8 @@
       changes: *static-analysis-patterns
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
-
-.static-analysis:rules:haml-lint-ee:
-  rules:
-    - <<: *if-not-ee
-      when: never
     - <<: *if-default-refs
-      changes: *rubocop-patterns
-    - <<: *if-default-refs
-      changes: *static-analysis-patterns
-    - <<: *if-default-refs
-      changes: *code-backstage-qa-patterns
+      changes: *docs-patterns
 
 .semgrep-appsec-custom-rules:rules:
   rules:
