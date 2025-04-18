@@ -1869,7 +1869,7 @@ cache-job:
 
 ##### `cache:key:files`
 
-Use the `cache:key:files` keyword to generate a new key when one or two specific files
+Use the `cache:key:files` keyword to generate a new key when files matching either of the defined paths or patterns
 change. `cache:key:files` lets you reuse some caches, and rebuild them less often,
 which speeds up subsequent pipeline runs.
 
@@ -1878,7 +1878,7 @@ which speeds up subsequent pipeline runs.
 
 **Supported values**:
 
-- An array of one or two file paths.
+- An array of up to two file paths or patterns.
 
 CI/CD variables are not supported.
 
@@ -1909,6 +1909,8 @@ use the new cache, instead of rebuilding the dependencies.
 - The cache `key` is a SHA computed from the most recent commits
   that changed each listed file.
   If neither file is changed in any commits, the fallback key is `default`.
+- Wildcard patterns like `**/package.json` can be used. An [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/301161)
+  exists to increase the number of paths or patterns allowed for a cache key.
 
 ##### `cache:key:prefix`
 

@@ -65,6 +65,18 @@ RSpec.describe CodequalityDegradationEntity, feature_category: :code_quality do
           expect(subject[:severity]).to eq('unknown')
         end
       end
+
+      context 'when file path starts with ./' do
+        let(:codequality_degradation) { build(:codequality_degradation_3) }
+
+        before do
+          codequality_degradation[:location][:path] = './file_b.rb'
+        end
+
+        it 'removes the ./', :aggregate_failures do
+          expect(subject[:file_path]).to eq("file_b.rb")
+        end
+      end
     end
   end
 end

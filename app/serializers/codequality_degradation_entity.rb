@@ -10,7 +10,7 @@ class CodequalityDegradationEntity < Grape::Entity
   end
 
   expose :file_path do |degradation|
-    degradation.dig(:location, :path)
+    degradation.dig(:location, :path).sub(%r{^./}, '')
   end
 
   expose :line do |degradation|

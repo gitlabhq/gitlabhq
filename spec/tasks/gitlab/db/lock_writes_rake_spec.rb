@@ -15,11 +15,15 @@ RSpec.describe 'gitlab:db:lock_writes', :reestablished_active_record_base, featu
   let(:dry_run) { false }
   let(:verbose) { false }
   let(:include_partitions) { true }
+  let(:options) { {} }
 
   before do
     allow(Logger).to receive(:new).with($stdout).and_return(logger)
     allow(Gitlab::Database::TablesLocker).to receive(:new).with(
-      logger: logger, dry_run: dry_run, include_partitions: include_partitions
+      logger: logger,
+      dry_run: dry_run,
+      include_partitions: include_partitions,
+      options: options
     ).and_return(table_locker)
   end
 
@@ -40,6 +44,16 @@ RSpec.describe 'gitlab:db:lock_writes', :reestablished_active_record_base, featu
 
       before do
         stub_env('DRY_RUN', 'true')
+      end
+
+      include_examples "call table locker", :lock_writes
+    end
+
+    context 'when environment sets SCOPE_TO_DATABASE' do
+      let(:options) { { scope_to_database: 'main' } }
+
+      before do
+        stub_env('SCOPE_TO_DATABASE', 'main')
       end
 
       include_examples "call table locker", :lock_writes
@@ -102,6 +116,16 @@ RSpec.describe 'gitlab:db:lock_writes', :reestablished_active_record_base, featu
 
       before do
         stub_env('DRY_RUN', 'true')
+      end
+
+      include_examples "call table locker", :unlock_writes
+    end
+
+    context 'when environment sets SCOPE_TO_DATABASE' do
+      let(:options) { { scope_to_database: 'main' } }
+
+      before do
+        stub_env('SCOPE_TO_DATABASE', 'main')
       end
 
       include_examples "call table locker", :unlock_writes
