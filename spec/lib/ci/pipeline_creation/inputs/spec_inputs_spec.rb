@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'oj'
 require_relative Rails.root.join('lib/ci/pipeline_creation/inputs/spec_inputs.rb')
 
 RSpec.describe Ci::PipelineCreation::Inputs::SpecInputs, feature_category: :pipeline_composition do

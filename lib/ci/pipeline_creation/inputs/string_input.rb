@@ -54,7 +54,7 @@ module Ci
 
         override :coerced_value
         def coerced_value(value)
-          super.to_s
+          value.to_s
         end
       end
     end

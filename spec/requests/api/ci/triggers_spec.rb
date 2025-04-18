@@ -237,10 +237,14 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
             { 'Content-Type' => 'application/x-www-form-urlencoded' }
           end
 
+          let(:transformed_values) do
+            inputs.transform_values { |value| value.is_a?(String) ? value : value.to_json }
+          end
+
           subject(:post_request) do
             post api("/projects/#{project.id}/ref/master/trigger/pipeline?token=#{token}"),
               headers: headers,
-              params: { ref: 'refs/heads/other-branch', inputs: inputs.transform_values(&:to_json) }
+              params: { ref: 'refs/heads/other-branch', inputs: transformed_values }
           end
 
           it_behaves_like 'creating a succesful pipeline'
