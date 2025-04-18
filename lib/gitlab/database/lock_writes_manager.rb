@@ -36,19 +36,9 @@ module Gitlab
       end
 
       def lock_writes
-        unless table_exist?
-          logger&.info "Skipping lock_writes, because #{table_name} does not exist"
-          return result_hash(action: 'skipped')
-        end
-
-        if table_locked_for_writes?
-          logger&.info "Skipping lock_writes, because #{table_name} is already locked for writes"
-          return result_hash(action: 'skipped')
-        end
-
         logger&.info Rainbow("Database: '#{database_name}', Table: '#{table_name}': Lock Writes").yellow
         sql_statement = <<~SQL
-          CREATE TRIGGER #{write_trigger_name}
+          CREATE OR REPLACE TRIGGER #{write_trigger_name}
             BEFORE INSERT OR UPDATE OR DELETE OR TRUNCATE
             ON #{table_name}
             FOR EACH STATEMENT EXECUTE FUNCTION #{TRIGGER_FUNCTION_NAME}();
@@ -57,14 +47,14 @@ module Gitlab
         result = process_query(sql_statement, 'lock')
 
         result_hash(action: result)
+      rescue ActiveRecord::StatementInvalid => e
+        # Errors like Gitlab::Database::GitlabSchema::UnknownSchemaError, PG::UndefinedTable
+        # are raised under this error
+        logger&.warn "Failed lock_writes, because #{table_name} raised an error. Error: #{e}"
+        result_hash(action: 'skipped')
       end
 
       def unlock_writes
-        unless table_locked_for_writes?
-          logger&.info "Skipping unlock_writes, because #{table_name} is already unlocked for writes"
-          return result_hash(action: 'skipped')
-        end
-
         logger&.info Rainbow("Database: '#{database_name}', Table: '#{table_name}': Allow Writes").green
         sql_statement = <<~SQL
           DROP TRIGGER IF EXISTS #{write_trigger_name} ON #{table_name};

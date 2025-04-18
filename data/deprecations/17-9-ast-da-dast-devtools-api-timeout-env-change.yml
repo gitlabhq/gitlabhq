@@ -16,13 +16,13 @@
 
     To lessen potential disruptions, we will incrementally adjust the default timeout value according to this schedule:
 
-    | Timeout value | Milestone |
-    |:--------------|:----------|
-    | 45            | Current   |
-    | 30            | 18.0      |
-    | 20            | 18.1      |
-    | 10            | 18.2      |
-    | 5             | 18.3      |
+    | Timeout value | Milestone         |
+    |:--------------|:------------------|
+    | 45            | 17.11 and earlier |
+    | 30            | 18.0              |
+    | 20            | 18.1              |
+    | 10            | 18.2              |
+    | 5             | 18.3              |
 
   end_of_support_milestone:
   tiers: [Ultimate]

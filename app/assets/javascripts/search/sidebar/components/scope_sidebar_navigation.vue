@@ -12,7 +12,7 @@ import getBlobSearchCountQuery from '~/search/graphql/blob_search_zoekt_count_on
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DEFAULT_FETCH_CHUNKS } from '~/search/results/constants';
 import { RECEIVE_NAVIGATION_COUNT } from '../../store/mutation_types';
-import { NAV_LINK_DEFAULT_CLASSES, NAV_LINK_COUNT_DEFAULT_CLASSES } from '../constants';
+import { NAV_LINK_DEFAULT_CLASSES, NAV_LINK_COUNT_DEFAULT_CLASSES, SCOPE_BLOB } from '../constants';
 
 export default {
   name: 'ScopeSidebarNavigation',
@@ -40,15 +40,11 @@ export default {
         };
       },
       skip() {
-        return !(
-          (this.query?.group_id || this.query?.project_id) &&
-          this.glFeatures.zoektMultimatchFrontend &&
-          this.zoektAvailable
-        );
+        return this.legacyBlobsCount;
       },
       update(data) {
         this.receiveNavigationCount({
-          key: 'blobs',
+          key: SCOPE_BLOB,
           count: data?.blobSearch?.matchCount.toString(),
         });
       },
@@ -64,11 +60,32 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['navigationItems']),
+    ...mapGetters(['navigationItems', 'currentScope']),
     ...mapState(['zoektAvailable', 'query']),
+    legacyBlobsCount() {
+      if (this.currentScope === SCOPE_BLOB) {
+        // if current scope is blobs skip this no matter what
+        return true;
+      }
+
+      if (!this.glFeatures.zoektMultimatchFrontend || !this.zoektAvailable) {
+        // skip this if no multimatch feature is available
+        return true;
+      }
+
+      if (
+        !this.glFeatures.zoektCrossNamespaceSearch &&
+        !(this.query?.group_id || this.query?.project_id)
+      ) {
+        // skip this if we have no group or project ID or crossNamespaceSearch is enabled
+        return true;
+      }
+
+      return false;
+    },
   },
   created() {
-    this.fetchSidebarCount();
+    this.fetchSidebarCount(this.legacyBlobsCount);
   },
   methods: {
     ...mapActions(['fetchSidebarCount']),

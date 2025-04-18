@@ -32,7 +32,59 @@ of the following executors is required:
 - [Docker](https://docs.gitlab.com/runner/executors/docker.html).
 - [Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
-## Building a Docker image with kaniko
+## Authentication with registries
+
+Authentication is required when building and pushing images with kaniko:
+
+- For the GitLab container registry, authentication happens automatically without any manual configuration.
+- For pulling images through the GitLab dependency proxy, additional authentication configuration is required.
+
+For more information on authentication with other registries,
+see [pushing to different registries](https://github.com/GoogleContainerTools/kaniko?tab=readme-ov-file#pushing-to-different-registries).
+
+### Authenticate with the container registry
+
+When pushing to the GitLab container registry, authentication happens automatically without requiring any manual configuration:
+
+- GitLab CI/CD automatically creates a `config.json` file at `/kaniko/.docker/config.json` before kaniko runs.
+- This file contains authentication credentials needed for the container registry.
+- These credentials are derived from the `CI_REGISTRY`, `CI_REGISTRY_USER`, and `CI_REGISTRY_PASSWORD` predefined CI/CD variables.
+- kaniko automatically detects and uses this file for authentication.
+
+{{< alert type="note" >}}
+
+You typically won't see this configuration file when inspecting the container as it's managed internally by GitLab CI/CD.
+Manually creating or modifying this file might cause authentication issues.
+
+{{< /alert >}}
+
+### Authenticate with the dependency proxy
+
+If you need to pull images through the dependency proxy,
+you must add the corresponding CI/CD variables for authentication to the `config.json` file:
+
+```yaml
+build:
+  script:
+    # Create a config.json with authentication for both the GitLab container registry and dependency proxy
+    - |
+      echo "{
+        \"auths\": {
+          \"${CI_REGISTRY}\": {
+            \"auth\": \"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"
+          },
+          \"$(echo -n $CI_DEPENDENCY_PROXY_SERVER | awk -F[:] '{print $1}')\": {
+            \"auth\": \"$(printf "%s:%s" ${CI_DEPENDENCY_PROXY_USER} "${CI_DEPENDENCY_PROXY_PASSWORD}" | base64 | tr -d '\n')\"
+          }
+        }
+      }" > /kaniko/.docker/config.json
+```
+
+This configuration strips the port, for example `:443`, from `CI_DEPENDENCY_PROXY_SERVER` so you don't have to include it when referencing images.
+
+For more information, see [authenticate within CI/CD](../../user/packages/dependency_proxy/_index.md#authenticate-within-cicd).
+
+## Build and push an image
 
 When building an image with kaniko and GitLab CI/CD, you should be aware of a
 few important details:
@@ -46,12 +98,9 @@ few important details:
 In the following example, kaniko is used to:
 
 1. Build a Docker image.
-1. Then push it to [GitLab container registry](../../user/packages/container_registry/_index.md).
+1. Push it to [GitLab container registry](../../user/packages/container_registry/_index.md).
 
-The job runs only when a tag is pushed. A `config.json` file is created under
-`/kaniko/.docker` with the needed GitLab container registry credentials taken from the
-[predefined CI/CD variables](../variables/_index.md#predefined-cicd-variables)
-GitLab CI/CD provides. These are automatically read by the Kaniko tool.
+The job runs only when a tag is pushed.
 
 In the last step, kaniko uses the `Dockerfile` under the
 root directory of the project, builds the Docker image and pushes it to the
@@ -72,16 +121,7 @@ build:
     - if: $CI_COMMIT_TAG
 ```
 
-If you authenticate against the [Dependency Proxy](../../user/packages/dependency_proxy/_index.md#authenticate-within-cicd),
-you must add the corresponding CI/CD variables for authentication to the `config.json` file:
-
-```yaml
-- echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"},\"$(echo -n $CI_DEPENDENCY_PROXY_SERVER | awk -F[:] '{print $1}')\":{\"auth\":\"$(printf "%s:%s" ${CI_DEPENDENCY_PROXY_USER} "${CI_DEPENDENCY_PROXY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-```
-
-This command strips the port, for example `:443`, from `CI_DEPENDENCY_PROXY_SERVER`, so you don't have to include it when referencing images.
-
-### Building an image with kaniko behind a proxy
+### Build an image behind a proxy
 
 If you use a custom GitLab Runner behind an http(s) proxy, kaniko needs to be set
 up accordingly. This means:
@@ -118,9 +158,10 @@ build:
 You can build [multi-arch images](https://www.docker.com/blog/multi-arch-build-and-images-the-simple-way/)
 inside a container by using [`manifest-tool`](https://github.com/estesp/manifest-tool).
 
-For a detailed guide on how to build a multi-arch image, read [Building a multi-arch container image in unprivileged containers](https://blog.siemens.com/2022/07/building-a-multi-arch-container-image-in-unprivileged-containers/).
+For a detailed guide on how to build a multi-arch image, see
+[Building a multi-arch container image in unprivileged containers](https://blog.siemens.com/2022/07/building-a-multi-arch-container-image-in-unprivileged-containers/).
 
-## Using a registry with a custom certificate
+## Use a registry with a custom certificate
 
 When trying to push to a Docker registry that uses a certificate that is signed
 by a custom CA, you might get the following error:

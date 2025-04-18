@@ -10,8 +10,10 @@
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/471677  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     In GitLab 19.0, we will remove CodeClimate-based Code Quality scanning.
+    This change was previously scheduled for GitLab 18.0 and has now been delayed.
+
     In its place, you should use quality tools directly in your CI/CD pipeline and [provide the tool's report as an artifact](https://docs.gitlab.com/ci/testing/code_quality/#import-code-quality-results-from-a-cicd-job).
-    Many tools already support the required report format, and you can integrate them by following the [documented steps](https://docs.gitlab.com/ci/testing/code_quality/#integrate-common-tools-with-code-quality).
+    We've already documented how to integrate many tools directly, and you can integrate them by following the [documentation](https://docs.gitlab.com/ci/testing/code_quality/#integrate-common-tools-with-code-quality).
 
     We expect to implement this change by:
 

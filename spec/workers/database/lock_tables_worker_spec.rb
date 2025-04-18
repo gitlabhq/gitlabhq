@@ -93,13 +93,13 @@ RSpec.describe Database::LockTablesWorker, feature_category: :cell do
             end
 
             with_them do
-              it 'skips locking the tables on the corresponding database' do
+              it 'tries to lock the table anyways, and logs the failure' do
                 tables.each do |table_name|
                   lock_table(database_name, table_name)
                 end
 
                 expected_log_results = tables.map do |table_name|
-                  { action: 'skipped', database: database_name, dry_run: false, table: table_name }
+                  { action: 'locked', database: database_name, dry_run: false, table: table_name }
                 end
                 expect(worker).to receive(:log_extra_metadata_on_done).with(:performed_actions, expected_log_results)
 

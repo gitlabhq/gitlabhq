@@ -23,7 +23,6 @@ import {
   getAggregationsUrl,
   prepareSearchAggregations,
   setDataToLS,
-  skipBlobESCount,
   buildDocumentTitle,
 } from './utils';
 
@@ -105,13 +104,17 @@ export const setFrequentProject = ({ state, commit }, item) => {
   commit(types.LOAD_FREQUENT_ITEMS, { key: PROJECTS_LOCAL_STORAGE_KEY, data: frequentItems });
 };
 
-export const fetchSidebarCount = ({ commit, state }) => {
+const filterBlobs = (navigationItemScope, skipBlobs) => {
+  return navigationItemScope !== SCOPE_BLOB ? true : skipBlobs;
+};
+
+export const fetchSidebarCount = ({ commit, state }, skipBlobs) => {
   const items = Object.values(state.navigation)
     .filter(
       (navigationItem) =>
         !navigationItem.active &&
         navigationItem.count_link &&
-        skipBlobESCount(state, navigationItem.scope),
+        filterBlobs(navigationItem.scope, skipBlobs),
     )
     .map((navItem) => {
       const navigationItem = { ...navItem };

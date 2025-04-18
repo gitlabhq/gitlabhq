@@ -11,22 +11,21 @@
   resolution_role: Developer
   manual_task: false
   body: |  # Do not modify this line, instead modify the lines below.
-    The Application Security Testing stage will be bumping the major versions of its analyzers in
-    tandem with the GitLab 18.0 release.
+    In GitLab 18.0, we will update the major version of all Application Security Testing analyzer container images.
 
     If you are not using the default included templates, or have pinned your analyzer versions, you
     must update your CI/CD job definition to either remove the pinned version or update
     the latest major version.
 
-    Users of GitLab 17.0 to GitLab 17.11 will continue to experience analyzer updates until the
+    Users of GitLab 17.0 to GitLab 17.11 will continue to receive analyzer updates until the
     release of GitLab 18.0, after which all newly fixed bugs and released features will be
     released only in the new major version of the analyzers.
+    However, we will not remove any published container images from the container registry.
 
     We do not backport bugs and features to deprecated versions as per our maintenance policy. As
     required, security patches will be backported within the latest 3 minor releases.
 
-    Specifically, the following analyzers are being deprecated and will no longer be updated after
-    the GitLab 18.0 release:
+    Specifically, the following analyzers will no longer be updated after the GitLab 18.0 release:
 
     - GitLab Advanced SAST: version 1
     - Container Scanning: version 7

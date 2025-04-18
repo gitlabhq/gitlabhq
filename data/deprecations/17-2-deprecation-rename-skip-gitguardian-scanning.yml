@@ -4,7 +4,9 @@
   breaking_change: false
   body: |  # Do not modify this line, instead modify the lines below.
     The options to skip GitGuardian secret detection, `[skip secret detection]` and `secret_detection.skip_all`, are deprecated. You should use `[skip secret push protection]` and `secret_push_protection.skip_all` instead.
-  stage: secure
+
+    While we recommend using the new wording, we no longer will remove the old option in GitLab 18.0.
+  stage: application_security_testing
   tiers: premium, ultimate
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/470119
   documentation_url: https://docs.gitlab.com/user/project/integrations/git_guardian/#skip-secret-detection

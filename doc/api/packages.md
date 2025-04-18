@@ -38,7 +38,7 @@ GET /projects/:id/packages
 | `id`                  | integer/string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `order_by`            | string         | no       | The field to use as order. One of `created_at` (default), `name`, `version`, or `type`. |
 | `sort`                | string         | no       | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
-| `package_type`        | string         | no       | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, `helm`, `terraform_module`, or `golang`. |
+| `package_type`        | string         | no       | Filter the returned packages by type. One of `composer`, `conan`, `generic`, `golang`, `helm`, `maven`, `npm`, `nuget`, `pypi`, or `terraform_module`. |
 | `package_name`        | string         | no       | Filter the project packages with a fuzzy search by name. |
 | `package_version`     | string         | no       | Filter the project packages by version. If used in combination with `include_versionless`, then no versionless packages are returned. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6. |
 | `include_versionless` | boolean        | no       | When set to true, versionless packages are included in the response. |
@@ -108,7 +108,7 @@ GET /groups/:id/packages
 | `exclude_subgroups`   | boolean        | no       | If the parameter is included as true, packages from projects from subgroups are not listed. Default is `false`. |
 | `order_by`            | string         | no       | The field to use as order. One of `created_at` (default), `name`, `version`, `type`, or `project_path`. |
 | `sort`                | string         | no       | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
-| `package_type`        | string         | no       | Filter the returned packages by type. One of `conan`, `maven`, `npm`, `pypi`, `composer`, `nuget`, `helm`, or `golang`. |
+| `package_type`        | string         | no       | Filter the returned packages by type. One of `composer`, `conan`, `generic`, `golang`, `helm`, `maven`, `npm`, `nuget`, `pypi`, or `terraform_module`. |
 | `package_name`        | string         | no       | Filter the project packages with a fuzzy search by name. |
 | `package_version`     | string         | no       | Filter the returned packages by version. If used in combination with `include_versionless`, then no versionless packages are returned. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6. |
 | `include_versionless` | boolean        | no       | When set to true, versionless packages are included in the response. |

@@ -745,3 +745,16 @@ The MR assignee must:
 1. Backup migrations from the default branch to the [migration graveyard](https://gitlab.com/gitlab-org/search-team/migration-graveyard)
 1. Verify that no references to the migration or spec files exist in the `.rubocop_todo/` directory.
 1. Push any required changes to the merge request.
+
+## ChatOps commands for monitoring migrations
+
+You can check migration status from Slack (or any ChatOps‑enabled channel) at any time:
+
+```plaintext
+/chatops run search_migrations --help
+/chatops run search_migrations list
+/chatops run search_migrations get MigrationName
+/chatops run search_migrations get VersionNumber
+```
+
+The above uses the [search_migrations](https://gitlab.com/gitlab-com/chatops/-/blob/master/lib/chatops/commands/search_migrations.rb) ChatOps plugin to fetch current migration state.

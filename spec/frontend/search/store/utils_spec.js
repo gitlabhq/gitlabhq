@@ -18,7 +18,6 @@ import {
   injectRegexSearch,
   injectUsersScope,
   scopeCrawler,
-  skipBlobESCount,
   buildDocumentTitle,
 } from '~/search/store/utils';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
@@ -404,67 +403,6 @@ describe('Global Search Store Utils', () => {
       const parentScope = 'customScope';
       const result = scopeCrawler(partialNavigationActive, parentScope);
       expect(result).toBe(parentScope);
-    });
-  });
-
-  describe('skipBlobESCount', () => {
-    const SCOPE_BLOB = 'blobs';
-
-    let state;
-
-    beforeEach(() => {
-      state = {
-        query: {},
-        zoektAvailable: false,
-      };
-
-      window.gon = {
-        features: {
-          zoektMultimatchFrontend: false,
-        },
-      };
-    });
-
-    it('returns true when no group_id or project_id is present', () => {
-      expect(skipBlobESCount(state, SCOPE_BLOB)).toBe(true);
-    });
-
-    it('returns true when zoektMultimatchFrontend feature flag is off', () => {
-      state.query.group_id = '1';
-      state.zoektAvailable = true;
-
-      expect(skipBlobESCount(state, SCOPE_BLOB)).toBe(true);
-    });
-
-    it('returns true when zoekt is not available', () => {
-      state.query.group_id = '1';
-      window.gon.features.zoektMultimatchFrontend = true;
-
-      expect(skipBlobESCount(state, SCOPE_BLOB)).toBe(true);
-    });
-
-    it('returns true when scope is not blob', () => {
-      state.query.group_id = '1';
-      state.zoektAvailable = true;
-      window.gon.features.zoektMultimatchFrontend = true;
-
-      expect(skipBlobESCount(state, 'not_blob')).toBe(true);
-    });
-
-    it('returns false when all conditions are met', () => {
-      state.query.group_id = '1';
-      state.zoektAvailable = true;
-      window.gon.features.zoektMultimatchFrontend = true;
-
-      expect(skipBlobESCount(state, SCOPE_BLOB)).toBe(false);
-    });
-
-    it('returns false when using project_id instead of group_id', () => {
-      state.query.project_id = '1';
-      state.zoektAvailable = true;
-      window.gon.features.zoektMultimatchFrontend = true;
-
-      expect(skipBlobESCount(state, SCOPE_BLOB)).toBe(false);
     });
   });
 
