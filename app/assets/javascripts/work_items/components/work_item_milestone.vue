@@ -73,6 +73,7 @@ export default {
     };
   },
   computed: {
+    // eslint-disable-next-line vue/no-unused-properties
     tracking() {
       return {
         category: TRACKING_CATEGORY_SHOW,

@@ -28,31 +28,16 @@ export default {
   },
   isLoggedIn: isLoggedIn(),
   props: {
-    fullPath: {
-      type: String,
-      required: true,
-    },
     workItemId: {
       type: String,
       required: false,
       default: null,
-    },
-    canUpdate: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     subscribedToNotifications: {
       type: Boolean,
       required: false,
       default: false,
     },
-  },
-  data() {
-    return {
-      isLockDiscussionUpdating: false,
-      emailsDisabled: false,
-    };
   },
   computed: {
     notificationTooltip() {

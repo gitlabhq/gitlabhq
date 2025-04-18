@@ -3306,9 +3306,6 @@ msgstr ""
 msgid "Account and limit"
 msgstr ""
 
-msgid "Account:"
-msgstr ""
-
 msgid "Account: %{account}"
 msgstr ""
 
@@ -5696,9 +5693,6 @@ msgstr ""
 msgid "AiPowered|Amazon Q Setup"
 msgstr ""
 
-msgid "AiPowered|Are you sure you want to turn off GitLab Duo Workflow?"
-msgstr ""
-
 msgid "AiPowered|Assign seats"
 msgstr ""
 
@@ -5756,12 +5750,6 @@ msgstr ""
 msgid "AiPowered|Expire conversation based on time conversation was last updated."
 msgstr ""
 
-msgid "AiPowered|Failed to disable GitLab Duo Workflow."
-msgstr ""
-
-msgid "AiPowered|Failed to enable GitLab Duo Workflow."
-msgstr ""
-
 msgid "AiPowered|Features are available. However, any group, subgroup, or project can turn them off."
 msgstr ""
 
@@ -5772,15 +5760,6 @@ msgid "AiPowered|Features are not available. However, any group, subgroup, or pr
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Chat conversation expiration"
-msgstr ""
-
-msgid "AiPowered|GitLab Duo Workflow"
-msgstr ""
-
-msgid "AiPowered|GitLab Duo Workflow has successfully been turned off."
-msgstr ""
-
-msgid "AiPowered|GitLab Duo Workflow is now on for the instance and the service account (%{accountId}) was created. To use Workflow in your groups, you must turn on AI features for specific groups."
 msgstr ""
 
 msgid "AiPowered|GitLab Duo seat assignment is now located in GitLab Duo settings."
@@ -5831,15 +5810,6 @@ msgstr ""
 msgid "AiPowered|Start date: %{startDate}"
 msgstr ""
 
-msgid "AiPowered|Turn off GitLab Duo Workflow"
-msgstr ""
-
-msgid "AiPowered|Turn off Workflow"
-msgstr ""
-
-msgid "AiPowered|Turn on GitLab Duo Workflow"
-msgstr ""
-
 msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
 msgstr ""
 
@@ -5852,9 +5822,6 @@ msgstr ""
 msgid "AiPowered|View configuration"
 msgstr ""
 
-msgid "AiPowered|What is this service account?"
-msgstr ""
-
 msgid "AiPowered|When GitLab Duo is not available, experiment and beta features cannot be turned on."
 msgstr ""
 
@@ -5862,15 +5829,6 @@ msgid "AiPowered|When you save, GitLab Duo will be turned for all groups, subgro
 msgstr ""
 
 msgid "AiPowered|When you save, GitLab Duo will be turned off for all groups, subgroups, and projects."
-msgstr ""
-
-msgid "AiPowered|When you turn off Workflow, users can no longer use it to solve coding tasks. Are you sure?"
-msgstr ""
-
-msgid "AiPowered|When you turn on GitLab Duo Workflow, a service account is created."
-msgstr ""
-
-msgid "AiPowered|Workflow is an AI-powered coding agent in the Visual Studio Code (VS Code) IDE."
 msgstr ""
 
 msgid "Akismet"
@@ -43261,6 +43219,9 @@ msgid "PackageRegistry|Package registry"
 msgstr ""
 
 msgid "PackageRegistry|Package updated by commit %{link} on branch %{branch}, built by pipeline %{pipeline}, and published to the registry %{datetime}"
+msgstr ""
+
+msgid "PackageRegistry|Packages"
 msgstr ""
 
 msgid "PackageRegistry|Packages and assets cleanup is ready to be executed when the next cleanup job runs."

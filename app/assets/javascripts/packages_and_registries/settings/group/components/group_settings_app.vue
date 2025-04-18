@@ -74,7 +74,6 @@ export default {
 
     <packages-settings
       id="packages-settings"
-      class="settings-section-no-bottom"
       :package-settings="packageSettings"
       :is-loading="isLoading"
       @success="handleSuccess"

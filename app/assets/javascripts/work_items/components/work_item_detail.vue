@@ -1008,10 +1008,8 @@ export default {
               />
               <work-item-notifications-widget
                 v-if="newTodoAndNotificationsEnabled"
-                :full-path="workItemFullPath"
                 :work-item-id="workItem.id"
                 :subscribed-to-notifications="workItemNotificationsSubscribed"
-                :can-update="canUpdate"
                 @error="updateError = $event"
               />
               <work-item-actions

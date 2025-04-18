@@ -68,6 +68,9 @@ export default {
       :list-item-class="listItemClass"
       :timestamp-type="timestampType"
       @refetch="$emit('refetch')"
+      @hover-visibility="$emit('hover-visibility', $event)"
+      @hover-stat="$emit('hover-stat', $event)"
+      @click-stat="$emit('click-stat', $event)"
     />
   </ul>
 </template>

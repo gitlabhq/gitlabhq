@@ -1,6 +1,7 @@
 import { nextTick } from 'vue';
-import { GlAvatarLabeled, GlIcon } from '@gitlab/ui';
+import { GlAvatarLabeled, GlIcon, GlTooltip } from '@gitlab/ui';
 import projects from 'test_fixtures/api/users/projects/get.json';
+import { stubComponent } from 'helpers/stub_component';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ProjectListItemDescription from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_description.vue';
 import ProjectListItemActions from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_actions.vue';
@@ -8,7 +9,6 @@ import ProjectListItemInactiveBadge from 'ee_else_ce/vue_shared/components/proje
 import ProjectsListItem from '~/vue_shared/components/projects_list/projects_list_item.vue';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
   VISIBILITY_TYPE_ICON,
@@ -66,13 +66,12 @@ describe('ProjectsListItem', () => {
   const createComponent = ({ propsData = {} } = {}) => {
     wrapper = mountExtended(ProjectsListItem, {
       propsData: { ...defaultPropsData, ...propsData },
-      directives: {
-        GlTooltip: createMockDirective('gl-tooltip'),
-      },
+      stubs: { GlTooltip: stubComponent(GlTooltip) },
     });
   };
 
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
+  const findStarsStat = () => wrapper.findByTestId('stars-btn');
   const findMergeRequestsStat = () => wrapper.findByTestId('mrs-btn');
   const findIssuesStat = () => wrapper.findByTestId('issues-btn');
   const findForksStat = () => wrapper.findByTestId('forks-btn');
@@ -89,6 +88,10 @@ describe('ProjectsListItem', () => {
     findDeleteModal().vm.$emit('primary');
     await nextTick();
   };
+  const findTooltipByTarget = (target) =>
+    wrapper
+      .findAllComponents(GlTooltip)
+      .wrappers.find((tooltip) => tooltip.props('target')() === target.element);
 
   it('renders project avatar', () => {
     createComponent();
@@ -112,10 +115,19 @@ describe('ProjectsListItem', () => {
     createComponent();
 
     const icon = findAvatarLabeled().findComponent(GlIcon);
-    const tooltip = getBinding(icon.element, 'gl-tooltip');
+    const tooltip = findTooltipByTarget(icon);
 
     expect(icon.props('name')).toBe(VISIBILITY_TYPE_ICON[VISIBILITY_LEVEL_PRIVATE_STRING]);
-    expect(tooltip.value).toBe(PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_PRIVATE_STRING]);
+    expect(tooltip.text()).toBe(PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_PRIVATE_STRING]);
+  });
+
+  it('emits hover-visibility event when visibility icon tooltip is shown', () => {
+    createComponent();
+
+    const icon = findAvatarLabeled().findComponent(GlIcon);
+    findTooltipByTarget(icon).vm.$emit('shown');
+
+    expect(wrapper.emitted('hover-visibility')).toEqual([[project.visibility]]);
   });
 
   describe('when visibility is not provided', () => {
@@ -174,12 +186,29 @@ describe('ProjectsListItem', () => {
   it('renders stars count', () => {
     createComponent();
 
-    expect(wrapper.findByTestId('stars-btn').props()).toEqual({
+    expect(findStarsStat().props()).toEqual({
       href: `${project.webUrl}/-/starrers`,
       tooltipText: 'Stars',
       a11yText: `${project.avatarLabel} has ${project.starCount} stars`,
       iconName: 'star-o',
       stat: project.starCount.toString(),
+    });
+  });
+
+  describe('when stars count stat emits hover and click events', () => {
+    beforeEach(async () => {
+      createComponent();
+      findStarsStat().vm.$emit('hover');
+      findStarsStat().vm.$emit('click');
+
+      await nextTick();
+    });
+
+    it('emits hover-stat and click-stat events', () => {
+      expect(wrapper.emitted()).toEqual({
+        'click-stat': [['stars-count']],
+        'hover-stat': [['stars-count']],
+      });
     });
   });
 
@@ -222,7 +251,7 @@ describe('ProjectsListItem', () => {
   });
 
   describe('when merge requests are enabled', () => {
-    it('renders merge requests count', () => {
+    beforeEach(() => {
       createComponent({
         propsData: {
           project: {
@@ -231,13 +260,29 @@ describe('ProjectsListItem', () => {
           },
         },
       });
+    });
 
+    it('renders merge requests count', () => {
       expect(findMergeRequestsStat().props()).toEqual({
         href: `${project.webUrl}/-/merge_requests`,
         tooltipText: 'Merge requests',
         a11yText: `${project.avatarLabel} has 5 open merge requests`,
         iconName: 'merge-request',
         stat: '5',
+      });
+    });
+
+    describe('when merge request stat emits hover and click events', () => {
+      beforeEach(() => {
+        findMergeRequestsStat().vm.$emit('hover');
+        findMergeRequestsStat().vm.$emit('click');
+      });
+
+      it('emits hover-stat and click-stat events', () => {
+        expect(wrapper.emitted()).toEqual({
+          'click-stat': [['mrs-count']],
+          'hover-stat': [['mrs-count']],
+        });
       });
     });
   });
@@ -258,15 +303,31 @@ describe('ProjectsListItem', () => {
   });
 
   describe('when issues are enabled', () => {
-    it('renders issues count', () => {
+    beforeEach(() => {
       createComponent();
+    });
 
+    it('renders issues count', () => {
       expect(findIssuesStat().props()).toEqual({
         href: `${project.webUrl}/-/issues`,
         tooltipText: 'Issues',
         a11yText: `${project.avatarLabel} has ${project.openIssuesCount} open issues`,
         iconName: 'issues',
         stat: project.openIssuesCount.toString(),
+      });
+    });
+
+    describe('when issues stat emits hover and click events', () => {
+      beforeEach(() => {
+        findIssuesStat().vm.$emit('hover');
+        findIssuesStat().vm.$emit('click');
+      });
+
+      it('emits hover-stat and click-stat events', () => {
+        expect(wrapper.emitted()).toEqual({
+          'click-stat': [['issues-count']],
+          'hover-stat': [['issues-count']],
+        });
       });
     });
   });
@@ -287,15 +348,31 @@ describe('ProjectsListItem', () => {
   });
 
   describe('when forking is enabled', () => {
-    it('renders forks count', () => {
+    beforeEach(() => {
       createComponent();
+    });
 
+    it('renders forks count', () => {
       expect(findForksStat().props()).toEqual({
         href: `${project.webUrl}/-/forks`,
         a11yText: `${project.avatarLabel} has ${project.forksCount} forks`,
         tooltipText: 'Forks',
         iconName: 'fork',
         stat: project.forksCount.toString(),
+      });
+    });
+
+    describe('when forking stat emits hover and click events', () => {
+      beforeEach(() => {
+        findForksStat().vm.$emit('hover');
+        findForksStat().vm.$emit('click');
+      });
+
+      it('emits hover-stat and click-stat events', () => {
+        expect(wrapper.emitted()).toEqual({
+          'click-stat': [['forks-count']],
+          'hover-stat': [['forks-count']],
+        });
       });
     });
   });

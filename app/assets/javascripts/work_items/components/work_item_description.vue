@@ -157,6 +157,7 @@ export default {
     hasConflicts() {
       return Boolean(this.conflictedDescription);
     },
+    // eslint-disable-next-line vue/no-unused-properties
     tracking() {
       return {
         category: TRACKING_CATEGORY_SHOW,

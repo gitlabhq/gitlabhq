@@ -180,6 +180,7 @@ export default {
     toggleWorkItemStateIcon() {
       return this.isWorkItemOpen ? 'issue-close' : 'issue-open-m';
     },
+    // eslint-disable-next-line vue/no-unused-properties
     tracking() {
       return {
         category: TRACKING_CATEGORY_SHOW,

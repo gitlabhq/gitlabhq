@@ -3,7 +3,7 @@ table_name: ci_pipeline_variables
 classes:
 - Ci::PipelineVariable
 feature_categories:
-- secrets_management
+- ci_variables
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/56418e85ac6b667d19495665860092ce4d74f55d
 milestone: '9.5'

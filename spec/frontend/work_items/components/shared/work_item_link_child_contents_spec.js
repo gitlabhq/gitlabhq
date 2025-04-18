@@ -205,7 +205,6 @@ describe('WorkItemLinkChildContents', () => {
       });
 
       expect(findMetadataComponent().props()).toMatchObject({
-        iid: '12',
         reference: '#12',
         metadataWidgets: workItemObjectiveMetadataWidgets,
       });
@@ -215,10 +214,7 @@ describe('WorkItemLinkChildContents', () => {
         childItem: otherNamespaceChild,
       });
 
-      expect(findMetadataComponent().props()).toMatchObject({
-        iid: '24',
-        reference: 'test-project-path/other#24',
-      });
+      expect(findMetadataComponent().props('reference')).toBe('test-project-path/other#24');
     });
   });
 

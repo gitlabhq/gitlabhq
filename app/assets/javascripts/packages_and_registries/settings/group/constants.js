@@ -2,6 +2,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
 
 export const PACKAGE_SETTINGS_HEADER = s__('PackageRegistry|Duplicate packages');
+export const PACKAGE_CRUD_HEADER = s__('PackageRegistry|Packages');
 export const PACKAGE_SETTINGS_DESCRIPTION = s__(
   'PackageRegistry|Allow packages with the same name and version to be uploaded to the registry. The newest version of a package is always used when installing.',
 );

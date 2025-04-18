@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlBadge, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlBadge, GlTooltip } from '@gitlab/ui';
 
 import {
   renderDeleteSuccessToast,
@@ -44,6 +44,7 @@ export default {
   components: {
     GlIcon,
     GlBadge,
+    GlTooltip,
     ListItem,
     ListItemStat,
     DeleteModal,
@@ -56,9 +57,6 @@ export default {
       import(
         'ee_component/vue_shared/components/projects_list/project_list_item_delayed_deletion_modal_footer.vue'
       ),
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
   },
   props: {
     /**
@@ -124,6 +122,9 @@ export default {
     },
     visibilityTooltip() {
       return PROJECT_VISIBILITY_TYPE[this.visibility];
+    },
+    visibilityTooltipTarget() {
+      return this.$refs?.visibilityIcon?.$el;
     },
     accessLevel() {
       return this.project.accessLevel?.integerValue;
@@ -261,6 +262,9 @@ export default {
         this.isDeleteLoading = false;
       }
     },
+    onVisibilityTooltipShown() {
+      this.$emit('hover-visibility', this.visibility);
+    },
   },
 };
 </script>
@@ -276,12 +280,12 @@ export default {
     content-testid="project-content"
   >
     <template #avatar-meta>
-      <gl-icon
-        v-if="visibility"
-        v-gl-tooltip="visibilityTooltip"
-        :name="visibilityIcon"
-        variant="subtle"
-      />
+      <template v-if="visibility">
+        <gl-icon ref="visibilityIcon" :name="visibilityIcon" variant="subtle" />
+        <gl-tooltip :target="() => visibilityTooltipTarget" @shown="onVisibilityTooltipShown">{{
+          visibilityTooltip
+        }}</gl-tooltip>
+      </template>
       <gl-badge
         v-if="project.isCatalogResource"
         icon="catalog-checkmark"
@@ -315,6 +319,8 @@ export default {
         icon-name="star-o"
         :stat="starCount"
         data-testid="stars-btn"
+        @hover="$emit('hover-stat', 'stars-count')"
+        @click="$emit('click-stat', 'stars-count')"
       />
       <list-item-stat
         v-if="isForkingEnabled"
@@ -324,6 +330,8 @@ export default {
         icon-name="fork"
         :stat="forksCount"
         data-testid="forks-btn"
+        @hover="$emit('hover-stat', 'forks-count')"
+        @click="$emit('click-stat', 'forks-count')"
       />
       <list-item-stat
         v-if="isMergeRequestsEnabled"
@@ -333,6 +341,8 @@ export default {
         icon-name="merge-request"
         :stat="openMergeRequestsCount"
         data-testid="mrs-btn"
+        @hover="$emit('hover-stat', 'mrs-count')"
+        @click="$emit('click-stat', 'mrs-count')"
       />
       <list-item-stat
         v-if="isIssuesEnabled"
@@ -342,6 +352,8 @@ export default {
         icon-name="issues"
         :stat="openIssuesCount"
         data-testid="issues-btn"
+        @hover="$emit('hover-stat', 'issues-count')"
+        @click="$emit('click-stat', 'issues-count')"
       />
     </template>
 

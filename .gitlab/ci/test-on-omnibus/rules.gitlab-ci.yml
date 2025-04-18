@@ -1,0 +1,15 @@
+.rules:test:dependency-update:
+  rules:
+    - if: '$DEPENDENCY_UPDATE == "true"'
+
+.rules:test:omnibus-base:
+  rules:
+    - if: '$DEPENDENCY_UPDATE == "true"'
+      when: never
+    # allows to trigger all jobs without creating specific list of scenarios
+    - if: '$RUN_ALL_TESTS == "true"'
+
+.rules:test:external-trigger-never:
+  rules:
+    - if: '$EXTERNAL_TRIGGER == "true"'
+      when: never

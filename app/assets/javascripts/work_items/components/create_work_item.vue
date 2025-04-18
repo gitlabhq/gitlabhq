@@ -459,9 +459,6 @@ export default {
       const healthStatusWidget = findWidget(WIDGET_TYPE_HEALTH_STATUS, this.workItem);
       return healthStatusWidget?.healthStatus || null;
     },
-    workItemAuthor() {
-      return this.workItem?.author;
-    },
     workItemDescription() {
       const descriptionWidget = findWidget(WIDGET_TYPE_DESCRIPTION, this.workItem);
       return descriptionWidget?.description || this.description;
@@ -970,7 +967,6 @@ export default {
               :work-item-id="workItemId"
               :assignees="workItemAssignees.assignees.nodes"
               :participants="workItemParticipantNodes"
-              :work-item-author="workItemAuthor"
               :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
               :work-item-type="selectedWorkItemTypeName"
               :can-invite-members="workItemAssignees.canInviteMembers"

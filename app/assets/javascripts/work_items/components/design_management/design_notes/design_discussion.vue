@@ -161,11 +161,6 @@ export default {
     isFormVisible() {
       return this.isFormRendered && this.discussionWithOpenForm === this.discussion.id;
     },
-    designsVersion() {
-      return this.$route.query.version
-        ? `gid://gitlab/DesignManagement::Version/${this.$route.query.version}`
-        : null;
-    },
   },
   mounted() {
     this.$nextTick(() => {

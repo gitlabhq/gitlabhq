@@ -7,10 +7,13 @@ import { createAlert } from '~/alert';
 import { TIMESTAMP_TYPES } from '~/vue_shared/components/resource_lists/constants';
 import { ACCESS_LEVELS_INTEGER_TO_STRING } from '~/access_level/constants';
 import { COMPONENT_NAME as NESTED_GROUPS_PROJECTS_LIST_COMPONENT_NAME } from '~/vue_shared/components/nested_groups_projects_list/constants';
+import { InternalEvents } from '~/tracking';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
 } from '../constants';
+
+const trackingMixin = InternalEvents.mixin();
 
 // Will be made more generic to work with groups and projects in future commits
 export default {
@@ -24,6 +27,7 @@ export default {
     GlLoadingIcon,
     GlKeysetPagination,
   },
+  mixins: [trackingMixin],
   props: {
     tab: {
       required: true,
@@ -62,6 +66,13 @@ export default {
     programmingLanguages: {
       type: Array,
       required: true,
+    },
+    eventTracking: {
+      type: Object,
+      required: false,
+      default() {
+        return {};
+      },
     },
   },
   data() {
@@ -239,6 +250,27 @@ export default {
         item.childrenLoading = false;
       }
     },
+    onHoverVisibility(visibility) {
+      if (!this.eventTracking?.hoverVisibility) {
+        return;
+      }
+
+      this.trackEvent(this.eventTracking.hoverVisibility, { label: visibility });
+    },
+    onHoverStat(stat) {
+      if (!this.eventTracking?.hoverStat) {
+        return;
+      }
+
+      this.trackEvent(this.eventTracking.hoverStat, { label: stat });
+    },
+    onClickStat(stat) {
+      if (!this.eventTracking?.clickStat) {
+        return;
+      }
+
+      this.trackEvent(this.eventTracking.clickStat, { label: stat });
+    },
   },
 };
 </script>
@@ -251,6 +283,9 @@ export default {
       v-bind="listComponentProps"
       @refetch="onRefetch"
       @load-children="onLoadChildren"
+      @hover-visibility="onHoverVisibility"
+      @hover-stat="onHoverStat"
+      @click-stat="onClickStat"
     />
     <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-mt-5 gl-text-center">
       <gl-keyset-pagination v-bind="pageInfo" @prev="onPrev" @next="onNext" />

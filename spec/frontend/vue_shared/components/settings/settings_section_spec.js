@@ -15,6 +15,7 @@ describe('Settings Block', () => {
     });
   };
 
+  const findSection = () => wrapper.findByTestId('settings-section');
   const findDefaultSlot = () => wrapper.findByTestId('default-slot');
   const findHeadingSlot = () => wrapper.findByTestId('heading-slot');
   const findHeading = () => wrapper.findByTestId('settings-section-heading');
@@ -53,5 +54,11 @@ describe('Settings Block', () => {
     expect(findDescription().classes()).toEqual(
       expect.arrayContaining(['gl-text-subtle', 'gl-mb-3']),
     );
+  });
+
+  it('option "noBottomBorder" has been set', () => {
+    mountComponent({ noBottomBorder: true });
+
+    expect(findSection().classes()).toContain('settings-section-no-bottom');
   });
 });

@@ -459,7 +459,7 @@ describe('TabsWithList', () => {
       expect(findTabView().props('tab')).toMatchObject(expectedTab);
     });
 
-    it('passes sorting, filtering, and pagination props', () => {
+    it('passes sorting, filtering, pagination, and event tracking props', () => {
       expect(findTabView().props()).toMatchObject({
         sort: query.sort,
         filters: {
@@ -470,6 +470,7 @@ describe('TabsWithList', () => {
         filteredSearchTermKey: defaultPropsData.filteredSearchTermKey,
         endCursor: mockEndCursor,
         startCursor: mockStartCursor,
+        eventTracking: defaultPropsData.eventTracking,
       });
     });
   });

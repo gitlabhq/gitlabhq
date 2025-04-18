@@ -25,10 +25,6 @@ export default {
       type: String,
       required: true,
     },
-    parentWorkItemIid: {
-      type: String,
-      required: true,
-    },
     linkedItems: {
       type: Array,
       required: false,

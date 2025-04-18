@@ -16,6 +16,11 @@ export default {
       required: false,
       default: '',
     },
+    noBottomBorder: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     hasHeading() {
@@ -29,7 +34,11 @@ export default {
 </script>
 
 <template>
-  <section class="settings-section js-search-settings-section">
+  <section
+    class="settings-section js-search-settings-section"
+    :class="{ 'settings-section-no-bottom': noBottomBorder }"
+    data-testid="settings-section"
+  >
     <div v-if="hasHeading || hasDescription" class="settings-sticky-header">
       <div class="settings-sticky-header-inner">
         <h2

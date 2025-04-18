@@ -9,6 +9,7 @@ include:
 
 variables:
   RUN_WITH_BUNDLE: "false"
+  EXTERNAL_TRIGGER: "true"
 
 # Populate runner cache with preinstalled version of gitlab-qa gem
 cache-gitlab-qa:

@@ -13,7 +13,6 @@ import {
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_MILESTONE,
-  WIDGET_TYPE_STATUS,
   WIDGET_TYPE_PARTICIPANTS,
   WIDGET_TYPE_PROGRESS,
   WIDGET_TYPE_START_AND_DUE_DATE,
@@ -134,9 +133,6 @@ export default {
     canUpdateMetadata() {
       return this.workItem?.userPermissions?.setWorkItemMetadata;
     },
-    canDelete() {
-      return this.workItem?.userPermissions?.deleteWorkItem;
-    },
     workItemAssignees() {
       return this.isWidgetPresent(WIDGET_TYPE_ASSIGNEES);
     },
@@ -167,9 +163,6 @@ export default {
     workItemMilestone() {
       return this.isWidgetPresent(WIDGET_TYPE_MILESTONE);
     },
-    showRolledupDates() {
-      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
-    },
     isParentEnabled() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC ? this.hasSubepicsFeature : true;
     },
@@ -184,12 +177,6 @@ export default {
     },
     workItemColor() {
       return this.isWidgetPresent(WIDGET_TYPE_COLOR);
-    },
-    workItemStatus() {
-      return this.isWidgetPresent(WIDGET_TYPE_STATUS);
-    },
-    workItemAuthor() {
-      return this.workItem?.author;
     },
     hasParent() {
       return this.workItemHierarchy?.hasParent;
@@ -236,7 +223,6 @@ export default {
       :work-item-id="workItem.id"
       :assignees="workItemAssignees.assignees.nodes"
       :participants="workItemParticipants"
-      :work-item-author="workItemAuthor"
       :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
       :work-item-type="workItemType"
       :can-invite-members="workItemAssignees.canInviteMembers"

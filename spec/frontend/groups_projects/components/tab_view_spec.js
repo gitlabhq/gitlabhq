@@ -36,11 +36,14 @@ import { TIMESTAMP_TYPE_CREATED_AT } from '~/vue_shared/components/resource_list
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { resolvers } from '~/groups/your_work/graphql/resolvers';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { pageInfoMultiplePages, programmingLanguages } from './mock_data';
 
 jest.mock('~/alert');
 
 Vue.use(VueApollo);
+
+const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
 describe('TabView', () => {
   let wrapper;
@@ -60,6 +63,11 @@ describe('TabView', () => {
     filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
     timestampType: TIMESTAMP_TYPE_CREATED_AT,
     programmingLanguages,
+    eventTracking: {
+      clickStat: 'click_stat_on_your_work_projects',
+      hoverStat: 'hover_stat_on_your_work_projects',
+      hoverVisibility: 'hover_visibility_icon_on_your_work_projects',
+    },
   };
 
   const createComponent = ({ handlers = [], propsData = {} } = {}) => {
@@ -429,6 +437,63 @@ describe('TabView', () => {
 
       it('does not render an empty state', () => {
         expect(findEmptyState().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('event tracking', () => {
+    let trackEventSpy;
+
+    beforeEach(async () => {
+      createComponent({
+        handlers: [
+          [PERSONAL_TAB.query, jest.fn().mockResolvedValue(personalProjectsGraphQlResponse)],
+        ],
+        propsData: { tab: PERSONAL_TAB },
+      });
+      await waitForPromises();
+      trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
+    });
+
+    describe('when visibility is hovered', () => {
+      beforeEach(() => {
+        findProjectsList().vm.$emit('hover-visibility', 'private');
+      });
+
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          defaultPropsData.eventTracking.hoverVisibility,
+          { label: 'private' },
+          undefined,
+        );
+      });
+    });
+
+    describe('when stat is hovered', () => {
+      beforeEach(() => {
+        findProjectsList().vm.$emit('hover-stat', 'stars-count');
+      });
+
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          defaultPropsData.eventTracking.hoverStat,
+          { label: 'stars-count' },
+          undefined,
+        );
+      });
+    });
+
+    describe('when stat is clicked', () => {
+      beforeEach(() => {
+        findProjectsList().vm.$emit('click-stat', 'stars-count');
+      });
+
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          defaultPropsData.eventTracking.clickStat,
+          { label: 'stars-count' },
+          undefined,
+        );
       });
     });
   });
