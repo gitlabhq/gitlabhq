@@ -13,7 +13,7 @@ module Sidebars
 
         override :title
         def title
-          _('GPG Keys')
+          _('GPG keys')
         end
 
         override :sprite_icon

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User Settings > GPG Keys', feature_category: :user_profile do
+RSpec.describe 'User Settings > GPG keys', feature_category: :user_profile do
   let(:user) { create(:user, email: GpgHelpers::User2.emails.first) }
 
   before do

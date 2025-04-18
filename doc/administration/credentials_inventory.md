@@ -78,4 +78,4 @@ To view information about GPG keys in your instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Credentials**.
-1. Select the **GPG Keys** tab.
+1. Select the **GPG keys** tab.

@@ -5,5 +5,5 @@
 %p
   = s_("Notify|Fingerprint: %{fingerprint}").html_safe % { fingerprint: content_tag(:code, @gpg_key.fingerprint) }
 %p
-  - removal_link = link_to _("GPG Keys"), user_settings_gpg_keys_url
+  - removal_link = link_to _("GPG keys"), user_settings_gpg_keys_url
   = s_("Notify|If this key was added in error, you can remove it under %{removal_link}").html_safe % { removal_link: removal_link }
