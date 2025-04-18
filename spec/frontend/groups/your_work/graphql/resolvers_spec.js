@@ -16,7 +16,7 @@ describe('your work groups resolver', () => {
   const makeQuery = () => {
     return mockApollo.clients.defaultClient.query({
       query: memberGroupsQuery,
-      variables: { search: 'foo', sort: 'created_desc' },
+      variables: { search: 'foo', sort: 'created_desc', page: 2 },
     });
   };
 
@@ -24,7 +24,14 @@ describe('your work groups resolver', () => {
     mockApollo = createMockApollo([], resolvers(endpoint));
 
     mockAxios = new MockAdapter(axios);
-    mockAxios.onGet(endpoint).reply(200, dashboardGroupsWithChildrenResponse);
+    mockAxios.onGet(endpoint).reply(200, dashboardGroupsWithChildrenResponse, {
+      'x-per-page': 10,
+      'x-page': 2,
+      'x-total': 21,
+      'x-total-pages': 3,
+      'x-next-page': 3,
+      'x-prev-page': 1,
+    });
   });
 
   afterEach(() => {
@@ -34,13 +41,17 @@ describe('your work groups resolver', () => {
   it(`makes API call to ${endpoint} with correct params`, async () => {
     await makeQuery();
 
-    expect(mockAxios.history.get[0].params).toEqual({ filter: 'foo', sort: 'created_desc' });
+    expect(mockAxios.history.get[0].params).toEqual({
+      filter: 'foo',
+      sort: 'created_desc',
+      page: 2,
+    });
   });
 
   it('returns API call response correctly formatted for GraphQL', async () => {
     const {
       data: {
-        groups: { nodes },
+        groups: { nodes, pageInfo },
       },
     } = await makeQuery();
 
@@ -79,6 +90,14 @@ describe('your work groups resolver', () => {
         },
       ],
       isLinkedToSubscription: false,
+    });
+
+    expect(pageInfo).toEqual({
+      __typename: 'LocalPageInfo',
+      total: 21,
+      perPage: 10,
+      nextPage: 3,
+      previousPage: 1,
     });
   });
 });

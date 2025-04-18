@@ -3,6 +3,7 @@ import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+  PAGINATION_TYPE_KEYSET,
 } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
@@ -49,6 +50,7 @@ export default {
     hoverVisibility: 'hover_visibility_icon_on_your_work_projects',
   },
   tabCountsQuery: projectCountsQuery,
+  PAGINATION_TYPE_KEYSET,
   name: 'YourWorkProjectsApp',
   components: {
     TabsWithList,
@@ -82,5 +84,6 @@ export default {
     :event-tracking="$options.eventTracking"
     :tab-counts-query="$options.tabCountsQuery"
     :tab-counts-query-error-message="__('An error occurred loading the project counts.')"
+    :pagination-type="$options.PAGINATION_TYPE_KEYSET"
   />
 </template>

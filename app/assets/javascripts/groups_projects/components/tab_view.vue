@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
+import { GlLoadingIcon, GlKeysetPagination, GlPagination } from '@gitlab/ui';
 import { get } from 'lodash';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { __ } from '~/locale';
@@ -11,12 +11,15 @@ import { InternalEvents } from '~/tracking';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+  PAGINATION_TYPE_KEYSET,
+  PAGINATION_TYPE_OFFSET,
 } from '../constants';
 
 const trackingMixin = InternalEvents.mixin();
 
-// Will be made more generic to work with groups and projects in future commits
 export default {
+  PAGINATION_TYPE_KEYSET,
+  PAGINATION_TYPE_OFFSET,
   name: 'TabView',
   i18n: {
     errorMessage: __(
@@ -26,6 +29,7 @@ export default {
   components: {
     GlLoadingIcon,
     GlKeysetPagination,
+    GlPagination,
   },
   mixins: [trackingMixin],
   props: {
@@ -42,6 +46,11 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    page: {
+      type: Number,
+      required: false,
+      default: 1,
     },
     sort: {
       type: String,
@@ -74,6 +83,13 @@ export default {
         return {};
       },
     },
+    paginationType: {
+      type: String,
+      required: true,
+      validator(value) {
+        return [PAGINATION_TYPE_KEYSET, PAGINATION_TYPE_OFFSET].includes(value);
+      },
+    },
   },
   data() {
     return {
@@ -88,7 +104,8 @@ export default {
           const { transformVariables } = this.tab;
 
           const variables = {
-            ...this.pagination,
+            ...(this.paginationType === PAGINATION_TYPE_KEYSET ? this.keysetPagination : {}),
+            ...(this.paginationType === PAGINATION_TYPE_OFFSET ? this.offsetPagination : {}),
             ...this.tab.variables,
             sort: this.sort,
             programmingLanguageName: this.programmingLanguageName,
@@ -122,7 +139,7 @@ export default {
     pageInfo() {
       return this.items.pageInfo || {};
     },
-    pagination() {
+    keysetPagination() {
       if (!this.startCursor && !this.endCursor) {
         return {
           first: DEFAULT_PER_PAGE,
@@ -138,6 +155,9 @@ export default {
         last: this.startCursor && DEFAULT_PER_PAGE,
         before: this.startCursor,
       };
+    },
+    offsetPagination() {
+      return { page: this.page };
     },
     isLoading() {
       return this.$apollo.queries.items.loading;
@@ -189,14 +209,14 @@ export default {
       this.apolloClient.resetStore();
       this.$apollo.queries.items.refetch();
     },
-    onNext(endCursor) {
-      this.$emit('page-change', {
+    onKeysetNext(endCursor) {
+      this.$emit('keyset-page-change', {
         endCursor,
         startCursor: null,
       });
     },
-    onPrev(startCursor) {
-      this.$emit('page-change', {
+    onKeysetPrev(startCursor) {
+      this.$emit('keyset-page-change', {
         endCursor: null,
         startCursor,
       });
@@ -271,6 +291,9 @@ export default {
 
       this.trackEvent(this.eventTracking.clickStat, { label: stat });
     },
+    onOffsetInput(page) {
+      this.$emit('offset-page-change', page);
+    },
   },
 };
 </script>
@@ -287,9 +310,22 @@ export default {
       @hover-stat="onHoverStat"
       @click-stat="onClickStat"
     />
-    <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-mt-5 gl-text-center">
-      <gl-keyset-pagination v-bind="pageInfo" @prev="onPrev" @next="onNext" />
-    </div>
+    <template v-if="paginationType === $options.PAGINATION_TYPE_OFFSET">
+      <div v-if="pageInfo.nextPage || pageInfo.previousPage" class="gl-mt-5">
+        <gl-pagination
+          :value="page"
+          :per-page="pageInfo.perPage"
+          :total-items="pageInfo.total"
+          align="center"
+          @input="onOffsetInput"
+        />
+      </div>
+    </template>
+    <template v-else-if="paginationType === $options.PAGINATION_TYPE_KEYSET">
+      <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-mt-5 gl-text-center">
+        <gl-keyset-pagination v-bind="pageInfo" @prev="onKeysetPrev" @next="onKeysetNext" />
+      </div>
+    </template>
   </div>
   <component :is="tab.emptyStateComponent" v-else v-bind="emptyStateComponentProps" />
 </template>

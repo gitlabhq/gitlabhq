@@ -5,6 +5,7 @@ import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+  PAGINATION_TYPE_KEYSET,
 } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
@@ -71,6 +72,7 @@ describe('YourWorkProjectsApp', () => {
       },
       tabCountsQuery: projectCountsQuery,
       tabCountsQueryErrorMessage: 'An error occurred loading the project counts.',
+      paginationType: PAGINATION_TYPE_KEYSET,
     });
   });
 });

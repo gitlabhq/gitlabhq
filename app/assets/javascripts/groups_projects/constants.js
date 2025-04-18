@@ -10,3 +10,8 @@ export const FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL = 'min_access_level';
 
 export const SORT_DIRECTION_ASC = 'asc';
 export const SORT_DIRECTION_DESC = 'desc';
+
+export const PAGINATION_TYPE_KEYSET = 'paginationKeyset';
+export const PAGINATION_TYPE_OFFSET = 'paginationOffset';
+
+export const QUERY_PARAM_PAGE = 'page';

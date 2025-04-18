@@ -16,6 +16,9 @@ import {
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
   SORT_DIRECTION_ASC,
   SORT_DIRECTION_DESC,
+  PAGINATION_TYPE_KEYSET,
+  PAGINATION_TYPE_OFFSET,
+  QUERY_PARAM_PAGE,
 } from '../constants';
 import userPreferencesUpdateMutation from '../graphql/mutations/user_preferences_update.mutation.graphql';
 import TabView from './tab_view.vue';
@@ -106,6 +109,13 @@ export default {
       required: false,
       default: __('An error occurred loading the tab counts.'),
     },
+    paginationType: {
+      type: String,
+      required: true,
+      validator(value) {
+        return [PAGINATION_TYPE_KEYSET, PAGINATION_TYPE_OFFSET].includes(value);
+      },
+    },
   },
   data() {
     return {
@@ -187,10 +197,14 @@ export default {
     endCursor() {
       return this.$route.query[QUERY_PARAM_END_CURSOR];
     },
+    page() {
+      return parseInt(this.$route.query[QUERY_PARAM_PAGE], 10) || 1;
+    },
     routeQueryWithoutPagination() {
       const {
         [QUERY_PARAM_START_CURSOR]: startCursor,
         [QUERY_PARAM_END_CURSOR]: endCursor,
+        [QUERY_PARAM_PAGE]: page,
         ...routeQuery
       } = this.$route.query;
 
@@ -328,7 +342,7 @@ export default {
         });
       });
     },
-    onPageChange(pagination) {
+    onKeysetPageChange(pagination) {
       this.pushQuery(
         calculateGraphQLPaginationQueryParams({ ...pagination, routeQuery: this.$route.query }),
       );
@@ -341,6 +355,9 @@ export default {
         label: this.activeTab.value,
         property: pagination.startCursor === null ? 'next' : 'previous',
       });
+    },
+    onOffsetPageChange(page) {
+      this.pushQuery({ ...this.$route.query, [QUERY_PARAM_PAGE]: page });
     },
     async userPreferencesUpdateMutate(sort) {
       try {
@@ -382,13 +399,16 @@ export default {
         :tab="tab"
         :start-cursor="startCursor"
         :end-cursor="endCursor"
+        :page="page"
         :sort="sort"
         :filters="filters"
         :timestamp-type="timestampType"
         :programming-languages="programmingLanguages"
         :filtered-search-term-key="filteredSearchTermKey"
         :event-tracking="eventTracking"
-        @page-change="onPageChange"
+        :pagination-type="paginationType"
+        @keyset-page-change="onKeysetPageChange"
+        @offset-page-change="onOffsetPageChange"
       />
       <template v-else>{{ tab.text }}</template>
     </gl-tab>

@@ -25,6 +25,8 @@ import {
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
   SORT_DIRECTION_DESC,
   SORT_DIRECTION_ASC,
+  PAGINATION_TYPE_KEYSET,
+  PAGINATION_TYPE_OFFSET,
 } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
@@ -90,6 +92,7 @@ const defaultPropsData = {
   },
   tabCountsQuery: projectCountsQuery,
   tabCountsQueryErrorMessage: 'An error occurred loading the project counts.',
+  paginationType: PAGINATION_TYPE_KEYSET,
 };
 
 const { bindInternalEventDocument } = useMockInternalEventsTracking();
@@ -597,7 +600,7 @@ describe('TabsWithList', () => {
     });
   });
 
-  describe('when page is changed', () => {
+  describe('when keyset page is changed', () => {
     let trackEventSpy;
 
     describe('when going to next page', () => {
@@ -610,7 +613,7 @@ describe('TabsWithList', () => {
 
         trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
 
-        findTabView().vm.$emit('page-change', {
+        findTabView().vm.$emit('keyset-page-change', {
           endCursor: mockEndCursor,
           startCursor: null,
           hasPreviousPage: true,
@@ -650,7 +653,7 @@ describe('TabsWithList', () => {
 
         trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
 
-        findTabView().vm.$emit('page-change', {
+        findTabView().vm.$emit('keyset-page-change', {
           endCursor: null,
           startCursor: mockStartCursor,
           hasPreviousPage: true,
@@ -670,6 +673,31 @@ describe('TabsWithList', () => {
           undefined,
         );
       });
+    });
+  });
+
+  describe('when offset page is changed', () => {
+    beforeEach(async () => {
+      await createComponent({
+        route: defaultRoute,
+        propsData: {
+          paginationType: PAGINATION_TYPE_OFFSET,
+        },
+      });
+
+      findTabView().vm.$emit('offset-page-change', 2);
+
+      await waitForPromises();
+    });
+
+    it('sets `page` query string', () => {
+      expect(router.currentRoute.query).toMatchObject({
+        page: '2',
+      });
+    });
+
+    it('passes page prop to TabView component', () => {
+      expect(findTabView().props('page')).toBe(2);
     });
   });
 

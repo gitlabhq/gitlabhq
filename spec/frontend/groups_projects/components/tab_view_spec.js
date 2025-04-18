@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
-import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
+import { GlLoadingIcon, GlKeysetPagination, GlPagination } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import starredProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/starred_projects.query.graphql.json';
 import inactiveProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/inactive_projects.query.graphql.json';
@@ -29,6 +29,8 @@ import { MEMBER_TAB as MEMBER_TAB_GROUPS } from '~/groups/your_work/constants';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+  PAGINATION_TYPE_KEYSET,
+  PAGINATION_TYPE_OFFSET,
 } from '~/groups_projects/constants';
 import { FILTERED_SEARCH_TERM_KEY } from '~/projects/filtered_search_and_sort/constants';
 import { ACCESS_LEVEL_OWNER_INTEGER, ACCESS_LEVEL_OWNER_STRING } from '~/access_level/constants';
@@ -68,6 +70,7 @@ describe('TabView', () => {
       hoverStat: 'hover_stat_on_your_work_projects',
       hoverVisibility: 'hover_visibility_icon_on_your_work_projects',
     },
+    paginationType: PAGINATION_TYPE_KEYSET,
   };
 
   const createComponent = ({ handlers = [], propsData = {} } = {}) => {
@@ -83,7 +86,8 @@ describe('TabView', () => {
   };
 
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
-  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
+  const findKeysetPagination = () => wrapper.findComponent(GlKeysetPagination);
+  const findOffsetPagination = () => wrapper.findComponent(GlPagination);
   const findEmptyState = () => wrapper.findComponent(ProjectsListEmptyState);
 
   beforeEach(() => {
@@ -280,7 +284,7 @@ describe('TabView', () => {
     });
   });
 
-  describe('pagination', () => {
+  describe('keyset pagination', () => {
     const propsData = { tab: PERSONAL_TAB };
 
     describe('when there is one page of projects', () => {
@@ -295,7 +299,7 @@ describe('TabView', () => {
       });
 
       it('does not render pagination', () => {
-        expect(findPagination().exists()).toBe(false);
+        expect(findKeysetPagination().exists()).toBe(false);
       });
     });
 
@@ -323,16 +327,16 @@ describe('TabView', () => {
       });
 
       it('renders pagination', () => {
-        expect(findPagination().exists()).toBe(true);
+        expect(findKeysetPagination().exists()).toBe(true);
       });
 
       describe('when next button is clicked', () => {
         beforeEach(() => {
-          findPagination().vm.$emit('next', mockEndCursor);
+          findKeysetPagination().vm.$emit('next', mockEndCursor);
         });
 
-        it('emits `page-change` event', () => {
-          expect(wrapper.emitted('page-change')[0]).toEqual([
+        it('emits `keyset-page-change` event', () => {
+          expect(wrapper.emitted('keyset-page-change')[0]).toEqual([
             {
               endCursor: mockEndCursor,
               startCursor: null,
@@ -366,11 +370,11 @@ describe('TabView', () => {
 
       describe('when previous button is clicked', () => {
         beforeEach(() => {
-          findPagination().vm.$emit('prev', mockStartCursor);
+          findKeysetPagination().vm.$emit('prev', mockStartCursor);
         });
 
-        it('emits `page-change` event', () => {
-          expect(wrapper.emitted('page-change')[0]).toEqual([
+        it('emits `keyset-page-change` event', () => {
+          expect(wrapper.emitted('keyset-page-change')[0]).toEqual([
             {
               endCursor: null,
               startCursor: mockStartCursor,
@@ -399,6 +403,84 @@ describe('TabView', () => {
             programmingLanguageName: 'CoffeeScript',
             minAccessLevel: ACCESS_LEVEL_OWNER_STRING,
           });
+        });
+      });
+    });
+  });
+
+  describe('offset pagination', () => {
+    const propsData = { tab: MEMBER_TAB_GROUPS, paginationType: PAGINATION_TYPE_OFFSET };
+
+    describe('when there is one page', () => {
+      beforeEach(async () => {
+        mockAxios.onGet(endpoint).replyOnce(200, dashboardGroupsResponse, {
+          'x-per-page': 10,
+          'x-page': 1,
+          'x-total': 9,
+          'x-total-pages': 1,
+          'x-next-page': null,
+          'x-prev-page': null,
+        });
+        createComponent({
+          propsData,
+        });
+        await waitForPromises();
+      });
+
+      it('does not render pagination', () => {
+        expect(findOffsetPagination().exists()).toBe(false);
+      });
+    });
+
+    describe('when there are multiple pages', () => {
+      beforeEach(async () => {
+        mockAxios.onGet(endpoint).replyOnce(200, dashboardGroupsResponse, {
+          'x-per-page': 10,
+          'x-page': 2,
+          'x-total': 21,
+          'x-total-pages': 3,
+          'x-next-page': 3,
+          'x-prev-page': 1,
+        });
+
+        createComponent({
+          propsData,
+        });
+        await waitForPromises();
+      });
+
+      it('renders pagination', () => {
+        expect(findOffsetPagination().exists()).toBe(true);
+      });
+
+      describe('when next button is clicked', () => {
+        beforeEach(() => {
+          findOffsetPagination().vm.$emit('input', 3);
+        });
+
+        it('emits `offset-page-change` event', () => {
+          expect(wrapper.emitted('offset-page-change')[0]).toEqual([3]);
+        });
+      });
+
+      describe('when previous button is clicked', () => {
+        beforeEach(() => {
+          findOffsetPagination().vm.$emit('input', 1);
+        });
+
+        it('emits `offset-page-change` event', () => {
+          expect(wrapper.emitted('offset-page-change')[0]).toEqual([1]);
+        });
+      });
+
+      describe('when `page` prop is changed', () => {
+        beforeEach(async () => {
+          wrapper.setProps({ page: 3 });
+          await waitForPromises();
+        });
+
+        it('calls API with page argument', () => {
+          expect(mockAxios.history.get[1].params.page).toBe(3);
         });
       });
     });
