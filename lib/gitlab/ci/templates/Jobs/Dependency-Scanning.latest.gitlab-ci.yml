@@ -322,14 +322,6 @@ dependency-scanning-with-reachability:
     - job: gitlab-static-reachability
       optional: true
       artifacts: true
-      # For supporting Scan Execution Policies.
-    - job: gitlab-static-reachability-0
-      optional: true
-      artifacts: true
-      # For dependency scanning getting artifacts from build job
-    - job: build
-      optional: true
-      artifacts: true
   script:
     - |
       /analyzer run || exit $?

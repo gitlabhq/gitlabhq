@@ -57,6 +57,7 @@ Prerequisites:
 To enable static reachability analysis:
 
 - Edit the project `.gitlab-ci.yml` file and set `DS_STATIC_REACHABILITY_ENABLED` to `true`.
+- Make sure you extend `dependency-scanning-with-reachability` needs section to depend on the build job that creates the artifact required by the DS analyzer.
 
 Enabling static reachability:
 
@@ -72,9 +73,9 @@ variables:
   DS_STATIC_REACHABILITY_ENABLED: true
   DS_ENFORCE_NEW_ANALYZER: true
 
-# Build job required by the DS analyzer to create pipdeptree.json
+# create job required by the DS analyzer to create pipdeptree.json
 # https://docs.gitlab.com/user/application_security/dependency_scanning/dependency_scanning_sbom/#pip
-build:
+create:
   stage: build
   image: "python:latest"
   script:
@@ -85,50 +86,13 @@ build:
     when: on_success
     access: developer
     paths: ["**/pipdeptree.json"]
-```
-
-The dependency scanning analyzer requires specific lock files to function properly. These files must
-be generated during a build job on a stage prior to dependency scanning. By default, the dependency
-scanning with reachability job is configured to depend on a job named `build`. If you need to use a
-different name for your build job, you must override the dependency scanning `needs` section in your
-configuration. Below is an example using `pip-compile` to generate a requirement lock file. This
-file is passed to the new DS analyzer by using the `DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN`
-because the name is not standard.
-
-```yaml
-stages:
-  - build
-  - test
-
-include:
-  - template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
-
-variables:
-  DS_ENFORCE_NEW_ANALYZER: true
-  DS_STATIC_REACHABILITY_ENABLED: true
-  DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN: "requirements-lock.txt"
-
-create:
-  stage: build
-  image: "python:3.12"
-  script:
-    - pip install pip-tools
-    - pip-compile requirements.txt -o requirements-lock.txt
-  artifacts:
-    when: on_success
-    access: developer
-    paths: ["**/requirements-lock.txt"]
 
 dependency-scanning-with-reachability:
   needs:
     - job: gitlab-static-reachability
       optional: true
       artifacts: true
-      # For supporting Scan Execution Policies.
-    - job: gitlab-static-reachability-0
-      optional: true
-      artifacts: true
-    - job: create # Instead of depending on build job it depends on `create` job
+    - job: create
       optional: true
       artifacts: true
 ```
@@ -197,7 +161,4 @@ Static reachability analysis has the following limitations:
 - Offline GitLab instances are not supported, though this is proposed for the GA release.
 - When a direct dependency is marked as `in use`, all its transitive dependencies are also marked as `in use`.
 - Requires the new [dependency scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning). [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) analyzers are not supported.
-- SRA on beta doesn't officially support pipeline execution policies.
-- SRA on beta works with scan execution policies (SEP), but with the following restrictions:
-  - only dependency scanning and/or static reachability jobs should be added through SEP. You should avoid having a policy while also including the latest dependency scanning template in your project configuration.
-  - Users cannot override the build job name that `dependency-scanning-with-reachability` depends on. Consequently if a build job is required to create a lock file for the dependency scanning analyzer then the name must be named `build`.
+- SRA on beta is not supported in combination with Scan and Pipeline execution policies
