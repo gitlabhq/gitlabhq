@@ -12,20 +12,17 @@ title: Store all of your packages in one GitLab project
 
 {{< /details >}}
 
-You can store all of your packages in one project's package registry. Rather than using
-a GitLab repository to store code, you can use the repository to store all your packages.
-Then you can configure your remote repositories to point to the project in GitLab.
+You can store all packages in one project's package registry and configure your remote repositories to
+point to this project in GitLab.
 
-You might want to do this because:
+Use this approach when you want to:
 
-- You want to publish your packages in GitLab, but to a different project from where your code is stored.
-- You want to group packages together in one project. For example, you might want to put all npm packages,
-  or all packages for a specific department, or all private packages in the same project.
-- When you install packages for other projects, you want to use one remote.
-- You want to migrate your packages from a third-party package registry to a single place in GitLab and do not
-  want to worry about setting up separate projects for each package.
-- You want to have your CI/CD pipelines build all of your packages to one project, so the person responsible for
-  validating packages can manage them all in one place.
+- Publish packages to GitLab in a different project than where your code is stored
+- Group packages together in one project (for example, all npm packages, all packages for a specific
+  department, or all private packages in the same project)
+- Use one remote repository when installing packages for other projects
+- Migrate packages from a third-party package registry to a single location in GitLab
+- Have CI/CD pipelines build all packages to one project so you can manage packages in the same location
 
 ## Example walkthrough
 

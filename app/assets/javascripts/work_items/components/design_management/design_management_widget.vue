@@ -454,6 +454,7 @@ export default {
           multiple
           @change="onDesignUploadChange"
         />
+        <router-view :key="$route.fullPath" :all-designs="designs" :all-versions="allVersions" />
       </template>
 
       <template #default>
@@ -521,6 +522,5 @@ export default {
         </design-dropzone>
       </template>
     </crud-component>
-    <router-view :key="$route.fullPath" :all-designs="designs" :all-versions="allVersions" />
   </div>
 </template>
