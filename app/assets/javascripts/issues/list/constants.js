@@ -105,13 +105,11 @@ export const i18n = {
   closedMoved: CLOSED_MOVED,
   confidentialNo: __('No'),
   confidentialYes: __('Yes'),
-  downvotes: __('Downvotes'),
   errorFetchingCounts: __('An error occurred while getting issue counts'),
   errorFetchingIssues: __('An error occurred while loading issues'),
   issueRepositioningMessage: __(
     'Issues are being rebalanced at the moment, so manual reordering is disabled.',
   ),
-  upvotes: __('Upvotes'),
   titles: __('Titles'),
   descriptions: __('Descriptions'),
   subscribedExplicitly: __('Explicitly subscribed'),

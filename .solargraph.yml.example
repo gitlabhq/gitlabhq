@@ -23,5 +23,6 @@ reporters:
 formatter:
   rubocop: # formatting
 require_paths: []
-plugins: []
+plugins:
+- solargraph-rspec
 max_files: 20000

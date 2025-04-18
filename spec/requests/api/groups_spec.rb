@@ -1018,6 +1018,31 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         end
       end
     end
+
+    context 'when using the marked_for_deletion_on filter' do
+      let_it_be(:group_with_deletion_on) { create(:group_with_deletion_schedule, name: "group_with_deletion_on", marked_for_deletion_on: Date.parse('2024-01-01'), owners: user1) }
+      let_it_be(:group_without_deletion) { create(:group, name: "group_without_deletion", owners: user1) }
+      let(:response_groups) { json_response.map { |group| group['id'] } }
+
+      it 'returns groups marked for deletion on the specified date' do
+        get api("/groups", user1), params: { marked_for_deletion_on: Date.parse('2024-01-01') }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to contain_exactly(group_with_deletion_on.id)
+        expect(json_response.map { |group| group["marked_for_deletion_on"] }).to contain_exactly(Date.parse('2024-01-01').iso8601)
+      end
+
+      it 'returns all groups when marked_for_deletion_on is not specified' do
+        get api("/groups", user1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to contain_exactly(group1.id, group_with_deletion_on.id, group_without_deletion.id)
+      end
+    end
   end
 
   describe 'PUT /groups/:id' do

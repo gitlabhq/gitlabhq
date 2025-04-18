@@ -3681,9 +3681,6 @@ msgstr ""
 msgid "Add new key"
 msgstr ""
 
-msgid "Add new pipeline subscription"
-msgstr ""
-
 msgid "Add new pipeline trigger token"
 msgstr ""
 
@@ -20855,9 +20852,6 @@ msgstr ""
 msgid "Delete source branch when merge request is accepted."
 msgstr ""
 
-msgid "Delete subscription"
-msgstr ""
-
 msgid "Delete table"
 msgstr ""
 
@@ -30802,6 +30796,9 @@ msgstr ""
 msgid "Horizontal rule"
 msgstr ""
 
+msgid "Hosted runner usage"
+msgstr ""
+
 msgid "Hostname"
 msgstr ""
 
@@ -40370,9 +40367,6 @@ msgstr ""
 msgid "No project selected"
 msgstr ""
 
-msgid "No project subscribes to the pipelines in this project."
-msgstr ""
-
 msgid "No projects"
 msgstr ""
 
@@ -44556,7 +44550,7 @@ msgstr ""
 msgid "PipelineSubscriptions|Subscription for this project will be removed. Do you want to continue?"
 msgstr ""
 
-msgid "PipelineSubscriptions|Subscription successfully added."
+msgid "PipelineSubscriptions|Subscription successfully created."
 msgstr ""
 
 msgid "PipelineSubscriptions|Subscription successfully deleted."
@@ -58932,9 +58926,6 @@ msgstr ""
 msgid "Subscribed to notifications."
 msgstr ""
 
-msgid "Subscribed to this project"
-msgstr ""
-
 msgid "Subscribes to notifications."
 msgstr ""
 
@@ -58948,9 +58939,6 @@ msgid "Subscription can be synchronized."
 msgstr ""
 
 msgid "Subscription deletion failed."
-msgstr ""
-
-msgid "Subscription for %{subscription} will be removed. Do you want to continue?"
 msgstr ""
 
 msgid "Subscription for this instance cannot be synchronized. Contact GitLab customer support to obtain a license."
@@ -61990,9 +61978,6 @@ msgstr ""
 msgid "This project is mirrored from %{link}."
 msgstr ""
 
-msgid "This project is not subscribed to any project pipelines."
-msgstr ""
-
 msgid "This project is pending deletion, and will be deleted on %{date}. Repository and other project resources are read-only."
 msgstr ""
 
@@ -64611,10 +64596,16 @@ msgstr ""
 msgid "Usage"
 msgstr ""
 
+msgid "Usage Quotas"
+msgstr ""
+
 msgid "Usage breakdown"
 msgstr ""
 
 msgid "Usage statistics"
+msgstr ""
+
+msgid "Usage this month"
 msgstr ""
 
 msgid "Usage trends"
@@ -64695,7 +64686,16 @@ msgstr ""
 msgid "UsageQuota|Excess storage usage"
 msgstr ""
 
+msgid "UsageQuota|Filter by runner"
+msgstr ""
+
+msgid "UsageQuota|Filter chart by year"
+msgstr ""
+
 msgid "UsageQuota|Filter charts by year"
+msgstr ""
+
+msgid "UsageQuota|Filter list by month"
 msgstr ""
 
 msgid "UsageQuota|Filter projects data by month"
@@ -64711,6 +64711,12 @@ msgid "UsageQuota|Gitlab-integrated Docker container registry for storing Docker
 msgstr ""
 
 msgid "UsageQuota|Group settings %{gt} Usage quotas"
+msgstr ""
+
+msgid "UsageQuota|Hosted runner duration"
+msgstr ""
+
+msgid "UsageQuota|Hosted runner pipeline duration by month"
 msgstr ""
 
 msgid "UsageQuota|How are limits applied?"
@@ -64744,6 +64750,9 @@ msgid "UsageQuota|Local proxy used for frequently-accessed upstream Docker image
 msgstr ""
 
 msgid "UsageQuota|Month"
+msgstr ""
+
+msgid "UsageQuota|Namespace"
 msgstr ""
 
 msgid "UsageQuota|Namespace entities"
@@ -64800,10 +64809,16 @@ msgstr ""
 msgid "UsageQuota|Shared bits of code and text."
 msgstr ""
 
+msgid "UsageQuota|Something went wrong while fetching compute usage"
+msgstr ""
+
 msgid "UsageQuota|Something went wrong while fetching pipeline statistics"
 msgstr ""
 
 msgid "UsageQuota|Something went wrong while fetching project storage statistics"
+msgstr ""
+
+msgid "UsageQuota|Something went wrong while fetching runner filters"
 msgstr ""
 
 msgid "UsageQuota|Something went wrong while loading Usage Quotas Tabs."
@@ -64878,6 +64893,9 @@ msgstr ""
 msgid "UsageQuota|Usage by month"
 msgstr ""
 
+msgid "UsageQuota|Usage by namespace"
+msgstr ""
+
 msgid "UsageQuota|Usage by project"
 msgstr ""
 
@@ -64888,6 +64906,9 @@ msgid "UsageQuota|Usage of project resources across the %{strong_start}%{project
 msgstr ""
 
 msgid "UsageQuota|Usage of resources across your projects"
+msgstr ""
+
+msgid "UsageQuota|Usage of shared resources across the projects in your instance"
 msgstr ""
 
 msgid "UsageQuota|User settings %{gt} Usage quotas"
@@ -72040,6 +72061,9 @@ msgid "milestone"
 msgstr ""
 
 msgid "milestone should belong either to a project or a group."
+msgstr ""
+
+msgid "minutes"
 msgstr ""
 
 msgid "missing"

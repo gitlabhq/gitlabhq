@@ -1,18 +1,25 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { useFakeDate } from 'helpers/fake_date';
 import { STATUS_CLOSED } from '~/issues/constants';
 import IssueCardTimeInfo from '~/issues/list/components/issue_card_time_info.vue';
 import IssuableMilestone from '~/vue_shared/issuable/list/components/issuable_milestone.vue';
-import { WIDGET_TYPE_MILESTONE, WIDGET_TYPE_START_AND_DUE_DATE } from '~/work_items/constants';
+import {
+  WIDGET_TYPE_MILESTONE,
+  WIDGET_TYPE_START_AND_DUE_DATE,
+  WIDGET_TYPE_TIME_TRACKING,
+} from '~/work_items/constants';
 import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
 
 describe('CE IssueCardTimeInfo component', () => {
-  useFakeDate(2020, 11, 11); // 2020 Dec 11
-
   let wrapper;
 
-  const issueObject = ({ milestoneStartDate, milestoneDueDate, dueDate, state } = {}) => ({
+  const issueObject = ({
+    milestoneStartDate,
+    milestoneDueDate,
+    dueDate,
+    state,
+    timeEstimate,
+  } = {}) => ({
     milestone: {
       dueDate: milestoneDueDate,
       startDate: milestoneStartDate,
@@ -20,7 +27,7 @@ describe('CE IssueCardTimeInfo component', () => {
       webPath: '/milestone/webPath',
     },
     dueDate,
-    humanTimeEstimate: '1w',
+    humanTimeEstimate: timeEstimate,
     state,
   });
 
@@ -30,6 +37,7 @@ describe('CE IssueCardTimeInfo component', () => {
     startDate,
     dueDate,
     state,
+    timeEstimate,
   } = {}) => ({
     state,
     widgets: [
@@ -46,6 +54,12 @@ describe('CE IssueCardTimeInfo component', () => {
         type: WIDGET_TYPE_START_AND_DUE_DATE,
         dueDate,
         startDate,
+      },
+      {
+        type: WIDGET_TYPE_TIME_TRACKING,
+        humanReadableAttributes: {
+          timeEstimate,
+        },
       },
     ],
   });
@@ -93,7 +107,7 @@ describe('CE IssueCardTimeInfo component', () => {
       describe('when in the past', () => {
         describe('when issue is open', () => {
           it('renders in red with overdue icon', () => {
-            wrapper = mountComponent({ issue: object({ dueDate: '2020-10-10' }) });
+            wrapper = mountComponent({ issue: object({ dueDate: '2020-01-01' }) });
             expect(findDueDateIcon().props()).toMatchObject({
               variant: 'danger',
               name: 'calendar-overdue',
@@ -104,7 +118,7 @@ describe('CE IssueCardTimeInfo component', () => {
         describe('when issue is closed', () => {
           it('does not render in red with overdue icon', () => {
             wrapper = mountComponent({
-              issue: object({ dueDate: '2020-10-10', state: STATUS_CLOSED }),
+              issue: object({ dueDate: '2020-01-01', state: STATUS_CLOSED }),
             });
 
             expect(findDueDateIcon().props()).toMatchObject({
@@ -137,14 +151,16 @@ describe('CE IssueCardTimeInfo component', () => {
         });
       });
     });
-  });
 
-  it('renders time estimate', () => {
-    wrapper = mountComponent();
-    const timeEstimate = wrapper.findByTestId('time-estimate');
+    describe('time estimate', () => {
+      it('renders time estimate', () => {
+        wrapper = mountComponent({ issue: object({ timeEstimate: '1w' }) });
+        const timeEstimate = wrapper.findByTestId('time-estimate');
 
-    expect(findWorkItemAttribute().props('title')).toBe('1w');
-    expect(findWorkItemAttribute().props('tooltipText')).toBe('Estimate');
-    expect(timeEstimate.findComponent(GlIcon).props('name')).toBe('timer');
+        expect(findWorkItemAttribute().props('title')).toBe('1w');
+        expect(findWorkItemAttribute().props('tooltipText')).toBe('Estimate');
+        expect(timeEstimate.findComponent(GlIcon).props('name')).toBe('timer');
+      });
+    });
   });
 });

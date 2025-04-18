@@ -62,7 +62,6 @@ RSpec/BeEq:
     - 'ee/spec/helpers/ee/groups/group_members_helper_spec.rb'
     - 'ee/spec/helpers/ee/groups_helper_spec.rb'
     - 'ee/spec/helpers/ee/merge_requests_helper_spec.rb'
-    - 'ee/spec/helpers/ee/namespace_user_cap_reached_alert_helper_spec.rb'
     - 'ee/spec/helpers/ee/protected_branches_helper_spec.rb'
     - 'ee/spec/helpers/ee/security_orchestration_helper_spec.rb'
     - 'ee/spec/helpers/ee/users/callouts_helper_spec.rb'

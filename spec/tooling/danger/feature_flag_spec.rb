@@ -100,6 +100,7 @@ RSpec.describe Tooling::Danger::FeatureFlag, feature_category: :tooling do
     let(:yaml) do
       {
         'name' => name,
+        'description' => 'feature flag description',
         'default_enabled' => default_enabled,
         'feature_issue_url' => feature_issue_url,
         'rollout_issue_url' => rollout_issue_url,

@@ -46,6 +46,10 @@ module Resolvers
         Unauthenticated requests always return all public groups. The `owned_only` argument takes precedence.
       DESC
 
+    argument :marked_for_deletion_on, ::Types::DateType,
+      required: false,
+      description: 'Date when the group was marked for deletion.'
+
     private
 
     def resolve_groups(parent_path: nil, **args)

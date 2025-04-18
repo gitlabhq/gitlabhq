@@ -1,6 +1,7 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import IssueCardStatistics from '~/issues/list/components/issue_card_statistics.vue';
+import { WIDGET_TYPE_AWARD_EMOJI, WIDGET_TYPE_DEVELOPMENT } from '~/work_items/constants';
 
 describe('IssueCardStatistics CE component', () => {
   let wrapper;
@@ -59,14 +60,18 @@ describe('IssueCardStatistics CE component', () => {
   });
 
   describe('with work item object', () => {
-    it('renders upvotes and downvotes', () => {
+    it('renders upvotes, downvotes, and closing merge requests', () => {
       const issue = {
-        widgets: [{ type: 'AWARD_EMOJI', downvotes: '4', upvotes: '8' }],
+        widgets: [
+          { type: WIDGET_TYPE_AWARD_EMOJI, downvotes: '4', upvotes: '8' },
+          { type: WIDGET_TYPE_DEVELOPMENT, closingMergeRequests: { count: 3 } },
+        ],
       };
       mountComponent(issue);
 
       expect(findDownvotes().text()).toBe('4');
       expect(findUpvotes().text()).toBe('8');
+      expect(findMergeRequests().text()).toBe('3');
     });
   });
 });

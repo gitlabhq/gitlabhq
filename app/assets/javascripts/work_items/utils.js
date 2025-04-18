@@ -31,6 +31,7 @@ import {
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
   STATE_CLOSED,
   NAME_TO_ENUM_MAP,
+  WIDGET_TYPE_DEVELOPMENT,
 } from './constants';
 
 export const isAssigneesWidget = (widget) => widget.type === WIDGET_TYPE_ASSIGNEES;
@@ -50,6 +51,9 @@ export const findCurrentUserTodosWidget = (workItem) =>
 
 export const findDescriptionWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESCRIPTION);
+
+export const findDevelopmentWidget = (workItem) =>
+  workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DEVELOPMENT);
 
 export const findDesignsWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_DESIGNS);

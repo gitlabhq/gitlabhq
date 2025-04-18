@@ -5403,6 +5403,7 @@ export const groupWorkItemsQueryResponse = {
             closedAt: '',
             confidential: true,
             createdAt: '2020-01-23T12:34:56Z',
+            hidden: true,
             namespace: {
               id: 'full-path-epic-id',
               fullPath: 'full-path',
@@ -5457,6 +5458,7 @@ export const groupWorkItemsQueryResponse = {
             closedAt: '',
             confidential: true,
             createdAt: '2020-01-23T12:34:56Z',
+            hidden: true,
             namespace: {
               id: 'full-path-epic-id',
               fullPath: 'full-path',

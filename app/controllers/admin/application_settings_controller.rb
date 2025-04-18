@@ -37,6 +37,7 @@ module Admin
     feature_category :pages, [:lets_encrypt_terms_of_service]
     feature_category :observability, [:reset_error_tracking_access_token]
     feature_category :global_search, [:search]
+    feature_category :environment_management, [:usage_quotas]
 
     VALID_SETTING_PANELS = %w[general repository
       ci_cd reporting metrics_and_profiling

@@ -8,13 +8,13 @@ export default {
 };
 
 const data = () => ({
-  selected: ['option', 'option-two'],
+  checked: ['option', 'option-two'],
 });
 
 const Template = () => ({
   components: { MultipleChoiceSelector, MultipleChoiceSelectorItem, GlBadge, GlIcon },
   data,
-  template: `<multiple-choice-selector :selected="selected">
+  template: `<multiple-choice-selector v-model="checked">
     <multiple-choice-selector-item value="option" title="Option name" description="This is a description for this option. Descriptions are optional." :disabled="false"></multiple-choice-selector-item>
     <multiple-choice-selector-item value="option-two" title="Option name" description="This is a description for this option. Descriptions are optional." :disabled="false"></multiple-choice-selector-item>
     <multiple-choice-selector-item value="option-3" description="This is a description for this option. Descriptions are optional." :disabled="false">

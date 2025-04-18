@@ -45,7 +45,7 @@ module Groups # rubocop:disable Gitlab/BoundedContexts -- existing top-level mod
     end
 
     def feature_downtiered?
-      Feature.enabled?(:downtier_delayed_deletion, :instance, type: :wip)
+      Feature.enabled?(:downtier_delayed_deletion, :instance, type: :gitlab_com_derisk)
     end
   end
 end

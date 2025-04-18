@@ -403,6 +403,7 @@ export default {
         <gl-icon
           v-if="issuable.hidden"
           v-gl-tooltip
+          class="gl-mr-2"
           name="spam"
           :title="hiddenIssuableTitle"
           :aria-label="__('Hidden')"

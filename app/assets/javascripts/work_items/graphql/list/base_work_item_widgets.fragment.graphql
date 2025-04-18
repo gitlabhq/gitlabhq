@@ -1,6 +1,5 @@
 fragment BaseWorkItemWidgets on WorkItemWidget {
   ... on WorkItemWidgetAssignees {
-    type
     assignees {
       nodes {
         id
@@ -12,8 +11,16 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
       }
     }
   }
+  ... on WorkItemWidgetAwardEmoji {
+    upvotes
+    downvotes
+  }
+  ... on WorkItemWidgetDevelopment {
+    closingMergeRequests {
+      count
+    }
+  }
   ... on WorkItemWidgetLabels {
-    type
     allowsScopedLabels
     labels {
       nodes {
@@ -25,7 +32,6 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
     }
   }
   ... on WorkItemWidgetMilestone {
-    type
     milestone {
       id
       dueDate
@@ -35,13 +41,12 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
     }
   }
   ... on WorkItemWidgetStartAndDueDate {
-    type
     dueDate
     startDate
   }
-  ... on WorkItemWidgetAwardEmoji {
-    type
-    upvotes
-    downvotes
+  ... on WorkItemWidgetTimeTracking {
+    humanReadableAttributes {
+      timeEstimate
+    }
   }
 }

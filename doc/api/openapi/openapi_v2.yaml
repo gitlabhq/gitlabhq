@@ -1056,15 +1056,15 @@ paths:
         type: boolean
         required: false
       - in: query
+        name: marked_for_deletion_on
+        description: Return groups that are marked for deletion on this date
+        type: string
+        format: date
+        required: false
+      - in: query
         name: repository_storage
         description: Filter by repository storage used by the group
         type: string
-        required: false
-      - in: query
-        name: marked_for_deletion_on
-        description: Date when the group was marked for deletion
-        type: string
-        format: date
         required: false
       - in: query
         name: page
@@ -1795,15 +1795,15 @@ paths:
         type: boolean
         required: false
       - in: query
+        name: marked_for_deletion_on
+        description: Return groups that are marked for deletion on this date
+        type: string
+        format: date
+        required: false
+      - in: query
         name: repository_storage
         description: Filter by repository storage used by the group
         type: string
-        required: false
-      - in: query
-        name: marked_for_deletion_on
-        description: Date when the group was marked for deletion
-        type: string
-        format: date
         required: false
       - in: query
         name: page
@@ -1932,15 +1932,15 @@ paths:
         type: boolean
         required: false
       - in: query
+        name: marked_for_deletion_on
+        description: Return groups that are marked for deletion on this date
+        type: string
+        format: date
+        required: false
+      - in: query
         name: repository_storage
         description: Filter by repository storage used by the group
         type: string
-        required: false
-      - in: query
-        name: marked_for_deletion_on
-        description: Date when the group was marked for deletion
-        type: string
-        format: date
         required: false
       - in: query
         name: page

@@ -130,5 +130,24 @@ RSpec.describe Resolvers::GroupsResolver, feature_category: :groups_and_projects
         end
       end
     end
+
+    context 'with marked_for_deletion_on filter', :freeze_time do
+      let_it_be(:marked_for_deletion_on) { Date.yesterday }
+      let_it_be(:group_marked_for_deletion) do
+        create(:group_with_deletion_schedule, marked_for_deletion_on: marked_for_deletion_on, owners: user)
+      end
+
+      context 'when a group has been marked for deletion on the given date' do
+        let(:params) { { marked_for_deletion_on: marked_for_deletion_on } }
+
+        it { is_expected.to contain_exactly(group_marked_for_deletion) }
+      end
+
+      context 'when no groups have been marked for deletion on the given date' do
+        let(:params) { { marked_for_deletion_on: (marked_for_deletion_on - 2.days) } }
+
+        it { is_expected.to be_empty }
+      end
+    end
   end
 end

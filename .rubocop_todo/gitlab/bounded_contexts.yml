@@ -2163,7 +2163,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/graphql/ee/resolvers/board_item_filterable.rb'
     - 'ee/app/graphql/ee/resolvers/bulk_labels_resolver.rb'
     - 'ee/app/graphql/ee/resolvers/group_issues_resolver.rb'
-    - 'ee/app/graphql/ee/resolvers/groups_resolver.rb'
     - 'ee/app/graphql/ee/resolvers/issues/base_parent_resolver.rb'
     - 'ee/app/graphql/ee/resolvers/issues/base_resolver.rb'
     - 'ee/app/graphql/ee/resolvers/issues_resolver.rb'

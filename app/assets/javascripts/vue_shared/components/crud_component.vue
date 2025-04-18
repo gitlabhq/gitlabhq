@@ -239,7 +239,7 @@ export default {
         </p>
       </div>
       <div class="gl-flex gl-items-center gl-gap-3" data-testid="crud-actions">
-        <slot name="actions" :show-form="showForm"></slot>
+        <slot name="actions" :show-form="showForm" :is-form-visible="isFormVisible"></slot>
         <gl-button
           v-if="toggleText && !isFormUsedAndVisible"
           size="small"

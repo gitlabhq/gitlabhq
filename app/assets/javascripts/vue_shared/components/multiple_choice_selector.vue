@@ -2,25 +2,27 @@
 import { GlFormCheckboxGroup } from '@gitlab/ui';
 
 export default {
+  name: 'MultipleChoiceSelector',
   components: { GlFormCheckboxGroup },
-  props: {
-    selected: {
-      type: Array,
-      required: true,
-    },
+  model: {
+    prop: 'checked',
+    event: 'input',
   },
-  data() {
-    return {
-      selectedOptions: this.selected,
-    };
+  props: {
+    checked: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
 };
 </script>
 
 <template>
   <gl-form-checkbox-group
-    v-model="selectedOptions"
+    :checked="checked"
     class="multiple-choice-selector gl-border gl-block gl-rounded-base"
+    @input="$emit('input', $event)"
   >
     <slot></slot>
   </gl-form-checkbox-group>
