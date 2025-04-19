@@ -121,7 +121,7 @@ module ContainerExpirationPolicies
     end
 
     def allowed_to_run?
-      return false unless policy&.enabled && policy&.next_run_at
+      return false unless policy&.enabled && policy.next_run_at
 
       now = Time.zone.now
 

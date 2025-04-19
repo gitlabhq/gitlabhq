@@ -47,7 +47,6 @@ module Ci
 
     DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
     RUNNERS_STATUS_CACHE_EXPIRATION = 1.minute
-    CANCELABLE_STATUSES = (HasStatus::CANCELABLE_STATUSES + ['canceling']).freeze
     DEPLOYMENT_NAMES = %w[deploy release rollout].freeze
 
     TOKEN_PREFIX = 'glcbt-'

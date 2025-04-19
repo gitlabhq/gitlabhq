@@ -21,7 +21,7 @@ module Packages
 
         desc "Deploy token with read access to dependency proxy"
         condition(:read_dependency_proxy_deploy_token) do
-          deploy_token_user? && @user&.valid_for_dependency_proxy? && @user&.has_access_to_group?(@subject.group)
+          deploy_token_user? && @user&.valid_for_dependency_proxy? && @user.has_access_to_group?(@subject.group)
         end
 
         # TODO: Remove the deploy token check when we create a deploy token policy

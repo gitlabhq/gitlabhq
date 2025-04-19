@@ -1026,7 +1026,7 @@ module API
     end
 
     def handle_job_token_failure!(project)
-      if current_user&.from_ci_job_token? && current_user&.ci_job_token_scope
+      if current_user&.from_ci_job_token? && current_user.ci_job_token_scope
         source_project = current_user.ci_job_token_scope.current_project
         error_message = format("Authentication by CI/CD job token not allowed from %{source_project_path} to %{target_project_path}.", source_project_path: source_project.path, target_project_path: project.path)
 

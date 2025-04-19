@@ -49498,7 +49498,7 @@ definitions:
     properties:
       force:
         type: boolean
-        description: Whether to force cancellation for a job in `canceling` state
+        description: Force cancellation for a job with a state of `canceling`
         example: true
     description: Cancel a specific job of a project
   postApiV4ProjectsIdJobsJobIdPlay:

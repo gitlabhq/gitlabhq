@@ -27,7 +27,7 @@ module WorkItems
         assignee_ids = assignee_ids.first(1) unless work_item.allows_multiple_assignees?
 
         assignees = User.id_in(assignee_ids)
-        assignees.select { |assignee| assignee.can?(:read_work_item, work_item) }.map(&:id)
+        assignees.select { |assignee| assignee.can?(:read_work_item, work_item.resource_parent) }.map(&:id)
       end
     end
   end

@@ -1,0 +1,4 @@
+- css_class = local_assigns.fetch(:css_class, '')
+
+- if group.marked_for_deletion?
+  = render Pajamas::BadgeComponent.new(_('Pending deletion'), variant: 'warning', class: css_class)

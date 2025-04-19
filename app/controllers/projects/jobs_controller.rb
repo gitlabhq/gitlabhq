@@ -242,7 +242,7 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def force_param
-    %w[1 t true y yes].include?(params[:force].to_s.downcase)
+    params[:force] == "true"
   end
 
   def play_params

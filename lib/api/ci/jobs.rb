@@ -123,7 +123,7 @@ module API
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
-          optional :force, type: Boolean, desc: 'Whether to force cancellation for a job in `canceling` state', documentation: { example: true }
+          optional :force, type: Boolean, desc: 'Force cancellation for a job with a state of `canceling`', documentation: { example: true }
         end
         post ':id/jobs/:job_id/cancel', urgency: :low, feature_category: :continuous_integration do
           authorize_cancel_builds!
