@@ -240,7 +240,7 @@ it('exists', () => {
   wrapper.findComponent(FooComponent);
   wrapper.find('input[name=foo]');
   wrapper.find('[data-testid="my-foo-id"]');
-  wrapper.findByTestId('my-foo-id'); // with shallowMountExtended or mountExtended – check below
+  wrapper.findByTestId('my-foo-id'); // with shallowMountExtended or mountExtended, check below
 
   // Bad
   wrapper.find({ ref: 'foo'});

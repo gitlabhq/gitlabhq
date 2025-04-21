@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', only: { subdomain: %i[staging staging-canary pre] },
+  RSpec.describe 'Package', only: { pipeline: %i[staging staging-canary preprod] },
     product_group: :container_registry do
     include Support::Helpers::MaskToken
     include Support::Data::Image

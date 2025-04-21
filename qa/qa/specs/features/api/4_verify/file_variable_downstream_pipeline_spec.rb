@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Verify', product_group: :pipeline_authoring,
-    only: { subdomain: 'staging-canary' } do
+    only: { pipeline: 'staging-canary' } do
     # Runs this test only in staging-canary to debug flakiness https://gitlab.com/gitlab-org/gitlab/-/issues/424903
     # We need to collect failure data, please don't quarantine for the time being
     describe 'Pipeline with file variables and downstream pipelines' do

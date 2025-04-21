@@ -135,7 +135,7 @@ with additional functions on the instance level:
 Source Editor provides a universal, extensible editing tool to the whole product,
 and doesn't depend on any particular group. Even though the Source Editor's core is owned by
 [Create::Editor FE Team](https://handbook.gitlab.com/handbook/engineering/development/dev/create/editor-extensions/),
-any group can own the extensions—the main functional elements. The goal of
+any group can own the extensions (the main functional elements). The goal of
 Source Editor extensions is to keep the editor's core slim and stable. Any
 needed features can be added as extensions to this core. Any group can
 build and own new editing features without worrying about changes to Source Editor

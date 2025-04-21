@@ -81,7 +81,7 @@ To use Code Suggestions:
 1. When you receive a suggestion, you can do any of the following:
    - To accept a suggestion, press <kbd>Tab</kbd>.
    - To accept a partial suggestion, press either <kbd>Control</kbd>+<kbd>Right arrow</kbd> or <kbd>Command</kbd>+<kbd>Right arrow</kbd>.
-   - To reject a suggestion, press <kbd>Esc</kbd>.
+   - To reject a suggestion, press <kbd>Esc</kbd>. In Neovim, press <kbd>Control</kbd>+<kbd>E</kbd> to exit the menu.
    - To ignore a suggestion, keep typing as you usually would.
 
 ## View multiple code suggestions

@@ -227,7 +227,7 @@ Without knowing your application firsthand, we can't tell you _how_ to test the
 changes, but we can offer some questions to consider:
 
 - **Does it work?** It's a deceptively simple question, but it's important to keep
-  in mind. Code can be ugly, convoluted, and undocumented — but still work.
+  in mind. Code can be ugly, convoluted, and undocumented, but still work.
 - **How far along is the review process?** Is it early or late in the review process?
   Are you a specialist?
 

@@ -517,7 +517,7 @@ Storing private key files on your bastion host is a bad idea. To get around this
 For example, the command-line `ssh` client uses agent forwarding with its `-A` switch, like this:
 
 ```shell
-ssh –A user@<bastion-public-IP-address>
+ssh -A user@<bastion-public-IP-address>
 ```
 
 See [Securely Connect to Linux Instances Running in a Private Amazon VPC](https://aws.amazon.com/blogs/security/securely-connect-to-linux-instances-running-in-a-private-amazon-vpc/) for a step-by-step guide on how to use SSH agent forwarding for other clients.

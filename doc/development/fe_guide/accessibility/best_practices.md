@@ -252,7 +252,7 @@ As the majority of icons within GitLab are decorative, `GlIcon` automatically hi
 Therefore, you do not need to add `aria-hidden="true"` to `GlIcon`, as this is redundant.
 
 ```html
-<!-- unnecessary — gl-icon hides icons from screen readers by default -->
+<!-- unnecessary: gl-icon hides icons from screen readers by default -->
 <gl-icon name="rocket" aria-hidden="true" />
 
 <!-- good -->

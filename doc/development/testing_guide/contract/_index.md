@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Contract testing
 ---
 
-Contract tests consist of two parts — consumer tests and provider tests. A simple example of a consumer and provider relationship is between the frontend and backend. The frontend would be the consumer and the backend is the provider. The frontend consumes the API that is provided by the backend. The test helps ensure that these two sides follow an agreed upon contract and any divergence from the contract triggers a meaningful conversation to prevent breaking changes from slipping through.
+Contract tests consist of two parts: consumer tests and provider tests. A simple example of a consumer and provider relationship is between the frontend and backend. The frontend would be the consumer and the backend is the provider. The frontend consumes the API that is provided by the backend. The test helps ensure that these two sides follow an agreed upon contract and any divergence from the contract triggers a meaningful conversation to prevent breaking changes from slipping through.
 
 Consumer tests are similar to unit tests with each spec defining a requests and an expected mock responses and creating a contract based on those definitions. On the other hand, provider tests are similar to integration tests as each spec takes the request defined in the contract and runs that request against the actual service which is then matched against the contract to validate the contract.
 

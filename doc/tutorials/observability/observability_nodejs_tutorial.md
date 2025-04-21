@@ -35,7 +35,7 @@ This tutorial uses the project name `nodejs-O11y-tutorial`.
    - In the **Project name** field, enter `nodejs-O11y-tutorial`.
 1. Select **Create project**.
 1. In the `nodejs-O11y-tutorial` project, on the left sidebar, select **Settings > Access tokens**.
-1. Create an access token with the `api` scope and Developer role. Store the token value somewhere safe—you'll need it later.
+1. Create an access token with the `api` scope and Developer role. Store the token value somewhere safe because you need it later.
 
 ## Instrument your NodeJS application
 

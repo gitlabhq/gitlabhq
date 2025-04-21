@@ -1092,7 +1092,7 @@ and as the docs state, may include fractional seconds.
 
 When Rails models are saved to the database,
 any timestamps they have are stored using a type in PostgreSQL called `timestamp without time zone`,
-which has microsecond resolution—that is six digits after the decimal.
+which has microsecond resolution (six digits after the decimal).
 So if `1577987974.6472975` is sent to PostgreSQL,
 it truncates the last digit of the fractional part and instead saves `1577987974.647297`.
 

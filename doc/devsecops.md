@@ -55,7 +55,7 @@ If your organization is facing any of the following challenges, a DevSecOps appr
 
 - **You're migrating to the cloud (or considering it).**
   Moving to the cloud often means bringing on new development processes, tools, and systems.
-  It's a great time to make processes faster and more secure — and DevSecOps could make that a lot easier.
+  It's a great time to make processes faster and more secure, and DevSecOps could make that a lot easier.
 
 To get started with DevSecOps,
 [learn more, and try GitLab Ultimate for free](https://about.gitlab.com/solutions/security-compliance/).

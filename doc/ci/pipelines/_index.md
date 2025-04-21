@@ -428,7 +428,7 @@ The pipeline details page displays a graph of all the jobs in the pipeline:
 
 You can use a standard URL to access the details for specific pipelines:
 
-- `gitlab.example.com/my-group/my-project/-/pipelines/pipelines/latest`: The details page
+- `gitlab.example.com/my-group/my-project/-/pipelines/latest`: The details page
   for the latest pipeline for the most recent commit on the default branch in the project.
 - `gitlab.example.com/my-group/my-project/-/pipelines/<branch>/latest`: The details page
   for the latest pipeline for the most recent commit on branch `<branch>` in the project.

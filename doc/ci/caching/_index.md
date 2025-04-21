@@ -493,6 +493,26 @@ test:
     - go test ./... -v -short
 ```
 
+### Cache curl downloads
+
+If your project uses [cURL](https://curl.se/) to download dependencies or files,
+you can cache the downloaded content. The files are automatically updated when
+newer downloads are available.
+
+```yaml
+job:
+  script:
+    - curl --remote-time --time-cond .curl-cache/caching.md --output .curl-cache/caching.md "https://docs.gitlab.com/ci/caching/"
+  cache:
+    paths:
+      - .curl-cache/
+```
+
+In this example cURL downloads a file from a webserver and saves it to a local file in `.curl-cache/`.
+The `--remote-time` flag saves the last modification time reported by the server,
+and cURL compares it to the timestamp of the cached file with `--time-cond`. If the remote file has
+a more recent timestamp the local cache is automatically updated.
+
 ## Availability of the cache
 
 Caching is an optimization, but it isn't guaranteed to always work. You might need

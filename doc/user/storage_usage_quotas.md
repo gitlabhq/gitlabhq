@@ -60,8 +60,8 @@ namespace to recalculate the storage.
 
 Storage and network usage is calculated with the binary measurement system (1024 unit multiples).
 Storage usage is displayed in kibibytes (KiB), mebibytes (MiB),
-or gibibytes (GiB). 1 KiB is 2^10 bytes (1024 bytes),
-1 MiB is 2^20 bytes (1024 kibibytes), and 1 GiB is 2^30 bytes (1024 mebibytes).
+or gibibytes (GiB). 1 KiB is 2<sup>10</sup> bytes (1024 bytes),
+1 MiB is 2<sup>20</sup> bytes (1024 kibibytes), and 1 GiB is 2<sup>30</sup> bytes (1024 mebibytes).
 
 ## View project fork storage usage
 
@@ -102,7 +102,7 @@ The **Storage** tab of the **Usage Quotas** page displays the following:
 
 The total storage includes the free and excess storage purchased.
 The remaining excess storage is expressed as a percentage and calculated as:
-100 % - ((excess storage used - excess storage purchased) * 100).
+100 % - ((excess storage used - excess storage purchased) × 100).
 
 ### Excess storage example
 
@@ -134,7 +134,7 @@ If some projects' repositories and LFS grow past the 10 GiB quota, the available
 In this example:
 
 - Available purchased storage is 40 GiB: 50 GiB (purchased storage) - 10 GiB (total excess storage used). Consequently, the projects are no longer read-only.
-- Excess storage usage is 20%: 10 GiB / 50 GiB * 100.
+- Excess storage usage is 20%: 10 GiB / 50 GiB × 100.
 - Remaining purchased storage is 80%.
 
 ## Manage storage usage

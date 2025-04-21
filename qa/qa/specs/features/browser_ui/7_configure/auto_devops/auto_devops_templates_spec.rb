@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Configure' do
-    describe 'AutoDevOps Templates', only: { subdomain: %i[staging staging-canary] }, product_group: :environments,
+    describe 'AutoDevOps Templates', only: { pipeline: %i[staging staging-canary] }, product_group: :environments,
       quarantine: {
         issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/432409',
         type: :test_environment

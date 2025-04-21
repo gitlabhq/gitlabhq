@@ -34,7 +34,7 @@ This tutorial uses the project name `animals`.
    - In the **Project name** field, enter `animals`.
 1. Select **Create project**.
 1. In the `animals` project, on the left sidebar, select **Settings > Access tokens**.
-1. Create an access token with the `api` scope and Developer role. Store the token value somewhere safe—you'll need it later.
+1. Create an access token with the `api` scope and Developer role. Store the token value somewhere safe because you need it later.
 
 ## Create a Rails application
 
