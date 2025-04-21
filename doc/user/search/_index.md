@@ -75,7 +75,7 @@ To restrict global search to authenticated users only:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Global search**
-1. Select **Enable blocking of anonymous global search requests**.
+1. Select **Restrict global search to authenticated users**.
 1. Select **Save changes**.
 
 ## Disable global search scopes

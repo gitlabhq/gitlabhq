@@ -400,11 +400,11 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
     it 'returns correctly checked checkboxes' do
       helper.gitlab_ui_form_for(application_setting, url: search_admin_application_settings_path) do |form|
         result = helper.global_search_settings_checkboxes(form)
-        expect(result[0]).to have_checked_field('Enable blocking of anonymous global search requests', with: 1)
-        expect(result[1]).to have_checked_field('Enable issues tab in global search results', with: 1)
-        expect(result[2]).not_to have_checked_field('Enable merge requests tab in global search results', with: 1)
-        expect(result[3]).to have_checked_field('Enable snippet tab in global search results', with: 1)
-        expect(result[4]).not_to have_checked_field('Enable users tab in global search results', with: 1)
+        expect(result[0]).to have_checked_field('Restrict global search to authenticated users', with: 1)
+        expect(result[1]).to have_checked_field('Show issues in global search results', with: 1)
+        expect(result[2]).not_to have_checked_field('Show merge requests in global search results', with: 1)
+        expect(result[3]).to have_checked_field('Show snippets in global search results', with: 1)
+        expect(result[4]).not_to have_checked_field('Show users in global search results', with: 1)
       end
     end
   end

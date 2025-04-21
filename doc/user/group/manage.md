@@ -276,13 +276,13 @@ For members with `Minimal Access` in the selected group, their `Max Role` and `S
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com
-- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442718) in GitLab 17.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/523468) in GitLab 18.0.
 
 {{< /history >}}
 

@@ -76,29 +76,29 @@ module ApplicationSettingsHelper
     [
       form.gitlab_ui_checkbox_component(
         :global_search_block_anonymous_searches_enabled,
-        _("Enable blocking of anonymous global search requests"),
+        _("Restrict global search to authenticated users"),
         checkbox_options: {
           checked: @application_setting.global_search_block_anonymous_searches_enabled, multiple: false
         }
       ),
       form.gitlab_ui_checkbox_component(
         :global_search_issues_enabled,
-        _("Enable issues tab in global search results"),
+        _("Show issues in global search results"),
         checkbox_options: { checked: @application_setting.global_search_issues_enabled, multiple: false }
       ),
       form.gitlab_ui_checkbox_component(
         :global_search_merge_requests_enabled,
-        _("Enable merge requests tab in global search results"),
+        _("Show merge requests in global search results"),
         checkbox_options: { checked: @application_setting.global_search_merge_requests_enabled, multiple: false }
       ),
       form.gitlab_ui_checkbox_component(
         :global_search_snippet_titles_enabled,
-        _("Enable snippet tab in global search results"),
+        _("Show snippets in global search results"),
         checkbox_options: { checked: @application_setting.global_search_snippet_titles_enabled, multiple: false }
       ),
       form.gitlab_ui_checkbox_component(
         :global_search_users_enabled,
-        _("Enable users tab in global search results"),
+        _("Show users in global search results"),
         checkbox_options: { checked: @application_setting.global_search_users_enabled, multiple: false }
       )
     ]

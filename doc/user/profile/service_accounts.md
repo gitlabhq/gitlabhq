@@ -52,6 +52,12 @@ You can also manage service accounts through the API.
 
 ## View and manage service accounts
 
+{{< history >}}
+
+- Introduced for GitLab.com in GitLab 17.11
+
+{{< /history >}}
+
 The Service Accounts page displays information about service accounts in your top-level group or instance. Each top-level group and GitLab Self-Managed instance has a separate Service Accounts page. From these pages, you can:
 
 - View all service accounts for your group or instance.

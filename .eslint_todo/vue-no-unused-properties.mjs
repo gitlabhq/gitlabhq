@@ -454,7 +454,6 @@ export default {
     'ee/app/assets/javascripts/sidebar/components/health_status/health_status_dropdown.vue',
     'ee/app/assets/javascripts/sidebar/components/incidents/escalation_status.vue',
     'ee/app/assets/javascripts/sidebar/components/weight/sidebar_weight_widget.vue',
-    'ee/app/assets/javascripts/test_case_show/components/test_case_sidebar.vue',
     'ee/app/assets/javascripts/tracing/details/tracing_details.vue',
     'ee/app/assets/javascripts/usage_quotas/code_suggestions/components/code_suggestions_info_card.vue',
     'ee/app/assets/javascripts/usage_quotas/code_suggestions/components/search_and_sort_bar.vue',
