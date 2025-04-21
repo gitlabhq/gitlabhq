@@ -34,7 +34,6 @@ module Ci
 
     belongs_to :project
     belongs_to :owner, class_name: 'User'
-    has_one :last_pipeline, -> { order(id: :desc) }, class_name: 'Ci::Pipeline', inverse_of: :pipeline_schedule
     has_many :pipelines, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineScheduleVariable'
     has_many :inputs, class_name: 'Ci::PipelineScheduleInput'
@@ -136,6 +135,10 @@ module Ci
 
     def inputs_hash
       inputs.to_h { |input| [input.name, input.value] }
+    end
+
+    def last_pipeline
+      pipelines.last
     end
 
     private

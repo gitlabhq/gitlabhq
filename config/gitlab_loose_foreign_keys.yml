@@ -15,6 +15,9 @@ analyzer_project_statuses:
   - table: projects
     column: project_id
     on_delete: async_delete
+  - table: p_ci_builds
+    column: build_id
+    on_delete: async_nullify
 application_settings:
   - table: push_rules
     column: push_rule_id

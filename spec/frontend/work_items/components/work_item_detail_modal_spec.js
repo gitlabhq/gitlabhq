@@ -86,6 +86,7 @@ describe('WorkItemDetailModal component', () => {
       newCommentTemplatePaths: [],
       isDrawer: false,
       modalIsGroup: null,
+      isBoard: false,
     });
   });
 

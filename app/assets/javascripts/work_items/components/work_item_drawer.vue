@@ -61,6 +61,11 @@ export default {
       required: false,
       default: () => [],
     },
+    isBoard: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -138,6 +143,7 @@ export default {
       e.preventDefault();
       const shouldRouterNav =
         !this.preventRouterNav &&
+        !this.isBoard &&
         this.$router &&
         canRouterNav({
           fullPath: this.fullPath,
@@ -291,6 +297,7 @@ export default {
         :modal-work-item-full-path="activeItemFullPath"
         :modal-is-group="modalIsGroup"
         :new-comment-template-paths="newCommentTemplatePaths"
+        :is-board="isBoard"
         is-drawer
         class="work-item-drawer !gl-pt-0 xl:!gl-px-6"
         @deleteWorkItem="deleteWorkItem"

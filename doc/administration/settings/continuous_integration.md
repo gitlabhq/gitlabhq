@@ -2,7 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: CI/CD Admin area settings
+title: CI/CD settings
 ---
 
 {{< details >}}
@@ -12,10 +12,28 @@ title: CI/CD Admin area settings
 
 {{< /details >}}
 
-The [**Admin** area](_index.md) has the instance settings for CI/CD-related features,
-including runners, job artifacts, and the package registry.
+Configure CI/CD settings for your GitLab instance in the Admin area.
 
-## Auto DevOps
+The following settings are available:
+
+- Variables: Configure CI/CD variables available to all projects in your instance.
+- Continuous Integration and Deployment: Configure settings for Auto DevOps, jobs, artifacts, instance runners, and pipeline features.
+- Package registry: Configure package forwarding and file size limits.
+- Runners: Configure runner registration, version management, and token settings.
+- Job token permissions: Control job token access across projects.
+- Job logs: Configure job log settings like incremental logging.
+
+## Continuous integration and deployment
+
+Customize CI/CD settings, including Auto DevOps, instance runners, and job artifacts.
+
+To access these settings:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+
+### Auto DevOps
 
 To enable (or disable) [Auto DevOps](../../topics/autodevops/_index.md)
 for all projects:
@@ -30,9 +48,9 @@ for all projects:
 Every existing project and newly created ones that don't have a
 `.gitlab-ci.yml` use the Auto DevOps pipelines.
 
-## Runners
+### Instance runners
 
-### Enable instance runners for new projects
+#### Enable instance runners for new projects
 
 You can set all new projects to have instance runners available by default.
 
@@ -43,7 +61,7 @@ You can set all new projects to have instance runners available by default.
 
 Any time a new project is created, the instance runners are available.
 
-### Add a message for instance runners
+#### Add a message for instance runners
 
 To display details about the instance runners in all projects'
 runner settings:
@@ -61,7 +79,7 @@ To view the rendered details:
 
 ![A project's runner settings shows a message about instance runner guidelines.](img/continuous_integration_instance_runner_details_v17_6.png)
 
-### Enable a project runner for multiple projects
+#### Enable a project runner for multiple projects
 
 If you have already registered a [project runner](../../ci/runners/runners_scope.md#project-runners)
 you can assign that runner to other projects.
@@ -75,6 +93,350 @@ To enable a project runner for more than one project:
 1. Under **Restrict projects for this runner**, search for a project.
 1. To the left of the project, select **Enable**.
 1. Repeat this process for each additional project.
+
+### Job artifacts
+
+#### Maximum artifacts size
+
+You can set the maximum size of distinct [job artifacts](../cicd/job_artifacts.md) for:
+
+- An instance
+- Projects
+- Groups
+
+The default maximum size for each artifact file in a job is 100 MB.
+For GitLab.com, see [Artifacts maximum size](../../user/gitlab_com/_index.md#cicd).
+
+Job artifacts defined with `artifacts:reports` can have [different limits](../instance_limits.md#maximum-file-size-per-type-of-artifact).
+In this case, the smaller value is used.
+
+{{< alert type="note" >}}
+
+This setting applies to the size of the final archive file, not individual files in a job.
+
+{{< /alert >}}
+
+To modify the maximum artifacts size:
+
+- For an instance:
+
+  1. On the left sidebar, at the bottom, select **Admin**.
+  1. Select **Settings > CI/CD**.
+  1. Expand **Continuous Integration and Deployment**.
+  1. Change the value of **Maximum artifacts size (MB)**.
+  1. Select **Save changes**.
+
+- For a group or project:
+
+  Group settings override instance settings. Project settings override both instance and group settings.
+
+  1. On the left sidebar, select **Search or go to** and find your project or group.
+  1. Select **Settings > CI/CD**.
+  1. Expand **General pipelines**
+  1. Change the value of **Maximum artifacts size** (in MB).
+  1. Select **Save changes**.
+
+#### Default artifacts expiration
+
+The default expiration time of the [job artifacts](../cicd/job_artifacts.md)
+can be set in the **Admin** area of your GitLab instance. The syntax of duration is
+described in [`artifacts:expire_in`](../../ci/yaml/_index.md#artifactsexpire_in)
+and the default value is `30 days`.
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Change the value of default expiration time.
+1. Select **Save changes** for the changes to take effect.
+
+This setting is set per job and can be overridden in
+[`.gitlab-ci.yml`](../../ci/yaml/_index.md#artifactsexpire_in).
+To disable the expiration, set it to `0`. The default unit is in seconds.
+
+{{< alert type="note" >}}
+
+Any changes to this setting applies to new artifacts only. The expiration time is not
+be updated for artifacts created before this setting was changed.
+The administrator may need to manually search for and expire previously-created
+artifacts, as described in the [troubleshooting documentation](../cicd/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts).
+
+{{< /alert >}}
+
+#### Keep the latest artifacts for all jobs in the latest successful pipelines
+
+When enabled (default), the artifacts of the most recent pipeline for each Git ref
+([branches and tags](https://git-scm.com/book/en/v2/Git-Internals-Git-References))
+are locked against deletion and kept regardless of the expiry time.
+
+When disabled, the latest artifacts for any **new** successful or fixed pipelines
+are allowed to expire.
+
+This setting takes precedence over the [project setting](../../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
+If disabled for the entire instance, you cannot enable this in individual projects.
+
+To disable the setting:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Clear the **Keep the latest artifacts for all jobs in the latest successful pipelines** checkbox.
+1. Select **Save changes**
+
+When you disable the feature, the latest artifacts do not immediately expire.
+A new pipeline must run before the latest artifacts can expire and be deleted.
+
+{{< alert type="note" >}}
+
+All application settings have a [customizable cache expiry interval](../application_settings_cache.md) which can delay the settings affect.
+
+{{< /alert >}}
+
+#### Disable the external redirect page for job artifacts
+
+By default, GitLab Pages shows an external redirect page when a user tries to view
+a job artifact served by GitLab Pages. This page warns about the potential for
+malicious user-generated content, as described in
+[issue 352611](https://gitlab.com/gitlab-org/gitlab/-/issues/352611).
+
+GitLab Self-Managed administrators can disable the external redirect warning page,
+so you can view job artifact pages directly:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Clear **Enable the external redirect page for job artifacts**.
+
+### Jobs
+
+#### Archive jobs
+
+You can archive old jobs to prevent them from being re-run individually. Archived jobs
+display a lock icon ({{< icon name="lock" >}}) and **This job is archived** at the top of the job log.
+
+To set the duration for which the jobs are considered as old and expired:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand the **Continuous Integration and Deployment** section.
+1. Set the value of **Archive jobs**.
+1. Select **Save changes** for the changes to take effect.
+
+After that time passes, the jobs are archived in the background and no longer able to be
+retried. Make it empty to never expire jobs. It has to be no less than 1 day,
+for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.
+
+For the value set for GitLab.com, see [Scheduled job archiving](../../user/gitlab_com/_index.md#cicd).
+
+### Pipelines
+
+#### Protect CI/CD variables by default
+
+To set all new [CI/CD variables](../../ci/variables/_index.md) as
+[protected](../../ci/variables/_index.md#protect-a-cicd-variable) by default:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Select **Protect CI/CD variables by default**.
+
+#### Maximum includes
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) in GitLab 16.0.
+
+{{< /history >}}
+
+The maximum number of [includes](../../ci/yaml/includes.md) per pipeline can be set for the entire instance.
+The default is `150`.
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Change the value of **Maximum includes**.
+1. Select **Save changes** for the changes to take effect.
+
+#### Maximum downstream pipeline trigger rate
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144077) in GitLab 16.10.
+
+{{< /history >}}
+
+The maximum number of [downstream pipelines](../../ci/pipelines/downstream_pipelines.md) that can be triggered per minute
+(for a given project, user, and commit) can be set for the entire instance.
+The default value is `0` (no restriction).
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Change the value of **Maximum downstream pipeline trigger rate**.
+1. Select **Save changes** for the changes to take effect.
+
+#### Default CI/CD configuration file
+
+The default CI/CD configuration file and path for new projects can be set in the **Admin** area
+of your GitLab instance (`.gitlab-ci.yml` if not set):
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Input the new file and path in the **Default CI/CD configuration file** field.
+1. Select **Save changes** for the changes to take effect.
+
+It is also possible to specify a [custom CI/CD configuration file for a specific project](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file).
+
+#### Disable the pipeline suggestion banner
+
+By default, a banner displays in merge requests with no pipeline suggesting a
+walkthrough on how to add one.
+
+![A banner displays guidance on how to get started with GitLab Pipelines.](img/suggest_pipeline_banner_v14_5.png)
+
+To disable the banner:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Clear the **Enable pipeline suggestion banner** checkbox.
+1. Select **Save changes**.
+
+#### Disable the migrate from Jenkins banner
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470025) in GitLab 17.7.
+
+{{< /history >}}
+
+By default, a banner shows in merge requests in projects with the [Jenkins integration enabled](../../integration/jenkins.md) to prompt migration to GitLab CI/CD.
+
+![A banner prompting migration from Jenkins to GitLab CI](img/suggest_migrate_from_jenkins_v17_7.png)
+
+To disable the banner:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Clear the **Show the migrate from Jenkins banner** checkbox.
+1. Select **Save changes**.
+
+### Set CI/CD limits
+
+{{< history >}}
+
+- **Maximum number of active pipelines per project** setting [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/368195) in GitLab 16.0.
+- **Maximum number of instance-level CI/CD variables** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/456845) in GitLab 17.1.
+- **Maximum size of a dotenv artifact in bytes** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155791) in GitLab 17.1.
+- **Maximum number of variables in a dotenv artifact** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155791) in GitLab 17.1.
+- **Maximum number of jobs in a single pipeline** setting [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/287669) from GitLab Enterprise Edition to GitLab Community Edition in 17.6.
+
+{{< /history >}}
+
+You can configure some [CI/CD limits](../instance_limits.md#cicd-limits)
+from the **Admin** area:
+
+<!-- vale gitlab_base.CurrentStatus = NO -->
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. In the **CI/CD limits** section, you can set the following limits:
+   - **Maximum number of instance-level CI/CD variables**
+   - **Maximum size of a dotenv artifact in bytes**
+   - **Maximum number of variables in a dotenv artifact**
+   - **Maximum number of jobs in a single pipeline**
+   - **Total number of jobs in currently active pipelines**
+   - **Maximum number of pipeline subscriptions to and from a project**
+   - **Maximum number of pipeline schedules**
+   - **Maximum number of needs dependencies that a job can have**
+   - **Maximum number of runners created or active in a group during the past seven days**
+   - **Maximum number of runners created or active in a project during the past seven days**
+   - **Maximum number of downstream pipelines in a pipeline's hierarchy tree**
+<!-- vale gitlab_base.CurrentStatus = YES -->
+
+## Package registry configuration
+
+Configure package forwarding, package limits, and package file size limits.
+
+To access these settings:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand **Package registry**.
+
+### Maven forwarding
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+GitLab administrators can disable the forwarding of Maven requests to [Maven Central](https://search.maven.org/).
+
+To disable forwarding Maven requests:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand the **Package registry** section.
+1. Clear the checkbox **Forward Maven package requests to the Maven registry if the packages are not found in the GitLab Package registry**.
+1. Select **Save changes**.
+
+### npm forwarding
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+GitLab administrators can disable the forwarding of npm requests to [npmjs.com](https://www.npmjs.com/).
+
+To disable it:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand the **Package registry** section.
+1. Clear the checkbox **Forward npm package requests to the npm registry if the packages are not found in the GitLab package registry**.
+1. Select **Save changes**.
+
+### PyPI forwarding
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+GitLab administrators can disable the forwarding of PyPI requests to [pypi.org](https://pypi.org/).
+
+To disable it:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand the **Package registry** section.
+1. Clear the checkbox **Forward PyPI package requests to the PyPI registry if the packages are not found in the GitLab package registry**.
+1. Select **Save changes**.
+
+### Package file size limits
+
+GitLab administrators can adjust the maximum allowed file size for each package type.
+
+To set the maximum file size:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand the **Package registry** section.
+1. Find the package type you would like to adjust.
+1. Enter the maximum file size, in bytes.
+1. Select **Save size limits**.
+
+## Runners
+
+Configure runner version management and registration settings.
+
+To access these settings:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand **Runners**.
 
 ### Disable runner version management
 
@@ -168,224 +530,17 @@ For more information, see
 1. Expand **Runners**.
 1. Select the **Allow runner registration token** checkbox.
 
-## Artifacts
-
-### Maximum artifacts size
-
-You can set the maximum size of distinct [job artifacts](../cicd/job_artifacts.md) for:
-
-- An instance
-- Projects
-- Groups
-
-The default maximum size for each artifact file in a job is 100 MB.
-For GitLab.com, see [Artifacts maximum size](../../user/gitlab_com/_index.md#cicd).
-
-Job artifacts defined with `artifacts:reports` can have [different limits](../instance_limits.md#maximum-file-size-per-type-of-artifact).
-In this case, the smaller value is used.
-
-{{< alert type="note" >}}
-
-This setting applies to the size of the final archive file, not individual files in a job.
-
-{{< /alert >}}
-
-To modify the maximum artifacts size:
-
-- For an instance:
-
-  1. On the left sidebar, at the bottom, select **Admin**.
-  1. Select **Settings > CI/CD**.
-  1. Expand **Continuous Integration and Deployment**.
-  1. Change the value of **Maximum artifacts size (MB)**.
-  1. Select **Save changes**.
-
-- For a group or project:
-
-  Group settings override instance settings. Project settings override both instance and group settings.
-
-  1. On the left sidebar, select **Search or go to** and find your project or group.
-  1. Select **Settings > CI/CD**.
-  1. Expand **General pipelines**
-  1. Change the value of **Maximum artifacts size** (in MB).
-  1. Select **Save changes**.
-
-### Default artifacts expiration
-
-The default expiration time of the [job artifacts](../cicd/job_artifacts.md)
-can be set in the **Admin** area of your GitLab instance. The syntax of duration is
-described in [`artifacts:expire_in`](../../ci/yaml/_index.md#artifactsexpire_in)
-and the default value is `30 days`.
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Change the value of default expiration time.
-1. Select **Save changes** for the changes to take effect.
-
-This setting is set per job and can be overridden in
-[`.gitlab-ci.yml`](../../ci/yaml/_index.md#artifactsexpire_in).
-To disable the expiration, set it to `0`. The default unit is in seconds.
-
-{{< alert type="note" >}}
-
-Any changes to this setting applies to new artifacts only. The expiration time is not
-be updated for artifacts created before this setting was changed.
-The administrator may need to manually search for and expire previously-created
-artifacts, as described in the [troubleshooting documentation](../cicd/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts).
-
-{{< /alert >}}
-
-### Keep the latest artifacts for all jobs in the latest successful pipelines
-
-When enabled (default), the artifacts of the most recent pipeline for each Git ref
-([branches and tags](https://git-scm.com/book/en/v2/Git-Internals-Git-References))
-are locked against deletion and kept regardless of the expiry time.
-
-When disabled, the latest artifacts for any **new** successful or fixed pipelines
-are allowed to expire.
-
-This setting takes precedence over the [project setting](../../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
-If disabled for the entire instance, you cannot enable this in individual projects.
-
-To disable the setting:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand **Continuous Integration and Deployment**.
-1. Clear the **Keep the latest artifacts for all jobs in the latest successful pipelines** checkbox.
-1. Select **Save changes**
-
-When you disable the feature, the latest artifacts do not immediately expire.
-A new pipeline must run before the latest artifacts can expire and be deleted.
-
-{{< alert type="note" >}}
-
-All application settings have a [customizable cache expiry interval](../application_settings_cache.md) which can delay the settings affect.
-
-{{< /alert >}}
-
-### Disable the external redirect page for job artifacts
-
-By default, GitLab Pages shows an external redirect page when a user tries to view
-a job artifact served by GitLab Pages. This page warns about the potential for
-malicious user-generated content, as described in
-[issue 352611](https://gitlab.com/gitlab-org/gitlab/-/issues/352611).
-
-GitLab Self-Managed administrators can disable the external redirect warning page,
-so you can view job artifact pages directly:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand **Continuous Integration and Deployment**.
-1. Clear **Enable the external redirect page for job artifacts**.
-
-## Archive jobs
-
-You can archive old jobs to prevent them from being re-run individually. Archived jobs
-display a lock icon ({{< icon name="lock" >}}) and **This job is archived** at the top of the job log.
-
-To set the duration for which the jobs are considered as old and expired:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand the **Continuous Integration and Deployment** section.
-1. Set the value of **Archive jobs**.
-1. Select **Save changes** for the changes to take effect.
-
-After that time passes, the jobs are archived in the background and no longer able to be
-retried. Make it empty to never expire jobs. It has to be no less than 1 day,
-for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.
-
-For the value set for GitLab.com, see [Scheduled job archiving](../../user/gitlab_com/_index.md#cicd).
-
-## Protect CI/CD variables by default
-
-To set all new [CI/CD variables](../../ci/variables/_index.md) as
-[protected](../../ci/variables/_index.md#protect-a-cicd-variable) by default:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Select **Protect CI/CD variables by default**.
-
-## Maximum includes
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) in GitLab 16.0.
-
-{{< /history >}}
-
-The maximum number of [includes](../../ci/yaml/includes.md) per pipeline can be set for the entire instance.
-The default is `150`.
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Change the value of **Maximum includes**.
-1. Select **Save changes** for the changes to take effect.
-
-## Maximum downstream pipeline trigger rate
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144077) in GitLab 16.10.
-
-{{< /history >}}
-
-The maximum number of [downstream pipelines](../../ci/pipelines/downstream_pipelines.md) that can be triggered per minute
-(for a given project, user, and commit) can be set for the entire instance.
-The default value is `0` (no restriction).
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Change the value of **Maximum downstream pipeline trigger rate**.
-1. Select **Save changes** for the changes to take effect.
-
-## Default CI/CD configuration file
-
-The default CI/CD configuration file and path for new projects can be set in the **Admin** area
-of your GitLab instance (`.gitlab-ci.yml` if not set):
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Input the new file and path in the **Default CI/CD configuration file** field.
-1. Select **Save changes** for the changes to take effect.
-
-It is also possible to specify a [custom CI/CD configuration file for a specific project](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file).
-
-## Set CI/CD limits
-
-{{< history >}}
-
-- **Maximum number of active pipelines per project** setting [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/368195) in GitLab 16.0.
-- **Maximum number of instance-level CI/CD variables** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/456845) in GitLab 17.1.
-- **Maximum size of a dotenv artifact in bytes** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155791) in GitLab 17.1.
-- **Maximum number of variables in a dotenv artifact** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155791) in GitLab 17.1.
-- **Maximum number of jobs in a single pipeline** setting [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/287669) from GitLab Enterprise Edition to GitLab Community Edition in 17.6.
-
-{{< /history >}}
-
-You can configure some [CI/CD limits](../instance_limits.md#cicd-limits)
-from the **Admin** area:
-
-<!-- vale gitlab_base.CurrentStatus = NO -->
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand **Continuous Integration and Deployment**.
-1. In the **CI/CD limits** section, you can set the following limits:
-   - **Maximum number of instance-level CI/CD variables**
-   - **Maximum size of a dotenv artifact in bytes**
-   - **Maximum number of variables in a dotenv artifact**
-   - **Maximum number of jobs in a single pipeline**
-   - **Total number of jobs in currently active pipelines**
-   - **Maximum number of pipeline subscriptions to and from a project**
-   - **Maximum number of pipeline schedules**
-   - **Maximum number of needs dependencies that a job can have**
-   - **Maximum number of runners created or active in a group during the past seven days**
-   - **Maximum number of runners created or active in a project during the past seven days**
-   - **Maximum number of downstream pipelines in a pipeline's hierarchy tree**
-<!-- vale gitlab_base.CurrentStatus = YES -->
-
 ## Job token permissions
+
+Configure CI/CD job token settings for all projects.
+
+To access these settings:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand **Job token permissions**.
+
+### Enforce job token allowlist
 
 {{< history >}}
 
@@ -403,6 +558,14 @@ for all projects from the **Admin** area.
    require all projects to control job token access with the allowlist.
 
 ## Job logs
+
+Configure CI job log settings for all projects.
+
+To access these settings:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand **Job logs**.
 
 ### Incremental logging
 
@@ -428,111 +591,6 @@ To turn on incremental logging for all projects:
 1. Expand **Job logs**.
 1. Select the **Turn on incremental logging** checkbox.
 1. Select **Save changes**.
-
-## Disable the pipeline suggestion banner
-
-By default, a banner displays in merge requests with no pipeline suggesting a
-walkthrough on how to add one.
-
-![A banner displays guidance on how to get started with GitLab Pipelines.](img/suggest_pipeline_banner_v14_5.png)
-
-To disable the banner:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Clear the **Enable pipeline suggestion banner** checkbox.
-1. Select **Save changes**.
-
-## Disable the migrate from Jenkins banner
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470025) in GitLab 17.7.
-
-{{< /history >}}
-
-By default, a banner shows in merge requests in projects with the [Jenkins integration enabled](../../integration/jenkins.md) to prompt migration to GitLab CI/CD.
-
-![A banner prompting migration from Jenkins to GitLab CI](img/suggest_migrate_from_jenkins_v17_7.png)
-
-To disable the banner:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Clear the **Show the migrate from Jenkins banner** checkbox.
-1. Select **Save changes**.
-
-## Package registry configuration
-
-### Maven Forwarding
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-GitLab administrators can disable the forwarding of Maven requests to [Maven Central](https://search.maven.org/).
-
-To disable forwarding Maven requests:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand the **Package registry** section.
-1. Clear the checkbox **Forward Maven package requests to the Maven registry if the packages are not found in the GitLab Package registry**.
-1. Select **Save changes**.
-
-### npm Forwarding
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-GitLab administrators can disable the forwarding of npm requests to [npmjs.com](https://www.npmjs.com/).
-
-To disable it:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand the **Package registry** section.
-1. Clear the checkbox **Forward npm package requests to the npm registry if the packages are not found in the GitLab package registry**.
-1. Select **Save changes**.
-
-### PyPI Forwarding
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-GitLab administrators can disable the forwarding of PyPI requests to [pypi.org](https://pypi.org/).
-
-To disable it:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand the **Package registry** section.
-1. Clear the checkbox **Forward PyPI package requests to the PyPI registry if the packages are not found in the GitLab package registry**.
-1. Select **Save changes**.
-
-### Package file size limits
-
-GitLab administrators can adjust the maximum allowed file size for each package type.
-
-To set the maximum file size:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand the **Package registry** section.
-1. Find the package type you would like to adjust.
-1. Enter the maximum file size, in bytes.
-1. Select **Save size limits**.
 
 ## Required pipeline configuration (deprecated)
 

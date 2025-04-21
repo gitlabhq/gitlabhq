@@ -88,6 +88,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    isBoard: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   apollo: {
     designCollection: {
@@ -212,12 +217,14 @@ export default {
       );
     },
     canUseRouter() {
-      return canRouterNav({
-        fullPath: this.fullPath,
-        webUrl: this.workItemWebUrl,
-        isGroup: this.isGroup,
-        issueAsWorkItem: this.issueAsWorkItem,
-      });
+      return (
+        canRouterNav({
+          fullPath: this.fullPath,
+          webUrl: this.workItemWebUrl,
+          isGroup: this.isGroup,
+          issueAsWorkItem: this.issueAsWorkItem,
+        }) && !this.isBoard
+      );
     },
   },
   methods: {

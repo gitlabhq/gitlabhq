@@ -50,7 +50,7 @@ RSpec.describe 'User visits issue boards', :js, feature_category: :portfolio_man
       end
 
       it 'displays all issues satisfiying filter params and correctly sets url params' do
-        expect(page).to have_current_path(board_path)
+        expect(page).to have_current_path(board_path.gsub('+', '%20'))
 
         page.assert_selector('[data-testid="board-card"]', count: expected_issues.length)
         expected_issues.each { |issue_title| expect(page).to have_link issue_title }

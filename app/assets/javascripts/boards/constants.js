@@ -18,6 +18,8 @@ import projectBoardQuery from './graphql/project_board.query.graphql';
 import listIssuesQuery from './graphql/lists_issues.query.graphql';
 import listDeferredQuery from './graphql/board_lists_deferred.query.graphql';
 
+export const BOARDS_ROUTE_NAME = 'boards';
+
 export const BoardType = {
   project: 'project',
   group: 'group',

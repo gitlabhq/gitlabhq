@@ -8547,7 +8547,8 @@ CREATE TABLE analyzer_project_statuses (
     analyzer_type smallint NOT NULL,
     status smallint NOT NULL,
     last_call timestamp with time zone NOT NULL,
-    traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    build_id bigint
 );
 
 CREATE SEQUENCE analyzer_project_statuses_id_seq
@@ -33881,6 +33882,8 @@ CREATE INDEX index_analytics_dashboards_pointers_on_target_project_id ON analyti
 CREATE UNIQUE INDEX index_analyzer_namespace_statuses_status ON analyzer_namespace_statuses USING btree (namespace_id, analyzer_type);
 
 CREATE INDEX index_analyzer_namespace_statuses_traversal_ids ON analyzer_namespace_statuses USING btree (traversal_ids);
+
+CREATE INDEX index_analyzer_project_statuses_build_id ON analyzer_project_statuses USING btree (build_id);
 
 CREATE UNIQUE INDEX index_analyzer_project_statuses_status ON analyzer_project_statuses USING btree (project_id, analyzer_type);
 

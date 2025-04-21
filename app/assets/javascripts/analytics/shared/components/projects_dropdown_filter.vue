@@ -5,7 +5,7 @@ import { filterBySearchTerm } from '~/analytics/shared/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { n__, s__, __ } from '~/locale';
+import { n__, __ } from '~/locale';
 import getProjects from '../graphql/projects.query.graphql';
 
 const MIN_SEARCH_CHARS = 3;
@@ -31,11 +31,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    label: {
-      type: String,
-      required: false,
-      default: s__('CycleAnalytics|project dropdown filter'),
     },
     queryParams: {
       type: Object,

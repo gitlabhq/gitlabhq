@@ -28,8 +28,8 @@
   = f.hidden_field :lock_version
 
   - if @milestone.new_record?
-    = f.submit _('Create milestone'), data: { testid: 'create-milestone-button' }, class: 'gl-mr-2', pajamas_button: true
+    = f.submit _('Create milestone'), data: { testid: 'create-milestone-button' }, class: 'gl-mr-2 js-reset-autosave', pajamas_button: true
     = link_button_to _('Cancel'), project_milestones_path(@project)
   - else
-    = f.submit _('Save changes'), class: 'gl-mr-2', pajamas_button: true
+    = f.submit _('Save changes'), class: 'gl-mr-2 js-reset-autosave', pajamas_button: true
     = link_button_to _('Cancel'), project_milestone_path(@project, @milestone)

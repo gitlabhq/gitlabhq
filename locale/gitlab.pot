@@ -19273,9 +19273,6 @@ msgstr ""
 msgid "CycleAnalytics|not allowed for the given start event"
 msgstr ""
 
-msgid "CycleAnalytics|project dropdown filter"
-msgstr ""
-
 msgid "CycleAnalytics|seconds"
 msgstr ""
 

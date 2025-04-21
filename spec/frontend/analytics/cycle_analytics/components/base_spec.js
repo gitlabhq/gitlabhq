@@ -25,7 +25,6 @@ import {
 
 const selectedStageEvents = issueEvents.events;
 const noDataSvgPath = 'path/to/no/data';
-const noAccessSvgPath = 'path/to/no/access';
 const selectedStageCount = stageCounts[selectedStage.id];
 const namespaceRestApiRequestPath = 'rest/full/path/to/foo';
 
@@ -71,7 +70,6 @@ function createComponent({ initialState, initialGetters } = {}) {
       store: createStore({ initialState, initialGetters }),
       propsData: {
         noDataSvgPath,
-        noAccessSvgPath,
       },
       stubs: {
         StageTable,

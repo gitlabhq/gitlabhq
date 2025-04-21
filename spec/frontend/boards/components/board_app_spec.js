@@ -55,6 +55,7 @@ describe('BoardApp', () => {
         },
         hasCustomFieldsFeature: false,
       },
+      stubs: ['router-view'],
     });
   };
 

@@ -317,7 +317,7 @@ module API
           @pipeline_schedule ||=
             user_project
               .pipeline_schedules
-              .preload(:owner, :last_pipeline)
+              .preload(:owner)
               .find_by(id: params.delete(:pipeline_schedule_id)).tap do |pipeline_schedule|
                 unless can?(current_user, :read_pipeline_schedule, pipeline_schedule)
                   not_found!('Pipeline Schedule')

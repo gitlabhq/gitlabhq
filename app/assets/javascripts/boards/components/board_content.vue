@@ -373,6 +373,7 @@ export default {
           :issuable-type="issuableType"
           :new-comment-template-paths="commentTemplatePaths"
           click-outside-exclude-selector=".board-card"
+          is-board
           @close="
             onDrawerClosed();
             $emit('drawer-closed');

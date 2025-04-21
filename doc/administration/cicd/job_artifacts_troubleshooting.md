@@ -597,7 +597,7 @@ user = User.find(1)
 project.ci_pipelines.where("finished_at < ?", 1.year.ago).each_batch do |batch|
   batch.each do |pipeline|
     puts "Erasing pipeline #{pipeline.id}"
-    ::Ci::DestroyPipelineService.new(pipeline.project, user).execute(pipeline)
+    Ci::DestroyPipelineService.new(pipeline.project, user).execute(pipeline)
   end
 end
 ```
@@ -609,7 +609,7 @@ user = User.find(1)
 Ci::Pipeline.where("finished_at < ?", 1.year.ago).each_batch do |batch|
   batch.each do |pipeline|
     puts "Erasing pipeline #{pipeline.id} for project #{pipeline.project_id}"
-    ::Ci::DestroyPipelineService.new(pipeline.project, user).execute(pipeline)
+    Ci::DestroyPipelineService.new(pipeline.project, user).execute(pipeline)
   end
 end
 ```

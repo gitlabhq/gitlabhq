@@ -2,7 +2,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import ValueStreamMetrics from '~/analytics/shared/components/value_stream_metrics.vue';
 import { VSA_METRICS_GROUPS, FLOW_METRICS_QUERY_TYPE } from '~/analytics/shared/constants';
 import {
@@ -16,8 +15,6 @@ import ValueStreamFilters from '~/analytics/cycle_analytics/components/value_str
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 import { __, s__ } from '~/locale';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
-
-const OVERVIEW_DIALOG_COOKIE = 'cycle_analytics_help_dismissed';
 
 export default {
   name: 'CycleAnalytics',
@@ -35,21 +32,11 @@ export default {
       type: String,
       required: true,
     },
-    noAccessSvgPath: {
-      type: String,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      isOverviewDialogDismissed: getCookie(OVERVIEW_DIALOG_COOKIE),
-    };
   },
   computed: {
     ...mapState([
       'isLoading',
       'isLoadingStage',
-      'isEmptyStage',
       'selectedStage',
       'selectedStageEvents',
       'selectedStageError',
@@ -66,13 +53,6 @@ export default {
     ...mapGetters(['pathNavigationData', 'filterParams']),
     isLoaded() {
       return !this.isLoading && !this.isLoadingStage;
-    },
-    displayStageEvents() {
-      const { selectedStageEvents, isLoadingStage, isEmptyStage } = this;
-      return selectedStageEvents.length && !isLoadingStage && !isEmptyStage;
-    },
-    displayNotEnoughData() {
-      return !this.isLoadingStage && this.isEmptyStage;
     },
     displayNoAccess() {
       return !this.isLoadingStage && this.hasNoAccessError;
@@ -131,7 +111,6 @@ export default {
   },
   methods: {
     ...mapActions([
-      'fetchStageData',
       'setSelectedStage',
       'setDateRange',
       'setPredefinedDateRange',
@@ -146,10 +125,6 @@ export default {
     onSelectStage(stage) {
       this.setSelectedStage(stage);
       this.updateStageTablePagination({ ...this.pagination, page: 1 });
-    },
-    dismissOverviewDialog() {
-      this.isOverviewDialogDismissed = true;
-      setCookie(OVERVIEW_DIALOG_COOKIE, '1');
     },
     onHandleUpdatePagination(data) {
       this.updateStageTablePagination(data);

@@ -178,6 +178,11 @@ export default {
       required: false,
       default: () => [],
     },
+    isBoard: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -387,7 +392,7 @@ export default {
       return this.findWidget(WIDGET_TYPE_DESCRIPTION);
     },
     hasDesignWidget() {
-      return this.findWidget(WIDGET_TYPE_DESIGNS) && this.$router;
+      return this.findWidget(WIDGET_TYPE_DESIGNS) && (this.$router || this.isBoard);
     },
     showUploadDesign() {
       return this.hasDesignWidget && this.workspacePermissions.createDesign;
@@ -1170,6 +1175,7 @@ export default {
               :upload-error-variant="designUploadErrorVariant"
               :is-saving="isSaving"
               :can-reorder-design="canReorderDesign"
+              :is-board="isBoard"
               @upload="onUploadDesign"
               @dismissError="designUploadError = null"
             >

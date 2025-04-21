@@ -15,7 +15,6 @@
     .broadcast-wrapper
       = dispensable_render_if_exists "shared/token_expiration_banner"
       = dispensable_render "layouts/broadcast" unless content_for(:hide_broadcast_messages).present?
-      = yield :group_invite_members_banner
 
     -# Alerts
     .alert-wrapper.alert-wrapper-top-space.gl-flex.gl-flex-col.gl-gap-3.container-fluid{ class: alert_class }
@@ -34,6 +33,7 @@
       = yield :flash_message
       = dispensable_render "shared/gitlab_version/security_patch_upgrade_alert"
       = dispensable_render "shared/service_ping_consent"
+      = yield :group_invite_members_banner
       = dispensable_render_if_exists "layouts/header/ee_subscribable_banner"
       = dispensable_render_if_exists "layouts/header/seat_count_alert", context: context
       = dispensable_render_if_exists "shared/namespace_user_cap_reached_alert"
