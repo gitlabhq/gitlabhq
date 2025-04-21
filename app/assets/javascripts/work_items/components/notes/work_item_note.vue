@@ -116,10 +116,9 @@ export default {
       required: false,
       default: false,
     },
-    isGroupWorkItem: {
-      type: Boolean,
-      required: false,
-      default: false,
+    uploadsPath: {
+      type: String,
+      required: true,
     },
   },
   data() {
@@ -432,7 +431,7 @@ export default {
             :has-replies="hasReplies"
             :full-path="fullPath"
             :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
-            :is-group-work-item="isGroupWorkItem"
+            :uploads-path="uploadsPath"
             class="gl-mt-3"
             @cancelEditing="cancelEditing"
             @toggleResolveDiscussion="$emit('resolve')"

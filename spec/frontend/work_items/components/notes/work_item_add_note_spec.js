@@ -87,6 +87,7 @@ describe('Work item add note', () => {
         workItemIid,
         workItemType: 'Task',
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
+        uploadsPath: 'http://127.0.0.1:3000/test-project-path/uploads',
         autocompleteDataSources: {},
         isInternalThread,
         isNewDiscussion,

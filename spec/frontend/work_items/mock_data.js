@@ -212,6 +212,7 @@ export const workItemQueryResponse = {
         fullPath: 'test-project-path',
         name: 'Project name',
         fullName: 'Group name',
+        webUrl: 'http://127.0.0.1:3000/test-project-path',
       },
       workItemType: {
         __typename: 'WorkItemType',
@@ -340,6 +341,7 @@ export const updateWorkItemMutationResponse = {
           fullPath: 'test-project-path',
           name: 'Project name',
           fullName: 'Group name',
+          webUrl: 'http://127.0.0.1:3000/test-project-path',
         },
         workItemType: {
           __typename: 'WorkItemType',
@@ -488,6 +490,7 @@ export const convertWorkItemMutationResponse = {
           fullPath: 'test-project-path',
           name: 'Project name',
           fullName: 'Group name',
+          webUrl: 'http://127.0.0.1:3000/test-project-path',
         },
         workItemType: {
           __typename: 'WorkItemType',
@@ -1525,6 +1528,7 @@ export const workItemResponseFactory = ({
         fullPath: 'test-project-path',
         name: 'Project name',
         fullName: 'Group name',
+        webUrl: 'http://127.0.0.1:3000/test-project-path',
       },
       workItemType,
       userPermissions: {
@@ -1907,6 +1911,7 @@ export const createWorkItemMutationResponse = {
           fullPath: 'test-project-path',
           name: 'Project name',
           fullName: 'Group name',
+          webUrl: 'http://127.0.0.1:3000/test-project-path',
         },
         workItemType: {
           __typename: 'WorkItemType',
@@ -2012,6 +2017,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
         fullPath: 'test-project-path',
         name: 'Project name',
         fullName: 'Project name',
+        webUrl: 'http://127.0.0.1:3000/test-project-path',
       },
       confidential: false,
       reference: 'test-project-path#1',
@@ -2448,6 +2454,7 @@ export const workItemHierarchyResponse = {
           id: '1',
           fullPath: 'test-project-path',
           name: 'Project name',
+          webUrl: 'http://127.0.0.1:3000/test-project-path',
         },
         description: 'Issue description',
         state: 'OPEN',
@@ -2494,6 +2501,7 @@ export const workItemObjectiveWithChild = {
     fullPath: 'test-project-path',
     name: 'Project name',
     fullName: 'Group name',
+    webUrl: 'http://127.0.0.1:3000/test-project-path',
   },
   userPermissions: {
     adminParentLink: true,
@@ -2587,6 +2595,7 @@ export const workItemObjectiveWithoutChild = {
     fullPath: 'test-project-path',
     name: 'Project name',
     fullName: 'Group name',
+    webUrl: 'http://127.0.0.1:3000/test-project-path',
   },
   userPermissions: {
     adminParentLink: true,
@@ -2665,6 +2674,7 @@ export const workItemHierarchyTreeEmptyResponse = {
         fullPath: 'test-project-path',
         name: 'Project name',
         fullName: 'Project name',
+        webUrl: 'http://127.0.0.1:3000/test-project-path',
       },
       widgets: [
         {
@@ -2933,6 +2943,7 @@ export const workItemHierarchyTreeResponse = {
         fullPath: 'test-project-path',
         name: 'Project name',
         fullName: 'Project name',
+        webUrl: 'http://127.0.0.1:3000/test-project-path',
       },
       widgets: [
         {
@@ -2980,6 +2991,7 @@ export const workItemHierarchyTreeSingleClosedItemResponse = {
         fullPath: 'test-project-path',
         name: 'Project name',
         fullName: 'Project name',
+        webUrl: 'http://127.0.0.1:3000/test-project-path',
       },
       widgets: [
         {
@@ -3209,6 +3221,7 @@ export const changeWorkItemParentMutationResponse = {
           fullPath: 'test-project-path',
           name: 'Project name',
           fullName: 'Group name',
+          webUrl: 'http://127.0.0.1:3000/test-project-path',
         },
         reference: 'test-project-path#2',
         createNoteEmail:
@@ -5762,6 +5775,7 @@ export const createWorkItemQueryResponse = {
           fullPath: 'full-path',
           name: 'Gitlab Org',
           fullName: 'Group name',
+          webUrl: 'http://127.0.0.1:3000/test-project-path',
           __typename: 'Namespace',
         },
         author: {
@@ -6258,6 +6272,7 @@ export const workItemHierarchyNoChildrenTreeResponse = {
         fullPath: 'test-project-path',
         name: 'Project name',
         fullName: 'Project name',
+        webUrl: 'http://127.0.0.1:3000/test-project-path',
       },
       widgets: [
         {

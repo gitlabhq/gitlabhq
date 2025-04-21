@@ -111,6 +111,11 @@ export default {
       required: false,
       default: true,
     },
+    uploadsPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   markdownDocsPath: helpPagePath('user/markdown'),
   data() {
@@ -237,11 +242,6 @@ export default {
         return ['full-screen'];
       }
       return [];
-    },
-    uploadsPath() {
-      return this.isGroupWorkItem
-        ? `/groups/${this.fullPath}/-/uploads`
-        : `/${this.fullPath}/uploads`;
     },
     enableTruncation() {
       /* truncationEnabled uses the local storage based setting,

@@ -93,10 +93,9 @@ export default {
       required: false,
       default: false,
     },
-    isGroupWorkItem: {
-      type: Boolean,
-      required: false,
-      default: false,
+    uploadsPath: {
+      type: String,
+      required: true,
     },
   },
   data() {
@@ -253,7 +252,7 @@ export default {
     :work-item-iid="workItemIid"
     :is-resolving="isResolving"
     :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
-    :is-group-work-item="isGroupWorkItem"
+    :uploads-path="uploadsPath"
     @startEditing="$emit('startEditing')"
     @resolve="resolveDiscussion"
     @startReplying="showReplyForm"
@@ -289,7 +288,7 @@ export default {
                   :is-discussion-resolvable="isDiscussionResolvable"
                   :is-resolving="isResolving"
                   :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
-                  :is-group-work-item="isGroupWorkItem"
+                  :uploads-path="uploadsPath"
                   @startReplying="showReplyForm"
                   @startEditing="$emit('startEditing')"
                   @deleteNote="$emit('deleteNote', note)"
@@ -325,7 +324,7 @@ export default {
                         :is-discussion-resolvable="isDiscussionResolvable"
                         :is-resolving="isResolving"
                         :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
-                        :is-group-work-item="isGroupWorkItem"
+                        :uploads-path="uploadsPath"
                         @startReplying="showReplyForm"
                         @deleteNote="$emit('deleteNote', reply)"
                         @reportAbuse="$emit('reportAbuse', reply)"
@@ -361,7 +360,7 @@ export default {
                       :is-resolving="isResolving"
                       :has-replies="hasReplies"
                       :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
-                      :is-group-work-item="isGroupWorkItem"
+                      :uploads-path="uploadsPath"
                       @startReplying="showReplyForm"
                       @cancelEditing="hideReplyForm"
                       @replied="onReplied"

@@ -102,6 +102,7 @@ describe('WorkItemDescription', () => {
         showButtonsBelowField,
         isCreateFlow,
         hideFullscreenMarkdownButton,
+        uploadsPath: 'http://127.0.0.1:3000/test-project-path/uploads',
       },
       provide: {
         isGroup,
@@ -163,6 +164,7 @@ describe('WorkItemDescription', () => {
                 fullPath: 'gitlab-org',
                 name: 'Gitlab Org',
                 fullName: 'Gitlab Org',
+                webUrl: 'http://127.0.0.1:3000/test-project-path',
                 __typename: 'Namespace',
               },
             },
@@ -203,6 +205,7 @@ describe('WorkItemDescription', () => {
                 fullPath: 'gitlab-org',
                 name: 'Gitlab Org',
                 fullName: 'Gitlab Org',
+                webUrl: 'http://127.0.0.1:3000/test-project-path',
                 __typename: 'Namespace',
               },
             },
@@ -764,47 +767,4 @@ describe('WorkItemDescription', () => {
       expect(findMarkdownEditor().props('restrictedToolBarItems')).toEqual(['full-screen']);
     });
   });
-
-  it.each`
-    namespaceId                | uploadsPath                            | namespaceType
-    ${'gid://gitlab/Group/24'} | ${`/groups/${mockFullPath}/-/uploads`} | ${'group'}
-    ${'123'}                   | ${`/${mockFullPath}/uploads`}          | ${'project'}
-  `(
-    'passes correct uploads path for markdown editor when namespace is $namespaceType',
-
-    async ({ namespaceId, uploadsPath }) => {
-      const workItemResponse = workItemByIidResponseFactory({
-        iid: NEW_WORK_ITEM_IID,
-        id: NEW_WORK_ITEM_GID,
-      });
-
-      const newGroupWorkItem = {
-        data: {
-          workspace: {
-            __typename: 'Group',
-            id: namespaceId,
-            workItem: {
-              ...workItemResponse.data.workspace.workItem,
-              namespace: {
-                id: namespaceId,
-                fullPath: 'gitlab-org',
-                name: 'Gitlab Org',
-                fullName: 'Gitlab Org',
-                __typename: 'Namespace',
-              },
-            },
-          },
-        },
-      };
-
-      createComponent({
-        isEditing: true,
-        isGroup: true,
-        workItemResponse: newGroupWorkItem,
-      });
-      await waitForPromises();
-
-      expect(findMarkdownEditor().props('uploadsPath')).toBe(uploadsPath);
-    },
-  );
 });
