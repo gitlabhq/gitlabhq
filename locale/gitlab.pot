@@ -19961,9 +19961,6 @@ msgstr ""
 msgid "DastProfiles|No variables found"
 msgstr ""
 
-msgid "DastProfiles|Not Validated"
-msgstr ""
-
 msgid "DastProfiles|Number of workers that passive scan in parallel. Defaults to the number of available CPUs."
 msgstr ""
 
@@ -20268,9 +20265,6 @@ msgid "DastProfiles|Validate"
 msgstr ""
 
 msgid "DastProfiles|Validate site profile"
-msgstr ""
-
-msgid "DastProfiles|Validated"
 msgstr ""
 
 msgid "DastProfiles|Validation status"
@@ -57398,6 +57392,9 @@ msgid "Similar issues"
 msgstr ""
 
 msgid "Simulate a pipeline created for the default branch"
+msgstr ""
+
+msgid "Single component can be selected for component filter to be able to filter by version."
 msgstr ""
 
 msgid "Site profile failed to delete"

@@ -1,5 +1,50 @@
-#import "./base_project.fragment.graphql"
+#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
 
 fragment Project on Project {
-  ...BaseProject
+  id
+  fullPath
+  archived
+  nameWithNamespace
+  webUrl
+  topics
+  forksCount
+  avatarUrl
+  starCount
+  visibility
+  openMergeRequestsCount
+  openIssuesCount
+  descriptionHtml
+  createdAt
+  updatedAt
+  lastActivityAt
+  group {
+    id
+  }
+  mergeRequestsAccessLevel {
+    stringValue
+  }
+  issuesAccessLevel {
+    stringValue
+  }
+  forkingAccessLevel {
+    stringValue
+  }
+  userPermissions {
+    removeProject
+    viewEditPage
+  }
+  maxAccessLevel {
+    integerValue
+  }
+  isCatalogResource
+  exploreCatalogPath
+  pipeline {
+    id
+    detailedStatus {
+      ...CiIcon
+    }
+  }
+  markedForDeletionOn
+  isAdjournedDeletionEnabled
+  permanentDeletionDate
 }

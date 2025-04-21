@@ -100,6 +100,18 @@ Elastic::ProcessBookkeepingService.track!(*MergeRequest.all)
 Elastic::ProcessBookkeepingService.new.execute
 ```
 
+## Dependent association index updates
+
+You can use elastic_index_dependant_association to automatically update associated records in the index
+when specific fields change. For example, to reindex all work items when a project's `visibility_level` changes
+
+```ruby
+  elastic_index_dependant_association :work_items, on_change: :visibility_level, depends_on_finished_migration: :add_mapping_migration
+```
+
+The `depends_on_finished_migration` parameter is optional and ensures the update only occurs after the specified advanced
+search migration has completed (such as a migration that added the necessary field to the mapping).
+
 ## Testing
 
 {{< alert type="warning" >}}

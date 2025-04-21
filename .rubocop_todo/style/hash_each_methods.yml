@@ -113,7 +113,6 @@ Style/HashEachMethods:
     - 'spec/models/user_spec.rb'
     - 'spec/presenters/ci/pipeline_presenter_spec.rb'
     - 'spec/presenters/commit_status_presenter_spec.rb'
-    - 'spec/requests/api/project_templates_spec.rb'
     - 'spec/services/system_notes/incident_service_spec.rb'
     - 'spec/support/helpers/database/multiple_databases_helpers.rb'
     - 'spec/support/helpers/reactive_caching_helpers.rb'

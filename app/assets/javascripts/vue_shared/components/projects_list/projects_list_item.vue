@@ -5,9 +5,9 @@ import {
   renderDeleteSuccessToast,
   deleteParams,
 } from 'ee_else_ce/vue_shared/components/projects_list/utils';
-import ProjectListItemDescription from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_description.vue';
+import ProjectListItemDescription from '~/vue_shared/components/projects_list/project_list_item_description.vue';
 import ProjectListItemActions from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_actions.vue';
-import ProjectListItemInactiveBadge from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
+import ProjectListItemInactiveBadge from '~/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
 import { VISIBILITY_TYPE_ICON, PROJECT_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { FEATURABLE_ENABLED } from '~/featurable/constants';

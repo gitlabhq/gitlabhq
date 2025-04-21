@@ -1559,7 +1559,7 @@ This is not applicable yet as multiple indices functionality is not fully implem
 
 {{< /alert >}}
 
-Currently GitLab can only handle a single version of setting. Any setting/schema changes would require reindexing everything from scratch. Since reindexing can take a long time, this can cause search functionality downtime.
+Currently, GitLab can only handle a single version of setting. Any setting/schema changes would require reindexing everything from scratch. Since reindexing can take a long time, this can cause search functionality downtime.
 
 To avoid downtime, GitLab is working to support multiple indices that
 can function at the same time. Whenever the schema changes, the administrator
@@ -1571,7 +1571,7 @@ index.
 
 This is also helpful for migrating to new servers, for example, moving to/from AWS.
 
-Currently we are on the process of migrating to this new design. Everything is hardwired to work with one single version for now.
+Currently, we are on the process of migrating to this new design. Everything is hardwired to work with one single version for now.
 
 ## Performance Monitoring
 
@@ -1586,12 +1586,12 @@ is impacting overall performance relative to the time spent doing other things.
 
 GitLab also exports [Prometheus metrics](../administration/monitoring/prometheus/gitlab_metrics.md)
 for indexing queues, which can help diagnose performance bottlenecks and determine
-whether or not your GitLab instance or Elasticsearch server can keep up with
+whether your GitLab instance or Elasticsearch server can keep up with
 the volume of updates.
 
 ### Logs
 
-All of the indexing happens in Sidekiq, so much of the relevant logs for the
+All indexing happens in Sidekiq, so much of the relevant logs for the
 Elasticsearch integration can be found in
 [`sidekiq.log`](../administration/logs/_index.md#sidekiqlog). In particular, all
 Sidekiq workers that make requests to Elasticsearch in any way will log the
@@ -1631,6 +1631,7 @@ in the cluster back the request in GitLab.
 
 - [Creating indices from scratch](advanced_search/tips.md#creating-all-indices-from-scratch-and-populating-with-local-data)
 - [Index data](advanced_search/tips.md#index-data)
+- [Updating dependent associations in the index](advanced_search/tips.md#dependent-association-index-updates)
 - [Kibana](advanced_search/tips.md#kibana)
 - [Running tests with Elasticsearch](advanced_search/tips.md#testing)
 - [Testing migrations](advanced_search/tips.md#advanced-search-migrations)

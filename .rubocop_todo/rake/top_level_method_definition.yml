@@ -17,7 +17,6 @@ Rake/TopLevelMethodDefinition:
     - 'lib/tasks/gettext.rake'
     - 'lib/tasks/gitlab/assets.rake'
     - 'lib/tasks/gitlab/background_migrations.rake'
-    - 'lib/tasks/gitlab/backup.rake'
     - 'lib/tasks/gitlab/cleanup.rake'
     - 'lib/tasks/gitlab/click_house/migration.rake'
     - 'lib/tasks/gitlab/container_registry.rake'

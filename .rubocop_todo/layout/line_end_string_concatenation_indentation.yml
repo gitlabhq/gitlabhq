@@ -589,7 +589,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'spec/support/helpers/stub_gitlab_calls.rb'
     - 'spec/support/matchers/have_gitlab_http_status.rb'
     - 'spec/support/permissions_check.rb'
-    - 'spec/support/rspec_run_time.rb'
     - 'spec/support/shared_examples/features/inviting_members_shared_examples.rb'
     - 'spec/support/shared_examples/features/project_upload_files_shared_examples.rb'
     - 'spec/support/shared_examples/features/value_streams_dashboard_shared_examples.rb'

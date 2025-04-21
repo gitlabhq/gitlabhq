@@ -109,8 +109,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'ee/lib/gitlab/llm/tanuki_bot.rb'
     - 'ee/lib/gitlab/search/zoekt/client.rb'
     - 'ee/lib/gitlab/usage_data_counters/epic_activity_unique_counter.rb'
-    - 'ee/lib/gitlab_subscriptions/billable_users_utils.rb'
-    - 'ee/lib/gitlab_subscriptions/member_management/promotion_management_utils.rb'
     - 'ee/lib/search/zoekt/circuit_breaker.rb'
     - 'ee/spec/lib/gitlab/product_analytics/developments/setup_spec.rb'
     - 'ee/spec/models/gitlab_subscriptions/features_spec.rb'
