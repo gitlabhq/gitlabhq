@@ -83,6 +83,25 @@ does not match, the response code is `409`.
 }
 ```
 
+### Approvals for automated merge requests
+
+If you use the API to create and immediately approve a merge request, your automation
+might approve the merge request before the commit is fully processed. By default, adding
+a new commit to a merge request
+[resets any existing approvals](../user/project/merge_requests/approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch).
+When this happens, the **Activity** area of the merge request shows a sequence of
+messages like this:
+
+- `(botname)` approved this merge request 5 minutes ago
+- `(botname)` added 1 commit 5 minutes ago
+- `(botname)` reset approvals from `(botname)` by pushing to the branch 5 minutes ago
+
+To ensure automated approvals are not applied before commit processing is complete,
+your automation should add a wait (or `sleep`) function until:
+
+- The `detailed_merge_status` attribute is not in either the `checking` or `approvals_syncing` states.
+- The merge request diff contains a `patch_id_sha` that is not NULL.
+
 ## Unapprove merge request
 
 If you did approve a merge request, you can unapprove it using the following

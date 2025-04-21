@@ -322,3 +322,11 @@ To force a cache update:
    ```
 
 1. Reload the merge request.
+
+## Approvals reset when automation approves a merge request
+
+If you automate the creation of merge requests, or pushing to them, you might want to build automated
+approvals for those merge requests. In GitLab Premium and Ultimate, by default, all approvals are removed
+[when commits are added to the source branch](approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch).
+To avoid this problem, add logic to your automation that ensures
+[commits are processed before approving](../../../api/merge_request_approvals.md#approvals-for-automated-merge-requests) the merge request.
