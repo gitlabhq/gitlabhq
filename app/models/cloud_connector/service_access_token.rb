@@ -19,5 +19,9 @@ module CloudConnector
     def expired?
       expires_at.past?
     end
+
+    def refresh_required?
+      expires_at < 2.days.from_now
+    end
   end
 end
