@@ -53,7 +53,7 @@ If a feature flag value is changed on staging or production through a ChatOps co
 
 ![GitLab Chatops Slack message example](img/gitlab-chatops-message_v18_0.png)
 
-Once the pipeline completes, a followup message with the results is sent to the same Slack channel.
+Once the pipeline completes, a followup message with the results is sent to the same Slack channel. If the pipeline failed, it includes a link to the debugging instructions below.
 
 ![Failed pipeline Slack message example](img/failed-pipeline-message_v18_0.png)
 

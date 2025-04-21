@@ -95,13 +95,13 @@ The following settings are available:
 
 - Tier: Premium, Ultimate
 - Offering: GitLab Self-Managed
-- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501717) in GitLab 17.8.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/523464) in GitLab 18.0.
 
 {{< /history >}}
 
