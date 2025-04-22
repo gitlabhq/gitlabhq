@@ -727,7 +727,8 @@ module API
     # @content_disposition controls the Content-Disposition response header. nil by default. Forced to attachment for object storage disabled mode.
     # @content_type controls the Content-Type response header. By default, it will rely on the 'application/octet-stream' value or the content type detected by carrierwave.
     # @extra_response_headers. Set additional response headers. Not used in the direct download supported case.
-    def present_carrierwave_file!(file, supports_direct_download: true, content_disposition: nil, content_type: nil, extra_response_headers: {})
+    # @extra_send_url_params. Additional parameters to send to workhorse send_url call. See Gitlab::Workhorse.send_url for more information
+    def present_carrierwave_file!(file, supports_direct_download: true, content_disposition: nil, content_type: nil, extra_response_headers: {}, extra_send_url_params: {})
       return not_found! unless file&.exists?
 
       if content_disposition
@@ -749,7 +750,7 @@ module API
       else
         response_headers = extra_response_headers.merge('Content-Type' => content_type, 'Content-Disposition' => response_disposition).compact_blank
 
-        header(*Gitlab::Workhorse.send_url(file.url, response_headers: response_headers))
+        header(*Gitlab::Workhorse.send_url(file.url, response_headers: response_headers, **extra_send_url_params))
         status :ok
         body '' # to avoid an error from API::APIGuard::ResponseCoercerMiddleware
       end
