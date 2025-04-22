@@ -119,7 +119,7 @@ module Gitlab
 
         def set_table_owner_statement(table_name, new_owner)
           <<~SQL.chomp
-            ALTER TABLE #{quote_table_name(table_name)} OWNER TO #{new_owner}
+            ALTER TABLE #{quote_table_name(table_name)} OWNER TO #{quote_column_name(new_owner)}
           SQL
         end
 

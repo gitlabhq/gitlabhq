@@ -83,11 +83,27 @@ To configure a self-hosted model:
      | Bedrock | `bedrock/<model ID of the model>` | `bedrock/mistral.mixtral-8x7b-instruct-v0:1` |
      | Azure OpenAI | `azure/<model ID of the model>` | `azure/gpt-35-turbo` |
 
-     - For Amazon Bedrock models, find and copy the model's **Inference profile ID** (based on your `AWS_REGION`), and paste it in the `Model Identifier` field, with the `bedrock/` prefix. For more information, see the [Amazon supported regions and models for inference profiles documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html). 
+     - For Amazon Bedrock models:
 
-     For more information about configuring the model identifier for models deployed through vLLM, see the [vLLM documentation](supported_llm_serving_platforms.md#finding-the-model-name).
+       1. Set your `AWS_REGION` and make sure you have access to models in that region in your AI gateway Docker configuration.
+       1. Add the appropriate region prefix to the model's inference profile ID
+          for cross-region inferencing.
+       1. Enter the region prefix and model inference profile ID in the **Model identifier**
+          field, with the `bedrock/` prefix.
+
+       For example, for the Anthropic Claude 3.5 v2 model in the Tokyo region:
+
+       - The `AWS_REGION` is `ap-northeast-1`.
+       - The cross-region inferencing prefix is `apac.`.
+       - The model identifier is `bedrock/apac.anthropic.claude-3-5-sonnet-20241022-v2:0`
 
 1. Select **Create self-hosted model**.
+
+For more information about:
+
+- Configuring the model identifier for models deployed through vLLM, see the [vLLM documentation](supported_llm_serving_platforms.md#finding-the-model-name).
+- Configuring Amazon Bedrock models with cross-region inferencing, see the
+  [Amazon supported regions and models for inference profiles documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html)
 
 ## Configure self-hosted beta models and features
 

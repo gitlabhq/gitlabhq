@@ -204,13 +204,13 @@ To determine an appropriate limit, you can use this PromQL query as a guide in [
 
 ```promql
 (
-  sum by (worker) (rate(sidekiq_enqueued_jobs_total{environment="gprd", worker="ElasticCommitIndexerWorker"}[1m]))
+  sum by (worker) (rate(sidekiq_enqueued_jobs_total{environment="gprd", worker="Search::Elastic::CommitIndexerWorker"}[1m]))
 )
 *
 (
-  sum by (worker) (rate(sidekiq_jobs_completion_seconds_sum{environment="gprd", worker="ElasticCommitIndexerWorker"}[1m]))
+  sum by (worker) (rate(sidekiq_jobs_completion_seconds_sum{environment="gprd", worker="Search::Elastic::CommitIndexerWorker"}[1m]))
   /
-  sum by (worker) (rate(sidekiq_jobs_completion_count{environment="gprd", worker="ElasticCommitIndexerWorker"}[1m]))
+  sum by (worker) (rate(sidekiq_jobs_completion_count{environment="gprd", worker="Search::Elastic::CommitIndexerWorker"}[1m]))
 )
 ```
 

@@ -386,8 +386,14 @@ When you require expiration dates for new access tokens:
 
 {{< /history >}}
 
-By default, in GitLab Self-Managed, top-level group Owners can not create service accounts. GitLab
-administrators can allow top-level group Owners to create service accounts.
+By default, only administrators can create service accounts. You can configure GitLab to also
+allow top-level group Owners to create service accounts.
+
+Prerequisites:
+
+- You must have administrator access.
+
+To allow top-level group Owners to create service accounts:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.

@@ -5,10 +5,12 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::Partitioning::ReplaceTable, '#perform', feature_category: :database do
   include Database::TableSchemaHelpers
 
+  subject(:replace_table) do
+    described_class.new(connection, original_table, replacement_table, archived_table, primary_key_columns).perform
+  end
+
   context 'with a composite primary key' do
-    subject(:replace_table) do
-      described_class.new(connection, original_table, replacement_table, archived_table, %w[id created_at]).perform
-    end
+    let(:primary_key_columns) { %w[id created_at] }
 
     let(:original_table) { '_test_original_table_composite' }
     let(:replacement_table) { '_test_replacement_table_composite' }
@@ -119,11 +121,15 @@ RSpec.describe Gitlab::Database::Partitioning::ReplaceTable, '#perform', feature
 
     context 'when the source table is not owned by current user' do
       let(:original_table_owner) { 'random_table_owner' }
+      let(:replacement_table_owner) { 'random-table-owner' }
 
       before do
         connection.execute(<<~SQL)
           CREATE USER #{original_table_owner};
-          ALTER TABLE #{original_table} OWNER TO #{original_table_owner}
+          ALTER TABLE #{original_table} OWNER TO #{original_table_owner};
+
+          CREATE USER "#{replacement_table_owner}";
+          ALTER TABLE #{replacement_table} OWNER TO "#{replacement_table_owner}";
         SQL
       end
 

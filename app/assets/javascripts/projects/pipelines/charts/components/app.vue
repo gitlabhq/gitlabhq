@@ -49,14 +49,15 @@ export default {
           key: 'deployment-frequency',
           event: 'p_analytics_ci_cd_deployment_frequency',
           title: __('Deployment frequency'),
-          componentIs: () => import('ee_component/dora/components/deployment_frequency_charts.vue'),
+          componentIs: () =>
+            import('ee_component/analytics/dora/components/deployment_frequency_charts.vue'),
           lazy: true,
         },
         {
           key: 'lead-time',
           event: 'p_analytics_ci_cd_lead_time',
           title: __('Lead time'),
-          componentIs: () => import('ee_component/dora/components/lead_time_charts.vue'),
+          componentIs: () => import('ee_component/analytics/dora/components/lead_time_charts.vue'),
           lazy: true,
         },
         {
@@ -64,14 +65,15 @@ export default {
           event: 'visit_ci_cd_time_to_restore_service_tab',
           title: s__('DORA4Metrics|Time to restore service'),
           componentIs: () =>
-            import('ee_component/dora/components/time_to_restore_service_charts.vue'),
+            import('ee_component/analytics/dora/components/time_to_restore_service_charts.vue'),
           lazy: true,
         },
         {
           key: 'change-failure-rate',
           event: 'visit_ci_cd_failure_rate_tab',
           title: s__('DORA4Metrics|Change failure rate'),
-          componentIs: () => import('ee_component/dora/components/change_failure_rate_charts.vue'),
+          componentIs: () =>
+            import('ee_component/analytics/dora/components/change_failure_rate_charts.vue'),
           lazy: true,
         },
       );

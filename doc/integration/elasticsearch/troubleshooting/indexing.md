@@ -99,7 +99,7 @@ To reindex the database, repositories, and wikis, [index the instance](../../adv
 
 ## Indexing fails with `error: elastic: Error 429 (Too Many Requests)`
 
-If `ElasticCommitIndexerWorker` Sidekiq workers are failing with this error during indexing, it usually means that Elasticsearch is unable to keep up with the concurrency of indexing request. To address change the following settings:
+If `Search::Elastic::CommitIndexerWorker` Sidekiq workers are failing with this error during indexing, it usually means that Elasticsearch is unable to keep up with the concurrency of indexing request. To address change the following settings:
 
 - To decrease the indexing throughput you can decrease `Bulk request concurrency` (see [Advanced search settings](../../advanced_search/elasticsearch.md#advanced-search-configuration)). This is set to `10` by default, but you change it to as low as 1 to reduce the number of concurrent indexing operations.
 - If changing `Bulk request concurrency` didn't help, you can use the [routing rules](../../../administration/sidekiq/processing_specific_job_classes.md#routing-rules) option to [limit indexing jobs only to specific Sidekiq nodes](../../advanced_search/elasticsearch.md#index-large-instances-with-dedicated-sidekiq-nodes-or-processes), which should reduce the number of indexing requests.

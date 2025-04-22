@@ -226,7 +226,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'DisallowTwoFactorForSubgroupsWorker' => 3,
         'Dora::DailyMetrics::RefreshWorker' => 3,
         'ElasticAssociationIndexerWorker' => 3,
-        'ElasticCommitIndexerWorker' => 2,
         'ElasticDeleteProjectWorker' => 2,
         'ElasticFullIndexWorker' => 2,
         'ElasticNamespaceIndexerWorker' => 2,

@@ -12,9 +12,11 @@
 }
 
 .upload-dropzone-border {
-  border: 0;
-  @include dropzone-background($gl-border-color-default, 2);
-  border-radius: $gl-border-radius-base;
+  @include dropzone-background($gray-400, 2);
+}
+
+.upload-dropzone-border-error {
+  @include dropzone-background($red-400, 2);
 }
 
 .upload-dropzone-card {

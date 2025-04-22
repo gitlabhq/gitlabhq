@@ -21,6 +21,9 @@ export default {
   i18n: {
     REMOVE_FILE_TEXT: __('Remove file'),
     ERROR_MESSAGE: __('Error uploading file. Please try again.'),
+    DIRECTORY_FILE_ERROR: __(
+      'Directories cannot be uploaded. Please upload a single file instead.',
+    ),
   },
   props: {
     modalId: {
@@ -67,6 +70,7 @@ export default {
       file: null,
       filePreviewURL: null,
       loading: false,
+      hasDirectoryUploadError: false,
     };
   },
   computed: {
@@ -90,6 +94,22 @@ export default {
 
       fileUurlReader.onload = (e) => {
         this.filePreviewURL = e.target?.result;
+        this.hasDirectoryUploadError = false;
+      };
+
+      fileUurlReader.onerror = (e) => {
+        const error = e.target?.error;
+
+        // eslint-disable-next-line no-extra-boolean-cast
+        if (!Boolean(this.file?.type)) {
+          this.file = null;
+          this.hasDirectoryUploadError = true;
+        }
+
+        logError(
+          `Failed to ${this.replacePath ? 'replace' : 'upload'} file. See exception details for more information.`,
+          error,
+        );
       };
     },
     removeFile() {
@@ -141,6 +161,9 @@ export default {
 
       return this.submitRequest('post', uploadPath, formData);
     },
+    handleModalClose() {
+      this.hasDirectoryUploadError = false;
+    },
   },
   validFileMimetypes: [],
 };
@@ -158,14 +181,16 @@ export default {
     :loading="loading"
     :empty-repo="emptyRepo"
     data-testid="upload-blob-modal"
+    @close-commit-changes-modal="handleModalClose"
     @submit-form="submitForm"
   >
     <template #body>
       <upload-dropzone
-        class="gl-mb-6 gl-h-26"
+        :class="['gl-h-26', hasDirectoryUploadError ? 'gl-mb-3' : 'gl-mb-6']"
         single-file-selection
         :valid-file-mimetypes="$options.validFileMimetypes"
         :is-file-valid="() => true"
+        :has-upload-error="hasDirectoryUploadError"
         @change="setFile"
       >
         <div
@@ -187,6 +212,9 @@ export default {
           >
         </div>
       </upload-dropzone>
+      <div v-if="hasDirectoryUploadError" class="gl-mb-6 gl-text-left gl-text-danger">
+        {{ $options.i18n.DIRECTORY_FILE_ERROR }}
+      </div>
     </template>
   </commit-changes-modal>
 </template>

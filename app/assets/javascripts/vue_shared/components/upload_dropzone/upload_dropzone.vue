@@ -86,6 +86,11 @@ export default {
       required: false,
       default: false,
     },
+    hasUploadError: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -208,7 +213,8 @@ export default {
   >
     <slot>
       <button
-        class="upload-dropzone-card upload-dropzone-border gl-mb-0 gl-h-full gl-w-full gl-items-center gl-justify-center gl-bg-default gl-px-5 gl-py-4"
+        class="upload-dropzone-card gl-mb-0 gl-h-full gl-w-full gl-items-center gl-justify-center gl-rounded-base gl-border-0 gl-bg-default gl-px-5 gl-py-4"
+        :class="hasUploadError ? 'upload-dropzone-border-error' : 'upload-dropzone-border'"
         type="button"
         @click="openFileUpload"
         @mouseenter="onMouseEnter"

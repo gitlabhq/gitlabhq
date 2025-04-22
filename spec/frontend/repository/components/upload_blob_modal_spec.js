@@ -29,6 +29,10 @@ const initialProps = {
   path: NEW_PATH,
 };
 
+const $toast = {
+  show: jest.fn(),
+};
+
 describe('UploadBlobModal', () => {
   let wrapper;
   let mock;
@@ -49,6 +53,7 @@ describe('UploadBlobModal', () => {
             path: '',
           },
         },
+        $toast,
       },
     });
   };
@@ -107,6 +112,68 @@ describe('UploadBlobModal', () => {
 
     it('includes the upload dropzone', () => {
       expect(findUploadDropzone().exists()).toBe(true);
+    });
+  });
+
+  describe('directory upload handling', () => {
+    let mockFileReader;
+
+    beforeEach(() => {
+      createComponent();
+      mockFileReader = {
+        readAsDataURL: jest.fn(),
+        onload: null,
+        onerror: null,
+      };
+      jest.spyOn(window, 'FileReader').mockImplementation(() => mockFileReader);
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('displays error message when user attempts to drag and drop a directory', async () => {
+      const directoryFile = new File([''], 'test-folder', { type: '' });
+      findUploadDropzone().vm.$emit('change', directoryFile);
+      mockFileReader.onerror({ target: { error: new Error() } });
+
+      await nextTick();
+
+      expect(wrapper.text()).toContain(
+        'Directories cannot be uploaded. Please upload a single file instead.',
+      );
+      expect(findUploadDropzone().exists()).toBe(true);
+      expect(wrapper.text()).not.toContain('test-folder');
+    });
+
+    it('allows uploading valid files', async () => {
+      const validFile = new File(['content'], 'test.txt', { type: 'text/plain' });
+      findUploadDropzone().vm.$emit('change', validFile);
+      mockFileReader.onload({ target: { result: 'data:text/plain;base64,content' } });
+
+      await nextTick();
+
+      expect(wrapper.text()).not.toContain('Directories cannot be uploaded');
+      expect(wrapper.text()).toContain('test.txt');
+    });
+
+    it('clears error state when valid file is loaded', async () => {
+      wrapper.vm.hasDirectoryUploadError = true;
+
+      findUploadDropzone().vm.$emit('change', new File(['content'], 'file.txt'));
+      mockFileReader.onload({ target: { result: 'data:text/plain;base64,' } });
+
+      await nextTick();
+
+      expect(wrapper.text()).not.toContain('Directories cannot be uploaded');
+    });
+
+    it('clears error state when modal is closed', async () => {
+      wrapper.vm.hasDirectoryUploadError = true;
+      findCommitChangesModal().vm.$emit('close-commit-changes-modal');
+      await nextTick();
+
+      expect(wrapper.text()).not.toContain('Directories cannot be uploaded');
     });
   });
 

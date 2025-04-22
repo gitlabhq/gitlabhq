@@ -385,4 +385,22 @@ describe('Upload dropzone component', () => {
       expect(wrapper.emitted('error')).toHaveLength(1);
     });
   });
+
+  describe('directory upload error', () => {
+    it('shows error border when hasUploadError is true', () => {
+      createComponent({
+        props: {
+          hasUploadError: true,
+        },
+      });
+
+      expect(findDropzoneCard().classes('upload-dropzone-border-error')).toBe(true);
+    });
+
+    it('shows normal border when hasUploadError is false', () => {
+      createComponent();
+
+      expect(findDropzoneCard().classes('upload-dropzone-border')).toBe(true);
+    });
+  });
 });

@@ -118,7 +118,7 @@ function run_rspec_non_fast {
 function run_rspec_feature {
   trap onexit_err ERR
 
-  printf "\n\n${BBlue}Running backend RSpec feature specs (NOTE: These sometimes are flaky (see https://gitlab.com/gitlab-org/gitlab/-/issues/478601)! If one fails, try running it focused, or just ignore it and let CI run it)...${Color_Off}\n\n"
+  printf "\n\n${BBlue}Running backend RSpec feature specs${Color_Off}\n\n"
   files_for_feature=()
   while IFS='' read -r file; do
       files_for_feature+=("$file")
@@ -147,7 +147,7 @@ function main {
   [ -z "${SKIP_FAST}" ] && run_rspec_fast
   [ -z "${SKIP_JEST}" ] && run_jest
   [ -z "${SKIP_NON_FAST}" ] && run_rspec_non_fast
-  [ "${SKIP_FEATURE:-1}" -eq 0 ] && run_rspec_feature
+  [ -z "${SKIP_FEATURE}" ] && run_rspec_feature
 
   # Convenience ENV vars to run focused sections, copy and paste as a prefix to script command, and remove the one(s) you want to run focused
   # SKIP_RUBOCOP=1 SKIP_FP=1 SKIP_FAST=1 SKIP_JEST=1 SKIP_NON_FAST=1 SKIP_FEATURE=1

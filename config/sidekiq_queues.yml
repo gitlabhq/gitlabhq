@@ -359,8 +359,6 @@
   - 1
 - - elastic_association_indexer
   - 1
-- - elastic_commit_indexer
-  - 1
 - - elastic_delete_project
   - 1
 - - elastic_full_index

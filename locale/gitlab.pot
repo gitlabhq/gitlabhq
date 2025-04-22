@@ -14526,7 +14526,7 @@ msgstr ""
 msgid "CodeSuggestions|Get started with GitLab Duo Pro today."
 msgstr ""
 
-msgid "CodeSuggestions|GitLab Duo"
+msgid "CodeSuggestions|GitLab Duo Core"
 msgstr ""
 
 msgid "CodeSuggestions|GitLab Duo Enterprise"
@@ -22496,6 +22496,9 @@ msgstr ""
 msgid "Direction"
 msgstr ""
 
+msgid "Directories cannot be uploaded. Please upload a single file instead."
+msgstr ""
+
 msgid "Directory locked"
 msgstr ""
 
@@ -23033,6 +23036,9 @@ msgid "DuoCodeReview|:wave: There's nothing for me to review."
 msgstr ""
 
 msgid "DuoCodeReview|Can't access the merge request. When SAML single sign-on is enabled on a group or its parent, Duo Code Reviews can't be requested from the API. Request a review from the GitLab UI instead."
+msgstr ""
+
+msgid "DuoCodeReview|GitLab Duo Code Review"
 msgstr ""
 
 msgid "DuoCodeReview|Hey :wave: I'm reviewing your merge request now. I will let you know when I'm finished."
@@ -47632,6 +47638,9 @@ msgstr ""
 msgid "ProjectSettings|Enable \"Delete source branch\" option by default"
 msgstr ""
 
+msgid "ProjectSettings|Enable automatic reviews by GitLab Duo"
+msgstr ""
+
 msgid "ProjectSettings|Enable email notifications"
 msgstr ""
 
@@ -47699,6 +47708,9 @@ msgid "ProjectSettings|Git Large File Storage (LFS)"
 msgstr ""
 
 msgid "ProjectSettings|GitLab Duo"
+msgstr ""
+
+msgid "ProjectSettings|GitLab Duo reviews new merge requests immediately, and when a draft is marked ready."
 msgstr ""
 
 msgid "ProjectSettings|Global"
@@ -55792,6 +55804,9 @@ msgstr ""
 msgid "SecurityReports|Remove project from dashboard"
 msgstr ""
 
+msgid "SecurityReports|Report export in progress. After the report is generated, an email will be sent with the download link."
+msgstr ""
+
 msgid "SecurityReports|Report has expired"
 msgstr ""
 
@@ -55873,9 +55888,6 @@ msgid "SecurityReports|The following SBOM reports could not be parsed. Therefore
 msgstr ""
 
 msgid "SecurityReports|The following security reports contain one or more vulnerability findings that could not be parsed and were not recorded. To investigate a report, download the artifacts in the job output. Ensure the security report conforms to the relevant %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}."
-msgstr ""
-
-msgid "SecurityReports|The report is being generated and will be sent to your email."
 msgstr ""
 
 msgid "SecurityReports|The security report for this pipeline has %{helpPageLinkStart}expired%{helpPageLinkEnd}. Re-run the pipeline to generate a new security report."
@@ -66699,6 +66711,9 @@ msgid "VulnerabilityExport|Detected At"
 msgstr ""
 
 msgid "VulnerabilityExport|Dismissal Reason"
+msgstr ""
+
+msgid "VulnerabilityExport|Export already in progress. Please retry after the current export completes."
 msgstr ""
 
 msgid "VulnerabilityExport|Full Path"

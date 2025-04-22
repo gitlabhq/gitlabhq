@@ -23,13 +23,6 @@ like interacting with [package and container registries](../packages/_index.md),
 performing [Git operations](personal_access_tokens.md#clone-repository-using-personal-access-token),
 and accessing the API.
 
-There are two types of service accounts:
-
-| Account type                    | Description |
-| ------------------------------- | ----------- |
-| Instance-level service accounts | Associated with an entire GitLab instance<br>Must be created by an administrator for the instance.<br>Unavailable on GitLab.com. |
-| Group-level service accounts    | Associated with a specific top-level group<br>Must be created by an Owner for a top-level group.<br>Can only be associated with a single top-level group. |
-
 Service accounts:
 
 - Do not use a seat.
@@ -39,16 +32,20 @@ Service accounts:
 - Are not [billable users](../../subscriptions/self_managed/_index.md#billable-users) or [internal users](../../administration/internal_users.md).
 - Cannot be used with [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com&glm_content=free-user-limit-faq/ee/user/free_user_limit.html) of GitLab.com.
 - Can be used with trial versions of GitLab Self-Managed and GitLab Dedicated.
+- Can be owned by the entire instance or a specific top-level group.
+  - On GitLab.com, service accounts must be owned by a top-level group.
 
 You can also manage service accounts through the API.
 
-- For instance-level service accounts, use the [service account users API](../../api/user_service_accounts.md).
-- For group-level service accounts, use the [group service accounts API](../../api/group_service_accounts.md).
+- For instance-wide service accounts, use the [service account users API](../../api/user_service_accounts.md).
+- For group service accounts, use the [group service accounts API](../../api/group_service_accounts.md).
 
 ## Prerequisites
 
-- For instance-level service accounts, you must be an administrator for the instance.
-- For group-level service accounts, you must have the Owner role in a top-level group.
+- On GitLab Self-Managed or GitLab Dedicated you must either:
+  - Be an administrator for the instance.
+  - Have the Owner role in a top-level group and be [allowed to create service accounts](../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
+- On GitLab.com, you must have the Owner role in a top-level group.
 
 ## View and manage service accounts
 
@@ -67,18 +64,18 @@ The Service Accounts page displays information about service accounts in your to
 
 {{< tabs >}}
 
-{{< tab title="Instance-level service accounts" >}}
+{{< tab title="Instance-wide service accounts" >}}
 
-To view the Service Accounts page:
+To view service accounts for the entire instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Service Accounts**.
 
 {{< /tab >}}
 
-{{< tab title="Group-level service accounts" >}}
+{{< tab title="Group service accounts" >}}
 
-To view the Service Accounts page:
+To view service accounts for a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Service Accounts**.
@@ -97,16 +94,16 @@ To view the Service Accounts page:
 
 {{< /history >}}
 
-The number of service accounts you can create is restricted by the number of service
-accounts allowed under your license:
+On GitLab.com, you can create service accounts owned by a top-level group.
 
-- On GitLab Free, service accounts are not available.
-- On GitLab Premium, you can create one service account for every paid seat you have.
+By default, on GitLab Self-Managed and GitLab Dedicated, only administrators can create service
+accounts. You can [allow top-level group Owners to create service accounts](../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
+
+The number of service accounts you can create is limited by your license:
+
+- On GitLab Free, you cannot create service accounts.
+- On GitLab Premium, you can create one service account for every paid seat.
 - On GitLab Ultimate, you can create an unlimited number of service accounts.
-
-Prerequisites:
-
-- For group-level service accounts on GitLab Self-Managed or GitLab Dedicated, you must be [allowed to create service accounts](../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
 
 To create a service account:
 
@@ -135,7 +132,7 @@ resources, you must add it to each group or project.
 
 There is no limit to the number of service accounts you can add to a group or project. Service accounts
 can have different roles in each group, subgroup, or project they are a member of.
-However, group-level service accounts can only belong to one top-level group.
+On GitLab.com, service accounts for groups can only belong to a single top-level group.
 
 You can manage service account access to groups and projects the same way you manage access for
 human users. For more information, see
@@ -168,8 +165,8 @@ contributions can include activity such as merge requests, issues, groups, and p
 
 You can also delete service accounts through the API.
 
-- For instance-level service accounts, use the [users API](../../api/users.md#delete-a-user).
-- For group-level service accounts, use the [group service accounts API](../../api/group_service_accounts.md#delete-a-service-account-user).
+- For instance-wide service accounts, use the [users API](../../api/users.md#delete-a-user).
+- For group service accounts, use the [group service accounts API](../../api/group_service_accounts.md#delete-a-service-account-user).
 
 ## View and manage personal access tokens for a service account
 
@@ -181,8 +178,8 @@ The personal access tokens page displays information about the personal access t
 
 You can also manage personal access tokens for service accounts through the API.
 
-- For instance-level service accounts, use the [personal access tokens API](../../api/personal_access_tokens.md).
-- For group-level service accounts, use the [group service accounts API](../../api/group_service_accounts.md).
+- For instance-wide service accounts, use the [personal access tokens API](../../api/personal_access_tokens.md).
+- For group service accounts, use the [group service accounts API](../../api/group_service_accounts.md).
 
 To view the personal access tokens page for a service account:
 
