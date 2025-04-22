@@ -436,10 +436,10 @@ Then customize the configuration:
 
 ```ruby
 # Lower minimum index size to 100 MB (default is 1GB)
-ApplicationSetting.current.update!(database_reindexing: { reindexing_minimum_index_size: 100.megabytes })
+Gitlab::Database::Reindexing.minimum_index_size!(100.megabytes)
 
 # Change minimum bloat threshold to 30% (default is 20%, there is no benefit from setting it lower)
-ApplicationSetting.current.update!(database_reindexing: { reindexing_minimum_relative_bloat_size: 0.3 })
+Gitlab::Database::Reindexing.minimum_relative_bloat_size!(0.3)
 ```
 
 ### Automated reindexing

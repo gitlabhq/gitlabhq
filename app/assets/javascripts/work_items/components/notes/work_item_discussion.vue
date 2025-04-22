@@ -2,6 +2,7 @@
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ASC } from '~/notes/constants';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
+import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import toggleWorkItemNoteResolveDiscussion from '~/work_items/graphql/notes/toggle_work_item_note_resolve_discussion.mutation.graphql';
 import DiscussionNotesRepliesWrapper from '~/notes/components/discussion_notes_replies_wrapper.vue';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
@@ -153,7 +154,31 @@ export default {
       deep: true,
     },
   },
+  mounted() {
+    gfmEventHub.$on('quote-reply', this.handleQuoteReply);
+  },
+  beforeDestroy() {
+    gfmEventHub.$off('quote-reply', this.handleQuoteReply);
+  },
   methods: {
+    handleQuoteReply({ event, discussionId, text }) {
+      // Ensure we're using correct discussion block for reply form.
+      if (this.note.discussion.id === discussionId) {
+        // Prevent 'r' being written.
+        if (event && typeof event.preventDefault === 'function') {
+          event.preventDefault();
+        }
+
+        // Show reply form if not open already.
+        if (!this.showForm) this.showReplyForm();
+
+        // Wait for form rendering.
+        this.$nextTick(() => {
+          // We're using `append` method from ~/vue_shared/components/markdown/markdown_editor.vue
+          this.$refs.addNote.appendText(text);
+        });
+      }
+    },
     showReplyForm() {
       this.showForm = true;
       this.isExpanded = true;
@@ -340,6 +365,7 @@ export default {
                     />
                     <work-item-add-note
                       v-if="shouldShowReplyForm"
+                      ref="addNote"
                       :notes-form="false"
                       :autofocus="autofocus"
                       :full-path="fullPath"

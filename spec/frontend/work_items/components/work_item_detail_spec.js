@@ -853,6 +853,7 @@ describe('WorkItemDetail component', () => {
 
       expect(findNotesWidget().exists()).toBe(true);
       expect(findNotesWidget().props('isWorkItemConfidential')).toBe(confidential);
+      expect(findNotesWidget().props('canCreateNote')).toBeDefined();
     });
   });
 

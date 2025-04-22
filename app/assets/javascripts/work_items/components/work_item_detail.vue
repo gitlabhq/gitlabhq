@@ -350,6 +350,9 @@ export default {
     hasBlockedWorkItemsFeature() {
       return this.workItem.userPermissions?.blockedWorkItems;
     },
+    canCreateNote() {
+      return this.workItem.userPermissions?.createNote;
+    },
     isDiscussionLocked() {
       return this.workItemNotes?.discussionLocked;
     },
@@ -1255,6 +1258,7 @@ export default {
               :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
               :can-set-work-item-metadata="canAssignUnassignUser"
               :can-summarize-comments="canSummarizeComments"
+              :can-create-note="canCreateNote"
               :is-discussion-locked="isDiscussionLocked"
               :is-work-item-confidential="workItem.confidential"
               :new-comment-template-paths="newCommentTemplatePaths"

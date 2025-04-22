@@ -365,6 +365,7 @@ export default {
           :noteable-type="workItemTypeKey"
         >
           <markdown-editor
+            ref="markdownEditor"
             class="js-gfm-wrapper"
             :value="commentText"
             :render-markdown-path="markdownPreviewPath"

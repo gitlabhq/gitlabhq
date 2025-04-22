@@ -23367,9 +23367,6 @@ msgstr ""
 msgid "Dynamic Application Security Testing (DAST)"
 msgstr ""
 
-msgid "Dynamic application security testing (DAST)"
-msgstr ""
-
 msgid "E-mail:"
 msgstr ""
 
@@ -32257,9 +32254,6 @@ msgid "Infrastructure"
 msgstr ""
 
 msgid "Infrastructure as Code (IaC) Scanning"
-msgstr ""
-
-msgid "Infrastructure as code scanning (IaC)"
 msgstr ""
 
 msgid "InfrastructureRegistry|Copy Terraform Command"
@@ -54160,7 +54154,19 @@ msgstr ""
 msgid "SecurityInventory|Add projects to this group to start tracking their security posture."
 msgstr ""
 
+msgid "SecurityInventory|Basic SAST"
+msgstr ""
+
 msgid "SecurityInventory|CS"
+msgstr ""
+
+msgid "SecurityInventory|Container scanning"
+msgstr ""
+
+msgid "SecurityInventory|Container scanning (standard)"
+msgstr ""
+
+msgid "SecurityInventory|Container scanning for registry"
 msgstr ""
 
 msgid "SecurityInventory|DAST"
@@ -54169,16 +54175,31 @@ msgstr ""
 msgid "SecurityInventory|DS"
 msgstr ""
 
+msgid "SecurityInventory|Dependency scanning"
+msgstr ""
+
+msgid "SecurityInventory|Dynamic application security testing (DAST)"
+msgstr ""
+
+msgid "SecurityInventory|GitLab Advanced SAST"
+msgstr ""
+
 msgid "SecurityInventory|Group vulnerabilities"
 msgstr ""
 
 msgid "SecurityInventory|IaC"
 msgstr ""
 
+msgid "SecurityInventory|Infrastructure as code scanning (IaC)"
+msgstr ""
+
 msgid "SecurityInventory|Manage security configuration"
 msgstr ""
 
 msgid "SecurityInventory|No projects found"
+msgstr ""
+
+msgid "SecurityInventory|Pipeline secret detection"
 msgstr ""
 
 msgid "SecurityInventory|Project vulnerabilities"
@@ -54190,7 +54211,16 @@ msgstr ""
 msgid "SecurityInventory|SD"
 msgstr ""
 
+msgid "SecurityInventory|Secret detection"
+msgstr ""
+
+msgid "SecurityInventory|Secret push protection"
+msgstr ""
+
 msgid "SecurityInventory|Security inventory"
+msgstr ""
+
+msgid "SecurityInventory|Static application security testing (SAST)"
 msgstr ""
 
 msgid "SecurityInventory|Tool coverage: %{coverage}%%"
@@ -58531,9 +58561,6 @@ msgid "State your message to activate"
 msgstr ""
 
 msgid "Static Application Security Testing (SAST)"
-msgstr ""
-
-msgid "Static application security testing (SAST)"
 msgstr ""
 
 msgid "Statistics"
@@ -63195,6 +63222,9 @@ msgid "Tool"
 msgstr ""
 
 msgid "Tool Coverage"
+msgstr ""
+
+msgid "ToolCoverageDetails|Manage configuration"
 msgstr ""
 
 msgid "Topic %{source_topic} was successfully merged into topic %{target_topic}."

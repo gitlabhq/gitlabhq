@@ -23,6 +23,7 @@ export default {
   },
   mixins: [mergeRequestQueryVariablesMixin],
   apollo: {
+    // `state` is used here to manage Apollo query result,
     state: {
       query: missingBranchQuery,
       variables() {
@@ -38,6 +39,7 @@ export default {
     },
   },
   data() {
+    // eslint-disable-next-line vue/no-unused-properties -- `state` is tied to an Apollo query
     return { state: {} };
   },
   computed: {

@@ -49,9 +49,10 @@ module MergeRequests
         # Deleted branch
         next if Gitlab::Git.blank_ref?(changes[:newrev])
 
-        # Default branch
         branch_name = Gitlab::Git.branch_name(changes[:ref])
-        next if branch_name == target_project.default_branch
+
+        # Skip default branch only if no target branch is specified
+        next if branch_name == target_project.default_branch && !push_options[:target]
 
         result[branch_name] = changes
       end

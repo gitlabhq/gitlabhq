@@ -241,6 +241,12 @@ export default {
       // used to rerender work-item-comment-form so the text in the textarea is cleared
       return uniqueId(`work-item-add-note-${this.workItemId}-`);
     },
+    // This method is called from parent components so we need
+    // ignore linter here.
+    // eslint-disable-next-line vue/no-unused-properties
+    appendText(text) {
+      this.$refs.commentForm.$refs.markdownEditor.append(text);
+    },
     async updateWorkItem({ commentText, isNoteInternal = false }) {
       this.isSubmitting = true;
       this.$emit('replying', commentText);
@@ -378,6 +384,7 @@ export default {
           <work-item-comment-form
             v-if="isEditing"
             :key="addNoteKey"
+            ref="commentForm"
             :work-item-type="workItemType"
             :aria-label="__('Add a reply')"
             :is-submitting="isSubmitting"

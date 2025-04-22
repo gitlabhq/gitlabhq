@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemNote from '~/work_items/components/notes/work_item_note.vue';
@@ -54,9 +55,13 @@ describe('Work Item Discussion', () => {
         workItemIid: '1',
         workItemType,
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
+        uploadsPath: '/group/project/uploads',
         autocompleteDataSources: {},
         isExpandedOnLoad,
         hideFullscreenMarkdownButton,
+      },
+      stubs: {
+        WorkItemAddNote,
       },
     });
   };
@@ -265,6 +270,39 @@ describe('Work Item Discussion', () => {
       await nextTick();
 
       expect(findToggleRepliesWidget().props('collapsed')).toBe(false);
+    });
+  });
+
+  describe('quote-reply event', () => {
+    const mockDiscussions =
+      mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes;
+    let mockAppendTextSpy;
+
+    beforeEach(async () => {
+      window.gon.current_user_id = 1;
+      createComponent({
+        discussion: mockDiscussions,
+      });
+
+      mockAppendTextSpy = jest
+        .spyOn(wrapper.vm.$refs.addNote, 'appendText')
+        .mockImplementation(() => {});
+      await gfmEventHub.$emit('quote-reply', {
+        event: {
+          preventDefault: jest.fn(),
+        },
+        discussionId: mockDiscussions[0].discussion.id,
+        text: 'quoted text',
+      });
+      await nextTick();
+    });
+
+    it('shows reply input form for the discussion note', () => {
+      expect(findWorkItemAddNote().exists()).toBe(true);
+    });
+
+    it('calls appendText on work-item-add-note', () => {
+      expect(mockAppendTextSpy).toHaveBeenCalledWith('quoted text');
     });
   });
 });

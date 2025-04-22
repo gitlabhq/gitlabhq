@@ -6,7 +6,12 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
+import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
+import { Mousetrap } from '~/lib/mousetrap';
+import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybindings';
+import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
@@ -109,6 +114,7 @@ describe('WorkItemNotes component', () => {
     workItemIid = mockWorkItemIid,
     defaultWorkItemNotesQueryHandler = workItemNotesQueryHandler,
     deleteWINoteMutationHandler = deleteWorkItemNoteMutationSuccessHandler,
+    canCreateNote = false,
     isGroup = false,
     isDrawer = false,
     isModal = false,
@@ -116,7 +122,16 @@ describe('WorkItemNotes component', () => {
     parentId = null,
     propsData = {},
   } = {}) => {
+    setHTMLFixture(`
+      <div class="work-item-overview">
+        <div class="js-work-item-description">
+          <p>Work Item Description</p>
+        </div>
+        <div id="root"></div>
+      </div>
+    `);
     wrapper = shallowMount(WorkItemNotes, {
+      attachTo: '#root',
       apolloProvider: createMockApollo([
         [workItemNoteQuery, workItemNoteQueryHandler],
         [workItemNotesByIidQuery, defaultWorkItemNotesQueryHandler],
@@ -130,6 +145,7 @@ describe('WorkItemNotes component', () => {
       },
       propsData: {
         fullPath: 'test-path',
+        uploadsPath: '/group/project/uploads',
         workItemId,
         workItemIid,
         workItemType: 'task',
@@ -137,6 +153,7 @@ describe('WorkItemNotes component', () => {
         isModal,
         isWorkItemConfidential,
         parentId,
+        canCreateNote,
         ...propsData,
       },
       stubs: {
@@ -147,6 +164,10 @@ describe('WorkItemNotes component', () => {
 
   beforeEach(() => {
     createComponent();
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
   });
 
   it('has the work item note activity header', () => {
@@ -595,5 +616,58 @@ describe('WorkItemNotes component', () => {
     it('passes prop to work-item-discussion', () => {
       expect(findAllWorkItemCommentNotes().at(0).props('hideFullscreenMarkdownButton')).toBe(true);
     });
+  });
+
+  describe('reply shortcut', () => {
+    const triggerReplyShortcut = async () => {
+      Mousetrap.trigger(keysFor(ISSUABLE_COMMENT_OR_REPLY)[0]);
+      await nextTick();
+    };
+
+    beforeEach(async () => {
+      window.gon.current_user_id = 1;
+      createComponent({
+        defaultWorkItemNotesQueryHandler: jest
+          .fn()
+          .mockResolvedValue(mockWorkItemNotesResponseWithComments()),
+        canCreateNote: true,
+      });
+
+      jest.spyOn(gfmEventHub, '$emit');
+      jest.spyOn(wrapper.vm, 'appendText').mockImplementation(() => {});
+
+      await waitForPromises();
+    });
+
+    it('emits `quote-reply` event on $root when reply quotes an existing discussion', async () => {
+      jest.spyOn(CopyAsGFM, 'selectionToGfm').mockReturnValueOnce('foo');
+      jest.spyOn(wrapper.vm, 'getDiscussionIdFromSelection').mockReturnValue('discussion-1');
+      await triggerReplyShortcut();
+
+      expect(gfmEventHub.$emit).toHaveBeenCalledWith('quote-reply', {
+        discussionId: 'discussion-1',
+        text: 'foo',
+        event: expect.any(Object),
+      });
+    });
+
+    it.each`
+      sortDirection | description
+      ${ASC}        | ${'oldest-first'}
+      ${DESC}       | ${'newest-first'}
+    `(
+      'calls on appendText on work-item-add-note form with discussion sort direction set to $description',
+      async ({ sortDirection }) => {
+        jest.spyOn(CopyAsGFM, 'selectionToGfm').mockReturnValueOnce('foo');
+
+        findActivityHeader().vm.$emit('changeSort', sortDirection);
+        await nextTick();
+
+        await triggerReplyShortcut();
+
+        expect(gfmEventHub.$emit).not.toHaveBeenCalledWith();
+        expect(wrapper.vm.appendText).toHaveBeenCalledWith('foo');
+      },
+    );
   });
 });

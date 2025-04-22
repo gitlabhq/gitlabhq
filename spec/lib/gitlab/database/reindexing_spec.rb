@@ -279,4 +279,30 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_t
       expect(expected_queries).to eq(actual_queries)
     end
   end
+
+  describe '.minimum_index_size!' do
+    let(:current_application_settings) { Gitlab::CurrentSettings.current_application_settings }
+    let(:bytes) { 2.gigabytes }
+
+    subject(:minimum_index_size) { described_class.minimum_index_size!(bytes) }
+
+    it 'updates reindexing minimun index size' do
+      minimum_index_size
+
+      expect(current_application_settings.database_reindexing['reindexing_minimum_index_size']).to be(bytes)
+    end
+  end
+
+  describe '.minimum_relative_bloat_size!' do
+    let(:current_application_settings) { Gitlab::CurrentSettings.current_application_settings }
+    let(:threshold) { 0.3 }
+
+    subject(:minimum_relative_bloat_size) { described_class.minimum_relative_bloat_size!(threshold) }
+
+    it 'updates minimum relative bloat size' do
+      minimum_relative_bloat_size
+
+      expect(current_application_settings.database_reindexing['reindexing_minimum_relative_bloat_size']).to be(threshold)
+    end
+  end
 end

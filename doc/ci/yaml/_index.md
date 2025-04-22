@@ -3366,8 +3366,8 @@ build_job:
 
 #### `needs:pipeline:job`
 
-A [child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines) can download artifacts from a job in
-its parent pipeline or another child pipeline in the same parent-child pipeline hierarchy.
+A [child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines) can download artifacts from a
+successfully finished job in its parent pipeline or another child pipeline in the same parent-child pipeline hierarchy.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -3381,6 +3381,10 @@ its parent pipeline or another child pipeline in the same parent-child pipeline 
 - Parent pipeline (`.gitlab-ci.yml`):
 
   ```yaml
+  stages:
+    - build
+    - test
+
   create-artifact:
     stage: build
     script: echo "sample artifact" > artifact.txt
@@ -3410,6 +3414,8 @@ In this example, the `create-artifact` job in the parent pipeline creates some a
 The `child-pipeline` job triggers a child pipeline, and passes the `CI_PIPELINE_ID`
 variable to the child pipeline as a new `PARENT_PIPELINE_ID` variable. The child pipeline
 can use that variable in `needs:pipeline` to download artifacts from the parent pipeline.
+Having the `create-artifact` and `child-pipeline` jobs in subsequent stages ensures that
+the `use-artifact` job only executes when `create-artifact` has successfully finished.
 
 **Additional details**:
 
@@ -3418,6 +3424,9 @@ can use that variable in `needs:pipeline` to download artifacts from the parent 
 - You cannot use `needs:pipeline:job` in a [trigger job](#trigger), or to fetch artifacts
   from a [multi-project pipeline](../pipelines/downstream_pipelines.md#multi-project-pipelines).
   To fetch artifacts from a multi-project pipeline use [`needs:project`](#needsproject).
+- The job listed in `needs:pipeline:job` must complete with a status of `success`
+  or the artifacts can't be fetched. [Issue 367229](https://gitlab.com/gitlab-org/gitlab/-/issues/367229)
+  proposes to allow fetching artifacts from any job with artifacts.
 
 #### `needs:optional`
 

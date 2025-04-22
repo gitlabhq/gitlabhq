@@ -7,7 +7,7 @@ describe('MRWidgetArchived', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallowMount(archivedComponent, { propsData: { mr: {} } });
+    wrapper = shallowMount(archivedComponent);
   });
 
   it('renders error icon', () => {
