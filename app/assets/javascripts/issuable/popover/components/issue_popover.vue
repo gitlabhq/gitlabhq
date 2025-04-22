@@ -104,9 +104,7 @@ export default {
 
 <template>
   <gl-popover :target="target" boundary="viewport" placement="top" :show="show">
-    <gl-skeleton-loader v-if="$apollo.queries.workItem.loading" :height="15">
-      <rect width="250" height="15" rx="4" />
-    </gl-skeleton-loader>
+    <gl-skeleton-loader v-if="$apollo.queries.workItem.loading" :width="150" />
     <template v-else>
       <div class="gl-flex gl-items-center gl-gap-2">
         <status-badge :state="workItem.state" />

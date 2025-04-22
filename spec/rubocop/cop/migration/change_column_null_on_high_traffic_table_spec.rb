@@ -50,11 +50,19 @@ RSpec.describe RuboCop::Cop::Migration::ChangeColumnNullOnHighTrafficTable, feat
             'For more details check https://docs.gitlab.com/ee/development/database/not_null_constraints.html#not-null-constraints-on-large-tables'
         end
 
-        it 'registers an offense' do
+        it 'registers an offense when setting NOT NULL' do
           expect_offense(<<~RUBY)
             def up
-              change_column_null :vulnerabilities, :name
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{offense}
+              change_column_null :vulnerabilities, :name, false
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{offense}
+            end
+          RUBY
+        end
+
+        it 'does not register an offense when removing NOT NULL' do
+          expect_no_offenses(<<~RUBY)
+            def up
+              change_column_null :vulnerabilities, :name, true
             end
           RUBY
         end

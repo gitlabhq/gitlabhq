@@ -21,6 +21,7 @@ import {
   workItemResponseFactory,
   projectMembersAutocompleteResponseWithCurrentUser,
   mockAssignees,
+  mockParticipants,
   currentUserResponse,
   currentUserNullResponse,
   projectMembersAutocompleteResponseWithNoMatchingUsers,
@@ -76,6 +77,7 @@ describe('WorkItemAssignees component', () => {
     workItemId = 'gid://gitlab/WorkItem/1',
     mountFn = shallowMountExtended,
     assignees = mockAssignees,
+    participants = [],
     searchQueryHandler = successSearchQueryHandler,
     currentUserQueryHandler = successCurrentUserQueryHandler,
     allowsMultipleAssignees = false,
@@ -109,6 +111,7 @@ describe('WorkItemAssignees component', () => {
     wrapper = mountFn(WorkItemAssignees, {
       propsData: {
         assignees,
+        participants,
         fullPath,
         workItemId,
         allowsMultipleAssignees,
@@ -134,6 +137,30 @@ describe('WorkItemAssignees component', () => {
   });
 
   describe('Dropdown search', () => {
+    it('includes participants in the results when there are matching results', async () => {
+      const expectedParticipant = {
+        ...mockParticipants[0],
+        text: mockParticipants[0].name,
+        value: mockParticipants[0].id,
+        matcher: `${mockParticipants[0].name} ${mockParticipants[0].username}`,
+      };
+
+      createComponent({
+        participants: mockParticipants,
+        searchQueryHandler: successSearchWithNoMatchingUsers,
+      });
+
+      showDropdown();
+
+      await waitForPromises();
+
+      findSidebarDropdownWidget().vm.$emit('searchStarted', expectedParticipant.username);
+
+      await nextTick();
+
+      expect(findSidebarDropdownWidget().props('listItems')).toEqual([expectedParticipant]);
+    });
+
     it('shows no items in the dropdown when no results matching', async () => {
       createComponent({ searchQueryHandler: successSearchWithNoMatchingUsers });
       showDropdown();

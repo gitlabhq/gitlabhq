@@ -1,6 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { unionBy } from 'lodash';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { sortNameAlphabetically, newWorkItemId } from '~/work_items/utils';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_users.query.graphql';
@@ -163,8 +164,18 @@ export default {
           { options: unselectedUsers, text: __('All users'), textSrOnly: true },
         ];
       }
+      const filteredParticipants = fuzzaldrinPlus.filter(
+        // We're storing `name` and `username` as a combined string in
+        // a new key `matcher` as fuzzaldrin-plus doesn't support searching
+        // using multiple keys.
+        this.participants.map((p) => ({ ...p, matcher: `${p.name} ${p.username}` })),
+        this.searchKey,
+        {
+          key: ['matcher'],
+        },
+      );
 
-      return this.users.map((user) => ({
+      return unionBy([...filteredParticipants, ...this.users], 'id').map((user) => ({
         ...user,
         value: user?.id,
         text: user?.name,

@@ -1,0 +1,5 @@
+query workItemParent($fullPath: ID!) {
+  namespace(fullPath: $fullPath) {
+    id
+  }
+}

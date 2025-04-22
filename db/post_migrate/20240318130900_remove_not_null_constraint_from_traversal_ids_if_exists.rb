@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Migration/ChangeColumnNullOnHighTrafficTable -- The cop is introduced after this migration.
 class RemoveNotNullConstraintFromTraversalIdsIfExists < Gitlab::Database::Migration[2.2]
   disable_ddl_transaction!
   milestone '16.11'
@@ -27,4 +26,3 @@ class RemoveNotNullConstraintFromTraversalIdsIfExists < Gitlab::Database::Migrat
     # no-op
   end
 end
-# rubocop:enable Migration/ChangeColumnNullOnHighTrafficTable

@@ -1,0 +1,8 @@
+name: load_balancer_replace_hosts
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/497226
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170129
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/534523
+milestone: '18.0'
+group: group::database frameworks
+type: gitlab_com_derisk
+default_enabled: false

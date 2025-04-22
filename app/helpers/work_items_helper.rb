@@ -9,6 +9,7 @@ module WorkItemsHelper
     {
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
       can_admin_label: can?(current_user, :admin_label, resource_parent).to_s,
+      can_bulk_update: can?(current_user, :admin_issue, resource_parent).to_s,
       full_path: resource_parent.full_path,
       group_path: group&.full_path,
       issues_list_path:
@@ -22,7 +23,7 @@ module WorkItemsHelper
       default_branch: resource_parent.is_a?(Project) ? resource_parent.default_branch_or_main : nil,
       initial_sort: current_user&.user_preference&.issues_sort,
       is_signed_in: current_user.present?.to_s,
-      show_new_issue_link: can?(current_user, :create_work_item, group).to_s,
+      show_new_work_item: can?(current_user, :create_work_item, group).to_s,
       can_create_projects: can?(current_user, :create_projects, group).to_s,
       new_project_path: new_project_path(namespace_id: group&.id),
       group_id: group&.id,

@@ -1168,6 +1168,22 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_009314eae986() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."protected_branch_project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."protected_branch_project_id"
+  FROM "protected_branches"
+  WHERE "protected_branches"."id" = NEW."protected_branch_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_01b3fc052119() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -2683,6 +2699,22 @@ IF NEW."organization_id" IS NULL THEN
   INTO NEW."organization_id"
   FROM "subscription_add_on_purchases"
   WHERE "subscription_add_on_purchases"."id" = NEW."add_on_purchase_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_744ab45ee5ac() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."protected_branch_namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."protected_branch_namespace_id"
+  FROM "protected_branches"
+  WHERE "protected_branches"."id" = NEW."protected_branch_id";
 END IF;
 
 RETURN NEW;
@@ -21793,7 +21825,9 @@ CREATE TABLE protected_branch_push_access_levels (
     updated_at timestamp without time zone NOT NULL,
     user_id bigint,
     group_id bigint,
-    deploy_key_id bigint
+    deploy_key_id bigint,
+    protected_branch_project_id bigint,
+    protected_branch_namespace_id bigint
 );
 
 CREATE SEQUENCE protected_branch_push_access_levels_id_seq
@@ -37130,6 +37164,10 @@ CREATE INDEX index_protected_branch_push_access ON protected_branch_push_access_
 
 CREATE INDEX index_protected_branch_push_access_levels_on_group_id ON protected_branch_push_access_levels USING btree (group_id);
 
+CREATE INDEX index_protected_branch_push_access_levels_on_protected_branch_n ON protected_branch_push_access_levels USING btree (protected_branch_namespace_id);
+
+CREATE INDEX index_protected_branch_push_access_levels_on_protected_branch_p ON protected_branch_push_access_levels USING btree (protected_branch_project_id);
+
 CREATE INDEX index_protected_branch_push_access_levels_on_user_id ON protected_branch_push_access_levels USING btree (user_id);
 
 CREATE INDEX index_protected_branch_unprotect_access ON protected_branch_unprotect_access_levels USING btree (protected_branch_id);
@@ -41468,6 +41506,8 @@ CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE 
 
 CREATE TRIGGER terraform_state_versions_loose_fk_trigger AFTER DELETE ON terraform_state_versions REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER trigger_009314eae986 BEFORE INSERT OR UPDATE ON protected_branch_push_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_009314eae986();
+
 CREATE TRIGGER trigger_01b3fc052119 BEFORE INSERT OR UPDATE ON approval_merge_request_rules FOR EACH ROW EXECUTE FUNCTION trigger_01b3fc052119();
 
 CREATE TRIGGER trigger_02450faab875 BEFORE INSERT OR UPDATE ON vulnerability_occurrence_identifiers FOR EACH ROW EXECUTE FUNCTION trigger_02450faab875();
@@ -41657,6 +41697,8 @@ CREATE TRIGGER trigger_70d3f0bba1de BEFORE INSERT OR UPDATE ON compliance_framew
 CREATE TRIGGER trigger_738125833856 BEFORE INSERT OR UPDATE ON bulk_import_configurations FOR EACH ROW EXECUTE FUNCTION trigger_738125833856();
 
 CREATE TRIGGER trigger_740afa9807b8 BEFORE INSERT OR UPDATE ON subscription_user_add_on_assignments FOR EACH ROW EXECUTE FUNCTION trigger_740afa9807b8();
+
+CREATE TRIGGER trigger_744ab45ee5ac BEFORE INSERT OR UPDATE ON protected_branch_push_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_744ab45ee5ac();
 
 CREATE TRIGGER trigger_7495f5e0efcb BEFORE INSERT OR UPDATE ON snippet_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_7495f5e0efcb();
 
@@ -42877,6 +42919,9 @@ ALTER TABLE ONLY deploy_tokens
 ALTER TABLE ONLY oauth_openid_requests
     ADD CONSTRAINT fk_7092424b77 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY protected_branch_push_access_levels
+    ADD CONSTRAINT fk_70dc11e706 FOREIGN KEY (protected_branch_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY bulk_import_failures
     ADD CONSTRAINT fk_70f30b02fd FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -43860,6 +43905,9 @@ ALTER TABLE ONLY ci_sources_pipelines
 
 ALTER TABLE p_ci_builds_metadata
     ADD CONSTRAINT fk_e20479742e_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY protected_branch_push_access_levels
+    ADD CONSTRAINT fk_e23067f9e1 FOREIGN KEY (protected_branch_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY gitlab_subscriptions
     ADD CONSTRAINT fk_e2595d00a1 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

@@ -3,12 +3,10 @@
 class DropNotNullConstraintFromMergeRequestDiffCommits < Gitlab::Database::Migration[2.2]
   milestone '18.0'
 
-  # rubocop:disable Migration/ChangeColumnNullOnHighTrafficTable -- We're making them nullable and there is no constraint
   def up
     change_column_null :merge_request_diff_commits, :sha, true
     change_column_null :merge_request_diff_commits, :trailers, true
   end
-  # rubocop:enable Migration/ChangeColumnNullOnHighTrafficTable
 
   def down
     # no-op

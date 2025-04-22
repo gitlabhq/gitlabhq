@@ -26,3 +26,5 @@ desired_sharding_key:
         sharding_key: namespace_id
         belongs_to: protected_branch
 table_size: small
+desired_sharding_key_migration_job_name:
+- BackfillProtectedBranchPushAccessLevelsFields

@@ -115,8 +115,7 @@ export default {
       return escape(suggestion);
     },
     isDuoFirstReviewComment() {
-      // Must be a Duo bot comment of type DiffNote
-      if (this.note.author.user_type !== 'duo_code_review_bot' || this.note.type !== 'DiffNote') {
+      if (this.note.author.user_type !== 'duo_code_review_bot') {
         return false;
       }
       // Get the discussion
@@ -124,8 +123,11 @@ export default {
       // If can't get discussion or this is not the first note, don't show feedback
       return discussion?.notes?.length > 0 && discussion.notes[0].id === this.note.id;
     },
+    isDiffNote() {
+      return this.note.type === 'DiffNote';
+    },
     defaultAwardsList() {
-      return this.isDuoFirstReviewComment ? ['thumbsup', 'thumbsdown'] : [];
+      return this.isDuoFirstReviewComment && this.isDiffNote ? ['thumbsup', 'thumbsdown'] : [];
     },
     duoFeedbackText() {
       return sprintf(
@@ -223,7 +225,7 @@ export default {
     />
     <div v-else v-safe-html:[$options.safeHtmlConfig]="note.note_html" class="note-text md"></div>
     <duo-code-review-feedback
-      v-if="note.author.user_type === 'duo_code_review_bot' && note.type !== 'DiffNote'"
+      v-if="isDuoFirstReviewComment && !isDiffNote"
       class="gl-mt-3"
       data-testid="code-review-feedback"
     />
@@ -261,12 +263,12 @@ export default {
       class="note_edited_ago"
     />
     <div
-      v-if="isDuoFirstReviewComment"
+      v-if="isDuoFirstReviewComment && isDiffNote"
       v-safe-html:[$options.safeHtmlConfig]="duoFeedbackText"
       class="gl-text-md gl-mt-4 gl-text-gray-500"
     ></div>
     <note-awards-list
-      v-if="isDuoFirstReviewComment || (note.award_emoji && note.award_emoji.length)"
+      v-if="defaultAwardsList.length || (note.award_emoji && note.award_emoji.length)"
       :note-id="note.id"
       :note-author-id="note.author.id"
       :awards="note.award_emoji"

@@ -16569,9 +16569,6 @@ msgstr ""
 msgid "Confidentiality"
 msgstr ""
 
-msgid "Confidentiality controls have moved to the issue actions menu (%{icon}) at the top of the page."
-msgstr ""
-
 msgid "Configuration help"
 msgstr ""
 
@@ -68933,6 +68930,9 @@ msgid "WorkItem|Something went wrong when trying to create a child. Please try a
 msgstr ""
 
 msgid "WorkItem|Something went wrong when trying to link a item. Please try again."
+msgstr ""
+
+msgid "WorkItem|Something went wrong while bulk editing."
 msgstr ""
 
 msgid "WorkItem|Something went wrong while copying the %{workItemType} email address. Please try again."

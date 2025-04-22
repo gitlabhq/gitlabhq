@@ -19,6 +19,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
           {
             autocomplete_award_emojis_path: autocomplete_award_emojis_path,
             can_admin_label: 'true',
+            can_bulk_update: 'true',
             full_path: project.full_path,
             group_path: nil,
             issues_list_path: project_issues_path(project),
@@ -44,7 +45,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
           expect(helper.work_items_data(group_project, current_user)).to include(
             {
               group_path: group_project.group.full_path,
-              show_new_issue_link: 'true'
+              show_new_work_item: 'true'
             }
           )
         end

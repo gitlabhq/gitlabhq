@@ -149,8 +149,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
   end
 
   describe '#refresh_if_necessary' do
-    let(:address_foo) { described_class::Address.new('foo') }
-    let(:address_bar) { described_class::Address.new('bar') }
+    let(:address_foo) { described_class::Address.new('foo', nil) }
+    let(:address_bar) { described_class::Address.new('bar', nil) }
 
     context 'when a refresh is necessary' do
       before do
@@ -199,20 +199,34 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
               .and_return(load_balancer)
     end
 
-    let(:address_foo) { described_class::Address.new('foo') }
-    let(:address_bar) { described_class::Address.new('bar') }
+    let(:address_foo) { described_class::Address.new('foo', nil) }
+    let(:address_bar) { described_class::Address.new('bar', nil) }
 
     let(:load_balancer) do
       Gitlab::Database::LoadBalancing::LoadBalancer.new(
         Gitlab::Database::LoadBalancing::Configuration
-          .new(ActiveRecord::Base, [address_foo])
+          .new(ActiveRecord::Base, [address_foo.hostname])
       )
     end
 
     it 'replaces the hosts of the load balancer' do
       service.replace_hosts([address_bar])
 
-      expect(load_balancer.host_list.host_names_and_ports).to eq([['bar', nil]])
+      expect(load_balancer.host_list.host_names_and_ports).to match_array([['bar', nil]])
+    end
+
+    it 'reuses existing hosts when hostname and port are unchanged' do
+      old_host1 = Gitlab::Database::LoadBalancing::Host.new(address_foo.hostname, load_balancer, port: address_foo.port)
+      old_host2 = Gitlab::Database::LoadBalancing::Host.new(address_bar.hostname, load_balancer, port: address_bar.port)
+
+      allow(load_balancer.host_list)
+      .to receive(:hosts)
+            .and_return([old_host1, old_host2])
+
+      expect(service).to receive(:disconnect_old_hosts).with([old_host2])
+      service.replace_hosts([address_foo])
+
+      expect(load_balancer.host_list.hosts.size).to eq(2)
     end
 
     it 'disconnects the old connections gracefully if possible' do
@@ -256,6 +270,32 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
         service.replace_hosts([address_foo, address_bar])
       end
     end
+
+    context "when replace_hosts_enabled? is true" do
+      before do
+        allow(service).to receive(:replace_hosts_enabled?).and_return(true)
+        allow(service).to receive(:new_replace_hosts).and_call_original
+      end
+
+      it 'calls new_replace_hosts' do
+        expect(service).to receive(:new_replace_hosts).with([address_bar])
+
+        service.replace_hosts([address_bar])
+      end
+    end
+
+    context "when replace_hosts_enabled? is false" do
+      before do
+        allow(service).to receive(:replace_hosts_enabled?).and_return(false)
+        allow(service).to receive(:old_replace_hosts).and_call_original
+      end
+
+      it 'calls old_replace_hosts' do
+        expect(service).to receive(:old_replace_hosts).with([address_bar])
+
+        service.replace_hosts([address_bar])
+      end
+    end
   end
 
   describe '#addresses_from_dns' do
@@ -289,8 +329,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
 
       it 'returns a TTL and ordered list of IP addresses' do
         addresses = [
-          described_class::Address.new('127.0.0.1'),
-          described_class::Address.new('255.255.255.0')
+          described_class::Address.new('127.0.0.1', nil),
+          described_class::Address.new('255.255.255.0', nil)
         ]
 
         expect(service.addresses_from_dns).to eq([90, addresses])
@@ -389,8 +429,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
 
     it 'returns the ordered host names of the load balancer' do
       addresses = [
-        described_class::Address.new('a'),
-        described_class::Address.new('b')
+        described_class::Address.new('a', nil),
+        described_class::Address.new('b', nil)
       ]
 
       expect(service.addresses_from_load_balancer).to eq(addresses)

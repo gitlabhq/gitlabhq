@@ -32,6 +32,27 @@ export const mockAssignees = [
   },
 ];
 
+export const mockParticipants = [
+  {
+    __typename: 'UserCore',
+    id: 'gid://gitlab/User/3',
+    avatarUrl: '',
+    webUrl: '',
+    webPath: '/l_zadeh',
+    name: 'Lotfi Zadeh',
+    username: 'l_zadeh',
+  },
+  {
+    __typename: 'UserCore',
+    id: 'gid://gitlab/User/4',
+    avatarUrl: '',
+    webUrl: '',
+    webPath: '/fbar',
+    name: 'Foo Bar',
+    username: 'fbar',
+  },
+];
+
 export const mockLabels = [
   {
     __typename: 'Label',
@@ -6459,3 +6480,11 @@ export const errorTrackingQueryResponseWithStackTrace = getErrorTrackingQueryRes
 });
 
 export const mockRolledUpHealthStatus = [];
+
+export const workItemParentQueryResponse = {
+  data: {
+    namespace: {
+      id: 'gid://gitlab/Group/1',
+    },
+  },
+};

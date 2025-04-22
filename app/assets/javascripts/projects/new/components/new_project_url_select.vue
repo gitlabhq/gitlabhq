@@ -234,6 +234,7 @@ export default {
     <input
       :id="inputId"
       type="hidden"
+      :data-testid="inputName"
       :name="inputName"
       :value="selectedNamespace.id || userNamespaceUniqueId"
     />
