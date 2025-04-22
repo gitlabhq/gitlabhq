@@ -425,7 +425,7 @@ In GitLab 17.8, three new secrets have been added to support the new encryption 
    gitlab-rails r 'Rails.application.eager_load!; puts ApplicationRecord.descendants.select { |d| d.encrypted_attributes.present? }.index_with { |model| model.count }.values.all?(&:zero?)'
    ```
 
-   If the result is `true`, you can proceed to step 2. Otherwise, we need to check what are the existing records
+   If the result is `true`, proceed to the next step. Otherwise, we need to check what are the existing records
    and decide if we can delete them before proceeding further.
 
 1. Pick one Sidekiq or Rails node as a reference node from which you will copy

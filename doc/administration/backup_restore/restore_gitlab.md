@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Geo
+stage: Data Access
+group: Durability
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Restore GitLab
 ---
@@ -149,10 +149,16 @@ your installation is using PgBouncer, for either performance reasons or when usi
 
 {{< /alert >}}
 
-Next, restart and [check](../raketasks/maintenance.md#check-gitlab-configuration) GitLab:
+Run reconfigure on the PostgreSQL node:
 
 ```shell
-sudo gitlab-ctl restart
+sudo gitlab-ctl reconfigure
+```
+
+Next, start and [check](../raketasks/maintenance.md#check-gitlab-configuration) GitLab:
+
+```shell
+sudo gitlab-ctl start
 sudo gitlab-rake gitlab:check SANITIZE=true
 ```
 

@@ -132,7 +132,7 @@ Dangerfile
 /scripts/**/*.rb @gl-dx/eng-prod @gitlab-org/maintainers/rails-backend
 /scripts/**/*.js @gl-dx/eng-prod @gitlab-org/maintainers/frontend
 /scripts/frontend/ @gl-dx/eng-prod @gitlab-org/maintainers/frontend
-/scripts/remote_development/ @gitlab-org/maintainers/workspaces/backend
+/scripts/remote_development/ @gl-dx/eng-prod @gitlab-org/maintainers/workspaces/backend @gitlab-org/maintainers/workspaces/frontend
 /scripts/review_apps/seed-dast-test-data.sh @gl-dx/eng-prod @dappelt @ngeorge1
 /.dockerignore
 /.editorconfig
@@ -1833,7 +1833,7 @@ ee/app/workers/ai/repository_xray/
 ^[Global Search] @gitlab-org/search-team/migration-maintainers
 /ee/spec/elastic/migrate/
 
-^[Create::IDE - Remote Development Backend] @gitlab-org/maintainers/workspaces/backend
+^[Workspaces Backend] @gitlab-org/maintainers/workspaces/backend
 /ee/app/models/remote_development/
 /ee/app/policies/remote_development/
 /ee/app/finders/remote_development/
@@ -1843,7 +1843,6 @@ ee/app/workers/ai/repository_xray/
 /ee/app/controllers/remote_development/
 /ee/app/services/remote_development/
 /ee/lib/remote_development/
-/ee/spec/features/remote_development/
 /ee/spec/models/remote_development/
 /ee/spec/policies/remote_development/
 /ee/spec/requests/api/graphql/mutations/remote_development/
@@ -1859,8 +1858,7 @@ ee/app/workers/ai/repository_xray/
 /ee/spec/services/remote_development/
 /qa/qa/specs/features/**/remote_development/ @gitlab-org/maintainers/workspaces/backend @gl-dx/maintainers
 
-^[Create::IDE - Remote Development Frontend] @gitlab-org/maintainers/workspaces/frontend
-/app/assets/javascripts/ide/components/shared/tokened_input.vue
+^[Workspaces Frontend] @gitlab-org/maintainers/workspaces/frontend
 /ee/app/assets/remote_development/
 /ee/app/assets/**/remote_development/
 /ee/app/views/remote_development/

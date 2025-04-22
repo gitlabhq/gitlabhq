@@ -25,6 +25,7 @@
 
     > code {
       font-weight: inherit;
+      @apply gl-break-all gl-whitespace-break-spaces;
     }
   }
 

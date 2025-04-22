@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Geo
+stage: Data Access
+group: Durability
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Back up and restore large reference architectures
 ---
@@ -392,12 +392,18 @@ First, as part of [Restore object storage data](#restore-object-storage-data), y
    GitLab, the restore command aborts with an error message.
    Install the [correct GitLab version](https://packages.gitlab.com/gitlab/), and then try again.
 
-1. Restart and [check](../raketasks/maintenance.md#check-gitlab-configuration) GitLab:
+1. Reconfigure, start, and [check](../raketasks/maintenance.md#check-gitlab-configuration) GitLab:
+
+   1. In all PostgreSQL nodes, run:
+
+      ```shell
+      sudo gitlab-ctl reconfigure
+      ```
 
    1. In all Puma or Sidekiq nodes, run:
 
       ```shell
-      sudo gitlab-ctl restart
+      sudo gitlab-ctl start
       ```
 
    1. In one Puma or Sidekiq node, run:

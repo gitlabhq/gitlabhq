@@ -65,7 +65,7 @@ To manually enable GitLab CI/CD for your repository:
 
 1. In GitHub, create a token:
    1. Open <https://github.com/settings/tokens/new>.
-   1. Create a **personal access token**.
+   1. Create a personal access token.
    1. Enter a **Token description** and update the scope to allow
       `repo` so that GitLab can access your project and update commit statuses.
 1. In GitLab, create a project:
@@ -79,7 +79,7 @@ To manually enable GitLab CI/CD for your repository:
    1. On the left sidebar, select **Settings > Integrations**.
    1. Select the **Active** checkbox.
    1. Paste your personal access token and HTTPS repository URL into the form and select **Save**.
-1. In GitLab, create a **personal access token** with `API` scope to
+1. In GitLab, create a personal access token with `API` scope to
    authenticate the GitHub web hook notifying GitLab of new commits.
 1. In GitHub, from **Settings > Webhooks**, create a web hook to notify GitLab of
    new commits.
