@@ -173,4 +173,12 @@ RSpec.describe ContainerRegistry::Protection::UpdateTagRuleService, '#execute', 
     it_behaves_like 'an erroneous service response',
       message: 'GitLab container registry API not supported'
   end
+
+  context 'when the rule is immutable' do
+    let_it_be(:container_protection_tag_rule) do
+      create(:container_registry_protection_tag_rule, :immutable, project: project, tag_name_pattern: 'a')
+    end
+
+    it_behaves_like 'an erroneous service response', message: 'Operation not allowed'
+  end
 end

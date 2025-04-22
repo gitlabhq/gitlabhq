@@ -3,8 +3,12 @@ import { GlLoadingIcon, GlPagination, GlSprintf, GlAlert } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { debounce, throttle } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
-import { mapState, mapGetters, mapActions } from 'vuex';
-import { mapState as mapPiniaState, mapActions as mapPiniaActions } from 'pinia';
+import {
+  mapState as mapVuexState,
+  mapGetters as mapVuexGetters,
+  mapActions as mapVuexActions,
+} from 'vuex';
+import { mapState, mapActions } from 'pinia';
 import FindingsDrawer from 'ee_component/diffs/components/shared/findings_drawer.vue';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import {
@@ -23,12 +27,12 @@ import { BV_HIDE_TOOLTIP, DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/c
 import { Mousetrap } from '~/lib/mousetrap';
 import { updateHistory, getLocationHash } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-
 import notesEventHub from '~/notes/event_hub';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import getMRCodequalityAndSecurityReports from 'ee_else_ce/diffs/components/graphql/get_mr_codequality_and_security_reports.query.graphql';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 import { sortFindingsByFile } from '../utils/sort_findings_by_file';
 import {
   ALERT_OVERFLOW_HIDDEN,
@@ -47,7 +51,6 @@ import {
   EVT_DISCUSSIONS_ASSIGNED,
   FILE_BROWSER_VISIBLE,
 } from '../constants';
-
 import { isCollapsed } from '../utils/diff_file';
 import diffsEventHub from '../event_hub';
 import { reviewStatuses } from '../utils/file_reviews';
@@ -219,12 +222,11 @@ export default {
     },
   },
   computed: {
-    ...mapPiniaState(useLegacyDiffs, {
+    ...mapState(useLegacyDiffs, {
       numTotalFiles: 'realSize',
       numVisibleFiles: 'size',
     }),
-    ...mapState('findingsDrawer', ['activeDrawer']),
-    ...mapPiniaState(useLegacyDiffs, [
+    ...mapState(useLegacyDiffs, [
       'isLoading',
       'diffViewType',
       'commit',
@@ -256,9 +258,10 @@ export default {
       'flatBlobsList',
       'diffFiles',
     ]),
-    ...mapGetters(['isNotesFetched', 'getNoteableData']),
-    ...mapGetters('findingsDrawer', ['activeDrawer']),
-    ...mapPiniaState(useFileBrowser, ['fileBrowserVisible']),
+    ...mapState(useNotes, ['isNotesFetched', 'getNoteableData']),
+    ...mapState(useFileBrowser, ['fileBrowserVisible']),
+    ...mapVuexState('findingsDrawer', ['activeDrawer']),
+    ...mapVuexGetters('findingsDrawer', ['activeDrawer']),
     diffs() {
       if (!this.viewDiffsFileByFile) {
         return this.diffFiles;
@@ -440,8 +443,8 @@ export default {
     diffsEventHub.$off('scrollToIndex', this.scrollVirtualScrollerToIndex);
   },
   methods: {
-    ...mapActions(['startTaskList']),
-    ...mapPiniaActions(useLegacyDiffs, [
+    ...mapActions(useNotes, ['startTaskList']),
+    ...mapActions(useLegacyDiffs, [
       'moveToNeighboringCommit',
       'fetchDiffFilesMeta',
       'fetchDiffFilesBatch',
@@ -467,8 +470,8 @@ export default {
       'reviewFile',
       'setFileCollapsedByUser',
     ]),
-    ...mapActions('findingsDrawer', ['setDrawer']),
-    ...mapPiniaActions(useFileBrowser, ['setFileBrowserVisibility']),
+    ...mapActions(useFileBrowser, ['setFileBrowserVisibility']),
+    ...mapVuexActions('findingsDrawer', ['setDrawer']),
     closeDrawer() {
       this.setDrawer({});
     },

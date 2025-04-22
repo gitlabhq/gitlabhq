@@ -12,6 +12,10 @@ module ContainerRegistry
         new(params: params.merge(action: :delete), **args)
       end
 
+      def self.for_push(params:, **args)
+        new(params: params.merge(action: :push), **args)
+      end
+
       def initialize(params:, **args)
         raise(ArgumentError, 'Invalid param :action') unless params[:action].in?([:push, :delete])
 

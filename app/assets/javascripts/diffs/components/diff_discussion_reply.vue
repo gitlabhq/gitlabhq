@@ -1,11 +1,10 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 import NoteSignedOutWidget from '~/notes/components/note_signed_out_widget.vue';
 import DiscussionLockedWidget from '~/notes/components/discussion_locked_widget.vue';
-import { COMMENT_FORM } from '../../notes/i18n';
-
+import { useNotes } from '~/notes/store/legacy_notes';
+import { COMMENT_FORM } from '~/notes/i18n';
 import { START_THREAD } from '../i18n';
 
 export default {
@@ -31,7 +30,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters({
+    ...mapState(useNotes, {
       currentUser: 'getUserData',
       userCanReply: 'userCanReply',
       getNoteableData: 'getNoteableData',

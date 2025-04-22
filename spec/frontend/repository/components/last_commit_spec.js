@@ -34,7 +34,11 @@ describe('Repository last commit component', () => {
 
   const subscriptionHandler = jest.fn().mockResolvedValue(mockPipelineStatusUpdatedResponse);
 
-  const createComponent = (data = {}, pipelineSubscriptionHandler = subscriptionHandler) => {
+  const createComponent = (
+    data = {},
+    pipelineSubscriptionHandler = subscriptionHandler,
+    isRealTime = true,
+  ) => {
     const currentPath = 'path';
 
     commitData = createCommitData(data);
@@ -50,7 +54,7 @@ describe('Repository last commit component', () => {
       propsData: { currentPath, historyUrl: '/history' },
       provide: {
         glFeatures: {
-          ciPipelineStatusRealtime: true,
+          ciPipelineStatusRealtime: isRealTime,
         },
       },
     });
@@ -181,6 +185,16 @@ describe('Repository last commit component', () => {
       expect(subscriptionHandler).toHaveBeenCalledWith({
         pipelineId: 'gid://gitlab/Ci::Pipeline/167',
       });
+    });
+
+    it('does not call the subscription when feature flag is false', async () => {
+      const realTime = false;
+
+      createComponent({}, subscriptionHandler, realTime);
+
+      await waitForPromises();
+
+      expect(subscriptionHandler).not.toHaveBeenCalled();
     });
   });
 

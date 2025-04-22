@@ -195,7 +195,7 @@ describe('GlobalSearchTopbar', () => {
 
       it(`calls applyQuery ${called ? '' : 'NOT '}`, async () => {
         await nextTick();
-        findGlSearchBox().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
+        findGlSearchBox().vm.$emit('keydown', new KeyboardEvent('keydown', { key: ENTER_KEY }));
         expect(actionSpies.applyQuery).toHaveBeenCalledTimes(called ? 1 : 0);
       });
     });

@@ -1,8 +1,6 @@
 <script>
 import { GlButton, GlLoadingIcon, GlSprintf, GlAlert, GlLink } from '@gitlab/ui';
 import { escape } from 'lodash';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters as mapVuexGetters } from 'vuex';
 import { mapActions, mapState } from 'pinia';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { IdState } from 'vendor/vue-virtual-scroller';
@@ -23,6 +21,7 @@ import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import { fileContentsId } from '~/diffs/components/diff_row_utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
+import { useNotes } from '~/notes/store/legacy_notes';
 import {
   DIFF_FILE_AUTOMATIC_COLLAPSE,
   DIFF_FILE_MANUAL_COLLAPSE,
@@ -136,7 +135,7 @@ export default {
       'linkedFile',
     ]),
     ...mapState(useMrNotes, ['isLoggedIn']),
-    ...mapVuexGetters(['isNotesFetched', 'getNoteableData', 'noteableType']),
+    ...mapState(useNotes, ['isNotesFetched', 'getNoteableData', 'noteableType']),
     autosaveKey() {
       if (!this.isLoggedIn) return '';
 

@@ -244,6 +244,15 @@
 // to the top at different heights, which is a bad-looking defect
 $diff-file-header-top: 11px;
 
+.diffs.tab-pane .files {
+  @include media-breakpoint-up(md) {
+    // ensure consistent page height when selected file is loading
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/426250
+    // also required for file browser to consume all available height
+    min-height: calc(100vh - (#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{$diff-file-header-top} + #{$content-wrapper-padding}));
+  }
+}
+
 .diff-tree-list {
   --file-row-height: 32px;
   --file-tree-min-height: 300px;

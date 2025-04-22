@@ -160,7 +160,7 @@ describe('CompareVersions', () => {
         expect(link.element.getAttribute('href')).toEqual(PREV_COMMIT_URL);
       });
 
-      it('triggers the correct Vuex action on click', async () => {
+      it('triggers the correct action on click', async () => {
         const link = getPrevCommitNavElement();
 
         link.trigger('click');
@@ -190,7 +190,7 @@ describe('CompareVersions', () => {
         expect(link.element.getAttribute('href')).toEqual(NEXT_COMMIT_URL);
       });
 
-      it('triggers the correct Vuex action on click', async () => {
+      it('triggers the correct action on click', async () => {
         const link = getNextCommitNavElement();
 
         link.trigger('click');

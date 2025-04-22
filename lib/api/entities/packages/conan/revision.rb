@@ -4,10 +4,10 @@ module API
   module Entities
     module Packages
       module Conan
-        class RecipeRevision < Grape::Entity
+        class Revision < Grape::Entity
           expose :revision, documentation: {
             type: String,
-            desc: 'The revision hash of the Conan recipe',
+            desc: 'The revision hash of the Conan recipe or package',
             example: '75151329520e7685dcf5da49ded2fec0'
           }
 

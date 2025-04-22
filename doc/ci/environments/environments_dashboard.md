@@ -27,7 +27,7 @@ a more systemic problem you need to investigate.
 1. Select **Your work**.
 1. Select **Environments**.
 
-![Environments Dashboard with projects.](img/environments_dashboard_v12_5.png)
+![Environments Dashboard showing two rows of projects with their deployment environments and pipeline status.](img/environments_dashboard_v12_5.png)
 
 The Environments dashboard displays a paginated list of projects that includes
 up to three environments per project.

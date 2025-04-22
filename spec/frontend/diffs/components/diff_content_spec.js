@@ -2,8 +2,6 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { createTestingPinia } from '@pinia/testing';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import { PiniaVuePlugin } from 'pinia';
 import waitForPromises from 'helpers/wait_for_promises';
 import { sprintf } from '~/locale';
@@ -24,7 +22,6 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { getDiffFileMock } from '../mock_data/diff_file';
 
-Vue.use(Vuex);
 Vue.use(PiniaVuePlugin);
 jest.mock('~/alert');
 
@@ -32,28 +29,11 @@ describe('DiffContent', () => {
   let wrapper;
   let pinia;
 
-  const noteableTypeGetterMock = jest.fn();
-  const getUserDataGetterMock = jest.fn();
-
   const defaultProps = {
     diffFile: getDiffFileMock(),
   };
 
   const createComponent = ({ props, provide } = {}) => {
-    const fakeStore = new Vuex.Store({
-      getters: {
-        getNoteableData() {
-          return {
-            current_user: {
-              can_create_note: true,
-            },
-          };
-        },
-        noteableType: noteableTypeGetterMock,
-        getUserData: getUserDataGetterMock,
-      },
-    });
-
     const glFeatures = provide ? { ...provide.glFeatures } : {};
 
     wrapper = shallowMount(DiffContentComponent, {
@@ -62,7 +42,6 @@ describe('DiffContent', () => {
         ...props,
       },
       pinia,
-      store: fakeStore,
       provide: { glFeatures },
     });
   };
@@ -230,7 +209,7 @@ describe('DiffContent', () => {
           y: undefined,
           width: undefined,
           height: undefined,
-          noteableType: undefined,
+          noteableType: 'Issue',
         },
       });
     });

@@ -12,8 +12,6 @@ import {
   GlLoadingIcon,
 } from '@gitlab/ui';
 import { escape } from 'lodash';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters as mapVuexGetters } from 'vuex';
 import { mapActions, mapState } from 'pinia';
 import { keysFor, MR_TOGGLE_REVIEW } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
@@ -26,6 +24,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 import { createFileUrl, fileContentsId } from '~/diffs/components/diff_row_utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 import { DIFF_FILE_AUTOMATIC_COLLAPSE } from '../constants';
 import { DIFF_FILE_HEADER } from '../i18n';
 import { collapsedType, isCollapsed } from '../utils/diff_file';
@@ -104,7 +103,7 @@ export default {
   },
   computed: {
     ...mapState(useLegacyDiffs, ['latestDiff', 'diffHasExpandedDiscussions', 'diffHasDiscussions']),
-    ...mapVuexGetters(['getNoteableData']),
+    ...mapState(useNotes, ['getNoteableData']),
     diffContentIDSelector() {
       return fileContentsId(this.diffFile);
     },

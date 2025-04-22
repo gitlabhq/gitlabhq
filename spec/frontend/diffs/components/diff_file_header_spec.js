@@ -1,19 +1,10 @@
 import Vue, { nextTick } from 'vue';
-import { cloneDeep } from 'lodash';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import { DIFF_FILE_AUTOMATIC_COLLAPSE, DIFF_FILE_MANUAL_COLLAPSE } from '~/diffs/constants';
-import { reviewFile, setFileForcedOpen } from '~/diffs/store/actions';
-import {
-  SET_DIFF_FILE_VIEWED,
-  SET_MR_FILE_REVIEWS,
-  SET_FILE_FORCED_OPEN,
-} from '~/diffs/store/mutation_types';
 import { diffViewerModes } from '~/ide/constants';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
@@ -21,12 +12,13 @@ import { sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { globalAccessorPlugin } from '~/pinia/plugins';
-import testAction from '../../__helpers__/vuex_action_helper';
+import { useNotes } from '~/notes/store/legacy_notes';
 import diffDiscussionsMockData from '../mock_data/diff_discussions';
 
 jest.mock('~/lib/utils/common_utils', () => ({
   convertObjectPropsToCamelCase: jest.requireActual('~/lib/utils/common_utils')
     .convertObjectPropsToCamelCase,
+  isInMRPage: jest.requireActual('~/lib/utils/common_utils').isInMRPage,
   scrollToElement: jest.fn(),
   isLoggedIn: () => true,
 }));
@@ -52,20 +44,11 @@ const createDiffFile = () => ({
   },
 });
 
-Vue.use(Vuex);
 Vue.use(PiniaVuePlugin);
 
 describe('DiffFileHeader component', () => {
   let wrapper;
   let pinia;
-  let mockStoreConfig;
-
-  const defaultMockStoreConfig = {
-    state: {},
-    getters: {
-      getNoteableData: () => ({ current_user: { can_create_note: true } }),
-    },
-  };
 
   const getFirstDiffFile = () => useLegacyDiffs().diffFiles[0];
   const findHeader = () => wrapper.findComponent({ ref: 'header' });
@@ -84,9 +67,6 @@ describe('DiffFileHeader component', () => {
   const findReviewFileCheckbox = () => wrapper.find("[data-testid='fileReviewCheckbox']");
 
   const createComponent = ({ props, options = {} } = {}) => {
-    mockStoreConfig = cloneDeep(defaultMockStoreConfig);
-    const store = new Vuex.Store({ ...mockStoreConfig, ...options.store });
-
     wrapper = shallowMountExtended(DiffFileHeader, {
       propsData: {
         diffFile: getFirstDiffFile(),
@@ -95,7 +75,6 @@ describe('DiffFileHeader component', () => {
         ...props,
       },
       ...options,
-      store,
       pinia,
     });
   };
@@ -103,6 +82,7 @@ describe('DiffFileHeader component', () => {
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
     useLegacyDiffs().diffFiles = [createDiffFile()];
+    useNotes();
   });
 
   it.each`
@@ -135,18 +115,10 @@ describe('DiffFileHeader component', () => {
     createComponent();
     findHeader().trigger('click');
 
-    return testAction(
-      setFileForcedOpen,
-      { filePath: getFirstDiffFile().file_path, forced: false },
-      {},
-      [
-        {
-          type: SET_FILE_FORCED_OPEN,
-          payload: { filePath: getFirstDiffFile().file_path, forced: false },
-        },
-      ],
-      [],
-    );
+    expect(useLegacyDiffs().setFileForcedOpen).toHaveBeenCalledWith({
+      filePath: getFirstDiffFile().file_path,
+      forced: false,
+    });
   });
 
   it('when collapseIcon is clicked emits toggleFile', async () => {
@@ -565,19 +537,7 @@ describe('DiffFileHeader component', () => {
 
       expect(document.activeElement.blur).toHaveBeenCalled();
 
-      return testAction(
-        reviewFile,
-        { file, reviewed: true },
-        {},
-        [
-          { type: SET_DIFF_FILE_VIEWED, payload: { id: file.id, seen: true } },
-          {
-            type: SET_MR_FILE_REVIEWS,
-            payload: { [file.file_identifier_hash]: [file.id, `hash:${file.file_hash}`] },
-          },
-        ],
-        [],
-      );
+      expect(useLegacyDiffs().reviewFile).toHaveBeenCalledWith({ file, reviewed: true });
     });
 
     it.each`
@@ -682,39 +642,18 @@ describe('DiffFileHeader component', () => {
       });
 
       findReviewFileCheckbox().vm.$emit('change', true);
-
-      testAction(
-        setFileForcedOpen,
-        { filePath: getFirstDiffFile().file_path, forced: false },
-        {},
-        [
-          {
-            type: SET_FILE_FORCED_OPEN,
-            payload: { filePath: getFirstDiffFile().file_path, forced: false },
-          },
-        ],
-        [],
-      );
-
       findReviewFileCheckbox().vm.$emit('change', false);
 
-      testAction(
-        setFileForcedOpen,
-        { filePath: getFirstDiffFile().file_path, forced: false },
-        {},
-        [
-          {
-            type: SET_FILE_FORCED_OPEN,
-            payload: { filePath: getFirstDiffFile().file_path, forced: false },
-          },
-        ],
-        [],
-      );
+      expect(useLegacyDiffs().setFileForcedOpen).toHaveBeenCalledWith({
+        filePath: getFirstDiffFile().file_path,
+        forced: false,
+      });
     });
   });
 
   it('should render the comment on files button', () => {
     window.gon = { current_user_id: 1 };
+    useNotes().noteableData.current_user = { can_create_note: true };
     createComponent({
       props: {
         addMergeRequestButtons: true,

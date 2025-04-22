@@ -34,14 +34,6 @@ module ContainerRegistry
         )
       end
 
-      def self.for_push_exists?(access_level:, repository_path:)
-        return false if access_level.blank? || repository_path.blank?
-
-        where(':access_level < minimum_access_level_for_push', access_level: access_level)
-          .for_repository_path(repository_path)
-          .exists?
-      end
-
       def self.for_action_exists?(action:, access_level:, repository_path:)
         return false if [access_level, repository_path].any?(&:blank?)
         raise ArgumentError, 'action must be :push or :delete' unless %i[push delete].include?(action)

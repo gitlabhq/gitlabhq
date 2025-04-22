@@ -1496,6 +1496,34 @@ RSpec.shared_examples 'a container registry auth service' do
         it_behaves_like params[:shared_examples_name]
       end
     end
+
+    context 'for deploy tokens' do
+      let_it_be(:deploy_token) { create(:deploy_token, write_registry: true, projects: [current_project]) }
+
+      let(:current_params) { { scopes: current_params_scopes, deploy_token: deploy_token } }
+
+      before do
+        container_registry_protection_rule.update!(
+          repository_path_pattern: repository_path_pattern,
+          minimum_access_level_for_push: minimum_access_level_for_push
+        )
+      end
+
+      # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table layout
+      where(:repository_path_pattern, :minimum_access_level_for_push, :current_params_scopes, :shared_examples_name) do
+        ref(:container_repository_path)                  | :maintainer | lazy { ["repository:#{container_repository_path}:push"] }      | 'a protected container repository'
+        ref(:container_repository_path)                  | :maintainer | lazy { ["repository:#{container_repository_path}:push,pull"] } | 'a protected container repository'
+        ref(:container_repository_path)                  | :owner      | lazy { ["repository:#{container_repository_path}:push"] }      | 'a protected container repository'
+        ref(:container_repository_path)                  | :admin      | lazy { ["repository:#{container_repository_path}:push"] }      | 'a protected container repository'
+        ref(:container_repository_path_pattern_no_match) | :maintainer | lazy { ["repository:#{container_repository_path}:push"] }      | 'a pushable'
+        ref(:container_repository_path_pattern_no_match) | :admin      | lazy { ["repository:#{container_repository_path}:push"] }      | 'a pushable'
+      end
+      # rubocop:enable Layout/LineLength
+
+      with_them do
+        it_behaves_like params[:shared_examples_name]
+      end
+    end
   end
 
   context 'with protected tags' do

@@ -386,11 +386,24 @@ module Auth
 
         repository_project = push_scope_container_registry_path.repository_project
 
-        repository_project.container_registry_protection_rules.for_push_exists?(
-          access_level: repository_project.team.max_member_access(current_user&.id),
+        protection_rule_for_push_exists?(
+          current_user: current_user || deploy_token,
+          project: repository_project,
           repository_path: push_scope_container_registry_path.to_s
         )
       end
+    end
+
+    def protection_rule_for_push_exists?(current_user:, project:, repository_path:)
+      service_response = ContainerRegistry::Protection::CheckRuleExistenceService.for_push(
+        current_user: current_user,
+        project: project,
+        params: { repository_path: repository_path }
+      ).execute
+
+      raise ArgumentError, service_response.message if service_response.error?
+
+      service_response[:protection_rule_exists?]
     end
 
     # Overridden in EE

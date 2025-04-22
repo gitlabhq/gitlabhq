@@ -133,7 +133,7 @@ describe('EntitySelect', () => {
   });
 
   it("renders the error slot's content", () => {
-    const selector = 'data-test-id="error-element"';
+    const selector = 'data-testid="error-element"';
     createComponent({
       slots: {
         error: `<div ${selector} />`,

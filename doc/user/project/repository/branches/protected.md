@@ -53,9 +53,6 @@ When a branch is protected, the default behavior enforces these restrictions on 
 1. No one can delete a protected branch using Git commands, however, users with at least Maintainer
    role can [delete a protected branch from the UI or API](#delete-a-protected-branch).
 
-You can implement a [merge request approval policy](../../../application_security/policies/merge_request_approval_policies.md#approval_settings)
-to prevent protected branches being unprotected or deleted.
-
 ### When a branch matches multiple rules
 
 When a branch matches multiple rules, the **most permissive rule** determines the
@@ -489,6 +486,10 @@ branches by using the GitLab web interface:
 Protected branches can only be deleted by using GitLab either from the UI or API.
 This prevents accidentally deleting a branch through local Git commands or
 third-party Git clients.
+
+## Merge request approval policies
+
+For security and compliance, you may implement a [merge request approval policy](../../../application_security/policies/merge_request_approval_policies.md#approval_settings) which affects settings otherwise defined in your instance, group, or projects. Policies may affect users ability to unprotect or delete branches, push or force push.
 
 ## Related topics
 

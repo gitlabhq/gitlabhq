@@ -185,9 +185,10 @@ The following endpoints are available for CI/CD job tokens.
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` | Recipe Snapshot |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name` | Download recipe files |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name` | Download package files |
-| Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/latest` | Get the latest revision |
+| Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/latest` | Get the latest recipe revision |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files/:file_name` | Download recipe files |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/files` | List recipe files |
+| Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/latest` | Get the latest package revision |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions` | Get the list of revisions |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name` | Download package file |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/go/*module_name/@v/:module_version.info` | Version metadata |

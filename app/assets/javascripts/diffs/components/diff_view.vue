@@ -1,6 +1,4 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapState as mapVuexState, mapActions as mapVuexActions } from 'vuex';
 import { mapState, mapActions } from 'pinia';
 import { throttle } from 'lodash';
 import { IdState } from 'vendor/vue-virtual-scroller';
@@ -10,6 +8,7 @@ import { getCommentedLines } from '~/notes/components/multiline_comment_utils';
 import { hide } from '~/tooltips';
 import { countLinesInBetween } from '~/diffs/utils/diff_file';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 import { pickDirection } from '../utils/diff_line';
 import DiffCommentCell from './diff_comment_cell.vue';
 import DiffExpansionCell from './diff_expansion_cell.vue';
@@ -73,10 +72,7 @@ export default {
       'coverageLoaded',
       'selectedCommentPosition',
     ]),
-    ...mapVuexState({
-      selectedCommentPosition: ({ notes }) => notes.selectedCommentPosition,
-      selectedCommentPositionHover: ({ notes }) => notes.selectedCommentPositionHover,
-    }),
+    ...mapState(useNotes, ['selectedCommentPosition', 'selectedCommentPositionHover']),
     diffLinesLength() {
       return this.diffLines.length;
     },
@@ -97,7 +93,7 @@ export default {
     this.onDragOverThrottled = throttle((line) => this.onDragOver(line), 100, { leading: true });
   },
   methods: {
-    ...mapVuexActions(['setSelectedCommentPosition']),
+    ...mapActions(useNotes, ['setSelectedCommentPosition']),
     ...mapActions(useLegacyDiffs, [
       'showCommentForm',
       'setHighlightedRow',

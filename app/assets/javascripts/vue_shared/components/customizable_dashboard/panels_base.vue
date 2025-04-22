@@ -123,7 +123,6 @@ export default {
     <template #alert-message="{ panelId }">
       <gl-popover
         v-if="showAlertPopover"
-        data-test-id="panel-alert-popover"
         :aria-describedby="panelId"
         triggers="hover focus"
         :title="alertPopoverTitle"

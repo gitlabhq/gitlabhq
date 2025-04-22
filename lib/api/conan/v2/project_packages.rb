@@ -38,9 +38,9 @@ module API
               end
 
               namespace 'latest' do
-                desc 'Get the latest revision' do
+                desc 'Get the latest recipe revision' do
                   detail 'This feature was introduced in GitLab 17.11'
-                  success code: 200, model: ::API::Entities::Packages::Conan::RecipeRevision
+                  success code: 200, model: ::API::Entities::Packages::Conan::Revision
                   failure [
                     { code: 400, message: 'Bad Request' },
                     { code: 401, message: 'Unauthorized' },
@@ -59,13 +59,13 @@ module API
 
                   not_found!('Revision') unless revision.present?
 
-                  present revision, with: ::API::Entities::Packages::Conan::RecipeRevision
+                  present revision, with: ::API::Entities::Packages::Conan::Revision
                 end
               end
               namespace 'revisions' do
                 desc 'Get the list of revisions' do
                   detail 'This feature was introduced in GitLab 17.11'
-                  success code: 200, model: ::API::Entities::Packages::Conan::RecipeRevision
+                  success code: 200, model: ::API::Entities::Packages::Conan::RecipeRevisions
                   failure [
                     { code: 400, message: 'Bad Request' },
                     { code: 401, message: 'Unauthorized' },
@@ -191,6 +191,33 @@ module API
                       documentation: { example: '5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9' }
                   end
                   namespace 'packages/:conan_package_reference' do
+                    namespace 'latest' do
+                      desc 'Get the latest package revision' do
+                        detail 'This feature was introduced in GitLab 17.11'
+                        success code: 200, model: ::API::Entities::Packages::Conan::Revision
+                        failure [
+                          { code: 400, message: 'Bad Request' },
+                          { code: 401, message: 'Unauthorized' },
+                          { code: 403, message: 'Forbidden' },
+                          { code: 404, message: 'Not Found' }
+                        ]
+                        tags %w[conan_packages]
+                      end
+                      route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+                      route_setting :authorization, job_token_policies: :read_packages,
+                        allow_public_access_for_enabled_project_features: :package_registry
+                      get urgency: :low do
+                        not_found!('Package') unless package
+
+                        revision = package.conan_package_revisions
+                          .by_recipe_revision_and_package_reference(params[:recipe_revision],
+                            params[:conan_package_reference]).order_by_id_desc.first
+
+                        not_found!('Revision') unless revision.present?
+
+                        present revision, with: ::API::Entities::Packages::Conan::Revision
+                      end
+                    end
                     namespace 'revisions' do
                       params do
                         requires :package_revision, type: String, regexp: Gitlab::Regex.conan_revision_regex_v2,

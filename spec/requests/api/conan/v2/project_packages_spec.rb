@@ -281,4 +281,52 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     it_behaves_like 'package not found'
     it_behaves_like 'project not found by project id'
   end
+
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username' \
+    '/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/latest' do
+    let(:recipe_path) { package.conan_recipe_path }
+    let(:recipe_revision) { package.conan_recipe_revisions.first.revision }
+    let(:conan_package_reference) { package.conan_package_references.first.reference }
+    let(:url_suffix) { "#{recipe_path}/revisions/#{recipe_revision}/packages/#{conan_package_reference}/latest" }
+
+    subject(:request) { get api(url), headers: headers }
+
+    it 'returns the latest revision' do
+      request
+
+      expect(response).to have_gitlab_http_status(:ok)
+
+      package_revision = package.conan_package_revisions.first
+
+      expect(json_response['revision']).to eq(package_revision.revision)
+      expect(json_response['time']).to eq(package_revision.created_at.iso8601(3))
+    end
+
+    shared_examples 'returns 404 when resource does not exist' do
+      it 'returns 404' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Revision Not Found')
+      end
+    end
+
+    context 'when recipe revision does not exist' do
+      let(:recipe_revision) { OpenSSL::Digest.hexdigest('MD5', 'nonexistent-revision') }
+
+      it_behaves_like 'returns 404 when resource does not exist'
+    end
+
+    context 'when package reference does not exist' do
+      let(:conan_package_reference) { OpenSSL::Digest.hexdigest('SHA1', 'nonexistent-reference') }
+
+      it_behaves_like 'returns 404 when resource does not exist'
+    end
+
+    it_behaves_like 'enforcing read_packages job token policy'
+    it_behaves_like 'accept get request on private project with access to package registry for everyone'
+    it_behaves_like 'conan FIPS mode'
+    it_behaves_like 'package not found'
+    it_behaves_like 'project not found by project id'
+  end
 end

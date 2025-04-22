@@ -1,6 +1,8 @@
 <script>
 import { GlLoadingIcon, GlButton } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
+import { logError } from '~/lib/logger';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from '~/blob/components/blob_header.vue';
 import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
@@ -56,7 +58,13 @@ export default {
           projectPath: this.projectPath,
         };
       },
-      error() {
+      error(error) {
+        logError(`Unexpected error while fetching projectInfo query`, error);
+        captureException(error, {
+          tags: {
+            vue_component: 'BlobContentViewer',
+          },
+        });
         this.displayError();
       },
       update({ project }) {
@@ -91,7 +99,13 @@ export default {
         this.initHighlightWorker(this.blobInfo, this.isUsingLfs);
         this.switchViewer(useSimpleViewer ? SIMPLE_BLOB_VIEWER : RICH_BLOB_VIEWER); // By default, if present, use the rich viewer to render
       },
-      error() {
+      error(error) {
+        logError(`Unexpected error while fetching blobInfo query`, error);
+        captureException(error, {
+          tags: {
+            vue_component: 'BlobContentViewer',
+          },
+        });
         this.displayError();
       },
     },

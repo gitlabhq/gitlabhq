@@ -197,6 +197,10 @@ gem 'hamlit', '~> 2.15.0', feature_category: :shared
 gem 'carrierwave', '~> 1.3', feature_category: :shared
 gem 'mini_magick', '~> 4.12', feature_category: :shared
 
+# PDF generation
+gem 'prawn', feature_category: :vulnerability_management
+gem 'prawn-svg', feature_category: :vulnerability_management
+
 # for backups
 gem 'fog-aws', '~> 3.26', feature_category: :shared
 # Locked until fog-google resolves https://github.com/fog/fog-google/issues/421.

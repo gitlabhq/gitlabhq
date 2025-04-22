@@ -1,7 +1,5 @@
 <script>
 import { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import { mapState as mapVuexState, mapGetters as mapVuexGetters } from 'vuex';
 import { mapState, mapActions } from 'pinia';
 import { s__, __, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
@@ -15,6 +13,7 @@ import NoteForm from '~/notes/components/note_form.vue';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
+import { useNotes } from '~/notes/store/legacy_notes';
 import {
   DIFF_NOTE_TYPE,
   INLINE_DIFF_LINES_KEY,
@@ -77,11 +76,14 @@ export default {
       'diffLines',
     ]),
     ...mapState(useMrNotes, ['isLoggedIn']),
-    ...mapVuexState({
-      noteableData: ({ notes }) => notes.noteableData,
-      selectedCommentPosition: ({ notes }) => notes.selectedCommentPosition,
-    }),
-    ...mapVuexGetters(['noteableType', 'getNoteableData', 'getNotesDataByProp', 'getUserData']),
+    ...mapState(useNotes, [
+      'noteableData',
+      'noteableType',
+      'getNoteableData',
+      'getNotesDataByProp',
+      'getUserData',
+      'selectedCommentPosition',
+    ]),
     author() {
       return this.getUserData;
     },

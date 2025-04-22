@@ -17213,9 +17213,9 @@ CREATE TABLE merge_request_diff_commits (
     committed_date timestamp without time zone,
     merge_request_diff_id bigint NOT NULL,
     relative_order integer NOT NULL,
-    sha bytea NOT NULL,
+    sha bytea,
     message text,
-    trailers jsonb DEFAULT '{}'::jsonb NOT NULL,
+    trailers jsonb DEFAULT '{}'::jsonb,
     commit_author_id bigint,
     committer_id bigint
 );

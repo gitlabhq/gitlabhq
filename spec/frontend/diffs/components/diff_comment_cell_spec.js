@@ -1,9 +1,16 @@
+import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import DiffCommentCell from '~/diffs/components/diff_comment_cell.vue';
 import DiffDiscussionReply from '~/diffs/components/diff_discussion_reply.vue';
 import DiffDiscussions from '~/diffs/components/diff_discussions.vue';
 
+Vue.use(PiniaVuePlugin);
+
 describe('DiffCommentCell', () => {
+  let pinia;
+
   const createWrapper = (props = {}) => {
     const { renderDiscussion, ...otherProps } = props;
     const line = {
@@ -13,9 +20,14 @@ describe('DiffCommentCell', () => {
     const diffFileHash = 'abc';
 
     return shallowMount(DiffCommentCell, {
+      pinia,
       propsData: { line, diffFileHash, ...otherProps },
     });
   };
+
+  beforeEach(() => {
+    pinia = createTestingPinia();
+  });
 
   it('renders discussions if line has discussions', () => {
     const wrapper = createWrapper({ renderDiscussion: true });

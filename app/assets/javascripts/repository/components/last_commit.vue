@@ -61,6 +61,39 @@ export default {
           pipeline: pipelines?.length && pipelines[0].node,
         };
       },
+      result() {
+        // we use a manual subscribeToMore call due to issues with
+        // the skip hook not working correctly for the subscription
+        if (this.showRealTimePipelineStatus && this.commit?.pipeline?.id) {
+          this.$apollo.queries.commit.subscribeToMore({
+            document: pipelineCiStatusUpdatedSubscription,
+            variables: {
+              pipelineId: this.commit.pipeline.id,
+            },
+            updateQuery(
+              previousData,
+              {
+                subscriptionData: {
+                  data: { ciPipelineStatusUpdated },
+                },
+              },
+            ) {
+              if (ciPipelineStatusUpdated) {
+                const updatedData = structuredClone(previousData);
+                const pipeline =
+                  updatedData.project?.repository?.paginatedTree?.nodes[0]?.lastCommit?.pipelines
+                    ?.edges[0]?.node || {};
+
+                pipeline.detailedStatus = ciPipelineStatusUpdated.detailedStatus;
+
+                return updatedData;
+              }
+
+              return previousData;
+            },
+          });
+        }
+      },
       error(error) {
         logError(`Unexpected error while fetching projectInfo query`, error);
         captureException(error);
@@ -68,40 +101,6 @@ export default {
         throw error;
       },
       pollInterval: POLL_INTERVAL,
-      subscribeToMore: {
-        document() {
-          return pipelineCiStatusUpdatedSubscription;
-        },
-        variables() {
-          return {
-            pipelineId: this.commit?.pipeline?.id,
-          };
-        },
-        skip() {
-          return !this.showRealTimePipelineStatus || !this.commit?.pipeline?.id;
-        },
-        updateQuery(
-          previousData,
-          {
-            subscriptionData: {
-              data: { ciPipelineStatusUpdated },
-            },
-          },
-        ) {
-          if (ciPipelineStatusUpdated) {
-            const updatedData = structuredClone(previousData);
-            const pipeline =
-              updatedData.project?.repository?.paginatedTree?.nodes[0]?.lastCommit?.pipelines
-                ?.edges[0]?.node || {};
-
-            pipeline.detailedStatus = ciPipelineStatusUpdated.detailedStatus;
-
-            return updatedData;
-          }
-
-          return previousData;
-        },
-      },
     },
   },
   props: {

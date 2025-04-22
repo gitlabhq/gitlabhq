@@ -6,7 +6,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { sprintf } from '~/locale';
 import { createAlert } from '~/alert';
 import DiffLineNoteForm from '~/diffs/components/diff_line_note_form.vue';
-import store from '~/mr_notes/stores';
 import NoteForm from '~/notes/components/note_form.vue';
 import MultilineCommentForm from '~/notes/components/multiline_comment_form.vue';
 import { clearDraft } from '~/lib/utils/autosave';
@@ -34,8 +33,6 @@ describe('DiffLineNoteForm', () => {
   let diffLines;
 
   const createComponent = ({ props } = {}) => {
-    wrapper?.destroy();
-
     const propsData = {
       diffFileHash: diffFile.file_hash,
       diffLines,
@@ -46,9 +43,6 @@ describe('DiffLineNoteForm', () => {
     };
 
     wrapper = shallowMount(DiffLineNoteForm, {
-      mocks: {
-        $store: store,
-      },
       propsData,
       pinia,
     });
@@ -65,13 +59,9 @@ describe('DiffLineNoteForm', () => {
     useLegacyDiffs().diffFiles = [diffFile];
     useLegacyDiffs().saveDiffDiscussion.mockResolvedValue();
     useNotes().userData = { id: 1 };
+    useNotes().noteableData = noteableDataMock;
     useBatchComments().saveDraft.mockResolvedValue();
     useMrNotes();
-
-    store.reset();
-
-    store.state.notes.noteableData = noteableDataMock;
-
     createComponent();
   });
 
@@ -169,7 +159,7 @@ describe('DiffLineNoteForm', () => {
 
   describe('saving note', () => {
     beforeEach(() => {
-      store.getters.noteableType = 'merge-request';
+      useNotes().noteableData.merge_params = {};
     });
 
     it('should save original line', async () => {
@@ -195,9 +185,9 @@ describe('DiffLineNoteForm', () => {
         note: noteBody,
         formData: {
           noteableData: noteableDataMock,
-          noteableType: store.getters.noteableType,
+          noteableType: useNotes().noteableType,
           noteTargetLine: diffLines[1],
-          diffViewType: store.state.diffs.diffViewType,
+          diffViewType: useLegacyDiffs().diffViewType,
           diffFile,
           linePosition: '',
           lineRange,
@@ -211,7 +201,7 @@ describe('DiffLineNoteForm', () => {
 
     it('should save selected line from the store', async () => {
       const lineCode = 'test';
-      store.state.notes.selectedCommentPosition = { start: { line_code: lineCode } };
+      useNotes().selectedCommentPosition = { start: { line_code: lineCode } };
       createComponent();
       const noteBody = 'note body';
 
@@ -221,9 +211,9 @@ describe('DiffLineNoteForm', () => {
         note: noteBody,
         formData: {
           noteableData: noteableDataMock,
-          noteableType: store.getters.noteableType,
+          noteableType: useNotes().noteableType,
           noteTargetLine: diffLines[1],
-          diffViewType: store.state.diffs.diffViewType,
+          diffViewType: useLegacyDiffs().diffViewType,
           diffFile,
           linePosition: '',
           lineRange: {

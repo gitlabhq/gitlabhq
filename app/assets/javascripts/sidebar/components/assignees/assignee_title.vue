@@ -46,7 +46,7 @@ export default {
       v-if="editable"
       class="js-sidebar-dropdown-toggle edit-link btn hide-collapsed btn-default btn-sm gl-button btn-default-tertiary gl-float-right gl-ml-auto !gl-text-default"
       href="#"
-      data-test-id="edit-link"
+      data-testid="edit-link"
       data-track-action="click_edit_button"
       data-track-label="right_sidebar"
       data-track-property="assignee"

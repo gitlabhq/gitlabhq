@@ -278,10 +278,6 @@ RSpec.configure do |config|
     ::Ci::ApplicationRecord.set_open_transactions_baseline
   end
 
-  config.around do |example|
-    example.run
-  end
-
   config.append_after do
     ApplicationRecord.reset_open_transactions_baseline
     ::Ci::ApplicationRecord.reset_open_transactions_baseline

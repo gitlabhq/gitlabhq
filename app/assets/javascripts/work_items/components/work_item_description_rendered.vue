@@ -356,11 +356,7 @@ export default {
         :class="{ truncated: isTruncated, 'has-task-list-item-actions': hasTaskListItemActions }"
         @change="toggleCheckboxes"
       ></div>
-      <div
-        v-if="isTruncated"
-        class="description-more gl-block gl-w-full"
-        data-test-id="description-read-more"
-      >
+      <div v-if="isTruncated" class="description-more gl-block gl-w-full">
         <div class="show-all-btn gl-flex gl-w-full gl-items-center gl-justify-center">
           <gl-button
             ref="show-all-btn"

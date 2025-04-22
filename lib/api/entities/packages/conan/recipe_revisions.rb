@@ -14,7 +14,7 @@ module API
           }
 
           expose :conan_recipe_revisions, as: :revisions, using:
-          ::API::Entities::Packages::Conan::RecipeRevision, documentation: {
+          ::API::Entities::Packages::Conan::Revision, documentation: {
             type: Array,
             desc: 'List of recipe revisions',
             is_array: true
