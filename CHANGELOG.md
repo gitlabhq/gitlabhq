@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.10.5 (2025-04-22)
+
+### Fixed (3 changes)
+
+- [Fix 500 in Todo API when wiki page todo exists](https://gitlab.com/gitlab-org/security/gitlab/-/commit/71215f0615fad3167fb96b521b9628e11ea30a5d)
+- [Clear session cookie when browser is closed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7c77ca404d9be7166d8ef991013394483b3f0371)
+- [Fix workspaces reconciliation to send inventory config map correctly](https://gitlab.com/gitlab-org/security/gitlab/-/commit/aba508e925aea81c4d47555254e6a657edc94863) **GitLab Enterprise Edition**
+
+### Security (4 changes)
+
+- [Add SecureHeaders middleware with the Nel header](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0e180be62768513438f86ea99f0a4a305cca46b6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4919))
+- [Restrict forwarded headers in Maven dependency proxy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/faa100503f89d08e51549e4f35f362c9945dbb6f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4930))
+- [Security unauthorized access to reading branch names](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dc2f917499f58ed9ccff23158b39528b62b71c2f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4895))
+- [Simplify detecting paragraphs for quick actions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/507e465f21b5be5297eda7a67f0ba75994df88d8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4926))
+
+### Other (1 change)
+
+- [No-op FinalizeBackfillCiRunnerMachinesPartitionedTable migration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/119891459658f48120bcef02b1b66e3e78c78865)
+
 ## 17.10.4 (2025-04-09)
 
 ### Fixed (2 changes)
