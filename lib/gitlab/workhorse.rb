@@ -186,7 +186,8 @@ module Gitlab
         timeouts: {},
         response_statuses: {},
         response_headers: {},
-        allowed_uris: []
+        allowed_uris: [],
+        restrict_forwarded_response_headers: {}
       )
         params = {
           'URL' => url,
@@ -198,7 +199,7 @@ module Gitlab
           'Header' => headers.transform_values { |v| Array.wrap(v) },
           'ResponseHeaders' => response_headers.transform_values { |v| Array.wrap(v) },
           'Method' => method
-        }.compact
+        }.merge(restrict_forwarded_response_headers_params(restrict_forwarded_response_headers)).compact
 
         if timeouts.present?
           params['DialTimeout'] = "#{timeouts[:open]}s" if timeouts[:open]
@@ -242,7 +243,8 @@ module Gitlab
         upload_config: {},
         response_headers: {},
         ssrf_filter: false,
-        allowed_uris: [])
+        allowed_uris: [],
+        restrict_forwarded_response_headers: {})
         params = {
           'AllowLocalhost' => allow_localhost,
           'AllowedURIs' => allowed_uris,
@@ -256,9 +258,8 @@ module Gitlab
             'Headers' => (upload_config[:headers] || {}).transform_values { |v| Array.wrap(v) },
             'AuthorizedUploadResponse' => upload_config[:authorized_upload_response] || {}
           }.compact_blank!
-        }
+        }.merge(restrict_forwarded_response_headers_params(restrict_forwarded_response_headers))
         params.compact_blank!
-
         [
           SEND_DATA_HEADER,
           "send-dependency:#{encode(params)}"
@@ -392,6 +393,16 @@ module Gitlab
             ).to_proto
           )
         }
+      end
+
+      def restrict_forwarded_response_headers_params(params)
+        params[:enabled] = false unless params.key?(:enabled)
+        {
+          'RestrictForwardedResponseHeaders' => {
+            'Enabled' => params[:enabled],
+            'AllowList' => params[:allow_list] || []
+          }
+        }.compact_blank!
       end
     end
   end
