@@ -1,4 +1,4 @@
-import { GlCollapsibleListbox } from '@gitlab/ui';
+import { GlTruncate } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { shallowMount, mount } from '@vue/test-utils';
 import Vue from 'vue';
@@ -6,7 +6,13 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PipelinesDashboardClickhouse from '~/projects/pipelines/charts/components/pipelines_dashboard_clickhouse.vue';
-import BranchCollapsibleListbox from '~/projects/pipelines/charts/components/branch_collapsible_listbox.vue';
+import {
+  SOURCE_ANY,
+  SOURCE_PUSH,
+  DATE_RANGE_7_DAYS,
+  DATE_RANGE_30_DAYS,
+} from '~/projects/pipelines/charts/constants';
+import PipelinesDashboardClickhouseFilters from '~/projects/pipelines/charts/components/pipelines_dashboard_clickhouse_filters.vue';
 import StatisticsList from '~/projects/pipelines/charts/components/statistics_list.vue';
 import PipelineDurationChart from '~/projects/pipelines/charts/components/pipeline_duration_chart.vue';
 import PipelineStatusChart from '~/projects/pipelines/charts/components/pipeline_status_chart.vue';
@@ -28,22 +34,25 @@ describe('PipelinesDashboardClickhouse', () => {
   let wrapper;
   let getPipelineAnalyticsHandler;
 
-  const findCollapsibleListbox = (id) =>
-    wrapper.findAllComponents(GlCollapsibleListbox).wrappers.find((w) => w.attributes('id') === id);
-  const findBranchCollapsibleListbox = () => wrapper.findComponent(BranchCollapsibleListbox);
+  const findPipelinesDashboardClickhouseFilters = () =>
+    wrapper.findComponent(PipelinesDashboardClickhouseFilters);
   const findStatisticsList = () => wrapper.findComponent(StatisticsList);
   const findPipelineDurationChart = () => wrapper.findComponent(PipelineDurationChart);
   const findPipelineStatusChart = () => wrapper.findComponent(PipelineStatusChart);
   const findAllSingleStats = () => wrapper.findAllComponents(GlSingleStat);
 
-  const createComponent = ({ mountFn = shallowMount } = {}) => {
+  const createComponent = ({ mountFn = shallowMount, ...options } = {}) => {
     wrapper = mountFn(PipelinesDashboardClickhouse, {
       provide: {
         defaultBranch,
         projectPath,
         projectBranchCount,
       },
+      stubs: {
+        GlTruncate,
+      },
       apolloProvider: createMockApollo([[getPipelineAnalyticsQuery, getPipelineAnalyticsHandler]]),
+      ...options,
     });
   };
 
@@ -63,43 +72,25 @@ describe('PipelinesDashboardClickhouse', () => {
     });
   });
 
-  describe('source', () => {
+  describe('filters', () => {
     beforeEach(() => {
       createComponent();
     });
 
-    it('shows options', () => {
-      const sources = findCollapsibleListbox('pipeline-source')
-        .props('items')
-        .map(({ text }) => text);
-
-      expect(sources).toEqual([
-        'Any source',
-        'Push',
-        'Schedule',
-        'Merge Request Event',
-        'Web',
-        'Trigger',
-        'API',
-        'External',
-        'Pipeline',
-        'Chat',
-        'Web IDE',
-        'External Pull Request Event',
-        'Parent Pipeline',
-        'On-Demand DAST Scan',
-        'On-Demand DAST Validation',
-        'Security Orchestration Policy',
-        'Container Registry Push',
-        'Duo Workflow',
-        'Pipeline Execution Policy Schedule',
-        'Unknown',
-      ]);
+    it('sets default filters', () => {
+      expect(findPipelinesDashboardClickhouseFilters().props()).toEqual({
+        defaultBranch: 'main',
+        projectBranchCount: 99,
+        projectPath: 'gitlab-org/gitlab',
+        value: {
+          source: SOURCE_ANY,
+          branch: defaultBranch,
+          dateRange: DATE_RANGE_7_DAYS,
+        },
+      });
     });
 
-    it('is "Any" by default', async () => {
-      expect(findCollapsibleListbox('pipeline-source').props('selected')).toBe('ANY');
-
+    it('requests with default filters', async () => {
       await waitForPromises();
 
       expect(getPipelineAnalyticsHandler).toHaveBeenCalledTimes(1);
@@ -112,101 +103,24 @@ describe('PipelinesDashboardClickhouse', () => {
       });
     });
 
-    it('is set when an option is selected', async () => {
-      findCollapsibleListbox('pipeline-source').vm.$emit('select', 'PUSH');
+    it('when an option is selected, requests with new filters', async () => {
+      await waitForPromises();
+
+      findPipelinesDashboardClickhouseFilters().vm.$emit('input', {
+        source: SOURCE_PUSH,
+        dateRange: DATE_RANGE_30_DAYS,
+        branch: 'feature-branch',
+      });
 
       await waitForPromises();
 
       expect(getPipelineAnalyticsHandler).toHaveBeenCalledTimes(2);
       expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith({
-        source: 'PUSH',
-        fullPath: projectPath,
-        branch: defaultBranch,
-        fromTime: new Date('2022-02-08'),
-        toTime: new Date('2022-02-15'),
-      });
-    });
-  });
-
-  describe('branch', () => {
-    beforeEach(async () => {
-      createComponent();
-
-      await waitForPromises();
-    });
-
-    it('shows listbox with default branch as default value', () => {
-      expect(findBranchCollapsibleListbox().props()).toMatchObject({
-        block: true,
-        selected: 'main',
-        defaultBranch: 'main',
-        projectPath,
-        projectBranchCount,
-      });
-    });
-
-    it('is set when an option is selected', async () => {
-      findBranchCollapsibleListbox().vm.$emit('select', 'feature-branch');
-
-      await waitForPromises();
-
-      expect(getPipelineAnalyticsHandler).toHaveBeenCalledTimes(2);
-      expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith({
-        fromTime: new Date('2022-02-08'),
-        toTime: new Date('2022-02-15'),
+        source: SOURCE_PUSH,
         fullPath: projectPath,
         branch: 'feature-branch',
-        source: null,
-      });
-    });
-  });
-
-  describe('date range', () => {
-    beforeEach(async () => {
-      createComponent();
-
-      await waitForPromises();
-    });
-
-    it('shows listbox', () => {
-      expect(findCollapsibleListbox('date-range').props()).toMatchObject({
-        block: true,
-        selected: 7,
-      });
-    });
-
-    it('shows options', () => {
-      const ranges = findCollapsibleListbox('date-range')
-        .props('items')
-        .map(({ text }) => text);
-
-      expect(ranges).toEqual(['Last week', 'Last 30 days', 'Last 90 days', 'Last 180 days']);
-    });
-
-    it('is "Last 7 days" by default', () => {
-      expect(findCollapsibleListbox('date-range').props('selected')).toBe(7);
-      expect(getPipelineAnalyticsHandler).toHaveBeenCalledTimes(1);
-      expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith({
-        fromTime: new Date('2022-02-08'),
+        fromTime: new Date('2022-01-16'),
         toTime: new Date('2022-02-15'),
-        fullPath: projectPath,
-        branch: defaultBranch,
-        source: null,
-      });
-    });
-
-    it('is set when an option is selected', async () => {
-      findCollapsibleListbox('date-range').vm.$emit('select', 90);
-
-      await waitForPromises();
-
-      expect(getPipelineAnalyticsHandler).toHaveBeenCalledTimes(2);
-      expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith({
-        fromTime: new Date('2021-11-17'),
-        toTime: new Date('2022-02-15'),
-        fullPath: projectPath,
-        branch: defaultBranch,
-        source: null,
       });
     });
   });
@@ -222,6 +136,7 @@ describe('PipelinesDashboardClickhouse', () => {
       getPipelineAnalyticsHandler.mockResolvedValue(pipelineAnalyticsEmptyData);
 
       createComponent({ mountFn: mount });
+
       await waitForPromises();
 
       expect(findStatisticsList().props('counts')).toEqual({

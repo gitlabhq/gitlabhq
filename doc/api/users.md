@@ -1584,3 +1584,48 @@ Supported attributes:
 | Attribute              | Type     | Required | Description |
 |:-----------------------|:---------|:---------|:------------|
 | `id`             | integer   | yes       | ID of user account |
+
+## Revoke a Support PIN for a user
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187657)
+in GitLab 17.11.
+
+{{< /history >}}
+
+Revokes a Support PIN for the specified user before its natural expiration.
+This immediately expires and removes the PIN.
+
+Prerequisites:
+
+- You must be an administrator.
+
+```plaintext
+POST /users/:id/support_pin/revoke
+```
+
+Example request:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/1234/support_pin/revoke"
+```
+
+Example response:
+
+If successful, returns `202 Accepted`.
+
+Supported attributes:
+
+| Attribute    | Type      | Required | Description         |
+|:-------------|:----------|:---------|:--------------------|
+| `id`         | integer   | yes      | ID of a user  |

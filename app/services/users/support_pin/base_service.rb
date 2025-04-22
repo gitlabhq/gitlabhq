@@ -13,6 +13,12 @@ module Users
       def pin_key
         "#{SUPPORT_PIN_PREFIX}:#{@user.id}"
       end
+
+      def pin_exists?
+        Gitlab::Redis::Cache.with do |redis|
+          redis.exists(pin_key).to_i > 0
+        end
+      end
     end
   end
 end

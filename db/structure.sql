@@ -12905,7 +12905,8 @@ CREATE TABLE container_repository_states (
     verification_checksum bytea,
     verification_failure text,
     project_id bigint,
-    CONSTRAINT check_c96417dbc5 CHECK ((char_length(verification_failure) <= 255))
+    CONSTRAINT check_c96417dbc5 CHECK ((char_length(verification_failure) <= 255)),
+    CONSTRAINT check_d65b1f0839 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE TABLE content_blocked_states (

@@ -10,10 +10,18 @@ export const ONE_WEEK_AGO_DAYS = 7;
 export const ONE_MONTH_AGO_DAYS = 31;
 export const ONE_YEAR_AGO_DAYS = 365;
 
-export const DATE_RANGE_LAST_WEEK = 7;
-export const DATE_RANGE_LAST_30_DAYS = 30;
-export const DATE_RANGE_LAST_90_DAYS = 90;
-export const DATE_RANGE_LAST_180_DAYS = 180;
+export const DATE_RANGE_7_DAYS = '7d';
+export const DATE_RANGE_30_DAYS = '30d';
+export const DATE_RANGE_90_DAYS = '90d';
+export const DATE_RANGE_180_DAYS = '180d';
+
+export const DATE_RANGES_AS_DAYS = {
+  [DATE_RANGE_7_DAYS]: 7,
+  [DATE_RANGE_30_DAYS]: 30,
+  [DATE_RANGE_90_DAYS]: 90,
+  [DATE_RANGE_180_DAYS]: 180,
+};
+export const DATE_RANGE_DEFAULT = DATE_RANGE_7_DAYS;
 
 export const DEFAULT = 'default';
 export const PARSE_FAILURE = 'parse_failure';
@@ -26,6 +34,7 @@ export const SNOWPLOW_SCHEMA = 'iglu:com.gitlab/gitlab_service_ping/jsonschema/1
 export const SNOWPLOW_DATA_SOURCE = 'redis_hll';
 
 // CiPipelineSources values from GraphQL schema.
+export const SOURCE_ANY = 'ANY'; // This is a special value, not part of CiPipelineSources.
 export const SOURCE_PUSH = 'PUSH';
 export const SOURCE_SCHEDULE = 'SCHEDULE';
 export const SOURCE_MERGE_REQUEST_EVENT = 'MERGE_REQUEST_EVENT';
