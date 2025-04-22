@@ -21,6 +21,7 @@ export default {
     GlButton,
     JobVariablesForm,
   },
+  inject: ['canSetPipelineVariables'],
   props: {
     isRetryable: {
       type: Boolean,
@@ -38,11 +39,6 @@ export default {
       type: String,
       required: false,
       default: null,
-    },
-    canViewPipelineVariables: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   data() {
@@ -136,7 +132,7 @@ export default {
 <template>
   <div>
     <job-variables-form
-      v-if="canViewPipelineVariables"
+      v-if="canSetPipelineVariables"
       :job-id="jobId"
       @update-variables="onVariablesUpdate"
     />

@@ -90,8 +90,6 @@ import DesignUploadButton from './design_management/upload_button.vue';
 import WorkItemDevelopment from './work_item_development/work_item_development.vue';
 import WorkItemCreateBranchMergeRequestSplitButton from './work_item_development/work_item_create_branch_merge_request_split_button.vue';
 
-const WorkItemErrorTracking = () => import('~/work_items/components/work_item_error_tracking.vue');
-
 const defaultWorkspacePermissions = {
   createDesign: false,
   moveDesign: false,
@@ -128,7 +126,7 @@ export default {
     WorkItemTree,
     WorkItemNotes,
     WorkItemRelationships,
-    WorkItemErrorTracking,
+    WorkItemErrorTracking: () => import('~/work_items/components/work_item_error_tracking.vue'),
     WorkItemStickyHeader,
     WorkItemAncestors,
     WorkItemTitle,

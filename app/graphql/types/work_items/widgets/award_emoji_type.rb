@@ -40,9 +40,9 @@ module Types
         end
 
         def new_custom_emoji_path
-          return unless context[:current_user]&.can?(:create_custom_emoji, object.work_item.project.namespace)
+          return unless context[:current_user]
 
-          ::Gitlab::Routing.url_helpers.new_group_custom_emoji_path(object.work_item.project.namespace)
+          object.new_custom_emoji_path(context[:current_user])
         end
       end
       # rubocop:enable Graphql/AuthorizeTypes

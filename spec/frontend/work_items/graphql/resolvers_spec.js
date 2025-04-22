@@ -152,6 +152,11 @@ describe('work items graphql resolvers', () => {
             id: 'gid://gitlab/WorkItem/1259',
             iid: '56',
             title: 'PARENT',
+            namespace: {
+              id: 'gid://gitlab/Group/1',
+              fullPath: 'test-project-path',
+              __typename: 'Namespace',
+            },
             webUrl: 'http://127.0.0.1:3000/groups/flightjs/-/epics/56',
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/8',
@@ -170,6 +175,11 @@ describe('work items graphql resolvers', () => {
             id: 'gid://gitlab/WorkItem/1259',
             iid: '56',
             title: 'PARENT',
+            namespace: {
+              id: 'gid://gitlab/Group/1',
+              fullPath: 'test-project-path',
+              __typename: 'Namespace',
+            },
             webUrl: 'http://127.0.0.1:3000/groups/flightjs/-/epics/56',
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/8',

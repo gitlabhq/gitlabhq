@@ -12,6 +12,12 @@ title: SAML SSO for GitLab.com groups
 
 {{< /details >}}
 
+{{< alert type="note" >}}
+
+For GitLab Self-Managed, see [SAML SSO for GitLab Self-Managed](../../../integration/saml.md).
+
+{{< /alert >}}
+
 Users can sign in to GitLab through their SAML identity provider.
 
 [SCIM](scim_setup.md) synchronizes users with the group on GitLab.com.

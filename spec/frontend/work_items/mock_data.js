@@ -262,6 +262,11 @@ export const workItemQueryResponse = {
             iid: '5',
             title: 'Parent title',
             confidential: false,
+            namespace: {
+              id: 'gid://gitlab/Group/1',
+              fullPath: 'test-project-path',
+              __typename: 'Namespace',
+            },
             webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/1',
@@ -423,7 +428,7 @@ export const updateWorkItemMutationErrorResponse = {
   },
 };
 
-export const mockworkItemReferenceQueryResponse = {
+export const mockWorkItemReferenceQueryResponse = {
   data: {
     workItemsByReference: {
       nodes: [
@@ -432,6 +437,11 @@ export const mockworkItemReferenceQueryResponse = {
           iid: '111',
           title: 'Objective linked items 104',
           confidential: false,
+          namespace: {
+            id: 'gid://gitlab/Group/1',
+            fullPath: 'test-project-path',
+            __typename: 'Namespace',
+          },
           workItemType: {
             iconName: 'issue-type-objective',
             id: 'gid://gitlab/WorkItems::Type/6',
@@ -568,6 +578,11 @@ export const mockParent = {
     iid: '5',
     title: 'Parent title',
     confidential: false,
+    namespace: {
+      id: 'gid://gitlab/Group/1',
+      fullPath: 'test-project-path',
+      __typename: 'Namespace',
+    },
     webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
     workItemType: {
       id: 'gid://gitlab/WorkItems::Type/1',
@@ -1429,6 +1444,7 @@ export const workItemResponseFactory = ({
   notificationsWidgetPresent = true,
   currentUserTodosWidgetPresent = true,
   awardEmojiWidgetPresent = true,
+  newCustomEmojiPath = '',
   subscribed = true,
   allowsMultipleAssignees = true,
   assigneesWidgetPresent = true,
@@ -1782,6 +1798,7 @@ export const workItemResponseFactory = ({
               __typename: 'WorkItemWidgetAwardEmoji',
               type: 'AWARD_EMOJI',
               awardEmoji,
+              ...(newCustomEmojiPath ? { newCustomEmojiPath } : {}),
             }
           : { type: 'MOCK TYPE' },
         linkedItemsWidgetPresent ? linkedItems : { type: 'MOCK TYPE' },
@@ -3295,6 +3312,11 @@ export const availableObjectivesResponse = {
             iid: '122',
             title: 'Objective 101',
             confidential: false,
+            namespace: {
+              id: 'gid://gitlab/Group/1',
+              fullPath: 'test-project-path',
+              __typename: 'Namespace',
+            },
             workItemType: {
               iconName: 'issue-type-objective',
               id: 'gid://gitlab/WorkItems::Type/6',
@@ -3308,6 +3330,11 @@ export const availableObjectivesResponse = {
             iid: '118',
             title: 'Objective 103',
             confidential: false,
+            namespace: {
+              id: 'gid://gitlab/Group/1',
+              fullPath: 'test-project-path',
+              __typename: 'Namespace',
+            },
             workItemType: {
               iconName: 'issue-type-objective',
               id: 'gid://gitlab/WorkItems::Type/6',
@@ -3321,6 +3348,11 @@ export const availableObjectivesResponse = {
             iid: '117',
             title: 'Objective 102',
             confidential: false,
+            namespace: {
+              id: 'gid://gitlab/Group/1',
+              fullPath: 'test-project-path',
+              __typename: 'Namespace',
+            },
             workItemType: {
               iconName: 'issue-type-objective',
               id: 'gid://gitlab/WorkItems::Type/6',
@@ -3347,6 +3379,11 @@ export const searchedObjectiveResponse = {
             iid: '122',
             title: 'Objective 101',
             confidential: false,
+            namespace: {
+              id: 'gid://gitlab/Group/1',
+              fullPath: 'test-project-path',
+              __typename: 'Namespace',
+            },
             workItemType: {
               iconName: 'issue-type-objective',
               id: 'gid://gitlab/WorkItems::Type/6',
@@ -3611,6 +3648,11 @@ export const mockParentWidgetResponse = {
   iid: '122',
   title: 'Objective 101',
   confidential: false,
+  namespace: {
+    id: 'gid://gitlab/Group/1',
+    fullPath: 'test-project-path',
+    __typename: 'Namespace',
+  },
   webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_items/122',
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/6',
@@ -3636,6 +3678,11 @@ export const mockAncestorWidgetResponse = {
               iid: '149',
               title: 'Objective 333',
               confidential: false,
+              namespace: {
+                id: 'gid://gitlab/Group/1',
+                fullPath: 'test-project-path',
+                __typename: 'Namespace',
+              },
               webUrl: 'http://gdk.test:3000/gitlab-org/gitlab-test/-/work_items/149',
               workItemType: {
                 id: 'gid://gitlab/WorkItems::Type/6',

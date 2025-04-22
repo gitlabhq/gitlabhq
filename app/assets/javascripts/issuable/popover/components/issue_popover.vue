@@ -15,6 +15,7 @@ import {
 import { WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
 
 export default {
+  name: 'IssuePopover',
   components: {
     GlIcon,
     GlPopover,
@@ -31,7 +32,7 @@ export default {
   mixins: [timeagoMixin],
   props: {
     target: {
-      type: HTMLAnchorElement,
+      type: [HTMLElement, Function, Object, String],
       required: true,
     },
     namespacePath: {
@@ -44,7 +45,13 @@ export default {
     },
     cachedTitle: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
+    },
+    show: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -96,7 +103,7 @@ export default {
 </script>
 
 <template>
-  <gl-popover :target="target" boundary="viewport" placement="top" show>
+  <gl-popover :target="target" boundary="viewport" placement="top" :show="show">
     <gl-skeleton-loader v-if="$apollo.queries.workItem.loading" :height="15">
       <rect width="250" height="15" rx="4" />
     </gl-skeleton-loader>
@@ -115,7 +122,7 @@ export default {
           {{ __('Opened') }} <time :datetime="workItem.createdAt">{{ formattedTime }}</time>
         </span>
       </div>
-      <div class="gl-heading-5 gl-my-3">{{ title }}</div>
+      <div class="gl-heading-5 gl-my-3" data-testid="popover-title">{{ title }}</div>
       <div>
         <work-item-type-icon :work-item-type="type" />
         <span class="gl-text-subtle">{{ reference }}</span>

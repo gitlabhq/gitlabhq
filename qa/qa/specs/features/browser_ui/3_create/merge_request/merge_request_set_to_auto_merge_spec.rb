@@ -15,7 +15,7 @@ module QA
             content: <<~YAML
               test:
                 tags: ["#{runner_name}"]
-                script: sleep 25
+                script: sleep 45
                 only:
                   - merge_requests
             YAML

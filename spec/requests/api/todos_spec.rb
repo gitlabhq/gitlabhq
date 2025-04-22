@@ -244,6 +244,16 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
       end
     end
 
+    context 'when user is a bot' do
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'request_todos_by_bot_user' }
+        let(:user) { create(:user, :service_account) }
+        let(:additional_properties) { { label: 'user_type', property: user.user_type } }
+        let(:event_attribute_overrides) { { project: nil, namespace: nil } }
+        subject(:api_request) { get api('/todos', user) }
+      end
+    end
+
     it 'avoids N+1 queries', :request_store do
       create_issue_todo_for(john_doe)
       create(:todo, project: project_1, author: author_2, user: john_doe, target: merge_request)

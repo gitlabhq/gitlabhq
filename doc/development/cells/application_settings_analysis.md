@@ -14,12 +14,12 @@ title: Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 495
+- Number of attributes: 497
 - Number of encrypted attributes: 41 (8.0%)
 - Number of attributes documented: 298 (60.0%)
 - Number of attributes on GitLab.com different from the defaults: 222 (45.0%)
-- Number of attributes with `clusterwide` set: 495 (100.0%)
-- Number of attributes with `clusterwide: true` set: 126 (25.0%)
+- Number of attributes with `clusterwide` set: 497 (100.0%)
+- Number of attributes with `clusterwide: true` set: 128 (26.0%)
 
 ## Individual columns
 
@@ -66,7 +66,7 @@ title: Application Settings analysis
 | `can_create_group` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `can_create_organization` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `check_namespace_plan` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
-| `ci_cd_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
+| `ci_cd_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `false`| `false` |
 | `ci_job_token_signing_key` | `true` | `bytea` | `` | `false` | `null` | `true` | `true`| `false` |
 | `ci_jwt_signing_key` | `true` | `text` | `` | `false` | `null` | `true` | `true`| `false` |
 | `ci_max_includes` | `false` | `integer` | `integer` | `true` | `150` | `false` | `false`| `true` |
@@ -147,8 +147,9 @@ title: Application Settings analysis
 | `domain_denylist` | `false` | `text` | `array of strings` | `false` | `null` | `true` | `true`| `true` |
 | `domain_denylist_enabled` | `false` | `boolean` | `boolean` | `false` | `false` | `true` | `true`| `true` |
 | `dsa_key_restriction` | `false` | `integer` | `integer` | `true` | `'-1'::integer` | `false` | `false`| `true` |
-| `duo_chat` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
+| `duo_chat` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `duo_features_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
+| `duo_nano_features_enabled` | `false` | `boolean` | `` | `false` | `null` | `false` | `true`| `false` |
 | `duo_workflow` | `false` | `jsonb` | `` | `false` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `ecdsa_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
 | `ecdsa_sk_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
@@ -216,6 +217,7 @@ title: Application Settings analysis
 | `group_import_limit` | `false` | `integer` | `` | `true` | `6` | `false` | `false`| `false` |
 | `group_owners_can_manage_default_branch_protection` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `group_runner_token_expiration_interval` | `false` | `integer` | `integer` | `false` | `null` | `false` | `false`| `true` |
+| `group_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `hashed_storage_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `health_check_access_token` | `false` | `character` | `` | `false` | `null` | `true` | `true`| `false` |
 | `help_page_documentation_base_url` | `false` | `text` | `` | `false` | `null` | `true` | `true`| `false` |

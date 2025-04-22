@@ -265,8 +265,8 @@ export const RELATED_ITEM_ID_URL_QUERY_PARAM = 'related_item_id';
 export const WORK_ITEM_REFERENCE_CHAR = '#';
 
 export const NEW_WORK_ITEM_IID = 'new-work-item-iid';
-
 export const NEW_WORK_ITEM_GID = 'gid://gitlab/WorkItem/new';
+export const NO_WORK_ITEM_IID = 'no-work-item-iid';
 
 export const NEW_EPIC_FEEDBACK_PROMPT_EXPIRY = '2024-12-31';
 export const NEW_ISSUE_FEEDBACK_PROMPT_EXPIRY = '2025-04-25';

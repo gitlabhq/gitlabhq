@@ -50,6 +50,11 @@ export default {
       required: false,
       default: true,
     },
+    customEmojiPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -61,6 +66,9 @@ export default {
     };
   },
   computed: {
+    newEmojiPath() {
+      return this.newCustomEmojiPath || this.customEmojiPath;
+    },
     categoryNames() {
       return CATEGORY_NAMES.filter((c) => {
         if (c === FREQUENTLY_USED_KEY) return hasFrequentlyUsedEmojis();
@@ -77,7 +85,7 @@ export default {
     newCustomEmoji() {
       return {
         text: __('Create new emoji'),
-        href: this.newCustomEmojiPath,
+        href: this.newEmojiPath,
         extraAttrs: {
           'data-testid': 'create-new-emoji',
         },
@@ -225,12 +233,12 @@ export default {
         </template>
       </emoji-list>
 
-      <template v-if="newCustomEmojiPath" #footer>
+      <template v-if="newEmojiPath" #footer>
         <div
           class="gl-flex gl-flex-col gl-border-t-1 gl-border-t-dropdown !gl-p-2 !gl-pt-0 gl-border-t-solid"
         >
           <gl-button
-            :href="newCustomEmojiPath"
+            :href="newEmojiPath"
             category="tertiary"
             block
             data-testid="create-new-emoji"

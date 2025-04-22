@@ -37,6 +37,7 @@ export default {
   },
   data() {
     return {
+      newCustomEmojiPath: '',
       isLoading: false,
     };
   },
@@ -62,6 +63,9 @@ export default {
           name: emoji.user.name,
         },
       }));
+    },
+    customEmojiPath() {
+      return this.newCustomEmojiPath;
     },
     pageInfo() {
       return this.awardEmoji?.pageInfo;
@@ -95,6 +99,8 @@ export default {
           this.isLoading = false;
         }
         if (data) {
+          this.newCustomEmojiPath =
+            findAwardEmojiWidget(data.workspace?.workItem)?.newCustomEmojiPath || '';
           this.$emit('emoji-updated', data.workspace?.workItem);
         }
       },
@@ -244,6 +250,7 @@ export default {
       :can-award-emoji="$options.isLoggedIn"
       :current-user-id="currentUserId"
       :default-awards="$options.defaultAwards"
+      :custom-emoji-path="customEmojiPath"
       selected-class="selected"
       @award="handleAward"
     />

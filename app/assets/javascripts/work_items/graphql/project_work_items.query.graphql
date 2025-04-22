@@ -15,6 +15,10 @@ query projectWorkItems(
         iid
         title
         confidential
+        namespace {
+          id
+          fullPath
+        }
         workItemType {
           id
           name
@@ -28,6 +32,10 @@ query projectWorkItems(
         iid
         title
         confidential
+        namespace {
+          id
+          fullPath
+        }
         workItemType {
           id
           name

@@ -11,6 +11,10 @@ fragment WorkItemAncestors on WorkItem {
         iid
         title
         confidential
+        namespace {
+          id
+          fullPath
+        }
         webUrl
         workItemType {
           id

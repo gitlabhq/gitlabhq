@@ -11,7 +11,7 @@ import groupWorkItemsQuery from '~/work_items/graphql/group_work_items.query.gra
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import workItemsByReferencesQuery from '~/work_items/graphql/work_items_by_references.query.graphql';
 import workItemAncestorsQuery from '~/work_items/graphql/work_item_ancestors.query.graphql';
-import { searchWorkItemsResponse, mockworkItemReferenceQueryResponse } from '../../mock_data';
+import { searchWorkItemsResponse, mockWorkItemReferenceQueryResponse } from '../../mock_data';
 
 Vue.use(VueApollo);
 
@@ -48,6 +48,11 @@ describe('WorkItemTokenInput', () => {
           iid: '2',
           title: 'Task 1',
           confidential: false,
+          namespace: {
+            id: 'gid://gitlab/Group/1',
+            fullPath: 'test-project-path',
+            __typename: 'Namespace',
+          },
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/5',
             name: 'Task',
@@ -61,6 +66,11 @@ describe('WorkItemTokenInput', () => {
           iid: '3',
           title: 'Task 2',
           confidential: false,
+          namespace: {
+            id: 'gid://gitlab/Group/1',
+            fullPath: 'test-project-path',
+            __typename: 'Namespace',
+          },
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/5',
             name: 'Task',
@@ -74,6 +84,11 @@ describe('WorkItemTokenInput', () => {
           iid: '4',
           title: 'Task 3',
           confidential: false,
+          namespace: {
+            id: 'gid://gitlab/Group/1',
+            fullPath: 'test-project-path',
+            __typename: 'Namespace',
+          },
           workItemType: {
             id: 'gid://gitlab/WorkItems::Type/5',
             name: 'Task',
@@ -175,6 +190,11 @@ describe('WorkItemTokenInput', () => {
     iid: '3',
     title: 'Task 2',
     confidential: false,
+    namespace: {
+      id: 'gid://gitlab/Group/1',
+      fullPath: 'test-project-path',
+      __typename: 'Namespace',
+    },
     workItemType: {
       id: 'gid://gitlab/WorkItems::Type/5',
       name: 'Task',
@@ -189,6 +209,11 @@ describe('WorkItemTokenInput', () => {
     iid: 'Task 2 <svg><use href=#/></svg>',
     title: 'Task 2 <svg><use href=#/></svg>',
     confidential: false,
+    namespace: {
+      id: 'gid://gitlab/Group/1',
+      fullPath: 'test-project-path',
+      __typename: 'Namespace',
+    },
     workItemType: {
       id: 'gid://gitlab/WorkItems::Type/5',
       name: 'Task',
@@ -211,7 +236,7 @@ describe('WorkItemTokenInput', () => {
 
   const workItemReferencesQueryResolver = jest
     .fn()
-    .mockResolvedValue(mockworkItemReferenceQueryResponse);
+    .mockResolvedValue(mockWorkItemReferenceQueryResponse);
 
   const workItemAncestorsQueryHandler = jest.fn().mockResolvedValue(workItemAncestorsQueryResponse);
 
@@ -328,6 +353,11 @@ describe('WorkItemTokenInput', () => {
       iid: '101',
       title: 'Task 3',
       confidential: false,
+      namespace: {
+        id: 'gid://gitlab/Group/1',
+        fullPath: 'test-project-path',
+        __typename: 'Namespace',
+      },
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/5',
         name: 'Task',
@@ -341,6 +371,11 @@ describe('WorkItemTokenInput', () => {
       iid: '3',
       title: 'Task 123',
       confidential: false,
+      namespace: {
+        id: 'gid://gitlab/Group/1',
+        fullPath: 'test-project-path',
+        __typename: 'Namespace',
+      },
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/5',
         name: 'Task',
@@ -354,6 +389,11 @@ describe('WorkItemTokenInput', () => {
       iid: '123',
       title: 'Task 2',
       confidential: false,
+      namespace: {
+        id: 'gid://gitlab/Group/1',
+        fullPath: 'test-project-path',
+        __typename: 'Namespace',
+      },
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/5',
         name: 'Task',

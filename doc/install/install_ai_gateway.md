@@ -71,6 +71,167 @@ To fix this, set the appropriate certificate bundle path in the Docker container
 
 Replace `/path/to/ca-bundle.pem` with the actual path to your certificate bundle.
 
+## Docker-NGINX-SSL Setup
+
+{{< alert type="note" >}}
+
+This method of deploying NGINX or Caddy as a reverse proxy is a temporary workaround to support SSL
+until [issue 455854](https://gitlab.com/gitlab-org/gitlab/-/issues/455854)
+is implemented.
+
+{{< /alert >}}
+
+You can set up SSL for an AI gateway instance by using Docker,
+NGINX as a reverse proxy, and Let's Encrypt for SSL certificates.
+
+NGINX manages the secure connection with external clients, decrypting incoming HTTPS requests before
+passing them to the AI Gateway.
+
+Prerequisites:
+
+- Docker and Docker Compose installed
+- Registered and configured domain name
+
+### Step 1: Create Configuration Files
+
+Create the following files in your working directory:
+
+1. `nginx.conf`:
+
+   ```nginx
+   user  nginx;
+   worker_processes  auto;
+   error_log  /var/log/nginx/error.log warn;
+   pid        /var/run/nginx.pid;
+   events {
+       worker_connections  1024;
+   }
+   http {
+       include       /etc/nginx/mime.types;
+       default_type  application/octet-stream;
+       log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                         '$status $body_bytes_sent "$http_referer" '
+                         '"$http_user_agent" "$http_x_forwarded_for"';
+       access_log  /var/log/nginx/access.log  main;
+       sendfile        on;
+       keepalive_timeout  65;
+       include /etc/nginx/conf.d/*.conf;
+   }
+   ```
+
+1. `default.conf`:
+
+   ```nginx
+   # nginx/conf.d/default.conf
+   server {
+       listen 80;
+       server_name _;
+
+       # Forward all requests to the AI Gateway
+       location / {
+           proxy_pass http://gitlab-ai-gateway:5052;
+           proxy_read_timeout 300s;
+           proxy_connect_timeout 75s;
+           proxy_buffering off;
+       }
+   }
+
+   server {
+       listen 443 ssl;
+       server_name _;
+
+       # SSL configuration
+       ssl_certificate /etc/nginx/ssl/server.crt;
+       ssl_certificate_key /etc/nginx/ssl/server.key;
+
+       # Configuration for self-signed certificates
+       ssl_verify_client off;
+       ssl_protocols TLSv1.2 TLSv1.3;
+       ssl_ciphers HIGH:!aNULL:!MD5;
+       ssl_prefer_server_ciphers on;
+       ssl_session_cache shared:SSL:10m;
+       ssl_session_timeout 10m;
+
+       # Proxy headers
+       proxy_set_header Host $host;
+       proxy_set_header X-Real-IP $remote_addr;
+       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+       proxy_set_header X-Forwarded-Proto $scheme;
+
+       # WebSocket support (if needed)
+       proxy_http_version 1.1;
+       proxy_set_header Upgrade $http_upgrade;
+       proxy_set_header Connection "upgrade";
+
+       # Forward all requests to the AI Gateway
+       location / {
+           proxy_pass http://gitlab-ai-gateway:5052;
+           proxy_read_timeout 300s;
+           proxy_connect_timeout 75s;
+           proxy_buffering off;
+       }
+   }
+   ```
+
+### Step 2: SSL Certificate setup using Let's Encrypt
+
+- For Docker-based NGINX servers, Certbot provides an automated way to implement Let's Encrypt certificates -
+  see the [guide here](https://phoenixnap.com/kb/letsencrypt-docker).
+- Alternatively, you can use [Certbot's manual installation](https://eff-certbot.readthedocs.io/en/stable/using.html#manual)
+  process if you prefer that approach.
+
+### Step 3: Create Docker-compose file
+
+1. `docker-compose.yaml`:
+
+   ```yaml
+   version: '3.8'
+
+   services:
+     nginx-proxy:
+       image: nginx:alpine
+       ports:
+         - "80:80"
+         - "443:443"
+       volumes:
+         - /path/to/nginx.conf:/etc/nginx/nginx.conf:ro
+         - /path/to/default.conf:/etc/nginx/conf.d/default.conf:ro
+         - /path/to/fullchain.pem:/etc/nginx/ssl/server.crt:ro
+         - /path/to/privkey.pem:/etc/nginx/ssl/server.key:ro
+       networks:
+         - proxy-network
+       depends_on:
+         - gitlab-ai-gateway
+
+     gitlab-ai-gateway:
+       image: registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:<ai-gateway-tag>
+       expose:
+         - "5052"
+       environment:
+         - AIGW_GITLAB_URL=<your_gitlab_instance>
+         - AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/
+       networks:
+         - proxy-network
+       restart: always
+
+   networks:
+     proxy-network:
+       driver: bridge
+   ```
+
+### Step 4: Deployment and validation
+
+1. Start the `nginx` and `AIGW` containers and verify if they're running:
+
+   ```shell
+   docker-compose up
+   docker ps
+   ```
+
+1. Configure your [GitLab instance to access the AI gateway](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-your-gitlab-instance-to-access-the-ai-gateway).
+
+1. Perform the health check and confirm that the AI gateway is accessible.
+
 ## Install using the AI gateway Helm chart
 
 Prerequisites:

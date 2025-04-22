@@ -679,6 +679,12 @@ class ApplicationSetting < ApplicationRecord
   attribute :resource_usage_limits, ::Gitlab::Database::Type::IndifferentJsonb.new, default: -> { {} }
   validates :resource_usage_limits, json_schema: { filename: 'resource_usage_limits' }
 
+  jsonb_accessor :group_settings,
+    top_level_group_creation_enabled: [:boolean, { default: true }]
+
+  validates :group_settings,
+    json_schema: { filename: "application_setting_group_settings" }
+
   jsonb_accessor :clickhouse,
     use_clickhouse_for_analytics: [:boolean, { default: false }]
 

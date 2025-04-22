@@ -79,6 +79,7 @@ export const handleIssuablePopoverMount = ({
           placement,
           milestoneId: milestone,
           cachedTitle: title || innerText,
+          show: true,
         },
         apolloProvider,
       }).$mount();

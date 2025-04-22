@@ -62,7 +62,7 @@ describe('IssuePopover component', () => {
     });
 
     it('shows title', () => {
-      expect(wrapper.find('.gl-heading-5').text()).toBe(workItem.title);
+      expect(wrapper.find('[data-testid="popover-title"]').text()).toBe(workItem.title);
     });
 
     it('shows the work type icon', () => {

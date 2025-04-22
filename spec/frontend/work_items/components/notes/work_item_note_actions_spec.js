@@ -5,9 +5,15 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import { stubComponent } from 'helpers/stub_component';
+import EmojiPicker from '~/emoji/components/picker.vue';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
 import WorkItemNoteActions from '~/work_items/components/notes/work_item_note_actions.vue';
 import addAwardEmojiMutation from '~/work_items/graphql/notes/work_item_note_add_award_emoji.mutation.graphql';
+
+jest.mock('~/work_items/notes/award_utils', () => ({
+  ...jest.requireActual('~/work_items/notes/award_utils'),
+  getNewCustomEmojiPath: jest.fn().mockReturnValue('/groups/gitlab-org/-/custom_emoji/new'),
+}));
 
 Vue.use(VueApollo);
 
@@ -68,6 +74,7 @@ describe('Work Item Note Actions', () => {
         },
       },
       stubs: {
+        EmojiPicker,
         GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
           methods: { close: showSpy },
         }),
@@ -159,6 +166,9 @@ describe('Work Item Note Actions', () => {
       createComponent();
 
       expect(findEmojiButton().exists()).toBe(true);
+      expect(findEmojiButton().props('customEmojiPath')).toBe(
+        '/groups/gitlab-org/-/custom_emoji/new',
+      );
     });
 
     it('is hidden when `showAwardEmoji` prop is false', () => {

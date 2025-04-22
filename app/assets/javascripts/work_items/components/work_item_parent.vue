@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlIcon, GlPopover } from '@gitlab/ui';
+import { GlIcon, GlLink, GlPopover } from '@gitlab/ui';
 
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
@@ -15,31 +15,21 @@ import workItemsByReferencesQuery from '../graphql/work_items_by_references.quer
 import workItemAllowedParentTypesQuery from '../graphql/work_item_allowed_parent_types.query.graphql';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
+  NAME_TO_ENUM_MAP,
+  NO_WORK_ITEM_IID,
   sprintfWorkItem,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
-  NAME_TO_ENUM_MAP,
 } from '../constants';
-import { isReference, findHierarchyWidgetDefinition, newWorkItemId } from '../utils';
+import { findHierarchyWidgetDefinition, isReference, newWorkItemId } from '../utils';
 
 export default {
   name: 'WorkItemParent',
-  inputId: 'work-item-parent-listbox-value',
-  noWorkItemId: 'no-work-item-id',
-  i18n: {
-    assignParentLabel: s__('WorkItem|Select parent'),
-    parentLabel: s__('WorkItem|Parent'),
-    none: s__('WorkItem|None'),
-    unAssign: s__('WorkItem|Clear'),
-    workItemsFetchError: s__(
-      'WorkItem|Something went wrong while fetching items. Please try again.',
-    ),
-    searchPlaceholder: s__('WorkItem|Search or paste URL'),
-  },
   components: {
     GlLink,
     GlIcon,
     GlPopover,
+    IssuePopover: () => import('~/issuable/popover/components/issue_popover.vue'),
     WorkItemSidebarDropdownWidget,
   },
   inject: ['fullPath'],
@@ -108,11 +98,14 @@ export default {
       return (
         this.workItems.find(({ value }) => this.localSelectedItem === value)?.text ||
         this.parent?.title ||
-        this.$options.i18n.none
+        s__('WorkItem|None')
       );
     },
     workItems() {
       return this.availableWorkItems?.map(({ id, title }) => ({ text: title, value: id })) || [];
+    },
+    parentFullPath() {
+      return this.parent?.namespace.fullPath;
     },
     parentWebUrl() {
       return this.parent?.webUrl;
@@ -159,7 +152,10 @@ export default {
         return data.workspace.workItems.nodes.filter((wi) => this.workItemId !== wi.id) || [];
       },
       error() {
-        this.$emit('error', this.$options.i18n.workItemsFetchError);
+        this.$emit(
+          'error',
+          s__('WorkItem|Something went wrong while fetching items. Please try again.'),
+        );
       },
     },
     workItemsByReference: {
@@ -177,7 +173,10 @@ export default {
         return data?.workItemsByReference?.nodes || [];
       },
       error() {
-        this.$emit('error', this.$options.i18n.workItemsFetchError);
+        this.$emit(
+          'error',
+          s__('WorkItem|Something went wrong while fetching items. Please try again.'),
+        );
       },
     },
     allowedParentTypes: {
@@ -255,9 +254,7 @@ export default {
               id: this.workItemId,
               hierarchyWidget: {
                 parentId:
-                  this.localSelectedItem === this.$options.noWorkItemId
-                    ? null
-                    : this.localSelectedItem,
+                  this.localSelectedItem === NO_WORK_ITEM_IID ? null : this.localSelectedItem,
               },
             },
           },
@@ -272,7 +269,7 @@ export default {
 
         if (errors.length) {
           this.$emit('error', errors.join('\n'));
-          this.localSelectedItem = this.parent?.id || this.$options.noWorkItemId;
+          this.localSelectedItem = this.parent?.id || NO_WORK_ITEM_IID;
         }
       } catch (error) {
         this.$emit('error', sprintfWorkItem(I18N_WORK_ITEM_ERROR_UPDATING, this.workItemType));
@@ -289,7 +286,7 @@ export default {
       this.updateParent();
     },
     unassignParent() {
-      this.localSelectedItem = this.$options.noWorkItemId;
+      this.localSelectedItem = NO_WORK_ITEM_IID;
       this.updateParent();
     },
     onListboxShown() {
@@ -311,11 +308,11 @@ export default {
     :list-items="workItems"
     :loading="isLoading"
     :item-value="localSelectedItem"
-    :header-text="$options.i18n.assignParentLabel"
+    :header-text="s__('WorkItem|Select parent')"
     :update-in-progress="updateInProgress"
-    :reset-button-label="$options.i18n.unAssign"
+    :reset-button-label="s__('WorkItem|Clear')"
     :toggle-dropdown-text="listboxText"
-    :search-placeholder="$options.i18n.searchPlaceholder"
+    :search-placeholder="s__('WorkItem|Search or paste URL')"
     data-testid="work-item-parent"
     @dropdownShown="onListboxShown"
     @dropdownHidden="onListboxHide"
@@ -324,13 +321,21 @@ export default {
     @reset="unassignParent"
   >
     <template #readonly>
-      <gl-link
-        v-if="localSelectedItem"
-        data-testid="work-item-parent-link"
-        class="gl-inline-block gl-max-w-full gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-align-top gl-text-default"
-        :href="parentWebUrl"
-        >{{ listboxText }}</gl-link
-      >
+      <template v-if="localSelectedItem">
+        <gl-link
+          ref="link"
+          data-testid="work-item-parent-link"
+          class="gl-inline-block gl-max-w-full gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-align-top gl-text-default"
+          :href="parentWebUrl"
+          >{{ listboxText }}</gl-link
+        >
+        <issue-popover
+          :cached-title="parent.title"
+          :iid="parent.iid"
+          :namespace-path="parentFullPath"
+          :target="() => $refs.link.$el"
+        />
+      </template>
     </template>
     <template v-if="showCustomNoneValue" #none>
       <span id="parent-not-available" class="gl-cursor-help">

@@ -12,14 +12,18 @@ title: SAML SSO for GitLab Self-Managed
 
 {{< /details >}}
 
+{{< alert type="note" >}}
+
+For GitLab.com, see [SAML SSO for GitLab.com groups](../user/group/saml_sso/_index.md).
+
+{{< /alert >}}
+
 This page describes how to set up instance-wide SAML single sign on (SSO) for
 GitLab Self-Managed.
 
 You can configure GitLab to act as a SAML service provider (SP). This allows
 GitLab to consume assertions from a SAML identity provider (IdP), such as
 Okta, to authenticate users.
-
-To set up SAML on GitLab.com, see [SAML SSO for GitLab.com groups](../user/group/saml_sso/_index.md).
 
 For more information on:
 

@@ -88,7 +88,7 @@ When running in this method, you provide a container image that has the required
    ```yaml
    api_discovery:
        extends: .api_discovery_java_spring_boot
-       image: openjdk:11-jre-slim
+       image: eclipse-temurin:17-jre-alpine
    ```
 
 1. Provide the Java class path needed by your application. This includes your compatible build
@@ -99,24 +99,24 @@ When running in this method, you provide a container image that has the required
    ```yaml
    api_discovery:
        extends: .api_discovery_java_spring_boot
-       image: openjdk:11-jre-slim
+       image: eclipse-temurin:17-jre-alpine
        variables:
            API_DISCOVERY_JAVA_CLASSPATH: build/libs/spring-boot-app-0.0.0.jar
    ```
 
 1. Optional. If the image provided is missing a dependency needed by API Discovery, it can be added
-   using a `before_script`. In this example, the `openjdk:11-jre-slim` container doesn't include
+   using a `before_script`. In this example, the `eclipse-temurin:17-jre-alpine` container doesn't include
    `curl` which is required by API Discovery. The dependency can be installed using the Debian
    package manager `apt`:
 
    ```yaml
    api_discovery:
        extends: .api_discovery_java_spring_boot
-       image: openjdk:11-jre-slim
+       image: eclipse-temurin:17-jre-alpine
        variables:
            API_DISCOVERY_JAVA_CLASSPATH: build/libs/spring-boot-app-0.0.0.jar
        before_script:
-           - apt-get update && apt-get install -y curl
+           - apk add --no-cache curl
    ```
 
 1. Optional. If the image provided doesn't automatically set the `JAVA_HOME` environment variable,
@@ -125,7 +125,7 @@ When running in this method, you provide a container image that has the required
    ```yaml
    api_discovery:
        extends: .api_discovery_java_spring_boot
-       image: openjdk:11-jre-slim
+       image: eclipse-temurin:17-jre-alpine
        variables:
            API_DISCOVERY_JAVA_CLASSPATH: build/libs/spring-boot-app-0.0.0.jar
            API_DISCOVERY_JAVA_HOME: /opt/java
@@ -141,7 +141,7 @@ When running in this method, you provide a container image that has the required
    ```yaml
    api_discovery:
        extends: .api_discovery_java_spring_boot
-       image: openjdk:8-jre-alpine
+       image: eclipse-temurin:17-jre-alpine
        variables:
            API_DISCOVERY_JAVA_CLASSPATH: build/libs/spring-boot-app-0.0.0.jar
            API_DISCOVERY_PACKAGE_TOKEN: $GITLAB_READ_TOKEN
@@ -182,8 +182,8 @@ When experiencing a behavior not working as expected, consider providing context
 - GitLab version if using a GitLab Self-Managed instance.
 - `.gitlab-ci.yml` job definition.
 - Full job console output.
-- Framework in use with version (for example Spring Boot v2.3.2).
-- Language runtime with version (for example OpenJDK v17.0.1).
+- Framework in use with version (for example "Spring Boot v2.3.2").
+- Language runtime with version (for example "Eclipse Temurin v17.0.1").
 <!-- - Scanner log file is available as a job artifact named `gl-api-discovery.log`. -->
 
 {{< alert type="warning" >}}

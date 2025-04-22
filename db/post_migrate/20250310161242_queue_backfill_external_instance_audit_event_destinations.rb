@@ -11,17 +11,9 @@ class QueueBackfillExternalInstanceAuditEventDestinations < Gitlab::Database::Mi
   SUB_BATCH_SIZE = 100
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :audit_events_instance_external_audit_event_destinations,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op because there was a bug in the original migration (double JSON encoding),
+    # which has been fixed by BackfillExternalInstanceAuditEventDestinationsFixed
   end
 
-  def down
-    delete_batched_background_migration(MIGRATION, :audit_events_instance_external_audit_event_destinations, :id, [])
-  end
+  def down; end
 end

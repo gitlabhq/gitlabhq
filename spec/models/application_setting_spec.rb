@@ -94,7 +94,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           'session_expire_from_init' => false
         },
         reindexing_minimum_index_size: 1.gigabyte,
-        reindexing_minimum_relative_bloat_size: 0.2
+        reindexing_minimum_relative_bloat_size: 0.2,
+        top_level_group_creation_enabled: true
       )
     end
   end
@@ -294,6 +295,10 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_values([true, false]).for(:lock_pypi_package_requests_forwarding) }
     it { is_expected.not_to allow_value(nil).for(:pypi_package_requests_forwarding) }
     it { is_expected.not_to allow_value(nil).for(:lock_pypi_package_requests_forwarding) }
+
+    context 'for validating the group_settings jsonb_column`s atrributes' do
+      it { is_expected.to allow_values([true, false]).for(:top_level_group_creation_enabled) }
+    end
 
     context 'for non-null integer attributes starting from 0' do
       where(:attribute) do

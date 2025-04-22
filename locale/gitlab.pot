@@ -13017,9 +13017,6 @@ msgstr ""
 msgid "CiVariables|What are pipeline variables?"
 msgstr ""
 
-msgid "CiVariables|You can add CI/CD variables below for last-minute configuration changes before starting the job."
-msgstr ""
-
 msgid "CiVariables|You can use CI/CD variables with the same name in different places, but the variables might overwrite each other. %{linkStart}What is the order of precedence for variables?%{linkEnd}"
 msgstr ""
 
@@ -54997,6 +54994,9 @@ msgstr ""
 msgid "SecurityOrchestration|Security policy projects store your organization's security policies. They are identified when policies are created, or when a project is linked as a security policy project. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "SecurityOrchestration|Select a cadence"
+msgstr ""
+
 msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"
 msgstr ""
 
@@ -61796,6 +61796,9 @@ msgstr ""
 msgid "This job does not start automatically and must be started manually."
 msgstr ""
 
+msgid "This job does not start automatically and must be started manually. You can add CI/CD variables below for last-minute configuration changes before starting the job."
+msgstr ""
+
 msgid "This job has been canceled"
 msgstr ""
 
@@ -64716,16 +64719,7 @@ msgstr ""
 msgid "UsageQuota|Excess storage usage"
 msgstr ""
 
-msgid "UsageQuota|Filter by runner"
-msgstr ""
-
-msgid "UsageQuota|Filter chart by year"
-msgstr ""
-
 msgid "UsageQuota|Filter charts by year"
-msgstr ""
-
-msgid "UsageQuota|Filter list by month"
 msgstr ""
 
 msgid "UsageQuota|Filter projects data by month"
@@ -68789,9 +68783,6 @@ msgid "WorkItem|Only 10 items can be added at a time."
 msgstr ""
 
 msgid "WorkItem|Options:"
-msgstr ""
-
-msgid "WorkItem|Parent"
 msgstr ""
 
 msgid "WorkItem|Parent item type %{parentWorkItemType} is not supported on %{workItemType}. Remove the parent item to change type."

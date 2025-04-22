@@ -386,6 +386,10 @@ GitLab.com sets these requirements for passwords on new accounts and password ch
 - All characters are accepted. For example, `~`, `!`, `@`, `#`, `$`, `%`, `^`, `&`, `*`, `()`,
   `[]`, `_`, `+`,  `=`, and `-`.
 
+## Group creation
+
+On GitLab.com, [top-level group creation](../../api/groups.md#create-a-group) is not available through the API. It must be performed through the UI.
+
 ## Project and group deletion
 
 Settings related to the deletion of projects and groups.

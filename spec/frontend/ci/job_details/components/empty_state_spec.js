@@ -1,7 +1,7 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EmptyState from '~/ci/job_details/components/empty_state.vue';
 import ManualJobForm from '~/ci/job_details/components/manual_job_form.vue';
-import { mockFullPath, mockId, mockPipelineVariablesPermissions } from '../mock_data';
+import { mockId } from '../mock_data';
 
 describe('Empty State', () => {
   let wrapper;
@@ -16,24 +16,12 @@ describe('Empty State', () => {
     isRetryable: true,
   };
 
-  const defaultProvide = {
-    projectPath: mockFullPath,
-    userRole: 'maintainer',
-  };
-
-  const createWrapper = ({
-    props,
-    pipelineVariablesPermissionsMixin = mockPipelineVariablesPermissions(true),
-  } = {}) => {
+  const createWrapper = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(EmptyState, {
       propsData: {
         ...defaultProps,
         ...props,
       },
-      provide: {
-        ...defaultProvide,
-      },
-      mixins: [pipelineVariablesPermissionsMixin],
     });
   };
 
@@ -157,43 +145,6 @@ describe('Empty State', () => {
 
     it('does not render manual variables form', () => {
       expect(findManualVarsForm().exists()).toBe(false);
-    });
-  });
-
-  describe('when user is allowed to see the pipeline variables', () => {
-    beforeEach(() => {
-      createWrapper({
-        props: { content, isRetryable: false, playable: true, scheduled: false },
-      });
-    });
-
-    it('provides `canViewPipelineVariables` as `true` to manual variables form', () => {
-      expect(findManualVarsForm().props('canViewPipelineVariables')).toBe(true);
-    });
-
-    it('renders additional text for pipeline variables when it is not a retryable job', () => {
-      expect(findContent().text()).toContain(
-        'You can add CI/CD variables below for last-minute configuration changes before starting the job.',
-      );
-    });
-  });
-
-  describe('when user is not allowed to see the pipeline variables', () => {
-    beforeEach(() => {
-      createWrapper({
-        props: { content, isRetryable: false, playable: true, scheduled: false },
-        pipelineVariablesPermissionsMixin: mockPipelineVariablesPermissions(false),
-      });
-    });
-
-    it('provides `canViewPipelineVariables` as `false` to manual variables form', () => {
-      expect(findManualVarsForm().props('canViewPipelineVariables')).toBe(false);
-    });
-
-    it('does not render additional text for pipeline variables when it is not a retryable job', () => {
-      expect(findContent().text()).not.toContain(
-        'You can add CI/CD variables below for last-minute configuration changes before starting the job.',
-      );
     });
   });
 

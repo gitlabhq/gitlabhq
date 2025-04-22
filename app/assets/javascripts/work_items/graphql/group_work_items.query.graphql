@@ -23,6 +23,10 @@ query groupWorkItems(
         iid
         title
         confidential
+        namespace {
+          id
+          fullPath
+        }
         workItemType {
           id
           name
@@ -41,6 +45,10 @@ query groupWorkItems(
         iid
         title
         confidential
+        namespace {
+          id
+          fullPath
+        }
         workItemType {
           id
           name
