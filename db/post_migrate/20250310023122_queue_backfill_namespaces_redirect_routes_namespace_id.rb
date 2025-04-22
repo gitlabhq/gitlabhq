@@ -6,24 +6,9 @@ class QueueBackfillNamespacesRedirectRoutesNamespaceId < Gitlab::Database::Migra
   restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
 
   MIGRATION = "BackfillNamespacesRedirectRoutesNamespaceId"
-  DELAY_INTERVAL = 2.minutes
-  BATCH_SIZE = 1_000
-  MAX_BATCH_SIZE = 10_000
-  SUB_BATCH_SIZE = 250
 
-  def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :redirect_routes,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      max_batch_size: MAX_BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
-  end
-
-  def down
-    delete_batched_background_migration(MIGRATION, :redirect_routes, :id, [])
+  def change
+    # no-op because there was a performance concern in the original migration, which has been
+    # fixed by https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186774
   end
 end

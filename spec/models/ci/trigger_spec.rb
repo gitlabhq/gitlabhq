@@ -50,14 +50,6 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
 
       it { is_expected.to eq(pipeline1.reload.created_at) }
 
-      context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
-        before do
-          stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
-        end
-
-        it { is_expected.to eq(trigger_request1.reload.created_at) }
-      end
-
       context 'when there are two pipelines' do
         let_it_be(:pipeline2) do
           create(:ci_empty_pipeline, trigger: trigger, project: project, created_at: '2025-02-11')
@@ -67,14 +59,6 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
         let_it_be(:trigger_request2) { create(:ci_trigger_request, trigger: trigger, created_at: '2025-02-10') }
 
         it { is_expected.to eq(pipeline2.reload.created_at) }
-
-        context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
-          before do
-            stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
-          end
-
-          it { is_expected.to eq(trigger_request2.reload.created_at) }
-        end
       end
     end
   end

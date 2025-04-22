@@ -13,9 +13,11 @@
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#available-cicd-variables
 
 variables:
-  # Setting this variable will affect all Security templates
+  # Setting these variables affect all Security templates
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
+  AST_ENABLE_MR_PIPELINES: "true"
+  #
   DS_EXCLUDED_ANALYZERS: ""
   DS_EXCLUDED_PATHS: "spec, test, tests, tmp"
   DS_MAJOR_VERSION: 5
@@ -82,23 +84,33 @@ gemnasium-dependency_scanning:
     - if: $DS_ENFORCE_NEW_ANALYZER == 'true'
       when: never
 
-      # Add the job to merge request pipelines if there's an open merge request.
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR pipeline* if MR pipelines for AST are enabled and there's an open merge request.
+    ## When FIPS mode is enabled, use the FIPS compatible image
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $CI_GITLAB_FIPS_MODE == "true"
       exists: !reference [.gemnasium-shared-rule, exists]
       variables:
         DS_IMAGE_SUFFIX: "-fips"
         DS_REMEDIATE: "false"
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+    ## When FIPS mode is not enabled, use the regular image
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists: !reference [.gemnasium-shared-rule, exists]
 
-      # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
-    - if: $CI_OPEN_MERGE_REQUESTS
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
       when: never
 
-      # Add the job to branch pipelines.
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
+    ## When FIPS mode is enabled, use the FIPS compatible image
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $CI_GITLAB_FIPS_MODE == "true"
@@ -106,6 +118,7 @@ gemnasium-dependency_scanning:
       variables:
         DS_IMAGE_SUFFIX: "-fips"
         DS_REMEDIATE: "false"
+    ## When FIPS mode is not enabled, use the regular image
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists: !reference [.gemnasium-shared-rule, exists]
@@ -129,29 +142,40 @@ gemnasium-maven-dependency_scanning:
     - if: $DS_ENFORCE_NEW_ANALYZER == 'true'
       when: never
 
-    # Add the job to merge request pipelines if there's an open merge request.
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR pipeline* if MR pipelines for AST are enabled and there's an open merge request.
+    ## When FIPS mode is enabled, use the FIPS compatible image
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $CI_GITLAB_FIPS_MODE == "true"
       exists: !reference [.gemnasium-maven-shared-rule, exists]
       variables:
         DS_IMAGE_SUFFIX: "-fips"
         DS_REMEDIATE: "false"
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+    ## When FIPS mode is not enabled, use the regular image
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists: !reference [.gemnasium-maven-shared-rule, exists]
 
-      # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
-    - if: $CI_OPEN_MERGE_REQUESTS
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
       when: never
 
-      # Add the job to branch pipelines.
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
+    ## When FIPS mode is enabled, use the FIPS compatible image
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $CI_GITLAB_FIPS_MODE == "true"
       exists: !reference [.gemnasium-maven-shared-rule, exists]
       variables:
         DS_IMAGE_SUFFIX: "-fips"
+    ## When FIPS mode is not enabled, use the regular image
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists: !reference [.gemnasium-maven-shared-rule, exists]
@@ -175,44 +199,57 @@ gemnasium-python-dependency_scanning:
     - if: $DS_ENFORCE_NEW_ANALYZER == 'true'
       when: never
 
-    # Add the job to merge request pipelines if there's an open merge request.
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR pipeline* if MR pipelines for AST are enabled and there's an open merge request.
+    ## When FIPS mode is enabled, use the FIPS compatible image
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $CI_GITLAB_FIPS_MODE == "true"
       exists: !reference [.gemnasium-python-shared-rule, exists]
       variables:
         DS_IMAGE_SUFFIX: "-fips"
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+    ## When FIPS mode is not enabled, use the regular image
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists: !reference [.gemnasium-python-shared-rule, exists]
-    # Support passing of $PIP_REQUIREMENTS_FILE
-    #   See https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+    ## When $PIP_REQUIREMENTS_FILE is configured
+    ## See https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $PIP_REQUIREMENTS_FILE &&
           $CI_GITLAB_FIPS_MODE == "true"
       variables:
         DS_IMAGE_SUFFIX: "-fips"
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $PIP_REQUIREMENTS_FILE
 
-    # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
-    - if: $CI_OPEN_MERGE_REQUESTS
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
       when: never
 
-    # Add the job to branch pipelines.
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
+    ## When FIPS mode is enabled, use the FIPS compatible image
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $CI_GITLAB_FIPS_MODE == "true"
       exists: !reference [.gemnasium-python-shared-rule, exists]
       variables:
         DS_IMAGE_SUFFIX: "-fips"
+    ## When FIPS mode is not enabled, use the regular image
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists: !reference [.gemnasium-python-shared-rule, exists]
-    # Support passing of $PIP_REQUIREMENTS_FILE
-    # See https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning
+    ## When $PIP_REQUIREMENTS_FILE is configured
+    ## See https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $PIP_REQUIREMENTS_FILE &&
@@ -246,44 +283,50 @@ dependency-scanning:
   rules:
     - if: $DEPENDENCY_SCANNING_DISABLED == 'true' || $DEPENDENCY_SCANNING_DISABLED == '1'
       when: never
+    # If Static Reachability is enabled, this job is replaced by the dependency-scanning-with-reachability job
     - if: $DS_STATIC_REACHABILITY_ENABLED == 'true'
       when: never
     - if: $DS_EXCLUDED_ANALYZERS =~ /dependency-scanning/
       when: never
 
-    # Add the job to merge request pipelines if there's an open merge request.
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
 
+    # 1. Run the job in an *MR pipeline* if MR pipelines for AST are enabled and there's an open merge request.
     ## If the new DS analyzer is enforced, run this job for all possibly supported projects including those
     ## that might need additional file(s) to be provided dynamically by the user. To do that, we use the list in
     ## ADDITIONAL_SUPPORTED_FILES to trigger the job based on non-scannable files present in the repository, and expect
     ## the scannable file(s) to be provided at runtime.
-    - if: $DS_ENFORCE_NEW_ANALYZER == 'true' &&
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $DS_ENFORCE_NEW_ANALYZER == 'true' &&
           $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists:
         - '**/{$ANALYZER_SUPPORTED_FILES,$ADDITIONAL_SUPPORTED_FILES}'
-
-    # Support DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN
-    - if: $DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN &&
+    ## When DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN is configured
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN &&
           $DS_ENFORCE_NEW_ANALYZER == 'true' &&
           $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
 
-    ## Otherwise, run the job only if the project has files supported by the new DS analyzer and not already supported by
-    ## any gemnasium job and ensure to exclude the files already covered by the gemnasium jobs from the analysis.
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+    ## Otherwise, if the new DS analyzer is NOT enforced, run the job only if the project has files supported by the new DS analyzer
+    ## and not already supported by any gemnasium job and ensure to exclude the files already covered by the gemnasium jobs from the analysis.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists:
         - '**/{conda-lock.yml,pubspec.lock,Podfile.lock,Cargo.lock,Package.resolved}'
       variables:
         DS_EXCLUDED_PATHS: 'spec, test, tests, tmp, **/build.gradle, **/build.gradle.kts, **/build.sbt, **/pom.xml, **/requirements.txt, **/requirements.pip, **/Pipfile, **/Pipfile.lock, **/requires.txt, **/setup.py, **/poetry.lock, **/uv.lock, **/packages.lock.json, **/conan.lock, **/package-lock.json, **/npm-shrinkwrap.json, **/pnpm-lock.yaml, **/yarn.lock, **/composer.lock, **/Gemfile.lock, **/gems.locked, **/go.graph, **/ivy-report.xml, **/maven.graph.json, **/dependencies.lock, **/pipdeptree.json, **/pipenv.graph.json, **/dependencies-compile.dot'
 
-    # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
-    - if: $CI_OPEN_MERGE_REQUESTS
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
       when: never
 
-    # Add the job to branch pipelines.
-
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
     ## If the new DS analyzer is enforced, run this job for all possibly supported projects including those
     ## that might need additional file(s) to be provided dynamically by the user. To do that, we use the list in
     ## ADDITIONAL_SUPPORTED_FILES to trigger the job based on non-scannable files present in the repository, and expect
@@ -293,15 +336,14 @@ dependency-scanning:
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists:
         - '**/{$ANALYZER_SUPPORTED_FILES,$ADDITIONAL_SUPPORTED_FILES}'
-
-    # Support DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN
+    ## When DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN is configured
     - if: $DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN &&
           $DS_ENFORCE_NEW_ANALYZER == 'true' &&
           $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
 
-    ## Otherwise, run the job only if the project has files supported by the new DS analyzer and not already supported by
-    ## any gemnasium job and ensure to exclude the files already covered by the gemnasium jobs from the analysis.
+    ## Otherwise, if the new DS analyzer is NOT enforced, run the job only if the project has files supported by the new DS analyzer
+    ## and not already supported by any gemnasium job and ensure to exclude the files already covered by the gemnasium jobs from the analysis.
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists:
@@ -309,7 +351,8 @@ dependency-scanning:
       variables:
         DS_EXCLUDED_PATHS: 'spec, test, tests, tmp, **/build.gradle, **/build.gradle.kts, **/build.sbt, **/pom.xml, **/requirements.txt, **/requirements.pip, **/Pipfile, **/Pipfile.lock, **/requires.txt, **/setup.py, **/poetry.lock, **/uv.lock, **/packages.lock.json, **/conan.lock, **/package-lock.json, **/npm-shrinkwrap.json, **/pnpm-lock.yaml, **/yarn.lock, **/composer.lock, **/Gemfile.lock, **/gems.locked, **/go.graph, **/ivy-report.xml, **/maven.graph.json, **/dependencies.lock, **/pipdeptree.json, **/pipenv.graph.json, **/dependencies-compile.dot'
 
-# this job should run only if SR is enabled
+# This job only runs if Static Reachability is enabled and the new DS analyzer is enforced
+# It replaces the dependency-scanning job with a new one that depends on the gitlab-static-reachability job (using `needs`)
 dependency-scanning-with-reachability:
   stage: !reference [.ds-analyzer, stage]
   variables:
@@ -346,25 +389,35 @@ dependency-scanning-with-reachability:
       when: never
     - if: $DS_EXCLUDED_ANALYZERS =~ /dependency-scanning/
       when: never
-    # Add the job to merge request pipelines if there's an open merge request.
+
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR pipeline* if MR pipelines for AST are enabled and there's an open merge request.
     ## If the new DS analyzer is enforced, run this job for all possibly supported projects including those
     ## that might need additional file(s) to be provided dynamically by the user. To do that, we use the list in
     ## ADDITIONAL_SUPPORTED_FILES to trigger the job based on non-scannable files present in the repository, and expect
     ## the scannable file(s) to be provided at runtime.
-    - if: $DS_ENFORCE_NEW_ANALYZER == 'true' &&
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $DS_ENFORCE_NEW_ANALYZER == 'true' &&
           $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists:
         - '**/{$ANALYZER_SUPPORTED_FILES,$ADDITIONAL_SUPPORTED_FILES}'
-    # Support DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN
-    - if: $DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN &&
+    ## When DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN is configured
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN &&
           $DS_ENFORCE_NEW_ANALYZER == 'true' &&
           $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
-    # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
-    - if: $CI_OPEN_MERGE_REQUESTS
+
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
       when: never
-    # Add the job to branch pipelines.
+
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
     ## If the new DS analyzer is enforced, run this job for all possibly supported projects including those
     ## that might need additional file(s) to be provided dynamically by the user. To do that, we use the list in
     ## ADDITIONAL_SUPPORTED_FILES to trigger the job based on non-scannable files present in the repository, and expect
@@ -374,12 +427,13 @@ dependency-scanning-with-reachability:
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists:
         - '**/{$ANALYZER_SUPPORTED_FILES,$ADDITIONAL_SUPPORTED_FILES}'
-    # Support DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN
+    ## When DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN is configured
     - if: $DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN &&
           $DS_ENFORCE_NEW_ANALYZER == 'true' &&
           $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
 
+# This job only runs if Static Reachability is enabled and the new DS analyzer is enforced
 gitlab-static-reachability:
   stage: !reference [.ds-analyzer, stage]
   variables:
@@ -412,12 +466,19 @@ gitlab-static-reachability:
       # if DS is disabled then static reachability cannot execute
     - if: $DEPENDENCY_SCANNING_DISABLED == 'true' || $DEPENDENCY_SCANNING_DISABLED == '1'
       when: never
-      # Add the job to merge request pipelines if there's an open merge request.
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR* pipeline if MR pipelines for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bsast_advanced\b/
-    # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
-    - if: $CI_OPEN_MERGE_REQUESTS
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
       when: never
-    # If there's no open merge request, add it to a *branch* pipeline instead.
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bsast_advanced\b/

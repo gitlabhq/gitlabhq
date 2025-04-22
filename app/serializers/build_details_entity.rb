@@ -90,8 +90,7 @@ class BuildDetailsEntity < Ci::JobEntity
     raw_project_job_path(project, build)
   end
 
-  expose :trigger,
-    if: ->(*) { Feature.enabled?(:ci_read_trigger_from_ci_pipeline, project) ? build.trigger : build.trigger_request } do
+  expose :trigger, if: ->(*) { build.pipeline.trigger_id } do
     expose :trigger_short_token, as: :short_token
 
     expose :trigger_variables, as: :variables, using: TriggerVariableEntity

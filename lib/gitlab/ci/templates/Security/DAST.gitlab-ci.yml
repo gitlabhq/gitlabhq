@@ -23,9 +23,10 @@
 
 variables:
   DAST_VERSION: 5
-  # Setting this variable will affect all Security templates
+  # Setting this variable affects all Security templates
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
+  #
   DAST_IMAGE_SUFFIX: ""
 
 dast:
@@ -60,11 +61,37 @@ dast:
     - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME &&
           $REVIEW_DISABLED == '1'
       when: never
+
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR pipeline* if MR pipelines for AST are enabled and there's an open merge request.
+    ## When FIPS mode is enabled, use the FIPS compatible image
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $CI_GITLAB_FIPS_MODE == "true" &&
+          $GITLAB_FEATURES =~ /\bdast\b/
+      variables:
+        DAST_IMAGE_SUFFIX: "-fips"
+    ## When FIPS mode is not enabled, use the regular image
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bdast\b/
+
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
+      when: never
+
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
+    ## When FIPS mode is enabled, use the FIPS compatible image
     - if: $CI_COMMIT_BRANCH &&
           $CI_GITLAB_FIPS_MODE == "true" &&
           $GITLAB_FEATURES =~ /\bdast\b/
       variables:
         DAST_IMAGE_SUFFIX: "-fips"
+    ## When FIPS mode is not enabled, use the regular image
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdast\b/
   after_script:

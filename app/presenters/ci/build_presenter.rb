@@ -14,18 +14,10 @@ module Ci
 
     def trigger_variables
       @trigger_variables ||=
-        if ::Feature.enabled?(:ci_read_trigger_from_ci_pipeline, project)
-          return [] if pipeline.trigger_id.blank?
-
-          pipeline.variables.map(&:to_hash_variable)
+        if pipeline.trigger_id.blank?
+          []
         else
-          return [] unless trigger_request
-
-          if pipeline.variables.any?
-            pipeline.variables.map(&:to_hash_variable)
-          else
-            trigger_request.user_variables
-          end
+          pipeline.variables.map(&:to_hash_variable)
         end
     end
 

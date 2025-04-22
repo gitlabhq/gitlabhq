@@ -320,19 +320,6 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
         expect(subject[:trigger][:variables][0][:key]).to eq(pipeline_variable.key)
         expect(subject[:trigger][:variables][0][:value]).to eq(pipeline_variable.value)
       end
-
-      context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
-        before do
-          stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
-        end
-
-        it 'exposes trigger' do
-          expect(subject[:trigger]).to be_present
-          expect(subject[:trigger][:short_token]).to eq(build.trigger_short_token)
-          expect(subject[:trigger][:variables][0][:key]).to eq(pipeline_variable.key)
-          expect(subject[:trigger][:variables][0][:value]).to eq(pipeline_variable.value)
-        end
-      end
     end
   end
 end

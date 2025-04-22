@@ -42,4 +42,20 @@ if (isJest) {
   ];
 }
 
-module.exports = { presets, plugins, sourceType: 'unambiguous' };
+module.exports = {
+  presets,
+  plugins,
+  sourceType: 'unambiguous',
+  env: {
+    istanbul: {
+      plugins: [
+        [
+          'istanbul',
+          {
+            extension: ['.js', '.vue', '.mjs', '.cjs'],
+          },
+        ],
+      ],
+    },
+  },
+};

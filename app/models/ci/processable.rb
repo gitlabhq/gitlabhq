@@ -134,6 +134,8 @@ module Ci
       :merge_train_pipeline?,
       to: :pipeline
 
+    delegate :short_token, to: :trigger, prefix: true, allow_nil: true
+
     def clone(current_user:, new_job_variables_attributes: [])
       new_attributes = self.class.clone_accessors.index_with do |attribute|
         public_send(attribute) # rubocop:disable GitlabSecurity/PublicSend
@@ -265,14 +267,6 @@ module Ci
 
     def manual_confirmation_message
       options[:manual_confirmation] if manual_job?
-    end
-
-    def trigger_short_token
-      if ::Feature.enabled?(:ci_read_trigger_from_ci_pipeline, project)
-        trigger&.short_token
-      else
-        trigger_request&.trigger_short_token
-      end
     end
 
     private

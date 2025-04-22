@@ -139,7 +139,7 @@ pipelines, each of which may contain a security scan.
 - In GitLab 16.2 and earlier, only the results of the latest completed pipeline were evaluated
   when enforcing merge request approval policies.
 
-If a project uses [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md), you must use the [`latest` security templates](../../../development/cicd/templates.md) so that the security scanning jobs are present in the pipeline.
+If a project uses [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md), you must set the CI/CD variable `AST_ENABLE_MR_PIPELINES` to `"true"` for the security scanning jobs to be present in the pipeline.
 For more information see [Use security scanning tools with merge request pipelines](../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 For projects where many pipelines have run on the latest commit (for example, inactive projects), policy evaluation considers a maximum of 1,000 pipelines from both the source and target branches of the merge request.

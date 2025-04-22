@@ -23,7 +23,7 @@ module Gitlab
                 user: pipeline.user,
                 environment: seed_environment,
                 kubernetes_namespace: seed_kubernetes_namespace,
-                trigger_or_request: trigger_or_request
+                trigger: pipeline.trigger
               )
           end
           strong_memoize_attr :variables
@@ -60,18 +60,10 @@ module Gitlab
               user: pipeline.user,
               environment: nil,
               kubernetes_namespace: nil,
-              trigger_or_request: trigger_or_request
+              trigger: pipeline.trigger
             )
           end
           strong_memoize_attr :simple_variables
-
-          def trigger_or_request
-            if Feature.enabled?(:ci_read_trigger_from_ci_pipeline, pipeline.project)
-              pipeline.trigger
-            else
-              pipeline.legacy_trigger
-            end
-          end
         end
       end
     end

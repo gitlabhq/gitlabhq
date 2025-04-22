@@ -35,7 +35,8 @@ Gitlab::Database::Partitioning.register_models(
     Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog,
     LooseForeignKeys::DeletedRecord,
     Users::GroupVisit,
-    Users::ProjectVisit
+    Users::ProjectVisit,
+    MergeRequest::CommitsMetadata
     # WebHookLog is temporarily removed from this list and managed without a model
     # during the switch from web_hook_logs to web_hook_logs_daily
   ])

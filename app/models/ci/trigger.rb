@@ -39,11 +39,7 @@ module Ci
     end
 
     def last_used
-      if ::Feature.enabled?(:ci_read_trigger_from_ci_pipeline, project)
-        pipelines.last&.created_at
-      else
-        trigger_requests.last&.created_at
-      end
+      pipelines.last&.created_at
     end
 
     def short_token

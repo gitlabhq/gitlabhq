@@ -9,9 +9,10 @@
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#available-cicd-variables
 
 variables:
-  # Setting this variable will affect all Security templates
+  # Setting this variable affects all Security templates
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
+  #
   DS_EXCLUDED_ANALYZERS: ""
   DS_EXCLUDED_PATHS: "spec, test, tests, tmp"
   DS_MAJOR_VERSION: 5
@@ -72,6 +73,34 @@ gemnasium-dependency_scanning:
       when: never
     - if: $DS_EXCLUDED_ANALYZERS =~ /gemnasium([^-]|$)/
       when: never
+
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR pipeline* if MR pipelines for AST are enabled and there's an open merge request.
+    ## When FIPS mode is enabled, use the FIPS compatible image
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      exists: !reference [.gemnasium-shared-rule, exists]
+      variables:
+        DS_IMAGE_SUFFIX: "-fips"
+        DS_REMEDIATE: "false"
+    ## When FIPS mode is not enabled, use the regular image
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+      exists: !reference [.gemnasium-shared-rule, exists]
+
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
+      when: never
+
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
+    ## When FIPS mode is enabled, use the FIPS compatible image
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $CI_GITLAB_FIPS_MODE == "true"
@@ -79,6 +108,7 @@ gemnasium-dependency_scanning:
       variables:
         DS_IMAGE_SUFFIX: "-fips"
         DS_REMEDIATE: "false"
+    ## When FIPS mode is not enabled, use the regular image
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists: !reference [.gemnasium-shared-rule, exists]
@@ -98,12 +128,41 @@ gemnasium-maven-dependency_scanning:
       when: never
     - if: $DS_EXCLUDED_ANALYZERS =~ /gemnasium-maven/
       when: never
+
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR pipeline* if MR pipelines for AST are enabled and there's an open merge request.
+    ## When FIPS mode is enabled, use the FIPS compatible image
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      exists: !reference [.gemnasium-maven-shared-rule, exists]
+      variables:
+        DS_IMAGE_SUFFIX: "-fips"
+        DS_REMEDIATE: "false"
+    ## When FIPS mode is not enabled, use the regular image
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+      exists: !reference [.gemnasium-maven-shared-rule, exists]
+
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
+      when: never
+
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
+    ## When FIPS mode is enabled, use the FIPS compatible image
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $CI_GITLAB_FIPS_MODE == "true"
       exists: !reference [.gemnasium-maven-shared-rule, exists]
       variables:
         DS_IMAGE_SUFFIX: "-fips"
+    ## When FIPS mode is not enabled, use the regular image
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists: !reference [.gemnasium-maven-shared-rule, exists]
@@ -123,12 +182,53 @@ gemnasium-python-dependency_scanning:
       when: never
     - if: $DS_EXCLUDED_ANALYZERS =~ /gemnasium-python/
       when: never
+
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR pipeline* if MR pipelines for AST are enabled and there's an open merge request.
+    ## When FIPS mode is enabled, use the FIPS compatible image
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      exists: !reference [.gemnasium-python-shared-rule, exists]
+      variables:
+        DS_IMAGE_SUFFIX: "-fips"
+    ## When FIPS mode is not enabled, use the regular image
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+      exists: !reference [.gemnasium-python-shared-rule, exists]
+    # Support passing of $PIP_REQUIREMENTS_FILE
+    #   See https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuring-specific-analyzers-used-by-dependency-scanning
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $PIP_REQUIREMENTS_FILE &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      variables:
+        DS_IMAGE_SUFFIX: "-fips"
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
+          $PIP_REQUIREMENTS_FILE
+
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
+      when: never
+
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
+    ## When FIPS mode is enabled, use the FIPS compatible image
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/ &&
           $CI_GITLAB_FIPS_MODE == "true"
       exists: !reference [.gemnasium-python-shared-rule, exists]
       variables:
         DS_IMAGE_SUFFIX: "-fips"
+    ## When FIPS mode is not enabled, use the regular image
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdependency_scanning\b/
       exists: !reference [.gemnasium-python-shared-rule, exists]

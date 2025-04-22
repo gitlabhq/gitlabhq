@@ -79,19 +79,6 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_co
         expect(variables).to include('CI_PIPELINE_TRIGGERED' => 'true')
         expect(variables).to include('CI_TRIGGER_SHORT_TOKEN' => trigger.trigger_short_token)
       end
-
-      context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
-        before do
-          stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
-        end
-
-        let!(:trigger_request) { create(:ci_trigger_request, trigger: trigger, pipeline: pipeline) }
-
-        it 'includes trigger variables' do
-          expect(variables).to include('CI_PIPELINE_TRIGGERED' => 'true')
-          expect(variables).to include('CI_TRIGGER_SHORT_TOKEN' => trigger_request.trigger_short_token)
-        end
-      end
     end
 
     context 'when job is an instance of parallel:matrix' do

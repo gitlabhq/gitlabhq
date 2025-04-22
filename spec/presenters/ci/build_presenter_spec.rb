@@ -115,16 +115,6 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
       it 'returns empty array' do
         expect(presenter.trigger_variables).to eq([])
       end
-
-      context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
-        before do
-          stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
-        end
-
-        it 'returns empty array' do
-          expect(presenter.trigger_variables).to eq([])
-        end
-      end
     end
 
     context 'when triggered' do
@@ -137,16 +127,6 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
         expect(presenter.trigger_variables).to eq([])
       end
 
-      context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
-        before do
-          stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
-        end
-
-        it 'returns empty array' do
-          expect(presenter.trigger_variables).to eq([])
-        end
-      end
-
       context 'when variable is stored in ci_trigger_request' do
         before do
           trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' })
@@ -156,31 +136,11 @@ RSpec.describe Ci::BuildPresenter, feature_category: :continuous_integration do
           expect(presenter.trigger_variables).to eq([])
         end
 
-        context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
-          before do
-            stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
-          end
-
-          it 'returns trigger variables' do
-            expect(presenter.trigger_variables).to eq(trigger_request.user_variables)
-          end
-        end
-
         context 'when variable is stored in ci_pipeline_variables' do
           let_it_be(:pipeline_variable) { create(:ci_pipeline_variable, pipeline: pipeline) }
 
           it 'returns variables' do
             expect(presenter.trigger_variables).to eq([pipeline_variable.to_hash_variable])
-          end
-
-          context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
-            before do
-              stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
-            end
-
-            it 'returns variables' do
-              expect(presenter.trigger_variables).to eq([pipeline_variable.to_hash_variable])
-            end
           end
         end
       end

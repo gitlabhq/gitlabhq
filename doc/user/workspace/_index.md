@@ -126,7 +126,9 @@ Workspaces support both GitLab default devfile and custom devfiles.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171230) in GitLab 17.8.
+- [Introduced with Go](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171230) in GitLab 17.8.
+- [Added support for Node, Ruby, and Rust](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185393) in GitLab 17.9.
+- [Added support for Python, PHP, Java, and GCC](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188199) in GitLab 18.0.
 
 {{< /history >}}
 
@@ -140,8 +142,18 @@ components:
     attributes:
       gl/inject-editor: true
     container:
-      image: "registry.gitlab.com/gitlab-org/gitlab-build-images/workspaces/ubuntu-24.04:20250321073701-golang-1.23-node-23.9-yarn-1.22-ruby-3.4.2-rust-1.85-docker-27.5.1@sha256:a059826e65f0bc0ee2f3fdfd62f16a108c5b99b24b4656734cd6b8f4631389ad"
+      image: "registry.gitlab.com/gitlab-org/gitlab-build-images/workspaces/ubuntu-24.04:[VERSION_TAG]"
 ```
+
+{{< alert type="note" >}}
+
+This container `image` is updated regularly. `[VERSION_TAG]` is a placeholder only. For the latest version, see the
+[default devfile](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/remote_development/settings/default_devfile.yaml) file.
+
+{{< /alert >}}
+
+The workspace default image includes development tools such as Ruby, Node.js, Rust, Go, Python,
+Java, PHP, GCC, and their corresponding package managers. These tools are updated regularly.
 
 A GitLab default devfile might not be suitable for all development environments configurations.
 In these cases, you can create a [custom devfile](#custom-devfile).

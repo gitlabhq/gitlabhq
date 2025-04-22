@@ -292,25 +292,6 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
 
           expect { get api("/projects/#{project.id}/triggers", user) }.not_to exceed_query_limit(control)
         end
-
-        context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
-          before do
-            stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
-          end
-
-          it 'does not generate N+1 queries' do
-            control = ActiveRecord::QueryRecorder.new { get api("/projects/#{project.id}/triggers", user) }
-
-            trigger3 = create(:ci_trigger, project: project, token: 'trigger_token_3', owner: user2)
-            create(:ci_trigger_request, trigger: trigger3)
-            create(:ci_trigger_request, trigger: trigger3)
-            create(:ci_empty_pipeline, trigger: trigger2, project: project)
-            create(:ci_empty_pipeline, trigger: trigger3, project: project)
-            create(:ci_empty_pipeline, trigger: trigger3, project: project)
-
-            expect { get api("/projects/#{project.id}/triggers", user) }.not_to exceed_query_limit(control)
-          end
-        end
       end
     end
 

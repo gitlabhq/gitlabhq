@@ -461,22 +461,6 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
           end
         end
 
-        context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
-          before do
-            stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
-          end
-
-          context 'when variables are stored in trigger_request' do
-            before do
-              trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' })
-
-              visit project_job_path(project, job)
-            end
-
-            it_behaves_like 'no reveal button variables behavior'
-          end
-        end
-
         context 'when variables are stored in pipeline_variables' do
           before do
             create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1')
@@ -509,22 +493,6 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
 
             expect(page).to have_selector('[data-testid="trigger-build-key"]', text: 'TRIGGER_KEY_1')
             expect(page).to have_selector('[data-testid="trigger-build-value"]', text: 'TRIGGER_VALUE_1')
-          end
-        end
-
-        context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
-          before do
-            stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
-          end
-
-          context 'when variables are stored in trigger_request' do
-            before do
-              trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' })
-
-              visit project_job_path(project, job)
-            end
-
-            it_behaves_like 'reveal button variables behavior'
           end
         end
 

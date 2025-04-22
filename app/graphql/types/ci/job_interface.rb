@@ -134,11 +134,7 @@ module Types
       end
 
       def triggered
-        if Feature.enabled?(:ci_read_trigger_from_ci_pipeline, object.project)
-          object.pipeline.trigger_id.present?
-        else
-          object.try(:trigger_request).present?
-        end
+        object.pipeline.trigger_id.present?
       end
 
       def self.resolve_type(_object, _context)

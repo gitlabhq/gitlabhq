@@ -1,0 +1,13 @@
+---
+table_name: merge_request_commits_metadata
+classes:
+- MergeRequest::CommitsMetadata
+feature_categories:
+- code_review_workflow
+description: Database storage for commits metadata. Partitioned by project_id.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186556
+milestone: '18.0'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects
+table_size: unknown

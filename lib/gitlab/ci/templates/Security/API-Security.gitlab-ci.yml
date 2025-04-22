@@ -43,10 +43,34 @@ api_security:
     - if: $APISEC_DISABLED_FOR_DEFAULT_BRANCH == '1' &&
           $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
       when: never
+
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR pipeline* if MR pipelines for AST are enabled and there's an open merge request.
+    ## When FIPS mode is enabled, use the FIPS compatible image
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      variables:
+        APISEC_IMAGE_SUFFIX: -fips
+    ## When FIPS mode is not enabled, use the regular image
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event"
+
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
+      when: never
+
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
+    ## When FIPS mode is enabled, use the FIPS compatible image
     - if: $CI_COMMIT_BRANCH &&
           $CI_GITLAB_FIPS_MODE == "true"
       variables:
-        APISEC_IMAGE_SUFFIX: "-fips"
+        APISEC_IMAGE_SUFFIX: -fips
+    ## When FIPS mode is not enabled, use the regular image
     - if: $CI_COMMIT_BRANCH
   script:
     - /peach/analyzer-api-security
@@ -58,5 +82,4 @@ api_security:
       - gl-*.log
     reports:
       dast: gl-api-security-report.json
-
 # end

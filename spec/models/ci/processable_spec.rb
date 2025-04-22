@@ -688,16 +688,5 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       expect(processable.trigger).to receive(:short_token)
       processable.trigger_short_token
     end
-
-    context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
-      before do
-        stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
-      end
-
-      it 'delegates to trigger_request' do
-        expect(processable.trigger_request).to receive(:trigger_short_token)
-        processable.trigger_short_token
-      end
-    end
   end
 end

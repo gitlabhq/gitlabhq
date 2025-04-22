@@ -375,7 +375,7 @@ rule in the defined policy are met.
 
 {{< alert type="note" >}}
 
-If you have Merge Request Pipelines enabled for your project, you must select `template: latest` in your policy for each enforced scan. Using the latest template is crucial for compatibility with Merge Request Pipelines and allows you to take full advantage of GitLab security features. For more information on using security scanning tools with Merge Request Pipelines, please refer to our [security scanning documentation](../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
+If you have merge request pipelines enabled for your project, you must set the `AST_ENABLE_MR_PIPELINES` CI/CD variable to `"true"` in your policy for each enforced scan. For more information on using security scanning tools with merge request pipelines, please refer to the [security scanning documentation](../../application_security/detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 {{< /alert >}}
 

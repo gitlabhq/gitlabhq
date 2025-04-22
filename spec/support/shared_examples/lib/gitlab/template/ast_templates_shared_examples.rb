@@ -19,6 +19,12 @@ require 'spec_helper'
 # Though these contexts assume a particular usage which reduces flexibility.
 # Please check existing specs for examples.
 
+RSpec.shared_context "when project has files" do |files|
+  let_it_be(:files_for_repo) { files.index_with('') }
+  let_it_be(:project) { create(:project, :custom_repo, files: files_for_repo) }
+  let_it_be(:user) { project.first_owner }
+end
+
 RSpec.shared_context 'with CI variables' do |variables|
   before do
     variables.each do |(key, value)|
@@ -71,6 +77,15 @@ RSpec.shared_context 'with MR pipeline setup' do
       source_branch: pipeline_branch,
       target_project: project,
       target_branch: default_branch)
+  end
+end
+
+RSpec.shared_examples 'missing stage' do |stage_name|
+  it "fails due to missing '#{stage_name}' stage" do
+    expect(pipeline.builds.pluck(:name)).to be_empty
+    expect(pipeline.errors.full_messages.first).to match(
+      /job: chosen stage #{stage_name} does not exist; available stages are/
+    )
   end
 end
 
@@ -127,5 +142,18 @@ RSpec.shared_examples 'has jobs that can be disabled' do |key, disabled_values, 
     end
 
     include_examples 'has expected jobs', jobs
+  end
+end
+
+# TODO: remove (need to update all templates)
+RSpec.shared_examples 'acts as branch pipeline' do |jobs|
+  context 'when branch pipeline' do
+    let(:pipeline_branch) { default_branch }
+    let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_branch) }
+    let(:pipeline) { service.execute(:push).payload }
+
+    it 'includes a job' do
+      expect(pipeline.builds.pluck(:name)).to match_array(jobs)
+    end
   end
 end
