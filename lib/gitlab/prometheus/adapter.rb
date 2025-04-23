@@ -11,22 +11,12 @@ module Gitlab
       end
 
       def prometheus_adapter
-        @prometheus_adapter ||= if service_prometheus_adapter.can_query?
-                                  service_prometheus_adapter
-                                else
-                                  cluster_prometheus_adapter
-                                end
+        @prometheus_adapter ||= find_cluster_prometheus_adapter
       end
 
-      def cluster_prometheus_adapter
+      def find_cluster_prometheus_adapter
         integration = cluster&.integration_prometheus
         integration if integration&.available?
-      end
-
-      private
-
-      def service_prometheus_adapter
-        project.find_or_initialize_integration('prometheus')
       end
     end
   end

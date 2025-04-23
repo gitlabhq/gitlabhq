@@ -81,7 +81,7 @@ RSpec.describe OperationsHelper do
         before do
           allow(prometheus_integration)
             .to receive(:prometheus_available?)
-            .and_return(cluster_managed)
+                  .and_return(cluster_managed)
 
           prometheus_integration.update!(manual_configuration: false)
         end

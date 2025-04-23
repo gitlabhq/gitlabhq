@@ -96,13 +96,21 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
   end
 
   describe '#valid_for_dependency_proxy?' do
-    let_it_be_with_reload(:deploy_token) { create(:deploy_token, :group, :dependency_proxy_scopes) }
-
     subject { deploy_token.valid_for_dependency_proxy? }
 
-    it { is_expected.to eq(true) }
-
     it_behaves_like 'invalid group deploy token'
+
+    context 'has legacy registry scopes' do
+      let_it_be_with_reload(:deploy_token) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'has virtual registry scopes' do
+      let_it_be_with_reload(:deploy_token) { create(:deploy_token, :group, :virtual_registry_scopes) }
+
+      it { is_expected.to eq(true) }
+    end
 
     context 'insufficient scopes' do
       before do

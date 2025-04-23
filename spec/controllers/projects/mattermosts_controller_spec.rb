@@ -39,6 +39,18 @@ RSpec.describe Projects::MattermostsController do
       }
     end
 
+    context 'when integration is nil' do
+      before do
+        # rubocop:disable RSpec/AnyInstanceOf -- next_instance does not work in this scenario
+        allow_any_instance_of(Project).to receive(:find_or_initialize_integration).and_return(nil)
+        # rubocop:enable RSpec/AnyInstanceOf
+      end
+
+      it 'renders 404' do
+        expect(subject).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'no request can be made to mattermost' do
       it 'shows the error' do
         allow_next_instance_of(Integrations::MattermostSlashCommands) do |instance|

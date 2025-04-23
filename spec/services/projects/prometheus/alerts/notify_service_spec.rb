@@ -24,25 +24,32 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :i
     let(:source) { 'Prometheus' }
 
     context 'with manual prometheus installation' do
-      where(:alerting_setting, :configured_token, :token_input, :result) do
-        true  | token | token | :success
-        true  | token | 'x'   | :failure
-        true  | token | nil   | :failure
-        false | nil   | nil   | :success
-        false | nil   | token | :failure
+      where(:alerting_setting, :token_value, :token_input, :manual_configuration, :result) do
+        true  | 'token' | 'token' | true  | :success
+        true  | 'token' | 'x'     | true  | :failure
+        true  | 'token' | nil     | true  | :failure
+        false | nil     | nil     | true  | :success
+        false | nil     | 'token' | true  | :failure
+        true  | 'token' | 'token' | false | :failure
+        false | nil     | nil     | false | :failure
+        true  | 'token' | 'token' | nil   | :failure
       end
 
       with_them do
         let(:alert_manager_token) { token_input }
 
         before do
-          create(:prometheus_integration, project: project)
+          if manual_configuration.nil?
+            # Don't create a prometheus integration at all
+          else
+            create(:prometheus_integration, project: project, manual_configuration: manual_configuration)
+          end
 
           if alerting_setting
             create(
               :project_alerting_setting,
               project: project,
-              token: configured_token
+              token: token_value
             )
           end
         end

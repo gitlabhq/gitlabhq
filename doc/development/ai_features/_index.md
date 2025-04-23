@@ -50,7 +50,6 @@ For detailed instructions on setting up your GDK for GitLab Duo development, see
 
 Apply the following feature flags to any AI feature work:
 
-- A general flag (`ai_duo_chat_switch`) that applies to all GitLab Duo Chat features. It's enabled by default.
 - A general flag (`ai_global_switch`) that applies to all other AI features. It's enabled by default.
 - A flag specific to that feature. The feature flag name [must be different](../feature_flags/_index.md#feature-flags-for-licensed-features) than the licensed feature name.
 

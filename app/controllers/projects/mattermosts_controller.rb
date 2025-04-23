@@ -15,6 +15,8 @@ class Projects::MattermostsController < Projects::ApplicationController
   def new; end
 
   def create
+    render_404 && return unless integration
+
     result, message = integration.configure(current_user, configure_params)
 
     if result

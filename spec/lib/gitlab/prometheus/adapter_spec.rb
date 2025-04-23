@@ -10,21 +10,17 @@ RSpec.describe Gitlab::Prometheus::Adapter do
 
   describe '#prometheus_adapter' do
     context 'prometheus integration can execute queries' do
-      let(:prometheus_integration) { double(:prometheus_integration, can_query?: true) }
-
-      before do
-        allow(project).to receive(:find_or_initialize_integration).with('prometheus').and_return prometheus_integration
-      end
+      let!(:prometheus) { create(:clusters_integrations_prometheus, cluster: cluster, enabled: false) }
 
       it 'return prometheus integration as prometheus adapter' do
-        expect(subject.prometheus_adapter).to eq(prometheus_integration)
+        expect(subject.prometheus_adapter).to be_nil
       end
 
       context 'with cluster with prometheus available' do
         let!(:prometheus) { create(:clusters_integrations_prometheus, cluster: cluster) }
 
         it 'returns prometheus integration' do
-          expect(subject.prometheus_adapter).to eq(prometheus_integration)
+          expect(subject.prometheus_adapter).to be_a(Clusters::Integrations::Prometheus)
         end
       end
     end

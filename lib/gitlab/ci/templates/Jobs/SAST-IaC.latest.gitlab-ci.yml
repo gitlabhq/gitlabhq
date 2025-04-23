@@ -38,7 +38,7 @@ kics-iac-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 5
+    SAST_ANALYZER_IMAGE_TAG: 6
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/kics:$SAST_ANALYZER_IMAGE_TAG$SAST_IMAGE_SUFFIX"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'

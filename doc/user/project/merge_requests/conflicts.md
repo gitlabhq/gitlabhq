@@ -140,6 +140,14 @@ To rebase a merge request's branch from the GitLab UI:
 GitLab schedules, then runs, a rebase of the branch against the default branch.
 GitLab shows the completed rebase as a system note.
 
+{{< alert type="note" >}}
+
+If you have configured commit signing for commits made
+through the GitLab UI, web commits lose their commit signatures
+[when rebased through the UI](../repository/signed_commits/web_commits.md#web-commits-become-unsigned-after-rebase).
+
+{{< /alert >}}
+
 ## Related topics
 
 - [Rebase and resolve conflicts](../../../topics/git/git_rebase.md)

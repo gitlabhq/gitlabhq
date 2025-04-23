@@ -256,6 +256,21 @@ You can export a wiki page as a PDF file:
 
 A PDF of the wiki page is created.
 
+## Creating diagrams in the wiki using Draw.io
+
+With the diagrams.net integration, you can create and embed SVG diagrams on wiki pages! The diagram editor is available in both the plain text editor and the rich text editor.
+
+On GitLab.com, this integration is enabled for all SaaS users and does not require any additional configuration.
+
+On GitLab Self-Managed, you can integrate with the free diagrams.net website or host your own diagrams.net site in offline environments.
+
+To set up the integration, you must:
+
+1. Choose to integrate with the free diagrams.net website or configure your diagrams.net server.
+1. Enable the integration.
+
+After completing the integration, the diagrams.net editor opens with the URL you provided.
+
 ## Wiki page templates
 
 {{< history >}}

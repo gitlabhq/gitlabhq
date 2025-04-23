@@ -4,6 +4,8 @@ module Authn
   module TokenField
     module Generator
       class RoutableToken
+        TOKEN_VERSION = 1
+        TOKEN_VERSION_LENGTH = 2
         RANDOM_BYTES_LENGTH = 16
         BASE64_PAYLOAD_LENGTH_HOLDER_BYTES = 2
         CRC_BYTES = 7
@@ -68,7 +70,11 @@ module Authn
           encodable_payload = "#{random_bytes}#{payload}#{[payload.size].pack('C')}"
           base64_payload = Base64.urlsafe_encode64(encodable_payload, padding: false)
           base64_payload_length = base64_payload.size.to_s(36).rjust(BASE64_PAYLOAD_LENGTH_HOLDER_BYTES, '0')
-          "#{prefix}#{base64_payload}.#{base64_payload_length}"
+          "#{prefix}#{base64_payload}.#{token_version}.#{base64_payload_length}"
+        end
+
+        def token_version
+          TOKEN_VERSION.to_s(36).rjust(TOKEN_VERSION_LENGTH, '0')
         end
 
         def append_crc(encoded_payload)

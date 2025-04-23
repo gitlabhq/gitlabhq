@@ -17,7 +17,7 @@ module Clusters
         return unless cluster
 
         cluster.all_projects.find_each do |project|
-          project.find_or_initialize_integration(integration_name).update!(active: true)
+          project.find_or_initialize_integration(integration_name)&.update!(active: true)
         end
       end
     end
