@@ -15,6 +15,7 @@ import (
 	"gitlab.com/gitlab-org/labkit/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/forwardheaders"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
@@ -49,13 +50,14 @@ type Injector struct {
 }
 
 type entryParams struct {
-	URL             string
-	Headers         http.Header
-	ResponseHeaders http.Header
-	UploadConfig    uploadConfig
-	SSRFFilter      bool
-	AllowLocalhost  bool
-	AllowedURIs     []string
+	URL                              string
+	Headers                          http.Header
+	ResponseHeaders                  http.Header
+	UploadConfig                     uploadConfig
+	SSRFFilter                       bool
+	AllowLocalhost                   bool
+	AllowedURIs                      []string
+	RestrictForwardedResponseHeaders forwardheaders.Params
 }
 
 type uploadConfig struct {
@@ -160,8 +162,7 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 	}
 
 	forwardHeaders(dependencyResponse.Header, saveFileRequest)
-
-	p.forwardHeadersToResponse(w, dependencyResponse.Header, params.ResponseHeaders)
+	params.RestrictForwardedResponseHeaders.ForwardResponseHeaders(w, dependencyResponse, []string{}, params.ResponseHeaders)
 
 	// workhorse hijack overwrites the Content-Type header, but we need this header value
 	saveFileRequest.Header.Set("Workhorse-Proxy-Content-Type", dependencyResponse.Header.Get("Content-Type"))
@@ -232,17 +233,6 @@ func (p *Injector) newUploadRequest(ctx context.Context, params *entryParams, or
 	}
 
 	return request, nil
-}
-
-func (p *Injector) forwardHeadersToResponse(w http.ResponseWriter, headers ...http.Header) {
-	for _, h := range headers {
-		for key, values := range h {
-			w.Header().Del(key)
-			for _, v := range values {
-				w.Header().Add(key, v)
-			}
-		}
-	}
 }
 
 func (p *Injector) unpackParams(sendData string) (*entryParams, error) {

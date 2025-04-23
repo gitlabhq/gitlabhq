@@ -2,6 +2,20 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.9.7 (2025-04-22)
+
+### Security (4 changes)
+
+- [Add SecureHeaders middleware with the Nel header](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5e9112ba2d6fac340e1dbfc4b0330bdcff2f82bc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4920))
+- [Restrict forwarded headers in Maven dependency proxy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/24d73f3e778471c4e0153af174f2d8b44e106108) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4931))
+- [Security unauthorized access to reading branch names](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cb09987371857b97ec3cc5774b9f214c9db7c8a6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4923))
+- [Simplify detecting paragraphs for quick actions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/29d3f746b02137aaff4364473ce62f701d208e27) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4927))
+
+### Other (2 changes)
+
+- [Clean up BackfillCiRunnerMachinesPartitionedTable migration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/76d351431e07b3a695356c7b78ac16d23b180302)
+- [No-op FinalizeBackfillCiRunnerMachinesPartitionedTable migration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fb16e2ebcc6188b3f9bb0bc30e7e2b709484f3b1)
+
 ## 17.9.6 (2025-04-09)
 
 ### Security (6 changes)
