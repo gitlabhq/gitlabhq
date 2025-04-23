@@ -51646,9 +51646,6 @@ msgstr ""
 msgid "Runners|Date range limited to %{dateRange} days"
 msgstr ""
 
-msgid "Runners|Delete"
-msgstr ""
-
 msgid "Runners|Delete %d runner"
 msgid_plural "Runners|Delete %d runners"
 msgstr[0] ""

@@ -29162,7 +29162,7 @@ Represents a Group Membership.
 | <a id="groupmembernotificationemail"></a>`notificationEmail` | [`String`](#string) | Group notification email for user. Only available for admins. |
 | <a id="groupmemberupdatedat"></a>`updatedAt` | [`Time`](#time) | Date and time the membership was last updated. |
 | <a id="groupmemberuser"></a>`user` | [`UserCore`](#usercore) | User that is associated with the member object. |
-| <a id="groupmemberuserpermissions"></a>`userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
+| <a id="groupmemberuserpermissions"></a>`userPermissions` | [`GroupMemberPermissions!`](#groupmemberpermissions) | Permissions for the current user on the resource. |
 
 #### Fields with arguments
 
@@ -29177,6 +29177,18 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupmembermergerequestinteractionid"></a>`id` | [`MergeRequestID!`](#mergerequestid) | Global ID of the merge request. |
+
+### `GroupMemberPermissions`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupmemberpermissionscreatecustomemoji"></a>`createCustomEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_custom_emoji` on this resource. |
+| <a id="groupmemberpermissionscreateprojects"></a>`createProjects` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_projects` on this resource. |
+| <a id="groupmemberpermissionsreadgroup"></a>`readGroup` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_group` on this resource. |
+| <a id="groupmemberpermissionsremovegroup"></a>`removeGroup` | [`Boolean!`](#boolean) | If `true`, the user can perform `remove_group` on this resource. |
+| <a id="groupmemberpermissionsvieweditpage"></a>`viewEditPage` | [`Boolean!`](#boolean) | If `true`, the user can perform `view_edit_page` on this resource. |
 
 ### `GroupMinimalAccess`
 
@@ -29198,6 +29210,7 @@ Limited group data accessible to users without full group read access (e.g. non-
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="grouppermissionscanleave"></a>`canLeave` | [`Boolean!`](#boolean) | If `true`, the user can leave this group. |
 | <a id="grouppermissionscreatecustomemoji"></a>`createCustomEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_custom_emoji` on this resource. |
 | <a id="grouppermissionscreateprojects"></a>`createProjects` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_projects` on this resource. |
 | <a id="grouppermissionsgeneratedescription"></a>`generateDescription` | [`Boolean!`](#boolean) | If `true`, the user can perform `generate_description` on this resource. |

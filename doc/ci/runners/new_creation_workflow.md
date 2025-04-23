@@ -100,9 +100,9 @@ If you specify a runner authentication token with:
 - the `--token` command-line option, the `gitlab-runner register` command does not accept the configuration values.
 - the `--registration-token` command-line option, the `gitlab-runner register` command ignores the configuration values.
 
-| Token                                  | Registration command                                                                                      |
-|----------------------------------------|-----------------------------------------------------------------------------------------------------------|
-| Runner authentication token            | `gitlab-runner register --token $RUNNER_AUTHENTICATION_TOKEN`                                             |
+| Token                                  | Registration command |
+|----------------------------------------|----------------------|
+| Runner authentication token            | `gitlab-runner register --token $RUNNER_AUTHENTICATION_TOKEN` |
 | Runner registration token (deprecated) | `gitlab-runner register --registration-token $RUNNER_REGISTRATION_TOKEN <runner configuration arguments>` |
 
 Authentication tokens have the prefix, `glrt-`.

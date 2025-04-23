@@ -1569,6 +1569,10 @@ class User < ApplicationRecord
     can?(:create_group)
   end
 
+  def can_leave_group?(group)
+    can?(:destroy_group_member, group.member(self))
+  end
+
   def can_select_namespace?
     several_namespaces? || admin
   end

@@ -190,15 +190,15 @@ Create a new pipeline schedule of a project.
 POST /projects/:id/pipeline_schedules
 ```
 
-| Attribute       | Type           | Required | Description                                                                                                                                                                                                                                                                           |
-|-----------------|----------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `cron`          | string         | Yes      | The [cron](https://en.wikipedia.org/wiki/Cron) schedule, for example: `0 1 * * *`.                                                                                                                                                                                                    |
-| `description`   | string         | Yes      | The description of the pipeline schedule.                                                                                                                                                                                                                                             |
-| `id`            | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).                                                                                                                                                                                                  |
+| Attribute       | Type           | Required | Description |
+|-----------------|----------------|----------|-------------|
+| `cron`          | string         | Yes      | The [cron](https://en.wikipedia.org/wiki/Cron) schedule, for example: `0 1 * * *`. |
+| `description`   | string         | Yes      | The description of the pipeline schedule. |
+| `id`            | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `ref`           | string         | Yes      | The branch or tag name that is triggered. Both the short (e.g. `main`) and full (e.g. `refs/heads/main` or `refs/tags/main`) ref versions are accepted. If a short version is provided, it is automatically expanded to the full ref version but, if the ref is [ambiguous](../ci/pipelines/schedules.md#ambiguous-refs), it will be rejected |
-| `active`        | boolean        | No       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated (default: `true`).                                                                                                                                                               |
-| `cron_timezone` | string         | No       | The time zone supported by `ActiveSupport::TimeZone`, for example: `Pacific Time (US & Canada)` (default: `UTC`).                                                                                                                                                                     |
-| `inputs`        | hash          | No       | An array of [inputs](../ci/inputs/_index.md#for-a-pipeline) to pass to the pipeline schedule. Each input contains a `name` and `value`. Values can be strings, arrays, numbers, or booleans.                                                                                                                             |
+| `active`        | boolean        | No       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated (default: `true`). |
+| `cron_timezone` | string         | No       | The time zone supported by `ActiveSupport::TimeZone`, for example: `Pacific Time (US & Canada)` (default: `UTC`). |
+| `inputs`        | hash           | No       | An array of [inputs](../ci/inputs/_index.md#for-a-pipeline) to pass to the pipeline schedule. Each input contains a `name` and `value`. Values can be strings, arrays, numbers, or booleans. |
 
 Example request:
 
@@ -251,16 +251,16 @@ Updates the pipeline schedule of a project. After the update is done, it is resc
 PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
 ```
 
-| Attribute              | Type           | Required | Description                                                                                                                                                                                                                                                                                                                                   |
-|------------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).                                                                                                                                                                                                                                                          |
-| `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID.                                                                                                                                                                                                                                                                                                                     |
-| `active`               | boolean        | No       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated.                                                                                                                                                                                                                                         |
-| `cron_timezone`        | string         | No       | The time zone supported by `ActiveSupport::TimeZone` (for example `Pacific Time (US & Canada)`), or `TZInfo::Timezone` (for example `America/Los_Angeles`).                                                                                                                                                                                   |
-| `cron`                 | string         | No       | The [cron](https://en.wikipedia.org/wiki/Cron) schedule, for example: `0 1 * * *`.                                                                                                                                                                                                                                                            |
-| `description`          | string         | No       | The description of the pipeline schedule.                                                                                                                                                                                                                                                                                                     |
+| Attribute              | Type           | Required | Description |
+|------------------------|----------------|----------|-------------|
+| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID. |
+| `active`               | boolean        | No       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated. |
+| `cron_timezone`        | string         | No       | The time zone supported by `ActiveSupport::TimeZone` (for example `Pacific Time (US & Canada)`), or `TZInfo::Timezone` (for example `America/Los_Angeles`). |
+| `cron`                 | string         | No       | The [cron](https://en.wikipedia.org/wiki/Cron) schedule, for example: `0 1 * * *`. |
+| `description`          | string         | No       | The description of the pipeline schedule. |
 | `ref`                  | string         | No       | The branch or tag name that is triggered. Both the short (e.g. `main`) and full (e.g. `refs/heads/main` or `refs/tags/main`) ref versions are accepted. If a short version is provided, it is automatically expanded to the full ref version but, if the ref is [ambiguous](../ci/pipelines/schedules.md#ambiguous-refs), it will be rejected |
-| `inputs`               | hash          | No       | An array of [inputs](../ci/inputs/_index.md) to pass to the pipeline schedule. Each input contains a `name` and `value`. To delete an existing input, include the `name` field and set `destroy` to `true`. Values can be strings, arrays, numbers, or booleans.                                                                                                 |
+| `inputs`               | hash           | No       | An array of [inputs](../ci/inputs/_index.md) to pass to the pipeline schedule. Each input contains a `name` and `value`. To delete an existing input, include the `name` field and set `destroy` to `true`. Values can be strings, arrays, numbers, or booleans. |
 
 Example request:
 

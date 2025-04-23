@@ -313,7 +313,7 @@ spotbugs-sast:
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 5
+    SAST_ANALYZER_IMAGE_TAG: 6
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/spotbugs:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /spotbugs/

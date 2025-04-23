@@ -33,7 +33,7 @@ export default {
     },
     icon() {
       if (this.compact) {
-        return 'close';
+        return 'remove';
       }
       return '';
     },

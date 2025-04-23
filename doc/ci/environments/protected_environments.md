@@ -198,8 +198,8 @@ The permissions of deployments can be illustrated in the following table:
 
 | Environment | Developer  | Operator | Category |
 |-------------|------------|----------|----------|
-| Development | Allowed    | Allowed  | Lower environment  |
-| Testing     | Allowed    | Allowed  | Lower environment  |
+| Development | Allowed    | Allowed  | Lower environment |
+| Testing     | Allowed    | Allowed  | Lower environment |
 | Staging     | Disallowed | Allowed  | Higher environment |
 | Production  | Disallowed | Allowed  | Higher environment |
 

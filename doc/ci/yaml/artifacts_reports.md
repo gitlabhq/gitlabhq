@@ -73,10 +73,10 @@ An `external_link` annotation can be attached to a job to add a link to the job
 output page. The value of an `external_link` annotation is an object with the
 following keys:
 
-| Key     | Description                                        |
-|---------|----------------------------------------------------|
+| Key     | Description |
+|---------|-------------|
 | `label` | The human-readable label associated with the link. |
-| `url`   | The URL pointed to by the link.                    |
+| `url`   | The URL pointed to by the link. |
 
 ### Example report
 

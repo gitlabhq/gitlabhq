@@ -63,13 +63,13 @@ Sidekiq.configure_server do |config|
   # This also increases the internal redis pool from 10 to concurrency+5.
   config.redis = queues_config_hash.merge({ size: config.concurrency + 5 })
 
-  config.server_middleware(&Gitlab::SidekiqMiddleware.server_configurator(
+  config.server_middleware(&Gitlab::SidekiqMiddleware::Server.configurator(
     metrics: Settings.monitoring.sidekiq_exporter,
     arguments_logger: SidekiqLogArguments.enabled? && !enable_json_logs,
     skip_jobs: Gitlab::Utils.to_boolean(ENV['SIDEKIQ_SKIP_JOBS'], default: true)
   ))
 
-  config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)
+  config.client_middleware(&Gitlab::SidekiqMiddleware::Client.configurator)
 
   config.death_handlers << Gitlab::SidekiqDeathHandler.method(:handler)
 
@@ -125,7 +125,7 @@ Sidekiq.configure_client do |config|
   config.logger = Gitlab::SidekiqLogging::ClientLogger.build
   config.logger.formatter = Gitlab::SidekiqLogging::JSONFormatter.new if enable_json_logs
 
-  config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)
+  config.client_middleware(&Gitlab::SidekiqMiddleware::Client.configurator)
 end
 
 Gitlab::Application.configure do |config|

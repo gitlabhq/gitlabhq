@@ -45,6 +45,7 @@ RSpec.describe "Admin manages runner in admin section", :js, feature_category: :
 
     describe 'when a runner is deleted' do
       before do
+        click_on 'Runner actions'
         click_on 'Delete runner'
 
         within_modal do

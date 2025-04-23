@@ -5,7 +5,7 @@ module Types
     graphql_name 'GroupMember'
     description 'Represents a Group Membership'
 
-    expose_permissions Types::PermissionTypes::Group
+    expose_permissions Types::PermissionTypes::Members::GroupMember
     authorize :read_group
 
     implements MemberInterface

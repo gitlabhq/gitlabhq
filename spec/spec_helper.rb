@@ -457,7 +457,7 @@ RSpec.configure do |config|
 
   config.around do |example|
     with_sidekiq_server_middleware do |chain|
-      Gitlab::SidekiqMiddleware.server_configurator(
+      Gitlab::SidekiqMiddleware::Server.configurator(
         metrics: false, # The metrics don't go anywhere in tests
         arguments_logger: false, # We're not logging the regular messages for inline jobs
         skip_jobs: false # We're not skipping jobs for inline tests

@@ -27,11 +27,11 @@ Get all environments for a given project.
 GET /projects/:id/environments
 ```
 
-| Attribute | Type           | Required | Description                                                                                                                                                   |
-|-----------|----------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded](rest/_index.md#namespaced-paths) path of the project.                                                                          |
-| `name`    | string         | no       | Return the environment with this name. Mutually exclusive with `search`.                                                                                      |
-| `search`  | string         | no       | Return list of environments matching the search criteria. Mutually exclusive with `name`. Must be at least 3 characters long.                                 |
+| Attribute | Type           | Required | Description |
+|-----------|----------------|----------|-------------|
+| `id`      | integer/string | yes      | The ID or [URL-encoded](rest/_index.md#namespaced-paths) path of the project. |
+| `name`    | string         | no       | Return the environment with this name. Mutually exclusive with `search`. |
+| `search`  | string         | no       | Return list of environments matching the search criteria. Mutually exclusive with `name`. Must be at least 3 characters long. |
 | `states`  | string         | no       | List all environments that match a specific state. Accepted values: `available`, `stopping`, or `stopped`. If no state value given, returns all environments. |
 
 ```shell
@@ -69,10 +69,10 @@ Example response:
 GET /projects/:id/environments/:environment_id
 ```
 
-| Attribute        | Type           | Required | Description                                                                          |
-|------------------|----------------|----------|--------------------------------------------------------------------------------------|
+| Attribute        | Type           | Required | Description |
+|------------------|----------------|----------|-------------|
 | `id`             | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
-| `environment_id` | integer        | yes      | The ID of the environment.                                                           |
+| `environment_id` | integer        | yes      | The ID of the environment. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -209,16 +209,16 @@ It returns `201` if the environment was successfully created, `400` for wrong pa
 POST /projects/:id/environments
 ```
 
-| Attribute              | Type           | Required | Description                                                                                                         |
-|------------------------|----------------|----------|---------------------------------------------------------------------------------------------------------------------|
-| `id`                   | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project.                                |
-| `name`                 | string         | yes      | The name of the environment.                                                                                        |
-| `description`          | string         | no       | The description of the environment.                                                                                        |
-| `external_url`         | string         | no       | Place to link to for this environment.                                                                              |
+| Attribute              | Type           | Required | Description |
+|------------------------|----------------|----------|-------------|
+| `id`                   | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
+| `name`                 | string         | yes      | The name of the environment. |
+| `description`          | string         | no       | The description of the environment. |
+| `external_url`         | string         | no       | Place to link to for this environment. |
 | `tier`                 | string         | no       | The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`. |
-| `cluster_agent_id`     | integer        | no       | The cluster agent to associate with this environment.                                                               |
-| `kubernetes_namespace` | string         | no       | The Kubernetes namespace to associate with this environment.                                                        |
-| `flux_resource_path`   | string         | no       | The Flux resource path to associate with this environment. This must be the full resource path. For example, `helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent`.  |
+| `cluster_agent_id`     | integer        | no       | The cluster agent to associate with this environment. |
+| `kubernetes_namespace` | string         | no       | The Kubernetes namespace to associate with this environment. |
+| `flux_resource_path`   | string         | no       | The Flux resource path to associate with this environment. This must be the full resource path. For example, `helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent`. |
 | `auto_stop_setting`    | string         | no       | The auto stop setting for the environment. Allowed values are `always` or `with_action`. |
 
 ```shell
@@ -262,16 +262,16 @@ It returns `200` if the environment was successfully updated. In case of an erro
 PUT /projects/:id/environments/:environments_id
 ```
 
-| Attribute              | Type            | Required | Description                                                                                                         |
-|------------------------|-----------------|----------|---------------------------------------------------------------------------------------------------------------------|
-| `id`                   | integer/string  | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).                                |
-| `environment_id`       | integer         | yes      | The ID of the environment.                                                                                          |
-| `description`          | string          | no       | The description of the environment.                                                                                        |
-| `external_url`         | string          | no       | The new `external_url`.                                                                                             |
+| Attribute              | Type            | Required | Description |
+|------------------------|-----------------|----------|-------------|
+| `id`                   | integer/string  | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `environment_id`       | integer         | yes      | The ID of the environment. |
+| `description`          | string          | no       | The description of the environment. |
+| `external_url`         | string          | no       | The new `external_url`. |
 | `tier`                 | string          | no       | The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`. |
-| `cluster_agent_id`     | integer or null | no       | The cluster agent to associate with this environment or `null` to remove it.                                        |
-| `kubernetes_namespace` | string or null  | no       | The Kubernetes namespace to associate with this environment or `null` to remove it.                                 |
-| `flux_resource_path`   | string or null  | no       | The Flux resource path to associate with this environment or `null` to remove it.                                   |
+| `cluster_agent_id`     | integer or null | no       | The cluster agent to associate with this environment or `null` to remove it. |
+| `kubernetes_namespace` | string or null  | no       | The Kubernetes namespace to associate with this environment or `null` to remove it. |
+| `flux_resource_path`   | string or null  | no       | The Flux resource path to associate with this environment or `null` to remove it. |
 | `auto_stop_setting`    | string or null  | no       | The auto stop setting for the environment. Allowed values are `always` or `with_action`. |
 
 ```shell
@@ -308,10 +308,10 @@ It returns `204` if the environment was successfully deleted, and `404` if the e
 DELETE /projects/:id/environments/:environment_id
 ```
 
-| Attribute        | Type           | Required | Description                                                                          |
-|------------------|----------------|----------|--------------------------------------------------------------------------------------|
+| Attribute        | Type           | Required | Description |
+|------------------|----------------|----------|-------------|
 | `id`             | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
-| `environment_id` | integer        | yes      | The ID of the environment.                                                           |
+| `environment_id` | integer        | yes      | The ID of the environment. |
 
 ```shell
 curl --request DELETE \
@@ -331,11 +331,11 @@ By default, it only deletes environments 30 days or older. You can change this d
 DELETE /projects/:id/environments/review_apps
 ```
 
-| Attribute | Type           | Required | Description                                                                                                                                            |
-|-----------|----------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project.                                                                   |
-| `before`  | datetime       | no       | The date before which environments can be deleted. Defaults to 30 days ago. Expected in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`).                      |
-| `limit`   | integer        | no       | Maximum number of environments to delete. Defaults to 100.                                                                                             |
+| Attribute | Type           | Required | Description |
+|-----------|----------------|----------|-------------|
+| `id`      | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
+| `before`  | datetime       | no       | The date before which environments can be deleted. Defaults to 30 days ago. Expected in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`). |
+| `limit`   | integer        | no       | Maximum number of environments to delete. Defaults to 100. |
 | `dry_run` | boolean        | no       | Defaults to `true` for safety reasons. It performs a dry run where no actual deletion is performed. Set to `false` to actually delete the environment. |
 
 ```shell
@@ -374,11 +374,11 @@ It returns `200` if the environment was successfully stopped, and `404` if the e
 POST /projects/:id/environments/:environment_id/stop
 ```
 
-| Attribute        | Type           | Required | Description                                                                          |
-|------------------|----------------|----------|--------------------------------------------------------------------------------------|
+| Attribute        | Type           | Required | Description |
+|------------------|----------------|----------|-------------|
 | `id`             | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
-| `environment_id` | integer        | yes      | The ID of the environment.                                                           |
-| `force`          | boolean        | no       | Force environment to stop without executing `on_stop` actions.                       |
+| `environment_id` | integer        | yes      | The ID of the environment. |
+| `force`          | boolean        | no       | Force environment to stop without executing `on_stop` actions. |
 
 ```shell
 curl --request POST \
@@ -411,9 +411,9 @@ Issue stop request to all environments that were last modified or deployed to be
 POST /projects/:id/environments/stop_stale
 ```
 
-| Attribute | Type           | Required | Description                                                                                                                                                                                    |
-|-----------|----------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project.                                                                                                           |
+| Attribute | Type           | Required | Description |
+|-----------|----------------|----------|-------------|
+| `id`      | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
 | `before`  | date           | yes      | Stop environments that have been modified or deployed to before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). Valid inputs are between 10 years ago and 1 week ago |
 
 ```shell

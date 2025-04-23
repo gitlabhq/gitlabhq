@@ -275,11 +275,11 @@ registry.
 
 Let's also assume that these are the sign-in credentials:
 
-| Key      | Value                       |
-|:---------|:----------------------------|
+| Key      | Value |
+|:---------|:------|
 | registry | `registry.example.com:5000` |
-| username | `my_username`               |
-| password | `my_password`               |
+| username | `my_username` |
+| password | `my_password` |
 
 Use one of the following methods to determine the value for `DOCKER_AUTH_CONFIG`:
 

@@ -4204,6 +4204,32 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#can_leave_group?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+
+    subject { user.can_leave_group?(group) }
+
+    context 'when user is member' do
+      context 'when user has permission to leave the group' do
+        let_it_be(:group_owner) { create(:group_member, :owner, group: group, user: create(:user)) }
+        let_it_be(:group_member) { create(:group_member, group: group, user: user) }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when user has no permission to leave the group' do
+        let_it_be(:group_owner) { create(:group_member, :owner, user: user) }
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when user is not a member' do
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe '#all_emails' do
     let(:user) { create(:user) }
     let!(:unconfirmed_secondary_email) { create(:email, user: user) }

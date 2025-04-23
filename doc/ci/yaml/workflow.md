@@ -21,12 +21,12 @@ for tags, but the workflow prevents tag pipelines, the job never runs.
 
 Some example `if` clauses for `workflow: rules`:
 
-| Example rules                                        | Details                                                   |
-|------------------------------------------------------|-----------------------------------------------------------|
-| `if: '$CI_PIPELINE_SOURCE == "merge_request_event"'` | Control when merge request pipelines run.                 |
+| Example rules                                        | Details |
+|------------------------------------------------------|---------|
+| `if: '$CI_PIPELINE_SOURCE == "merge_request_event"'` | Control when merge request pipelines run. |
 | `if: '$CI_PIPELINE_SOURCE == "push"'`                | Control when both branch pipelines and tag pipelines run. |
-| `if: $CI_COMMIT_TAG`                                 | Control when tag pipelines run.                           |
-| `if: $CI_COMMIT_BRANCH`                              | Control when branch pipelines run.                        |
+| `if: $CI_COMMIT_TAG`                                 | Control when tag pipelines run. |
+| `if: $CI_COMMIT_BRANCH`                              | Control when branch pipelines run. |
 
 See the [common `if` clauses for `rules`](../jobs/job_rules.md#common-if-clauses-with-predefined-variables) for more examples.
 

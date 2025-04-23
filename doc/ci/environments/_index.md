@@ -282,13 +282,13 @@ are calculated.
 To indicate that a specific environment is for a specific use,
 you can use tiers:
 
-| Environment tier | Environment name examples                          |
-|------------------|----------------------------------------------------|
-| `production`     | Production, Live                                   |
-| `staging`        | Staging, Model, Demo                               |
-| `testing`        | Test, QC                                           |
+| Environment tier | Environment name examples |
+|------------------|---------------------------|
+| `production`     | Production, Live          |
+| `staging`        | Staging, Model, Demo      |
+| `testing`        | Test, QC                  |
 | `development`    | Dev, [Review apps](../review_apps/_index.md), Trunk |
-| `other`          |                                                    |
+| `other`          |                           |
 
 By default, GitLab assumes a tier based on [the environment name](../yaml/_index.md#environmentname).
 You cannot set an environment tier using the UI.

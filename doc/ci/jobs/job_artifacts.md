@@ -299,13 +299,13 @@ you must enable [GitLab Pages access control](../../administration/pages/_index.
 
 The following extensions are supported:
 
-| File extension | GitLab.com             | Linux package with built-in NGINX |
-|----------------|------------------------|-----------------------------------|
-| `.html`        | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes            |
-| `.json`        | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes            |
-| `.xml`         | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes            |
-| `.txt`         | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes            |
-| `.log`         | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes            |
+| File extension | GitLab.com                           | Linux package with built-in NGINX |
+|----------------|--------------------------------------|-----------------------------------|
+| `.html`        | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| `.json`        | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| `.xml`         | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| `.txt`         | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| `.log`         | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 
 ### From a URL
 

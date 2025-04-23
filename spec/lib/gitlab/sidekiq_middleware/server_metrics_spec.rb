@@ -492,7 +492,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
 
     around do |example|
       with_sidekiq_server_middleware do |chain|
-        Gitlab::SidekiqMiddleware.server_configurator(
+        Gitlab::SidekiqMiddleware::Server.configurator(
           metrics: true,
           arguments_logger: false,
           skip_jobs: false

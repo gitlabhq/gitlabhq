@@ -1,6 +1,6 @@
 <script>
 import { GlDisclosureDropdownItem } from '@gitlab/ui';
-import { I18N_DELETE } from '../constants';
+import { I18N_DELETE_RUNNER } from '../constants';
 import RunnerDeleteAction from './runner_delete_action.vue';
 
 export default {
@@ -21,7 +21,7 @@ export default {
       this.$emit('deleted', event);
     },
   },
-  I18N_DELETE,
+  I18N_DELETE_RUNNER,
 };
 </script>
 
@@ -30,7 +30,7 @@ export default {
     <template #default="{ onClick }">
       <gl-disclosure-dropdown-item variant="danger" @action="onClick">
         <template #list-item>
-          {{ $options.I18N_DELETE }}
+          {{ $options.I18N_DELETE_RUNNER }}
         </template>
       </gl-disclosure-dropdown-item>
     </template>

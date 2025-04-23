@@ -113,8 +113,8 @@ describe('RunnerDeleteButton', () => {
       expect(findBtn().text()).toBe('');
     });
 
-    it('Displays "x" icon', () => {
-      expect(findBtn().props('icon')).toBe('close');
+    it('Displays remove icon', () => {
+      expect(findBtn().props('icon')).toBe('remove');
       expect(findBtn().classes('btn-icon')).toBe(true);
     });
 

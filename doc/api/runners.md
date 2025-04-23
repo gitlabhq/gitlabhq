@@ -63,14 +63,14 @@ GET /runners?paused=true
 GET /runners?tag_list=tag1,tag2
 ```
 
-| Attribute        | Type         | Required | Description                                                                                                                                                                                                          |
-|------------------|--------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `scope`          | string       | no       | Deprecated: Use `type` or `status` instead. The scope of runners to return, one of: `active`, `paused`, `online` and `offline`; showing all runners if none provided                                                 |
-| `type`           | string       | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type`                                                                                                                                 |
+| Attribute        | Type         | Required | Description |
+|------------------|--------------|----------|-------------|
+| `scope`          | string       | no       | Deprecated: Use `type` or `status` instead. The scope of runners to return, one of: `active`, `paused`, `online` and `offline`; showing all runners if none provided |
+| `type`           | string       | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type` |
 | `status`         | string       | no       | The status of runners to return, one of: `online`, `offline`, `stale`, or `never_contacted`.<br/>Other possible values are the deprecated `active` and `paused`.<br/>Requesting `offline` runners might also return `stale` runners because `stale` is included in `offline`. |
-| `paused`         | boolean      | no       | Whether to include only runners that are accepting or ignoring new jobs                                                                                                                                              |
-| `tag_list`       | string array | no       | A list of runner tags                                                                                                                                                                                                |
-| `version_prefix` | string       | no       | The prefix of the version of the runners to return. For example, `15.0`, `14`, `16.1.241`                                                                                                                            |
+| `paused`         | boolean      | no       | Whether to include only runners that are accepting or ignoring new jobs |
+| `tag_list`       | string array | no       | A list of runner tags |
+| `version_prefix` | string       | no       | The prefix of the version of the runners to return. For example, `15.0`, `14`, `16.1.241` |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners"
@@ -161,14 +161,14 @@ GET /runners/all?paused=true
 GET /runners/all?tag_list=tag1,tag2
 ```
 
-| Attribute        | Type         | Required | Description                                                                                                                                                                                                             |
-|------------------|--------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `scope`          | string       | no       | Deprecated: Use `type` or `status` instead. The scope of runners to return, one of: `specific`, `shared`, `active`, `paused`, `online` and `offline`; showing all runners if none provided                              |
-| `type`           | string       | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type`                                                                                                                                    |
+| Attribute        | Type         | Required | Description |
+|------------------|--------------|----------|-------------|
+| `scope`          | string       | no       | Deprecated: Use `type` or `status` instead. The scope of runners to return, one of: `specific`, `shared`, `active`, `paused`, `online` and `offline`; showing all runners if none provided |
+| `type`           | string       | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type` |
 | `status`         | string       | no       | The status of runners to return, one of: `online`, `offline`, `stale`, or `never_contacted`.<br/>Other possible values are the deprecated `active` and `paused`.<br/>Requesting `offline` runners might also return `stale` runners because `stale` is included in `offline`. |
-| `paused`         | boolean      | no       | Whether to include only runners that are accepting or ignoring new jobs                                                                                                                                                 |
-| `tag_list`       | string array | no       | A list of runner tags                                                                                                                                                                                                   |
-| `version_prefix` | string       | no       | The prefix of the version of the runners to return. For example, `15.0`, `16.1.241`                                                                                                                               |
+| `paused`         | boolean      | no       | Whether to include only runners that are accepting or ignoring new jobs |
+| `tag_list`       | string array | no       | A list of runner tags |
+| `version_prefix` | string       | no       | The prefix of the version of the runners to return. For example, `15.0`, `16.1.241` |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/all"
@@ -274,9 +274,9 @@ Prerequisites:
 GET /runners/:id
 ```
 
-| Attribute | Type    | Required | Description         |
-|-----------|---------|----------|---------------------|
-| `id`      | integer | yes      | The ID of a runner  |
+| Attribute | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| `id`      | integer | yes      | The ID of a runner |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6"
@@ -366,18 +366,18 @@ Prerequisites:
 - For `project_type`, you must have at least the Maintainer role for the target project.
 - An access token with the `manage_runner` scope and the appropriate role.
 
-| Attribute          | Type    | Required | Description                                                                                     |
-|--------------------|---------|----------|-------------------------------------------------------------------------------------------------|
-| `id`               | integer | yes      | The ID of a runner                                                                              |
-| `description`      | string  | no       | The description of the runner                                                                   |
+| Attribute          | Type    | Required | Description |
+|--------------------|---------|----------|-------------|
+| `id`               | integer | yes      | The ID of a runner |
+| `description`      | string  | no       | The description of the runner |
 | `active`           | boolean | no       | Deprecated: Use `paused` instead. Flag indicating whether the runner is allowed to receive jobs |
-| `paused`           | boolean | no       | Specifies if the runner should ignore new jobs                                             |
-| `tag_list`         | array   | no       | The list of tags for the runner                                                                 |
-| `run_untagged`     | boolean | no       | Specifies if the runner can execute untagged jobs                                          |
-| `locked`           | boolean | no       | Specifies if the runner is locked                                                          |
-| `access_level`     | string  | no       | The access level of the runner; `not_protected` or `ref_protected`                              |
-| `maximum_timeout`  | integer | no       | Maximum timeout that limits the amount of time (in seconds) that runners can run jobs           |
-| `maintenance_note` | string  | no       | Free-form maintenance notes for the runner (1024 characters)                                    |
+| `paused`           | boolean | no       | Specifies if the runner should ignore new jobs |
+| `tag_list`         | array   | no       | The list of tags for the runner |
+| `run_untagged`     | boolean | no       | Specifies if the runner can execute untagged jobs |
+| `locked`           | boolean | no       | Specifies if the runner is locked |
+| `access_level`     | string  | no       | The access level of the runner; `not_protected` or `ref_protected` |
+| `maximum_timeout`  | integer | no       | Maximum timeout that limits the amount of time (in seconds) that runners can run jobs |
+| `maintenance_note` | string  | no       | Free-form maintenance notes for the runner (1024 characters) |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6" \
@@ -463,9 +463,9 @@ PUT --form "paused=true" /runners/:runner_id
 PUT --form "active=false" /runners/:runner_id
 ```
 
-| Attribute   | Type    | Required | Description         |
-|-------------|---------|----------|---------------------|
-| `runner_id` | integer | yes      | The ID of a runner  |
+| Attribute   | Type    | Required | Description |
+|-------------|---------|----------|-------------|
+| `runner_id` | integer | yes      | The ID of a runner |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -495,9 +495,9 @@ to projects where the user has at least the Reporter role.
 GET /runners/:id/jobs
 ```
 
-| Attribute   | Type    | Required | Description         |
-|-------------|---------|----------|---------------------|
-| `id`        | integer | yes      | The ID of a runner  |
+| Attribute   | Type    | Required | Description |
+|-------------|---------|----------|-------------|
+| `id`        | integer | yes      | The ID of a runner |
 | `system_id` | string  | no       | System ID of the machine where the runner manager is running |
 | `status`    | string  | no       | Status of the job; one of: `running`, `success`, `failed`, `canceled` |
 | `order_by`  | string  | no       | Order jobs by `id` |
@@ -585,9 +585,9 @@ List all the managers of a runner.
 GET /runners/:id/managers
 ```
 
-| Attribute | Type    | Required | Description         |
-|-----------|---------|----------|---------------------|
-| `id`      | integer | yes      | The ID of a runner  |
+| Attribute | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| `id`      | integer | yes      | The ID of a runner |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/1/managers"
@@ -642,15 +642,15 @@ GET /projects/:id/runners/all?paused=true
 GET /projects/:id/runners?tag_list=tag1,tag2
 ```
 
-| Attribute        | Type           | Required | Description                                                                                                                                                                                                          |
-|------------------|----------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)                                                                                                  |
-| `scope`          | string         | no       | Deprecated: Use `type` or `status` instead. The scope of runners to return, one of: `active`, `paused`, `online` and `offline`; showing all runners if none provided                                                 |
-| `type`           | string         | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type`                                                                                                                                 |
+| Attribute        | Type           | Required | Description |
+|------------------|----------------|----------|-------------|
+| `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `scope`          | string         | no       | Deprecated: Use `type` or `status` instead. The scope of runners to return, one of: `active`, `paused`, `online` and `offline`; showing all runners if none provided |
+| `type`           | string         | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type` |
 | `status`         | string         | no       | The status of runners to return, one of: `online`, `offline`, `stale`, or `never_contacted`.<br/>Other possible values are the deprecated `active` and `paused`.<br/>Requesting `offline` runners might also return `stale` runners because `stale` is included in `offline`. |
-| `paused`         | boolean        | no       | Whether to include only runners that are accepting or ignoring new jobs                                                                                                                                              |
-| `tag_list`       | string array   | no       | A list of runner tags                                                                                                                                                                                                |
-| `version_prefix` | string         | no       | The prefix of the version of the runners to return. For example, `15.0`, `14`, `16.1.241`                                                                                                                            |
+| `paused`         | boolean        | no       | Whether to include only runners that are accepting or ignoring new jobs |
+| `tag_list`       | string array   | no       | A list of runner tags |
+| `version_prefix` | string         | no       | The prefix of the version of the runners to return. For example, `15.0`, `14`, `16.1.241` |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners"
@@ -729,10 +729,10 @@ Prerequisites:
 POST /projects/:id/runners
 ```
 
-| Attribute   | Type    | Required | Description         |
-|-------------|---------|----------|---------------------|
+| Attribute   | Type           | Required | Description |
+|-------------|----------------|----------|-------------|
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `runner_id` | integer | yes      | The ID of a runner  |
+| `runner_id` | integer        | yes      | The ID of a runner |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners" \
@@ -782,10 +782,10 @@ Prerequisites:
 DELETE /projects/:id/runners/:runner_id
 ```
 
-| Attribute   | Type    | Required | Description         |
-|-------------|---------|----------|---------------------|
+| Attribute   | Type           | Required | Description |
+|-------------|----------------|----------|-------------|
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `runner_id` | integer | yes      | The ID of a runner  |
+| `runner_id` | integer        | yes      | The ID of a runner |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners/9"
@@ -807,14 +807,14 @@ GET /groups/:id/runners/all?paused=true
 GET /groups/:id/runners?tag_list=tag1,tag2
 ```
 
-| Attribute        | Type           | Required | Description                                                                                                                                                                                                             |
-|------------------|----------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`             | integer        | yes      | The ID of the group                                                                                                                                                                     |
-| `type`           | string         | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type`. The `project_type` value is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351466) and is scheduled for removal in GitLab 15.0 |
-| `status`         | string         | no       | The status of runners to return, one of: `online`, `offline`, `stale`, or `never_contacted`.<br/>Other possible values are the deprecated `active` and `paused`.<br/>Requesting `offline` runners might also return `stale` runners because `stale` is included in `offline`. |
-| `paused`         | boolean        | no       | Whether to include only runners that are accepting or ignoring new jobs                                                                                                                                                 |
-| `tag_list`       | string array   | no       | A list of runner tags                                                                                                                                                                                                   |
-| `version_prefix` | string         | no       | The prefix of the version of the runners to return. For example, `15.0`, `14`, `16.1.241`                                                                                                                               |
+| Attribute        | Type         | Required | Description |
+|------------------|--------------|----------|-------------|
+| `id`             | integer      | yes      | The ID of the group |
+| `type`           | string       | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type`. The `project_type` value is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351466) and is scheduled for removal in GitLab 15.0 |
+| `status`         | string       | no       | The status of runners to return, one of: `online`, `offline`, `stale`, or `never_contacted`.<br/>Other possible values are the deprecated `active` and `paused`.<br/>Requesting `offline` runners might also return `stale` runners because `stale` is included in `offline`. |
+| `paused`         | boolean      | no       | Whether to include only runners that are accepting or ignoring new jobs |
+| `tag_list`       | string array | no       | A list of runner tags |
+| `version_prefix` | string       | no       | The prefix of the version of the runners to return. For example, `15.0`, `14`, `16.1.241` |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/9/runners"
@@ -907,20 +907,20 @@ Create a runner with a runner registration token.
 POST /runners
 ```
 
-| Attribute          | Type         | Required | Description                                                                                                                                                                                    |
-|--------------------|--------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `token`            | string       | yes      | [Registration token](#registration-and-authentication-tokens)                                                                                                                                  |
-| `description`      | string       | no       | Description of the runner                                                                                                                                                                      |
+| Attribute          | Type         | Required | Description |
+|--------------------|--------------|----------|-------------|
+| `token`            | string       | yes      | [Registration token](#registration-and-authentication-tokens) |
+| `description`      | string       | no       | Description of the runner |
 | `info`             | hash         | no       | Runner's metadata. You can include `name`, `version`, `revision`, `platform`, and `architecture`, but only `version`, `platform`, and `architecture` are displayed in the **Admin** area of the UI |
-| `active`           | boolean      | no       | Deprecated: Use `paused` instead. Specifies if the runner is allowed to receive new jobs                                                                                                       |
-| `paused`           | boolean      | no       | Specifies if the runner should ignore new jobs                                                                                                                                                 |
-| `locked`           | boolean      | no       | Specifies if the runner should be locked for the current project                                                                                                                               |
-| `run_untagged`     | boolean      | no       | Specifies if the runner should handle untagged jobs                                                                                                                                            |
-| `tag_list`         | string array | no       | A list of runner tags                                                                                                                                                                          |
-| `access_level`     | string       | no       | The access level of the runner; `not_protected` or `ref_protected`                                                                                                                             |
-| `maximum_timeout`  | integer      | no       | Maximum timeout that limits the amount of time (in seconds) that runners can run jobs                                                                                                          |
-| `maintainer_note`  | string       | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350730), see `maintenance_note`                                                                                                     |
-| `maintenance_note` | string       | no       | Free-form maintenance notes for the runner (1024 characters)                                                                                                                                   |
+| `active`           | boolean      | no       | Deprecated: Use `paused` instead. Specifies if the runner is allowed to receive new jobs |
+| `paused`           | boolean      | no       | Specifies if the runner should ignore new jobs |
+| `locked`           | boolean      | no       | Specifies if the runner should be locked for the current project |
+| `run_untagged`     | boolean      | no       | Specifies if the runner should handle untagged jobs |
+| `tag_list`         | string array | no       | A list of runner tags |
+| `access_level`     | string       | no       | The access level of the runner; `not_protected` or `ref_protected` |
+| `maximum_timeout`  | integer      | no       | Maximum timeout that limits the amount of time (in seconds) that runners can run jobs |
+| `maintainer_note`  | string       | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350730), see `maintenance_note` |
+| `maintenance_note` | string       | no       | Free-form maintenance notes for the runner (1024 characters) |
 
 ```shell
 curl --request POST "https://gitlab.example.com/api/v4/runners" \
@@ -930,11 +930,11 @@ curl --request POST "https://gitlab.example.com/api/v4/runners" \
 
 Response:
 
-| Status    | Description                       |
-|-----------|-----------------------------------|
-| 201       | Runner was created                |
-| 403       | Invalid runner registration token |
-| 410       | Runner registration disabled      |
+| Status | Description |
+|--------|-------------|
+| 201    | Runner was created |
+| 403    | Invalid runner registration token |
+| 410    | Runner registration disabled |
 
 Example response:
 
@@ -968,9 +968,9 @@ Prerequisites:
 DELETE /runners/:id
 ```
 
-| Attribute   | Type    | Required | Description         |
-|-------------|---------|----------|---------------------|
-| `id`        | integer | yes      | The ID of a runner. The ID is visible in the UI under **Settings > CI/CD**. Expand **Runners**, and below **Remove Runner** is an ID preceded by the pound sign, for example, `#6`. |
+| Attribute | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| `id`      | integer | yes      | The ID of a runner. The ID is visible in the UI under **Settings > CI/CD**. Expand **Runners**, and below **Remove Runner** is an ID preceded by the pound sign, for example, `#6`. |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6"
@@ -989,9 +989,9 @@ Prerequisites:
 DELETE /runners
 ```
 
-| Attribute   | Type    | Required | Description         |
-|-------------|---------|----------|---------------------|
-| `token`     | string  | yes      | The runner's [authentication token](#registration-and-authentication-tokens). |
+| Attribute | Type   | Required | Description |
+|-----------|--------|----------|-------------|
+| `token`   | string | yes      | The runner's [authentication token](#registration-and-authentication-tokens). |
 
 ```shell
 curl --request DELETE "https://gitlab.example.com/api/v4/runners" \
@@ -1000,9 +1000,9 @@ curl --request DELETE "https://gitlab.example.com/api/v4/runners" \
 
 Response:
 
-| Status    | Description                     |
-|-----------|---------------------------------|
-| 204       | Runner was deleted              |
+| Status | Description |
+|--------|-------------|
+| 204    | Runner was deleted |
 
 ## Verify authentication for a registered runner
 
@@ -1012,10 +1012,10 @@ Validates authentication credentials for a registered runner.
 POST /runners/verify
 ```
 
-| Attribute   | Type    | Required | Description                                                                                    |
-|-------------|---------|----------|------------------------------------------------------------------------------------------------|
-| `token`     | string  | yes      | The runner's [authentication token](#registration-and-authentication-tokens).                  |
-| `system_id` | string  | no       | The runner's system identifier. This attribute is required if the `token` starts with `glrt-`. |
+| Attribute   | Type   | Required | Description |
+|-------------|--------|----------|-------------|
+| `token`     | string | yes      | The runner's [authentication token](#registration-and-authentication-tokens). |
+| `system_id` | string | no       | The runner's system identifier. This attribute is required if the `token` starts with `glrt-`. |
 
 ```shell
 curl --request POST "https://gitlab.example.com/api/v4/runners/verify" \
@@ -1024,10 +1024,10 @@ curl --request POST "https://gitlab.example.com/api/v4/runners/verify" \
 
 Response:
 
-| Status    | Description                     |
-|-----------|---------------------------------|
-| 200       | Credentials are valid           |
-| 403       | Credentials are invalid         |
+| Status | Description |
+|--------|-------------|
+| 200    | Credentials are valid |
+| 403    | Credentials are invalid |
 
 Example response:
 
@@ -1130,9 +1130,9 @@ Prerequisites:
 POST /runners/:id/reset_authentication_token
 ```
 
-| Attribute | Type    | Required | Description         |
-|-----------|---------|----------|---------------------|
-| `id`      | integer | yes      | The ID of a runner  |
+| Attribute | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| `id`      | integer | yes      | The ID of a runner |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -1156,9 +1156,9 @@ Reset the runner's authentication token by using the current token's value as an
 POST /runners/reset_authentication_token
 ```
 
-| Attribute | Type    | Required | Description                            |
-|-----------|---------|----------|----------------------------------------|
-| `token`   | string  | yes      | The authentication token of the runner |
+| Attribute | Type   | Required | Description |
+|-----------|--------|----------|-------------|
+| `token`   | string | yes      | The authentication token of the runner |
 
 ```shell
 curl --request POST --form "token=<current token>" \

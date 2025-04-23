@@ -1,0 +1,9 @@
+---
+name: track_sidekiq_concurrency_limit_execution
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/data-access/durability/team/-/issues/135
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188415
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/527022
+milestone: '18.0'
+group: group::durability
+type: gitlab_com_derisk
+default_enabled: false
