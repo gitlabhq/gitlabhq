@@ -82,6 +82,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/middleware/handle_malformed_strings')
     require_dependency Rails.root.join('lib/gitlab/middleware/path_traversal_check')
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_multipart_tempfile_factory')
+    require_dependency Rails.root.join('lib/gitlab/middleware/secure_headers')
     require_dependency Rails.root.join('lib/gitlab/runtime')
     require_dependency Rails.root.join('lib/gitlab/patch/database_config')
     require_dependency Rails.root.join('lib/gitlab/patch/redis_cache_store')
@@ -444,6 +445,8 @@ module Gitlab
     config.middleware.insert_after Rack::Sendfile, ::Gitlab::Middleware::RackMultipartTempfileFactory
 
     config.middleware.insert_before Rack::Runtime, ::Gitlab::Middleware::CompressedJson
+
+    config.middleware.insert_after ActionDispatch::Cookies, ::Gitlab::Middleware::SecureHeaders
 
     # Allow access to GitLab API from other domains
     config.middleware.insert_before Warden::Manager, Rack::Cors do
