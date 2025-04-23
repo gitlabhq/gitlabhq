@@ -18,12 +18,7 @@ module Banzai
           <p>Timeout while sanitizing links - rendering aborted. Please reduce the number of links if possible.</p>
         HTML
 
-      # We have seen documents with thousands of links
-      MAX_LINK_ATTRIBUTES = 10000
-
       def call
-        raise Timeout::Error if doc.xpath(self.class::XPATH).count > MAX_LINK_ATTRIBUTES
-
         doc.xpath(self.class::XPATH).each do |el|
           sanitize_unsafe_links({ node: el })
         end

@@ -437,64 +437,6 @@ func mergeMap(from map[string]interface{}, into map[string]interface{}) map[stri
 	return into
 }
 
-func TestRestrictForwardedResponseHeaders(t *testing.T) {
-	content := []byte("result")
-	contentLength := strconv.Itoa(len(content))
-	contentType := "multipart/x-mixed-replace"
-	acceptedHeader := "X-Accepted-Header"
-	notAcceptedHeader := "X-Not-Accepted-Header"
-	originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.Header().Set("Content-Length", contentLength)
-		w.Header().Set("Content-Type", contentType)
-		w.Header().Set(acceptedHeader, "test")
-		w.Header().Set(notAcceptedHeader, "test")
-		w.Write(content)
-	}))
-	defer originResourceServer.Close()
-
-	uploadHandler := &fakeUploadHandler{
-		handler: func(w http.ResponseWriter, _ *http.Request) {
-			w.WriteHeader(200)
-		},
-	}
-
-	injector := NewInjector()
-	injector.SetUploadHandler(uploadHandler)
-
-	entryParamsJSON := jsonEntryParams(t, &map[string]interface{}{
-		"Token":           "token",
-		"Url":             originResourceServer.URL + `/remote/file`,
-		"ResponseHeaders": http.Header{"CustomHeader": {"test"}},
-		"RestrictForwardedResponseHeaders": &map[string]interface{}{
-			"Enabled":   true,
-			"AllowList": []string{acceptedHeader, "Content-Type", "Content-Length"},
-		},
-	})
-
-	response := makeRequest(injector, entryParamsJSON)
-
-	require.Equal(t, "/target/upload", uploadHandler.request.URL.Path)
-	require.Equal(t, int64(6), uploadHandler.request.ContentLength)
-	require.Equal(t, content, uploadHandler.body)
-	require.Equal(t, http.StatusOK, response.Code)
-
-	expectedHeaders := http.Header{
-		"Content-Length": []string{contentLength},
-		"Content-Type":   []string{"application/octet-stream"},
-		acceptedHeader:   []string{"test"},
-		"Customheader":   []string{"test"},
-	}
-
-	require.Equal(t, expectedHeaders, response.Header())
-}
-
-func jsonEntryParams(t *testing.T, params *map[string]interface{}) string {
-	result, err := json.Marshal(params)
-	require.NoError(t, err)
-
-	return string(result)
-}
-
 func TestIncorrectSendData(t *testing.T) {
 	response := makeRequest(NewInjector(), "")
 

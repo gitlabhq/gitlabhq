@@ -2,23 +2,6 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
-## 17.11.1 (2025-04-22)
-
-### Fixed (1 change)
-
-- [Fix string conversion for CI Inputs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/aceb71126fb8ea5be6259a2156c6255bbaa1f3de)
-
-### Changed (1 change)
-
-- [Put allow_composite_identities_to_run_pipelines behind ff](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2287e37df7c9ed82aa54643759e00bbf30a788c8)
-
-### Security (4 changes)
-
-- [Add SecureHeaders middleware with the Nel header](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5a586de4d56429eabe0fb6ebc524894925759d2e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4934))
-- [Restrict forwarded headers in Maven dependency proxy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/80244b98dd92312510f4a9276b5adfcbaba8e68a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4929))
-- [Security unauthorized access to reading branch names](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9f9724584d109181e764f79a3b61667520d2212f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4933))
-- [Simplify detecting paragraphs for quick actions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/78466ef2cd3ddee5fbf0db67056a5bccf7c59907) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4925))
-
 ## 17.11.0 (2025-04-16)
 
 ### Added (211 changes)

@@ -11,12 +11,6 @@ RSpec.describe Banzai::Filter::QuickActionFilter, feature_category: :markdown do
     expect(result[:quick_action_paragraphs]).to match_array [{ start_line: 0, end_line: 1 }]
   end
 
-  it 'detects action in paragraph when it is on another line' do
-    described_class.call(%(<p data-sourcepos="1:1-2:3">foo\n/quick</p>), {}, result)
-
-    expect(result[:quick_action_paragraphs]).to match_array [{ start_line: 0, end_line: 1 }]
-  end
-
   it 'does not detect action in paragraph if no sourcepos' do
     described_class.call('<p>/quick</p>', {}, result)
 

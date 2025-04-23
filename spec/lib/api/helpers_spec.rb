@@ -1391,16 +1391,14 @@ RSpec.describe API::Helpers, feature_category: :shared do
     let(:content_type) { nil }
     let(:content_disposition) { nil }
     let(:extra_response_headers) { {} }
-    let(:extra_send_url_params) { {} }
 
     subject do
       helper.present_carrierwave_file!(
         artifact.file,
-        supports_direct_download:,
-        content_disposition:,
-        content_type:,
-        extra_response_headers:,
-        extra_send_url_params:
+        supports_direct_download: supports_direct_download,
+        content_disposition: content_disposition,
+        content_type: content_type,
+        extra_response_headers: extra_response_headers
       )
     end
 
@@ -1511,27 +1509,6 @@ RSpec.describe API::Helpers, feature_category: :shared do
 
               expect(command).to eq('send-url')
               expect(params.dig('ResponseHeaders', 'x-custom-header')).to eq(['test'])
-            end
-
-            subject
-          end
-        end
-
-        context 'with extra_send_url_params set' do
-          let(:extra_send_url_params) { { restrict_forwarded_response_headers: { enabled: true, allow_list: ['x-optional-header'] } } }
-
-          it 'sends a workhorse header with the response headers' do
-            expect(helper).to receive(:status).with(:ok)
-            expect(helper).to receive(:body).with('')
-            expect(helper).to receive(:header) do |name, value|
-              expect(name).to eq(Gitlab::Workhorse::SEND_DATA_HEADER)
-              command, encoded_params = value.split(":")
-              params = Gitlab::Json.parse(Base64.urlsafe_decode64(encoded_params))
-
-              expect(command).to eq('send-url')
-              restrict_forwarded_response_headers_params = params['RestrictForwardedResponseHeaders']
-              expect(restrict_forwarded_response_headers_params['Enabled']).to be_truthy
-              expect(restrict_forwarded_response_headers_params['AllowList']).to contain_exactly('x-optional-header')
             end
 
             subject

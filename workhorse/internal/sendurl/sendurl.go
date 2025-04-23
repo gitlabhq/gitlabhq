@@ -16,7 +16,6 @@ import (
 	"gitlab.com/gitlab-org/labkit/mask"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/forwardheaders"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
@@ -26,20 +25,19 @@ import (
 type entry struct{ senddata.Prefix }
 
 type entryParams struct {
-	URL                              string
-	AllowRedirects                   bool
-	AllowLocalhost                   bool
-	AllowedURIs                      []string
-	SSRFFilter                       bool
-	DialTimeout                      config.TomlDuration
-	ResponseHeaderTimeout            config.TomlDuration
-	ErrorResponseStatus              int
-	TimeoutResponseStatus            int
-	Body                             string
-	Header                           http.Header
-	ResponseHeaders                  http.Header
-	Method                           string
-	RestrictForwardedResponseHeaders forwardheaders.Params
+	URL                   string
+	AllowRedirects        bool
+	AllowLocalhost        bool
+	AllowedURIs           []string
+	SSRFFilter            bool
+	DialTimeout           config.TomlDuration
+	ResponseHeaderTimeout config.TomlDuration
+	ErrorResponseStatus   int
+	TimeoutResponseStatus int
+	Body                  string
+	Header                http.Header
+	ResponseHeaders       http.Header
+	Method                string
 }
 
 type cacheKey struct {
@@ -68,11 +66,11 @@ var rangeHeaderKeys = []string{
 // Keep cache headers from the original response, not the proxied response. The
 // original response comes from the Rails application, which should be the
 // source of truth for caching.
-var preserveHeaderKeys = []string{
-	"Cache-Control",
-	"Expires",
-	"Date",   // Support for HTTP 1.0 proxies
-	"Pragma", // Support for HTTP 1.0 proxies
+var preserveHeaderKeys = map[string]bool{
+	"Cache-Control": true,
+	"Expires":       true,
+	"Date":          true, // Support for HTTP 1.0 proxies
+	"Pragma":        true, // Support for HTTP 1.0 proxies
 }
 
 var httpClientNoRedirect = func(_ *http.Request, _ []*http.Request) error {
@@ -139,7 +137,7 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 		e.handleRequestError(w, r, err, &params)
 		return
 	}
-	params.RestrictForwardedResponseHeaders.ForwardResponseHeaders(w, resp, preserveHeaderKeys, params.ResponseHeaders)
+	e.copyResponseHeaders(w, resp, params.ResponseHeaders)
 	w.WriteHeader(resp.StatusCode)
 
 	defer func() {
@@ -196,6 +194,23 @@ func (e *entry) handleRequestError(w http.ResponseWriter, r *http.Request, err e
 
 	sendURLRequestsRequestFailed.Inc()
 	fail.Request(w, r, fmt.Errorf("SendURL: Do request: %v", err), fail.WithStatus(status))
+}
+
+func (e *entry) copyResponseHeaders(w http.ResponseWriter, resp *http.Response, responseHeaders map[string][]string) {
+	w.Header().Del("Content-Length")
+
+	for key, value := range resp.Header {
+		if !preserveHeaderKeys[key] {
+			w.Header()[key] = value
+		}
+	}
+
+	for key, values := range responseHeaders {
+		w.Header().Del(key)
+		for _, value := range values {
+			w.Header().Add(key, value)
+		}
+	}
 }
 
 func (e *entry) streamResponse(w http.ResponseWriter, body io.Reader) error {

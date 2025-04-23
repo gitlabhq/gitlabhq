@@ -165,6 +165,14 @@ RSpec.describe Gitlab::Pagination::OffsetPagination do
               expect(subject.paginate(resource).count).to eq 1
             end
           end
+
+          context 'when skip_pagination_check is true' do
+            let(:query) { base_query.merge(page: 1, per_page: 2) }
+
+            it 'does not re-paginate' do
+              expect(subject.paginate(resource, skip_pagination_check: true).count).to eq 1
+            end
+          end
         end
 
         context 'when resource does not respond to limit_value' do

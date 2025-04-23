@@ -11,18 +11,18 @@ module Gitlab
         @request_context = request_context
       end
 
-      def paginate(relation, exclude_total_headers: false, skip_default_order: false, without_count: false)
+      def paginate(relation, exclude_total_headers: false, skip_default_order: false, without_count: false, skip_pagination_check: false)
         ordered_relation = add_default_order(relation, skip_default_order: skip_default_order)
 
-        paginate_with_limit_optimization(ordered_relation, without_count: without_count).tap do |data|
+        paginate_with_limit_optimization(ordered_relation, without_count: without_count, skip_pagination_check: skip_pagination_check).tap do |data|
           add_pagination_headers(data, exclude_total_headers, without_count)
         end
       end
 
       private
 
-      def paginate_with_limit_optimization(relation, without_count:)
-        pagination_data = if needs_pagination?(relation)
+      def paginate_with_limit_optimization(relation, without_count:, skip_pagination_check: false)
+        pagination_data = if !skip_pagination_check && needs_pagination?(relation)
                             relation.page(params[:page]).per(params[:per_page])
                           else
                             relation

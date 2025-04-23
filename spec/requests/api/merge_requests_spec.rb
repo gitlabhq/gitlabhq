@@ -2022,7 +2022,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     it 'returns the diffs of the merge_request' do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/diffs", user)
 
-      expect(response).to have_gitlab_http_status(:ok)
+      expect_successful_response_with_paginated_array
       expect(json_response.size).to eq(merge_request.diffs.size)
     end
 
@@ -2030,7 +2030,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       it 'returns the diff in Unified format' do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/diffs", user), params: { unidiff: true }
 
-        expect(response).to have_gitlab_http_status(:ok)
+        expect_successful_response_with_paginated_array
         expect(json_response.dig(0, 'diff')).to eq(merge_request.diffs.diffs.first.unidiff)
       end
     end
@@ -2042,7 +2042,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           params: { page: 1, per_page: 1 }
         )
 
-        expect(response).to have_gitlab_http_status(:ok)
+        expect_successful_response_with_paginated_array
         expect(json_response.size).to eq(1)
       end
 
@@ -2057,7 +2057,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
             params: { per_page: 2 }
           )
 
-          expect(response).to have_gitlab_http_status(:ok)
+          expect_successful_response_with_paginated_array
           expect(json_response.size).to eq(1)
         end
       end
