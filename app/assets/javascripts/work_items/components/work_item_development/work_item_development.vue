@@ -1,20 +1,12 @@
 <script>
 import { GlIcon, GlAlert, GlTooltipDirective } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-
 import { s__, __ } from '~/locale';
-import { findWidget } from '~/issues/list/utils';
-
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import workItemDevelopmentQuery from '~/work_items/graphql/work_item_development.query.graphql';
 import workItemDevelopmentUpdatedSubscription from '~/work_items/graphql/work_item_development.subscription.graphql';
-import {
-  sprintfWorkItem,
-  WIDGET_TYPE_DEVELOPMENT,
-  STATE_OPEN,
-  DEVELOPMENT_ITEMS_ANCHOR,
-} from '~/work_items/constants';
-
+import { sprintfWorkItem, STATE_OPEN, DEVELOPMENT_ITEMS_ANCHOR } from '~/work_items/constants';
+import { findDevelopmentWidget } from '~/work_items/utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import WorkItemActionsSplitButton from '~/work_items/components/work_item_links/work_item_actions_split_button.vue';
 import WorkItemDevelopmentRelationshipList from './work_item_development_relationship_list.vue';
@@ -204,7 +196,7 @@ export default {
         };
       },
       update(data) {
-        return findWidget(WIDGET_TYPE_DEVELOPMENT, data?.workItem) || {};
+        return findDevelopmentWidget(data?.workItem) || {};
       },
       skip() {
         return !this.workItemIid;

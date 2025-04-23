@@ -2,6 +2,15 @@
 
 RSpec.describe ActiveContext::Query do
   describe 'class methods' do
+    describe '.all' do
+      it 'creates an all query' do
+        query = described_class.all
+        expect(query.type).to eq(:all)
+        expect(query.value).to be_nil
+        expect(query.children).to be_empty
+      end
+    end
+
     describe '.filter' do
       it 'creates a filter query with valid conditions' do
         query = described_class.filter(project_id: 1)
@@ -172,6 +181,18 @@ RSpec.describe ActiveContext::Query do
     end
 
     describe '#inspect_ast' do
+      it 'generates a readable AST representation for a simple all query' do
+        query = described_class.all
+        ast = query.inspect_ast
+        expect(ast).to eq('all')
+      end
+
+      it 'generates a readable AST representation for an all query with limit' do
+        query = described_class.all.limit(10)
+        ast = query.inspect_ast
+        expect(ast).to eq("limit(10)\n  all")
+      end
+
       it 'generates a readable AST representation for a simple filter query' do
         query = described_class.filter(project_id: 1)
         ast = query.inspect_ast
@@ -215,7 +236,7 @@ RSpec.describe ActiveContext::Query do
       it 'raises an error for invalid query type' do
         expect { described_class.new(type: :invalid) }.to raise_error(
           ArgumentError,
-          /Invalid type: invalid\. Allowed types are: filter, prefix, limit, knn, and, or/
+          /Invalid type: invalid\. Allowed types are: all, filter, prefix, limit, knn, and, or/
         )
       end
     end

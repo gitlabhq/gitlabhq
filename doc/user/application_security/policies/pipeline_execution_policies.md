@@ -756,7 +756,7 @@ predefined project variable, not defined in the project's `.gitlab-ci.yml` file.
 
 ```yaml
 variables:
-  CS_ANALYZER_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/security-products/container-scanning:7"
+  CS_ANALYZER_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/security-products/container-scanning:8"
   CS_IMAGE: alpine:latest
 
 policy::container-security:

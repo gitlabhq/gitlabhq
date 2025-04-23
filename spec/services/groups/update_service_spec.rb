@@ -177,6 +177,20 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
           expect(updated_group.crm_enabled?).to be_truthy
           expect(updated_group.crm_group).to eq(internal_group)
         end
+
+        context 'when crm_source_group_id blank and issues have contacts' do
+          let(:params) { { crm_source_group_id: '' } }
+
+          before do
+            allow(public_group).to receive(:has_issues_with_contacts?).and_return(true)
+          end
+
+          it 'does not return an error' do
+            described_class.new(public_group, user, params).execute
+
+            expect(public_group.errors).to be_empty
+          end
+        end
       end
 
       context 'with existing crm_settings' do

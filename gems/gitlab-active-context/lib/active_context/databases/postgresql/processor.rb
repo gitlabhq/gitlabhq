@@ -22,6 +22,7 @@ module ActiveContext
         # Processes a query node and returns the corresponding ActiveRecord relation
         def process(node)
           case node.type
+          when :all    then process_all
           when :filter then process_filter(node.value)
           when :prefix then process_prefix(node.value)
           when :and    then process_and(node.children)
@@ -36,6 +37,10 @@ module ActiveContext
         private
 
         attr_reader :model, :base_relation
+
+        def process_all
+          base_relation
+        end
 
         def process_filter(conditions)
           relation = base_relation

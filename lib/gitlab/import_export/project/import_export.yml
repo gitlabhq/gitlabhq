@@ -1318,7 +1318,6 @@ ee:
       - :report_type
       - :findings
     findings:
-      - :project_fingerprint
       - :project_id
       - :location_fingerprint
       - :primary_identifier_fingerprint
@@ -1343,7 +1342,6 @@ ee:
     primary_identifier: *identifiers_definition
     vulnerability_finding:
       - :uuid
-      - :project_fingerprint
       - :project_id
       - :location_fingerprint
       - :name

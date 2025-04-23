@@ -66,6 +66,8 @@ module ActiveContext
                                      { type: 'long' }
                                    when Field::Keyword
                                      { type: 'keyword' }
+                                   when Field::Text
+                                     { type: 'text' }
                                    when Field::Vector
                                      vector_field_mapping(field)
                                    else

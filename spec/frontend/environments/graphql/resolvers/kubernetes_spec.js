@@ -154,7 +154,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           await mockResolvers.Query.k8sPods(null, { configuration, namespace }, { client });
 
           expect(mockInitConnectionFn).toHaveBeenCalledWith({
-            configuration,
             message: {
               watchId: `k8sPods-n-${namespace}`,
               watchParams: {
@@ -281,7 +280,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           await mockResolvers.Query.k8sServices(null, { configuration, namespace }, { client });
 
           expect(mockInitConnectionFn).toHaveBeenCalledWith({
-            configuration,
             message: {
               watchId: `k8sServices-n-${namespace}`,
               watchParams: {
@@ -546,7 +544,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           );
 
           expect(mockInitConnectionFn).toHaveBeenCalledWith({
-            configuration,
             message: {
               watchId: `events-io-${involvedObjectName}`,
               watchParams: {

@@ -137,7 +137,6 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           );
 
           expect(mockInitConnectionFn).toHaveBeenCalledWith({
-            configuration,
             message: {
               watchId: `kustomizations-${resourceName}`,
               watchParams: {

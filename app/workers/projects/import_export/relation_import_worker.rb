@@ -91,7 +91,7 @@ module Projects
           relation_factory: Gitlab::ImportExport::Project::RelationFactory,
           reader: Gitlab::ImportExport::Reader.new(shared: project.import_export_shared),
           importable: project,
-          importable_attributes: relation_reader.consume_attributes('project'),
+          importable_attributes: {},
           importable_path: 'project',
           skip_on_duplicate_iid: true
         )
@@ -113,12 +113,15 @@ module Projects
         Gitlab::ImportExport::MembersMapper.new(
           exported_members: project_members,
           user: current_user,
-          importable: project
+          importable: project,
+          default_member: false
         )
       end
 
       def perform_post_import_tasks
         project.reset_counters_and_iids
+        # Issue iids are scoped on :namespace so that scope must be flushed as well
+        InternalId.flush_records!(namespace: project.project_namespace)
       end
 
       def log_failure(exception)

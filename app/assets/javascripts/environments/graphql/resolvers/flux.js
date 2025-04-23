@@ -117,11 +117,12 @@ const watchFluxResource = async ({
     };
 
     try {
+      const config = new Configuration(variables.configuration);
       await subscribeToSocket({
         watchId,
         watchParams,
-        configuration: variables.configuration,
         cacheParams,
+        config,
       });
     } catch {
       await watchFunction();

@@ -6,7 +6,7 @@ module MigrationHelpers
     def create_finding!(
       project_id:, scanner_id:, primary_identifier_id:, vulnerability_id: nil,
       name: "test", severity: 7, report_type: 0,
-      project_fingerprint: '123qweasdzxc', location_fingerprint: 'test',
+      location_fingerprint: 'test',
       metadata_version: 'test', raw_metadata: 'test', uuid: 'b1cee17e-3d7a-11ed-b878-0242ac120002')
       table(:vulnerability_occurrences).create!(
         vulnerability_id: vulnerability_id,
@@ -14,7 +14,6 @@ module MigrationHelpers
         name: name,
         severity: severity,
         report_type: report_type,
-        project_fingerprint: project_fingerprint,
         scanner_id: scanner_id,
         primary_identifier_id: primary_identifier_id,
         location_fingerprint: location_fingerprint,

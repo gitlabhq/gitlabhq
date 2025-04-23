@@ -1110,7 +1110,6 @@ Vulnerabilities::Finding:
   - severity
   - report_type
   - project_id
-  - project_fingerprint
   - location_fingerprint
   - name
   - metadata_version

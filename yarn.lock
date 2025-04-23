@@ -1365,12 +1365,11 @@
   resolved "https://registry.yarnpkg.com/@gitlab/at.js/-/at.js-1.5.7.tgz#1ee6f838cc4410a1d797770934df91d90df8179e"
   integrity sha512-c6ySRK/Ma7lxwpIVbSAF3P+xiTLrNTGTLRx4/pHK111AdFxwgUwrYF6aVZFXvmG65jHOJHoa0eQQ21RW6rm0Rg==
 
-"@gitlab/cluster-client@^2.5.0":
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/cluster-client/-/cluster-client-2.5.0.tgz#de5e3be45bbcd1da36e8337ace9d8e81521efa0b"
-  integrity sha512-uaVceqNLmAayvWLCjWUcYUkZ2AfWaj0yTWiu075sGt81zFKmWF+asz+vwWUXBClLKNaHZEoGrDkeJgOTlJP2HQ==
+"@gitlab/cluster-client@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/cluster-client/-/cluster-client-3.0.0.tgz#96351f55eef83c0dc3f5c030e2fc71d6c4753bd1"
+  integrity sha512-Hg9m9Kf38UUj/30PXxQY96SLVLqXd2mQeVDW1OYzHtOVOU59FXT8s9BydC2OR9J02+WHQQLMHYQKaMYO/wpIKg==
   dependencies:
-    axios "^0.24.0"
     core-js "^3.29.1"
     mitt "^3.0.1"
 
@@ -15035,10 +15034,10 @@ vite-plugin-ruby@^5.1.1:
     debug "^4.3.4"
     fast-glob "^3.3.2"
 
-vite@^6.3.1:
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-6.3.1.tgz#6b080ff907308ca691c5639c095ab6d938734c0d"
-  integrity sha512-kkzzkqtMESYklo96HKKPE5KKLkC1amlsqt+RjFMlX2AvbRB/0wghap19NdBxxwGZ+h/C6DLCrcEphPIItlGrRQ==
+vite@^6.3.2:
+  version "6.3.2"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-6.3.2.tgz#4c1bb01b1cea853686a191657bbc14272a038f0a"
+  integrity sha512-ZSvGOXKGceizRQIZSz7TGJ0pS3QLlVY/9hwxVh17W3re67je1RKYzFHivZ/t0tubU78Vkyb9WnHPENSBCzbckg==
   dependencies:
     esbuild "^0.25.0"
     fdir "^6.4.3"

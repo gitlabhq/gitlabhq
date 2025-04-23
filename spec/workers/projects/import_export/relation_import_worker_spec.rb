@@ -34,9 +34,17 @@ RSpec.describe Projects::ImportExport::RelationImportWorker, feature_category: :
     end
 
     it 'refreshes the project stats' do
-      expect(worker).to receive(:perform_post_import_tasks)
+      allow(worker).to receive(:project).and_return(tracker.project)
+      expect(tracker.project).to receive(:reset_counters_and_iids)
+      expect(InternalId).to receive(:flush_records!).with(namespace: tracker.project.project_namespace)
 
       perform
+    end
+
+    it 'does not change any project attributes' do
+      tracker.project.update!(description: 'an updated description', approvals_before_merge: 2, visibility_level: 10)
+
+      expect { perform }.not_to change { tracker.project.reload.attributes }
     end
   end
 

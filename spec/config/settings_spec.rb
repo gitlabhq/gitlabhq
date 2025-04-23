@@ -153,6 +153,21 @@ RSpec.describe Settings, feature_category: :system_access do
       allow(Gitlab::Application.credentials)
         .to receive(:db_key_base)
         .and_return(raw_keys)
+      # Reset memoization
+      described_class.instance_variable_set(:@db_key_base_keys, nil)
+    end
+
+    describe 'memoization' do
+      let(:raw_keys) { 'a' }
+
+      it 'memoizes the value' do
+        db_key_base_keys = described_class.db_key_base_keys
+
+        expect(described_class.db_key_base_keys).to be(db_key_base_keys)
+
+        expect(Gitlab::Application.credentials)
+          .to have_received(:db_key_base).once
+      end
     end
 
     context 'when db key base secret is a string' do

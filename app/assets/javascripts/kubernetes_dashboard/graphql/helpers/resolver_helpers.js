@@ -2,11 +2,11 @@ import {
   CoreV1Api,
   Configuration,
   WatchApi,
-  webSocketWatchManager,
   EVENT_DATA,
   EVENT_TIMEOUT,
   EVENT_ERROR,
 } from '@gitlab/cluster-client';
+import { getWatchManager } from '~/environments/services/websocket_connection_service';
 import { connectionStatus } from '~/environments/graphql/resolvers/kubernetes/constants';
 import { updateConnectionStatus } from '~/environments/graphql/resolvers/kubernetes/k8s_connection_status';
 import { s__ } from '~/locale';
@@ -54,13 +54,14 @@ export const mapEventItem = ({
   type,
 }) => ({ lastTimestamp, eventTime, message, reason, source, type });
 
-export const subscribeToSocket = async ({ watchId, watchParams, configuration, cacheParams }) => {
+export const subscribeToSocket = async ({ watchId, watchParams, cacheParams, config }) => {
   const { updateQueryCache, updateConnectionStatusFn } = cacheParams;
 
   try {
-    const watcher = await webSocketWatchManager.initConnection({
+    const watcherConnection = getWatchManager(config);
+
+    const watcher = await watcherConnection.initConnection({
       message: { watchId, watchParams },
-      configuration,
     });
 
     const handleConnectionStatus = (status) => {
@@ -142,7 +143,7 @@ export const watchWorkloadItems = async ({
     };
 
     try {
-      await subscribeToSocket({ watchId, watchParams, configuration, cacheParams });
+      await subscribeToSocket({ watchId, watchParams, cacheParams, config });
     } catch {
       await watchFunction();
     }

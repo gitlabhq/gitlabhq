@@ -59,6 +59,7 @@ module ActiveContext
         # @raise [ArgumentError] If the query type is not supported
         def process(node)
           case node.type
+          when :all     then process_all
           when :filter  then process_filter(node.value)
           when :prefix  then process_prefix(node.value)
           when :or      then process_or(node)
@@ -71,6 +72,10 @@ module ActiveContext
         end
 
         private
+
+        def process_all
+          { query: { match_all: {} } }
+        end
 
         # Processes filter conditions into term or terms queries
         #

@@ -6,14 +6,14 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
 import { __ } from '~/locale';
 import { clearDraft } from '~/lib/utils/autosave';
-import { findWidget } from '~/issues/list/utils';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
 import { updateCacheAfterCreatingNote } from '../../graphql/cache_utils';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
 import workItemNotesByIidQuery from '../../graphql/notes/work_item_notes_by_iid.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
-import { TRACKING_CATEGORY_SHOW, WIDGET_TYPE_EMAIL_PARTICIPANTS, i18n } from '../../constants';
+import { TRACKING_CATEGORY_SHOW, i18n } from '../../constants';
+import { findEmailParticipantsWidget } from '../../utils';
 import WorkItemNoteSignedOut from './work_item_note_signed_out.vue';
 import WorkItemCommentLocked from './work_item_comment_locked.vue';
 import WorkItemCommentForm from './work_item_comment_form.vue';
@@ -223,7 +223,7 @@ export default {
       return this.isDiscussionResolved ? __('Unresolve thread') : __('Resolve thread');
     },
     hasEmailParticipantsWidget() {
-      return Boolean(findWidget(WIDGET_TYPE_EMAIL_PARTICIPANTS, this.workItem));
+      return Boolean(findEmailParticipantsWidget(this.workItem));
     },
   },
   watch: {

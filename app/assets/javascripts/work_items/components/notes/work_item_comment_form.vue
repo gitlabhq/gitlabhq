@@ -3,14 +3,8 @@ import { GlButton, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-import {
-  STATE_OPEN,
-  WORK_ITEM_TYPE_NAME_TASK,
-  WIDGET_TYPE_EMAIL_PARTICIPANTS,
-  i18n,
-} from '~/work_items/constants';
+import { STATE_OPEN, WORK_ITEM_TYPE_NAME_TASK, i18n } from '~/work_items/constants';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
-import { findWidget } from '~/issues/list/utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
@@ -19,6 +13,7 @@ import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.
 import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import workItemEmailParticipantsByIidQuery from '../../graphql/notes/work_item_email_participants_by_iid.query.graphql';
+import { findEmailParticipantsWidget } from '../../utils';
 
 const DOCS_WORK_ITEM_LOCKED_TASKS_PATH = helpPagePath('user/tasks.html', {
   anchor: 'lock-discussion',
@@ -269,8 +264,7 @@ export default {
       },
       update(data) {
         return (
-          findWidget(WIDGET_TYPE_EMAIL_PARTICIPANTS, data?.workspace?.workItem)?.emailParticipants
-            ?.nodes || []
+          findEmailParticipantsWidget(data?.workspace?.workItem)?.emailParticipants?.nodes || []
         );
       },
     },

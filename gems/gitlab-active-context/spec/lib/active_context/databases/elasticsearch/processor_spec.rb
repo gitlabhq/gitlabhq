@@ -10,6 +10,7 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Processor do
 
     let(:simple_filter) { ActiveContext::Query.filter(status: 'active') }
     let(:simple_prefix) { ActiveContext::Query.prefix(name: 'test') }
+    let(:simple_all) { ActiveContext::Query.all }
     let(:simple_knn) do
       ActiveContext::Query.knn(
         target: 'embedding',
@@ -376,6 +377,16 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Processor do
             num_candidates: 50
           },
           size: 10
+        )
+      end
+    end
+
+    context 'with all queries' do
+      it 'creates a match_all query' do
+        result = processor.process(simple_all)
+
+        expect(result).to eq(
+          query: { match_all: {} }
         )
       end
     end

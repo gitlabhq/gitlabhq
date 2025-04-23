@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.11.1 (2025-04-22)
+
+### Fixed (1 change)
+
+- [Fix string conversion for CI Inputs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/aceb71126fb8ea5be6259a2156c6255bbaa1f3de)
+
+### Changed (1 change)
+
+- [Put allow_composite_identities_to_run_pipelines behind ff](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2287e37df7c9ed82aa54643759e00bbf30a788c8)
+
+### Security (4 changes)
+
+- [Add SecureHeaders middleware with the Nel header](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5a586de4d56429eabe0fb6ebc524894925759d2e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4934))
+- [Restrict forwarded headers in Maven dependency proxy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/80244b98dd92312510f4a9276b5adfcbaba8e68a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4929))
+- [Security unauthorized access to reading branch names](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9f9724584d109181e764f79a3b61667520d2212f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4933))
+- [Simplify detecting paragraphs for quick actions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/78466ef2cd3ddee5fbf0db67056a5bccf7c59907) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4925))
+
 ## 17.11.0 (2025-04-16)
 
 ### Added (211 changes)
@@ -766,6 +783,25 @@ entry.
 - [Cleanupp the no_onboarding_enterprise_users feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/7d9d548746a1b6dd2f2f074f64c7758745fb0494) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184478)) **GitLab Enterprise Edition**
 - [Remove feature flag allow_merge_request_pipelines_from_fork](https://gitlab.com/gitlab-org/gitlab/-/commit/b62f9187a57cc5ba66ce26889516cc55a425181a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182862))
 - [Finalize migration BackfillNewAuditEventTables](https://gitlab.com/gitlab-org/gitlab/-/commit/1bc0f07ffd3af5b9fab8a0ea0b1af5f2759d25db) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181881))
+
+## 17.10.5 (2025-04-22)
+
+### Fixed (3 changes)
+
+- [Fix 500 in Todo API when wiki page todo exists](https://gitlab.com/gitlab-org/security/gitlab/-/commit/71215f0615fad3167fb96b521b9628e11ea30a5d)
+- [Clear session cookie when browser is closed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7c77ca404d9be7166d8ef991013394483b3f0371)
+- [Fix workspaces reconciliation to send inventory config map correctly](https://gitlab.com/gitlab-org/security/gitlab/-/commit/aba508e925aea81c4d47555254e6a657edc94863) **GitLab Enterprise Edition**
+
+### Security (4 changes)
+
+- [Add SecureHeaders middleware with the Nel header](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0e180be62768513438f86ea99f0a4a305cca46b6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4919))
+- [Restrict forwarded headers in Maven dependency proxy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/faa100503f89d08e51549e4f35f362c9945dbb6f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4930))
+- [Security unauthorized access to reading branch names](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dc2f917499f58ed9ccff23158b39528b62b71c2f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4895))
+- [Simplify detecting paragraphs for quick actions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/507e465f21b5be5297eda7a67f0ba75994df88d8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4926))
+
+### Other (1 change)
+
+- [No-op FinalizeBackfillCiRunnerMachinesPartitionedTable migration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/119891459658f48120bcef02b1b66e3e78c78865)
 
 ## 17.10.4 (2025-04-09)
 
@@ -1607,6 +1643,20 @@ No changes.
 - [Validate NOT NULL on issue_links sharding key](https://gitlab.com/gitlab-org/gitlab/-/commit/88d10656deca31b2af41b3fcb20f5c56aa88af7e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180911))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/998d8028213da6bf0c3c1c08301797c8b3395c28) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180234))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/8ae69a3765cfb7561db95e43faa30cc60fac6444) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177662))
+
+## 17.9.7 (2025-04-22)
+
+### Security (4 changes)
+
+- [Add SecureHeaders middleware with the Nel header](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5e9112ba2d6fac340e1dbfc4b0330bdcff2f82bc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4920))
+- [Restrict forwarded headers in Maven dependency proxy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/24d73f3e778471c4e0153af174f2d8b44e106108) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4931))
+- [Security unauthorized access to reading branch names](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cb09987371857b97ec3cc5774b9f214c9db7c8a6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4923))
+- [Simplify detecting paragraphs for quick actions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/29d3f746b02137aaff4364473ce62f701d208e27) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4927))
+
+### Other (2 changes)
+
+- [Clean up BackfillCiRunnerMachinesPartitionedTable migration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/76d351431e07b3a695356c7b78ac16d23b180302)
+- [No-op FinalizeBackfillCiRunnerMachinesPartitionedTable migration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fb16e2ebcc6188b3f9bb0bc30e7e2b709484f3b1)
 
 ## 17.9.6 (2025-04-09)
 

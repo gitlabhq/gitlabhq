@@ -182,4 +182,10 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
       "SELECT subq.* FROM (SELECT \"items\".* FROM \"items\" " \
         "ORDER BY \"embedding\" <=> '[0.1,0.2]' LIMIT 5) subq LIMIT 10"
   end
+
+  context 'with all queries' do
+    it_behaves_like 'a SQL transformer',
+      ActiveContext::Query.all,
+      "SELECT \"items\".* FROM \"items\""
+  end
 end

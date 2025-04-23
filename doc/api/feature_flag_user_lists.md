@@ -44,7 +44,8 @@ GET /projects/:id/feature_flags_user_lists
 | `search`  | string         | no       | Return user lists matching the search criteria.                                  |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists"
 ```
 
 Example response:
@@ -87,10 +88,11 @@ POST /projects/:id/feature_flags_user_lists
 | `user_xids`         | string           | yes        | A comma-separated list of external user IDs. |
 
 ```shell
-curl "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists" \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     --header "Content-type: application/json" \
-     --data @- << EOF
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-type: application/json" \
+  --url "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists" \
+  --data @- << EOF
 {
     "name": "my_user_list",
     "user_xids": "user1,user2,user3"
@@ -126,7 +128,8 @@ GET /projects/:id/feature_flags_user_lists/:iid
 | `iid`               | integer/string   | yes        | The internal ID of the project's feature flag user list.                               |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists/1"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists/1"
 ```
 
 Example response:
@@ -159,11 +162,11 @@ PUT /projects/:id/feature_flags_user_lists/:iid
 | `user_xids`         | string           | no         | A comma-separated list of external user IDs.                                                    |
 
 ```shell
-curl "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists/1" \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     --header "Content-type: application/json" \
-     --request PUT \
-     --data @- << EOF
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-type: application/json" \
+  --url "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists/1" \
+  --data @- << EOF
 {
     "user_xids": "user2,user3,user4"
 }
@@ -198,5 +201,7 @@ DELETE /projects/:id/feature_flags_user_lists/:iid
 | `iid`               | integer/string   | yes        | The internal ID of the project's feature flag user list                                |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --request DELETE "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists/1"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/feature_flags_user_lists/1"
 ```

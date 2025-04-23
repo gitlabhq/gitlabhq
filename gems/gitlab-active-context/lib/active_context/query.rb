@@ -26,6 +26,7 @@
 #   ActiveContext::Query.knn(target: "similarity", vector: [0.1, 0.2, 0.3], limit: 5)
 #
 # Supported Query Types:
+# - :all      - Return all documents
 # - :filter   - Exact match conditions
 # - :prefix   - Prefix/starts-with conditions
 # - :limit    - Restricts number of results
@@ -44,11 +45,15 @@
 
 module ActiveContext
   class Query
-    ALLOWED_TYPES = [:filter, :prefix, :limit, :knn, :and, :or].freeze
+    ALLOWED_TYPES = [:all, :filter, :prefix, :limit, :knn, :and, :or].freeze
     SPACES_PER_INDENT = 2
 
     class << self
       # Class methods to start the chain
+      def all
+        new(type: :all)
+      end
+
       def filter(**conditions)
         raise ArgumentError, "Filter cannot be empty" if conditions.empty?
 

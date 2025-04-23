@@ -8,7 +8,6 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { getBaseURL } from '~/lib/utils/url_utility';
 import { convertEachWordToTitleCase } from '~/lib/utils/text_utility';
 import { getDraft, clearDraft } from '~/lib/utils/autosave';
-import { findWidget } from '~/issues/list/utils';
 import {
   newWorkItemOptimisticUserPermissions,
   WIDGET_TYPE_ASSIGNEES,
@@ -32,6 +31,7 @@ import {
 } from 'ee_else_ce/work_items/constants';
 import {
   findCurrentUserTodosWidget,
+  findDescriptionWidget,
   findHierarchyWidget,
   findHierarchyWidgetChildren,
   findNotesWidget,
@@ -350,8 +350,7 @@ export const setNewWorkItemCache = async (
   const draftData = JSON.parse(getDraft(autosaveKey));
 
   const draftTitle = draftData?.workspace?.workItem?.title || '';
-  const draftDescriptionWidget =
-    findWidget(WIDGET_TYPE_DESCRIPTION, draftData?.workspace?.workItem) || {};
+  const draftDescriptionWidget = findDescriptionWidget(draftData?.workspace?.workItem) || {};
   const draftDescription = draftDescriptionWidget?.description || null;
 
   widgets.push({

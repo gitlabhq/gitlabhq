@@ -1169,12 +1169,12 @@ To use dependency scanning with all [supported languages and frameworks](#suppor
    your [local Docker container registry](../../packages/container_registry/_index.md):
 
    ```plaintext
-   registry.gitlab.com/security-products/gemnasium:5
-   registry.gitlab.com/security-products/gemnasium:5-fips
-   registry.gitlab.com/security-products/gemnasium-maven:5
-   registry.gitlab.com/security-products/gemnasium-maven:5-fips
-   registry.gitlab.com/security-products/gemnasium-python:5
-   registry.gitlab.com/security-products/gemnasium-python:5-fips
+   registry.gitlab.com/security-products/gemnasium:6
+   registry.gitlab.com/security-products/gemnasium:6-fips
+   registry.gitlab.com/security-products/gemnasium-maven:6
+   registry.gitlab.com/security-products/gemnasium-maven:6-fips
+   registry.gitlab.com/security-products/gemnasium-python:6
+   registry.gitlab.com/security-products/gemnasium-python:6-fips
    ```
 
    The process for importing Docker images into a local offline Docker registry depends on

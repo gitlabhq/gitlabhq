@@ -37,6 +37,12 @@ en:
         grafana_enabled: "Grafana integration enabled"
       service_desk_setting:
         project_key: "Project name suffix"
+      system_access/group_microsoft_application:
+        tenant_xid: "Tenant ID"
+        client_xid: "Client ID"
+        encrypted_client_secret: "Client secret"
+        login_endpoint: "Login API endpoint"
+        graph_endpoint: "Graph API endpoint"
       system_access/microsoft_application:
         tenant_xid: "Tenant ID"
         client_xid: "Client ID"

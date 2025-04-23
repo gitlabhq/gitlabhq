@@ -30,7 +30,7 @@ variables:
   # (SAST, Dependency Scanning, ...)
   AST_ENABLE_MR_PIPELINES: "true"
   #
-  CS_ANALYZER_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/security-products/container-scanning:7"
+  CS_ANALYZER_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/security-products/container-scanning:8"
   CS_SCHEMA_MODEL: 15
 
 # Provide a base job for extensibility until delivery of https://gitlab.com/gitlab-org/gitlab/-/issues/215470

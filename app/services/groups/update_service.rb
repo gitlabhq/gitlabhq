@@ -144,7 +144,7 @@ module Groups
 
       crm_enabled = params.delete(:crm_enabled)
       crm_enabled = true if crm_enabled.nil?
-      crm_source_group_id = params.delete(:crm_source_group_id)
+      crm_source_group_id = params.delete(:crm_source_group_id).presence
       return if group.crm_enabled? == crm_enabled && group.crm_settings&.source_group_id == crm_source_group_id
 
       if group.crm_settings&.source_group_id != crm_source_group_id && group.has_issues_with_contacts?
@@ -154,7 +154,7 @@ module Groups
 
       crm_settings = group.crm_settings || group.build_crm_settings
       crm_settings.enabled = crm_enabled
-      crm_settings.source_group_id = crm_source_group_id.presence
+      crm_settings.source_group_id = crm_source_group_id
       crm_settings.save
     end
 

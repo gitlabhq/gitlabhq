@@ -5346,7 +5346,7 @@ In this example, GitLab launches two containers for the job:
 
 - A Ruby container that runs the `script` commands.
 - A PostgreSQL container. The `script` commands in the Ruby container can connect to
-  the PostgreSQL database at the `db-postgrest` hostname.
+  the PostgreSQL database at the `db-postgres` hostname.
 
 **Related topics**:
 

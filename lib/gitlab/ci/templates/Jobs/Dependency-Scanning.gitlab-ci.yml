@@ -15,7 +15,7 @@ variables:
   #
   DS_EXCLUDED_ANALYZERS: ""
   DS_EXCLUDED_PATHS: "spec, test, tests, tmp"
-  DS_MAJOR_VERSION: 5
+  DS_MAJOR_VERSION: 6
   DS_SCHEMA_MODEL: 15
 
 dependency_scanning:

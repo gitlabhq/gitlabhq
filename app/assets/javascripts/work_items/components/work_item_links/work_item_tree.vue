@@ -3,7 +3,6 @@ import { GlAlert } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import { findWidget } from '~/issues/list/utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
@@ -192,7 +191,7 @@ export default {
   },
   computed: {
     workItemHierarchy() {
-      return findWidget(WIDGET_TYPE_HIERARCHY, this.workItem);
+      return findHierarchyWidget(this.workItem);
     },
     rolledUpCountsByType() {
       return this.workItemHierarchy?.rolledUpCountsByType || [];

@@ -13,6 +13,23 @@ RSpec.shared_examples 'returns failure response' do |expected_status, expected_m
   end
 end
 
+RSpec.shared_examples 'returns success response' do
+  it 'schedules a restore of the relation' do
+    expect(Projects::ImportExport::RelationImportWorker).to receive(:perform_async)
+
+    import_service.execute
+  end
+
+  it 'returns a service response' do
+    response = import_service.execute
+
+    expect(response).to be_instance_of(ServiceResponse)
+    expect(response).to be_success
+    expect(response.http_status).to eq(:ok)
+    expect(response.payload).to be_instance_of(Projects::ImportExport::RelationImportTracker)
+  end
+end
+
 RSpec.describe ::Projects::ImportExport::RelationImportService, :aggregate_failures, feature_category: :importers do
   let_it_be(:project) { create(:project) }
 
@@ -39,20 +56,7 @@ RSpec.describe ::Projects::ImportExport::RelationImportService, :aggregate_failu
           project.add_maintainer(user)
         end
 
-        it 'schedules a restore of the relation' do
-          expect(Projects::ImportExport::RelationImportWorker).to receive(:perform_async)
-
-          import_service.execute
-        end
-
-        it 'returns a service response' do
-          response = import_service.execute
-
-          expect(response).to be_instance_of(ServiceResponse)
-          expect(response).to be_success
-          expect(response.http_status).to eq(:ok)
-          expect(response.payload).to be_instance_of(Projects::ImportExport::RelationImportTracker)
-        end
+        include_examples 'returns success response'
 
         context 'and the relation import tracker cannot be created' do
           before do
@@ -66,6 +70,12 @@ RSpec.describe ::Projects::ImportExport::RelationImportService, :aggregate_failu
         end
       end
 
+      context 'and the user is an admin bot' do
+        let_it_be(:user) { Users::Internal.admin_bot }
+
+        include_examples 'returns success response'
+      end
+
       context 'and the user has developer access' do
         before_all do
           project.add_developer(user)
@@ -74,7 +84,7 @@ RSpec.describe ::Projects::ImportExport::RelationImportService, :aggregate_failu
         include_examples 'returns failure response', :forbidden, 'You are not authorized to perform this action'
       end
 
-      context 'and the has no access' do
+      context 'and the user has no access' do
         include_examples 'returns failure response', :forbidden, 'You are not authorized to perform this action'
       end
 
