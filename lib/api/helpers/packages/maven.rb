@@ -54,17 +54,18 @@ module API
           nil
         end
 
-        def download_package_file!(package_file)
+        def download_package_file!(package_file, extra_send_url_params: {}, extra_response_headers: {})
           package_file.package.touch_last_downloaded_at
           file = package_file.file
 
-          extra_response_headers = { SHA1_CHECKSUM_HEADER => package_file.file_sha1 }
-          extra_response_headers[MD5_CHECKSUM_HEADER] = package_file.file_md5 unless Gitlab::FIPS.enabled?
+          headers = extra_response_headers.merge(SHA1_CHECKSUM_HEADER => package_file.file_sha1)
+          headers[MD5_CHECKSUM_HEADER] = package_file.file_md5 unless Gitlab::FIPS.enabled?
 
           present_carrierwave_file!(
             file,
             supports_direct_download: false, # we can't support direct download if we have custom response headers
-            extra_response_headers: extra_response_headers
+            extra_response_headers: headers,
+            extra_send_url_params: extra_send_url_params
           )
         end
       end

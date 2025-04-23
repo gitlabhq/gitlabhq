@@ -2,25 +2,23 @@
 
 module Banzai
   module Filter
-    # Filter which looks for possible paragraphs with quick action lines, and allows
-    # another processor to do final determination. Paragraph source position
+    # Filter which extracts top-level paragraph sourcepos, so
+    # another processor can determine if it's a quick action. Paragraph source position
     # is returned in `result[:quick_action_paragraphs]`.
     class QuickActionFilter < HTML::Pipeline::Filter
       def call
         result[:quick_action_paragraphs] = []
 
-        doc.children.xpath('self::p').each do |node|
+        # don't use `xpath` as it can take too long
+        doc.children.each do |node|
+          next unless node.name == 'p'
           next unless node.attributes['data-sourcepos']
+          next unless %r{^/}.match?(node.content)
 
           sourcepos = ::Banzai::Filter::MarkdownFilter.parse_sourcepos(node.attributes['data-sourcepos'].value)
 
-          node.children.xpath('self::text()').each do |text_node|
-            next unless %r{^/}.match?(text_node.content)
-
-            result[:quick_action_paragraphs] <<
-              { start_line: sourcepos[:start][:row], end_line: sourcepos[:end][:row] }
-            break
-          end
+          result[:quick_action_paragraphs] <<
+            { start_line: sourcepos[:start][:row], end_line: sourcepos[:end][:row] }
         end
 
         doc

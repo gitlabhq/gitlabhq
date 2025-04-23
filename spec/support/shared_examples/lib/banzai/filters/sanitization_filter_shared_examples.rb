@@ -179,6 +179,13 @@ RSpec.shared_examples 'sanitize link' do
 
     expect(act.to_html).to eq exp
   end
+
+  it 'limits to MAX_LINK_ATTRIBUTES links' do
+    exp = %q(<a href="foo/bar.md">foo/bar.md</a>) * (Banzai::Filter::SanitizeLinkFilter::MAX_LINK_ATTRIBUTES + 1)
+    act = filter(exp)
+
+    expect(act.to_html).to eq Banzai::Filter::SanitizeLinkFilter::TIMEOUT_MARKDOWN_MESSAGE
+  end
 end
 
 # not meant to be exhaustive, but verify that the pipeline is doing sanitization
