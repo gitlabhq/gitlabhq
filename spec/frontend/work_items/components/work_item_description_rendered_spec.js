@@ -6,6 +6,7 @@ import { handleLocationHash } from '~/lib/utils/common_utils';
 import eventHub from '~/issues/show/event_hub';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
+import { WORK_ITEM_TYPE_NAME_ISSUE, WORK_ITEM_TYPE_NAME_TASK } from '~/work_items/constants';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { descriptionHtmlWithCheckboxes, descriptionTextWithCheckboxes } from '../mock_data';
 
@@ -258,7 +259,7 @@ and even more`,
           title:
             'item 2 with a really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really rea',
           visible: true,
-          preselectedWorkItemType: 'TASK',
+          preselectedWorkItemType: WORK_ITEM_TYPE_NAME_TASK,
         });
 
         findCreateWorkItemModal().vm.$emit('workItemCreated');
@@ -296,7 +297,7 @@ and even more`,
             showProjectSelector: true,
             title: 'item 1',
             visible: true,
-            preselectedWorkItemType: 'ISSUE',
+            preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE,
           });
         });
       });
@@ -322,7 +323,7 @@ and even more`,
             showProjectSelector: false,
             title: 'item 1',
             visible: true,
-            preselectedWorkItemType: 'TASK',
+            preselectedWorkItemType: WORK_ITEM_TYPE_NAME_TASK,
           });
         });
       });

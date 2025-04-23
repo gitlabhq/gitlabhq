@@ -358,7 +358,7 @@ RSpec.describe 'Project > Settings > Packages and registries',
 
       visit_method
 
-      expect(page).to have_link('next-generation container registry', href: help_page_href)
+      expect(page).to have_link('Learn more', href: help_page_href)
     end
   end
 

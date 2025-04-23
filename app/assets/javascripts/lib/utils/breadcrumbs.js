@@ -22,6 +22,7 @@ export const injectVueAppBreadcrumbs = (
 
   return new Vue({
     el: injectBreadcrumbEl,
+    name: 'CustomBreadcrumbsRoot',
     router,
     apolloProvider,
     provide,

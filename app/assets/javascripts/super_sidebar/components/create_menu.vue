@@ -12,7 +12,7 @@ import {
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
 } from '~/invite_members/constants';
 import {
-  WORK_ITEM_TYPE_ENUM_EPIC,
+  WORK_ITEM_TYPE_NAME_EPIC,
   CREATE_NEW_WORK_ITEM_MODAL,
   CREATE_NEW_GROUP_WORK_ITEM_MODAL,
 } from '~/work_items/constants';
@@ -78,7 +78,7 @@ export default {
   },
   toggleId: 'create-menu-toggle',
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
-  WORK_ITEM_TYPE_ENUM_EPIC,
+  WORK_ITEM_TYPE_NAME_EPIC,
 };
 </script>
 
@@ -132,7 +132,7 @@ export default {
       hide-button
       is-group
       data-testid="new-group-work-item-modal"
-      :preselected-work-item-type="$options.WORK_ITEM_TYPE_ENUM_EPIC"
+      :preselected-work-item-type="$options.WORK_ITEM_TYPE_NAME_EPIC"
       @hideModal="showCreateGroupWorkItemModal = false"
     />
     <create-work-item-modal

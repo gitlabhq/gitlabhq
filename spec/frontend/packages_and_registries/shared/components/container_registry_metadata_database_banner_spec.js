@@ -1,16 +1,16 @@
-import { GlAlert } from '@gitlab/ui';
+import { GlBanner } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import MetadataDatabaseAlert from '~/packages_and_registries/shared/components/container_registry_metadata_database_alert.vue';
+import MetadataDatabaseBanner from '~/packages_and_registries/shared/components/container_registry_metadata_database_banner.vue';
 import * as utils from '~/lib/utils/common_utils';
 
 describe('container registry metadata database alert', () => {
   let wrapper;
 
   const mountComponent = () => {
-    wrapper = shallowMount(MetadataDatabaseAlert);
+    wrapper = shallowMount(MetadataDatabaseBanner);
   };
 
-  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findBanner = () => wrapper.findComponent(GlBanner);
 
   describe('with no cookie set', () => {
     beforeEach(() => {
@@ -19,8 +19,8 @@ describe('container registry metadata database alert', () => {
       mountComponent();
     });
 
-    it('displays the alert', () => {
-      expect(findAlert().exists()).toBe(true);
+    it('displays the banner', () => {
+      expect(findBanner().exists()).toBe(true);
     });
 
     it('does not call setCookie', () => {
@@ -29,15 +29,15 @@ describe('container registry metadata database alert', () => {
 
     describe('when the close button is clicked', () => {
       beforeEach(() => {
-        findAlert().vm.$emit('dismiss');
+        findBanner().vm.$emit('close');
       });
 
       it('sets the dismissed cookie', () => {
         expect(utils.setCookie).toHaveBeenCalledWith('hide_metadata_database_alert', 'true');
       });
 
-      it('does not display the alert', () => {
-        expect(findAlert().exists()).toBe(false);
+      it('does not display the banner', () => {
+        expect(findBanner().exists()).toBe(false);
       });
     });
   });
@@ -49,8 +49,8 @@ describe('container registry metadata database alert', () => {
       mountComponent();
     });
 
-    it('does not display the alert', () => {
-      expect(findAlert().exists()).toBe(false);
+    it('does not display the banner', () => {
+      expect(findBanner().exists()).toBe(false);
     });
   });
 });

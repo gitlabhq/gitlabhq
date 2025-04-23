@@ -18,9 +18,9 @@ import { handleLocationHash } from '~/lib/utils/common_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import {
-  WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_ENUM_TASK,
   WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_ISSUE,
+  WORK_ITEM_TYPE_NAME_TASK,
 } from '../constants';
 
 const trackingMixin = InternalEvents.mixin();
@@ -91,8 +91,8 @@ export default {
   computed: {
     childItemType() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC
-        ? WORK_ITEM_TYPE_ENUM_ISSUE
-        : WORK_ITEM_TYPE_ENUM_TASK;
+        ? WORK_ITEM_TYPE_NAME_ISSUE
+        : WORK_ITEM_TYPE_NAME_TASK;
     },
     descriptionText() {
       return this.workItemDescription?.description;

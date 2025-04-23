@@ -92,9 +92,8 @@ import {
   NAME_TO_ENUM_MAP,
   STATE_CLOSED,
   STATE_OPEN,
-  WORK_ITEM_TYPE_ENUM_EPIC,
-  WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
 } from '../constants';
@@ -602,7 +601,7 @@ export default {
       return this.glFeatures.workItemsClientSideBoards;
     },
     preselectedWorkItemType() {
-      return this.isEpicsList ? WORK_ITEM_TYPE_ENUM_EPIC : WORK_ITEM_TYPE_ENUM_ISSUE;
+      return this.isEpicsList ? WORK_ITEM_TYPE_NAME_EPIC : WORK_ITEM_TYPE_NAME_ISSUE;
     },
   },
   watch: {

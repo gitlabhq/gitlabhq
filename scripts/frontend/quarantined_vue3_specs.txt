@@ -14,7 +14,6 @@ ee/spec/frontend/approvals/components/security_configuration/unconfigured_securi
 ee/spec/frontend/approvals/mr_edit/mr_rules_spec.js
 ee/spec/frontend/approvals/project_settings/project_rules_spec.js
 ee/spec/frontend/boards/components/board_content_sidebar_spec.js
-ee/spec/frontend/boards/components/board_form_spec.js
 ee/spec/frontend/boards/components/board_list_spec.js
 ee/spec/frontend/boards/components/board_new_issue_spec.js
 ee/spec/frontend/boards/components/epic_board_content_sidebar_spec.js
@@ -76,7 +75,6 @@ spec/frontend/analytics/shared/components/date_ranges_dropdown_spec.js
 spec/frontend/boards/board_list_spec.js
 spec/frontend/boards/components/board_content_sidebar_spec.js
 spec/frontend/boards/components/board_content_spec.js
-spec/frontend/boards/components/board_form_spec.js
 spec/frontend/boards/components/board_options_spec.js
 spec/frontend/boards/components/board_settings_sidebar_spec.js
 spec/frontend/boards/components/toggle_focus_spec.js

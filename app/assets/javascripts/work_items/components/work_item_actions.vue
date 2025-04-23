@@ -28,9 +28,7 @@ import {
   BASE_ALLOWED_CREATE_TYPES,
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
-  WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_NAME_EPIC,
-  NAME_TO_ENUM_MAP,
   WORK_ITEM_TYPE_NAME_ISSUE,
 } from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
@@ -60,7 +58,6 @@ export default {
     reportAbuse: __('Report abuse'),
     changeWorkItemType: s__('WorkItem|Change type'),
   },
-  WORK_ITEM_TYPE_ENUM_EPIC,
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
@@ -377,9 +374,6 @@ export default {
       }
 
       return BASE_ALLOWED_CREATE_TYPES;
-    },
-    workItemTypeNameEnum() {
-      return NAME_TO_ENUM_MAP[this.workItemType];
     },
     showMoveButton() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE && this.canMove;
@@ -791,7 +785,7 @@ export default {
       :always-show-work-item-type-select="!isGroup"
       :visible="isCreateWorkItemModalVisible"
       :related-item="relatedItemData"
-      :preselected-work-item-type="workItemTypeNameEnum"
+      :preselected-work-item-type="workItemType"
       :show-project-selector="!isEpic"
       :namespace-full-name="namespaceFullName"
       :is-group="isGroup"

@@ -92,6 +92,11 @@ module Integrations
       ]
     end
 
+    override :testable?
+    def testable?
+      false
+    end
+
     override :manual_activation?
     def manual_activation?
       false

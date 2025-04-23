@@ -30,6 +30,9 @@ If you have a GitLab Duo Pro or Duo Enterprise add-on, this feature is not avail
 At Re:Invent 2024, Amazon announced the GitLab Duo with Amazon Q integration.
 With this integration, you can automate tasks and increase productivity.
 
+For a click-through demo, see [the GitLab Duo with Amazon Q Product Tour](https://gitlab.navattic.com/duo-with-q).
+<!-- Demo published on 2025-04-23 -->
+
 ## Set up GitLab Duo with Amazon Q
 
 To access GitLab Duo with Amazon Q, request [access to a lab environment](https://about.gitlab.com/partners/technology-partners/aws/#interest).
@@ -47,8 +50,6 @@ Turn an idea in an issue into a merge request that contains the proposed impleme
 
 Amazon Q uses the issue title and description, along with project context, to create a merge request
 with code to address the issue.
-
-[View a walkthrough](https://gitlab.navattic.com/duo-q).
 
 #### From the issue description
 

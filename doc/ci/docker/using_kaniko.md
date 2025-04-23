@@ -37,7 +37,7 @@ of the following executors is required:
 Authentication is required when building and pushing images with kaniko:
 
 - For the GitLab container registry, authentication happens automatically without any manual configuration.
-- For pulling images through the GitLab dependency proxy, additional authentication configuration is required.
+- For pulling images through the GitLab dependency proxy, additional configuration is required.
 
 For more information on authentication with other registries,
 see [pushing to different registries](https://github.com/GoogleContainerTools/kaniko?tab=readme-ov-file#pushing-to-different-registries).
@@ -53,7 +53,7 @@ When pushing to the GitLab container registry, authentication happens automatica
 
 {{< alert type="note" >}}
 
-You typically won't see this configuration file when inspecting the container as it's managed internally by GitLab CI/CD.
+You typically won't see this configuration file when inspecting the container because it's managed internally by GitLab CI/CD.
 Manually creating or modifying this file might cause authentication issues.
 
 {{< /alert >}}

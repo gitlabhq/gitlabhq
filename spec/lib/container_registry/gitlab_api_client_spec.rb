@@ -106,6 +106,43 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
     end
   end
 
+  shared_examples 'querying and parsing statistics' do
+    where(:output, :features, :version, :db_enabled) do
+      { release: { ext_features: 'a', version: 'v1'  }, database: { enabled: true } } | %w[a]   | 'v1'     | true
+      { release: { ext_features: 'a' }, database: { enabled: true } }                 | %w[a]   | nil      | true
+      { release: { ext_features: 'a,b' } }                                            | %w[a b] | nil      | nil
+      { release: { version: 'v1' }, database: { enabled: false } }                    | []      | 'v1'     | false
+      { release: { version: 'v1.5' }, database: {} }                                  | []      | 'v1.5'   | nil
+      { release: { version: 'v1.5' }, database: nil }                                 | []      | 'v1.5'   | nil
+      { release: { version: 'v1-git' } }                                              | []      | 'v1-git' | nil
+      { database: { enabled: true } }                                                 | []      | nil      | true
+    end
+
+    with_them do
+      before do
+        stub_statistics(status_code: 200, respond_with: output)
+      end
+
+      it { is_expected.to eq({ features:, version:, db_enabled: }) }
+    end
+
+    context 'when the response is empty' do
+      before do
+        stub_statistics(status_code: 200, respond_with: {})
+      end
+
+      it { is_expected.to eq({}) }
+    end
+
+    context 'when the request is not successful' do
+      before do
+        stub_statistics(status_code: 404)
+      end
+
+      it { is_expected.to eq({}) }
+    end
+  end
+
   describe '#repository_details' do
     let(:path) { 'namespace/path/to/repository' }
     let(:response) { { foo: :bar, this: :is_a_test } }
@@ -923,6 +960,30 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
     end
   end
 
+  describe '.statistics' do
+    subject { described_class.statistics }
+
+    before do
+      stub_container_registry_config(enabled: true, api_url: registry_api_url, key: 'spec/fixtures/x509_certificate_pk.key')
+    end
+
+    it_behaves_like 'querying and parsing statistics'
+
+    context 'when the registry is disabled' do
+      before do
+        stub_container_registry_config(enabled: false)
+      end
+
+      it { is_expected.to eq({}) }
+    end
+  end
+
+  describe '#statistics' do
+    subject { client.statistics }
+
+    it_behaves_like 'querying and parsing statistics'
+  end
+
   def stub_registry_gitlab_api_support(supported = true)
     status_code = supported ? 200 : 404
     stub_request(:get, "#{registry_api_url}/gitlab/v1/")
@@ -1002,6 +1063,18 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
     stub_request(:patch, url)
       .with(headers: request_headers, body: body.to_json)
       .to_return(status: status_code, headers: headers_with_json_content_type)
+  end
+
+  def stub_statistics(status_code: 200, respond_with: {})
+    url = "#{registry_api_url}/gitlab/v1/statistics/"
+
+    stub_request(:get, url)
+      .with(headers: { 'Accept' => described_class::JSON_TYPE })
+      .to_return(
+        status: status_code,
+        body: respond_with.to_json,
+        headers: headers_with_json_content_type
+      )
   end
 
   def request_headers

@@ -30,6 +30,10 @@ module ContainerRegistry
       with_dummy_client(return_value_if_disabled: false, &:supports_gitlab_api?)
     end
 
+    def self.statistics
+      with_dummy_client(return_value_if_disabled: {}, &:statistics)
+    end
+
     def self.deduplicated_size(path)
       downcased_path = path&.downcase
       with_dummy_client(token_config: { type: :nested_repositories_token, path: downcased_path }) do |client|
@@ -214,6 +218,23 @@ module ContainerRegistry
     # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/api.md#renamemove-origin-repository
     def move_repository_to_namespace(path, namespace:, dry_run: false)
       patch_repository(path, { namespace: namespace }, dry_run: dry_run)
+    end
+
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/api.md?ref_type=heads#get-registry-statistics
+    # example output: {"release"=>{"ext_features"=>"tag_delete", "version"=>"v4.20"}, "database"=>{"enabled"=>true}}
+    def statistics
+      with_token_faraday do |faraday_client|
+        req = faraday_client.get('/gitlab/v1/statistics/')
+        result = response_body(req)
+
+        break {} unless result.present?
+
+        {
+          features: result.dig('release', 'ext_features')&.split(',') || [],
+          version: result.dig('release', 'version'),
+          db_enabled: result.dig('database', 'enabled')
+        }
+      end
     end
 
     private

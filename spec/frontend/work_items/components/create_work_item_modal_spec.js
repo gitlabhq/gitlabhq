@@ -6,6 +6,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import {
+  WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
   WORK_ITEMS_TYPE_MAP,
@@ -40,7 +41,7 @@ describe('CreateWorkItemModal', () => {
   const createComponent = ({
     asDropdownItem = false,
     hideButton = false,
-    preselectedWorkItemType = 'EPIC',
+    preselectedWorkItemType = WORK_ITEM_TYPE_NAME_EPIC,
     relatedItem = null,
     alwaysShowWorkItemTypeSelect = false,
     namespaceFullName = 'GitLab.org / GitLab',
@@ -151,11 +152,11 @@ describe('CreateWorkItemModal', () => {
     expect(findCreateModal().props('visible')).toBe(false);
   });
 
-  for (const [preselectedWorkItemType, vals] of Object.entries(WORK_ITEMS_TYPE_MAP)) {
-    it(`has link to new work item page in modal header for ${preselectedWorkItemType}`, async () => {
-      createComponent({ preselectedWorkItemType });
+  for (const values of Object.values(WORK_ITEMS_TYPE_MAP)) {
+    it(`has link to new work item page in modal header for ${values.value}`, async () => {
+      createComponent({ preselectedWorkItemType: values.value });
 
-      const routeParamName = vals.routeParamName || WORK_ITEM_TYPE_ROUTE_WORK_ITEM;
+      const routeParamName = values.routeParamName || WORK_ITEM_TYPE_ROUTE_WORK_ITEM;
 
       await waitForPromises();
 

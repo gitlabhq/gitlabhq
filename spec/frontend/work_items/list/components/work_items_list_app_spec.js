@@ -56,7 +56,6 @@ import {
   DETAIL_VIEW_QUERY_PARAM_NAME,
   STATE_CLOSED,
   WORK_ITEM_TYPE_ENUM_EPIC,
-  WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,
@@ -957,8 +956,8 @@ describeSkipVue3(skipReason, () => {
     describe('preselectedWorkItemType', () => {
       it.each`
         workItemType                 | value
-        ${WORK_ITEM_TYPE_NAME_ISSUE} | ${WORK_ITEM_TYPE_ENUM_ISSUE}
-        ${WORK_ITEM_TYPE_NAME_EPIC}  | ${WORK_ITEM_TYPE_ENUM_EPIC}
+        ${WORK_ITEM_TYPE_NAME_ISSUE} | ${WORK_ITEM_TYPE_NAME_ISSUE}
+        ${WORK_ITEM_TYPE_NAME_EPIC}  | ${WORK_ITEM_TYPE_NAME_EPIC}
       `('renders=$value when workItemType=$workItemType', async ({ workItemType, value }) => {
         mountComponent({ provide: { workItemType } });
         await waitForPromises();

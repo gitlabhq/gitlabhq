@@ -3,7 +3,7 @@ import { GlButton, GlModal, GlDisclosureDropdownItem, GlTooltipDirective } from 
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import { isMetaClick } from '~/lib/utils/common_utils';
-import { convertTypeEnumToName, newWorkItemPath } from '~/work_items/utils';
+import { newWorkItemPath } from '~/work_items/utils';
 import {
   NAME_TO_LOWERCASE_TEXT_MAP,
   sprintfWorkItem,
@@ -99,7 +99,7 @@ export default {
     return {
       isCreateModalVisible: false,
       isConfirmationModalVisible: false,
-      selectedWorkItemTypeName: convertTypeEnumToName(this.preselectedWorkItemType),
+      selectedWorkItemTypeName: this.preselectedWorkItemType,
       shouldDiscardDraft: false,
     };
   },
@@ -171,7 +171,7 @@ export default {
       this.resetSelectedWorkItemType();
     },
     resetSelectedWorkItemType() {
-      this.selectedWorkItemTypeName = convertTypeEnumToName(this.preselectedWorkItemType);
+      this.selectedWorkItemTypeName = this.preselectedWorkItemType;
     },
     showCreateModal(event) {
       if (Boolean(event) && isMetaClick(event)) {
