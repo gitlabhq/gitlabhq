@@ -64,7 +64,7 @@ module ActiveContext
             mappings[field.name] = case field
                                    when Field::Bigint
                                      { type: 'long' }
-                                   when Field::Prefix
+                                   when Field::Keyword
                                      { type: 'keyword' }
                                    when Field::Vector
                                      vector_field_mapping(field)

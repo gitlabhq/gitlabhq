@@ -18,7 +18,7 @@ class CreateMergeRequests < ActiveContext::Migration[1.0]
     create_collection :merge_requests, number_of_partitions: 3 do |c|
       c.bigint :issue_id, index: true
       c.bigint :namespace_id, index: true
-      c.prefix :traversal_ids
+      c.keyword :traversal_ids
       c.vector :embeddings, dimensions: 768
     end
   end

@@ -193,7 +193,6 @@ class NotesFinder
   end
 
   def without_hidden_notes?
-    return false unless Feature.enabled?(:hidden_notes)
     return false if @current_user&.can_admin_all_resources?
 
     true

@@ -77,6 +77,12 @@ class BasePolicy < DeclarativePolicy::Base
   with_options scope: :global, score: 0
   condition(:can_create_organization) { Gitlab::CurrentSettings.can_create_organization }
 
+  desc "Only admins can destroy projects"
+  condition(:owner_cannot_destroy_project, scope: :global) do
+    ::Gitlab::CurrentSettings.current_application_settings
+      .default_project_deletion_protection
+  end
+
   desc "The application is restricted from public visibility"
   condition(:restricted_public_level, scope: :global) do
     Gitlab::CurrentSettings.current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)

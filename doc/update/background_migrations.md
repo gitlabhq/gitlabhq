@@ -314,7 +314,7 @@ use the information in the failure error logs or the database:
    ```
 
    When dealing with multiple arguments, such as `[["id"],["id_convert_to_bigint"]]`, escape the
-   comma between each argument with a backslash <code>&#92;</code> to prevent an invalid character error.
+   comma between each argument with a backslash ` \ ` to prevent an invalid character error.
    For example, to finish the migration from the previous step:
 
    ```shell
@@ -342,7 +342,7 @@ use the information in the failure error logs or the database:
      - `job_arguments`: `[["id"], ["id_convert_to_bigint"]]`
 
    When dealing with multiple arguments, such as `[["id"],["id_convert_to_bigint"]]`, escape the
-   comma between each argument with a backslash <code>&#92;</code> to prevent an invalid character error.
+   comma between each argument with a backslash ` \ ` to prevent an invalid character error.
    Every comma in the `job_arguments` parameter value must be escaped with a backslash.
 
    For example:

@@ -1,0 +1,10 @@
+---
+name: exact_matches_first_project_transfer
+description: Prioritize exact matches when searching for groups in project transfer
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/536745
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188711
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/536751
+milestone: '18.0'
+group: group::project management
+type: gitlab_com_derisk
+default_enabled: false

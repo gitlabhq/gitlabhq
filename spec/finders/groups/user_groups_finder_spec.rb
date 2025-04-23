@@ -12,7 +12,7 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
     let_it_be(:public_maintainer_group) { create(:group, name: 'a public maintainer', path: 'a-public-maintainer', parent: root_group) }
     let_it_be(:public_owner_group) { create(:group, name: 'a public owner', path: 'a-public-owner') }
 
-    subject { described_class.new(current_user, target_user, arguments.merge(search_arguments)).execute }
+    subject(:result) { described_class.new(current_user, target_user, arguments.merge(search_arguments)).execute }
 
     let(:arguments) { {} }
     let(:current_user) { user }
@@ -167,6 +167,36 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
               ]
             )
           end
+        end
+      end
+    end
+
+    context 'on searching with exact_matches_first' do
+      let(:search_arguments) { { exact_matches_first: true, search: private_maintainer_group.path } }
+      let(:other_groups) { [] }
+
+      before do
+        2.times do
+          new_group = create(:group, :private, path: "1-#{SecureRandom.hex}-#{private_maintainer_group.path}", parent: root_group)
+          new_group.add_owner(current_user)
+          other_groups << new_group
+        end
+      end
+
+      it 'prioritizes exact matches first' do
+        expect(result.first).to eq(private_maintainer_group)
+        expect(result[1..]).to match_array(other_groups)
+      end
+
+      context 'when exact_matches_first_project_transfer feature flag is disabled' do
+        let(:expected_groups) { other_groups + [private_maintainer_group] }
+
+        before do
+          stub_feature_flags(exact_matches_first_project_transfer: false)
+        end
+
+        it 'returns matching groups sorted by namespace path' do
+          expect(result).to match_array(expected_groups.sort_by(&:path))
         end
       end
     end

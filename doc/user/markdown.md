@@ -343,7 +343,7 @@ However, you cannot mix the wrapping tags:
 ```
 
 Diff highlighting doesn't work with `` `inline code` ``. If your text includes backticks (`` ` ``), [escape](#escape-characters)
-each backtick with a backslash <code>&#92;</code>:
+each backtick with a backslash ` \ `:
 
 ```markdown
 - {+ Just regular text +}
@@ -2039,6 +2039,22 @@ A backslash doesn't always escape the character that follows it. The backslash a
   - Inline HTML, such as `<kbd>`
 
 In these instances you might need to use the equivalent HTML entity, such as `&#93;` for `]`.
+
+### Use backslash with backticks
+
+When the backslash (` \ `) character is at the end of an inline code sample, the backslash
+can escape the last backtick. In this case, add extra spaces around the inline code,
+for example:
+
+```markdown
+Use the backslash ` \ ` character to escape inline code that ends in a ` backslash\ `.
+```
+
+When rendered, the inline code looks like this:
+
+---
+
+Use the backslash ` \ ` character to escape inline code that ends in a ` backslash\ `.
 
 ## Footnotes
 

@@ -74,12 +74,12 @@ module ClickHouse
       def process_batch(context)
         Enumerator.new do |yielder|
           has_more_data = false
-          batching_scope.each_batch(of: BATCH_SIZE) do |relation|
-            records = relation.select(projections).to_a
+          batching_scope.each_batch(of: BATCH_SIZE, column: primary_key) do |relation|
+            records = relation.select(*projections, "#{primary_key} AS id_for_cursor").to_a
             has_more_data = records.size == BATCH_SIZE
             records.each do |row|
               yielder << transform_row(row)
-              context.last_processed_id = row.id
+              context.last_processed_id = row.id_for_cursor
 
               break if context.record_limit_reached?
             end
@@ -110,6 +110,12 @@ module ClickHouse
 
       def projections
         raise NotImplementedError, "Subclasses must implement `projections`"
+      end
+
+      # UInt type primary key used for cursor management,
+      # override if necessary.
+      def primary_key
+        :id
       end
 
       def csv_mapping

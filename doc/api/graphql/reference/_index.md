@@ -26431,6 +26431,7 @@ Relationship between an epic and an issue.
 | <a id="epicissueseverity"></a>`severity` | [`IssuableSeverity`](#issuableseverity) | Severity level of the incident. |
 | <a id="epicissuesladueat"></a>`slaDueAt` | [`Time`](#time) | Timestamp of when the issue SLA expires. |
 | <a id="epicissuestate"></a>`state` | [`IssueState!`](#issuestate) | State of the issue. |
+| <a id="epicissuestatus"></a>`status` {{< icon name="warning-solid" >}} | [`WorkItemStatus`](#workitemstatus) | **Introduced** in GitLab 18.0. **Status**: Experiment. Status of the issue. |
 | <a id="epicissuestatuspagepublishedincident"></a>`statusPagePublishedIncident` | [`Boolean`](#boolean) | Indicates whether an issue is published to the status page. |
 | <a id="epicissuesubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Indicates the currently logged in user is subscribed to the issue. |
 | <a id="epicissuetaskcompletionstatus"></a>`taskCompletionStatus` | [`TaskCompletionStatus!`](#taskcompletionstatus) | Task completion status of the issue. |
@@ -29829,6 +29830,7 @@ Describes an issuable resource link for incident issues.
 | <a id="issueseverity"></a>`severity` | [`IssuableSeverity`](#issuableseverity) | Severity level of the incident. |
 | <a id="issuesladueat"></a>`slaDueAt` | [`Time`](#time) | Timestamp of when the issue SLA expires. |
 | <a id="issuestate"></a>`state` | [`IssueState!`](#issuestate) | State of the issue. |
+| <a id="issuestatus"></a>`status` {{< icon name="warning-solid" >}} | [`WorkItemStatus`](#workitemstatus) | **Introduced** in GitLab 18.0. **Status**: Experiment. Status of the issue. |
 | <a id="issuestatuspagepublishedincident"></a>`statusPagePublishedIncident` | [`Boolean`](#boolean) | Indicates whether an issue is published to the status page. |
 | <a id="issuesubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Indicates the currently logged in user is subscribed to the issue. |
 | <a id="issuetaskcompletionstatus"></a>`taskCompletionStatus` | [`TaskCompletionStatus!`](#taskcompletionstatus) | Task completion status of the issue. |

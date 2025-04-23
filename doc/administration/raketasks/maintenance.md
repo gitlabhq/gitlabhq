@@ -387,16 +387,17 @@ Starting with GitLab 17.1, migrations are executed in an
 
 ## Rebuild database indexes
 
-{{< details >}}
+{{< history >}}
 
-- Status: Experiment
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42705) in GitLab 13.5 [with a flag](../../administration/feature_flags.md) named `database_reindexing`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/3989) in GitLab 13.9.
+- [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188548) in GitLab 18.0.
 
-{{< /details >}}
+{{< /history >}}
 
 {{< alert type="warning" >}}
 
-This feature is experimental, and isn't enabled by default. Use caution when
-running in a production environment, and run during off-peak times.
+Use with caution when running in a production environment, and run during off-peak times.
 
 {{< /alert >}}
 
@@ -410,7 +411,6 @@ Prerequisites:
 
 - This feature requires PostgreSQL 12 or later.
 - These index types are **not supported**: expression indexes and indexes used for constraint exclusion.
-- Not enabled by default. A feature flag must be set for this task to work: `Feature.enable("database_reindexing")`
 
 ### Run reindexing
 

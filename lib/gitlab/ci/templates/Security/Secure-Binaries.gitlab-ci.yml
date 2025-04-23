@@ -130,7 +130,7 @@ eslint:
 secrets:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "6"
+    SECURE_BINARIES_ANALYZER_VERSION: "7"
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bsecrets\b/'
 

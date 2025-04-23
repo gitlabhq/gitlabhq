@@ -53679,10 +53679,19 @@ msgstr ""
 msgid "Secrets|An error occurred while fetching the Secret manager status. Please try again."
 msgstr ""
 
+msgid "Secrets|Are you sure you want to delete secret %{secretName}? This action cannot be undone, and the secret cannot be recovered."
+msgstr ""
+
 msgid "Secrets|Created"
 msgstr ""
 
 msgid "Secrets|Delete"
+msgstr ""
+
+msgid "Secrets|Delete Secret"
+msgstr ""
+
+msgid "Secrets|Delete secret"
 msgstr ""
 
 msgid "Secrets|Description must be 200 characters or less."
@@ -53736,6 +53745,9 @@ msgstr ""
 msgid "Secrets|Rotation reminder"
 msgstr ""
 
+msgid "Secrets|Secret %{secretName} has been deleted."
+msgstr ""
+
 msgid "Secrets|Secrets"
 msgstr ""
 
@@ -53758,6 +53770,9 @@ msgid "Secrets|Stored secrets"
 msgstr ""
 
 msgid "Secrets|The name should be unique within this project."
+msgstr ""
+
+msgid "Secrets|To confirm, enter %{secretName}:"
 msgstr ""
 
 msgid "Secrets|Use the Secrets Manager to store your sensitive credentials, and then safely use them in your processes."

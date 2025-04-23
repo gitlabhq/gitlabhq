@@ -1,3 +1,4 @@
+- return unless can?(current_user, :remove_group, group)
 - remove_form_id = local_assigns.fetch(:remove_form_id, nil)
 
 - if group.adjourned_deletion?

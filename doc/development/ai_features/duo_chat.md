@@ -567,53 +567,50 @@ flow of how we construct a Chat prompt:
    from original GraphQL request and initializes a new instance of
    `Gitlab::Llm::Completions::Chat` and calls `execute` on it
    ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/55b8eb6ff869e61500c839074f080979cc60f9de/ee/lib/gitlab/llm/completions_factory.rb#L89))
-1. `Gitlab::Llm::Completions::Chat#execute` calls `Gitlab::Llm::Chain::Agents::SingleActionExecutor`.
-   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/d539f64ce6c5bed72ab65294da3bcebdc43f68c6/ee/lib/gitlab/llm/completions/chat.rb#L128-134))
-1. `Gitlab::Llm::Chain::Agents::SingleActionExecutor#execute` calls
-   `execute_streamed_request`, which calls `request`, a method defined in the
-   `AiDependent` concern
-   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/7ac19f75bd0ba4db5cfe7030e56c3672e2ccdc88/ee/lib/gitlab/llm/chain/concerns/ai_dependent.rb#L14))
-1. The `SingleActionExecutor#prompt_options` method assembles all prompt parameters for the AI gateway request
-   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/chain/agents/single_action_executor.rb#L120-120))
-1. `ai_request` is defined in `Llm::Completions::Chat` and evaluates to
-   `AiGateway`([code](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/completions/chat.rb#L51-51))
-1. `ai_request.request` routes to `Llm::Chain::Requests::AiGateway#request`,
-   which calls `ai_client.stream`
-   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/e88256b1acc0d70ffc643efab99cad9190529312/ee/lib/gitlab/llm/chain/requests/ai_gateway.rb#L20-27))
-1. `ai_client.stream` routes to `Gitlab::Llm::AiGateway::Client#stream`, which
-   makes an API request to the AI gateway `/v2/chat/agent` endpoint
-   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/e88256b1acc0d70ffc643efab99cad9190529312/ee/lib/gitlab/llm/ai_gateway/client.rb#L64-82))
-1. AI gateway receives the request
-   ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/e6f55d143ecb5409e8ca4fefc042e590e5a95158/ai_gateway/api/v2/chat/agent.py#L43-43))
-1. AI gateway gets the list of tools available for user
-   ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/e6f55d143ecb5409e8ca4fefc042e590e5a95158/ai_gateway/chat/toolset.py#L43-43))
-1. AI GW gets definitions for each tool
-   ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/e6f55d143ecb5409e8ca4fefc042e590e5a95158/ai_gateway/chat/tools/gitlab.py#L11-11))
-1. And they are inserted into prompt template alongside other prompt parameters that come from Rails
-   ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/e6f55d143ecb5409e8ca4fefc042e590e5a95158/ai_gateway/agents/definitions/chat/react/base.yml#L14-14))
-1. AI gateway makes request to LLM and return response to Rails.
-   ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/e6f55d143ecb5409e8ca4fefc042e590e5a95158/ai_gateway/api/v2/chat/agent.py#L103-103))
-1. We've now made our first request to the AI gateway. If the LLM says that the
-   answer to the first request is a final answer, we
-   [parse the answer](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/chain/parsers/single_action_parser.rb#L41-42)
-   and stream it ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/chain/concerns/ai_dependent.rb#L25-25))
-   and return it ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/chain/agents/single_action_executor.rb#L46-46))
-1. If the first answer is not final, the "thoughts" and "picked tools"
-   from the first LLM request are parsed and then the relevant tool class is
-   called.
-   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/chain/agents/single_action_executor.rb#L54-54))
-1. The tool executor classes also include `Concerns::AiDependent` and use the
-   included `request` method similar to how the chat executor does
-  ([example](https://gitlab.com/gitlab-org/gitlab/-/blob/70fca6dbec522cb2218c5dcee66caa908c84271d/ee/lib/gitlab/llm/chain/tools/identifier.rb#L8)).
-   The `request` method uses the same `ai_request` instance
-   that was injected into the `context` in `Llm::Completions::Chat`. For Chat,
-   this is `Gitlab::Llm::Chain::Requests::AiGateway`. So, essentially the same
-   request to the AI gateway is put together but with a different
-   `prompt` / `PROMPT_TEMPLATE` than for the first request
-   ([Example tool prompt template](https://gitlab.com/gitlab-org/gitlab/-/blob/70fca6dbec522cb2218c5dcee66caa908c84271d/ee/lib/gitlab/llm/chain/tools/issue_identifier/executor.rb#L39-104))
-1. If the tool answer is not final, the response is added to `agent_scratchpad`
-   and the loop in `SingleActionExecutor` starts again, adding the additional
-   context to the request. It loops to up to 10 times until a final answer is reached.
+1. `Gitlab::Llm::Completions::Chat#execute` calls `Gitlab::Duo::Chat::ReactExecutor`.
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/llm/completions/chat.rb#L122-L130))
+1. `Gitlab::Duo::Chat::ReactExecutor#execute` calls `#step_forward` which calls `Gitlab::Duo::Chat::StepExecutor#step`
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L235)).
+1. `Gitlab::Duo::Chat::StepExecutor#step` calls `Gitlab::Duo::Chat::StepExecutor#perform_agent_request`, which sends a request to the AI Gateway `/v2/chat/agent/` endpoint
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/step_executor.rb#L69)).
+1. The AI Gateway `/v2/chat/agent` endpoint receives the request on the `api.v2.agent.chat.agent.chat` function
+   ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v2/chat/agent.py#L133))
+1. `api.v2.agent.chat.agent.chat` creates the `GLAgentRemoteExecutor` through the `gl_agent_remote_executor_factory` ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v2/chat/agent.py#L166)).
+
+      Upon creation of the `GLAgentRemoteExecutor`, the following parameters are passed:
+      - `tools_registry` - the registry of all available tools; this is passed through the factory ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/container.py#L35))
+      - `agent` - `ReActAgent` object that wraps the prompt information, including the chosen LLM model, prompt template, etc
+
+1. `api.v2.agent.chat.agent.chat` calls the `GLAgentRemoteExecutor.on_behalf`, which gets the user tools early to raise an exception as soon as possible if an error occurs ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/executor.py#L56)).
+1. `api.v2.agent.chat.agent.chat` calls the `GLAgentRemoteExecutor.stream` ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/executor.py#L81)).
+1. `GLAgentRemoteExecutor.stream` calls `astream` on `agent` (an instance of `ReActAgent`) with inputs such as the messages and the list of available tools ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/executor.py#L92)).
+1. The `ReActAgent` builds the prompts, with the available tools inserted into the system prompt template
+   ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/prompts/definitions/chat/react/system/1.0.0.jinja)).
+1. `ReActAgent.astream` sends a call to the LLM model ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/agents/react.py#L216))
+1. The LLM response is returned to Rails
+   (code path: [`ReActAgent.astream`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/agents/react.py#L209)
+   -> [`GLAgentRemoteExecutor.stream`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/executor.py#L81)
+   -> [`api.v2.agent.chat.agent.chat`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v2/chat/agent.py#L133)
+   -> Rails)
+1. We've now made our first request to the AI gateway. If the LLM says that the answer to the first request is final,
+   Rails [parses the answer](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L56) and [returns it](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L63) for further response handling by [`Gitlab::Llm::Completions::Chat`](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/llm/completions/chat.rb#L66).
+1. If the answer is not final, the "thoughts" and "picked tools" from the first LLM request are parsed and then the relevant tool class is called.
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L207)
+   | [example tool class](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/chain/tools/identifier.rb))
+      1. The tool executor classes include `Concerns::AiDependent` and use its `request` method.
+      ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/llm/chain/concerns/ai_dependent.rb#L14))
+      1. The `request` method uses the `ai_request` instance
+         that was injected into the `context` in `Llm::Completions::Chat`. For Chat,
+         this is `Gitlab::Llm::Chain::Requests::AiGateway`. ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/completions/chat.rb#L42)).
+      1. The tool indicates that `use_ai_gateway_agent_prompt=true` ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/llm/chain/tools/issue_reader/executor.rb#L121)).
+
+         This tells the `ai_request` to send the prompt to the `/v1/prompts/chat` endpoint ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/llm/chain/requests/ai_gateway.rb#L87)).
+
+      1. AI Gateway `/v1/prompts/chat` endpoint receives the request on `api.v1.prompts.invoke`
+      ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L41)).
+      1. `api.v1.prompts.invoke` gets the correct tool prompt from the tool prompt registry ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L49)).
+      1. The prompt is called either as a [stream](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L86) or as a [non-streamed invocation](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L96).
+      1. If the tool answer is not final, the response is added to agent_scratchpad and the loop in `Gitlab::Duo::Chat::ReactExecutor` starts again, adding the additional context to the request. It loops to up to 10 times until a final answer is reached. ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L44))
 
 ## Interpreting GitLab Duo Chat error codes
 

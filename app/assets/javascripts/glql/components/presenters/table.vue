@@ -76,7 +76,6 @@ export default {
     persist-collapsed-state
     class="!gl-mt-5 gl-overflow-hidden"
     :body-class="{ '!gl-m-[-1px] !gl-p-0': items.length || isPreview }"
-    footer-class="!gl-border-t-0"
     @collapsed="isCollapsed = true"
     @expanded="isCollapsed = false"
   >

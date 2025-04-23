@@ -1919,22 +1919,8 @@ RSpec.describe Note, feature_category: :team_planning do
         let_it_be(:banned_user) { create(:banned_user).user }
         let_it_be(:banned_note) { create(:note, author: banned_user) }
 
-        context 'when the :hidden_notes feature is disabled' do
-          before do
-            stub_feature_flags(hidden_notes: false)
-          end
-
-          it { is_expected.to include(banned_note, note1) }
-        end
-
-        context 'when the :hidden_notes feature is enabled' do
-          before do
-            stub_feature_flags(hidden_notes: true)
-          end
-
-          it { is_expected.not_to include(banned_note) }
-          it { is_expected.to include(note1) }
-        end
+        it { is_expected.not_to include(banned_note) }
+        it { is_expected.to include(note1) }
       end
     end
 

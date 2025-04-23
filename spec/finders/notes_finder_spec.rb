@@ -134,42 +134,20 @@ RSpec.describe NotesFinder do
       let_it_be(:banned_user) { create(:banned_user).user }
       let!(:banned_note) { create(:note_on_issue, project: project, author: banned_user) }
 
-      context 'when :hidden_notes feature is not enabled' do
-        before do
-          stub_feature_flags(hidden_notes: false)
-        end
+      context 'when user is an admin' do
+        let(:user) { create(:admin) }
 
-        context 'when user is not an admin' do
-          it { is_expected.to include(banned_note) }
-        end
-
-        context 'when @current_user is nil' do
-          let(:user) { nil }
-
-          it { is_expected.to be_empty }
-        end
+        it { is_expected.to include(banned_note) }
       end
 
-      context 'when :hidden_notes feature is enabled' do
-        before do
-          stub_feature_flags(hidden_notes: true)
-        end
+      context 'when user is not an admin' do
+        it { is_expected.not_to include(banned_note) }
+      end
 
-        context 'when user is an admin' do
-          let(:user) { create(:admin) }
+      context 'when @current_user is nil' do
+        let(:user) { nil }
 
-          it { is_expected.to include(banned_note) }
-        end
-
-        context 'when user is not an admin' do
-          it { is_expected.not_to include(banned_note) }
-        end
-
-        context 'when @current_user is nil' do
-          let(:user) { nil }
-
-          it { is_expected.to be_empty }
-        end
+        it { is_expected.to be_empty }
       end
     end
 

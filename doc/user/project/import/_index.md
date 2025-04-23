@@ -334,9 +334,18 @@ On the destination instance, users with the Owner role for a top-level group can
   [accepts the reassignment request](#accept-contribution-reassignment).
 - Choose not to reassign contributions and memberships and [keep them assigned to placeholder users](#keep-as-placeholder).
 
+#### Reassigning contributions from multiple placeholder users
+
 All the contributions initially assigned to a single placeholder user can only be reassigned to a single active regular
 user on the destination instance. The contributions assigned to a single placeholder user cannot be split among multiple
 active regular users.
+
+You can reassign contributions from multiple placeholder users to the same user
+on the destination instance if the placeholder users are from:
+
+- Different source instances
+- The same source instance and are imported to different top-level groups on the destination instance 
+
 If an assigned user becomes inactive before accepting the reassignment request,
 the pending reassignment remains linked to the user until they accept it.
 

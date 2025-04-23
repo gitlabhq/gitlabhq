@@ -171,11 +171,7 @@ class Note < ApplicationRecord
   scope :with_metadata, -> { includes(:system_note_metadata) }
 
   scope :without_hidden, -> {
-    if Feature.enabled?(:hidden_notes)
-      where_not_exists(Users::BannedUser.where('notes.author_id = banned_users.user_id'))
-    else
-      all
-    end
+    where_not_exists(Users::BannedUser.where('notes.author_id = banned_users.user_id'))
   }
 
   scope :for_note_or_capitalized_note, ->(text) { where(note: [text, text.capitalize]) }

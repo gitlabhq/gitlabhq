@@ -75,7 +75,7 @@ module ActiveContext
             when Field::Bigint
               # Bigint is 8 bytes
               fixed_columns << [field, 8]
-            when Field::Prefix
+            when Field::Keyword
               # Text fields are variable width
               variable_columns << field
             else
@@ -93,7 +93,7 @@ module ActiveContext
             table.column(field.name, "vector(#{field.options[:dimensions]})")
           when Field::Bigint
             table.bigint(field.name, **field.options.except(:index))
-          when Field::Prefix
+          when Field::Keyword
             table.text(field.name, **field.options.except(:index))
           else
             raise ArgumentError, "Unknown field type: #{field.class}"

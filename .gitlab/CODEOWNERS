@@ -7,10 +7,10 @@
 .gitlab/CODEOWNERS @gitlab-org/development-leaders @gitlab-org/tw-leadership
 
 ## Allows release tooling and Gitaly team members to update the Gitaly Version
-/GITALY_SERVER_VERSION @project_278964_bot_77e28085fcec07f14dfd31c689824b5b @gitlab-org/maintainers/rails-backend @gitlab-org/delivery @gl-gitaly
+/GITALY_SERVER_VERSION @project_278964_bot_e2e6cca5e3b0076fdecec369cccb9e18 @gitlab-org/maintainers/rails-backend @gitlab-org/delivery @gl-gitaly
 
 ## Allows release tooling, KAS version maintainers and the delivery team to update the KAS version
-/GITLAB_KAS_VERSION @project_278964_bot_77e28085fcec07f14dfd31c689824b5b @gitlab-org/maintainers/kas-version-maintainers @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
+/GITLAB_KAS_VERSION @project_278964_bot_e2e6cca5e3b0076fdecec369cccb9e18 @gitlab-org/maintainers/kas-version-maintainers @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
 
 ## Allows automated updates to E2E test knapsack reports
 /qa/knapsack/**/*.json @project_278964_bot_bd38289efeb650826d995b5f830ca9cb @gl-dx

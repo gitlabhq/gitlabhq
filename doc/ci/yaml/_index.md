@@ -4153,7 +4153,7 @@ job:
   You can use CI/CD variables to define the description, but some shells
   [use different syntax](../variables/_index.md#use-cicd-variables-in-job-scripts)
   to reference variables. Similarly, some shells might require special characters
-  to be escaped. For example, backticks (`` ` ``) might need to be escaped with a backslash (<code>&#92;</code>).
+  to be escaped. For example, backticks (`` ` ``) might need to be escaped with a backslash (` \ `).
 
 #### `release:ref`
 
