@@ -16,6 +16,7 @@ import {
 
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import {
+  conanMetadata,
   linksData,
   packageData,
   packagePipelines,
@@ -51,6 +52,9 @@ describe('packages_list_row', () => {
   const findListItem = () => wrapper.findComponent(ListItem);
   const findBulkDeleteAction = () => wrapper.findComponent(GlFormCheckbox);
   const findPackageName = () => wrapper.findByTestId('package-name');
+  const findConanMetadata = () => wrapper.findByTestId('conan-metadata');
+  const findPackageUsername = () => wrapper.findByTestId('package-username');
+  const findPackageChannel = () => wrapper.findByTestId('package-channel');
 
   const mountComponent = ({
     packageEntity = packageWithoutTags,
@@ -404,6 +408,28 @@ describe('packages_list_row', () => {
       it('renders the text `deprecated`', () => {
         expect(findDeprecatedBadge().text()).toBe('deprecated');
       });
+    });
+  });
+
+  describe('conan metadata', () => {
+    it('does not render `packageUsername` and `packageChannel` for any packages other than conan', () => {
+      mountComponent();
+
+      expect(findConanMetadata().exists()).toBe(false);
+    });
+
+    it('renders correct `packageUsername` and `packageChannel` when package type is conan', () => {
+      mountComponent({
+        packageEntity: {
+          ...packageWithoutTags,
+          packageType: 'CONAN',
+          metadata: conanMetadata(),
+        },
+      });
+
+      expect(findConanMetadata().exists()).toBe(true);
+      expect(findPackageUsername().text()).toBe('gitlab-org+gitlab-test');
+      expect(findPackageChannel().text()).toBe('stable');
     });
   });
 });

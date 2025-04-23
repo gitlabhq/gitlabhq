@@ -9,6 +9,7 @@ module Snippets
       cannot_be_used_together: 'and snippet files cannot be used together',
       invalid_data: 'have invalid data'
     }.freeze
+    SNIPPET_ACCESS_ERROR = :snippet_access_error
 
     CreateRepositoryError = Class.new(StandardError)
 
@@ -32,7 +33,7 @@ module Snippets
     def forbidden_visibility_error(snippet)
       deny_visibility_level(snippet)
 
-      snippet_error_response(snippet, 403)
+      snippet_error_response(snippet, SNIPPET_ACCESS_ERROR)
     end
 
     def valid_params?
@@ -50,7 +51,6 @@ module Snippets
         snippet.errors.add(:snippet_actions, INVALID_PARAMS_MESSAGES[:invalid_data])
       end
 
-      # Callers need to interpret into 422
       snippet_error_response(snippet, INVALID_PARAMS_ERROR)
     end
 

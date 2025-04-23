@@ -7,6 +7,8 @@ module Import
     before_action :provider_auth, only: [:status]
     feature_category :importers
 
+    # Same value as ORGANIZATIONS_PER_PAGE in
+    # `app/assets/javascripts/import_entities/import_projects/components/github_organizations_box.vue`
     PAGE_LENGTH = 25
 
     def status

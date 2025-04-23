@@ -29,12 +29,16 @@ exports[`packages_list_row renders 1`] = `
             class="gl-flex gl-gap-3 gl-items-center gl-min-w-0 gl-mr-5"
             data-testid="package-name"
           >
-            <a
-              class="gl-break-all gl-min-w-0 gl-text-default"
-              data-testid="details-link"
+            <div
+              class="gl-gap-2 sm:gl-flex"
             >
-              @gitlab-org/package-15
-            </a>
+              <a
+                class="gl-break-all gl-min-w-0 gl-text-default"
+                data-testid="details-link"
+              >
+                @gitlab-org/package-15
+              </a>
+            </div>
           </div>
         </div>
         <div

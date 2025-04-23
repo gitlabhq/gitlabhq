@@ -108,12 +108,7 @@ describe('WorkItemDescriptionRendered', () => {
   describe('with anchor to description item', () => {
     const anchorHash = '#description-anchor';
 
-    afterAll(() => {
-      window.location.hash = '';
-    });
-
-    it('scrolls matching link into view', async () => {
-      window.location.hash = anchorHash;
+    const setupComponent = async () => {
       createComponent({
         workItemDescription: {
           description: 'This is a long description',
@@ -128,9 +123,38 @@ describe('WorkItemDescriptionRendered', () => {
       jest.spyOn(wrapper.vm, 'truncateLongDescription');
 
       await nextTick();
+    };
 
+    afterAll(() => {
+      window.location.hash = '';
+    });
+
+    it('scrolls matching link into view when opened with hash present', async () => {
+      window.location.hash = anchorHash;
+      await setupComponent();
+
+      // Check if page loaded with hash present scrolls hash into view.
+      // In order to scroll, description must not have been truncated.
       expect(handleLocationHash).toHaveBeenCalled();
       expect(wrapper.vm.truncateLongDescription).not.toHaveBeenCalled();
+    });
+
+    it('expands description and then scrolls to matching link into view on user navigation', async () => {
+      window.location.hash = '';
+      await setupComponent();
+
+      // Check if page loaded with no hash present shows truncated description.
+      expect(handleLocationHash).not.toHaveBeenCalled();
+
+      // Simulate user clicking on an anchor hash within the description.
+      window.location.hash = anchorHash;
+      window.dispatchEvent(new Event('hashchange'));
+
+      await nextTick();
+
+      // Check if description is expanded and hash is scrolled into view.
+      expect(handleLocationHash).toHaveBeenCalled();
+      expect(findReadMore().exists()).toBe(false);
     });
   });
 

@@ -43,7 +43,7 @@ module RuboCop
           def on_casgn(node)
             # we want to make sure that we are running the cop only on
             # ConfigFiles::Constants::CONFIG_FILES_CONSTANTS
-            return unless config_files_constants?(node.parent.parent)
+            return unless config_files_constants?(node&.parent&.parent)
 
             _matcher, constants_array = config_file_classes(node)
 

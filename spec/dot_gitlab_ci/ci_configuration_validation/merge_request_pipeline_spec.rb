@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_relative './shared_context_and_examples'
 
-RSpec.describe 'CI configuration validation - branch pipelines', feature_category: :tooling do
+RSpec.describe 'CI configuration validation - branch pipelines', feature_category: :tooling, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/535543' do
   include ProjectForksHelper
   include CiConfigurationValidationHelper
 

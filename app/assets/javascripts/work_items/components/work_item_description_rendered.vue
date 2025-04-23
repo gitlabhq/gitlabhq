@@ -127,12 +127,15 @@ export default {
   async mounted() {
     eventHub.$on('convert-task-list-item', this.convertTaskListItem);
     eventHub.$on('delete-task-list-item', this.deleteTaskListItem);
+    window.addEventListener('hashchange', (e) => this.truncateOrScrollToAnchor(e));
+
     await this.$nextTick();
     this.truncateOrScrollToAnchor();
   },
   beforeDestroy() {
     eventHub.$off('convert-task-list-item', this.convertTaskListItem);
     eventHub.$off('delete-task-list-item', this.deleteTaskListItem);
+    window.removeEventListener('hashchange', this.truncateOrScrollToAnchor);
     this.removeAllPointerEventListeners();
   },
   methods: {
@@ -158,13 +161,18 @@ export default {
      * If yes, it will prevent description from truncating and will scroll the page to the anchor.
      * If no, it will truncate the description as per default behaviour.
      */
-    truncateOrScrollToAnchor() {
+    truncateOrScrollToAnchor({ type } = {}) {
       const hash = getLocationHash();
       const hashSelector = `href="#${hash}"`;
       const isLocationHashAnchoredInDescription =
         hash && this.descriptionHtml?.includes(hashSelector);
 
       if (isLocationHashAnchoredInDescription) {
+        // Link was referred from current page itself,
+        // so we expand the description and then scroll to it.
+        if (type === 'hashchange') {
+          this.showAll();
+        }
         handleLocationHash();
       } else {
         this.truncateLongDescription();

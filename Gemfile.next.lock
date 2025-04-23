@@ -465,7 +465,7 @@ GEM
     colored2 (3.1.2)
     commonmarker (0.23.11)
     concurrent-ruby (1.2.3)
-    connection_pool (2.5.0)
+    connection_pool (2.5.1)
     console (1.29.2)
       fiber-annotation
       fiber-local (~> 1.1)

@@ -5,6 +5,7 @@ import {
   GlDisclosureDropdownGroup,
   GlLoadingIcon,
   GlTooltipDirective,
+  GlSearchBoxByType,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { s__, __, sprintf } from '~/locale';
@@ -17,6 +18,8 @@ import { PIPELINE_POLL_INTERVAL_DEFAULT, FAILED_STATUS } from '~/ci/constants';
 import JobDropdownItem from '~/ci/common/private/job_dropdown_item.vue';
 import getPipelineStageJobsQuery from './graphql/queries/get_pipeline_stage_jobs.query.graphql';
 
+const searchItemsThreshold = 12;
+
 export default {
   name: 'PipelineStageDropdown',
   components: {
@@ -25,6 +28,7 @@ export default {
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GlLoadingIcon,
+    GlSearchBoxByType,
     JobDropdownItem,
   },
   directives: {
@@ -46,6 +50,7 @@ export default {
     return {
       isDropdownOpen: false,
       stageJobs: [],
+      search: '',
     };
   },
   apollo: {
@@ -99,6 +104,14 @@ export default {
     passedJobs() {
       return this.stageJobs.filter((job) => job.detailedStatus.group !== FAILED_STATUS);
     },
+    searchedJobs() {
+      return this.stageJobs.filter((job) =>
+        job.name.toLowerCase().includes(this.search.toLowerCase()),
+      );
+    },
+    searchVisible() {
+      return !this.isLoading && this.stageJobs.length > searchItemsThreshold;
+    },
   },
   mounted() {
     toggleQueryPollingByVisibility(this.$apollo.queries.stageJobs);
@@ -107,6 +120,7 @@ export default {
     onHideDropdown() {
       this.isDropdownOpen = false;
       this.$apollo.queries.stageJobs.stopPolling();
+      this.search = '';
     },
     onShowDropdown() {
       this.isDropdownOpen = true;
@@ -149,6 +163,7 @@ export default {
       >
         <span>{{ dropdownHeaderText }}</span>
       </div>
+      <gl-search-box-by-type v-if="searchVisible" v-model="search" class="gl-m-2" borderless />
     </template>
 
     <div v-if="isLoading" class="gl-flex gl-gap-3 gl-px-4 gl-py-3">
@@ -161,27 +176,43 @@ export default {
       data-testid="pipeline-mini-graph-dropdown-menu-list"
       @click.stop
     >
-      <gl-disclosure-dropdown-group v-if="hasFailedJobs">
-        <template #group-label>{{ s__('Pipelines|Failed jobs') }}</template>
-        <job-dropdown-item
-          v-for="job in failedJobs"
-          :key="job.id"
-          :job="job"
-          @jobActionExecuted="$emit('jobActionExecuted')"
-        />
-      </gl-disclosure-dropdown-group>
-      <gl-disclosure-dropdown-group
-        v-if="hasPassedJobs"
-        :bordered="hasFailedJobs"
-        data-testid="passed-jobs"
-      >
-        <job-dropdown-item
-          v-for="job in passedJobs"
-          :key="job.id"
-          :job="job"
-          @jobActionExecuted="$emit('jobActionExecuted')"
-        />
-      </gl-disclosure-dropdown-group>
+      <template v-if="search">
+        <gl-disclosure-dropdown-group
+          v-if="searchedJobs.length"
+          key="searched-jobs"
+          data-testid="searched-jobs"
+        >
+          <job-dropdown-item
+            v-for="job in searchedJobs"
+            :key="job.id + 'searched'"
+            :job="job"
+            @jobActionExecuted="$emit('jobActionExecuted')"
+          />
+        </gl-disclosure-dropdown-group>
+      </template>
+      <template v-else>
+        <gl-disclosure-dropdown-group v-if="hasFailedJobs">
+          <template #group-label>{{ s__('Pipelines|Failed jobs') }}</template>
+          <job-dropdown-item
+            v-for="job in failedJobs"
+            :key="job.id"
+            :job="job"
+            @jobActionExecuted="$emit('jobActionExecuted')"
+          />
+        </gl-disclosure-dropdown-group>
+        <gl-disclosure-dropdown-group
+          v-if="hasPassedJobs"
+          :bordered="hasFailedJobs"
+          data-testid="passed-jobs"
+        >
+          <job-dropdown-item
+            v-for="job in passedJobs"
+            :key="job.id"
+            :job="job"
+            @jobActionExecuted="$emit('jobActionExecuted')"
+          />
+        </gl-disclosure-dropdown-group>
+      </template>
     </ul>
 
     <template #footer>

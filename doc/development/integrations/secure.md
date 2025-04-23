@@ -80,6 +80,7 @@ Valid reports are:
 - `api_fuzzing`
 - `coverage_fuzzing`
 - `sast`
+- `secret_detection`
 
 For example, here is the definition of a SAST job that generates a file named `gl-sast-report.json`,
 and uploads it as a SAST report:

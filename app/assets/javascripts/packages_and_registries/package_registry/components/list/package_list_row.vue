@@ -17,6 +17,7 @@ import {
   PACKAGE_ERROR_STATUS,
   PACKAGE_DEFAULT_STATUS,
   PACKAGE_DEPRECATED_STATUS,
+  PACKAGE_TYPE_CONAN,
   WARNING_TEXT,
 } from '~/packages_and_registries/package_registry/constants';
 import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
@@ -103,6 +104,9 @@ export default {
         'gl-font-normal': this.errorStatusRow,
       };
     },
+    isPackageTypeConan() {
+      return this.packageEntity.packageType === PACKAGE_TYPE_CONAN;
+    },
   },
   i18n: {
     createdAt: __('Created %{timestamp}'),
@@ -127,18 +131,30 @@ export default {
     </template>
     <template #left-primary>
       <div class="gl-mr-5 gl-flex gl-min-w-0 gl-items-center gl-gap-3" data-testid="package-name">
-        <router-link
-          v-if="containsWebPathLink"
-          :class="errorPackageStyle"
-          class="gl-min-w-0 gl-break-all gl-text-default"
-          data-testid="details-link"
-          :to="{ name: 'details', params: { id: packageId } }"
-        >
-          {{ packageEntity.name }}
-        </router-link>
-        <span v-else :class="errorPackageStyle">
-          {{ packageEntity.name }}
-        </span>
+        <div class="gl-gap-2 sm:gl-flex">
+          <router-link
+            v-if="containsWebPathLink"
+            :class="errorPackageStyle"
+            class="gl-min-w-0 gl-break-all gl-text-default"
+            data-testid="details-link"
+            :to="{ name: 'details', params: { id: packageId } }"
+          >
+            {{ packageEntity.name }}
+          </router-link>
+          <span v-else :class="errorPackageStyle">
+            {{ packageEntity.name }}
+          </span>
+
+          <div v-if="isPackageTypeConan" data-testid="conan-metadata">
+            <span class="gl-hidden sm:gl-inline">&middot;</span>
+            <span class="gl-font-normal gl-text-subtle" data-testid="package-username">
+              {{ packageEntity.metadata.packageUsername }}
+            </span>
+            <gl-badge class="gl-ml-2" variant="info" data-testid="package-channel">
+              {{ packageEntity.metadata.packageChannel }}
+            </gl-badge>
+          </div>
+        </div>
 
         <div v-if="showBadges" class="gl-flex gl-gap-3">
           <package-tags

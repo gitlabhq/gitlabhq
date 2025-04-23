@@ -66,7 +66,7 @@ export default {
   <import-projects-table v-bind="$attrs">
     <template #filter="{ importAllButtonText, showImportAllModal }">
       <gl-tabs v-model="selectedRelationTypeTabIdx" content-class="!gl-py-0 gl-mb-3">
-        <gl-tab v-for="tab in $options.relationTypes" :key="tab.title" :title="tab.title">
+        <gl-tab v-for="tab in $options.relationTypes" :key="tab.title" :title="tab.title" lazy>
           <div
             class="gl-flex gl-flex-wrap gl-justify-between gl-gap-3 gl-border-0 gl-border-b-1 gl-border-solid gl-border-b-default gl-bg-subtle gl-p-5"
           >

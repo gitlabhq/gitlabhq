@@ -174,14 +174,25 @@ For more information, see [GitLab Duo add-on seat management with LDAP](../admin
 
 ## View assigned GitLab Duo users
 
+{{< history >}}
+
+- Last GitLab Duo activity field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455761) in GitLab 18.0.
+
+{{< /history >}}
+
 Prerequisites:
 
 - You must purchase a GitLab Duo add-on, or have an active GitLab Duo trial.
 
-After you purchase GitLab Duo, you can assign seats to users to grant access to the add-on.
+After you purchase GitLab Duo, you can assign seats to users to grant access to the add-on. Then you can view details of assigned GitLab Duo users.
 
-To retrieve the **Last Duo activity** date for assigned GitLab Duo users,
-you can also use the [GraphQL API](../api/graphql/reference/_index.md#addonuser) with the `AddOnUser` type.
+The GitLab Duo seat utilization page shows the following information for each user:
+
+- User's full name and username
+- Seat assignment status
+- Public email address
+- Last GitLab activity
+- Last GitLab Duo activity
 
 ### For GitLab.com
 

@@ -762,6 +762,24 @@ A replacement feature is planned as part of the [Auto Remediation vision](https:
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### Resource owner password credentials grant is deprecated
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.0</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/457353).
+
+</div>
+
+Using the resource owner password credentials (ROPC) grant as an OAuth flow is deprecated, and support will be fully removed in GitLab 19.0. We have added a setting that can be enabled or disabled by administrators to use this grant type with client credentials only, in their instances. This allows users who would like to opt out of using ROPC without client credentials to do so prior to 19.0. ROPC will be completely removed in 19.0 and cannot be used even with client credentials after that point.
+
+GitLab has [required client authentication for ROPC on GitLab.com](https://about.gitlab.com/blog/2025/04/01/improving-oauth-ropc-security-on-gitlab-com/) since April 8, 2025 for security reasons. Fully removing ROPC support keeps security in line with the OAuth RFC version 2.1.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### S3 storage driver (AWS SDK v1) for the container registry
 
 <div class="deprecation-notes">

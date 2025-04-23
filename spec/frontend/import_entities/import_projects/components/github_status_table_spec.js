@@ -85,26 +85,6 @@ describe('GithubStatusTable', () => {
     });
   });
 
-  it('renders name filter disabled when tab with organization filter is selected and organization is not set', async () => {
-    const NEW_ACTIVE_TAB_IDX = GithubStatusTable.relationTypes.findIndex(
-      (entry) => entry.showOrganizationFilter,
-    );
-    await selectTab(NEW_ACTIVE_TAB_IDX);
-    expect(findFilterField().props('disabled')).toBe(true);
-  });
-
-  it('enables name filter disabled when organization is set', async () => {
-    const NEW_ACTIVE_TAB_IDX = GithubStatusTable.relationTypes.findIndex(
-      (entry) => entry.showOrganizationFilter,
-    );
-    await selectTab(NEW_ACTIVE_TAB_IDX);
-
-    wrapper.findComponent(GithubOrganizationsBox).vm.$emit('input', 'some-org');
-    await nextTick();
-
-    expect(findFilterField().props('disabled')).toBe(false);
-  });
-
   it('updates filter when search box is changed', async () => {
     const NEW_FILTER = 'test';
     findFilterField().vm.$emit('submit', NEW_FILTER);
@@ -115,12 +95,32 @@ describe('GithubStatusTable', () => {
     });
   });
 
-  it('updates organization_login filter when GithubOrganizationsBox emits input', () => {
-    const NEW_ORG = 'some-org';
-    wrapper.findComponent(GithubOrganizationsBox).vm.$emit('input', NEW_ORG);
+  describe('when "Organization" tab is selected', () => {
+    beforeEach(async () => {
+      const organizationTabIndex = GithubStatusTable.relationTypes.findIndex(
+        (entry) => entry.showOrganizationFilter,
+      );
+      await selectTab(organizationTabIndex);
+    });
 
-    expect(setFilterAction).toHaveBeenCalledWith(expect.anything(), {
-      organization_login: NEW_ORG,
+    it('renders disabled name filter when organization is not set', () => {
+      expect(findFilterField().props('disabled')).toBe(true);
+    });
+
+    it('enables name filter when organization is set', async () => {
+      wrapper.findComponent(GithubOrganizationsBox).vm.$emit('input', 'some-org');
+      await nextTick();
+
+      expect(findFilterField().props('disabled')).toBe(false);
+    });
+
+    it('updates organization_login filter when GithubOrganizationsBox emits input', () => {
+      const NEW_ORG = 'some-org';
+      wrapper.findComponent(GithubOrganizationsBox).vm.$emit('input', NEW_ORG);
+
+      expect(setFilterAction).toHaveBeenCalledWith(expect.anything(), {
+        organization_login: NEW_ORG,
+      });
     });
   });
 });

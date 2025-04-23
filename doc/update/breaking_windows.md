@@ -26,8 +26,6 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 |-------------|--------|-------|-------|------------------------|
 | [CI/CD job token - **Limit access from your project** setting removal](deprecations.md#cicd-job-token---limit-access-from-your-project-setting-removal) | High | Software supply chain security | Project | Refer to the [Understanding this change](https://gitlab.com/gitlab-org/gitlab/-/issues/395708#understanding-this-change) section for details. |
 | [CI/CD job token - **Authorized groups and projects** allowlist enforcement](deprecations.md#cicd-job-token---authorized-groups-and-projects-allowlist-enforcement) | High | Software supply chain security | Project | Refer to the [Understanding this change](https://gitlab.com/gitlab-org/gitlab/-/issues/383084#understanding-this-change) section for details. |
-| [Replace `add_on_purchase` GraphQL field with `add_on_purchases`](deprecations.md#replace-add_on_purchase-graphql-field-with-add_on_purchases) | Low | Fulfillment | Instance, group |  |
-| [Replace namespace `add_on_purchase` GraphQL field with `add_on_purchases`](deprecations.md#replace-namespace-add_on_purchase-graphql-field-with-add_on_purchases) | Low | Fulfillment | Instance, group |  |
 | [Deprecation of `name` field in `ProjectMonthlyUsageType` GraphQL API](deprecations.md#deprecation-of-name-field-in-projectmonthlyusagetype-graphql-api) | Low | Fulfillment | Project |  |
 | [Deprecation of `STORAGE` enum in `NamespaceProjectSortEnum` GraphQL API](deprecations.md#deprecation-of-storage-enum-in-namespaceprojectsortenum-graphql-api) | Low | Fulfillment | Group |  |
 | [DAST `dast_devtools_api_timeout` will have a lower default value](deprecations.md#dast-dast_devtools_api_timeout-will-have-a-lower-default-value) | Low | Application security testing | Project |  |
@@ -40,6 +38,8 @@ This window takes place on April 28 - 30, 2025 from 09:00 UTC to 22:00 UTC.
 
 | Deprecation | Impact | Stage | Scope | Check potential impact |
 |-------------|--------|-------|-------|------------------------|
+| [Replace `add_on_purchase` GraphQL field with `add_on_purchases`](deprecations.md#replace-add_on_purchase-graphql-field-with-add_on_purchases) | Low | Fulfillment | Instance, group |  |
+| [Replace namespace `add_on_purchase` GraphQL field with `add_on_purchases`](deprecations.md#replace-namespace-add_on_purchase-graphql-field-with-add_on_purchases) | Low | Fulfillment | Instance, group |  |
 | [Limit number of scan execution policy actions allowed per policy](deprecations.md#limit-number-of-scan-execution-policy-actions-allowed-per-policy) | Low | Security risk management | Instance, group, project |  |
 | [Behavior change for Upcoming and Started milestone filters](deprecations.md#behavior-change-for-upcoming-and-started-milestone-filters) | Low | Plan | Group, project |  |
 

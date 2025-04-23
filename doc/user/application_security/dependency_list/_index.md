@@ -181,16 +181,25 @@ Dependency paths are supported for the following package managers only when usin
 If the [Dependency Scanning](../dependency_scanning/_index.md) CI job is configured,
 [discovered licenses](../../compliance/license_scanning_of_cyclonedx_files/_index.md) are displayed on this page.
 
-## Download the dependency list
+## Export
 
-You can download the full list of dependencies and their details in JSON, CSV, or CycloneDX format.
-The dependency list shows only the results of the last successful pipeline that ran on the default branch.
+You can export the dependency list in:
+
+- JSON
+- CSV
+- CycloneDX format (for projects only)
 
 To download the dependency list:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Secure > Dependency list**.
 1. Select **Export**.
+
+{{< alert type="note" >}}
+
+CycloneDX export is available on the project dependency list.
+
+{{< /alert >}}
 
 ## Troubleshooting
 

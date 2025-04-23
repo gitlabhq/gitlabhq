@@ -177,7 +177,7 @@ export const mockPipelineJob = {
 };
 
 // for `pipeline_stage_spec.js`
-export const mockPipelineStageJobs = {
+export const createMockPipelineStageJobs = () => ({
   data: {
     ciPipelineStage: {
       __typename: 'CiStage',
@@ -237,7 +237,9 @@ export const mockPipelineStageJobs = {
       },
     },
   },
-};
+});
+
+export const mockPipelineStageJobs = createMockPipelineStageJobs();
 
 export const singlePipeline = {
   id: 'gid://gitlab/Ci::Pipeline/610',
