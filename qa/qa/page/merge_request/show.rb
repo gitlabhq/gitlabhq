@@ -268,7 +268,7 @@ module QA
         end
 
         def has_merge_button?
-          has_element?('merge-button', wait: 30)
+          has_element?('merge-button', skip_finished_loading_check: true, wait: 30)
         end
 
         def has_no_merge_button?

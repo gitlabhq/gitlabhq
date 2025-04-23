@@ -2,7 +2,8 @@
 import {
   GlAlert,
   GlBadge,
-  GlButton,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
   GlLink,
   GlModal,
   GlModalDirective,
@@ -57,7 +58,8 @@ export default {
   components: {
     GlAlert,
     GlBadge,
-    GlButton,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
     GlEmptyState,
     GlModal,
     GlLink,
@@ -96,6 +98,7 @@ export default {
       versionsMutationLoading: false,
       packageEntity: {},
       groupSettings: {},
+      isDropdownVisible: false,
     };
   },
   apollo: {
@@ -219,6 +222,9 @@ export default {
         },
       ];
     },
+    moreActionsTooltip() {
+      return !this.isDropdownVisible ? __('Actions') : '';
+    },
   },
   methods: {
     formatSize(size) {
@@ -240,6 +246,12 @@ export default {
     },
     resetDeleteModalContent() {
       this.deletePackageModalContent = DELETE_MODAL_CONTENT;
+    },
+    showDropdown() {
+      this.isDropdownVisible = true;
+    },
+    hideDropdown() {
+      this.isDropdownVisible = false;
     },
   },
   i18n: {
@@ -284,15 +296,31 @@ export default {
   <div v-else-if="projectName" class="packages-app">
     <package-title :package-entity="packageEntity">
       <template #delete-button>
-        <gl-button
+        <gl-disclosure-dropdown
           v-if="canDelete"
-          v-gl-modal="'delete-modal'"
-          variant="danger"
-          category="primary"
-          data-testid="delete-package"
+          v-gl-tooltip
+          category="tertiary"
+          icon="ellipsis_v"
+          placement="bottom-end"
+          class="!-gl-my-3"
+          data-testid="package-options-dropdown"
+          :title="moreActionsTooltip"
+          :toggle-text="__('Actions')"
+          text-sr-only
+          no-caret
+          @shown="showDropdown"
+          @hidden="hideDropdown"
         >
-          {{ __('Delete') }}
-        </gl-button>
+          <gl-disclosure-dropdown-item
+            v-gl-modal="'delete-modal'"
+            variant="danger"
+            data-testid="delete-package"
+          >
+            <template #list-item>
+              {{ __('Delete') }}
+            </template>
+          </gl-disclosure-dropdown-item>
+        </gl-disclosure-dropdown>
       </template>
     </package-title>
 

@@ -63,3 +63,20 @@ The compliance status report has the following columns:
 - **Control**: The specific control the project is not adhering to (for example, "At least two approvals").
 - **Detected on**: The date and time the non-adherence was first recorded.
 - **More info**: A link to additional context or related settings for the project.
+
+## Export compliance status report
+
+Export the contents of a status report for projects in a group. Reports are truncated at 15 MB to avoid a large email attachment.
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To export the compliance status report for projects in a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Compliance center**.
+1. In the top-right corner, select **Export**.
+1. Select **Export compliance status report**.
+
+A report is compiled and delivered to your email inbox as an attachment.

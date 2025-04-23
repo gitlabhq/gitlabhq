@@ -318,3 +318,22 @@ In rare cases, Sidekiq is busy and locks the table that migrations are trying to
    ```shell
    gitlab-ctl stop sidekiq
    ```
+
+## GPG signature verification error: Bad GPG signature
+
+You might receive the following error when running `yum update` or `dnf update`:
+
+```plaintext
+Error: Failed to download metadata for repo 'gitlab_gitlab-ee-source': repomd.xml GPG signature verification error: Bad GPG signature
+```
+
+To resolve this issue:
+
+1. Run `dnf clean all`.
+1. [Fetch the latest signing keys](https://docs.gitlab.com/omnibus/update/package_signatures/?tab=CentOS%2FOpenSUSE%2FSLES#fetch-latest-signing-key).
+1. Attempt to upgrade again.
+
+If the error persists even after `dnf clean all`, manually remove the affected repository cache directory. In this example:
+
+1. Remove `/var/cache/dnf/gitlab_gitlab-ee-source`.
+1. Run `dnf makecache`.

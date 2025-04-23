@@ -16,6 +16,7 @@ module QA
           end
 
           def click_delete
+            click_element('package-options-dropdown')
             click_element('delete-package')
             wait_for_animated_element('delete-modal-button')
             click_element('delete-modal-button')
