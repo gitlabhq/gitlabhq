@@ -11,6 +11,7 @@ If you encounter any issues with the GitLab Workflow extension for VS Code, or h
    for known issues and solutions.
 1. Report bugs or request features in the
    [`gitlab-vscode-extension` issue tracker](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues).
+   Provide the [required information for Support](#required-information-for-support).
 
 For troubleshooting VS Code for GitLab Duo Code Suggestions,
 see [Troubleshooting Code Suggestions for VS Code](../../user/project/repository/code_suggestions/troubleshooting.md#vs-code-troubleshooting).
@@ -167,3 +168,33 @@ hosted on `https`.
 
 To resolve this, manually enter an `http` URL for your instance when you run the
 `GitLab: Authenticate` command.
+
+## Required information for support
+
+Before contacting Support, make sure the latest GitLab Workflow extension is installed. All releases
+are available on the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
+under the **Version History** tab.
+
+Gather this information from affected users, and provide it in your bug report:
+
+1. The error message shown to the user.
+1. Workflow and Language Server logs:
+   1. [Enable debug logs](#enable-debug-logs).
+   1. [Retrieve log files](#view-log-files) for the extension, and the Language Server.
+1. Diagnostics output.
+   1. Open the Command Palette with <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> or
+      <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
+   1. Run the command `GitLab: Diagnostics`, and note the extension version.
+1. System details:
+   - In VS Code, go to **Code > About Visual Studio Code** and find **OS**.
+   - Machine specifications (CPU, RAM): Provide these from your machine. They are not accessible in the IDE.
+1. Describe the scope of impact. How many users are affected?
+1. Describe how to reproduce the error. Include a screen recording, if possible.
+1. Describe how other GitLab Duo features are affected:
+   - Is **GitLab Quick Chat** functional?
+   - Is **Code Suggestions** working?
+   - Does **Web IDE Duo Chat** return responses?
+1. Perform extension isolation testing as described in the
+   [GitLab Workflow Extension Isolation Guide](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/814#step-2-extension-isolation-testing).
+   Try disabling (or uninstalling) all other extensions to determine if another extension is causing
+   the issue. This helps determine if the problem is with our extension, or from an external source.

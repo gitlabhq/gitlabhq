@@ -28,7 +28,7 @@ variables:
   AST_ENABLE_MR_PIPELINES: "true"
   #
 
-  FUZZAPI_VERSION: "5"
+  FUZZAPI_VERSION: "6"
   FUZZAPI_IMAGE_SUFFIX: ""
   FUZZAPI_IMAGE: api-security
 

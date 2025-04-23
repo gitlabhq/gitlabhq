@@ -15035,10 +15035,10 @@ vite-plugin-ruby@^5.1.1:
     debug "^4.3.4"
     fast-glob "^3.3.2"
 
-vite@^6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-6.3.0.tgz#17c86b3a0f4d20b210fe89f22f7b27d5926fcce5"
-  integrity sha512-9aC0n4pr6hIbvi1YOpFjwQ+QOTGssvbJKoeYkuHHGWwlXfdxQlI8L2qNMo9awEEcCPSiS+5mJZk5jH1PAqoDeQ==
+vite@^6.3.1:
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-6.3.1.tgz#6b080ff907308ca691c5639c095ab6d938734c0d"
+  integrity sha512-kkzzkqtMESYklo96HKKPE5KKLkC1amlsqt+RjFMlX2AvbRB/0wghap19NdBxxwGZ+h/C6DLCrcEphPIItlGrRQ==
   dependencies:
     esbuild "^0.25.0"
     fdir "^6.4.3"

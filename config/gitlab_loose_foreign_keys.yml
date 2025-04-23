@@ -279,6 +279,9 @@ dast_site_profiles_builds:
   - table: p_ci_builds
     column: ci_build_id
     on_delete: async_delete
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 dast_site_tokens:
   - table: projects
     column: project_id

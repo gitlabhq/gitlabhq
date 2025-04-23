@@ -230,6 +230,25 @@ module API
                               documentation: { example: 'conaninfo.txt' }
                           end
                           namespace ':file_name', requirements: FILE_NAME_REQUIREMENTS do
+                            desc 'Download package files' do
+                              detail 'This feature was introduced in GitLab 17.11'
+                              success code: 200
+                              failure [
+                                { code: 400, message: 'Bad Request' },
+                                { code: 401, message: 'Unauthorized' },
+                                { code: 403, message: 'Forbidden' },
+                                { code: 404, message: 'Not Found' }
+                              ]
+                              tags %w[conan_packages]
+                            end
+                            route_setting :authentication, job_token_allowed: true,
+                              basic_auth_personal_access_token: true
+                            route_setting :authorization, job_token_policies: :read_packages,
+                              allow_public_access_for_enabled_project_features: :package_registry
+                            get urgency: :low do
+                              download_package_file(:package_file)
+                            end
+
                             desc 'Upload package files' do
                               detail 'This feature was introduced in GitLab 17.11'
                               success code: 200

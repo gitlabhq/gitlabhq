@@ -145,6 +145,27 @@ The following variables are available:
 All variables should be referenced using the double curly brace syntax, for example: `{{ .project.id }}`.
 See [`text/template`](https://pkg.go.dev/text/template) documentation for more information on the templating system used.
 
+### Resource lifecycle management
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/507486) in GitLab 18.0.
+
+{{< /history >}}
+
+Use the following settings to configure when Kubernetes resources should be removed:
+
+```yaml
+# Never delete resources
+delete_resources: never
+
+# Delete resources when environment is stopped
+delete_resources: on_stop
+```
+
+The default value is `on_stop`, which is specified in the
+[default environment template](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/internal/module/managed_resources/server/default_template.yaml).
+
 ### Managed resource labels and annotations
 
 The resources created by GitLab use a series of labels and annotations for tracking and troubleshooting purposes.

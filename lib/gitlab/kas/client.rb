@@ -146,6 +146,17 @@ module Gitlab
           .ensure_environment(request, metadata: metadata)
       end
 
+      def delete_environment(managed_resource:)
+        request = ::Gitlab::Agent::ManagedResources::Rpc::DeleteEnvironmentRequest.new(
+          agent_id: managed_resource.cluster_agent_id,
+          project_id: managed_resource.project_id,
+          environment_slug: managed_resource.environment.slug,
+          objects: managed_resource.tracked_objects
+        )
+
+        stub_for(:managed_resources).delete_environment(request, metadata: metadata)
+      end
+
       private
 
       def stub_for(service)

@@ -22,7 +22,7 @@
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/dast/#available-variables
 
 variables:
-  DAST_VERSION: 5
+  DAST_VERSION: 6
   # Setting this variable affects all Security templates
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"

@@ -30,6 +30,7 @@ class Environment < ApplicationRecord
   has_many :successful_deployments, -> { success }, class_name: 'Deployment'
   has_many :active_deployments, -> { active }, class_name: 'Deployment'
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :environment
+  has_many :managed_resources, class_name: 'Clusters::Agents::ManagedResource', inverse_of: :environment
 
   # NOTE: If you preload multiple last deployments of environments, use Preloaders::Environments::DeploymentPreloader.
   has_one :last_deployment, -> { success.ordered }, class_name: 'Deployment', inverse_of: :environment

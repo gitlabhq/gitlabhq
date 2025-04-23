@@ -173,6 +173,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cluster_agent
+- :name: cluster_agent:clusters_agents_managed_resources_delete
+  :worker_name: Clusters::Agents::ManagedResources::DeleteWorker
+  :feature_category: :deployment_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cluster_agent
 - :name: cluster_agent:clusters_agents_notify_git_push
   :worker_name: Clusters::Agents::NotifyGitPushWorker
   :feature_category: :deployment_management

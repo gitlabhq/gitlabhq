@@ -145,6 +145,56 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     end
   end
 
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/' \
+    ':package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/' \
+    'files/:file_name' do
+    include_context 'for conan file download endpoints'
+
+    let(:file_name) { package_file.file_name }
+    let(:recipe_revision) { package_file_metadata.recipe_revision_value }
+    let(:package_revision) { package_file_metadata.package_revision_value }
+    let(:conan_package_reference) { package_file_metadata.package_reference_value }
+    let(:url_suffix) do
+      "#{recipe_path}/revisions/#{recipe_revision}/packages/#{conan_package_reference}/revisions/#{package_revision}/" \
+        "files/#{file_name}"
+    end
+
+    subject(:request) { get api(url), headers: headers }
+
+    it_behaves_like 'conan package revisions feature flag check'
+    it_behaves_like 'packages feature check'
+    it_behaves_like 'package file download endpoint'
+    it_behaves_like 'accept get request on private project with access to package registry for everyone'
+    it_behaves_like 'project not found by project id'
+
+    it_behaves_like 'enforcing job token policies', :read_packages,
+      allow_public_access_for_enabled_project_features: :package_registry do
+      let(:headers) { job_basic_auth_header(target_job) }
+    end
+
+    describe 'parameter validation for package file endpoints' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:url_suffix) do
+        "#{recipe_path}/revisions/#{recipe_revision}/packages/#{url_package_reference}/revisions/" \
+          "#{url_package_revision}/files/#{url_file_name}"
+      end
+
+      # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table syntax
+      where(:error, :url_package_reference, :url_package_revision, :url_file_name) do
+        /conan_package_reference/ | 'invalid_package_reference$' | ref(:package_revision) | ref(:file_name)
+        /package_revision/       | ref(:conan_package_reference)                     | 'invalid_package_revi$ion'                        | ref(:file_name)
+        /package_revision/       | ref(:conan_package_reference)                     | Packages::Conan::FileMetadatum::DEFAULT_REVISION  | ref(:file_name)
+        /file_name/              | ref(:conan_package_reference)                     | ref(:package_revision)                            | 'invalid_file.txt'
+      end
+      # rubocop:enable Layout/LineLength
+
+      with_them do
+        it_behaves_like 'returning response status with error', status: :bad_request, error: params[:error]
+      end
+    end
+  end
+
   context 'with file upload endpoints' do
     include_context 'for conan file upload endpoints'
     let(:file_name) { 'conanfile.py' }

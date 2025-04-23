@@ -85,5 +85,5 @@ You can view a project's activities and determine when the project was last acti
 - Go to the [activity page](../user/project/working_with_projects.md#view-project-activity) for the project and view
   the date of the latest event.
 - View the `last_activity_at` attribute for the project using the [Projects API](../api/projects.md).
-- List the visible events for the project using the [Events API](../api/events.md#list-a-projects-visible-events).
+- List the visible events for the project using the [Events API](../api/events.md#list-all-visible-events-for-a-project).
   View the `created_at` attribute of the latest event.

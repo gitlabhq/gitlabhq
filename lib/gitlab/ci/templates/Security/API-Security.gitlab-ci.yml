@@ -26,7 +26,7 @@ variables:
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
   #
-  APISEC_VERSION: "5"
+  APISEC_VERSION: "6"
   APISEC_IMAGE_SUFFIX: ""
   APISEC_IMAGE: api-security
 

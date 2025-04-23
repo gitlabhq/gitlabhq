@@ -23,6 +23,7 @@ and crawls the site using an embedded browser.
 - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87183) to DAST_VERSION: 3 in GitLab 15.0.
 - This template was updated to DAST_VERSION: 4 in GitLab 16.0.
 - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151910) to DAST_VERSION: 5 in GitLab 17.0.
+- This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188703) to DAST_VERSION: 6 in GitLab 18.0.
 
 {{< /history >}}
 

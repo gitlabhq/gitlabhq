@@ -25,6 +25,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
 
   it { is_expected.to have_many(:deployments) }
   it { is_expected.to have_many(:alert_management_alerts) }
+  it { is_expected.to have_many(:managed_resources) }
   it { is_expected.to have_one(:upcoming_deployment) }
   it { is_expected.to have_one(:latest_opened_most_severe_alert) }
 

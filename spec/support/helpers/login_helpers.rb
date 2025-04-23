@@ -55,8 +55,10 @@ module LoginHelpers
     click_button Gitlab::Auth::OAuth::Provider.label_for(provider)
   end
 
-  def gitlab_enable_admin_mode_sign_in_via(provider, user, uid, saml_response = nil)
-    mock_auth_hash_with_saml_xml(provider, uid, user.email, saml_response)
+  def gitlab_enable_admin_mode_sign_in_via(provider, user, uid, saml_response: nil, additional_info: {})
+    response_object = { document: saml_xml(saml_response) } if saml_response.present?
+    mock_auth_hash(provider, uid, user.email, response_object: response_object, additional_info: additional_info)
+
     visit new_admin_session_path
     click_button Gitlab::Auth::OAuth::Provider.label_for(provider)
   end

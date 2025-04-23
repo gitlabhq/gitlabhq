@@ -42,14 +42,24 @@ When you view a GitLab project in VS Code, the extension shows you information a
 
 ## Switch GitLab accounts in VS Code
 
-The GitLab Workflow extension uses one account for each [VS Code Workspace](https://code.visualstudio.com/docs/editor/workspaces) (window). The extension automatically selects the account when:
+The GitLab Workflow extension uses one account for each
+[VS Code Workspace](https://code.visualstudio.com/docs/editor/workspaces) (window). The extension
+automatically selects the account when:
 
 - You have added only one GitLab account to the extension.
 - All workspaces in your VS Code window use the same GitLab account, based on the `git remote` configuration.
 
-In other cases, you must select a GitLab account for the active VS Code window.
+What the extension shows in the status bar depends on your account setup:
 
-To change the account selection:
+![Status bar for a user with multiple GitLab accounts, with one preselected.](img/preselected_account_v17_11.png)
+
+- If only one GitLab account exists, the status bar shows no information.
+- If multiple GitLab accounts exist, and the extension can determine which account to use,
+  the status bar shows the account name next to the tanuki ({{< icon name="tanuki">}}) icon.
+- If multiple GitLab accounts exist, and the extension can't determine which account to use,
+  the status bar shows **Multiple GitLab Accounts** ({{< icon name="question-o">}}).
+
+To select a GitLab account for the active VS Code window, select the status bar item, or:
 
 1. Open the Command Palette:
    - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
@@ -57,11 +67,10 @@ To change the account selection:
 1. Run the command `GitLab: Select Account for this Workspace`.
 1. Select your desired account from the list.
 
-You can also change accounts by selecting the GitLab account status bar item.
-
 ## Select your GitLab project
 
-When your Git repository can be associated with multiple GitLab projects, the extension cannot determine which account to use. This can happen when you have multiple remotes, for example:
+When your Git repository can be associated with multiple GitLab projects, the extension cannot
+determine which account to use. This can happen when you have multiple remotes, for example:
 
 - `origin`: `git@gitlab.com:gitlab-org/gitlab-vscode-extension.git`
 - `personal-fork`: `git@gitlab.com:myusername/gitlab-vscode-extension.git`

@@ -1203,6 +1203,12 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/**/*'
     - 'ee/app/workers/**/*'
 
+Sidekiq/EnforceDatabaseHealthSignalDeferral:
+  Enabled: true
+  Include:
+    - 'app/workers/**/*'
+    - 'ee/app/workers/**/*'
+
 Graphql/ResourceNotAvailableError:
   Exclude:
     # Definition of `raise_resource_not_available_error!`

@@ -336,6 +336,43 @@ Example response:
 }
 ```
 
+## Get a package file
+
+Gets a package file from the package registry.
+
+```plaintext
+GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files/:file_name
+```
+
+| Attribute                 | Type | Required | Description |
+| ------------------------- | ---- | -------- | ----------- |
+| `id`                      | string | yes | The project ID or full project path. |
+| `package_name`            | string | yes | Name of a package. |
+| `package_version`         | string | yes | Version of a package. |
+| `package_username`        | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
+| `package_channel`         | string | yes | Channel of a package. |
+| `recipe_revision`         | string | yes | Revision of the recipe. Does not accept a value of `0`. |
+| `conan_package_reference` | string | yes | Reference hash of a Conan package. Conan generates this value. |
+| `package_revision`        | string | yes | Revision of the package. Does not accept a value of `0`. |
+| `file_name`               | string | yes | The name and file extension of the requested file. |
+
+```shell
+curl --request GET \
+     --header "Authorization: Bearer <authenticate_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/packages/103f6067a947f366ef91fc1b7da351c588d1827f/revisions/3bdd2d8c8e76c876ebd1ac0469a4e72c/files/conaninfo.txt"
+```
+
+You can also write the output to a file by using:
+
+```shell
+curl --request GET \
+     --header "Authorization: Bearer <authenticate_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/packages/103f6067a947f366ef91fc1b7da351c588d1827f/revisions/3bdd2d8c8e76c876ebd1ac0469a4e72c/files/conaninfo.txt" \
+     >> conaninfo.txt
+```
+
+This example writes to `conaninfo.txt` in the current directory.
+
 ## Upload a package file
 
 Uploads a package file to the package registry.

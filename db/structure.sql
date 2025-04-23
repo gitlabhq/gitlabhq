@@ -13421,7 +13421,8 @@ CREATE TABLE dast_site_profiles (
 CREATE TABLE dast_site_profiles_builds (
     dast_site_profile_id bigint NOT NULL,
     ci_build_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_581c9bb699 CHECK ((project_id IS NOT NULL))
 );
 
 COMMENT ON TABLE dast_site_profiles_builds IS '{"owner":"group::dynamic analysis","description":"Join table between DAST Site Profiles and CI Builds"}';

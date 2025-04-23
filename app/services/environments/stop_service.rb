@@ -29,6 +29,8 @@ module Environments
       end
 
       if environment.stopped? || environment.stopping?
+        delete_managed_resources(environment)
+
         ServiceResponse.success(payload: { environment: environment, actions: actions })
       else
         ServiceResponse.error(
@@ -73,6 +75,10 @@ module Environments
       @environments ||= Environments::EnvironmentsByDeploymentsFinder
         .new(project, current_user, ref: @ref, recently_updated: true)
         .execute
+    end
+
+    def delete_managed_resources(environment)
+      Environments::DeleteManagedResourcesService.new(environment).execute
     end
   end
 end

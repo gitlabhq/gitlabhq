@@ -170,7 +170,8 @@ module API
                 file_name: params[:file_name].to_s,
                 conan_file_type: file_type,
                 conan_package_reference: declared(params)[:conan_package_reference],
-                recipe_revision: params[:recipe_revision]
+                recipe_revision: params[:recipe_revision],
+                package_revision: declared(params)[:package_revision]
               ).execute!
 
             track_package_event('pull_package', :conan, category: 'API::ConanPackages', project: project, namespace: project.namespace) if params[:file_name] == ::Packages::Conan::FileMetadatum::PACKAGE_BINARY

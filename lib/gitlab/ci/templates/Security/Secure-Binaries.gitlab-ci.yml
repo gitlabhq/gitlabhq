@@ -219,7 +219,7 @@ license-finder:
 dast:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "5"
+    SECURE_BINARIES_ANALYZER_VERSION: "6"
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bdast\b/'
 
@@ -234,6 +234,6 @@ dast-runner-validation:
 api-security:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "5"
+    SECURE_BINARIES_ANALYZER_VERSION: "6"
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bapi-security\b/'

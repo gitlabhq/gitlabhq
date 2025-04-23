@@ -178,7 +178,7 @@ RSpec.describe 'Admin Mode Login', feature_category: :system_access do
         end
 
         def enable_admin_mode_using_saml!
-          gitlab_enable_admin_mode_sign_in_via('saml', user, 'my-uid', mock_saml_response)
+          gitlab_enable_admin_mode_sign_in_via('saml', user, 'my-uid', saml_response: mock_saml_response)
         end
       end
 

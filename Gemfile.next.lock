@@ -712,7 +712,7 @@ GEM
       multi_json (~> 1.10)
     fog-local (0.8.0)
       fog-core (>= 1.27, < 3.0)
-    fog-xml (0.1.3)
+    fog-xml (0.1.5)
       fog-core
       nokogiri (>= 1.5.11, < 2.0.0)
     formatador (0.2.5)
@@ -774,7 +774,7 @@ GEM
       nokogiri (~> 1, >= 1.10.8)
     gitlab-glfm-markdown (0.0.29)
       rb_sys (~> 0.9.109)
-    gitlab-kas-grpc (17.9.1)
+    gitlab-kas-grpc (17.10.4)
       grpc (~> 1.0)
     gitlab-labkit (0.37.0)
       actionpack (>= 5.0.0, < 8.1.0)
@@ -925,7 +925,7 @@ GEM
       google-protobuf (~> 3.14)
       googleapis-common-protos-types (~> 1.2)
       grpc (~> 1.27)
-    googleapis-common-protos-types (1.18.0)
+    googleapis-common-protos-types (1.19.0)
       google-protobuf (>= 3.18, < 5.a)
     googleauth (1.8.1)
       faraday (>= 0.17.3, < 3.a)
@@ -2169,7 +2169,7 @@ DEPENDENCIES
   gitlab-glfm-markdown (~> 0.0.29)
   gitlab-housekeeper!
   gitlab-http!
-  gitlab-kas-grpc (~> 17.9.0.pre.rc2)
+  gitlab-kas-grpc (~> 17.10.4)
   gitlab-labkit (~> 0.37.0)
   gitlab-license (~> 2.6)
   gitlab-mail_room (~> 0.0.24)
