@@ -12963,9 +12963,6 @@ msgstr ""
 msgid "CiVariables|The value must have %{charsAmount} characters."
 msgstr ""
 
-msgid "CiVariables|There was a problem fetching the CI/CD settings."
-msgstr ""
-
 msgid "CiVariables|There was a problem fetching the pipeline variables default role."
 msgstr ""
 

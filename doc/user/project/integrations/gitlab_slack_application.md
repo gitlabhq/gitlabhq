@@ -54,8 +54,13 @@ To install the GitLab for Slack app from the project or group settings:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Settings > Integrations**.
 1. Select **GitLab for Slack app**.
-1. Select **Install GitLab for Slack app**.
-1. On the Slack confirmation page, select **Allow**.
+1. Select **Install GitLab for Slack app**. You're redirected to the Slack confirmation page.
+1. On the Slack confirmation page:
+   1. Optional. If you're signed in to more than one Slack workspace, in the upper right,
+      from the dropdown list, select the workspace you want to install the app in.
+      On GitLab Self-Managed and GitLab Dedicated, an administrator must first
+      [enable support for multiple workspaces](../../../administration/settings/slack_app.md#enable-support-for-multiple-workspaces) for the dropdown list to appear.
+   1. Select **Allow**.
 
 ### From the Slack App Directory
 
@@ -83,8 +88,13 @@ To reinstall the GitLab for Slack app:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **GitLab for Slack app**.
-1. Select **Reinstall GitLab for Slack app**.
-1. On the Slack confirmation page, select **Allow**.
+1. Select **Install GitLab for Slack app**. You're redirected to the Slack confirmation page.
+1. On the Slack confirmation page:
+   1. Optional. If you're signed in to more than one Slack workspace, in the upper right,
+      from the dropdown list, select the workspace you want to reinstall the app in.
+      On GitLab Self-Managed and GitLab Dedicated, an administrator must first
+      [enable support for multiple workspaces](../../../administration/settings/slack_app.md#enable-support-for-multiple-workspaces) for the dropdown list to appear.
+   1. Select **Allow**.
 
 The GitLab for Slack app is updated for all projects that use the integration.
 

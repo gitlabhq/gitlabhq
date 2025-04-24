@@ -90,6 +90,15 @@ The following modes are supported:
   prevent all of the old deploy jobs with the [prevent outdated deployment jobs](../environments/deployment_safety.md#prevent-outdated-deployment-jobs) feature.
   This is the most efficient option in terms of the pipeline efficiency, but you must ensure that each deployment job is idempotent.
 
+- **Newest ready first:** This process mode limits concurrency on jobs, but less than plain newest_first.
+  When a resource is free, it picks the first job from the list of upcoming jobs that are waiting on this resource.
+  This list of jobs is sorted by pipeline ID in descending order like above.
+
+  This mode is best for those who might want to continuously deploy, but deploy merge often enough that
+  newest_first can lead to situations when no deploys between merges. It can be faster than newest_first, but
+  carries with it a risk that a job that might be skipped in newest_first would be run, so ensuring
+  deploys are idempotent is of even greater importance.
+
 ### Change the process mode
 
 To change the process mode of a resource group, you must use the API and
@@ -99,6 +108,7 @@ by specifying the `process_mode`:
 - `unordered`
 - `oldest_first`
 - `newest_first`
+- `newest_ready_first`
 
 ### An example of difference between the process modes
 

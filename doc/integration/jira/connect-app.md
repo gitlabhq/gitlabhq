@@ -341,3 +341,24 @@ A `403 Forbidden` is returned if the user information cannot be fetched from Jir
 
 To resolve this issue, ensure you meet certain
 [Jira user requirements](../../administration/settings/jira_cloud_app.md#jira-user-requirements).
+
+### Jira Code does not work after linking to a GitLab group
+
+[Jira Code](https://support.atlassian.com/jira-software-cloud/docs/enable-code/) might not work after you
+[link the GitLab for Jira Cloud app to a GitLab group](#configure-the-gitlab-for-jira-cloud-app).
+To resolve this issue, you must configure both Bitbucket and Jira.
+
+In Bitbucket:
+
+1. Sign in to your Atlassian account.
+1. Create and enter a name for your workspace.
+
+In Jira:
+
+1. In **Projects**, select your project.
+1. Select **Development > Code**.
+1. Select **Connect Bitbucket > Link Bitbucket Cloud workspace**.
+1. Select the workspace you created in Bitbucket.
+1. Select **Grant access**.
+
+Your repositories should now appear in Jira Code.

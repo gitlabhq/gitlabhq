@@ -50,6 +50,7 @@ describe('Pipeline New Form', () => {
         pipelinesPath: '/root/project/-/pipelines',
         projectPath: '/root/project/-/pipelines/config_variables',
         userRole: 'Maintainer',
+        canSetPipelineVariables: true,
       },
       propsData: {
         projectId: mockProjectId,

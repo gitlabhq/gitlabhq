@@ -206,6 +206,30 @@ adding new tools can expand the capabilities of the Chat feature.
 
 There are available short [videos](https://www.youtube.com/playlist?list=PL05JrBw4t0KoOK-bm_bwfHaOv-1cveh8i) covering this topic.
 
+### Working with multi-thread conversation
+
+If you're building features that interact with Duo Chat conversations, you need to understand how threads work.
+
+Duo Chat supports multiple conversations. Each conversation is represented by a thread, which contains multiple messages. The important attributes of a thread are:
+
+- `id`: The `id` is required when replying to a thread.
+- `conversation_type`: This allows for distinguishing between the different available Duo Chat conversation types. See the [thread conversation types list](../../api/graphql/reference/_index.md#aiconversationsthreadsconversationtype).
+  - If your feature needs its own conversation type, please contact the Duo Chat team.
+
+If your feature requires calling GraphQL API directly, the following queries and mutations are available, for which you **must** specify the `conversation_type`.
+
+- [Query.aiConversationThreads](../../api/graphql/reference/_index.md#queryaiconversationthreads): lists threads
+- [Query.aiMessages](../../api/graphql/reference/_index.md#queryaimessages): lists one thread's messages. **Must** specify `threadId`.
+- [Mutation.aiAction](../../api/graphql/reference/_index.md#mutationaiaction): creates one message. If `threadId` is specified the message is appended into that thread.
+
+All chat conversations have a retention period, controlled by the admin. The default retention period is 30 days after last reply.
+
+- [Configure Duo Chat Conversation Expiration](../../user/gitlab_duo_chat/_index.md#configure-chat-conversation-expiration)
+
+### Developer Resources
+
+- [Example GraphQL Queries](#duo-chat-conversation-threads-graphql-queries) - See examples below in this document
+
 ## Debugging
 
 To gather more insights about the full request, use the `Gitlab::Llm::Logger` file to debug logs.
@@ -431,6 +455,68 @@ Please keep in mind that the clientSubscriptionId must be unique for every reque
 If you can't fetch the response, check `graphql_json.log`,
 `sidekiq_json.log`, `llm.log` or `modelgateway_debug.log` if it contains error
 information.
+
+### Duo Chat Conversation Threads GraphQL queries
+
+#### Querying messages in a conversation thread
+
+To retrieve messages from a specific thread, use the `aiMessages` query with a thread ID:
+
+```graphql
+query {
+  aiMessages(threadId: "gid://gitlab/Ai::Conversation::Thread/1") {
+    nodes {
+      requestId
+      content
+      role
+      timestamp
+      chunkId
+      errors
+    }
+  }
+}
+```
+
+#### Starting a new conversation thread
+
+If you don't include a threadId in your aiAction mutation, a new thread will be created:
+
+```graphql
+mutation {
+  aiAction(input: {
+    chat: {
+      content: "This will create a new conversation thread"
+    },
+    conversationType: DUO_CHAT
+  })
+  {
+    requestId
+    errors
+    threadId  # This will contain the ID of the newly created thread
+  }
+}
+```
+
+#### Creating a new message in an existing conversation thread
+
+To add a message to an existing thread, include the threadId in your aiAction mutation:
+
+```graphql
+mutation {
+  aiAction(input: {
+    chat: {
+      content: "this is another message in the same thread"
+    },
+    conversationType: DUO_CHAT,
+    threadId: "gid://gitlab/Ai::Conversation::Thread/1",
+  })
+  {
+    requestId
+    errors
+    threadId
+  }
+}
+```
 
 ## Testing GitLab Duo Chat in production-like environments
 

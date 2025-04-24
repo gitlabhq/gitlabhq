@@ -131,7 +131,8 @@ RSpec.describe Ci::PipelinesHelper, feature_category: :continuous_integration do
         :project_refs_endpoint,
         :settings_link,
         :max_warnings,
-        :user_role
+        :user_role,
+        :can_set_pipeline_variables
       )
     end
 

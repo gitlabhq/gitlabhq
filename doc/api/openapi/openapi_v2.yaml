@@ -49771,6 +49771,7 @@ definitions:
         - unordered
         - oldest_first
         - newest_first
+        - newest_ready_first
     description: Edit an existing resource group
   postApiV4ProjectsIdRunners:
     type: object

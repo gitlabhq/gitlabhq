@@ -135,8 +135,6 @@ These placeholders are created on the destination instance even if
 users with the same email addresses exist on the source instance.
 Until you reassign contributions on the destination instance,
 all contributions display as associated with placeholders.
-For the behavior associated with subsequent imports to the same top-level group,
-see [placeholder user limits](#placeholder-user-limits).
 
 {{< alert type="note" >}}
 
@@ -153,8 +151,13 @@ After the import has completed, you can:
   on source and destination instances.
 - Create new users on the destination instance to reassign memberships and contributions to.
 
-When you reassign a contribution to a user on the destination instance, the user can
+When you reassign contributions to a user on the destination instance, the user can
 [accept](#accept-contribution-reassignment) or [reject](#reject-contribution-reassignment) the reassignment.
+When the user accepts the reassignment:
+
+- Contributions are reassigned. This process might take a few minutes.
+- In subsequent imports from the same source instance to the same top-level group or subgroup
+  on the destination instance, contributions are mapped automatically to the user.
 
 {{< alert type="note" >}}
 
@@ -264,7 +267,7 @@ To filter for placeholder users created during imports for an entire instance:
 1. Select **Overview > Users**.
 1. In the search box, filter users by **type**.
 
-#### Placeholder user limits
+#### Creating placeholder users
 
 Placeholder users are created per [import source](#supported-import-sources) and per top-level group:
 
@@ -272,6 +275,13 @@ Placeholder users are created per [import source](#supported-import-sources) and
   the same placeholder users as the first import.
 - If you import the same project twice, but to a different top-level group on the destination instance, the second import
   creates new placeholder users under that top-level group.
+
+When a user [accepts the reassignment](#accept-contribution-reassignment),
+subsequent imports from the same source instance to the same top-level group or
+subgroup on the destination instance do not create placeholder users.
+Instead, contributions are mapped automatically to the user.
+
+#### Placeholder user limits
 
 If importing to GitLab.com, placeholder users are limited per top-level group on the destination instance. The limits differ depending on your plan and seat count. Placeholder users do not count towards license limits.
 
@@ -301,22 +311,22 @@ To view your current placeholder user usage and limits:
 1. Select **Settings > Usage Quotas**.
 1. Select the **Import** tab.
 
-For imports to GitLab.com, some contributions might not be created
-because these contributions are mapped to the same user.
-For example, if multiple merge request approvers are mapped to the same user,
-only the first approval is added and the others are ignored.
-These contributions include:
+You cannot determine the number of placeholder users you need in advance.
 
+When the placeholder user limit is reached, all contributions
+are assigned to a single non-functional user called `Import User`.
+Contributions assigned to `Import User` might be deduplicated,
+and some contributions might not be created during the import.
+For example, if multiple approvals from a merge request approver are assigned
+to `Import User`, only the first approval is created and the others are ignored.
+The contributions that might be deduplicated are:
+
+- Approval rules
+- Emoji reactions
+- Issue assignees
 - Memberships
 - Merge request approvals, assignees, and reviewers
-- Issue assignees
-- Emoji
 - Push, merge request, and deploy access levels
-- Approval rules
-
-You cannot determine the number of placeholder users you need in advance.
-When the placeholder user limit is reached, the import does not fail.
-Instead, all contributions are assigned to a single non-functional user called `Import User`.
 
 Every change creates a system note, which is not affected by the placeholder user limit.
 

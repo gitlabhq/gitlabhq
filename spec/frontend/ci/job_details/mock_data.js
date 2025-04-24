@@ -122,11 +122,3 @@ export const mockPendingJobData = {
     },
   },
 };
-
-export const mockPipelineVariablesPermissions = (value) => ({
-  computed: {
-    canViewPipelineVariables() {
-      return value;
-    },
-  },
-});

@@ -14,6 +14,7 @@ const mountPipelineNewForm = (el) => {
     projectPath,
     projectRefsEndpoint,
     userRole,
+    canSetPipelineVariables,
 
     // props
     defaultBranch,
@@ -39,6 +40,7 @@ const mountPipelineNewForm = (el) => {
     apolloProvider,
     provide: {
       canViewPipelineEditor: parseBoolean(canViewPipelineEditor),
+      canSetPipelineVariables: parseBoolean(canSetPipelineVariables),
       identityVerificationPath,
       // Normally this will have a value from a helper. In this case, this is
       // set to true because the alert that uses this field is dynamically

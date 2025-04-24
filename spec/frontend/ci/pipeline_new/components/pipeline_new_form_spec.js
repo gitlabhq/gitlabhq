@@ -15,8 +15,6 @@ import PipelineNewForm from '~/ci/pipeline_new/components/pipeline_new_form.vue'
 import PipelineVariablesForm from '~/ci/pipeline_new/components/pipeline_variables_form.vue';
 import pipelineCreateMutation from '~/ci/pipeline_new/graphql/mutations/create_pipeline.mutation.graphql';
 import RefsDropdown from '~/ci/pipeline_new/components/refs_dropdown.vue';
-import { mockPipelineVariablesPermissions } from 'jest/ci/job_details/mock_data';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { mockProjectId, mockPipelineConfigButtonText } from '../mock_data';
 
 Vue.directive('safe-html', {
@@ -39,7 +37,6 @@ const defaultProps = {
   refParam: 'main',
   settingsLink: '',
   maxWarnings: 25,
-  isMaintainer: true,
 };
 
 const defaultProvide = {
@@ -50,6 +47,7 @@ const defaultProvide = {
   pipelinesPath: '/root/project/-/pipelines',
   projectPath: '/root/project/-/pipelines/config_variables',
   userRole: 'Maintainer',
+  canSetPipelineVariables: true,
 };
 
 describe('Pipeline New Form', () => {
@@ -88,7 +86,6 @@ describe('Pipeline New Form', () => {
     mountFn = shallowMountExtended,
     stubs = {},
     ciInputsForPipelines = false,
-    pipelineVariablesPermissionsMixin = mockPipelineVariablesPermissions(true),
   } = {}) => {
     const handlers = [[pipelineCreateMutation, pipelineCreateMutationHandler]];
     mockApollo = createMockApollo(handlers);
@@ -106,7 +103,6 @@ describe('Pipeline New Form', () => {
         ...props,
       },
       stubs,
-      mixins: [glFeatureFlagMixin(), pipelineVariablesPermissionsMixin],
     });
 
     await waitForPromises();
@@ -261,7 +257,7 @@ describe('Pipeline New Form', () => {
       beforeEach(async () => {
         pipelineCreateMutationHandler.mockResolvedValue(mockPipelineCreateMutationResponse);
         await createComponentWithApollo({
-          pipelineVariablesPermissionsMixin: mockPipelineVariablesPermissions(false),
+          provide: { canSetPipelineVariables: false },
         });
       });
 

@@ -90,7 +90,8 @@ module Ci
         project_refs_endpoint: refs_project_path(project, sort: 'updated_desc'),
         settings_link: project_settings_ci_cd_path(project),
         max_warnings: ::Gitlab::Ci::Warnings::MAX_LIMIT,
-        user_role: project.team.human_max_access(current_user&.id)
+        user_role: project.team.human_max_access(current_user&.id),
+        can_set_pipeline_variables: Ability.allowed?(current_user, :set_pipeline_variables, project).to_s
       }
     end
 
