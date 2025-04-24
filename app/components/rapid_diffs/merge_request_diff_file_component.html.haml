@@ -1,1 +1,4 @@
-= render RapidDiffs::DiffFileComponent.new(diff_file: @diff_file, parallel_view: @parallel_view)
+= render RapidDiffs::DiffFileComponent.new(diff_file:, parallel_view: @parallel_view) do |c|
+  - c.with_header do
+    = render RapidDiffs::DiffFileHeaderComponent.new(diff_file:, additional_menu_items:)
+  end

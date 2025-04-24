@@ -24,6 +24,8 @@ export default {
   },
   data() {
     return {
+      project: undefined,
+      group: undefined,
       ...extractGroupOrProject(this.data.webUrl),
     };
   },

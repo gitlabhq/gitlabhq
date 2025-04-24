@@ -4,6 +4,8 @@ module RapidDiffs
   class DiffFileComponent < ViewComponent::Base
     include TreeHelper
 
+    renders_one :header
+
     def initialize(diff_file:, parallel_view: false)
       @diff_file = diff_file
       @parallel_view = parallel_view
@@ -32,6 +34,10 @@ module RapidDiffs
       end
 
       Viewers::NoPreviewComponent
+    end
+
+    def default_header
+      render RapidDiffs::DiffFileHeaderComponent.new(diff_file: @diff_file)
     end
   end
 end

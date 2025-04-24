@@ -75,6 +75,8 @@ export default {
       this.isVisible = !Visibility.hidden();
     },
     clickTab({ key }) {
+      if (this.currentTab === key) return;
+
       this.currentTab = key;
       this.$router.push({ path: key || '/' });
     },
@@ -119,6 +121,7 @@ export default {
         :key="tab.title"
         :active="tab.key === currentTab"
         lazy
+        data-testid="merge-request-dashboard-tab"
         @click="clickTab(tab)"
       >
         <template #title>

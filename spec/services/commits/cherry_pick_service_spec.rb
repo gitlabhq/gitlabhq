@@ -16,7 +16,7 @@ RSpec.describe Commits::CherryPickService, feature_category: :source_code_manage
 
   let(:repository) { project.repository }
   let(:commit) { project.commit }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :commit_email) }
 
   before do
     project.add_maintainer(user)
@@ -50,7 +50,7 @@ RSpec.describe Commits::CherryPickService, feature_category: :source_code_manage
 
         commit = branch.dereferenced_target
         expect(commit.author_name).to eq(user.name)
-        expect(commit.author_email).to eq(user.email)
+        expect(commit.author_email).to eq(user.commit_email)
         expect(commit.message).to include("(cherry picked from commit #{merge_commit_sha})")
         expect(commit.message).to include(
           "Co-authored-by: #{source_commit.author_name} <#{source_commit.author_email}>"

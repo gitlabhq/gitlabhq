@@ -8,6 +8,7 @@ module ResourceEvents
     belongs_to :issue
 
     validates :issue, presence: true
+    validates :namespace_id, presence: true
 
     enum action: { add: 1, remove: 2 }
 

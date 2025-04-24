@@ -205,7 +205,7 @@ To select another file to view when this setting is enabled, either:
 
 - Scroll to the end of the file and select either **Prev** or **Next**.
 - If [keyboard shortcuts are enabled](../../shortcuts.md#enable-keyboard-shortcuts),
-  press <kbd>&#91;</kbd>, <kbd>]</kbd>, <kbd>k</kbd>, or <kbd>j</kbd>.
+  press <kbd>\[</kbd>, <kbd>]</kbd>, <kbd>k</kbd>, or <kbd>j</kbd>.
 - Select **Show file browser** ({{< icon name="file-tree" >}}) and select another file to view.
 
 ## Compare changes

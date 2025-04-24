@@ -11,7 +11,7 @@ title: Syntax options
 |---------------------|------------------|---------|
 | `"`                 | Exact search     | [`"gem sidekiq"`](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=%22gem+sidekiq%22) |
 | `~`                 | Fuzzy search     | [`J~ Doe`](https://gitlab.com/search?scope=users&search=j%7E+doe) |
-| <code>&#124;</code> | Or               | [<code>display &#124; banner</code>](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=display+%7C+banner) |
+| `\|`                | Or               | [`display \| banner`](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=display+%7C+banner) |
 | `+`                 | And              | [`display +banner`](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=display+%2Bbanner&snippets=) |
 | `-`                 | Exclude          | [`display -banner`](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=display+-banner) |
 | `*`                 | Partial          | [`bug error 50*`](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=bug+error+50%2A&snippets=) |
@@ -36,8 +36,8 @@ title: Syntax options
 |----------------------------------------------------|-------------|
 | [`rails -filename:gemfile.lock`](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=rails+-filename%3Agemfile.lock&snippets=) | Returns `rails` in all files except the `gemfile.lock` file. |
 | [`RSpec.describe Resolvers -*builder`](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=RSpec.describe+Resolvers+-*builder) | Returns `RSpec.describe Resolvers` that does not start with `builder`. |
-| [<code>bug &#124; (display +banner)</code>](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=bug+%7C+%28display+%2Bbanner%29&group_id=9970&project_id=278964) | Returns `bug` or both `display` and `banner`. |
-| [<code>helper -extension:yml -extension:js</code>](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=helper+-extension%3Ayml+-extension%3Ajs&snippets=) | Returns `helper` in all files except files with a `.yml` or `.js` extension. |
-| [<code>helper path:lib/git</code>](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=helper+path%3Alib%2Fgit) | Returns `helper` in all files with a `lib/git*` path (for example, `spec/lib/gitlab`). |
+| [`bug \| (display +banner)`](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=bug+%7C+%28display+%2Bbanner%29&group_id=9970&project_id=278964) | Returns `bug` or both `display` and `banner`. |
+| [`helper -extension:yml -extension:js`](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=helper+-extension%3Ayml+-extension%3Ajs&snippets=) | Returns `helper` in all files except files with a `.yml` or `.js` extension. |
+| [`helper path:lib/git`](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=helper+path%3Alib%2Fgit) | Returns `helper` in all files with a `lib/git*` path (for example, `spec/lib/gitlab`). |
 
 <!-- markdownlint-enable MD044 -->

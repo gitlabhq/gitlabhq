@@ -367,12 +367,6 @@ module QA
           end
 
           def right_click_file_explorer
-            # NOTE: Web IDE prompts for clipboard permission to open the file explorer context menu
-            # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177778#note_2295036716
-            # https://gitlab.com/gitlab-org/gitlab-web-ide/-/issues/433
-            page.driver.browser.add_permission("clipboard-read", "granted")
-            page.driver.browser.add_permission("clipboard-write", "granted")
-
             page.find('.explorer-folders-view', visible: true).right_click
           end
 

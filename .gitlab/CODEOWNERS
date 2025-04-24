@@ -977,7 +977,7 @@ lib/gitlab/checks/**
 /doc/development/audit_event_guide/ @gitlab-org/govern/security-policies-frontend @gitlab-org/govern/threat-insights-frontend-team @gitlab-org/govern/threat-insights-backend-team
 /doc/development/avoiding_required_stops.md @gitlab-org/distribution
 /doc/development/build_test_package.md @gitlab-org/distribution
-/doc/development/cascading_settings.md @gitlab-org/foundations/engineering
+/doc/development/cascading_settings.md @gitlab-org/foundations/personal-productivity/engineering
 /doc/development/cells/ @OmarQunsulGitlab @bmarjanovic
 /doc/development/cicd/ @gitlab-org/maintainers/cicd-verify
 /doc/development/contributing/verify/ @gitlab-org/maintainers/cicd-verify
@@ -987,7 +987,7 @@ lib/gitlab/checks/**
 /doc/development/documentation/ @fneill @sselhorn
 /doc/development/duo_workflow/ @gitlab-org/ai-powered
 /doc/development/fe_guide/analytics_dashboards.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
-/doc/development/fe_guide/keyboard_shortcuts.md @gitlab-org/foundations/engineering
+/doc/development/fe_guide/keyboard_shortcuts.md @gitlab-org/foundations/personal-productivity/engineering
 /doc/development/git_object_deduplication.md @proglottis @toon
 /doc/development/gitaly.md @proglottis @toon
 /doc/development/gitpod_internals.md @gl-dx/eng-prod
@@ -998,7 +998,7 @@ lib/gitlab/checks/**
 /doc/development/logging.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/logs.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/metrics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
-/doc/development/navigation_sidebar.md @gitlab-org/foundations/engineering
+/doc/development/navigation_sidebar.md @gitlab-org/foundations/personal-productivity/engineering
 /doc/development/observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/omnibus.md @gitlab-org/distribution
 /doc/development/organization/ @abdwdd @alexpooley
@@ -1817,7 +1817,7 @@ ee/app/workers/ai/repository_xray/
 /ee/spec/models/namespaces/free_user_cap/
 # END Fulfillment::Utilization
 
-^[Manage::Foundations] @gitlab-org/manage/foundations/engineering
+^[Foundations::Personal Productivity] @gitlab-org/foundations/personal-productivity/engineering
 /lib/sidebars/
 /ee/lib/sidebars/
 /ee/lib/ee/sidebars/

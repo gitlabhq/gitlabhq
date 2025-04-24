@@ -16331,7 +16331,8 @@ CREATE TABLE issue_assignment_events (
     issue_id bigint NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     action smallint DEFAULT 1 NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_b1ee75f25d CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE issue_assignment_events_id_seq

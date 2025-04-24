@@ -9,6 +9,11 @@ RSpec.shared_context "with diff file component tests" do
   let(:repository) { diff_file.repository }
   let(:project) { repository.container }
   let(:namespace) { project.namespace }
+  let(:sample_commit) { instance_double(Commit, raw_diffs: [diff_file]) }
+
+  before do
+    allow(repository).to receive(:commit).with(RepoHelpers.sample_commit.id).and_return(sample_commit)
+  end
 
   # This should be overridden in the including spec
   def render_component

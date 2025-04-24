@@ -43,7 +43,7 @@ module Commits
     end
 
     def perform_cherry_pick(message)
-      author_kwargs = { author_name: current_user.name, author_email: current_user.email }
+      author_kwargs = { author_name: current_user.name, author_email: current_user.commit_email_or_default }
 
       repository.cherry_pick(current_user, @commit, @branch_name, message,
         start_project: @start_project, start_branch_name: @start_branch, dry_run: @dry_run,

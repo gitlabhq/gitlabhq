@@ -6,13 +6,13 @@ class LabelNote < SyntheticNote
   attr_accessor :resource_parent
   attr_reader :events
 
-  def self.from_event(event, resource: nil, resource_parent: nil)
+  def self.from_event(event, resource:, resource_parent:)
     attrs = note_attributes('label', event, resource, resource_parent).merge(events: [event])
 
     LabelNote.new(attrs)
   end
 
-  def self.from_events(events, resource: nil, resource_parent: nil)
+  def self.from_events(events, resource:, resource_parent:)
     resource ||= events.first.issuable
 
     label_note = from_event(events.first, resource: resource, resource_parent: resource_parent)
@@ -32,8 +32,24 @@ class LabelNote < SyntheticNote
   end
 
   def note_html
-    @note_html ||= "<p dir=\"auto\">#{note_text(html: true)}</p>"
+    label_note_html = if Feature.enabled?(:render_label_notes_lazily, resource_parent)
+                        Banzai::Renderer.cacheless_render_field(
+                          self, :note,
+                          {
+                            group: group,
+                            project: project,
+                            pipeline: :label,
+                            only_path: true,
+                            label_url_method: label_url_method
+                          }
+                        )
+                      else
+                        note_text(html: true)
+                      end
+
+    "<p dir=\"auto\">#{label_note_html}</p>"
   end
+  strong_memoize_attr :note_html
 
   private
 
@@ -77,6 +93,12 @@ class LabelNote < SyntheticNote
     field = html ? :reference_html : :reference
 
     events.select { |e| e.action == action }.map(&field)
+  end
+
+  def label_url_method
+    return :project_merge_requests_url if noteable.is_a?(MergeRequest)
+
+    resource_parent.is_a?(Group) ? :group_work_items_url : :project_issues_url
   end
 end
 

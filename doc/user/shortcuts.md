@@ -51,17 +51,17 @@ Additionally, the following shortcuts are available when editing text in text
 fields (for example, comments, replies, issue descriptions, and merge request
 descriptions):
 
-| macOS shortcut | Windows shortcut | Description |
-|----------------|------------------|-------------|
-| <kbd>↑</kbd>   | <kbd>↑</kbd>     | Edit your last comment. You must be in a blank text field below a thread, and you must already have at least one comment in the thread. |
+| macOS shortcut                                       | Windows shortcut                                     | Description |
+|------------------------------------------------------|------------------------------------------------------|-------------|
+| <kbd>↑</kbd>                                         | <kbd>↑</kbd>                                         | Edit your last comment. You must be in a blank text field below a thread, and you must already have at least one comment in the thread. |
 | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>p</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>p</kbd> | Toggle Markdown preview when editing text in a text field that has **Write** and **Preview** tabs at the top. |
-| <kbd>Command</kbd> + <kbd>b</kbd>       | <kbd>Control</kbd> + <kbd>b</kbd> | Bold the selected text (surround it with `**`). |
-| <kbd>Command</kbd> + <kbd>i</kbd>       | <kbd>Control</kbd> + <kbd>i</kbd> | Italicize the selected text (surround it with `_`). |
+| <kbd>Command</kbd> + <kbd>b</kbd>                    | <kbd>Control</kbd> + <kbd>b</kbd>                    | Bold the selected text (surround it with `**`). |
+| <kbd>Command</kbd> + <kbd>i</kbd>                    | <kbd>Control</kbd> + <kbd>i</kbd>                    | Italicize the selected text (surround it with `_`). |
 | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>x</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>x</kbd> | Strike through the selected text (surround it with `~~`). |
-| <kbd>Command</kbd> + <kbd>k</kbd>       | <kbd>Control</kbd> + <kbd>k</kbd> | Add a link (surround the selected text with `[]()`). |
-| <kbd>Command</kbd> + <kbd>&#93;</kbd> | <kbd>Control</kbd> + <kbd>&#93;</kbd> |  Indent text. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351924) in GitLab 15.3. |
-| <kbd>Command</kbd> + <kbd>&#91;</kbd> | <kbd>Control</kbd> + <kbd>&#91;</kbd> |  Outdent text. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351924) in GitLab 15.3. |
-| <kbd>Command</kbd> + <kbd>Enter</kbd> | <kbd>Control</kbd> + <kbd>Enter</kbd> |  Submit or save changes |
+| <kbd>Command</kbd> + <kbd>k</kbd>                    | <kbd>Control</kbd> + <kbd>k</kbd>                    | Add a link (surround the selected text with `[]()`). |
+| <kbd>Command</kbd> + <kbd>[</kbd>                    | <kbd>Control</kbd> + <kbd>[</kbd>                    | Outdent text. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351924) in GitLab 15.3. |
+| <kbd>Command</kbd> + <kbd>]</kbd>                    | <kbd>Control</kbd> + <kbd>]</kbd>                    | Indent text. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351924) in GitLab 15.3. |
+| <kbd>Command</kbd> + <kbd>Enter</kbd>                | <kbd>Control</kbd> + <kbd>Enter</kbd>                | Submit or save changes |
 
 The shortcuts for editing in text fields are always enabled, even if other
 keyboard shortcuts are disabled.

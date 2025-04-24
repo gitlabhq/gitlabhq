@@ -68,7 +68,7 @@
           #application_setting_deactivate_dormant_users_period_error.form-text.gl-text-danger.gl-hidden
             = _('Please enter a value of 90 days or more')
           .form-text.gl-text-subtle
-            = _('Must be 90 days or more.')
+            = _('Must be 90 days or more. Applies only to users with sign-in history. Users with no sign-in history are automatically deactivated after 7 days.')
 
     .form-group
       = f.label :personal_access_token_prefix, _('Personal access token prefix'), class: 'label-light'

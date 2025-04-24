@@ -3,6 +3,7 @@
 module Glql
   class BaseController < GraphqlController
     before_action :check_rate_limit, only: [:execute]
+    before_action :set_namespace_context, only: [:execute]
 
     GlqlQueryLockedError = Class.new(StandardError)
 
@@ -38,6 +39,19 @@ module Glql
     end
 
     private
+
+    # When `set_current_context` in app/controllers/application_controller.rb calls
+    # `to_lazy_hash` on Gitlab::ApplicationContext, the meta fields (meta.project and
+    # meta.root_namespace) will be populated using @group or @project variables.
+    def set_namespace_context
+      @project ||= Project.find_by_full_path(permitted_params[:project]) if permitted_params[:project].present?
+      @group ||= Group.find_by_full_path(permitted_params[:group]) if permitted_params[:group].present?
+    end
+
+    # Overrides GraphqlController#permitted_params to permit project and group params
+    def permitted_standalone_query_params
+      params.permit(:query, :operationName, :remove_deprecated, :group, :project, variables: {})
+    end
 
     def logs
       super.map do |log|

@@ -222,7 +222,7 @@ To set the duration for which the jobs are considered as old and expired:
 
 After that time passes, the jobs are archived in the background and no longer able to be
 retried. Make it empty to never expire jobs. It has to be no less than 1 day,
-for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>.
+for example: `15 days`, `1 month`, `2 years`.
 
 For the value set for GitLab.com, see [Scheduled job archiving](../../user/gitlab_com/_index.md#cicd).
 
