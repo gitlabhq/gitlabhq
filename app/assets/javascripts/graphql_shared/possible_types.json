@@ -155,6 +155,7 @@
   "OrchestrationPolicy": [
     "ApprovalPolicy",
     "PipelineExecutionPolicy",
+    "PipelineExecutionSchedulePolicy",
     "ScanExecutionPolicy",
     "ScanResultPolicy",
     "VulnerabilityManagementPolicy"

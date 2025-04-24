@@ -13953,6 +13953,29 @@ The edge type for [`CiDedicatedHostedRunnerUsage`](#cidedicatedhostedrunnerusage
 | <a id="cidedicatedhostedrunnerusageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="cidedicatedhostedrunnerusageedgenode"></a>`node` | [`CiDedicatedHostedRunnerUsage`](#cidedicatedhostedrunnerusage) | The item at the end of the edge. |
 
+#### `CiDeletedRunnerConnection`
+
+The connection type for [`CiDeletedRunner`](#cideletedrunner).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cideletedrunnerconnectionedges"></a>`edges` | [`[CiDeletedRunnerEdge]`](#cideletedrunneredge) | A list of edges. |
+| <a id="cideletedrunnerconnectionnodes"></a>`nodes` | [`[CiDeletedRunner]`](#cideletedrunner) | A list of nodes. |
+| <a id="cideletedrunnerconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiDeletedRunnerEdge`
+
+The edge type for [`CiDeletedRunner`](#cideletedrunner).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cideletedrunneredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cideletedrunneredgenode"></a>`node` | [`CiDeletedRunner`](#cideletedrunner) | The item at the end of the edge. |
+
 #### `CiGroupConnection`
 
 The connection type for [`CiGroup`](#cigroup).
@@ -18087,6 +18110,29 @@ The edge type for [`PipelineExecutionPolicy`](#pipelineexecutionpolicy).
 | ---- | ---- | ----------- |
 | <a id="pipelineexecutionpolicyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="pipelineexecutionpolicyedgenode"></a>`node` | [`PipelineExecutionPolicy`](#pipelineexecutionpolicy) | The item at the end of the edge. |
+
+#### `PipelineExecutionSchedulePolicyConnection`
+
+The connection type for [`PipelineExecutionSchedulePolicy`](#pipelineexecutionschedulepolicy).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineexecutionschedulepolicyconnectionedges"></a>`edges` | [`[PipelineExecutionSchedulePolicyEdge]`](#pipelineexecutionschedulepolicyedge) | A list of edges. |
+| <a id="pipelineexecutionschedulepolicyconnectionnodes"></a>`nodes` | [`[PipelineExecutionSchedulePolicy]`](#pipelineexecutionschedulepolicy) | A list of nodes. |
+| <a id="pipelineexecutionschedulepolicyconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PipelineExecutionSchedulePolicyEdge`
+
+The edge type for [`PipelineExecutionSchedulePolicy`](#pipelineexecutionschedulepolicy).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineexecutionschedulepolicyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="pipelineexecutionschedulepolicyedgenode"></a>`node` | [`PipelineExecutionSchedulePolicy`](#pipelineexecutionschedulepolicy) | The item at the end of the edge. |
 
 #### `PipelineManualVariableConnection`
 
@@ -22535,6 +22581,7 @@ Filter options available for GitLab Dedicated runner usage data.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="cidedicatedhostedrunnerfiltersdeletedrunners"></a>`deletedRunners` | [`CiDeletedRunnerConnection`](#cideletedrunnerconnection) | List of runner IDs from usage data without associated runner records. (see [Connections](#connections)) |
 | <a id="cidedicatedhostedrunnerfiltersrunners"></a>`runners` | [`CiRunnerConnection`](#cirunnerconnection) | List of unique runners with usage data. (see [Connections](#connections)) |
 | <a id="cidedicatedhostedrunnerfiltersyears"></a>`years` | [`[Int!]`](#int) | List of years with available usage data. |
 
@@ -22551,6 +22598,16 @@ Compute usage data for hosted runners on GitLab Dedicated.
 | <a id="cidedicatedhostedrunnerusagecomputeminutes"></a>`computeMinutes` | [`Int!`](#int) | Total compute minutes used across all namespaces. |
 | <a id="cidedicatedhostedrunnerusagedurationseconds"></a>`durationSeconds` | [`Int!`](#int) | Total duration in seconds of runner usage. |
 | <a id="cidedicatedhostedrunnerusagerootnamespace"></a>`rootNamespace` | [`Namespace`](#namespace) | Namespace associated with the usage data. Null for instance aggregate data. |
+
+### `CiDeletedRunner`
+
+Reference to a deleted runner.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cideletedrunnerid"></a>`id` | [`CiRunnerID!`](#cirunnerid) | Global ID of the deleted runner. |
 
 ### `CiDurationStatistics`
 
@@ -23741,6 +23798,25 @@ Represents a ComplianceFramework associated with a Project.
 | <a id="complianceframeworkscanexecutionpolicies"></a>`scanExecutionPolicies` | [`ScanExecutionPolicyConnection`](#scanexecutionpolicyconnection) | Scan Execution Policies of the compliance framework. (see [Connections](#connections)) |
 | <a id="complianceframeworkscanresultpolicies"></a>`scanResultPolicies` | [`ScanResultPolicyConnection`](#scanresultpolicyconnection) | Scan Result Policies of the compliance framework. (see [Connections](#connections)) |
 | <a id="complianceframeworkvulnerabilitymanagementpolicies"></a>`vulnerabilityManagementPolicies` | [`VulnerabilityManagementPolicyConnection`](#vulnerabilitymanagementpolicyconnection) | Vulnerability Management Policies of the compliance framework. (see [Connections](#connections)) |
+
+#### Fields with arguments
+
+##### `ComplianceFramework.pipelineExecutionSchedulePolicies`
+
+Pipeline Execution Schedule Policies of the compliance framework.
+
+Returns [`PipelineExecutionSchedulePolicyConnection`](#pipelineexecutionschedulepolicyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="complianceframeworkpipelineexecutionschedulepoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
+| <a id="complianceframeworkpipelineexecutionschedulepoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
 ### `ComplianceRequirement`
 
@@ -28433,6 +28509,23 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="grouppipelineexecutionpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="grouppipelineexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
+##### `Group.pipelineExecutionSchedulePolicies`
+
+Pipeline Execution Schedule Policies of the namespace.
+
+Returns [`PipelineExecutionSchedulePolicyConnection`](#pipelineexecutionschedulepolicyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="grouppipelineexecutionschedulepoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
+| <a id="grouppipelineexecutionschedulepoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
+
 ##### `Group.projectComplianceRequirementsStatus`
 
 Compliance standards adherence for the projects in a group and its subgroups.
@@ -32950,6 +33043,23 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespacepipelineexecutionpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="namespacepipelineexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
+##### `Namespace.pipelineExecutionSchedulePolicies`
+
+Pipeline Execution Schedule Policies of the namespace.
+
+Returns [`PipelineExecutionSchedulePolicyConnection`](#pipelineexecutionschedulepolicyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespacepipelineexecutionschedulepoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
+| <a id="namespacepipelineexecutionschedulepoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
+
 ##### `Namespace.projects`
 
 Projects within this namespace. Returns projects from the parent group if namespace is project.
@@ -34276,6 +34386,25 @@ Represents the pipeline execution policy.
 | <a id="pipelineexecutionpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
 | <a id="pipelineexecutionpolicywarnings"></a>`warnings` | [`[String!]!`](#string) | Warnings associated with the policy. |
 | <a id="pipelineexecutionpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
+
+### `PipelineExecutionSchedulePolicy`
+
+Represents the pipeline execution schedule policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineexecutionschedulepolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
+| <a id="pipelineexecutionschedulepolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
+| <a id="pipelineexecutionschedulepolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the policy is enabled. |
+| <a id="pipelineexecutionschedulepolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
+| <a id="pipelineexecutionschedulepolicypolicyblobfilepath"></a>`policyBlobFilePath` | [`String!`](#string) | Path to the policy file in the project. |
+| <a id="pipelineexecutionschedulepolicypolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
+| <a id="pipelineexecutionschedulepolicysource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
+| <a id="pipelineexecutionschedulepolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
+| <a id="pipelineexecutionschedulepolicywarnings"></a>`warnings` | [`[String!]!`](#string) | Warnings associated with the policy. |
+| <a id="pipelineexecutionschedulepolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
 
 ### `PipelineManualVariable`
 
@@ -36234,6 +36363,23 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="projectpipelineexecutionpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="projectpipelineexecutionpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
+
+##### `Project.pipelineExecutionSchedulePolicies`
+
+Pipeline Execution Schedule Policies of the namespace.
+
+Returns [`PipelineExecutionSchedulePolicyConnection`](#pipelineexecutionschedulepolicyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectpipelineexecutionschedulepoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
+| <a id="projectpipelineexecutionschedulepoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
 ##### `Project.pipelineSchedules`
 
@@ -47593,6 +47739,7 @@ Implementations:
 
 - [`ApprovalPolicy`](#approvalpolicy)
 - [`PipelineExecutionPolicy`](#pipelineexecutionpolicy)
+- [`PipelineExecutionSchedulePolicy`](#pipelineexecutionschedulepolicy)
 - [`ScanExecutionPolicy`](#scanexecutionpolicy)
 - [`ScanResultPolicy`](#scanresultpolicy)
 - [`VulnerabilityManagementPolicy`](#vulnerabilitymanagementpolicy)

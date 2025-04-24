@@ -1955,8 +1955,6 @@ class Project < ApplicationRecord
   # Returns a list of integration names that should be disabled at the project-level.
   # Globally disabled integrations should go in Integration.disabled_integration_names.
   def disabled_integrations
-    return [] if Rails.env.development?
-
     %w[zentao]
   end
 

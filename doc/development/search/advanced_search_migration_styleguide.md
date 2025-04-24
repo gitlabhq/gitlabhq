@@ -331,6 +331,31 @@ include_examples 'migration removes field' do
 end
 ```
 
+If the mapping contains more than a `type`, omit the `type` variable and define `mapping` instead:
+
+```ruby
+include_examples 'migration removes field' do
+  let(:expected_throttle_delay) { 1.minute }
+  let(:objects) { create_list(:work_item, 6) }
+  let(:index_name) { ::Search::Elastic::Types::WorkItem.index_name }
+  let(:field) { :embedding_0 }
+  let(:mapping) { { type: 'dense_vector', dims: 768, index: true, similarity: 'cosine' } }
+end
+```
+
+If you get an `expecting token of type [VALUE_NUMBER] but found [FIELD_NAME]` error, define the `value` variable:
+
+```ruby
+include_examples 'migration removes field' do
+  let(:expected_throttle_delay) { 1.minute }
+  let(:objects) { create_list(:work_item, 6) }
+  let(:index_name) { ::Search::Elastic::Types::WorkItem.index_name }
+  let(:field) { :embedding_0 }
+  let(:mapping) { { type: 'dense_vector', dims: 768, index: true, similarity: 'cosine' } }
+  let(:value) { Array.new(768, 1) }
+end
+```
+
 #### `Search::Elastic::MigrationObsolete`
 
 Marks a migration as obsolete when it's no longer required.

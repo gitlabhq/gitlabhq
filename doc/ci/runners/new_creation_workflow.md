@@ -83,7 +83,7 @@ Existing runners will continue to work as usual after upgrading to GitLab 17.0. 
 
 The [GitLab Runner Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html) generates new runner pods every time a job is executed.
 For these runners, [enable legacy runner registration](#using-registration-tokens-after-gitlab-170) to use registration tokens.
-In GitLab 18.0 and later, you must migrate to the [new runner registration workflow](#the-new-runner-registration-workflow).
+In GitLab 20.0 and later, you must migrate to the [new runner registration workflow](#the-new-runner-registration-workflow).
 
 ## Changes to the `gitlab-runner register` command syntax
 
@@ -168,7 +168,7 @@ Several runner configuration options cannot be set during runner registration. T
 The following configuration options are no longer supported in [`values.yaml`](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/main/values.yaml):
 
 ```yaml
-## All these fields are DEPRECATED and the runner WILL FAIL TO START with GitLab Runner 18.0 and later if you specify them.
+## All these fields are DEPRECATED and the runner WILL FAIL TO START with GitLab Runner 20.0 and later if you specify them.
 ## If a runner authentication token is specified in runnerRegistrationToken, the registration will succeed, however the
 ## other values will be ignored.
 runnerRegistrationToken: ""

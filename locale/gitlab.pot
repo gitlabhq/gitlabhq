@@ -27299,6 +27299,9 @@ msgstr ""
 msgid "Geo|Healthy"
 msgstr ""
 
+msgid "Geo|Help us improve Geo for distributed teams and disaster recovery. We aim to make it simpler to use and operate."
+msgstr ""
+
 msgid "Geo|If enabled, GitLab will handle Object Storage replication using Geo."
 msgstr ""
 
@@ -54530,9 +54533,6 @@ msgstr ""
 msgid "SecurityOrchestration|Create new framework label"
 msgstr ""
 
-msgid "SecurityOrchestration|Create policy"
-msgstr ""
-
 msgid "SecurityOrchestration|Create security policy"
 msgstr ""
 
@@ -54965,9 +54965,6 @@ msgid "SecurityOrchestration|Run %{scannerStart}%{scanner}%{scannerEnd} with the
 msgstr ""
 
 msgid "SecurityOrchestration|Run a %{scannerStart}%{scanner}%{scannerEnd} scan with the following options:"
-msgstr ""
-
-msgid "SecurityOrchestration|Save changes"
 msgstr ""
 
 msgid "SecurityOrchestration|Scan actions exceed the limit of %{maxScanExecutionPolicyActions} actions per policy."

@@ -23,30 +23,32 @@ title: Custom roles
 
 {{< /history >}}
 
-Custom roles allow an organization to create user roles with the precise privileges and permissions required for that organization's needs.
+Custom roles allow you to create roles with only the specific [custom permissions](abilities.md)
+required by your organization. Each custom role is based on an existing default role. For example,
+you might create a custom role based on the Guest role, but also include permission to view code
+in a project repository.
+
+When you assign a custom role to a user:
+
+- They gain the same permissions for any subgroups or projects within the group they belong to. For more information, see [membership types](../../user/project/members/_index.md#membership-types).
+- They [use a seat](../../subscriptions/gitlab_com/_index.md#how-seat-usage-is-determined) or become a [billable user](../../subscriptions/self_managed/_index.md#billable-users).
+  - Custom Guest roles that include only the `read_code` permission do not use a seat.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of the custom roles feature, see [[Demo] Ultimate Guest can view code on private repositories via custom role](https://www.youtube.com/watch?v=46cp_-Rtxps).
-
-{{< alert type="note" >}}
-
-Most custom roles are considered [billable users that use a seat](#billing-and-seat-usage). When you add a user to your group with a custom role and you are about to incur additional charges for having more seats than are included in your subscription, a warning is displayed.
-
-{{< /alert >}}
-
-## Available permissions
-
-For more information on available permissions, see [custom permissions](abilities.md).
+<!-- Video published on 2023-02-13 -->
 
 {{< alert type="warning" >}}
 
-Depending on the permissions added to a lower base role such as Guest, a user with a custom role might be able to perform actions that are usually restricted to the Maintainer role or higher. For example, if a custom role is Guest plus a permissions to manage CI/CD variables, a user with this role can manage CI/CD variables added by other Maintainers or Owners for that group or project.
+Custom roles can allow users to perform actions usually restricted to the Maintainer role or higher.
+For example, if a custom role includes permission to manage CI/CD variables, users with the role
+could also manage CI/CD variables added by other Maintainers or Owners for the group or project.
 
 {{< /alert >}}
 
 ## Create a custom role
 
-You create a custom role by adding [permissions](#available-permissions) to a base role.
+You create a custom role by adding [permissions](abilities.md) to a base role.
 You can add multiple permissions to that custom role. For example, you can create a custom role
 with the permission to do all of the following:
 
@@ -255,35 +257,6 @@ curl --request PUT --header "Content-Type: application/json" --header "Authoriza
 curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": null, "access_level": 10}' "https://gitlab.example.com/api/v4/groups/<group_id>/members/<user_id>"
 ```
 
-## Inheritance
-
-If a user belongs to a group, they are a direct member of the group
-and an [inherited member](../project/members/_index.md#membership-types)
-of any subgroups or projects. If a user is assigned a custom role
-by the top-level group, the permissions of the role are also inherited by subgroups
-and projects.
-
-For example, assume the following structure exists:
-
-- Group A
-  - Subgroup B
-    - Project 1
-
-If a custom role with the Developer role plus the `Manage CI/CD variables` permission is assigned to Group A,
-the user also has `Manage CI/CD variables` permission in Subgroup B and Project 1.
-
-## Billing and seat usage
-
-When you assign a custom role to a user with the Guest role, that user has
-access to elevated permissions over the base role, and therefore:
-
-- Is considered a [billable user](../../subscriptions/self_managed/_index.md#billable-users) on GitLab Self-Managed.
-- [Uses a seat](../../subscriptions/gitlab_com/_index.md#how-seat-usage-is-determined) on GitLab.com.
-
-This does not apply when the user's custom role only has the `read_code` permission
-enabled. Guest users with that specific permission only are not considered billable users
-and do not use a seat.
-
 ## Assign a custom role to an invited group
 
 {{< history >}}
@@ -335,12 +308,13 @@ You can assign custom roles and permissions to the following:
 | Groups       | 17.7          | Partially supported. Further support for group assignment in projects is proposed in [Issue 468329](https://gitlab.com/gitlab-org/gitlab/-/issues/468329)  |
 | Tokens       | Not supported | [Issue 434354](https://gitlab.com/gitlab-org/gitlab/-/issues/434354) |
 
-## Supported group links
+## Sync users to custom roles
 
-You can sync users to custom roles with following authentication providers:
+If you use tools like SAML or LDAP to manage your group membership, you can automatically sync your
+users to custom roles. For more information, see:
 
-- See [Configure SAML Group Links](../group/saml_sso/group_sync.md#configure-saml-group-links).
-- See [Manage group memberships via LDAP](../group/access_and_permissions.md#manage-group-memberships-with-ldap).
+- [Configure SAML Group Links](../group/saml_sso/group_sync.md#configure-saml-group-links).
+- [Manage group memberships via LDAP](../group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
 ## Custom admin roles
 

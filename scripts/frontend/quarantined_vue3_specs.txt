@@ -2,7 +2,6 @@
 # Do not add new specs to this file.
 ee/spec/frontend/admin/signup_restrictions/components/signup_form_spec.js
 ee/spec/frontend/admin/subscriptions/show/components/subscription_breakdown_spec.js
-ee/spec/frontend/ai/settings/components/duo_experiment_beta_features_form_spec.js
 ee/spec/frontend/analytics/analytics_dashboards/components/analytics_dashboards_breadcrumbs_spec.js
 ee/spec/frontend/analytics/analytics_dashboards/components/analytics_data_explorer_spec.js
 ee/spec/frontend/analytics/analytics_dashboards/components/list/feature_list_item_spec.js

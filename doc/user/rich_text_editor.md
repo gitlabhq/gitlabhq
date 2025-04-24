@@ -78,7 +78,7 @@ Supported input rules:
 | `~~strike~~`                                              | Strikethrough        |
 | `[link](https://example.com)`                             | Hyperlink            |
 | `code`                                                    | Inline code          |
-| <code>&#96;&#96;&#96;rb</code> + <kbd>Enter</kbd> <br> <code>&#96;&#96;&#96;js</code> + <kbd>Enter</kbd> | Code block           |
+| ` ```rb ` + <kbd>Enter</kbd> <br> ` ```js ` + <kbd>Enter</kbd> | Code block      |
 | `* List item`, or<br> `- List item`, or<br> `+ List item` | Unordered list       |
 | `1. List item`                                            | Numbered list        |
 | `<details>`                                               | Collapsible section  |

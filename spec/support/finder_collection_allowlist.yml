@@ -63,6 +63,7 @@
 - Security::ScanExecutionPoliciesFinder
 - Security::ScanResultPoliciesFinder
 - Security::PipelineExecutionPoliciesFinder
+- Security::PipelineExecutionSchedulePoliciesFinder
 - Security::VulnerabilityManagementPoliciesFinder
 - Security::SecurityPoliciesFinder
 - Security::SecurityProjectGroupFinder
