@@ -163,8 +163,13 @@ class Issue < ApplicationRecord
 
   scope :not_authored_by, ->(user) { where.not(author_id: user) }
 
+  # N.B. The start_date and due_date columns are preserved on the issues table to enable performant sorting by these
+  # dates, since we would otherwise need to perform a join for the sort. These are synced via the DB trigger
+  # sync_issues_dates_with_work_item_dates_sources() from the work_item_dates_sources table
   scope :order_due_date_asc, -> { reorder(arel_table[:due_date].asc.nulls_last) }
   scope :order_due_date_desc, -> { reorder(arel_table[:due_date].desc.nulls_last) }
+  scope :order_start_date_asc, -> { reorder(arel_table[:start_date].asc.nulls_last) }
+  scope :order_start_date_desc, -> { reorder(arel_table[:start_date].desc.nulls_last) }
   scope :order_closest_future_date, -> { reorder(Arel.sql("CASE WHEN issues.due_date >= CURRENT_DATE THEN 0 ELSE 1 END ASC, ABS(CURRENT_DATE - issues.due_date) ASC")) }
   scope :order_created_at_desc, -> { reorder(created_at: :desc) }
   scope :order_severity_asc, -> do
@@ -189,8 +194,6 @@ class Issue < ApplicationRecord
   scope :order_escalation_status_desc, -> { includes(:incident_management_issuable_escalation_status).order(IncidentManagement::IssuableEscalationStatus.arel_table[:status].desc.nulls_last).references(:incident_management_issuable_escalation_status) }
   scope :order_closed_at_asc, -> { reorder(arel_table[:closed_at].asc.nulls_last) }
   scope :order_closed_at_desc, -> { reorder(arel_table[:closed_at].desc.nulls_last) }
-  scope :order_start_date_asc, -> { left_joins(:dates_source).order(WorkItems::DatesSource.arel_table[:start_date].asc.nulls_last) }
-  scope :order_start_date_desc, -> { left_joins(:dates_source).order(WorkItems::DatesSource.arel_table[:start_date].desc.nulls_last) }
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
   scope :with_web_entity_associations, -> do
@@ -449,6 +452,8 @@ class Issue < ApplicationRecord
     when 'closest_future_date', 'closest_future_date_asc' then order_closest_future_date
     when 'due_date', 'due_date_asc'                       then order_due_date_asc.with_order_id_desc
     when 'due_date_desc'                                  then order_due_date_desc.with_order_id_desc
+    when 'start_date', 'start_date_asc'                   then order_start_date_asc.with_order_id_desc
+    when 'start_date_desc'                                then order_start_date_desc.with_order_id_desc
     when 'relative_position', 'relative_position_asc'     then order_by_relative_position
     when 'severity_asc'                                   then order_severity_asc
     when 'severity_desc'                                  then order_severity_desc
@@ -456,8 +461,6 @@ class Issue < ApplicationRecord
     when 'escalation_status_desc'                         then order_escalation_status_desc
     when 'closed_at', 'closed_at_asc'                     then order_closed_at_asc
     when 'closed_at_desc'                                 then order_closed_at_desc
-    when 'start_date', 'start_date_asc'                   then order_start_date_asc
-    when 'start_date_desc'                                then order_start_date_desc
     else
       super
     end

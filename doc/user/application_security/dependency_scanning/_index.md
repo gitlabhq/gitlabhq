@@ -51,10 +51,10 @@ table.no-vertical-table-lines tr {
 
 {{< alert type="warning" >}}
 
-The Dependency Scanning feature based on the Gemnasium analyzer is deprecated in GitLab 17.9 and reaches
-end of support in GitLab 18.0. It is replaced with [Dependency Scanning using SBOM](dependency_scanning_sbom/_index.md)
+The Dependency Scanning feature based on the Gemnasium analyzer is deprecated in GitLab 17.9 and is planned for removal in
+GitLab 19.0. It is being replaced with [Dependency Scanning using SBOM](dependency_scanning_sbom/_index.md)
 and the [new Dependency Scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning).
-For more information, see [issue 501038](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
+For more information, see [epic 15961](https://gitlab.com/groups/gitlab-org/-/epics/15961).
 
 {{< /alert >}}
 

@@ -36,24 +36,8 @@ RSpec.describe Gitlab::Ci::Status::Build::Common, feature_category: :continuous_
   end
 
   describe '#details_path' do
-    context 'when user has access to read build' do
-      before do
-        project.add_developer(user)
-      end
-
-      it 'links to the build details page' do
-        expect(subject.details_path).to include "jobs/#{build.id}"
-      end
-    end
-
-    context 'when user has no access to read build' do
-      before do
-        project.update!(public_builds: false)
-      end
-
-      it 'is nil' do
-        expect(subject.details_path).to be_nil
-      end
+    it 'links to the build details page' do
+      expect(subject.details_path).to include "jobs/#{build.id}"
     end
   end
 

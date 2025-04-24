@@ -5,6 +5,7 @@ require_relative '../suggestor'
 module Tooling
   module Danger
     module RemoteDevelopment
+      # noinspection MissingYardReturnTag -- We don't care about annotating this, we will be deleting it eventually
       module DesiredConfigGeneratorSuggestor
         include ::Tooling::Danger::Suggestor
 

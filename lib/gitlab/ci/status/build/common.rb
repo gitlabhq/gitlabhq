@@ -18,8 +18,6 @@ module Gitlab
           end
 
           def details_path
-            return unless can?(user, :read_build, subject)
-
             project_job_path(subject.project, subject)
           end
         end
