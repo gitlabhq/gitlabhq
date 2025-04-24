@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlLink, GlPopover } from '@gitlab/ui';
-
+import { uniqueId } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
@@ -24,6 +24,7 @@ import {
 import { findHierarchyWidgetDefinition, isReference, newWorkItemId } from '../utils';
 
 export default {
+  linkId: uniqueId('work-item-parent-link-'),
   name: 'WorkItemParent',
   components: {
     GlLink,
@@ -103,9 +104,6 @@ export default {
     },
     workItems() {
       return this.availableWorkItems?.map(({ id, title }) => ({ text: title, value: id })) || [];
-    },
-    parentFullPath() {
-      return this.parent?.namespace.fullPath;
     },
     parentWebUrl() {
       return this.parent?.webUrl;
@@ -323,17 +321,18 @@ export default {
     <template #readonly>
       <template v-if="localSelectedItem">
         <gl-link
-          ref="link"
+          :id="$options.linkId"
           data-testid="work-item-parent-link"
           class="gl-inline-block gl-max-w-full gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-align-top gl-text-default"
           :href="parentWebUrl"
           >{{ listboxText }}</gl-link
         >
         <issue-popover
+          v-if="parent"
           :cached-title="parent.title"
           :iid="parent.iid"
-          :namespace-path="parentFullPath"
-          :target="() => $refs.link.$el"
+          :namespace-path="parent.namespace.fullPath"
+          :target="$options.linkId"
         />
       </template>
     </template>

@@ -513,6 +513,17 @@ For example, to scan a Rust application, you must:
            # include any other file extensions you need to scan from the semgrep-sast template: Jobs/SAST.gitlab-ci.yml
    ```
 
+### JDK21 support for SpotBugs analyzer
+
+Version `6` of the SpotBugs analyzer adds support for JDK21 and removes JDK11. The default version remains at `5` as discussed in [issue 517169](https://gitlab.com/gitlab-org/gitlab/-/issues/517169).
+To use version `6`, manually pin the version by following the instructions [Pinning to minor image version](#pinning-to-minor-image-version).
+
+```yaml
+spotbugs-sast:
+  variables:
+    SAST_ANALYZER_IMAGE_TAG: "6"
+```
+
 ### Using pre-compilation with SpotBugs analyzer
 
 The SpotBugs-based analyzer scans compiled bytecode for `Groovy` projects. By default, it automatically attempts to fetch dependencies and compile your code so it can be scanned.

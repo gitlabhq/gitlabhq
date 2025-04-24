@@ -21,4 +21,26 @@ describe('Highlight.js plugin for wrapping _emitter nodes', () => {
     wrapChildNodes(hljsResultMock);
     expect(hljsResultMock.value).toBe(outputValue);
   });
+
+  it('should not create empty spans when handling newlines', () => {
+    const hljsResultMock = {
+      _emitter: {
+        rootNode: {
+          children: [
+            {
+              scope: 'string',
+              children: ['Line 1\\', '\n', '    Line 2\\'],
+            },
+          ],
+        },
+      },
+    };
+
+    const expectedOutput =
+      '<span class="hljs-string"><span class="hljs-string">Line 1\\</span>\n' +
+      '<span class="hljs-string">    Line 2\\</span></span>';
+
+    wrapChildNodes(hljsResultMock);
+    expect(hljsResultMock.value).toBe(expectedOutput);
+  });
 });

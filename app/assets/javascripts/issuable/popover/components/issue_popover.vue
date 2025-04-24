@@ -56,6 +56,7 @@ export default {
   },
   data() {
     return {
+      shouldFetch: false,
       workItem: {},
     };
   },
@@ -69,6 +70,9 @@ export default {
         };
       },
       update: (data) => data.namespace?.workItem || {},
+      skip() {
+        return !this.shouldFetch;
+      },
     },
   },
   computed: {
@@ -103,7 +107,13 @@ export default {
 </script>
 
 <template>
-  <gl-popover :target="target" boundary="viewport" placement="top" :show="show">
+  <gl-popover
+    :target="target"
+    boundary="viewport"
+    placement="top"
+    :show="show"
+    @show="shouldFetch = true"
+  >
     <gl-skeleton-loader v-if="$apollo.queries.workItem.loading" :width="150" />
     <template v-else>
       <div class="gl-flex gl-items-center gl-gap-2">

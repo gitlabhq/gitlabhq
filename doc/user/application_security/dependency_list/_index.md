@@ -193,13 +193,9 @@ To download the dependency list:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Secure > Dependency list**.
-1. Select **Export**.
+1. Select **Export** and then select the file format.
 
-{{< alert type="note" >}}
-
-CycloneDX export is available on the project dependency list.
-
-{{< /alert >}}
+When the exported details are available, you'll receive an email. To download the exported details, select the link in the email.
 
 ## Troubleshooting
 

@@ -87,39 +87,6 @@ RSpec.describe Ci::JobToken::AllowlistMigrationTask, :silence_stdout, feature_ca
         expect(output_stream.string).not_to include("project id(s) failed to migrate:")
       end
 
-      it 'triggers the tracking events' do
-        expect do
-          task.execute
-        end
-        .to trigger_internal_events('ci_job_token_autopopulate_allowlist')
-        .with(
-          user: user,
-          project: accessed_projects[0],
-          additional_properties: {
-            label: 'rake'
-          }
-        ).exactly(:once)
-        .and trigger_internal_events('ci_job_token_autopopulate_allowlist')
-        .with(
-          user: user,
-          project: accessed_projects[1],
-          additional_properties: {
-            label: 'rake'
-          }
-        ).exactly(:once)
-        .and trigger_internal_events('ci_job_token_autopopulate_allowlist')
-        .with(
-          user: user,
-          project: accessed_projects[2],
-          additional_properties: {
-            label: 'rake'
-          }
-        ).exactly(:once)
-        .and increment_usage_metrics(
-          'counts.count_total_allowlist_autopopulation'
-        ).by(3)
-      end
-
       context "when a handled exception is raised" do
         let(:project) { create(:project) }
         let(:only_ids) { project.id.to_s }

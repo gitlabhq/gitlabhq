@@ -187,6 +187,7 @@ describe('WorkItemParent component', () => {
       createComponent({ parent: mockParentWidgetResponse });
 
       expect(findIssuePopover().exists()).toBe(true);
+      expect(findIssuePopover().props('target')).toBe(findLink().props('id'));
     });
 
     it('does not show ancestor not available message', () => {
