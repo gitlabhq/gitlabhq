@@ -2,6 +2,8 @@
 
 module ServiceDesk
   class CustomEmailCredential < ApplicationRecord
+    include Gitlab::EncryptedAttribute
+
     # Used to explicitly set the SMTP AUTH method.
     # If nil Net::SMTP will choose one of methods listed by the SMTP server.
     enum smtp_authentication: {
@@ -13,13 +15,13 @@ module ServiceDesk
     attr_encrypted :smtp_username,
       mode: :per_attribute_iv,
       algorithm: 'aes-256-gcm',
-      key: Settings.attr_encrypted_db_key_base_32,
+      key: :db_key_base_32,
       encode: false,
       encode_iv: false
     attr_encrypted :smtp_password,
       mode: :per_attribute_iv,
       algorithm: 'aes-256-gcm',
-      key: Settings.attr_encrypted_db_key_base_32,
+      key: :db_key_base_32,
       encode: false,
       encode_iv: false
 

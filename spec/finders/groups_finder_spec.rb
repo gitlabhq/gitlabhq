@@ -487,6 +487,32 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
       end
     end
 
+    context 'with active' do
+      let_it_be(:active_group) { create(:group, :public) }
+      let_it_be(:marked_for_deletion_group) { create(:group_with_deletion_schedule, :public) }
+      let_it_be(:archived_group) do
+        create(:group, :public, namespace_settings: create(:namespace_settings, archived: true))
+      end
+
+      subject { described_class.new(nil, params).execute.to_a }
+
+      context 'when true' do
+        let(:params) { { active: true } }
+
+        it 'returns active projects only' do
+          is_expected.to contain_exactly(active_group)
+        end
+      end
+
+      context 'when false' do
+        let(:params) { { active: false } }
+
+        it 'returns inactive projects only' do
+          is_expected.to contain_exactly(archived_group, marked_for_deletion_group)
+        end
+      end
+    end
+
     describe 'group sorting' do
       let_it_be(:all_groups) { create_list(:group, 3, :public) }
 

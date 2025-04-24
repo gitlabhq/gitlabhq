@@ -2,6 +2,7 @@
 
 class SlackIntegration < ApplicationRecord
   include EachBatch
+  include Gitlab::EncryptedAttribute
 
   ALL_FEATURES = %i[commands notifications].freeze
 
@@ -21,7 +22,7 @@ class SlackIntegration < ApplicationRecord
 
   attr_encrypted :bot_access_token,
     mode: :per_attribute_iv,
-    key: Settings.attr_encrypted_db_key_base_32,
+    key: :db_key_base_32,
     algorithm: 'aes-256-gcm',
     encode: false,
     encode_iv: false

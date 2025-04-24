@@ -20,7 +20,6 @@ RSpec.describe IdeController, feature_category: :web_ide do
   let(:user) { creator }
 
   before do
-    stub_feature_flags(vscode_web_ide: true)
     sign_in(user)
   end
 
@@ -147,36 +146,10 @@ RSpec.describe IdeController, feature_category: :web_ide do
         end
       end
 
-      describe 'legacy Web IDE' do
-        before do
-          stub_feature_flags(vscode_web_ide: false)
-        end
+      it 'uses fullscreen layout' do
+        subject
 
-        it 'uses application layout' do
-          subject
-
-          expect(response).to render_template('layouts/application')
-        end
-
-        it 'does not create oauth application' do
-          expect(Doorkeeper::Application).not_to receive(:new)
-
-          subject
-
-          expect(web_ide_oauth_application).to be_nil
-        end
-      end
-
-      describe 'vscode IDE' do
-        before do
-          stub_feature_flags(vscode_web_ide: true)
-        end
-
-        it 'uses fullscreen layout' do
-          subject
-
-          expect(response).to render_template('layouts/fullscreen')
-        end
+        expect(response).to render_template('layouts/fullscreen')
       end
 
       it 'ensures web_ide_oauth_application' do
@@ -241,14 +214,6 @@ RSpec.describe IdeController, feature_category: :web_ide do
         oauth_redirect
 
         expect(response).to have_gitlab_http_status(:ok)
-      end
-
-      it 'with vscode_web_ide flag off, returns not_found' do
-        stub_feature_flags(vscode_web_ide: false)
-
-        oauth_redirect
-
-        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

@@ -311,6 +311,7 @@ Parameters:
 | `top_level_only`         | boolean           | no       | Limit to top-level groups, excluding all subgroups |
 | `repository_storage`     | string            | no       | Filter by repository storage used by the group _(administrators only)_. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419643) in GitLab 16.3. Premium and Ultimate only. |
 | `marked_for_deletion_on` | date              | no       | Filter by date when group was marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429315) in GitLab 17.1. Premium and Ultimate only. |
+| `active`                 | boolean           | no       | Limit by groups that are not archived and not marked for deletion. |
 
 ```plaintext
 GET /groups
@@ -929,6 +930,7 @@ Parameters:
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
 | `all_available`          | boolean           | no       | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Defaults to `false` for users, `true` for administrators. Unauthenticated requests always return all public groups. The `owned` and `min_access_level` attributes take precedence. |
+| `active`                 | boolean           | no       | Limit by groups that are not archived and not marked for deletion. |
 
 ```plaintext
 GET /groups/:id/subgroups
@@ -1006,6 +1008,7 @@ Parameters:
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
+| `active`                 | boolean           | no       | Limit by groups that are not archived and not marked for deletion. |
 
 ```plaintext
 GET /groups/:id/descendant_groups

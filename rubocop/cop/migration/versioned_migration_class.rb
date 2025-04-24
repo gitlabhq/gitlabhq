@@ -8,8 +8,8 @@ module RuboCop
       class VersionedMigrationClass < RuboCop::Cop::Base
         include MigrationHelpers
 
-        ENFORCED_SINCE = 2023_11_01_02_15_00
-        CURRENT_MIGRATION_VERSION = 2.2 # Should be the same value as Gitlab::Database::Migration.current_version
+        ENFORCED_SINCE = 2025_04_27_00_00_00
+        CURRENT_MIGRATION_VERSION = 2.3 # Should be the same value as Gitlab::Database::Migration.current_version
         DOC_LINK = "https://docs.gitlab.com/ee/development/migration_style_guide.html#migration-helpers-and-versioning"
 
         MSG_INHERIT = "Don't inherit from ActiveRecord::Migration or old versions of Gitlab::Database::Migration. " \

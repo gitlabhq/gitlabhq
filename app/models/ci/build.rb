@@ -165,7 +165,7 @@ module Ci
       preload(
         :job_artifacts_archive, :ci_stage, :job_artifacts, :runner, :tags, :runner_manager, :metadata,
         pipeline: :project,
-        user: [:user_preference, :user_detail, :followees]
+        user: [:user_preference, :user_detail, :followees, :followers]
       )
     end
 

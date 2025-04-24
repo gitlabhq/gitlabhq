@@ -79,6 +79,10 @@ module Gitlab
         include Gitlab::Database::Migrations::MilestoneMixin
       end
 
+      class V2_3 < V2_2
+        include Gitlab::Database::MigrationHelpers::RequireDisableDdlTransactionForMultipleLocks
+      end
+
       def self.[](version)
         version = version.to_s
         name = "V#{version.tr('.', '_')}"
@@ -89,7 +93,7 @@ module Gitlab
 
       # The current version to be used in new migrations
       def self.current_version
-        2.2
+        2.3
       end
     end
   end

@@ -5,7 +5,7 @@
 
 # Update below commented lines with appropriate values.
 
-class QueueMyBatchedMigration < Gitlab::Database::Migration[2.2]
+class QueueMyBatchedMigration < Gitlab::Database::Migration[2.3]
   milestone '16.6'
 
   # Select the applicable gitlab schema for your batched background migration

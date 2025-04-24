@@ -15,7 +15,10 @@ module RapidDiffs
 
       offset = { offset_index: params.permit(:offset)[:offset].to_i }
 
-      stream_diff_files(streaming_diff_options.merge(offset))
+      context = view_context
+
+      # view_context calls are not memoized, with explicit passing we are able to reuse it across renders
+      stream_diff_files(streaming_diff_options.merge(offset), context)
 
       streaming_time = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - streaming_start_time).round(2)
       response.stream.write "<server-timings streaming=\"#{streaming_time}\"></server-timings>"
@@ -24,7 +27,7 @@ module RapidDiffs
     rescue StandardError => e
       Gitlab::AppLogger.error("Error streaming diffs: #{e.message}")
       error_component = ::RapidDiffs::StreamingErrorComponent.new(message: e.message)
-      response.stream.write error_component.render_in(view_context)
+      response.stream.write error_component.render_in(context)
     ensure
       response.stream.close
     end
@@ -55,7 +58,7 @@ module RapidDiffs
       helpers.diff_view
     end
 
-    def stream_diff_files(options)
+    def stream_diff_files(options, view_context)
       return unless resource
 
       diffs = resource.diffs_for_streaming(options)
@@ -68,26 +71,40 @@ module RapidDiffs
 
       # NOTE: This is a temporary flag to test out the new diff_blobs
       if !!ActiveModel::Type::Boolean.new.cast(params.permit(:diff_blobs)[:diff_blobs])
-        stream_diff_blobs(options)
+        stream_diff_blobs(options, view_context)
       else
-        diffs.diff_files.each do |diff_file|
-          response.stream.write(render_diff_file(diff_file))
-        end
+        stream_diff_collection(diffs.diff_files, view_context)
       end
     end
 
-    def render_diff_file(diff_file)
-      render_to_string(
-        ::RapidDiffs::DiffFileComponent.new(diff_file: diff_file, parallel_view: view == :parallel),
-        layout: false
-      )
+    def stream_diff_collection(diff_files, view_context)
+      each_growing_slice(diff_files, 5, 2) do |slice|
+        response.stream.write(render_diff_files_collection(slice, view_context))
+      end
     end
 
-    def stream_diff_blobs(options)
+    def each_growing_slice(collection, initial_size, growth_factor = 2)
+      position = 0
+      size = initial_size
+      total = collection.count
+
+      while position < total
+        end_pos = [position + size, total].min
+        yield collection.to_a[position...end_pos] if block_given?
+
+        position = end_pos
+        size = (size * growth_factor).to_i
+      end
+    end
+
+    def render_diff_files_collection(diff_files, view_context)
+      ::RapidDiffs::DiffFileComponent.with_collection(diff_files, parallel_view: view == :parallel)
+        .render_in(view_context)
+    end
+
+    def stream_diff_blobs(options, view_context)
       resource.diffs_for_streaming(options) do |diff_files_batch|
-        diff_files_batch.each do |diff_file|
-          response.stream.write(render_diff_file(diff_file))
-        end
+        response.stream.write(render_diff_files_collection(diff_files_batch, view_context))
       end
     end
 

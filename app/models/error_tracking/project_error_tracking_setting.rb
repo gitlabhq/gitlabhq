@@ -5,6 +5,7 @@ module ErrorTracking
     include Gitlab::Utils::StrongMemoize
     include ReactiveCaching
     include Gitlab::Routing
+    include Gitlab::EncryptedAttribute
 
     SENTRY_API_ERROR_TYPE_BAD_REQUEST = 'bad_request_for_sentry_api'
     SENTRY_API_ERROR_TYPE_MISSING_KEYS = 'missing_keys_in_sentry_response'
@@ -42,7 +43,7 @@ module ErrorTracking
 
     attr_encrypted :token,
       mode: :per_attribute_iv,
-      key: Settings.attr_encrypted_db_key_base_32,
+      key: :db_key_base_32,
       algorithm: 'aes-256-gcm'
 
     before_validation :reset_token

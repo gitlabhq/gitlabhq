@@ -5,6 +5,7 @@ class ProjectSetting < ApplicationRecord
   include EachBatch
   include CascadingProjectSettingAttribute
   include Projects::SquashOption
+  include Gitlab::EncryptedAttribute
 
   ALLOWED_TARGET_PLATFORMS = %w[ios osx tvos watchos android].freeze
 
@@ -18,14 +19,14 @@ class ProjectSetting < ApplicationRecord
 
   attr_encrypted :cube_api_key,
     mode: :per_attribute_iv,
-    key: Settings.attr_encrypted_db_key_base_32,
+    key: :db_key_base_32,
     algorithm: 'aes-256-gcm',
     encode: false,
     encode_iv: false
 
   attr_encrypted :product_analytics_configurator_connection_string,
     mode: :per_attribute_iv,
-    key: Settings.attr_encrypted_db_key_base_32,
+    key: :db_key_base_32,
     algorithm: 'aes-256-gcm',
     encode: false,
     encode_iv: false

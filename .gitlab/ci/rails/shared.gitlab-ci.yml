@@ -119,7 +119,7 @@ include:
     - bundle exec gem list gitlab_quality-test_tooling
     - |
       section_start "failed-test-issues" "Report test failures"
-      if [[ "$CREATE_RAILS_TEST_FAILURE_ISSUES" == "true" ]] && [[ -n "$TEST_FAILURES_PROJECT_TOKEN" ]]; then
+      if [[ -n "$TEST_FAILURES_PROJECT_TOKEN" ]]; then
         input_file="rspec/rspec-${CI_JOB_ID}.json"
 
         # The actual failures will always be part of the retry report
@@ -127,14 +127,35 @@ include:
           input_file="rspec/rspec-retry-${CI_JOB_ID}.json"
         fi
 
-        bundle exec failed-test-issues \
-          --token "${TEST_FAILURES_PROJECT_TOKEN}" \
-          --project "gitlab-org/gitlab" \
-          --input-files "${input_file}" \
-          --exclude-labels-for-search "QA,knapsack_report" \
-          --related-issues-file "rspec/${CI_JOB_ID}-failed-test-issues.json";
+        cmd_args=()
+        cmd_args+=(--token "${TEST_FAILURES_PROJECT_TOKEN}")
+        cmd_args+=(--project "gitlab-org/gitlab")
+        cmd_args+=(--input-files "${input_file}")
+        cmd_args+=(--exclude-labels-for-search "QA,knapsack_report")
+        cmd_args+=(--related-issues-file "rspec/${CI_JOB_ID}-failed-test-issues.json")
+
+        if [[ "$CREATE_RAILS_TEST_FAILURE_ISSUES" != "true" ]]; then
+          cmd_args+=(--enable-issue-update false)
+          echoinfo "Disabling issue creation because \$CREATE_RAILS_TEST_FAILURE_ISSUES != 'true'"
+        fi
+
+        if [[ "$GLCI_PUSH_RAILS_TEST_FAILURE_ISSUES_TO_GCS" == "true" ]]; then
+          if [[ -n "$GLCI_FAILED_TESTS_GCS_PROJECT_ID" && -n "$GLCI_FAILED_TESTS_GCS_BUCKET" && -n "$GLCI_FAILED_TESTS_GCS_CREDENTIALS_FILE" ]]; then
+            cmd_args+=(--enable-gcs true)
+            cmd_args+=(--gcs-project-id "$GLCI_FAILED_TESTS_GCS_PROJECT_ID")
+            cmd_args+=(--gcs-bucket "$GLCI_FAILED_TESTS_GCS_BUCKET")
+            cmd_args+=(--gcs-credentials "$GLCI_FAILED_TESTS_GCS_CREDENTIALS_FILE")
+          else
+            echoerr "Skipping GCS push because one or more GLCI_FAILED_TESTS_* environment variables are not set"
+          fi
+        else
+          echoinfo "Skipping GCS push because \$GLCI_PUSH_RAILS_TEST_FAILURE_ISSUES_TO_GCS != 'true'"
+        fi
+
+        # Execute command with all arguments
+        bundle exec failed-test-issues "${cmd_args[@]}"
       else
-        echoinfo "Not reporting test failures because \$CREATE_RAILS_TEST_FAILURE_ISSUES != 'true' or TEST_FAILURES_PROJECT_TOKEN is not set"
+        echoinfo "Not reporting test failures because TEST_FAILURES_PROJECT_TOKEN is not set"
       fi
       section_end "failed-test-issues"
     - |

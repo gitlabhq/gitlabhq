@@ -675,8 +675,6 @@ Style/IfUnlessModifier:
     - 'spec/factories/users.rb'
     - 'spec/features/merge_request/batch_comments_spec.rb'
     - 'spec/features/merge_request/user_sees_avatar_on_diff_notes_spec.rb'
-    - 'spec/features/projects/tree/create_directory_spec.rb'
-    - 'spec/features/projects/tree/create_file_spec.rb'
     - 'spec/graphql/mutations/releases/update_spec.rb'
     - 'spec/lib/container_registry/gitlab_api_client_spec.rb'
     - 'spec/lib/gitlab/config/entry/validators/nested_array_helpers_spec.rb'

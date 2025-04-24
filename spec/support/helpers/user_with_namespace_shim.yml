@@ -547,8 +547,6 @@
 - spec/features/projects/sourcegraph_csp_spec.rb
 - spec/features/projects/tags/user_views_tag_spec.rb
 - spec/features/projects/tags/user_views_tags_spec.rb
-- spec/features/projects/tree/create_directory_spec.rb
-- spec/features/projects/tree/create_file_spec.rb
 - spec/features/projects/tree/rss_spec.rb
 - spec/features/projects/tree/tree_show_spec.rb
 - spec/features/projects/user_creates_project_spec.rb

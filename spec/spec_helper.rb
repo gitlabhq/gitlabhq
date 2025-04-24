@@ -310,10 +310,6 @@ RSpec.configure do |config|
       # cause spec failures.
       stub_feature_flags(gitlab_error_tracking: false)
 
-      # Disable this to avoid the Web IDE modals popping up in tests:
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/385453
-      stub_feature_flags(vscode_web_ide: false)
-
       # Disable `main_branch_over_master` as we migrate
       # from `master` to `main` accross our codebase.
       # It's done in order to preserve the concistency in tests

@@ -279,6 +279,38 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         end
       end
 
+      context 'when filtering by active parameter' do
+        let_it_be(:marked_for_deletion_project) do
+          create(:project, marked_for_deletion_on: Date.parse('2024-01-01'), namespace: user.namespace)
+        end
+
+        let_it_be(:archived_project) do
+          create(:project, :archived, namespace: user.namespace)
+        end
+
+        context 'when active is true' do
+          it 'returns only non archived and not marked for deletion projects' do
+            get api(path, user), params: { active: true }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response).to be_an Array
+            expect(json_response.map { |p| p['id'] }).not_to include(archived_project.id, marked_for_deletion_project.id)
+          end
+        end
+
+        context 'when active is false' do
+          it 'returns only archived or marked for deletion projects' do
+            get api(path, user), params: { active: false }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(json_response).to be_an Array
+            expect(json_response.map { |p| p['id'] }).to contain_exactly(archived_project.id, marked_for_deletion_project.id)
+          end
+        end
+      end
+
       shared_examples 'includes container_registry_access_level' do
         specify do
           project.project_feature.update!(container_registry_access_level: ProjectFeature::DISABLED)

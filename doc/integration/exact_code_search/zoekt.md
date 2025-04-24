@@ -72,6 +72,20 @@ To enable [exact code search](../../user/search/exact_code_search.md) in GitLab:
 
 ## Check indexing status
 
+{{< history >}}
+
+- Stopping indexing when Zoekt node storage exceeds the critical watermark [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/504945) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `zoekt_critical_watermark_stop_indexing`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/505334) in GitLab 18.0.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
 Prerequisites:
 
 - You must have administrator access to the instance.

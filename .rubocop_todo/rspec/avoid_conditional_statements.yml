@@ -62,8 +62,6 @@ RSpec/AvoidConditionalStatements:
     - 'spec/features/projects/settings/repository_settings_spec.rb'
     - 'spec/features/projects/settings/user_transfers_a_project_spec.rb'
     - 'spec/features/projects/show/user_sees_git_instructions_spec.rb'
-    - 'spec/features/projects/tree/create_directory_spec.rb'
-    - 'spec/features/projects/tree/create_file_spec.rb'
     - 'spec/features/projects_spec.rb'
     - 'spec/features/search/user_uses_header_search_field_spec.rb'
     - 'spec/features/usage_stats_consent_spec.rb'

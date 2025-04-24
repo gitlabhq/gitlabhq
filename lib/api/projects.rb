@@ -181,6 +181,7 @@ module API
         optional :updated_after, type: DateTime, desc: 'Return projects updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
         optional :include_pending_delete, type: Boolean, desc: 'Include projects in pending delete state. Can only be set by admins'
         optional :marked_for_deletion_on, type: Date, desc: 'Date when the project was marked for deletion'
+        optional :active, type: Boolean, desc: 'Limit by projects that are not archived and not marked for deletion'
 
         use :optional_filter_params_ee
       end

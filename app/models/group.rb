@@ -205,6 +205,19 @@ class Group < Namespace
 
   scope :with_users, -> { includes(:users) }
 
+  scope :active, -> do
+    non_archived.not_aimed_for_deletion
+  end
+
+  scope :inactive, -> do
+    joins(:namespace_settings)
+      .left_joins(:deletion_schedule)
+      .where(<<~SQL)
+        #{reflections['namespace_settings'].table_name}.archived = TRUE
+        OR #{reflections['deletion_schedule'].table_name}.#{reflections['deletion_schedule'].foreign_key} IS NOT NULL
+      SQL
+  end
+
   scope :with_non_archived_projects, -> { includes(:non_archived_projects) }
 
   scope :with_non_invite_group_members, -> { includes(:non_invite_group_members) }

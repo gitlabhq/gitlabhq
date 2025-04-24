@@ -1062,6 +1062,11 @@ paths:
         format: date
         required: false
       - in: query
+        name: active
+        description: Limit by groups that are not archived and not marked for deletion
+        type: boolean
+        required: false
+      - in: query
         name: repository_storage
         description: Filter by repository storage used by the group
         type: string
@@ -1801,6 +1806,11 @@ paths:
         format: date
         required: false
       - in: query
+        name: active
+        description: Limit by groups that are not archived and not marked for deletion
+        type: boolean
+        required: false
+      - in: query
         name: repository_storage
         description: Filter by repository storage used by the group
         type: string
@@ -1936,6 +1946,11 @@ paths:
         description: Return groups that are marked for deletion on this date
         type: string
         format: date
+        required: false
+      - in: query
+        name: active
+        description: Limit by groups that are not archived and not marked for deletion
+        type: boolean
         required: false
       - in: query
         name: repository_storage
@@ -31970,6 +31985,11 @@ paths:
         format: date
         required: false
       - in: query
+        name: active
+        description: Limit by projects that are not archived and not marked for deletion
+        type: boolean
+        required: false
+      - in: query
         name: wiki_checksum_failed
         description: Limit by projects where wiki checksum is failed
         type: boolean
@@ -32451,6 +32471,11 @@ paths:
         description: Date when the project was marked for deletion
         type: string
         format: date
+        required: false
+      - in: query
+        name: active
+        description: Limit by projects that are not archived and not marked for deletion
+        type: boolean
         required: false
       - in: query
         name: wiki_checksum_failed
@@ -39918,6 +39943,11 @@ paths:
         format: date
         required: false
       - in: query
+        name: active
+        description: Limit by projects that are not archived and not marked for deletion
+        type: boolean
+        required: false
+      - in: query
         name: wiki_checksum_failed
         description: Limit by projects where wiki checksum is failed
         type: boolean
@@ -40247,6 +40277,11 @@ paths:
         description: Date when the project was marked for deletion
         type: string
         format: date
+        required: false
+      - in: query
+        name: active
+        description: Limit by projects that are not archived and not marked for deletion
+        type: boolean
         required: false
       - in: query
         name: wiki_checksum_failed

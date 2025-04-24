@@ -454,6 +454,8 @@ module Integrations
         include Integrations::ResetSecretFields
         include FromUnion
         include EachBatch
+        include Gitlab::EncryptedAttribute
+
         extend SafeFormatHelper
         extend ::Gitlab::Utils::Override
 
@@ -462,7 +464,7 @@ module Integrations
 
         attr_encrypted :properties,
           mode: :per_attribute_iv,
-          key: Settings.attr_encrypted_db_key_base_32,
+          key: :db_key_base_32,
           algorithm: 'aes-256-gcm',
           marshal: true,
           marshaler: ::Gitlab::Json,
@@ -669,9 +671,10 @@ module Integrations
 
       def reencrypt_properties
         unless properties.nil? || properties.empty?
-          alg = self.class.attr_encrypted_attributes[:properties][:algorithm]
-          iv = generate_iv(alg)
-          ep = self.class.attr_encrypt(:properties, properties, { iv: iv })
+          attr_encrypted_attributes = self.class.attr_encrypted_attributes[:properties]
+          key = dynamic_encryption_key_for_operation(attr_encrypted_attributes[:key])
+          iv = generate_iv(attr_encrypted_attributes[:algorithm])
+          ep = self.class.attr_encrypt(:properties, properties, { key: key, iv: iv })
         end
 
         { 'encrypted_properties' => ep, 'encrypted_properties_iv' => iv }

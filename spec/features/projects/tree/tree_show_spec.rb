@@ -135,40 +135,6 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
     end
   end
 
-  context 'web IDE' do
-    before do
-      stub_feature_flags(vscode_web_ide: false)
-    end
-
-    context 'when directory_code_dropdown_updates is enabled' do
-      it 'opens folder in IDE' do
-        stub_feature_flags(directory_code_dropdown_updates: true)
-
-        visit project_tree_path(project, File.join('master', 'bar'))
-        ide_visit_from_link
-
-        wait_for_all_requests
-        find('.ide-file-list')
-        wait_for_requests
-        expect(page).to have_selector('.is-open', text: 'bar')
-      end
-    end
-
-    context 'when directory_code_dropdown_updates is disabled' do
-      it 'opens folder in IDE' do
-        stub_feature_flags(directory_code_dropdown_updates: false)
-
-        visit project_tree_path(project, File.join('master', 'bar'))
-        ide_visit_from_link
-
-        wait_for_all_requests
-        find('.ide-file-list')
-        wait_for_requests
-        expect(page).to have_selector('.is-open', text: 'bar')
-      end
-    end
-  end
-
   context 'for subgroups' do
     let(:group) { create(:group) }
     let(:subgroup) { create(:group, parent: group) }

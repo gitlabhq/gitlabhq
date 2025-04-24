@@ -102,7 +102,6 @@ RSpec/ContextWording:
     - 'ee/spec/features/groups/saml_providers_spec.rb'
     - 'ee/spec/features/groups/security/compliance_dashboards_spec.rb'
     - 'ee/spec/features/groups_spec.rb'
-    - 'ee/spec/features/ide/user_opens_ide_spec.rb'
     - 'ee/spec/features/issues/epic_in_issue_sidebar_spec.rb'
     - 'ee/spec/features/issues/filtered_search/filter_issues_by_iteration_spec.rb'
     - 'ee/spec/features/issues/form_spec.rb'

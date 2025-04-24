@@ -7,7 +7,7 @@ RSpec.describe CI::ChangedFiles, feature_category: :tooling do
   let(:instance) { described_class.new }
 
   describe '#get_changed_files_in_merged_results_pipeline' do
-    let(:git_diff_output) { "file1.js\nfile2.rb\nfile3.vue" }
+    let(:git_diff_output) { "file1.js\nfile2.rb\nfile3.vue\nfile4.graphql" }
 
     before do
       allow(instance).to receive(:`)
@@ -18,7 +18,7 @@ RSpec.describe CI::ChangedFiles, feature_category: :tooling do
     context 'when git diff is run in a merged results pipeline' do
       it 'returns an array when there are changed files' do
         expect(instance.get_changed_files_in_merged_results_pipeline)
-        .to match_array(['file1.js', 'file2.rb', 'file3.vue'])
+        .to match_array(['file1.js', 'file2.rb', 'file3.vue', 'file4.graphql'])
       end
 
       context "when there are no changed files" do
@@ -115,6 +115,175 @@ RSpec.describe CI::ChangedFiles, feature_category: :tooling do
 
         expect(instance).not_to receive(:system)
         expect(instance.run_eslint_for_changed_files).to eq(0)
+      end
+    end
+
+    context 'when a single todo file has been changed' do
+      let(:eslint_command) do
+        ['yarn', 'run', 'lint:eslint', '--no-warn-ignored', '--format', 'gitlab',
+          '.eslint_todo/vue-no-unused-properties.mjs',
+          'app/assets/javascripts/add_context_commits_modal/components/add_context_commits_modal_wrapper.vue',
+          'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_comment_form.vue',
+          'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_edit_note.vue',
+          'app/assets/javascripts/admin/statistics_panel/components/app.vue',
+          'app/assets/javascripts/badges/components/badge.vue',
+          'app/assets/javascripts/badges/components/badge_form.vue',
+          'app/assets/javascripts/batch_comments/components/draft_note.vue']
+      end
+
+      let(:files) { ['.eslint_todo/vue-no-unused-properties.mjs'] }
+      let(:git_diff_output) do
+        <<-DIFF
+          diff --git a/.eslint_todo/vue-no-unused-properties.mjs b/.eslint_todo/vue-no-unused-properties.mjs
+          index 81f0b2cbcf84..ef936567f2e8 100644
+          --- a/.eslint_todo/vue-no-unused-properties.mjs
+          +++ b/.eslint_todo/vue-no-unused-properties.mjs
+          @@ -3,13 +3,7 @@
+            */
+          export default {
+            files: [
+          -    'app/assets/javascripts/add_context_commits_modal/components/add_context_commits_modal_wrapper.vue',
+          -    'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_comment_form.vue',
+          -    'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_edit_note.vue',
+          -    'app/assets/javascripts/admin/statistics_panel/components/app.vue',
+          -    'app/assets/javascripts/badges/components/badge.vue',
+          -    'app/assets/javascripts/badges/components/badge_form.vue',
+          -    'app/assets/javascripts/batch_comments/components/draft_note.vue',
+          +    'app/assets/javascripts/batch_comments/components/preview_item.vue',
+              'app/assets/javascripts/behaviors/components/json_table.vue',
+              'app/assets/javascripts/behaviors/components/sandboxed_mermaid.vue',
+        DIFF
+      end
+
+      before do
+        allow(instance).to receive(:filter_and_get_changed_files_in_mr).and_return(files)
+        allow(instance).to receive(:`)
+          .with('git diff HEAD~..HEAD -- .eslint_todo/vue-no-unused-properties.mjs')
+          .and_return(git_diff_output)
+      end
+
+      it 'runs eslint with the correct arguments and returns exit 1 on failure' do
+        expect(instance).to receive(:system).with(*eslint_command).and_return(false)
+
+        status = instance_double(Process::Status, exitstatus: 1)
+        allow(instance).to receive(:last_command_status).and_return(status)
+
+        expect(instance.run_eslint_for_changed_files).to eq(1)
+      end
+    end
+
+    context 'when several todo files have been changed' do
+      let(:eslint_command) do
+        ['yarn', 'run', 'lint:eslint', '--no-warn-ignored', '--format', 'gitlab',
+          '.eslint_todo/vue-no-unused-properties.mjs',
+          'app/assets/javascripts/projects/project_new.js',
+          'app/assets/javascripts/add_context_commits_modal/components/add_context_commits_modal_wrapper.vue',
+          'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_comment_form.vue']
+      end
+
+      let(:files) { ['.eslint_todo/vue-no-unused-properties.mjs'] }
+      let(:git_diff_output) do
+        <<-DIFF
+          diff --git a/.eslint_todo/index.mjs b/.eslint_todo/index.mjs
+          index 88c73e337a50..1c27203d62cb 100644
+          --- a/.eslint_todo/index.mjs
+          +++ b/.eslint_todo/index.mjs
+          @@ -1 +1,3 @@
+          export { default as vueNoUnusedProperties } from './vue-no-unused-properties.mjs';
+          +
+          +export { default as noUnusedVars } from './no-unused-vars.mjs';
+          diff --git a/.eslint_todo/no-unused-vars.mjs b/.eslint_todo/no-unused-vars.mjs
+          index dbd4c28b65c8..f11106b14857 100644
+          --- a/.eslint_todo/no-unused-vars.mjs
+          +++ b/.eslint_todo/no-unused-vars.mjs
+          @@ -3,7 +3,6 @@
+            */
+          export default {
+            files: [
+          -    'app/assets/javascripts/projects/project_new.js',
+              'app/assets/javascripts/vue_shared/components/customizable_dashboard/dashboard_editor/available_visualizations_drawer.vue',
+              'app/assets/javascripts/vue_shared/components/customizable_dashboard/utils.js',
+            ],
+          diff --git a/.eslint_todo/vue-no-unused-properties.mjs b/.eslint_todo/vue-no-unused-properties.mjs
+          index 81f0b2cbcf84..cf56bd55554b 100644
+          --- a/.eslint_todo/vue-no-unused-properties.mjs
+          +++ b/.eslint_todo/vue-no-unused-properties.mjs
+          @@ -3,8 +3,6 @@
+            */
+          export default {
+            files: [
+          -    'app/assets/javascripts/add_context_commits_modal/components/add_context_commits_modal_wrapper.vue',
+          -    'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_comment_form.vue',
+              'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_edit_note.vue',
+              'app/assets/javascripts/admin/statistics_panel/components/app.vue',
+              'app/assets/javascripts/badges/components/badge.vue',
+
+        DIFF
+      end
+
+      before do
+        allow(instance).to receive(:filter_and_get_changed_files_in_mr).and_return(files)
+        allow(instance).to receive(:`)
+          .with('git diff HEAD~..HEAD -- .eslint_todo/vue-no-unused-properties.mjs')
+          .and_return(git_diff_output)
+      end
+
+      it 'runs eslint with the correct arguments and returns exit 1 on failure' do
+        expect(instance).to receive(:system).with(*eslint_command).and_return(false)
+
+        status = instance_double(Process::Status, exitstatus: 1)
+        allow(instance).to receive(:last_command_status).and_return(status)
+
+        expect(instance.run_eslint_for_changed_files).to eq(1)
+      end
+    end
+
+    context 'when todo files have been changed but no ignored file was removed from them' do
+      let(:eslint_command) do
+        ['yarn', 'run', 'lint:eslint', '--no-warn-ignored', '--format', 'gitlab',
+          '.eslint_todo/vue-no-unused-properties.mjs']
+      end
+
+      let(:files) { ['.eslint_todo/vue-no-unused-properties.mjs'] }
+      let(:git_diff_output) do
+        <<-DIFF
+          diff --git a/.eslint_todo/no-unused-vars.mjs b/.eslint_todo/no-unused-vars.mjs
+          new file mode 100644
+          index 000000000000..dbd4c28b65c8
+          --- /dev/null
+          +++ b/.eslint_todo/no-unused-vars.mjs
+          @@ -0,0 +1,13 @@
+          +/**
+          + * Generated by `scripts/frontend/generate_eslint_todo_list.mjs`.
+          + */
+          +export default {
+          +  files: [
+          +    'app/assets/javascripts/projects/project_new.js',
+          +    'app/assets/javascripts/vue_shared/components/customizable_dashboard/dashboard_editor/available_visualizations_drawer.vue',
+          +    'app/assets/javascripts/vue_shared/components/customizable_dashboard/utils.js',
+          +  ],
+          +  rules: {
+          +    'no-unused-vars': 'off',
+          +  },
+          +};
+
+        DIFF
+      end
+
+      before do
+        allow(instance).to receive(:filter_and_get_changed_files_in_mr).and_return(files)
+        allow(instance).to receive(:`)
+          .with('git diff HEAD~..HEAD -- .eslint_todo/vue-no-unused-properties.mjs')
+          .and_return(git_diff_output)
+      end
+
+      it 'runs eslint with the correct arguments and returns exit 1 on failure' do
+        expect(instance).to receive(:system).with(*eslint_command).and_return(false)
+
+        status = instance_double(Process::Status, exitstatus: 1)
+        allow(instance).to receive(:last_command_status).and_return(status)
+
+        expect(instance.run_eslint_for_changed_files).to eq(1)
       end
     end
   end

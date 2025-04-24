@@ -2,6 +2,8 @@
 
 module Atlassian
   class Identity < ApplicationRecord
+    include Gitlab::EncryptedAttribute
+
     self.table_name = 'atlassian_identities'
 
     belongs_to :user
@@ -11,14 +13,14 @@ module Atlassian
 
     attr_encrypted :token,
       mode: :per_attribute_iv,
-      key: Settings.attr_encrypted_db_key_base_32,
+      key: :db_key_base_32,
       algorithm: 'aes-256-gcm',
       encode: false,
       encode_iv: false
 
     attr_encrypted :refresh_token,
       mode: :per_attribute_iv,
-      key: Settings.attr_encrypted_db_key_base_32,
+      key: :db_key_base_32,
       algorithm: 'aes-256-gcm',
       encode: false,
       encode_iv: false

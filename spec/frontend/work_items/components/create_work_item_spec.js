@@ -64,7 +64,7 @@ describe('Create work item component', () => {
   const createWorkItemSuccessHandler = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
   const mutationErrorHandler = jest.fn().mockResolvedValue(createWorkItemMutationErrorResponse);
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
-  const workItemQuerySuccessHandler = jest.fn().mockResolvedValue(createWorkItemQueryResponse);
+  const workItemQuerySuccessHandler = jest.fn().mockResolvedValue(createWorkItemQueryResponse());
   const namespaceWorkItemTypesHandler = jest
     .fn()
     .mockResolvedValue(namespaceWorkItemTypesQueryResponse);

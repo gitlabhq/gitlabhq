@@ -49,33 +49,46 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
     end
   end
 
-  describe '#stream_diff_files' do
+  describe '#diffs' do
     let(:controller_instance) { controller.new }
     let(:mock_resource) { instance_double(::Commit) }
     let(:mock_diffs) { instance_double(Gitlab::Diff::FileCollection::Commit, diff_files: diff_files) }
-    let(:diff_files) { [] }
-    let(:response) do
-      instance_double(ActionDispatch::Response,
-        stream: instance_double(ActionDispatch::Response::Buffer, write: nil))
-    end
+    let(:diff_files) { [{}] }
+    let(:stream) { instance_double(ActionDispatch::Response::Buffer, write: nil, close: nil) }
+    let(:response) { instance_double(ActionDispatch::Response, stream: stream) }
 
     let(:empty_state_html) { '<empty-state>No changes</empty-state>' }
+    let(:diffs_html) { '<diffs></diffs>' }
 
     before do
-      allow(controller_instance).to receive_messages(resource: mock_resource, response: response)
-      allow(controller_instance).to receive(:view_context)
+      allow(controller_instance).to receive_messages(
+        resource: mock_resource,
+        response: response,
+        rapid_diffs_enabled?: true,
+        view_context: nil,
+        stream_headers: nil,
+        params: ActionController::Parameters.new)
+      allow(controller_instance).to receive_message_chain(:helpers, :diff_view).and_return('inline')
       allow(mock_resource).to receive(:diffs_for_streaming).and_return(mock_diffs)
+      allow(RapidDiffs::DiffFileComponent).to receive_message_chain(:with_collection, :render_in)
+        .and_return(diffs_html)
+    end
+
+    it 'renders diffs' do
+      controller_instance.send(:diffs)
+      expect(response.stream).to have_received(:write).with(diffs_html)
     end
 
     context 'when no diffs and no offset' do
+      let(:diff_files) { [] }
+
       before do
         allow(controller_instance).to receive(:params).and_return(ActionController::Parameters.new)
         allow(RapidDiffs::EmptyStateComponent).to receive_message_chain(:new, :render_in).and_return(empty_state_html)
       end
 
       it 'renders empty state' do
-        controller_instance.send(:stream_diff_files, {})
-
+        controller_instance.send(:diffs)
         expect(response.stream).to have_received(:write).with(empty_state_html)
       end
     end
@@ -85,10 +98,9 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
         allow(controller_instance).to receive(:params).and_return(ActionController::Parameters.new(offset: '5'))
       end
 
-      it 'does not render empty state' do
-        expect(RapidDiffs::EmptyStateComponent).not_to receive(:new)
-
-        controller_instance.send(:stream_diff_files, {})
+      it 'renders diffs' do
+        controller_instance.send(:diffs)
+        expect(response.stream).to have_received(:write).with(diffs_html)
       end
     end
   end

@@ -187,9 +187,6 @@ export default {
     customFields() {
       return this.isWidgetPresent(WIDGET_TYPE_CUSTOM_FIELDS)?.customFieldValues;
     },
-    showWorkItemCustomFields() {
-      return this.glFeatures.customFieldsFeature && this.customFields;
-    },
     showWorkItemStatus() {
       return this.glFeatures.workItemStatusFeatureFlag;
     },
@@ -323,7 +320,7 @@ export default {
       @error="$emit('error', $event)"
     />
     <work-item-custom-fields
-      v-if="showWorkItemCustomFields"
+      v-if="customFields"
       :work-item-id="workItem.id"
       :work-item-type="workItemType"
       :custom-fields="customFields"

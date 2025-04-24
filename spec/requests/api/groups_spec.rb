@@ -100,6 +100,19 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
   end
 
+  shared_examples 'API that accepts active parameter for GroupFinder' do
+    [nil, true, false].each do |active_value|
+      it "passes #{active_value.inspect} active parameter to the GroupsFinder" do
+        params = { active: active_value }
+
+        expect(GroupsFinder).to receive(:new)
+          .with(user1, hash_including(active: active_value)).and_call_original
+
+        get api('/groups', user1), params: params
+      end
+    end
+  end
+
   describe "GET /groups" do
     shared_examples 'groups list N+1' do
       it 'avoids N+1 queries', :use_sql_query_cache do
@@ -602,6 +615,8 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(response_groups).to match_array([group1.id, subgroup1.id])
       end
     end
+
+    it_behaves_like 'API that accepts active parameter for GroupFinder'
   end
 
   describe "GET /groups/:id" do
@@ -2816,6 +2831,8 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       let(:parent) { group1 }
       let(:endpoint) { api("/groups/#{group1.id}/subgroups", user1) }
     end
+
+    it_behaves_like 'API that accepts active parameter for GroupFinder'
   end
 
   describe 'GET /groups/:id/descendant_groups' do
@@ -2959,6 +2976,8 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       let(:parent) { group1 }
       let(:endpoint) { api("/groups/#{group1.id}/descendant_groups", user1) }
     end
+
+    it_behaves_like 'API that accepts active parameter for GroupFinder'
   end
 
   describe "POST /groups" do

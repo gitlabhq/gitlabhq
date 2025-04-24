@@ -4,6 +4,7 @@ class PagesDomain < ApplicationRecord
   include Presentable
   include FromUnion
   include AfterCommitQueue
+  include Gitlab::EncryptedAttribute
 
   VERIFICATION_KEY = 'gitlab-pages-verification-code'
   VERIFICATION_THRESHOLD = 3.days.freeze
@@ -48,7 +49,7 @@ class PagesDomain < ApplicationRecord
   attr_encrypted :key,
     mode: :per_attribute_iv_and_salt,
     insecure_mode: true,
-    key: Settings.attr_encrypted_db_key_base,
+    key: :db_key_base,
     algorithm: 'aes-256-cbc'
 
   scope :for_project, ->(project) { where(project: project) }

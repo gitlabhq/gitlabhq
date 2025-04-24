@@ -6,6 +6,7 @@ class ApplicationSetting < ApplicationRecord
   include TokenAuthenticatable
   include ChronicDurationAttribute
   include Sanitizable
+  include Gitlab::EncryptedAttribute
 
   ignore_column :pre_receive_secret_detection_enabled, remove_with: '17.9', remove_after: '2025-02-15'
 
@@ -854,14 +855,14 @@ class ApplicationSetting < ApplicationRecord
 
   attr_encrypted :asset_proxy_secret_key,
     mode: :per_attribute_iv,
-    key: Settings.attr_encrypted_db_key_base_truncated,
+    key: :db_key_base_truncated,
     algorithm: 'aes-256-cbc',
     insecure_mode: true
 
   private_class_method def self.encryption_options_base_32_aes_256_gcm
     {
       mode: :per_attribute_iv,
-      key: Settings.attr_encrypted_db_key_base_32,
+      key: :db_key_base_32,
       algorithm: 'aes-256-gcm',
       encode: true
     }

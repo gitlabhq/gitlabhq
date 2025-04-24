@@ -1643,6 +1643,30 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         it { is_expected.to match_array([subgroup, subsubgroup]) }
       end
     end
+
+    describe '.active' do
+      let_it_be(:active_group) { create(:group) }
+      let_it_be(:archived_group) { create(:group, namespace_settings: create(:namespace_settings, archived: true)) }
+      let_it_be(:marked_for_deletion_group) { create(:group_with_deletion_schedule) }
+
+      subject { described_class.active }
+
+      it { is_expected.to include(active_group) }
+      it { is_expected.not_to include(marked_for_deletion_group) }
+      it { is_expected.not_to include(archived_group) }
+    end
+
+    describe '.inactive' do
+      let_it_be(:active_group) { create(:group) }
+      let_it_be(:archived_group) { create(:group, namespace_settings: create(:namespace_settings, archived: true)) }
+      let_it_be(:marked_for_deletion_group) { create(:group_with_deletion_schedule) }
+
+      subject { described_class.inactive }
+
+      it { is_expected.to include(archived_group) }
+      it { is_expected.to include(marked_for_deletion_group) }
+      it { is_expected.not_to include(active_group) }
+    end
   end
 
   describe '.project_creation_levels_for_user' do

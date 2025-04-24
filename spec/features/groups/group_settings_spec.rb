@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
   include Spec::Support::Helpers::ModalHelpers
+  include Features::WebIdeSpecHelpers
 
   let(:user)  { create(:user) }
   let(:group) { create(:group, path: 'foo') }
@@ -280,7 +281,7 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
 
         expect(page).to have_current_path("/-/ide/project/#{group.readme_project.present.path_with_namespace}/edit/main/-/README.md/")
 
-        page.within('.ide') do
+        within_web_ide do
           expect(page).to have_text('README.md')
         end
       end
@@ -300,7 +301,7 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
 
         expect(page).to have_current_path("/-/ide/project/#{group.full_path}/gitlab-profile/edit/main/-/README.md/")
 
-        page.within('.ide') do
+        within_web_ide do
           expect(page).to have_text('README.md')
         end
       end

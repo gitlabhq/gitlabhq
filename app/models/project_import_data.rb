@@ -3,6 +3,8 @@
 require 'carrierwave/orm/activerecord'
 
 class ProjectImportData < ApplicationRecord
+  include Gitlab::EncryptedAttribute
+
   prepend_mod_with('ProjectImportData') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
   # Timeout strategy can only be changed via API, currently only with GitHub and BitBucket Server
@@ -12,7 +14,7 @@ class ProjectImportData < ApplicationRecord
 
   belongs_to :project, inverse_of: :import_data
   attr_encrypted :credentials,
-    key: Settings.attr_encrypted_db_key_base,
+    key: :db_key_base,
     marshal: true,
     encode: true,
     mode: :per_attribute_iv_and_salt,

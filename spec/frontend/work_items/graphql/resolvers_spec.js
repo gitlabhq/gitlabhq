@@ -55,7 +55,7 @@ describe('work items graphql resolvers', () => {
       mockApollo.clients.defaultClient.cache.writeQuery({
         query: workItemByIidQuery,
         variables: { fullPath: fullPathWithId, iid },
-        data: createWorkItemQueryResponse.data,
+        data: createWorkItemQueryResponse().data,
       });
       mockApolloClient = mockApollo.clients.defaultClient;
     });

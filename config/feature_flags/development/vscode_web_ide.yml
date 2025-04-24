@@ -1,8 +1,0 @@
----
-name: vscode_web_ide
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/371084
-milestone: '15.4'
-type: development
-group: group::ide
-default_enabled: true

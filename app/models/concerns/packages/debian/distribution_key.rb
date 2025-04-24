@@ -6,6 +6,8 @@ module Packages
       extend ActiveSupport::Concern
 
       included do
+        include Gitlab::EncryptedAttribute
+
         belongs_to :distribution, class_name: "Packages::Debian::#{container_type.capitalize}Distribution", inverse_of: :key
         validates :distribution,
           presence: true
@@ -19,11 +21,11 @@ module Packages
 
         attr_encrypted :private_key,
           mode: :per_attribute_iv,
-          key: Settings.attr_encrypted_db_key_base_32,
+          key: :db_key_base_32,
           algorithm: 'aes-256-gcm'
         attr_encrypted :passphrase,
           mode: :per_attribute_iv,
-          key: Settings.attr_encrypted_db_key_base_32,
+          key: :db_key_base_32,
           algorithm: 'aes-256-gcm'
 
         private

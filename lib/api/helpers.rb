@@ -810,6 +810,7 @@ module API
       finder_params[:non_public] = true if params[:membership].present?
       finder_params[:starred] = true if params[:starred].present?
       finder_params[:archived] = archived_param unless params[:archived].nil?
+      finder_params[:active] = params[:active] unless params[:active].nil?
       finder_params
     end
 

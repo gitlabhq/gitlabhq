@@ -2,6 +2,8 @@
 
 module ServiceDesk
   class CustomEmailVerification < ApplicationRecord
+    include Gitlab::EncryptedAttribute
+
     TIMEFRAME = 30.minutes
     STATES = { started: 0, finished: 1, failed: 2 }.freeze
 
@@ -18,7 +20,7 @@ module ServiceDesk
     attr_encrypted :token,
       mode: :per_attribute_iv,
       algorithm: 'aes-256-gcm',
-      key: Settings.attr_encrypted_db_key_base_32,
+      key: :db_key_base_32,
       encode: false,
       encode_iv: false
 

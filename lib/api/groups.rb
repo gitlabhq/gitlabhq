@@ -33,6 +33,7 @@ module API
         optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Minimum access level of authenticated user'
         optional :top_level_only, type: Boolean, desc: 'Only include top-level groups'
         optional :marked_for_deletion_on, type: Date, desc: 'Return groups that are marked for deletion on this date'
+        optional :active, type: Boolean, desc: 'Limit by groups that are not archived and not marked for deletion'
         use :optional_group_list_params_ee
         use :pagination
       end
@@ -61,7 +62,8 @@ module API
         [:all_available,
           :custom_attributes,
           :owned, :min_access_level,
-          :include_parent_descendants, :search, :visibility, :archived, :marked_for_deletion_on]
+          :include_parent_descendants, :search, :visibility, :archived,
+          :active, :marked_for_deletion_on]
       end
 
       # This is a separate method so that EE can extend its behaviour, without

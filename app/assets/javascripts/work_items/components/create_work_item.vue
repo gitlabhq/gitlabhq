@@ -520,7 +520,7 @@ export default {
         Boolean(this.workItemDueDateIsFixed) ||
         Boolean(this.workItemStartDateIsFixed) ||
         Boolean(this.workItemIterationId) ||
-        (this.glFeatures.customFieldsFeature && isCustomFieldsFilled)
+        isCustomFieldsFilled
       );
     },
     shouldDatesRollup() {
@@ -528,9 +528,6 @@ export default {
     },
     workItemCustomFields() {
       return findWidget(WIDGET_TYPE_CUSTOM_FIELDS, this.workItem)?.customFieldValues ?? null;
-    },
-    showWorkItemCustomFields() {
-      return this.glFeatures.customFieldsFeature && this.workItemCustomFields;
     },
   },
   watch: {
@@ -1049,7 +1046,7 @@ export default {
               @error="$emit('error', $event)"
             />
             <work-item-custom-fields
-              v-if="showWorkItemCustomFields"
+              v-if="workItemCustomFields"
               :work-item-id="workItemId"
               :work-item-type="selectedWorkItemTypeName"
               :custom-fields="workItemCustomFields"

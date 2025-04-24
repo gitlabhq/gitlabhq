@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Work item keyboard shortcuts', :js, feature_category: :team_planning do
+  include Features::WebIdeSpecHelpers
+
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:work_item) { create(:work_item, project: project) }
@@ -82,7 +84,9 @@ RSpec.describe 'Work item keyboard shortcuts', :js, feature_category: :team_plan
         new_tab = window_opened_by { find('body').native.send_key('.') }
 
         within_window new_tab do
-          expect(page).to have_selector('.ide-view')
+          within_web_ide do
+            expect(page).to have_text(project.path.upcase)
+          end
         end
       end
     end

@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe 'IDE', :js, :with_current_organization, feature_category: :web_ide do
   include Features::WebIdeSpecHelpers
 
-  let_it_be(:ide_iframe_selector) { '#ide iframe' }
   let_it_be(:normal_project) { create(:project, :repository) }
 
   let(:project) { normal_project }
@@ -21,22 +20,10 @@ RSpec.describe 'IDE', :js, :with_current_organization, feature_category: :web_id
     sign_in(user)
   end
 
-  shared_examples "legacy Web IDE" do
-    it 'loads legacy Web IDE', :aggregate_failures do
-      expect(page).to have_selector('.context-header', text: project.name)
-
-      # Assert new Web IDE is not loaded
-      expect(page).not_to have_selector(ide_iframe_selector)
-    end
-  end
-
-  shared_examples "new Web IDE" do
-    it 'loads new Web IDE', :aggregate_failures do
-      iframe = find(ide_iframe_selector)
-
-      page.within_frame(iframe) do
-        expect(page).to have_selector('.title', text: project.path.upcase)
-
+  shared_examples "Web IDE" do
+    it 'loads Web IDE', :aggregate_failures do
+      within_web_ide do
+        expect(page).to have_text(project.path.upcase)
         # Verify that the built-in GitLab Workflow Extension loads
         expect(page).to have_css('#GitLab\\.gitlab-workflow\\.gl\\.status\\.code_suggestions')
       end
@@ -58,24 +45,12 @@ RSpec.describe 'IDE', :js, :with_current_organization, feature_category: :web_id
       let(:project) { subgroup_project }
 
       before do
-        stub_feature_flags(vscode_web_ide: true)
         stub_feature_flags(directory_code_dropdown_updates: directory_code_dropdown_updates)
 
         ide_visit(project)
       end
 
-      it_behaves_like 'new Web IDE'
-    end
-
-    describe 'with vscode feature flag off' do
-      before do
-        stub_feature_flags(vscode_web_ide: false)
-        stub_feature_flags(directory_code_dropdown_updates: directory_code_dropdown_updates)
-
-        ide_visit(project)
-      end
-
-      it_behaves_like 'legacy Web IDE'
+      it_behaves_like 'Web IDE'
     end
   end
 end
