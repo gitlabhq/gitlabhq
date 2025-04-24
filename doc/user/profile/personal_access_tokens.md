@@ -384,7 +384,7 @@ Prerequisites:
 
 You can now create personal access tokens for a service account user with no expiry date.
 
-## Require DPoP headers with personal access tokens
+## Use DPoP with personal access tokens
 
 {{< details >}}
 
@@ -414,14 +414,17 @@ signed DPoP header requires your corresponding private SSH key.
 
 {{< alert type="note" >}}
 
-If you enable this feature, all REST and GraphQL API requests without a valid DPoP header fail with a `DpopValidationError`.
+If you enable this feature, all API requests without a valid DPoP header return a `DpopValidationError` error.
+
+DPoP header is not required for Git operations over HTTPS that include an access token.
 
 {{< /alert >}}
 
 Prerequisites:
 
-- You must have [added at least one public SSH key](../ssh.md#add-an-ssh-key-to-your-gitlab-account)
-  to your account, with the **Usage type** of **Signing**, or **Authentication & Signing**.
+- You must [add at least one public SSH key](../ssh.md#add-an-ssh-key-to-your-gitlab-account)
+  to your account, with a **Usage type** of **Signing** or **Authentication & Signing**.
+  - Your SSH key type must be RSA.
 - You must have installed and configured the [GitLab CLI](../../editor_extensions/gitlab_cli/_index.md)
   for your GitLab account.
 
@@ -430,14 +433,14 @@ To require DPoP on all calls to the REST and GraphQL APIs:
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
-1. Go to the **Use Demonstrating Proof of Possession** section, and select **Enable DPoP**.
+1. Go to the **Use Demonstrating Proof of Possession (DPoP)** section, and select **Enable DPoP**.
 1. Select **Save changes**.
 1. To generate a DPoP header with the [GitLab CLI](../../editor_extensions/gitlab_cli/_index.md),
    run this command in your terminal. Replace `<your_access_token>` with your access token, and `~/.ssh/id_rsa`
    with the location of your private key:
 
    ```shell
-    bin/glab auth dpop-gen --pat "<your_access_token>" --private-key ~/.ssh/id_rsa
+    glab auth dpop-gen --pat "<your_access_token>" --private-key ~/.ssh/id_rsa
    ```
 
 The DPoP header you generated in the CLI can be used:
@@ -463,7 +466,7 @@ The DPoP header you generated in the CLI can be used:
    "https://gitlab.example.com/api/graphql"
   ```
 
-To learn more about DPoP headers, see the blueprint
+To learn more about DPoP, see the blueprint
 [Sender Constraining Personal Access Tokens](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/security-feature-blueprints/-/tree/main/sender_constraining_access_tokens).
 
 ## Create a personal access token programmatically

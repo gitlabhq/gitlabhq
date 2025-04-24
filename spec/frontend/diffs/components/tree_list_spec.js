@@ -107,6 +107,22 @@ describe('Diffs tree list component', () => {
         file_path: 'app/index.js',
         file_hash: 'app-index',
       },
+      'unordered.rb': {
+        addedLines: 0,
+        changed: true,
+        deleted: false,
+        fileHash: 'unordered',
+        key: 'unordered.rb',
+        name: 'unordered.rb',
+        path: 'unordered.rb',
+        removedLines: 0,
+        tempFile: true,
+        type: 'blob',
+        parentPath: '/',
+        tree: [],
+        file_path: 'unordered.rb',
+        file_hash: 'unordered',
+      },
       'test.rb': {
         addedLines: 0,
         changed: true,
@@ -143,11 +159,12 @@ describe('Diffs tree list component', () => {
 
     useLegacyDiffs().treeEntries = treeEntries;
     useLegacyDiffs().tree = [
-      treeEntries.LICENSE,
       {
         ...treeEntries.app,
         tree: [treeEntries.javascript, treeEntries['index.js'], treeEntries['test.rb']],
       },
+      treeEntries['unordered.rb'],
+      treeEntries.LICENSE,
     ];
 
     return treeEntries;
@@ -192,7 +209,7 @@ describe('Diffs tree list component', () => {
         ${'*.js'}       | ${2}
         ${'index.js'}   | ${2}
         ${'app/*.js'}   | ${2}
-        ${'*.js, *.rb'} | ${3}
+        ${'*.js, *.rb'} | ${5}
       `('returns $itemSize item for $extension', async ({ extension, itemSize }) => {
         const input = findDiffTreeSearch();
 
@@ -205,7 +222,19 @@ describe('Diffs tree list component', () => {
     });
 
     it('renders tree', () => {
-      expect(getScroller().props('items')).toHaveLength(6);
+      expect(
+        getScroller()
+          .props('items')
+          .map((item) => item.path),
+      ).toStrictEqual([
+        'app',
+        'app/javascript',
+        'app/javascript/file.rb',
+        'app/index.js',
+        'app/test.rb',
+        'unordered.rb',
+        'LICENSE',
+      ]);
     });
 
     it('re-emits clickFile event', () => {
@@ -219,17 +248,43 @@ describe('Diffs tree list component', () => {
       expect(getFileRow().props('hideFileStats')).toBe(true);
     });
 
-    it('calls toggleTreeOpen when clicking folder', () => {
+    it('re-emits toggleTreeOpen event as toggleFolder', () => {
       getFileRow().vm.$emit('toggleTreeOpen', 'app');
-
-      expect(useLegacyDiffs().toggleTreeOpen).toHaveBeenCalledWith('app');
+      expect(wrapper.emitted('toggleFolder')).toStrictEqual([['app']]);
     });
 
-    it('renders when renderTreeList is false', async () => {
-      useLegacyDiffs().renderTreeList = false;
+    describe('when renderTreeList is false', () => {
+      beforeEach(() => {
+        useLegacyDiffs().renderTreeList = false;
+      });
 
-      await nextTick();
-      expect(getScroller().props('items')).toHaveLength(5);
+      it('renders list items', async () => {
+        await nextTick();
+        expect(
+          getScroller()
+            .props('items')
+            .map((item) => item.path),
+        ).toStrictEqual(['app', 'app/index.js', 'app/test.rb', '/', 'unordered.rb', 'LICENSE']);
+      });
+
+      it('renders ungrouped list items', async () => {
+        createComponent({ groupBlobsListItems: false });
+        await nextTick();
+        expect(
+          getScroller()
+            .props('items')
+            .map((item) => item.path),
+        ).toStrictEqual([
+          'app',
+          'app/index.js',
+          '/',
+          'unordered.rb',
+          'app',
+          'app/test.rb',
+          '/',
+          'LICENSE',
+        ]);
+      });
     });
 
     it('dispatches setTreeOpen with all paths for the current diff file', async () => {
@@ -396,36 +451,43 @@ describe('Diffs tree list component', () => {
   });
 
   describe('loading state', () => {
-    const getLoadedFiles = (offset = 1) =>
-      useLegacyDiffs()
-        .tree.slice(offset)
-        .reduce((acc, el) => {
-          acc[el.fileHash] = true;
-          return acc;
-        }, {});
+    const getLoadingFile = () => useLegacyDiffs().tree[2];
+    const getRootItems = () =>
+      getScroller()
+        .props('items')
+        .filter((item) => item.type !== 'tree');
+    const findLoadingItem = (loadedFile) =>
+      getRootItems().find((item) => item.type !== 'tree' && item.fileHash !== loadedFile.fileHash);
+    const findLoadedItem = (loadedFile) =>
+      getRootItems().find((item) => item.type !== 'tree' && item.fileHash === loadedFile.fileHash);
 
     beforeEach(() => {
       setupFilesInState();
     });
 
     it('sets loading state for loading files', () => {
-      const loadedFiles = getLoadedFiles();
-      createComponent({ loadedFiles });
-      const [firstItem, secondItem] = getScroller().props('items');
-      expect(firstItem.loading).toBe(true);
-      expect(secondItem.loading).toBe(false);
+      const loadedFile = getLoadingFile();
+      createComponent({ loadedFiles: { [loadedFile.fileHash]: true } });
+      const loadedItem = findLoadedItem(loadedFile);
+      const loadingItem = findLoadingItem(loadedFile);
+      expect(loadingItem.loading).toBe(true);
+      expect(loadedItem.loading).toBe(false);
     });
 
     it('is not focusable', () => {
-      const loadedFiles = getLoadedFiles();
-      createComponent({ loadedFiles });
-      expect(wrapper.findAllComponents(DiffFileRow).at(0).attributes('tabindex')).toBe('-1');
+      const loadedFile = getLoadingFile();
+      createComponent({ loadedFiles: { [loadedFile.fileHash]: true } });
+      const loadingItemIndex = getScroller().props('items').indexOf(findLoadingItem(loadedFile));
+      expect(
+        wrapper.findAllComponents(DiffFileRow).at(loadingItemIndex).attributes('tabindex'),
+      ).toBe('-1');
     });
 
     it('ignores clicks on loading files', () => {
-      const loadedFiles = getLoadedFiles();
-      createComponent({ loadedFiles });
-      wrapper.findAllComponents(DiffFileRow).at(0).vm.$emit('clickFile', {});
+      const loadedFile = getLoadingFile();
+      createComponent({ loadedFiles: { [loadedFile.fileHash]: true } });
+      const loadingItemIndex = getScroller().props('items').indexOf(findLoadingItem(loadedFile));
+      wrapper.findAllComponents(DiffFileRow).at(loadingItemIndex).vm.$emit('clickFile', {});
       expect(wrapper.emitted('clickFile')).toBe(undefined);
     });
   });

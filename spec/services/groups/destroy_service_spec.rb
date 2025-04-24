@@ -78,10 +78,16 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
       it 'publishes a GroupDeletedEvent' do
         expect { destroy_group(group, user, async) }
           .to publish_event(Groups::GroupDeletedEvent)
-          .with(
-            group_id: group.id,
-            root_namespace_id: group.root_ancestor.id
-          )
+            .with(
+              group_id: group.id,
+              root_namespace_id: group.root_ancestor.id
+            )
+          .and publish_event(Groups::GroupDeletedEvent)
+            .with(
+              group_id: nested_group.id,
+              root_namespace_id: nested_group.root_ancestor.id,
+              parent_namespace_id: group.id
+            )
       end
     end
   end
@@ -102,6 +108,7 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
       before do
         # Don't run Sidekiq to verify that group and projects are not actually destroyed
         Sidekiq::Testing.fake! { destroy_group(group, user, true) }
+        Sidekiq::Testing.fake! { destroy_group(nested_group, user, true) }
       end
 
       it 'verifies original paths and projects still exist' do

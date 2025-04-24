@@ -15,6 +15,7 @@ jest.mock('~/rapid_diffs/app/file_browser.vue', () => ({
     return h('div', {
       attrs: {
         'data-file-browser-component': true,
+        'data-group-blobs-list-items': JSON.stringify(this.groupBlobsListItems),
       },
       on: {
         click: () => {
@@ -119,5 +120,11 @@ describe('Init file browser', () => {
     initFileBrowser(diffFilesEndpoint);
     await waitForPromises();
     expect(document.querySelector('[data-file-browser-toggle-component]')).not.toBe(null);
+  });
+
+  it('disables sorting', async () => {
+    initFileBrowser(diffFilesEndpoint, false);
+    await waitForPromises();
+    expect(document.querySelector('[data-group-blobs-list-items="false"]')).not.toBe(null);
   });
 });

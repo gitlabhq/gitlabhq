@@ -41,7 +41,13 @@ describe('Rapid Diffs App', () => {
     initFileBrowser.mockResolvedValue();
     setHTMLFixture(
       `
-        <div data-rapid-diffs data-reload-stream-url="/reload" data-diffs-stats-endpoint="/stats" data-diff-files-endpoint="/diff-files-metadata">
+        <div
+          data-rapid-diffs
+          data-reload-stream-url="/reload"
+          data-diffs-stats-endpoint="/stats"
+          data-diff-files-endpoint="/diff-files-metadata"
+          data-should-sort-metadata-files="true"
+        >
           <div id="js-stream-container" data-diffs-stream-url="/stream"></div>
         </div>
       `,
@@ -59,7 +65,7 @@ describe('Rapid Diffs App', () => {
     expect(window.customElements.define).toHaveBeenCalledWith('streaming-error', StreamingError);
     expect(initHiddenFilesWarning).toHaveBeenCalled();
     expect(fixWebComponentsStreamingOnSafari).toHaveBeenCalled();
-    expect(initFileBrowser).toHaveBeenCalledWith('/diff-files-metadata');
+    expect(initFileBrowser).toHaveBeenCalledWith('/diff-files-metadata', true);
   });
 
   it('streams remaining diffs', () => {
@@ -81,5 +87,24 @@ describe('Rapid Diffs App', () => {
     app.init();
     document.dispatchEvent(new CustomEvent(DIFF_FILE_MOUNTED));
     expect(useDiffsList(pinia).addLoadedFile).toHaveBeenCalled();
+  });
+
+  it('skips sorting', () => {
+    setHTMLFixture(
+      `
+        <div
+          data-rapid-diffs
+          data-reload-stream-url="/reload"
+          data-diffs-stats-endpoint="/stats"
+          data-diff-files-endpoint="/diff-files-metadata"
+          data-should-sort-metadata-files="false"
+        >
+          <div id="js-stream-container" data-diffs-stream-url="/stream"></div>
+        </div>
+      `,
+    );
+    createApp();
+    app.init();
+    expect(initFileBrowser).toHaveBeenCalledWith('/diff-files-metadata', false);
   });
 });

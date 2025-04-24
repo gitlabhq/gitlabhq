@@ -69,15 +69,15 @@ module ActiveContext
 
           fields.each do |field|
             case field
-            when Field::Vector
-              # Vector fields have fixed size based on dimensions
-              fixed_columns << [field, field.options[:dimensions] * 4]
             when Field::Bigint
               # Bigint is 8 bytes
               fixed_columns << [field, 8]
             when Field::Keyword, Field::Text
               # Text fields are variable width
               variable_columns << field
+            when Field::Vector
+              # Vector fields have fixed size based on dimensions
+              fixed_columns << [field, field.options[:dimensions] * 4]
             else
               raise ArgumentError, "Unknown field type: #{field.class}"
             end
@@ -89,12 +89,12 @@ module ActiveContext
 
         def add_column_from_field(table, field)
           case field
-          when Field::Vector
-            table.column(field.name, "vector(#{field.options[:dimensions]})")
           when Field::Bigint
             table.bigint(field.name, **field.options.except(:index))
           when Field::Keyword, Field::Text
             table.text(field.name, **field.options.except(:index))
+          when Field::Vector
+            table.column(field.name, "vector(#{field.options[:dimensions]})")
           else
             raise ArgumentError, "Unknown field type: #{field.class}"
           end

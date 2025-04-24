@@ -11,7 +11,7 @@
             streamRequest: fetch('#{Gitlab::UrlSanitizer.sanitize(@stream_url)}', { signal: controller.signal })
           }
 
-.rd-app{ data: { rapid_diffs: true, reload_stream_url: @reload_stream_url, diffs_stats_endpoint: @diffs_stats_endpoint, diff_files_endpoint: @diff_files_endpoint } }
+.rd-app{ data: { rapid_diffs: true, reload_stream_url: @reload_stream_url, diffs_stats_endpoint: @diffs_stats_endpoint, diff_files_endpoint: @diff_files_endpoint, should_sort_metadata_files: @should_sort_metadata_files.to_json } }
   .rd-app-header
     .rd-app-file-browser-toggle
       %div{ data: { file_browser_toggle: true } }

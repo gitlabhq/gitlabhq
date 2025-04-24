@@ -3112,7 +3112,7 @@ msgstr ""
 msgid "AccessTokens|Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API)."
 msgstr ""
 
-msgid "AccessTokens|How do I use DPoP headers?"
+msgid "AccessTokens|How do I use DPoP?"
 msgstr ""
 
 msgid "AccessTokens|IP: %{ips}"
@@ -3163,12 +3163,6 @@ msgid "AccessTokens|Personal / project / group access token expiration"
 msgstr ""
 
 msgid "AccessTokens|Personal access tokens"
-msgstr ""
-
-msgid "AccessTokens|Require DPoP headers to access the REST or GraphQL API with a personal access token."
-msgstr ""
-
-msgid "AccessTokens|Require Demonstrating Proof of Possession (DPoP) headers"
 msgstr ""
 
 msgid "AccessTokens|Revoke"
@@ -3250,6 +3244,12 @@ msgid "AccessTokens|Tokens expiring in 2 weeks"
 msgstr ""
 
 msgid "AccessTokens|Usage"
+msgstr ""
+
+msgid "AccessTokens|Use DPoP to protect your REST or GraphQL API access when using a personal access token."
+msgstr ""
+
+msgid "AccessTokens|Use Demonstrating Proof of Possession (DPoP)"
 msgstr ""
 
 msgid "AccessTokens|View token usage information"
@@ -53667,9 +53667,6 @@ msgstr ""
 msgid "Secrets manager"
 msgstr ""
 
-msgid "Secrets|Actions"
-msgstr ""
-
 msgid "Secrets|Add a description for the secret"
 msgstr ""
 
@@ -53697,9 +53694,6 @@ msgstr ""
 msgid "Secrets|Created"
 msgstr ""
 
-msgid "Secrets|Delete"
-msgstr ""
-
 msgid "Secrets|Delete Secret"
 msgstr ""
 
@@ -53710,9 +53704,6 @@ msgid "Secrets|Description must be 200 characters or less."
 msgstr ""
 
 msgid "Secrets|Edit %{id}"
-msgstr ""
-
-msgid "Secrets|Edit secret"
 msgstr ""
 
 msgid "Secrets|Enable the Secrets Manager to securely store and manage sensitive information for this project."
@@ -53746,9 +53737,6 @@ msgid "Secrets|Please wait while the Secrets manager is provisioned. It is safe 
 msgstr ""
 
 msgid "Secrets|Provisioning in progress"
-msgstr ""
-
-msgid "Secrets|Revoke"
 msgstr ""
 
 msgid "Secrets|Rotation period"
@@ -65878,12 +65866,6 @@ msgid "UserProfile|You haven't created any snippets"
 msgstr ""
 
 msgid "UserProfile|Your projects can be available publicly, internally, or privately, at your choice."
-msgstr ""
-
-msgid "UserProfile|at"
-msgstr ""
-
-msgid "UserProfile|made a private contribution"
 msgstr ""
 
 msgid "UserProfile|updated %{updated}"

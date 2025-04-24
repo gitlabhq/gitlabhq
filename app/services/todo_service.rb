@@ -193,8 +193,8 @@ class TodoService
   #
   #   * Mark all outstanding todos on this MR for the current user as done
   #
-  def new_review(review, current_user)
-    resolve_todos_for_target(review.merge_request, current_user)
+  def new_review(merge_request, current_user)
+    resolve_todos_for_target(merge_request, current_user)
   end
 
   # When user marks a target as todo

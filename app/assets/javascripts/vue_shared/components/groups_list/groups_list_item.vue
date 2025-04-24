@@ -3,7 +3,7 @@ import { GlIcon, GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 
 import { createAlert } from '~/alert';
-import GroupListItemDeleteModal from 'ee_else_ce/vue_shared/components/groups_list/group_list_item_delete_modal.vue';
+import GroupListItemDeleteModal from '~/vue_shared/components/groups_list/group_list_item_delete_modal.vue';
 import axios from '~/lib/utils/axios_utils';
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
@@ -16,11 +16,9 @@ import {
 } from '~/vue_shared/components/resource_lists/constants';
 import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
 import ListItemStat from '~/vue_shared/components/resource_lists/list_item_stat.vue';
-import {
-  renderDeleteSuccessToast,
-  deleteParams,
-} from 'ee_else_ce/vue_shared/components/groups_list/utils';
+import { renderDeleteSuccessToast, deleteParams } from '~/vue_shared/components/groups_list/utils';
 import GroupListItemPreventDeleteModal from './group_list_item_prevent_delete_modal.vue';
+import GroupListItemInactiveBadge from './group_list_item_inactive_badge.vue';
 
 export default {
   i18n: {
@@ -38,8 +36,7 @@ export default {
     GlBadge,
     GroupListItemPreventDeleteModal,
     GroupListItemDeleteModal,
-    GroupListItemInactiveBadge: () =>
-      import('ee_component/vue_shared/components/groups_list/group_list_item_inactive_badge.vue'),
+    GroupListItemInactiveBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,

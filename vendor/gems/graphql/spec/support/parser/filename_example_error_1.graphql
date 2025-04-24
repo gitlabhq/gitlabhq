@@ -1,4 +1,0 @@
-{
-  node(id: 2) {
-    stuff
-}

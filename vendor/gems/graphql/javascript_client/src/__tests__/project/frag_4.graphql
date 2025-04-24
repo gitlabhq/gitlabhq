@@ -1,5 +1,0 @@
-fragment Frag4 on Query {
-  evenMoreStuff {
-    stuffInside
-  }
-}

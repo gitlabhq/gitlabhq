@@ -15,7 +15,7 @@ module RapidDiffs
       return render_404 unless diffs_resource.present?
 
       render json: {
-        diff_files: DiffFileMetadataEntity.represent(diffs_resource.raw_diff_files(sorted: true))
+        diff_files: DiffFileMetadataEntity.represent(diffs_resource.raw_diff_files)
       }
     end
 

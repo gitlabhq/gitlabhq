@@ -2797,18 +2797,6 @@
     - <<: *if-merge-request
       changes: ["Gemfile.lock", "Gemfile.next.lock"]
 
-.reports:rules:x-ray:
-  rules:
-    - <<: *if-default-branch-refs
-      changes: *dependency-patterns
-    - <<: *if-merge-request
-      changes: *dependency-patterns
-      when: never
-    - <<: *if-merge-request
-      changes: [".gitlab/ci/reports.gitlab-ci.yml"]
-      when: manual
-    - when: never
-
 .reports:rules:pajamas_adoption:
   rules:
     - <<: *if-not-ee

@@ -11,6 +11,7 @@ import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { fixWebComponentsStreamingOnSafari } from '~/rapid_diffs/app/safari_fix';
 import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 // This facade interface joins together all the bits and pieces of Rapid Diffs: DiffFile, Settings, File browser, etc.
 // It's a unified entrypoint for Rapid Diffs and all external communications should happen through this interface.
@@ -25,7 +26,7 @@ class RapidDiffsFacade {
       document.querySelector('[data-diffs-list]'),
       this.DiffFileImplementation,
     );
-    const { reloadStreamUrl, diffsStatsEndpoint, diffFilesEndpoint } =
+    const { reloadStreamUrl, diffsStatsEndpoint, diffFilesEndpoint, shouldSortMetadataFiles } =
       document.querySelector('[data-rapid-diffs]').dataset;
     useDiffsView(pinia).diffsStatsEndpoint = diffsStatsEndpoint;
     useDiffsView(pinia)
@@ -36,7 +37,7 @@ class RapidDiffsFacade {
           error,
         });
       });
-    initFileBrowser(diffFilesEndpoint).catch((error) => {
+    initFileBrowser(diffFilesEndpoint, parseBoolean(shouldSortMetadataFiles)).catch((error) => {
       createAlert({
         message: __('Failed to load file browser. Try reloading the page.'),
         error,

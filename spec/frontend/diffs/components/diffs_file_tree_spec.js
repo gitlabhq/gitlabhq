@@ -55,6 +55,13 @@ describe('DiffsFileTree', () => {
     expect(wrapper.emitted('clickFile')).toStrictEqual([[obj]]);
   });
 
+  it('re-emits toggleFolder event', () => {
+    const obj = {};
+    createComponent();
+    wrapper.findComponent(TreeList).vm.$emit('toggleFolder', obj);
+    expect(wrapper.emitted('toggleFolder')).toStrictEqual([[obj]]);
+  });
+
   it('sets current file on click', () => {
     const file = { fileHash: 'foo' };
     createComponent();
@@ -200,6 +207,7 @@ describe('DiffsFileTree', () => {
   });
 
   it('passes down props to tree list', async () => {
+    const groupBlobsListItems = false;
     const loadedFiles = { foo: true };
     const totalFilesCount = '20';
     const rowHeight = 30;
@@ -208,10 +216,11 @@ describe('DiffsFileTree', () => {
         return `${rowHeight}px`;
       },
     });
-    createComponent({ loadedFiles, totalFilesCount });
+    createComponent({ loadedFiles, totalFilesCount, groupBlobsListItems });
     await nextTick();
     expect(wrapper.findComponent(TreeList).props('loadedFiles')).toBe(loadedFiles);
     expect(wrapper.findComponent(TreeList).props('totalFilesCount')).toBe(totalFilesCount);
     expect(wrapper.findComponent(TreeList).props('rowHeight')).toBe(rowHeight);
+    expect(wrapper.findComponent(TreeList).props('groupBlobsListItems')).toBe(groupBlobsListItems);
   });
 });

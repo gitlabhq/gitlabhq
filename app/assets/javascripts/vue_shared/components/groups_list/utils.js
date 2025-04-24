@@ -1,15 +1,31 @@
 import toast from '~/vue_shared/plugins/global_toast';
 import { sprintf, __ } from '~/locale';
 
-export const renderDeleteSuccessToast = (group) => {
+export const renderDeleteSuccessToast = (item) => {
+  // If delayed deletion is disabled or the project/group is already marked for deletion
+  if (!item.isAdjournedDeletionEnabled || item.markedForDeletionOn) {
+    toast(
+      sprintf(__("Group '%{group_name}' is being deleted."), {
+        group_name: item.fullName,
+      }),
+    );
+
+    return;
+  }
+
   toast(
-    sprintf(__("Group '%{group_name}' is being deleted."), {
-      group_name: group.fullName,
+    sprintf(__("Group '%{group_name}' will be deleted on %{date}."), {
+      group_name: item.fullName,
+      date: item.permanentDeletionDate,
     }),
   );
 };
 
-export const deleteParams = () => {
-  // Overridden in EE
-  return {};
+export const deleteParams = (item) => {
+  // If delayed deletion is disabled or the project/group is not yet marked for deletion
+  if (!item.isAdjournedDeletionEnabled || !item.markedForDeletionOn) {
+    return {};
+  }
+
+  return { permanently_remove: true };
 };

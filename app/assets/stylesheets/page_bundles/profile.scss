@@ -181,7 +181,7 @@ $profile-grid-flex: 1fr;
   @apply gl-bg-subtle;
 }
 
-.user-activity-content {
+.user-activity-content, .user-calendar-activities {
   position: relative;
 
   .system-note-image {

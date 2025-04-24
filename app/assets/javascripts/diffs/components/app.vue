@@ -469,6 +469,7 @@ export default {
       'goToFile',
       'reviewFile',
       'setFileCollapsedByUser',
+      'toggleTreeOpen',
     ]),
     ...mapActions(useFileBrowser, ['setFileBrowserVisibility']),
     ...mapVuexActions('findingsDrawer', ['setDrawer']),
@@ -805,6 +806,7 @@ export default {
           class="gl-px-5"
           :total-files-count="numTotalFiles"
           @clickFile="goToFile({ path: $event.path })"
+          @toggleFolder="toggleTreeOpen"
         />
         <div class="col-12 col-md-auto diff-files-holder">
           <commit-widget v-if="commit" :commit="commit" :collapsible="false" />

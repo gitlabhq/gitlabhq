@@ -48,6 +48,11 @@ export default {
       type: Number,
       required: true,
     },
+    groupBlobsListItems: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -62,7 +67,26 @@ export default {
       'fileTree',
       'allBlobs',
       'linkedFile',
+      'flatBlobsList',
     ]),
+    flatUngroupedList() {
+      return this.flatBlobsList.reduce((acc, blob, index) => {
+        const loading = this.isLoading(blob.fileHash);
+        const lastIndex = acc.length;
+        const previous = acc[lastIndex - 1];
+        const adjacentNonHeader = previous?.isHeader ? acc[lastIndex - 2] : previous;
+        const isSibling = adjacentNonHeader?.parentPath === blob.parentPath;
+        if (isSibling) return [...acc, { ...blob, loading, level: 1 }];
+        const header = {
+          key: `header-${index}`,
+          path: blob.parentPath,
+          isHeader: true,
+          tree: [],
+          level: 0,
+        };
+        return [...acc, header, { ...blob, loading, level: 1 }];
+      }, []);
+    },
     filteredTreeList() {
       let search = this.search.toLowerCase().trim();
 
@@ -101,8 +125,7 @@ export default {
       const result = [];
       const createFlatten = (level, hidden) => (item) => {
         const isTree = item.type === 'tree';
-        const loading =
-          !isTree && !item.isHeader && this.loadedFiles && !this.loadedFiles[item.fileHash];
+        const loading = !isTree && !item.isHeader && this.isLoading(item.fileHash);
         result.push({
           ...item,
           hidden,
@@ -152,6 +175,8 @@ export default {
       ];
     },
     treeList() {
+      if (!this.renderTreeList && !this.groupBlobsListItems && !this.search)
+        return this.flatUngroupedList;
       const list = this.linkedFile ? this.flatListWithLinkedFile : this.flatFilteredTreeList;
       if (this.search) return list;
       return list.filter((item) => !item.hidden);
@@ -166,7 +191,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useLegacyDiffs, ['toggleTreeOpen', 'setRenderTreeList', 'setTreeOpen']),
+    ...mapActions(useLegacyDiffs, ['setRenderTreeList', 'setTreeOpen']),
     preventClippingSelectedFile(hash) {
       // let the layout stabilize, we need to wait for:
       // scroll to file, sticky elements update, file browser height update
@@ -193,6 +218,9 @@ export default {
           .reduce((acc, part) => [...acc, acc.length ? `${acc.at(-1)}/${part}` : part], [])
           .forEach((path) => this.setTreeOpen({ path, opened: true }));
       }
+    },
+    isLoading(fileHash) {
+      return this.loadedFiles && !this.loadedFiles[fileHash];
     },
   },
   searchPlaceholder: sprintf(s__('MergeRequest|Search (e.g. *.vue) (%{MODIFIER_KEY}P)'), {
@@ -260,7 +288,7 @@ export default {
             :tabindex="item.loading ? -1 : 0"
             class="gl-relative !gl-m-1"
             :data-file-row="item.fileHash"
-            @toggleTreeOpen="toggleTreeOpen"
+            @toggleTreeOpen="$emit('toggleFolder', $event)"
             @clickFile="!item.loading && $emit('clickFile', $event)"
           />
         </template>

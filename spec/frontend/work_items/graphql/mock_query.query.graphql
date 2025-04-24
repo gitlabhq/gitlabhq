@@ -1,0 +1,5 @@
+query mockQuery {
+  group(fullPath: "example") {
+    id
+  }
+}

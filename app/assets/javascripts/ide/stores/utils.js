@@ -142,6 +142,14 @@ const sortTreesByTypeAndName = (a, b) => {
   return 0;
 };
 
+export const linkTreeNodes = (tree) => {
+  return tree.map((entity) =>
+    Object.assign(entity, {
+      tree: entity.tree.length ? linkTreeNodes(entity.tree) : [],
+    }),
+  );
+};
+
 export const sortTree = (sortedTree) =>
   sortedTree
     .map((entity) =>

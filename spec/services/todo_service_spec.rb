@@ -1226,8 +1226,7 @@ RSpec.describe TodoService, feature_category: :notifications do
         second_todo = create(:todo, :pending, :review_requested, user: john_doe, project: project, target: mentioned_mr, author: author)
         third_todo = create(:todo, :pending, :mentioned, user: john_doe, project: project, target: mentioned_mr, author: author)
 
-        review = Review.new(merge_request: mentioned_mr)
-        service.new_review(review, john_doe)
+        service.new_review(mentioned_mr, john_doe)
 
         expect(first_todo.reload).to be_done
         expect(second_todo.reload).to be_done

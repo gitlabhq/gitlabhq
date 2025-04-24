@@ -1,6 +1,6 @@
 import axios from '~/lib/utils/axios_utils';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
-import { formatGroup } from 'ee_else_ce/groups/your_work/graphql/utils';
+import { formatGroup } from '~/groups/your_work/graphql/utils';
 
 export const resolvers = (endpoint) => ({
   Query: {

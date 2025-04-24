@@ -1,5 +1,29 @@
-#import "./base_group.fragment.graphql"
-
 fragment Group on Group {
-  ...BaseGroup
+  id
+  fullPath
+  fullName
+  parent {
+    id
+  }
+  webUrl
+  organizationEditPath
+  descriptionHtml
+  avatarUrl
+  descendantGroupsCount
+  projectsCount
+  groupMembersCount
+  visibility
+  createdAt
+  updatedAt
+  userPermissions {
+    removeGroup
+    viewEditPage
+  }
+  maxAccessLevel {
+    integerValue
+  }
+  isLinkedToSubscription
+  markedForDeletionOn
+  isAdjournedDeletionEnabled
+  permanentDeletionDate
 }

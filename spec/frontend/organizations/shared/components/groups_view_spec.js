@@ -38,8 +38,8 @@ const MOCK_DELETE_PARAMS = {
   testParam: true,
 };
 
-jest.mock('ee_else_ce/vue_shared/components/groups_list/utils', () => ({
-  ...jest.requireActual('ee_else_ce/vue_shared/components/groups_list/utils'),
+jest.mock('~/vue_shared/components/groups_list/utils', () => ({
+  ...jest.requireActual('~/vue_shared/components/groups_list/utils'),
   renderDeleteSuccessToast: jest.fn(),
   deleteParams: jest.fn(() => MOCK_DELETE_PARAMS),
 }));

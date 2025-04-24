@@ -344,6 +344,8 @@ Streaming of Code Generation responses is supported in JetBrains and Visual Stud
 perceived faster response times.
 Other supported IDEs will return the generated code in a single block.
 
+Streaming is not enabled for code completion.
+
 ### Direct and indirect connections
 
 {{< history >}}

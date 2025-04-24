@@ -31,7 +31,7 @@
           = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'js-retry-load' }) do
             = s_('UserProfile|Retry')
 
-      .user-calendar-activities
+      .user-calendar-activities.gl-mb-5
       .overview-content-list.user-activity-content.gl-mb-5{ data: { href: user_activity_path, testid: 'user-activity-content' } }
         = gl_loading_icon(size: 'md', css_class: 'loading')
 

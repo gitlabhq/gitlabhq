@@ -11,6 +11,7 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
   let(:update_user_endpoint) { '/update_user' }
   let(:diffs_stats_endpoint) { '/diffs_stats' }
   let(:diff_files_endpoint) { '/diff_files_metadata' }
+  let(:should_sort_metadata_files) { false }
 
   it "renders diffs slice" do
     render_component
@@ -24,6 +25,16 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     expect(app['data-reload-stream-url']).to eq(reload_stream_url)
     expect(app['data-diffs-stats-endpoint']).to eq(diffs_stats_endpoint)
     expect(app['data-diff-files-endpoint']).to eq(diff_files_endpoint)
+  end
+
+  context "with should_sort_metadata_files set to true" do
+    let(:should_sort_metadata_files) { true }
+
+    it "renders should_sort_metadata_files" do
+      render_component
+      app = page.find('[data-rapid-diffs]')
+      expect(app['data-should-sort-metadata-files']).to eq('true')
+    end
   end
 
   it "renders view settings" do
@@ -116,6 +127,7 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
       update_user_endpoint:,
       diffs_stats_endpoint:,
       diff_files_endpoint:,
+      should_sort_metadata_files:,
       lazy:
     )
   end

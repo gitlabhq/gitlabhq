@@ -201,7 +201,9 @@ class UsersController < ApplicationController
     rescue StandardError
       Date.today
     end
+
     @events = contributions_calendar.events_by_date(@calendar_date).map(&:present)
+    Events::RenderService.new(current_user).execute(@events)
 
     render 'calendar_activities', layout: false
   end

@@ -322,7 +322,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
     context 'with adjourned deletion disabled' do
       before do
         allow_next_found_instance_of(Group) do |group|
-          allow(group).to receive_messages(adjourned_deletion?: false, adjourned_deletion_configured?: false)
+          allow(group).to receive_messages(adjourned_deletion?: false)
         end
       end
 
@@ -342,7 +342,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
     context 'with adjourned deletion enabled' do
       before do
         allow_next_found_instance_of(Group) do |group|
-          allow(group).to receive_messages(adjourned_deletion?: true, adjourned_deletion_configured?: true)
+          allow(group).to receive_messages(adjourned_deletion?: true)
         end
       end
 
@@ -354,19 +354,6 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
 
       it 'is_adjourned_deletion_enabled returns true' do
         expect(group_data[:is_adjourned_deletion_enabled]).to be true
-      end
-
-      it 'permanent_deletion_date returns correct date', :freeze_time do
-        expect(group_data[:permanent_deletion_date])
-          .to eq(::Gitlab::CurrentSettings.deletion_adjourned_period.days.since(Date.current).strftime('%F'))
-      end
-    end
-
-    context 'with adjourned deletion enabled globally' do
-      before do
-        allow_next_found_instance_of(Group) do |group|
-          allow(group).to receive_messages(adjourned_deletion?: false, adjourned_deletion_configured?: true)
-        end
       end
 
       it 'permanent_deletion_date returns correct date', :freeze_time do

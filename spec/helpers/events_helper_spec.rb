@@ -46,8 +46,8 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
     let(:users_activity_page?) { true }
 
     before do
-      allow(helper).to receive(:current_path?).and_call_original
-      allow(helper).to receive(:current_path?).with('users#activity').and_return(users_activity_page?)
+      allow(helper).to receive(:current_controller?).and_call_original
+      allow(helper).to receive(:current_controller?).with('users').and_return(users_activity_page?)
     end
 
     context 'when on users activity page' do
@@ -87,8 +87,8 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
     let(:users_activity_page?) { true }
 
     before do
-      allow(helper).to receive(:current_path?).and_call_original
-      allow(helper).to receive(:current_path?).with('users#activity').and_return(users_activity_page?)
+      allow(helper).to receive(:current_controller?).and_call_original
+      allow(helper).to receive(:current_controller?).with('users').and_return(users_activity_page?)
     end
 
     subject { helper.event_user_info(event) }
@@ -564,8 +564,8 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
     let(:users_activity_page?) { true }
 
     before do
-      allow(helper).to receive(:current_path?).and_call_original
-      allow(helper).to receive(:current_path?).with('users#activity').and_return(users_activity_page?)
+      allow(helper).to receive(:current_controller?).and_call_original
+      allow(helper).to receive(:current_controller?).with('users').and_return(users_activity_page?)
     end
 
     context 'when on the user activity page' do

@@ -1,24 +1,31 @@
 - event = event.present
+- event_visible_to_user = event.visible_to_user?(current_user)
+- timezone = local_assigns[:timezone] || nil
 
-- if event.visible_to_user?(current_user)
-  .event-item.gl-border-b-0.gl-pb-3{ class: current_path?('users#activity') ? 'user-profile-activity !gl-pl-7' : 'project-activity-item' }
+- if event_visible_to_user || @user&.include_private_contributions?
+  .event-item.gl-border-b-0.gl-pb-3{ class: current_controller?('users') ? 'user-profile-activity !gl-pl-7' : 'project-activity-item' }
     .event-item-timestamp.gl-text-sm
-      #{time_ago_with_tooltip(event.created_at)}
-      - if event.imported?
+      - if timezone
+        %span.js-localtime{ data: { datetime: event.created_at.utc.strftime('%Y-%m-%dT%H:%M:%SZ'), toggle: 'tooltip', placement: 'top' } }
+          = event.created_at.to_time.in_time_zone(timezone).strftime('%-I:%M%P')
+      - else
+        = time_ago_with_tooltip(event.created_at)
+      - if event_visible_to_user && event.imported?
         %span &middot;
         = render "import/shared/imported_badge", text_only: true, importable: _('event')
 
-    - if event.wiki_page?
-      = render "events/event/wiki", event: event
-    - elsif event.design?
-      = render 'events/event/design', event: event
-    - elsif event.created_project_action?
-      = render "events/event/created_project", event: event
-    - elsif event.push_action?
-      = render "events/event/push", event: event
-    - elsif event.commented_action?
-      = render "events/event/note", event: event
-    - else
-      = render "events/event/common", event: event
-- elsif @user&.include_private_contributions?
-  = render "events/event/private", event: event
+    - if event_visible_to_user
+      - if event.wiki_page?
+        = render "events/event/wiki", event: event
+      - elsif event.design?
+        = render 'events/event/design', event: event
+      - elsif event.created_project_action?
+        = render "events/event/created_project", event: event
+      - elsif event.push_action?
+        = render "events/event/push", event: event
+      - elsif event.commented_action?
+        = render "events/event/note", event: event
+      - else
+        = render "events/event/common", event: event
+    - elsif @user&.include_private_contributions?
+      = render "events/event/private", event: event

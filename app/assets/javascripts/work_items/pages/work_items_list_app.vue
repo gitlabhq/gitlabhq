@@ -158,6 +158,11 @@ export default {
       required: false,
       default: 0,
     },
+    eeEpicListQuery: {
+      type: Object,
+      required: false,
+      default: null,
+    },
     withTabs: {
       type: Boolean,
       required: false,
@@ -199,7 +204,9 @@ export default {
   },
   apollo: {
     workItems: {
-      query: getWorkItemsQuery,
+      query() {
+        return this.isEpicsList && this.eeEpicListQuery ? this.eeEpicListQuery : getWorkItemsQuery;
+      },
       variables() {
         return this.queryVariables;
       },

@@ -288,7 +288,7 @@ export default class ActivityCalendar {
 
       $(this.activitiesContainer)
         .empty()
-        .append(loadingIconForLegacyJS({ size: 'lg' }));
+        .append(loadingIconForLegacyJS({ size: 'md', classes: 'gl-my-8' }));
 
       $(this.recentActivitiesContainer).hide();
 

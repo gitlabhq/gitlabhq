@@ -312,14 +312,14 @@ module EventsHelper
   def icon_for_profile_event(event)
     base_class = 'system-note-image'
 
-    classes = current_path?('users#activity') ? "#{event.action_name.parameterize}-icon gl-rounded-full gl-bg-strong gl-leading-0" : "user-avatar"
-    content = current_path?('users#activity') ? icon_for_event(event.action_name, size: 14) : author_avatar(event, size: 32, css_class: 'gl-inline-block', project: event.project)
+    classes = current_controller?('users') ? "#{event.action_name.parameterize}-icon gl-rounded-full gl-bg-strong gl-leading-0" : "user-avatar"
+    content = current_controller?('users') ? icon_for_event(event.action_name, size: 14) : author_avatar(event, size: 32, css_class: 'gl-inline-block', project: event.project)
 
     tag.div(class: "#{base_class} #{classes}") { content }
   end
 
   def inline_event_icon(event)
-    unless current_path?('users#activity')
+    unless current_controller?('users')
       content_tag :span, class: "system-note-image-inline gl-flex gl-mr-2 gl-mt-1 #{event.action_name.parameterize}-icon" do
         next design_event_icon(event.action, size: 14) if event.design?
 
@@ -329,7 +329,7 @@ module EventsHelper
   end
 
   def event_user_info(event)
-    return if current_path?('users#activity')
+    return if current_controller?('users')
 
     tag.div(class: 'event-user-info') do
       concat tag.span(link_to_author(event), class: 'author-name')
@@ -339,7 +339,7 @@ module EventsHelper
   end
 
   def user_profile_activity_classes
-    current_path?('users#activity') ? ' gl-font-semibold gl-text-default' : ''
+    current_controller?('users') ? ' gl-font-semibold gl-text-default' : ''
   end
 
   private

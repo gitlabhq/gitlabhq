@@ -628,6 +628,14 @@ describe('diffs/components/app', () => {
         wrapper.findComponent(DiffsFileTree).vm.$emit('clickFile', file);
         expect(store.goToFile).toHaveBeenCalledWith({ path: file.path });
       });
+
+      it('should handle toggleFolder events', () => {
+        const file = { path: '111.js' };
+        store.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
+        createComponent();
+        wrapper.findComponent(DiffsFileTree).vm.$emit('toggleFolder', file);
+        expect(store.toggleTreeOpen).toHaveBeenCalledWith(file);
+      });
     });
   });
 

@@ -43162,6 +43162,7 @@ The status of the workflow.
 | <a id="duoworkflowstatusplan_approval_required"></a>`PLAN_APPROVAL_REQUIRED` | The workflow is plan_approval_required. |
 | <a id="duoworkflowstatusrunning"></a>`RUNNING` | The workflow is running. |
 | <a id="duoworkflowstatusstopped"></a>`STOPPED` | The workflow is stopped. |
+| <a id="duoworkflowstatustool_call_approval_required"></a>`TOOL_CALL_APPROVAL_REQUIRED` | The workflow is tool_call_approval_required. |
 
 ### `EntryType`
 

@@ -69,6 +69,7 @@ import {
   groupWorkItemStateCountsQueryResponse,
   workItemParentQueryResponse,
 } from '../../mock_data';
+import mockQuery from '../../graphql/mock_query.query.graphql';
 
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -113,6 +114,7 @@ describeSkipVue3(skipReason, () => {
     workItemsViewPreference = false,
     workItemsToggleEnabled = true,
     props = {},
+    additionalHandlers = [],
   } = {}) => {
     window.gon = {
       ...window.gon,
@@ -130,6 +132,7 @@ describeSkipVue3(skipReason, () => {
         [workItemParentQuery, workItemParentQueryHandler],
         [setSortPreferenceMutation, sortPreferenceMutationResponse],
         [workItemBulkUpdateMutation, workItemBulkUpdateHandler],
+        ...additionalHandlers,
       ]),
       provide: {
         glFeatures: {
@@ -303,6 +306,24 @@ describeSkipVue3(skipReason, () => {
           excludeProjects: true,
         }),
       );
+    });
+
+    it('uses the eeEpicListQuery prop rather than the regular query', async () => {
+      const handler = jest.fn();
+      const mockEEQueryHandler = [mockQuery, handler];
+      mountComponent({
+        provide: {
+          workItemType: WORK_ITEM_TYPE_NAME_EPIC,
+        },
+        additionalHandlers: [mockEEQueryHandler],
+        props: {
+          eeEpicListQuery: mockQuery,
+        },
+      });
+
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalled();
     });
   });
 

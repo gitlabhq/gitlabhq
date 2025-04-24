@@ -34,4 +34,7 @@ export const formatGroup = (group) => ({
   organizationEditPath: '',
   groupMembersCount: 0,
   isLinkedToSubscription: false,
+  markedForDeletionOn: null,
+  isAdjournedDeletionEnabled: false,
+  permanentDeletionDate: null,
 });
