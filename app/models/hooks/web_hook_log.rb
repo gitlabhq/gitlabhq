@@ -6,25 +6,14 @@ class WebHookLog < ApplicationRecord
   include CreatedAtFilterable
   include PartitionedTable
 
-  ROUTING_FEATURE_FLAG = 'web_hook_logs_daily_enabled'
-  self.define_singleton_method(:routing_table_name) { 'web_hook_logs_daily' }
-  self.define_singleton_method(:routing_table_name_flag) { ROUTING_FEATURE_FLAG }
-
-  include ::Ci::Partitionable::Switch # rubocop:disable Layout/ClassStructure -- required to be loaded after constant
-
   OVERSIZE_REQUEST_DATA = { 'oversize' => true }.freeze
   MAX_RECENT_DAYS = 7
 
   attr_accessor :interpolated_url
 
   self.primary_key = :id
-
-  # The partitioning definition here has been temporarily moved to config/initializers/postgres_partitioning.rb
-  # so that it does not interact with the changing WebHookLog.table_name as influenced by the
-  # ::Ci::Partitionable::Switch module.
-  # In config/initializers/postgres_partitioning.rb:
-  #   - web_hook_logs_daily is registered for daily partitioning for when the flag is ON
-  #   - web_hook_logs is registered for monthly partitioning for when the flag is OFF
+  self.table_name = :web_hook_logs_daily
+  partitioned_by :created_at, strategy: :daily, retain_for: 14.days
 
   belongs_to :web_hook
 

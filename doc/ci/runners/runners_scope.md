@@ -645,7 +645,7 @@ You can edit a project runner from any of the projects it's enabled for.
 The modifications, which include unlocking and editing tags and the description,
 affect all projects that use the runner.
 
-An administrator can [enable the runner for multiple projects](../../administration/settings/continuous_integration.md#enable-a-project-runner-for-multiple-projects).
+An administrator can [enable the runner for multiple projects](../../administration/settings/continuous_integration.md#share-project-runners-with-multiple-projects).
 
 ### Prevent a project runner from being enabled for other projects
 

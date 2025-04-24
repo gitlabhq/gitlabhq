@@ -10008,7 +10008,7 @@ CREATE TABLE audit_events_streaming_headers (
     group_id bigint,
     CONSTRAINT check_3feba4e364 CHECK ((group_id IS NOT NULL)),
     CONSTRAINT check_53c3152034 CHECK ((char_length(key) <= 255)),
-    CONSTRAINT check_ac213cca22 CHECK ((char_length(value) <= 255))
+    CONSTRAINT check_ac213cca22 CHECK ((char_length(value) <= 2000))
 );
 
 CREATE SEQUENCE audit_events_streaming_headers_id_seq
@@ -16017,7 +16017,7 @@ CREATE TABLE instance_audit_events_streaming_headers (
     key text NOT NULL,
     value text NOT NULL,
     active boolean DEFAULT true NOT NULL,
-    CONSTRAINT check_d52adbbabb CHECK ((char_length(value) <= 255)),
+    CONSTRAINT check_d52adbbabb CHECK ((char_length(value) <= 2000)),
     CONSTRAINT check_e92010d531 CHECK ((char_length(key) <= 255))
 );
 

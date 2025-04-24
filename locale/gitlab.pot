@@ -5483,9 +5483,6 @@ msgstr ""
 msgid "Admin|Geo"
 msgstr ""
 
-msgid "Admin|GitLab Duo Self-Hosted"
-msgstr ""
-
 msgid "Admin|Kubernetes"
 msgstr ""
 
@@ -5693,6 +5690,9 @@ msgstr ""
 msgid "AiPowered|Assign seats"
 msgstr ""
 
+msgid "AiPowered|Assign self-hosted models to specific AI-native features."
+msgstr ""
+
 msgid "AiPowered|Automatic Code Reviews"
 msgstr ""
 
@@ -5708,7 +5708,13 @@ msgstr ""
 msgid "AiPowered|Configuration"
 msgstr ""
 
+msgid "AiPowered|Configure AI features"
+msgstr ""
+
 msgid "AiPowered|Configure AI-powered GitLab Duo features. %{linkStart}Which features?%{linkEnd}"
+msgstr ""
+
+msgid "AiPowered|Configure GitLab Duo Self-Hosted"
 msgstr ""
 
 msgid "AiPowered|Configure how long GitLab Duo Chat conversations persist before they expire:"
@@ -5757,6 +5763,9 @@ msgid "AiPowered|Features are not available. However, any group, subgroup, or pr
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Chat conversation expiration"
+msgstr ""
+
+msgid "AiPowered|GitLab Duo Self-Hosted"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo seat assignment is now located in GitLab Duo settings."
@@ -46714,6 +46723,9 @@ msgstr ""
 msgid "Profiles|Setting locked"
 msgstr ""
 
+msgid "Profiles|Social accounts"
+msgstr ""
+
 msgid "Profiles|Some options are unavailable for LDAP accounts"
 msgstr ""
 
@@ -47128,6 +47140,12 @@ msgstr ""
 msgid "ProjectImport|Bitbucket Server"
 msgstr ""
 
+msgid "ProjectImport|Check connection"
+msgstr ""
+
+msgid "ProjectImport|Connection failed: %{error}"
+msgstr ""
+
 msgid "ProjectImport|FogBugz"
 msgstr ""
 
@@ -47147,6 +47165,9 @@ msgid "ProjectImport|Manifest file"
 msgstr ""
 
 msgid "ProjectImport|Project URL"
+msgstr ""
+
+msgid "ProjectImport|The repository must be accessible over http://, https:// or git://"
 msgstr ""
 
 msgid "ProjectMaintenance|Afterwards, run housekeeping manually to remove old versions of the file from Git history."

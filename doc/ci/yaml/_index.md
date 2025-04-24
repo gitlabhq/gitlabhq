@@ -1423,7 +1423,7 @@ they expire and are deleted. The `expire_in` setting does not affect:
 
 - Artifacts from the latest job, unless keeping the latest job artifacts is disabled
   [at the project level](../jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
-  or [instance-wide](../../administration/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
+  or [instance-wide](../../administration/settings/continuous_integration.md#keep-artifacts-from-latest-successful-pipelines).
 
 After their expiry, artifacts are deleted hourly by default (using a cron job), and are not
 accessible anymore.
@@ -1455,7 +1455,7 @@ job:
 **Additional details**:
 
 - The expiration time period begins when the artifact is uploaded and stored on GitLab.
-  If the expiry time is not defined, it defaults to the [instance wide setting](../../administration/settings/continuous_integration.md#default-artifacts-expiration).
+  If the expiry time is not defined, it defaults to the [instance wide setting](../../administration/settings/continuous_integration.md#set-default-artifacts-expiration).
 - To override the expiration date and protect artifacts from being automatically deleted:
   - Select **Keep** on the job page.
   - Set the value of `expire_in` to `never`.

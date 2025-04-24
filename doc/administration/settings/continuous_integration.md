@@ -23,7 +23,7 @@ The following settings are available:
 - Job token permissions: Control job token access across projects.
 - Job logs: Configure job log settings like incremental logging.
 
-## Continuous integration and deployment
+## Access continuous integration and deployment settings
 
 Customize CI/CD settings, including Auto DevOps, instance runners, and job artifacts.
 
@@ -33,43 +33,39 @@ To access these settings:
 1. Select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 
-### Auto DevOps
+### Configure Auto DevOps for all projects
 
-To enable (or disable) [Auto DevOps](../../topics/autodevops/_index.md)
-for all projects:
+Configure [Auto DevOps](../../topics/autodevops/_index.md)
+to run for all projects that don't have a `.gitlab-ci.yml` file.
+This applies to both existing projects and any new projects.
 
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Check (or uncheck to disable) the box that says **Default to Auto DevOps pipeline for all projects**.
-1. Optionally, set up the [Auto DevOps base domain](../../topics/autodevops/requirements.md#auto-devops-base-domain)
-   which is used for Auto Deploy and Auto Review Apps.
-1. Select **Save changes** for the changes to take effect.
+To configure Auto DevOps for all projects in your instance:
 
-Every existing project and newly created ones that don't have a
-`.gitlab-ci.yml` use the Auto DevOps pipelines.
+1. Select the **Default to Auto DevOps pipeline for all projects** checkbox.
+1. Optional. To use Auto Deploy and Auto Review Apps,
+   specify the [Auto DevOps base domain](../../topics/autodevops/requirements.md#auto-devops-base-domain).
+1. Select **Save changes**.
 
 ### Instance runners
 
 #### Enable instance runners for new projects
 
-You can set all new projects to have instance runners available by default.
+Make instance runners available to all new projects by default.
 
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand **Continuous Integration and Deployment**.
+To make instance runners available to new projects:
+
 1. Select the **Enable instance runners for new projects** checkbox.
+1. Select **Save changes**.
 
-Any time a new project is created, the instance runners are available.
+#### Add details for instance runners
 
-#### Add a message for instance runners
+Add explanatory text about the instance runners.
+This text appears in all projects' runner settings.
 
-To display details about the instance runners in all projects'
-runner settings:
+To add instance runner details:
 
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand **Continuous Integration and Deployment**.
-1. Enter text, including Markdown if you want, in the **Instance runner details** field.
+1. Enter text in the **Instance runner details** field. You can use Markdown formatting.
+1. Select **Save changes**.
 
 To view the rendered details:
 
@@ -79,12 +75,15 @@ To view the rendered details:
 
 ![A project's runner settings shows a message about instance runner guidelines.](img/continuous_integration_instance_runner_details_v17_6.png)
 
-#### Enable a project runner for multiple projects
+#### Share project runners with multiple projects
 
-If you have already registered a [project runner](../../ci/runners/runners_scope.md#project-runners)
-you can assign that runner to other projects.
+Share a project runner with multiple projects.
 
-To enable a project runner for more than one project:
+Prerequisites:
+
+- You must have a registered [project runner](../../ci/runners/runners_scope.md#project-runners).
+
+To share a project runner with multiple projects:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. From the left sidebar, select **CI/CD > Runners**.
@@ -96,19 +95,15 @@ To enable a project runner for more than one project:
 
 ### Job artifacts
 
-#### Maximum artifacts size
+Control how [job artifacts](../cicd/job_artifacts.md) are stored and managed across your GitLab instance.
 
-You can set the maximum size of distinct [job artifacts](../cicd/job_artifacts.md) for:
+#### Set maximum artifacts size
 
-- An instance
-- Projects
-- Groups
+Set size limits for job artifacts to control storage use.
+Each artifact file in a job has a default maximum size of 100 MB.
 
-The default maximum size for each artifact file in a job is 100 MB.
-For GitLab.com, see [Artifacts maximum size](../../user/gitlab_com/_index.md#cicd).
-
-Job artifacts defined with `artifacts:reports` can have [different limits](../instance_limits.md#maximum-file-size-per-type-of-artifact).
-In this case, the smaller value is used.
+Job artifacts defined with `artifacts:reports` can have [different limits](../../administration/instance_limits.md#maximum-file-size-per-type-of-artifact).
+When different limits apply, the smaller value is used.
 
 {{< alert type="note" >}}
 
@@ -116,115 +111,107 @@ This setting applies to the size of the final archive file, not individual files
 
 {{< /alert >}}
 
-To modify the maximum artifacts size:
+You can configure artifact size limits for:
 
-- For an instance:
+- An instance: The base setting that applies to all projects and groups.
+- A group: Overrides the instance setting for all projects in the group.
+- A project: Overrides both instance and group settings for a specific project.
 
-  1. On the left sidebar, at the bottom, select **Admin**.
-  1. Select **Settings > CI/CD**.
-  1. Expand **Continuous Integration and Deployment**.
-  1. Change the value of **Maximum artifacts size (MB)**.
-  1. Select **Save changes**.
+For GitLab.com limits, see [Artifacts maximum size](../../user/gitlab_com/_index.md#cicd).
 
-- For a group or project:
+To change the maximum artifact size for an instance:
 
-  Group settings override instance settings. Project settings override both instance and group settings.
+1. Enter a value in the **Maximum artifacts size (MB)** field.
+1. Select **Save changes**.
 
-  1. On the left sidebar, select **Search or go to** and find your project or group.
-  1. Select **Settings > CI/CD**.
-  1. Expand **General pipelines**
-  1. Change the value of **Maximum artifacts size** (in MB).
-  1. Select **Save changes**.
+To change the maximum artifact size for a group or project:
 
-#### Default artifacts expiration
-
-The default expiration time of the [job artifacts](../cicd/job_artifacts.md)
-can be set in the **Admin** area of your GitLab instance. The syntax of duration is
-described in [`artifacts:expire_in`](../../ci/yaml/_index.md#artifactsexpire_in)
-and the default value is `30 days`.
-
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Settings > CI/CD**.
-1. Change the value of default expiration time.
-1. Select **Save changes** for the changes to take effect.
+1. Expand **General pipelines**
+1. Change the value of **Maximum artifacts size** (in MB).
+1. Select **Save changes**.
 
-This setting is set per job and can be overridden in
-[`.gitlab-ci.yml`](../../ci/yaml/_index.md#artifactsexpire_in).
-To disable the expiration, set it to `0`. The default unit is in seconds.
+#### Set default artifacts expiration
+
+Set how long job artifacts are kept before being automatically deleted.
+The default expiration time is 30 days.
+
+The syntax for duration is described in [`artifacts:expire_in`](../../ci/yaml/_index.md#artifactsexpire_in).
+Individual job definitions can override this default value in the project's `.gitlab-ci.yml` file.
+
+Changes to this setting apply only to new artifacts. Existing artifacts keep their original expiration time.
+For information about manually expiring older artifacts,
+see the [troubleshooting documentation](../cicd/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts).
+
+To set the default expiration time for job artifacts:
+
+1. Enter a value in the **Default artifacts expiration** field.
+1. Select **Save changes**.
+
+#### Keep artifacts from latest successful pipelines
+
+Preserve artifacts from the most recent successful pipeline
+for each Git ref (branch or tag), regardless of their expiration time.
+
+By default, this setting is turned on.
+
+This setting takes precedence over [project settings](../../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
+If turned off for an instance, it cannot be turned on for individual projects.
+
+When this feature is turned off, existing preserved artifacts don't immediately expire.
+A new successful pipeline must run on a branch before its artifacts can expire.
 
 {{< alert type="note" >}}
 
-Any changes to this setting applies to new artifacts only. The expiration time is not
-be updated for artifacts created before this setting was changed.
-The administrator may need to manually search for and expire previously-created
-artifacts, as described in the [troubleshooting documentation](../cicd/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts).
+All application settings have a [customizable cache expiry interval](../application_settings_cache.md),
+which can delay the effect of settings changes.
 
 {{< /alert >}}
 
-#### Keep the latest artifacts for all jobs in the latest successful pipelines
+To keep artifacts from the latest successful pipelines:
 
-When enabled (default), the artifacts of the most recent pipeline for each Git ref
-([branches and tags](https://git-scm.com/book/en/v2/Git-Internals-Git-References))
-are locked against deletion and kept regardless of the expiry time.
+1. Select the **Keep the latest artifacts for all jobs in the latest successful pipelines** checkbox.
+1. Select **Save changes**.
 
-When disabled, the latest artifacts for any **new** successful or fixed pipelines
-are allowed to expire.
+To allow artifacts to expire according to their expiration settings, clear the checkbox instead.
 
-This setting takes precedence over the [project setting](../../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
-If disabled for the entire instance, you cannot enable this in individual projects.
+#### Display external redirect warning page
 
-To disable the setting:
+Display a warning page when users view job artifacts through GitLab Pages.
+This warning alerts about potential security risks from user-generated content.
 
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand **Continuous Integration and Deployment**.
-1. Clear the **Keep the latest artifacts for all jobs in the latest successful pipelines** checkbox.
-1. Select **Save changes**
+By default, this setting is turned on.
 
-When you disable the feature, the latest artifacts do not immediately expire.
-A new pipeline must run before the latest artifacts can expire and be deleted.
+To display the warning page when viewing job artifacts:
 
-{{< alert type="note" >}}
+1. Select the **Enable the external redirect page for job artifacts** checkbox.
+1. Select **Save changes**.
 
-All application settings have a [customizable cache expiry interval](../application_settings_cache.md) which can delay the settings affect.
-
-{{< /alert >}}
-
-#### Disable the external redirect page for job artifacts
-
-By default, GitLab Pages shows an external redirect page when a user tries to view
-a job artifact served by GitLab Pages. This page warns about the potential for
-malicious user-generated content, as described in
-[issue 352611](https://gitlab.com/gitlab-org/gitlab/-/issues/352611).
-
-GitLab Self-Managed administrators can disable the external redirect warning page,
-so you can view job artifact pages directly:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand **Continuous Integration and Deployment**.
-1. Clear **Enable the external redirect page for job artifacts**.
+To allow direct access to job artifacts without warnings, clear the checkbox instead.
 
 ### Jobs
 
-#### Archive jobs
+#### Archive older jobs
 
-You can archive old jobs to prevent them from being re-run individually. Archived jobs
-display a lock icon ({{< icon name="lock" >}}) and **This job is archived** at the top of the job log.
+Archive older jobs automatically after a specified time period. Archived jobs:
 
-To set the duration for which the jobs are considered as old and expired:
+- Display a lock icon ({{< icon name="lock" >}}) and **This job is archived** at the top of the job log.
+- Cannot be re-run individually.
+- Are still visible in job logs.
+- Can still be retried.
+- Are no longer subject to expiration settings.
 
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand the **Continuous Integration and Deployment** section.
-1. Set the value of **Archive jobs**.
-1. Select **Save changes** for the changes to take effect.
+The archive duration must be at least 1 day.
+Examples of valid durations include `15 days`, `1 month`, and `2 years`.
+Leave this field empty to never archive jobs automatically.
 
-After that time passes, the jobs are archived in the background and no longer able to be
-retried. Make it empty to never expire jobs. It has to be no less than 1 day,
-for example: `15 days`, `1 month`, `2 years`.
+For GitLab.com, see [Scheduled job archiving](../../user/gitlab_com/_index.md#cicd).
 
-For the value set for GitLab.com, see [Scheduled job archiving](../../user/gitlab_com/_index.md#cicd).
+To set up job archiving:
+
+1. Enter a value in the **Archive jobs** field.
+1. Select **Save changes**.
 
 ### Pipelines
 

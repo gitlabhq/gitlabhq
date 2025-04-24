@@ -272,7 +272,7 @@ export default {
       this.loadLegacyViewer();
     },
     loadLegacyViewer() {
-      if (this.legacyViewerLoaded) {
+      if (this.legacyViewerLoaded || this.isLoadingLegacyViewer) {
         return;
       }
 
@@ -295,7 +295,6 @@ export default {
           }
 
           this.isBinary = binary;
-          this.isLoadingLegacyViewer = false;
 
           window.requestIdleCallback(() => {
             this.isRenderingLegacyTextViewer = false;
@@ -309,7 +308,10 @@ export default {
           handleLocationHash(); // Ensures that we scroll to the hash when async content is loaded
           eventHub.$emit('showBlobInteractionZones', this.blobInfo.path);
         })
-        .catch(() => this.displayError());
+        .catch(() => this.displayError())
+        .finally(() => {
+          this.isLoadingLegacyViewer = false;
+        });
     },
     displayError() {
       createAlert({ message: __('An error occurred while loading the file. Please try again.') });

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_category: :code_review_workflow do
   include ListboxHelpers
+  include RapidDiffsHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository, namespace: user.namespace) }
@@ -108,14 +109,41 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
 
     click_link 'Changes'
 
-    expect(page).to have_css('a.btn.selected', text: 'Inline')
-    expect(page).not_to have_css('a.btn.selected', text: 'Side-by-side')
+    expect(page).to have_css('[data-testid="hunk-lines-inline"]')
+    expect(page).not_to have_css('[data-testid="hunk-lines-parallel"]')
 
-    click_link 'Side-by-side'
+    open_diff_view_preferences
+    expect(inline_view_option['aria-selected']).to eq('true')
+    expect(parallel_view_option['aria-selected']).not_to eq('true')
 
-    within '.merge-request' do
-      expect(page).not_to have_css('a.btn.selected', text: 'Inline')
-      expect(page).to have_css('a.btn.selected', text: 'Side-by-side')
+    select_parallel_view
+    open_diff_view_preferences
+
+    expect(inline_view_option['aria-selected']).not_to eq('true')
+    expect(parallel_view_option['aria-selected']).to eq('true')
+    expect(page).not_to have_css('[data-testid="hunk-lines-inline"]')
+    expect(page).to have_css('[data-testid="hunk-lines-parallel"]')
+  end
+
+  context 'without rapid diffs' do
+    before do
+      stub_feature_flags(rapid_diffs: false)
+    end
+
+    it 'allows to change the diff view' do
+      visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'fix' })
+
+      click_link 'Changes'
+
+      expect(page).to have_css('a.btn.selected', text: 'Inline')
+      expect(page).not_to have_css('a.btn.selected', text: 'Side-by-side')
+
+      click_link 'Side-by-side'
+
+      within '.merge-request' do
+        expect(page).not_to have_css('a.btn.selected', text: 'Inline')
+        expect(page).to have_css('a.btn.selected', text: 'Side-by-side')
+      end
     end
   end
 

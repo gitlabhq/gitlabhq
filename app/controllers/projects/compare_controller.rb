@@ -78,7 +78,8 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def rapid_diffs
-    return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip)
+    return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip) &&
+      ::Feature.enabled?(:rapid_diffs_on_compare_show, current_user, type: :wip)
 
     @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
     @reload_stream_url = diffs_stream_namespace_project_compare_index_path(**compare_params)

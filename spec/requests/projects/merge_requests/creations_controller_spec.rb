@@ -31,38 +31,37 @@ RSpec.describe 'Merge Request Creation', feature_category: :code_review_workflow
         stub_feature_flags(rapid_diffs: false)
       end
 
-      it 'returns 404' do
-        get_diffs(rapid_diffs: 'true')
+      it 'uses default action' do
+        get_diffs
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to include('data-page="projects:merge_requests:creations:new"')
       end
     end
 
-    it 'does not use rapid diffs action when rapid_diffs flag is false' do
-      get_diffs(rapid_diffs: 'false')
+    it 'uses rapid diffs action' do
+      get_diffs
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(response.body).to include('data-page="projects:merge_requests:creations:new"')
+      expect(response.body).to include('data-rapid-diffs')
     end
 
-    it 'uses rapid diffs action when rapid_diffs flag is true' do
-      get_diffs(rapid_diffs: 'true')
+    context "when there is an existing MR targeting same branch" do
+      before do
+        create(:merge_request, source_project: project, source_branch: source_branch, target_branch: target_branch)
+      end
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response.body).to include('data-page="projects:merge_requests:creations:rapid_diffs"')
-    end
+      it 'sets flash alert when there is an existing MR targeting same branch' do
+        get_diffs
 
-    it 'sets flash alert when there is an existing MR targeting same branch' do
-      create(:merge_request, source_project: project, source_branch: source_branch, target_branch: target_branch)
-      get_diffs(rapid_diffs: 'true')
+        expect(flash[:alert]).to be_present
+      end
 
-      expect(flash[:alert]).to be_present
-    end
+      it 'assigns show_whitespace_default' do
+        get_diffs
 
-    it 'assigns show_whitespace_default' do
-      get_diffs(rapid_diffs: 'true')
-
-      expect(assigns(:show_whitespace_default)).to be(true)
+        expect(assigns(:show_whitespace_default)).to be(true)
+      end
     end
   end
 end

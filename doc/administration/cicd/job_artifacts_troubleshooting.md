@@ -816,6 +816,6 @@ Uploading artifacts as "archive" to coordinator... too large archive <job-id> re
 
 You might need to:
 
-- Increase the [maximum artifacts size](../settings/continuous_integration.md#maximum-artifacts-size).
+- Increase the [maximum artifacts size](../settings/continuous_integration.md#set-maximum-artifacts-size).
 - If you are using NGINX as a proxy server, increase the file upload size limit which is limited to 1 MB by default.
   Set a higher value for `client-max-body-size` in the NGINX configuration file.

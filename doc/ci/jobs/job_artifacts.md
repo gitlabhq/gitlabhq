@@ -67,7 +67,7 @@ pdf:
     expire_in: 1 week
 ```
 
-If `expire_in` is not defined, the [instance-wide setting](../../administration/settings/continuous_integration.md#default-artifacts-expiration)
+If `expire_in` is not defined, the [instance-wide setting](../../administration/settings/continuous_integration.md#set-default-artifacts-expiration)
 is used.
 
 To prevent artifacts from expiring, you can select **Keep** from the job details page.
@@ -408,4 +408,4 @@ Artifacts in old pipelines continue to be kept until a new pipeline runs for the
 Then the artifacts in the earlier pipeline for that ref are allowed to expire too.
 
 You can disable this behavior for all projects on GitLab Self-Managed in the
-[instance's CI/CD settings](../../administration/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
+[instance's CI/CD settings](../../administration/settings/continuous_integration.md#keep-artifacts-from-latest-successful-pipelines).

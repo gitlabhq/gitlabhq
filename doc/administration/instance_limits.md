@@ -694,7 +694,7 @@ To update the `default` plan of one of these limits on a GitLab Self-Managed ins
 Job artifacts defined with [`artifacts:reports`](../ci/yaml/_index.md#artifactsreports)
 that are uploaded by the runner are rejected if the file size exceeds the maximum
 file size limit. The limit is determined by comparing the project's
-[maximum artifact size setting](settings/continuous_integration.md#maximum-artifacts-size)
+[maximum artifact size setting](settings/continuous_integration.md#set-maximum-artifacts-size)
 with the instance limit for the given artifact type, and choosing the smaller value.
 
 Limits are set in megabytes, so the smallest possible value that can be defined is `1 MB`.

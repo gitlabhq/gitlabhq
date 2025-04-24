@@ -1,9 +1,0 @@
----
-name: web_hook_logs_daily_enabled
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514530
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180522
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517450
-milestone: '17.9'
-group: group::database frameworks
-type: gitlab_com_derisk
-default_enabled: false

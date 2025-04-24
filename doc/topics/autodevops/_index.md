@@ -79,7 +79,7 @@ If you want to build, test, and deploy your app:
 Auto DevOps runs pipelines automatically only if a [`Dockerfile` or matching buildpack](stages.md#auto-build) exists.
 
 You can enable or disable Auto DevOps for a project or an entire group. Instance administrators
-can also [set Auto DevOps as the default](../../administration/settings/continuous_integration.md#auto-devops)
+can also [set Auto DevOps as the default](../../administration/settings/continuous_integration.md#configure-auto-devops-for-all-projects)
 for all projects in an instance.
 
 Before enabling Auto DevOps, consider [preparing it for deployment](requirements.md).
@@ -90,7 +90,7 @@ If you don't, Auto DevOps can build and test your app, but cannot deploy it.
 To use Auto DevOps for individual projects, you can enable it in a
 project-by-project basis. If you intend to use it for more projects,
 you can enable it for a [group](#per-group) or an
-[instance](../../administration/settings/continuous_integration.md#auto-devops).
+[instance](../../administration/settings/continuous_integration.md#configure-auto-devops-for-all-projects).
 This can save you the time of enabling it in each project.
 
 Prerequisites:

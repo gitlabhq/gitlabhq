@@ -42,7 +42,8 @@
     import_gitea_import_path: new_import_gitea_path(namespace_id: @namespace&.id),
     import_git_enabled: git_import_enabled?.to_s,
     import_manifest_enabled: manifest_import_enabled?.to_s,
-    import_manifest_import_path: new_import_manifest_path(namespace_id: @namespace&.id) } }
+    import_manifest_import_path: new_import_manifest_path(namespace_id: @namespace&.id),
+    import_by_url_validate_path: import_url_validate_path } }
 - else
   .project-edit-container
     .project-edit-errors

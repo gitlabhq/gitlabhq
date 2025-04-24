@@ -3633,7 +3633,6 @@ Gitlab/BoundedContexts:
     - 'ee/lib/sidebars/admin/menus/duo_settings_menu.rb'
     - 'ee/lib/sidebars/admin/menus/geo_menu.rb'
     - 'ee/lib/sidebars/admin/menus/push_rules_menu.rb'
-    - 'ee/lib/sidebars/admin/menus/self_hosted_models_menu.rb'
     - 'ee/lib/sidebars/admin/menus/subscription_menu.rb'
     - 'ee/lib/sidebars/groups/menus/analytics_menu.rb'
     - 'ee/lib/sidebars/groups/menus/epics_menu.rb'

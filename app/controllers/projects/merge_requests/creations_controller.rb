@@ -9,7 +9,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
   skip_before_action :merge_request
   before_action :authorize_create_merge_request_from!
-  before_action :apply_diff_view_cookie!, only: [:diffs, :diff_for_path, :rapid_diffs]
+  before_action :apply_diff_view_cookie!, only: [:diffs, :diff_for_path]
   before_action :build_merge_request, except: [:create]
 
   urgency :low, [
@@ -17,7 +17,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     :create,
     :pipelines,
     :diffs,
-    :rapid_diffs,
     :branch_from,
     :branch_to
   ]
@@ -30,6 +29,12 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
   def new
     define_new_vars
+    return unless rapid_diffs?
+
+    # load 'rapid_diffs' javascript entrypoint instead of 'new'
+    @js_action_name = 'rapid_diffs'
+    define_rapid_diffs_vars
+    render action: :rapid_diffs
   end
 
   def create
@@ -60,19 +65,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
       .new(project: @project, current_user: current_user)
       .represent(@pipelines)
     }
-  end
-
-  def rapid_diffs
-    return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip)
-
-    merge_request = { source_branch: @merge_request.source_branch, target_branch: @merge_request.target_branch }
-    @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
-    @stream_url = project_new_merge_request_diffs_stream_path(@project, merge_request: merge_request)
-    @reload_stream_url = project_new_merge_request_diffs_stream_path(@project, merge_request: merge_request)
-    @diff_files_endpoint = project_new_merge_request_diff_files_metadata_path(@project, merge_request: merge_request)
-    @diffs_stats_endpoint = project_new_merge_request_diffs_stats_path(@project, merge_request: merge_request)
-
-    define_new_vars
   end
 
   def diffs
@@ -155,6 +147,20 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
 
     set_pipeline_variables
+  end
+
+  def rapid_diffs?
+    ::Feature.enabled?(:rapid_diffs, current_user, type: :wip) &&
+      ::Feature.enabled?(:rapid_diffs_on_mr_creation, current_user, type: :wip)
+  end
+
+  def define_rapid_diffs_vars
+    merge_request = { source_branch: @merge_request.source_branch, target_branch: @merge_request.target_branch }
+    @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
+    @stream_url = project_new_merge_request_diffs_stream_path(@project, merge_request: merge_request)
+    @reload_stream_url = project_new_merge_request_diffs_stream_path(@project, merge_request: merge_request)
+    @diff_files_endpoint = project_new_merge_request_diff_files_metadata_path(@project, merge_request: merge_request)
+    @diffs_stats_endpoint = project_new_merge_request_diffs_stats_path(@project, merge_request: merge_request)
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
