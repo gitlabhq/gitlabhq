@@ -49,7 +49,7 @@
   failure_category: "rails_pg_sidekiq"
 - pattern: "psql:.+ERROR:"
   failure_category: "psql_failed_command"
-- pattern: "Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas::DMLAccessDeniedError"
+- pattern: "Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas::DMLAccessDeniedError:"
   failure_category: "rake_unallowed_schemas_accessed"
 - pattern: "Sidekiq::Job::EnqueueFromTransactionError"
   failure_category: "rake_enqueue_from_transaction"

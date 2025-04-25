@@ -1,0 +1,10 @@
+#import "~/ci/runner/graphql/list/runner_connection.fragment.graphql"
+
+query getProjectRunners($fullPath: ID!, $type: CiRunnerType) {
+  project(fullPath: $fullPath) {
+    id # Apollo required
+    runners(type: $type) {
+      ...RunnerConnection
+    }
+  }
+}

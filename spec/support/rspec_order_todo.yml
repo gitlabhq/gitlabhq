@@ -6546,7 +6546,6 @@
 - './spec/requests/api/graphql/ci/pipelines_spec.rb'
 - './spec/requests/api/graphql/ci/project_variables_spec.rb'
 - './spec/requests/api/graphql/ci/runner_spec.rb'
-- './spec/requests/api/graphql/ci/runners_spec.rb'
 - './spec/requests/api/graphql/ci/runner_web_url_edge_spec.rb'
 - './spec/requests/api/graphql/ci/stages_spec.rb'
 - './spec/requests/api/graphql/ci/template_spec.rb'

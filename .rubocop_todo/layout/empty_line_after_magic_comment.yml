@@ -476,7 +476,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/requests/api/graphql/ci/groups_spec.rb'
     - 'spec/requests/api/graphql/ci/jobs_spec.rb'
     - 'spec/requests/api/graphql/ci/runner_web_url_edge_spec.rb'
-    - 'spec/requests/api/graphql/ci/runners_spec.rb'
     - 'spec/requests/api/graphql/ci/stages_spec.rb'
     - 'spec/requests/api/graphql/ci/template_spec.rb'
     - 'spec/requests/api/graphql/container_repository/container_repository_details_spec.rb'

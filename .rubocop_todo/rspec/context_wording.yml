@@ -2099,7 +2099,6 @@ RSpec/ContextWording:
     - 'spec/requests/api/files_spec.rb'
     - 'spec/requests/api/generic_packages_spec.rb'
     - 'spec/requests/api/graphql/ci/runner_spec.rb'
-    - 'spec/requests/api/graphql/ci/runners_spec.rb'
     - 'spec/requests/api/graphql/container_repository/container_repository_details_spec.rb'
     - 'spec/requests/api/graphql/gitlab_schema_spec.rb'
     - 'spec/requests/api/graphql/group/container_repositories_spec.rb'

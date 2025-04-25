@@ -39,7 +39,7 @@ module API
       resource :personal_access_tokens do
         desc "Get single personal access token" do
           detail 'Get the details of a personal access token by passing it to the API in a header'
-          success code: 200, model: Entities::PersonalAccessToken
+          success code: 200, model: Entities::PersonalAccessTokenWithLastUsedIps
           failure [
             { code: 401, message: 'Unauthorized' },
             { code: 404, message: 'Not found' }
@@ -47,7 +47,7 @@ module API
           tags %w[personal_access_tokens]
         end
         get 'self' do
-          present access_token, with: Entities::PersonalAccessToken
+          present access_token, with: Entities::PersonalAccessTokenWithLastUsedIps
         end
 
         desc "Return personal access token associations" do

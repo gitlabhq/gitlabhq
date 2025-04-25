@@ -1,7 +1,8 @@
 #import "ee_else_ce/ci/runner/graphql/list/list_item.fragment.graphql"
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
-fragment GroupRunnerConnection on CiRunnerConnection {
+fragment RunnerConnection on CiRunnerConnection {
+  count
   edges {
     webUrl
     editUrl

@@ -166,7 +166,6 @@ RSpec/ScatteredLet:
     - 'spec/requests/api/ci/jobs_spec.rb'
     - 'spec/requests/api/ci/pipeline_schedules_spec.rb'
     - 'spec/requests/api/commit_statuses_spec.rb'
-    - 'spec/requests/api/graphql/ci/runners_spec.rb'
     - 'spec/requests/api/graphql/milestone_spec.rb'
     - 'spec/requests/api/graphql/mutations/boards/create_spec.rb'
     - 'spec/requests/api/graphql/namespace/projects_spec.rb'

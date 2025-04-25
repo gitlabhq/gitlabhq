@@ -81,6 +81,39 @@ RSpec.describe API::PersonalAccessTokens::SelfInformation, feature_category: :sy
       end
     end
 
+    context 'when an ip is recently used' do
+      let(:request_ip_address) { '192.168.1.2' }
+
+      before do
+        allow(Gitlab::IpAddressState).to receive(:current).and_return(request_ip_address)
+      end
+
+      it 'returns ips used' do
+        get api(path, personal_access_token: token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['last_used_ips']).to match_array([request_ip_address])
+      end
+    end
+
+    context 'when several IP have been recently used' do
+      let(:nb_ips) { 8 }
+      let(:request_ips) { (1..nb_ips).map { |i| "192.168.#{i}.2" } }
+      let(:time_travel_step) { 1.minute + 10.seconds }
+
+      it 'returns up to 5 most recent ones' do
+        nb_ips.times do |i|
+          travel_to (i * time_travel_step).from_now do
+            allow(Gitlab::IpAddressState).to receive(:current).and_return(request_ips[i])
+            get api(path, personal_access_token: token)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['last_used_ips']).to match_array(request_ips.first(i + 1).last(5))
+          end
+        end
+      end
+    end
+
     context 'when token is invalid' do
       it 'returns 401' do
         get api(path, personal_access_token: instance_double(PersonalAccessToken, token: 'invalidtoken'))
