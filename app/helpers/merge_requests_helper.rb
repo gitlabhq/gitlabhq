@@ -507,6 +507,9 @@ module MergeRequestsHelper
                 query: 'reviewRequestedMergeRequests',
                 variables: {
                   reviewStates: %w[APPROVED REQUESTED_CHANGES REVIEWED],
+                  not: {
+                    reviewStates: %w[UNREVIEWED REVIEW_STARTED UNAPPROVED]
+                  },
                   perPage: 10
                 }
               },
@@ -516,7 +519,10 @@ module MergeRequestsHelper
                 helpContent: _(''),
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
-                  reviewStates: %w[REQUESTED_CHANGES REVIEWED],
+                  or: {
+                    reviewerWildcard: 'NONE',
+                    reviewStates: %w[REQUESTED_CHANGES REVIEWED]
+                  },
                   perPage: 10
                 }
               },
@@ -528,6 +534,9 @@ module MergeRequestsHelper
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
                   reviewStates: %w[APPROVED UNAPPROVED UNREVIEWED REVIEW_STARTED],
+                  not: {
+                    reviewStates: %w[REVIEWED REQUESTED_CHANGES]
+                  },
                   perPage: 10
                 }
               }

@@ -30,6 +30,7 @@ class ApplicationController < BaseActionController
   include StrongPaginationParams
   include Gitlab::HttpRouter::RuleContext
   include Gitlab::HttpRouter::RuleMetrics
+  include ViteCSP
 
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :set_current_organization

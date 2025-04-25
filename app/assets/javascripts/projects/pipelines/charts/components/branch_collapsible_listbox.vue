@@ -4,6 +4,7 @@ import { produce } from 'immer';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import getBranchesOptionsQuery from '../graphql/queries/get_branches_options.query.graphql';
+import { BRANCH_ANY } from '../constants';
 
 const BRANCH_PAGINATION_LIMIT = 10;
 
@@ -85,7 +86,7 @@ export default {
       return [
         {
           text: s__('PipelineCharts|All branches'),
-          value: '', // use '' to represent no value selected, as GlCollapsibleListbox does not accept null as a valid value
+          value: BRANCH_ANY,
         },
         ...this.branchesOptions.map((branch) => ({
           text: branch,
@@ -152,7 +153,6 @@ export default {
     :block="block"
     :items="items"
     :title="__('Switch branch')"
-    :toggle-text="branch"
     :search-placeholder="s__('Branches|Filter by branch name')"
     :infinite-scroll-loading="loading"
     :infinite-scroll="infiniteScroll"

@@ -5723,6 +5723,9 @@ msgstr ""
 msgid "AiPowered|Connection method"
 msgstr ""
 
+msgid "AiPowered|Contact sales for Duo Enterprise"
+msgstr ""
+
 msgid "AiPowered|Direct connections"
 msgstr ""
 
@@ -5771,6 +5774,9 @@ msgstr ""
 msgid "AiPowered|GitLab Duo Core available to all users"
 msgstr ""
 
+msgid "AiPowered|GitLab Duo Pro or Enterprise"
+msgstr ""
+
 msgid "AiPowered|GitLab Duo Self-Hosted"
 msgstr ""
 
@@ -5810,6 +5816,9 @@ msgstr ""
 msgid "AiPowered|Participate in the Early Access Program and help make GitLab better"
 msgstr ""
 
+msgid "AiPowered|Purchase Duo Pro seats"
+msgstr ""
+
 msgid "AiPowered|Seat assignment for GitLab Duo has moved"
 msgstr ""
 
@@ -5825,7 +5834,16 @@ msgstr ""
 msgid "AiPowered|Start date: %{startDate}"
 msgstr ""
 
+msgid "AiPowered|Tanuki AI icon"
+msgstr ""
+
 msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
+msgstr ""
+
+msgid "AiPowered|Unlock advanced AI-powered capabilities with the Premium or Ultimate tier designed for your development needs."
+msgstr ""
+
+msgid "AiPowered|Upgrade to"
 msgstr ""
 
 msgid "AiPowered|Use beta models and features in GitLab Duo Self-Hosted"
@@ -30823,6 +30841,9 @@ msgstr ""
 msgid "How do I use a web terminal?"
 msgstr ""
 
+msgid "How does it work?"
+msgstr ""
+
 msgid "How does pull mirroring work?"
 msgstr ""
 
@@ -35532,12 +35553,6 @@ msgid "Learn more about Auto DevOps"
 msgstr ""
 
 msgid "Learn more about GitLab"
-msgstr ""
-
-msgid "Learn more about Root Cause Analysis"
-msgstr ""
-
-msgid "Learn more about Root Cause Analysis in new tab"
 msgstr ""
 
 msgid "Learn more about Service Desk"
@@ -49591,9 +49606,6 @@ msgstr ""
 msgid "Quick start guide"
 msgstr ""
 
-msgid "Quickly identify the root cause of an incident using AI-assisted analysis."
-msgstr ""
-
 msgid "README"
 msgstr ""
 
@@ -51345,9 +51357,6 @@ msgid "Roll up totals may reflect child items you don’t have access to."
 msgstr ""
 
 msgid "Rollback"
-msgstr ""
-
-msgid "Root Cause Analysis"
 msgstr ""
 
 msgid "Root Moved Permanently redirection response"
@@ -61163,6 +61172,9 @@ msgstr ""
 msgid "There are no closed merge requests"
 msgstr ""
 
+msgid "There are no comments to summarize."
+msgstr ""
+
 msgid "There are no commits yet"
 msgstr ""
 
@@ -62171,9 +62183,6 @@ msgid "This repository was last checked %{last_check_timestamp}. The check %{str
 msgstr ""
 
 msgid "This repository was last checked %{last_check_timestamp}. The check passed."
-msgstr ""
-
-msgid "This resource has no comments to summarize"
 msgstr ""
 
 msgid "This setting can be overridden in each project."
@@ -63934,6 +63943,9 @@ msgstr ""
 msgid "Troubleshoot failed CI/CD jobs with Root Cause Analysis."
 msgstr ""
 
+msgid "Troubleshoot failed jobs with Root Cause Analysis"
+msgstr ""
+
 msgid "True"
 msgstr ""
 
@@ -65161,6 +65173,9 @@ msgid "Use %{code_start}authorized_keys%{code_end} file to authenticate SSH keys
 msgstr ""
 
 msgid "Use .gitlab-ci.yml"
+msgstr ""
+
+msgid "Use AI to quickly identify the cause of job failures and get example fixes to get your pipeline running."
 msgstr ""
 
 msgid "Use Amazon Q to streamline development workflow and project upgrades"

@@ -24,12 +24,10 @@ RSpec.describe ViteGdk, feature_category: :tooling do
           end.and_return(true)
           expect(YAML).to receive(:safe_load_file) do |file_path|
             expect(file_path).to end_with(VITE_GDK_CONFIG_FILEPATH)
-          end.and_return('enabled' => true, 'port' => 3038, 'host' => 'gdk.test')
-          expect(ViteRuby).to receive(:configure).with(host: 'gdk.test', port: 3038)
+          end.and_return('enabled' => true, 'port' => 3038, 'host' => '127.0.0.1', 'public_host' => 'gdk.test')
+          expect(ViteRuby).to receive(:configure).with(host: 'gdk.test', https: false, port: 3038)
           expect(ViteRuby.env).to receive(:[]=).with('VITE_ENABLED', 'true')
           expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_HOST', 'gdk.test')
-          expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_HTTP_URL', 'http://gdk.test:3038')
-          expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_WS_URL', 'ws://gdk.test:3038')
 
           described_class.load_gdk_vite_config
         end
@@ -43,43 +41,50 @@ RSpec.describe ViteGdk, feature_category: :tooling do
             }
           end
 
-          it 'configures ViteRuby with HMR settings' do
+          it 'ViteRuby uses same host for hmr' do
             expect(File).to receive(:exist?) do |file_path|
               expect(file_path).to end_with(VITE_GDK_CONFIG_FILEPATH)
             end.and_return(true)
             expect(YAML).to receive(:safe_load_file) do |file_path|
               expect(file_path).to end_with(VITE_GDK_CONFIG_FILEPATH)
-            end.and_return('enabled' => true, 'port' => 3038, 'host' => 'gdk.test', 'hmr' => hmr_config)
-            expect(ViteRuby).to receive(:configure).with(host: 'gdk.test', port: 3038)
+            end.and_return(
+              'enabled' => true,
+              'port' => 3038,
+              'host' => '127.0.0.1',
+              'public_host' => 'gdk.test',
+              'hmr' => hmr_config)
+            expect(ViteRuby).to receive(:configure).with(host: 'gdk.test', https: false, port: 3038)
             expect(ViteRuby.env).to receive(:[]=).with('VITE_ENABLED', 'true')
-            expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_HOST', 'hmr.gdk.test')
-            expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_HTTP_URL', 'https://hmr.gdk.test:9999')
-            expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_WS_URL', 'wss://hmr.gdk.test:9999')
+            expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_HOST', 'gdk.test')
 
             described_class.load_gdk_vite_config
           end
         end
 
-        context 'when HMR config has no port' do
-          let(:hmr_config) do
+        context 'when HTTPS config is present' do
+          let(:https_config) do
             {
-              'host' => 'hmr.gdk.test',
-              'protocol' => 'wss'
+              'enabled' => true,
+              'key' => 'key',
+              'certificate' => 'certificate'
             }
           end
 
-          it 'configures ViteRuby with default port' do
+          it 'enables HTTPS' do
             expect(File).to receive(:exist?) do |file_path|
               expect(file_path).to end_with(VITE_GDK_CONFIG_FILEPATH)
             end.and_return(true)
             expect(YAML).to receive(:safe_load_file) do |file_path|
               expect(file_path).to end_with(VITE_GDK_CONFIG_FILEPATH)
-            end.and_return('enabled' => true, 'port' => 3038, 'host' => 'gdk.test', 'hmr' => hmr_config)
-            expect(ViteRuby).to receive(:configure).with(host: 'gdk.test', port: 3038)
+            end.and_return(
+              'enabled' => true,
+              'port' => 3038,
+              'host' => '127.0.0.1',
+              'public_host' => 'gdk.test',
+              'https' => https_config)
+            expect(ViteRuby).to receive(:configure).with(host: 'gdk.test', https: true, port: 3038)
             expect(ViteRuby.env).to receive(:[]=).with('VITE_ENABLED', 'true')
-            expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_HOST', 'hmr.gdk.test')
-            expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_HTTP_URL', 'https://hmr.gdk.test:3038')
-            expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_WS_URL', 'wss://hmr.gdk.test:3038')
+            expect(ViteRuby.env).to receive(:[]=).with('VITE_HMR_HOST', 'gdk.test')
 
             described_class.load_gdk_vite_config
           end

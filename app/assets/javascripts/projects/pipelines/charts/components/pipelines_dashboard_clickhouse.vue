@@ -2,7 +2,8 @@
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { getDateInPast } from '~/lib/utils/datetime_utility';
-import { SOURCE_ANY, DATE_RANGE_7_DAYS, DATE_RANGES_AS_DAYS } from '../constants';
+import { DATE_RANGES_AS_DAYS, DATE_RANGE_DEFAULT, BRANCH_ANY } from '../constants';
+import { updateQueryHistory, paramsFromQuery } from '../url_utils';
 import getPipelineAnalytics from '../graphql/queries/get_pipeline_analytics.query.graphql';
 
 import DashboardHeader from './dashboard_header.vue';
@@ -35,12 +36,15 @@ export default {
     },
   },
   data() {
+    const defaultParams = {
+      source: null,
+      branch: this.defaultBranch,
+      dateRange: DATE_RANGE_DEFAULT,
+    };
+
     return {
-      params: {
-        source: SOURCE_ANY,
-        dateRange: DATE_RANGE_7_DAYS,
-        branch: this.defaultBranch,
-      },
+      defaultParams,
+      params: paramsFromQuery(window.location.search, defaultParams),
       pipelineAnalytics: {
         aggregate: {
           count: null,
@@ -82,8 +86,8 @@ export default {
 
       return {
         fullPath: this.projectPath,
-        source: this.params.source === SOURCE_ANY ? null : this.params.source,
-        branch: this.params.branch || null,
+        source: this.params.source || null,
+        branch: (this.params.branch === BRANCH_ANY ? null : this.params.branch) || null,
         fromTime: getDateInPast(today, DATE_RANGES_AS_DAYS[this.params.dateRange] || 7),
         toTime: today,
       };
@@ -99,6 +103,22 @@ export default {
       };
     },
   },
+  mounted() {
+    window.addEventListener('popstate', this.updateParamsFromQuery);
+  },
+  beforeDestroy() {
+    window.removeEventListener('popstate', this.updateParamsFromQuery);
+  },
+  methods: {
+    updateParamsFromQuery() {
+      this.params = paramsFromQuery(window.location.search, this.defaultParams);
+    },
+    onFiltersInput(params) {
+      this.params = params;
+
+      updateQueryHistory(this.params, this.defaultParams);
+    },
+  },
 };
 </script>
 <template>
@@ -107,10 +127,11 @@ export default {
       {{ s__('PipelineCharts|Pipelines') }}
     </dashboard-header>
     <pipelines-dashboard-clickhouse-filters
-      v-model="params"
+      :value="params"
       :default-branch="defaultBranch"
       :project-path="projectPath"
       :project-branch-count="projectBranchCount"
+      @input="onFiltersInput($event)"
     />
     <div>
       <statistics-list :loading="loading" :counts="formattedCounts" />

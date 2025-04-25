@@ -1368,13 +1368,5 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
 
       it { is_expected.to include(banned_merge_request) }
     end
-
-    context 'when the `hide_merge_requests_from_banned_users` feature flag is disabled' do
-      before do
-        stub_feature_flags(hide_merge_requests_from_banned_users: false)
-      end
-
-      it { is_expected.to include(banned_merge_request) }
-    end
   end
 end

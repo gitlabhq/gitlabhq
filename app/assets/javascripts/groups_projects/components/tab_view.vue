@@ -205,9 +205,10 @@ export default {
     },
   },
   methods: {
-    onRefetch() {
-      this.apolloClient.resetStore();
+    async onRefetch() {
+      await this.apolloClient.clearStore();
       this.$apollo.queries.items.refetch();
+      this.$emit('refetch');
     },
     onKeysetNext(endCursor) {
       this.$emit('keyset-page-change', {

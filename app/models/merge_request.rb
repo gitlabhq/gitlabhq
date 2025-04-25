@@ -572,11 +572,7 @@ class MergeRequest < ApplicationRecord
   end
 
   scope :without_hidden, -> {
-    if Feature.enabled?(:hide_merge_requests_from_banned_users)
-      where_not_exists(Users::BannedUser.where('merge_requests.author_id = banned_users.user_id'))
-    else
-      all
-    end
+    where_not_exists(Users::BannedUser.where('merge_requests.author_id = banned_users.user_id'))
   }
 
   scope :merged_without_state_event_source, -> {
@@ -2451,7 +2447,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def hidden?
-    Feature.enabled?(:hide_merge_requests_from_banned_users) && author&.banned?
+    author&.banned?
   end
 
   def diffs_batch_cache_with_max_age?

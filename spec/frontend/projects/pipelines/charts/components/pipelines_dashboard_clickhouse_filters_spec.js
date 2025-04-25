@@ -29,8 +29,28 @@ describe('PipelinesDashboardClickhouseFilters', () => {
   };
 
   describe('input', () => {
-    it('does not emit immediately', () => {
-      createComponent();
+    beforeEach(() => {
+      createComponent({
+        props: { value: { source: 'PUSH', dateRange: '30d', branch: 'my-branch-0' } },
+      });
+    });
+
+    it('sets values, and does not emit @input', () => {
+      expect(findCollapsibleListbox('pipeline-source').props('selected')).toBe('PUSH');
+      expect(findBranchCollapsibleListbox().props('selected')).toBe('my-branch-0');
+      expect(findCollapsibleListbox('date-range').props('selected')).toBe('30d');
+
+      expect(wrapper.emitted('input')).toBeUndefined();
+    });
+
+    it('reacts to changes in value, and does not emit @input', async () => {
+      wrapper.setProps({ value: { source: 'SCHEDULE', dateRange: '180d', branch: 'my-branch-1' } });
+      await nextTick();
+
+      expect(findCollapsibleListbox('pipeline-source').props('selected')).toBe('SCHEDULE');
+      expect(findBranchCollapsibleListbox().props('selected')).toBe('my-branch-1');
+      expect(findCollapsibleListbox('date-range').props('selected')).toBe('180d');
+
       expect(wrapper.emitted('input')).toBeUndefined();
     });
   });
@@ -70,7 +90,7 @@ describe('PipelinesDashboardClickhouseFilters', () => {
     });
 
     it('is "Any" by default', () => {
-      expect(findCollapsibleListbox('pipeline-source').props('selected')).toBe('ANY');
+      expect(findCollapsibleListbox('pipeline-source').props('selected')).toBe(null);
     });
 
     it('sets selected value', () => {
@@ -94,7 +114,7 @@ describe('PipelinesDashboardClickhouseFilters', () => {
         },
       });
 
-      expect(findCollapsibleListbox('pipeline-source').props('selected')).toBe('ANY');
+      expect(findCollapsibleListbox('pipeline-source').props('selected')).toBe(null);
     });
 
     it('emits when an option is selected', async () => {
@@ -103,7 +123,7 @@ describe('PipelinesDashboardClickhouseFilters', () => {
       await nextTick();
 
       expect(wrapper.emitted('input')[0][0]).toEqual({
-        branch: defaultBranch,
+        branch: null,
         dateRange: '7d',
         source: 'PUSH',
       });
@@ -117,15 +137,15 @@ describe('PipelinesDashboardClickhouseFilters', () => {
 
     it('shows listbox with default branch as default value', () => {
       expect(findBranchCollapsibleListbox().props()).toMatchObject({
-        selected: defaultBranch,
+        selected: null,
         defaultBranch,
         projectPath,
         projectBranchCount,
       });
     });
 
-    it('is the default branch by default', () => {
-      expect(findBranchCollapsibleListbox().props('selected')).toBe(defaultBranch);
+    it('is no branch by default', () => {
+      expect(findBranchCollapsibleListbox().props('selected')).toBe(null);
     });
 
     it('sets selected value', () => {
@@ -148,7 +168,7 @@ describe('PipelinesDashboardClickhouseFilters', () => {
       expect(wrapper.emitted('input')[0][0]).toEqual({
         branch: 'my-branch-1',
         dateRange: '7d',
-        source: 'ANY',
+        source: null,
       });
     });
   });
@@ -189,8 +209,8 @@ describe('PipelinesDashboardClickhouseFilters', () => {
 
       expect(wrapper.emitted('input')[0][0]).toEqual({
         dateRange: '90d',
-        branch: defaultBranch,
-        source: 'ANY',
+        branch: null,
+        source: null,
       });
     });
   });

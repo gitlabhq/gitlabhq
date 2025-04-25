@@ -7,10 +7,11 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PipelinesDashboardClickhouse from '~/projects/pipelines/charts/components/pipelines_dashboard_clickhouse.vue';
 import {
-  SOURCE_ANY,
   SOURCE_PUSH,
-  DATE_RANGE_7_DAYS,
+  BRANCH_ANY,
+  DATE_RANGE_DEFAULT,
   DATE_RANGE_30_DAYS,
+  DATE_RANGE_180_DAYS,
 } from '~/projects/pipelines/charts/constants';
 import PipelinesDashboardClickhouseFilters from '~/projects/pipelines/charts/components/pipelines_dashboard_clickhouse_filters.vue';
 import StatisticsList from '~/projects/pipelines/charts/components/statistics_list.vue';
@@ -18,11 +19,18 @@ import PipelineDurationChart from '~/projects/pipelines/charts/components/pipeli
 import PipelineStatusChart from '~/projects/pipelines/charts/components/pipeline_status_chart.vue';
 import getPipelineAnalyticsQuery from '~/projects/pipelines/charts/graphql/queries/get_pipeline_analytics.query.graphql';
 import { createAlert } from '~/alert';
+import { updateHistory } from '~/lib/utils/url_utility';
 import { useFakeDate } from 'helpers/fake_date';
 import { pipelineAnalyticsEmptyData, pipelineAnalyticsData } from 'jest/analytics/ci_cd/mock_data';
+import setWindowLocation from 'helpers/set_window_location_helper';
 
 Vue.use(VueApollo);
 jest.mock('~/alert');
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  updateHistory: jest.fn(),
+}));
 
 const projectPath = 'gitlab-org/gitlab';
 const defaultBranch = 'main';
@@ -73,55 +81,139 @@ describe('PipelinesDashboardClickhouse', () => {
   });
 
   describe('filters', () => {
-    beforeEach(() => {
-      createComponent();
-    });
+    describe('default filters', () => {
+      beforeEach(() => {
+        createComponent();
+      });
 
-    it('sets default filters', () => {
-      expect(findPipelinesDashboardClickhouseFilters().props()).toEqual({
-        defaultBranch: 'main',
-        projectBranchCount: 99,
-        projectPath: 'gitlab-org/gitlab',
-        value: {
-          source: SOURCE_ANY,
+      it('sets default filters', () => {
+        expect(findPipelinesDashboardClickhouseFilters().props()).toEqual({
+          defaultBranch,
+          projectBranchCount: 99,
+          projectPath: 'gitlab-org/gitlab',
+          value: {
+            source: null,
+            branch: defaultBranch,
+            dateRange: DATE_RANGE_DEFAULT,
+          },
+        });
+      });
+
+      it('requests with default filters', async () => {
+        await waitForPromises();
+
+        expect(getPipelineAnalyticsHandler).toHaveBeenCalledTimes(1);
+        expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith({
+          fullPath: projectPath,
+          source: null,
           branch: defaultBranch,
-          dateRange: DATE_RANGE_7_DAYS,
+          fromTime: new Date('2022-02-08'),
+          toTime: new Date('2022-02-15'),
+        });
+      });
+    });
+
+    describe('filters can be bookmarked', () => {
+      const tests = [
+        {
+          name: 'only default branch',
+          input: {
+            source: null,
+            dateRange: DATE_RANGE_DEFAULT,
+            branch: defaultBranch,
+          },
+          variables: {
+            source: null,
+            fullPath: projectPath,
+            branch: defaultBranch,
+            fromTime: new Date('2022-02-08'),
+            toTime: new Date('2022-02-15'),
+          },
+          query: '',
         },
-      });
+        {
+          name: 'the last 30 days',
+          input: {
+            source: null,
+            dateRange: DATE_RANGE_30_DAYS,
+            branch: BRANCH_ANY,
+          },
+          variables: {
+            source: null,
+            fullPath: projectPath,
+            branch: null,
+            fromTime: new Date('2022-01-16'),
+            toTime: new Date('2022-02-15'),
+          },
+          query: '?branch=~any&time=30d',
+        },
+        {
+          name: 'feature branch pushes in the last 180 days',
+          input: {
+            source: SOURCE_PUSH,
+            dateRange: DATE_RANGE_180_DAYS,
+            branch: 'feature-branch',
+          },
+          variables: {
+            source: SOURCE_PUSH,
+            fullPath: projectPath,
+            branch: 'feature-branch',
+            fromTime: new Date('2021-08-19'),
+            toTime: new Date('2022-02-15'),
+          },
+          query: '?branch=feature-branch&source=PUSH&time=180d',
+        },
+      ];
+
+      it.each(tests)(
+        'filters by "$name", updating query to "$query"',
+        async ({ input, variables, query }) => {
+          createComponent();
+          findPipelinesDashboardClickhouseFilters().vm.$emit('input', input);
+
+          await waitForPromises();
+
+          expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith(variables);
+
+          expect(updateHistory).toHaveBeenLastCalledWith({ url: `http://test.host/${query}` });
+        },
+      );
+
+      it.each(tests)(
+        'with query "$query", filters by "$name"',
+        async ({ input, variables, query }) => {
+          setWindowLocation(query);
+          createComponent();
+
+          await waitForPromises();
+
+          expect(findPipelinesDashboardClickhouseFilters().props('value')).toEqual(input);
+          expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith(variables);
+        },
+      );
+
+      it.each(tests)(
+        'responds to history back button for "$query" to filter by "$name"',
+        async ({ input, variables, query }) => {
+          createComponent();
+
+          setWindowLocation(query);
+          window.dispatchEvent(new Event('popstate'));
+          await waitForPromises();
+
+          expect(findPipelinesDashboardClickhouseFilters().props('value')).toEqual(input);
+          expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith(variables);
+        },
+      );
     });
 
-    it('requests with default filters', async () => {
-      await waitForPromises();
+    it('removes popstate event listener when destroyed', () => {
+      const spy = jest.spyOn(window, 'removeEventListener');
 
-      expect(getPipelineAnalyticsHandler).toHaveBeenCalledTimes(1);
-      expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith({
-        source: null,
-        fullPath: projectPath,
-        branch: defaultBranch,
-        fromTime: new Date('2022-02-08'),
-        toTime: new Date('2022-02-15'),
-      });
-    });
+      createComponent();
+      wrapper.destroy();
 
-    it('when an option is selected, requests with new filters', async () => {
-      await waitForPromises();
-
-      findPipelinesDashboardClickhouseFilters().vm.$emit('input', {
-        source: SOURCE_PUSH,
-        dateRange: DATE_RANGE_30_DAYS,
-        branch: 'feature-branch',
-      });
-
-      await waitForPromises();
-
-      expect(getPipelineAnalyticsHandler).toHaveBeenCalledTimes(2);
-      expect(getPipelineAnalyticsHandler).toHaveBeenLastCalledWith({
-        source: SOURCE_PUSH,
-        fullPath: projectPath,
-        branch: 'feature-branch',
-        fromTime: new Date('2022-01-16'),
-        toTime: new Date('2022-02-15'),
-      });
+      expect(spy).toHaveBeenCalledWith('popstate', wrapper.vm.updateParamsFromQuery);
     });
   });
 

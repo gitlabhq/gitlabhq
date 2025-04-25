@@ -799,9 +799,11 @@ scoped to a group or project return no results.
 
 ## Advanced search migrations
 
-With reindex migrations running in the background, there's no need for a manual
-intervention. This usually happens in situations where new features are added to
-advanced search, which means adding or changing the way content is indexed.
+Reindex migrations run in the background, which means
+you do not have to reindex the instance manually.
+With the `elastic_migration_worker_enabled` application setting,
+you can turn on or off the migration worker.
+By default, the migration worker is on.
 
 ### Migration dictionary files
 

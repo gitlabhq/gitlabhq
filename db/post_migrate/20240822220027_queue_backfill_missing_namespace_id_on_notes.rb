@@ -17,19 +17,11 @@ class QueueBackfillMissingNamespaceIdOnNotes < Gitlab::Database::Migration[2.2]
   GITLAB_OPTIMIZED_BATCH_SIZE = 75_000
   GITLAB_OPTIMIZED_SUB_BATCH_SIZE = 250
 
-  def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :notes,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      **batch_sizes
-    )
-  end
+  # No longer needed as we are now going to backfill only non project notes
+  # gitlab.com/gitlab-org/gitlab/-/issues/444222
+  def up; end
 
-  def down
-    delete_batched_background_migration(MIGRATION, :notes, :id, [])
-  end
+  def down; end
 
   private
 

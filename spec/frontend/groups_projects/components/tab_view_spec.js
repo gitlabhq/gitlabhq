@@ -82,7 +82,7 @@ describe('TabView', () => {
     });
 
     apolloClient = mockApollo.defaultClient;
-    jest.spyOn(apolloClient, 'resetStore');
+    jest.spyOn(apolloClient, 'clearStore');
   };
 
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
@@ -154,9 +154,15 @@ describe('TabView', () => {
             findProjectsList().vm.$emit('refetch');
           });
 
-          it('resets store and refetches list', () => {
-            expect(apolloClient.resetStore).toHaveBeenCalled();
+          it('clears store and refetches list', async () => {
+            expect(apolloClient.clearStore).toHaveBeenCalled();
+            await waitForPromises();
             expect(handler[1]).toHaveBeenCalledTimes(2);
+          });
+
+          it('emits refetch event', async () => {
+            await waitForPromises();
+            expect(wrapper.emitted('refetch')).toEqual([[]]);
           });
         });
       });

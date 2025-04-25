@@ -15,9 +15,7 @@
 import { GlFormGroup, GlFormInput, GlFormInputGroup, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { __, s__ } from '~/locale';
-
-const PREVIEW_COLOR_DEFAULT_CLASSES =
-  'gl-relative gl-w-7 gl-bg-subtle gl-rounded-tl-base gl-rounded-bl-base';
+import { BORDER_COLOR_ERROR, BORDER_COLOR_DEFAULT } from './constants';
 
 export default {
   name: 'ColorPicker',
@@ -68,18 +66,11 @@ export default {
         ? s__('ColorPicker|Enter any hex color or choose one of the suggested colors below.')
         : s__('ColorPicker|Enter any hex color.');
     },
-    previewColor() {
-      if (this.state) {
-        return { backgroundColor: this.value };
-      }
-
-      return {};
-    },
-    previewColorClasses() {
-      const borderStyle =
-        this.state === false ? 'gl-shadow-inner-1-red-500' : 'gl-shadow-inner-1-gray-400';
-
-      return `${PREVIEW_COLOR_DEFAULT_CLASSES} ${borderStyle}`;
+    previewStyle() {
+      return {
+        backgroundColor: this.state ? this.value : null,
+        borderColor: this.state === false ? BORDER_COLOR_ERROR : BORDER_COLOR_DEFAULT,
+      };
     },
     hasSuggestedColors() {
       return Object.keys(this.suggestedColors).length;
@@ -118,7 +109,11 @@ export default {
       >
         <!-- eslint-enable @gitlab/vue-require-i18n-attribute-strings -->
         <template #prepend>
-          <div :class="previewColorClasses" :style="previewColor" data-testid="color-preview">
+          <div
+            class="gl-relative gl-w-7 gl-rounded-bl-base gl-rounded-tl-base gl-border-1 gl-border-solid gl-bg-subtle"
+            :style="previewStyle"
+            data-testid="color-preview"
+          >
             <gl-form-input
               :id="id"
               type="color"

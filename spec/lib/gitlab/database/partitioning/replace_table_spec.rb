@@ -138,6 +138,27 @@ RSpec.describe Gitlab::Database::Partitioning::ReplaceTable, '#perform', feature
       end
     end
 
+    context 'when the source table is owned by a user with non-alphanumeric characters' do
+      let(:special_owner) { 'random-table-ownér$#%' }
+      let(:replace_table_instance) do
+        described_class.new(connection, original_table, replacement_table, archived_table, 'id')
+      end
+
+      it 'fails when owner name is not quoted' do
+        unquoted_sql = "ALTER TABLE #{connection.quote_table_name(original_table)} OWNER TO #{special_owner}"
+
+        expect do
+          connection.execute(unquoted_sql)
+        end.to raise_error(ActiveRecord::StatementInvalid, /syntax error/)
+      end
+
+      it 'properly quotes both table name and owner name' do
+        sql = replace_table_instance.send(:set_table_owner_statement, original_table, special_owner)
+
+        expect(sql).to eq("ALTER TABLE \"#{original_table}\" OWNER TO \"#{special_owner}\"")
+      end
+    end
+
     def partitions_for_parent_table(table)
       Gitlab::Database::PostgresPartition.for_parent_table(table)
     end

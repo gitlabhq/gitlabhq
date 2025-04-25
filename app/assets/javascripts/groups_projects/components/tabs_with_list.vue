@@ -230,28 +230,7 @@ export default {
     },
   },
   async created() {
-    if (!Object.keys(this.tabCountsQuery).length) {
-      return;
-    }
-
-    try {
-      const { data } = await this.$apollo.query({ query: this.tabCountsQuery });
-
-      this.tabCounts = this.tabs.reduce((accumulator, tab) => {
-        const { count } = get(data, tab.countsQueryPath);
-
-        return {
-          ...accumulator,
-          [tab.value]: count,
-        };
-      }, {});
-    } catch (error) {
-      createAlert({
-        message: this.tabCountsQueryErrorMessage,
-        error,
-        captureError: true,
-      });
-    }
+    this.getTabCounts();
   },
   methods: {
     numberToMetricPrefix,
@@ -359,6 +338,9 @@ export default {
     onOffsetPageChange(page) {
       this.pushQuery({ ...this.$route.query, [QUERY_PARAM_PAGE]: page });
     },
+    onRefetch() {
+      this.getTabCounts();
+    },
     async userPreferencesUpdateMutate(sort) {
       try {
         await this.$apollo.mutate({
@@ -372,6 +354,30 @@ export default {
       } catch (error) {
         // Silently fail but capture exception in Sentry
         Sentry.captureException(error);
+      }
+    },
+    async getTabCounts() {
+      if (!Object.keys(this.tabCountsQuery).length) {
+        return;
+      }
+
+      try {
+        const { data } = await this.$apollo.query({ query: this.tabCountsQuery });
+
+        this.tabCounts = this.tabs.reduce((accumulator, tab) => {
+          const { count } = get(data, tab.countsQueryPath);
+
+          return {
+            ...accumulator,
+            [tab.value]: count,
+          };
+        }, {});
+      } catch (error) {
+        createAlert({
+          message: this.tabCountsQueryErrorMessage,
+          error,
+          captureError: true,
+        });
       }
     },
   },
@@ -409,6 +415,7 @@ export default {
         :pagination-type="paginationType"
         @keyset-page-change="onKeysetPageChange"
         @offset-page-change="onOffsetPageChange"
+        @refetch="onRefetch"
       />
       <template v-else>{{ tab.text }}</template>
     </gl-tab>

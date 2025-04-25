@@ -124,9 +124,7 @@ export default defineConfig({
     'process.env.GITLAB_WEB_IDE_PUBLIC_PATH': JSON.stringify(GITLAB_WEB_IDE_PUBLIC_PATH),
     'window.IS_VITE': JSON.stringify(true),
     'window.VUE_DEVTOOLS_CONFIG.openInEditorHost': JSON.stringify(
-      viteGDKConfig.hmr
-        ? `${process.env.VITE_HMR_HTTP_URL}/vite-dev/`
-        : `http://${viteGDKConfig.host}:${viteGDKConfig.port}/vite-dev/`,
+      `${viteGDKConfig.https?.enabled ? 'https' : 'http'}://${viteGDKConfig.public_host}:${viteGDKConfig.port}/vite-dev/`,
     ),
     'process.env.PDF_JS_WORKER_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_PUBLIC_PATH),
     'process.env.PDF_JS_CMAPS_UBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_PUBLIC_PATH),
@@ -136,8 +134,12 @@ export default defineConfig({
     warmup: {
       clientFiles: ['javascripts/entrypoints/main.js', 'javascripts/entrypoints/super_sidebar.js'],
     },
-    hmr: viteGDKConfig.hmr,
-    https: false,
+    https: viteGDKConfig.https?.enabled
+      ? {
+          key: viteGDKConfig.https?.key,
+          cert: viteGDKConfig.https?.certificate,
+        }
+      : false,
     watch:
       viteGDKConfig.hmr === null
         ? null

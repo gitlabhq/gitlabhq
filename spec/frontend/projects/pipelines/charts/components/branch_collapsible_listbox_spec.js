@@ -6,6 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import BranchCollapsibleListbox from '~/projects/pipelines/charts/components/branch_collapsible_listbox.vue';
 import getBranchesOptionsQuery from '~/projects/pipelines/charts/graphql/queries/get_branches_options.query.graphql';
+import { BRANCH_ANY } from '~/projects/pipelines/charts/constants';
 import { createAlert } from '~/alert';
 
 jest.mock('~/alert');
@@ -63,7 +64,7 @@ describe('Pipeline editor branch switcher', () => {
         infiniteScroll: false,
         loading: false,
         infiniteScrollLoading: true,
-        items: [{ text: 'All branches', value: '' }],
+        items: [{ text: 'All branches', value: BRANCH_ANY }],
         searchPlaceholder: 'Filter by branch name',
         searchable: true,
         searching: false,
@@ -96,7 +97,7 @@ describe('Pipeline editor branch switcher', () => {
         expect(findGlCollapsibleListbox().exists()).toBe(true);
 
         expect(findGlCollapsibleListbox().props('items')).toEqual([
-          { text: 'All branches', value: '' },
+          { text: 'All branches', value: BRANCH_ANY },
           { text: 'main', value: 'main' },
           { text: 'feature-branch', value: 'feature-branch' },
         ]);
@@ -155,7 +156,7 @@ describe('Pipeline editor branch switcher', () => {
 
         it('updates items', () => {
           expect(findGlCollapsibleListbox().props('items')).toEqual([
-            { text: 'All branches', value: '' },
+            { text: 'All branches', value: BRANCH_ANY },
             { text: 'main', value: 'main' },
             { text: 'feature-branch', value: 'feature-branch' },
             { text: 'feature-branch-2', value: 'feature-branch-2' },
@@ -193,7 +194,6 @@ describe('Pipeline editor branch switcher', () => {
 
       it('shows selected branch', () => {
         expect(findGlCollapsibleListbox().props('selected')).toBe('feature-branch');
-        expect(findGlCollapsibleListbox().props('toggleText')).toBe('feature-branch');
 
         expect(findListboxItem(2).text()).toBe('feature-branch');
         expect(findListboxItem(2).props('isSelected')).toBe(true);
@@ -211,7 +211,7 @@ describe('Pipeline editor branch switcher', () => {
 
     it('shows "All" option', () => {
       expect(findGlCollapsibleListbox().props('items')).toEqual([
-        { text: 'All branches', value: '' },
+        { text: 'All branches', value: BRANCH_ANY },
       ]);
     });
 

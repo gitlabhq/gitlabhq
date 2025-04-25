@@ -7,7 +7,6 @@ import {
   DATE_RANGE_90_DAYS,
   DATE_RANGE_180_DAYS,
   DATE_RANGE_DEFAULT,
-  SOURCE_ANY,
   SOURCE_PUSH,
   SOURCE_SCHEDULE,
   SOURCE_MERGE_REQUEST_EVENT,
@@ -32,7 +31,7 @@ import {
 import BranchCollapsibleListbox from './branch_collapsible_listbox.vue';
 
 const sourcesItems = [
-  { value: SOURCE_ANY, text: s__('PipelineSource|Any source') },
+  { value: null, text: s__('PipelineSource|Any source') },
   { value: SOURCE_PUSH, text: s__('PipelineSource|Push') },
   { value: SOURCE_SCHEDULE, text: s__('PipelineSource|Schedule') },
   { value: SOURCE_MERGE_REQUEST_EVENT, text: s__('PipelineSource|Merge Request Event') },
@@ -83,11 +82,7 @@ export default {
   props: {
     value: {
       type: Object,
-      default: () => ({
-        source: SOURCE_ANY,
-        dateRange: DATE_RANGE_7_DAYS,
-        branch: null,
-      }),
+      default: null,
       required: false,
     },
     defaultBranch: {
@@ -106,25 +101,36 @@ export default {
     },
   },
   data() {
-    const { source, branch, dateRange } = this.value;
-
-    const isValidSource = sourcesItems.map(({ value }) => value).includes(source);
-    const isValidDateRange = dateRangeItems.map(({ value }) => value).includes(dateRange);
-
     return {
-      params: {
-        source: isValidSource ? source : SOURCE_ANY,
-        dateRange: isValidDateRange ? dateRange : DATE_RANGE_DEFAULT,
-        branch: branch || this.defaultBranch,
-      },
+      source: null,
+      branch: null,
+      dateRange: null,
     };
   },
   watch: {
-    params: {
-      handler(params) {
-        this.$emit('input', params);
+    value: {
+      handler() {
+        const { source, branch, dateRange } = this.value || {};
+
+        const isValidSource = sourcesItems.map((s) => s.value).includes(source);
+        const isValidDateRange = dateRangeItems.map((d) => d.value).includes(dateRange);
+
+        this.source = isValidSource ? source : null;
+        this.branch = branch || null;
+        this.dateRange = isValidDateRange ? dateRange : DATE_RANGE_DEFAULT;
       },
-      deep: true,
+      immediate: true,
+    },
+  },
+  methods: {
+    onSelect(param, value) {
+      this[param] = value;
+
+      this.$emit('input', {
+        source: this.source,
+        branch: this.branch,
+        dateRange: this.dateRange,
+      });
     },
   },
   sourcesItems,
@@ -140,19 +146,21 @@ export default {
     >
       <gl-collapsible-listbox
         id="pipeline-source"
-        v-model="params.source"
+        :selected="source"
         block
         :items="$options.sourcesItems"
+        @select="onSelect('source', $event)"
       />
     </gl-form-group>
     <gl-form-group class="gl-min-w-full sm:gl-min-w-26" :label="__('Branch')" label-for="branch">
       <branch-collapsible-listbox
         id="branch"
-        v-model="params.branch"
+        :selected="branch"
         block
         :default-branch="defaultBranch"
         :project-path="projectPath"
         :project-branch-count="projectBranchCount"
+        @select="onSelect('branch', $event)"
       />
     </gl-form-group>
     <gl-form-group
@@ -162,9 +170,10 @@ export default {
     >
       <gl-collapsible-listbox
         id="date-range"
-        v-model="params.dateRange"
+        :selected="dateRange"
         block
         :items="$options.dateRangeItems"
+        @select="onSelect('dateRange', $event)"
       />
     </gl-form-group>
   </div>

@@ -5,7 +5,7 @@ module ContentSecurityPolicyHelpers
   # 1. call that's being tested
   # 2. call in ApplicationController
   def setup_csp_for_controller(
-    controller_class, csp = ActionDispatch::ContentSecurityPolicy.new, times: 2,
+    controller_class, csp = ActionDispatch::ContentSecurityPolicy.new, times: 3,
     any_time: false)
     expect_next_instance_of(controller_class) do |controller|
       if any_time

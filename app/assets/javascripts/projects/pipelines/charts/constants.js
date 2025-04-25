@@ -10,6 +10,8 @@ export const ONE_WEEK_AGO_DAYS = 7;
 export const ONE_MONTH_AGO_DAYS = 31;
 export const ONE_YEAR_AGO_DAYS = 365;
 
+export const BRANCH_ANY = '~any'; // ~ is not allowed as part of a branch name so it can be used as a special identifier, see https://git-scm.com/docs/git-check-ref-format#_description
+
 export const DATE_RANGE_7_DAYS = '7d';
 export const DATE_RANGE_30_DAYS = '30d';
 export const DATE_RANGE_90_DAYS = '90d';
@@ -34,7 +36,6 @@ export const SNOWPLOW_SCHEMA = 'iglu:com.gitlab/gitlab_service_ping/jsonschema/1
 export const SNOWPLOW_DATA_SOURCE = 'redis_hll';
 
 // CiPipelineSources values from GraphQL schema.
-export const SOURCE_ANY = 'ANY'; // This is a special value, not part of CiPipelineSources.
 export const SOURCE_PUSH = 'PUSH';
 export const SOURCE_SCHEDULE = 'SCHEDULE';
 export const SOURCE_MERGE_REQUEST_EVENT = 'MERGE_REQUEST_EVENT';

@@ -727,4 +727,18 @@ describe('TabsWithList', () => {
       expect(findTabView().props('timestampType')).toBe(expectedTimestampType);
     });
   });
+
+  describe('when refetch event is fired', () => {
+    beforeEach(async () => {
+      await createComponent();
+      await waitForPromises();
+      await mockApollo.defaultClient.clearStore();
+      findTabView().vm.$emit('refetch');
+      await waitForPromises();
+    });
+
+    it('refetches tab counts', () => {
+      expect(successHandler).toHaveBeenCalledTimes(2);
+    });
+  });
 });
