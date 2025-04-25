@@ -44,7 +44,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/helpers/ee/subscribable_banner_helper_spec.rb'
     - 'ee/spec/helpers/ee/users/callouts_helper_spec.rb'
     - 'ee/spec/helpers/ee/wiki_helper_spec.rb'
-    - 'ee/spec/helpers/epics_helper_spec.rb'
     - 'ee/spec/helpers/gitlab_subscriptions/upcoming_reconciliation_helper_spec.rb'
     - 'ee/spec/helpers/groups/security_features_helper_spec.rb'
     - 'ee/spec/helpers/incident_management/escalation_policy_helper_spec.rb'

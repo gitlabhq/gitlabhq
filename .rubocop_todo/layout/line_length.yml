@@ -1138,7 +1138,6 @@ Layout/LineLength:
     - 'ee/spec/helpers/ee/projects/security/dast_configuration_helper_spec.rb'
     - 'ee/spec/helpers/ee/subscribable_banner_helper_spec.rb'
     - 'ee/spec/helpers/ee/users/callouts_helper_spec.rb'
-    - 'ee/spec/helpers/epics_helper_spec.rb'
     - 'ee/spec/helpers/gitlab_subscriptions/upcoming_reconciliation_helper_spec.rb'
     - 'ee/spec/helpers/groups/security_features_helper_spec.rb'
     - 'ee/spec/helpers/license_helper_spec.rb'

@@ -1,7 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAlert } from '@gitlab/ui';
-import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/namespace_work_item_types.query.graphql.json';
+import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_namespace_work_item_types.query.graphql.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -20,15 +20,13 @@ import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.grap
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import {
   FORM_TYPES,
-  WORK_ITEM_TYPE_ENUM_OBJECTIVE,
-  WORK_ITEM_TYPE_ENUM_KEY_RESULT,
-  WORK_ITEM_TYPE_ENUM_EPIC,
-  WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
   WORK_ITEM_TYPE_NAME_TASK,
   WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
   WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
+  WORK_ITEM_TYPE_NAME_KEY_RESULT,
+  WORK_ITEM_TYPE_NAME_ISSUE,
 } from '~/work_items/constants';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import * as utils from '~/work_items/utils';
@@ -168,10 +166,10 @@ describe('WorkItemTree', () => {
 
   it.each`
     option                   | formType             | childType
-    ${'New objective'}       | ${FORM_TYPES.create} | ${WORK_ITEM_TYPE_ENUM_OBJECTIVE}
-    ${'Existing objective'}  | ${FORM_TYPES.add}    | ${WORK_ITEM_TYPE_ENUM_OBJECTIVE}
-    ${'New key result'}      | ${FORM_TYPES.create} | ${WORK_ITEM_TYPE_ENUM_KEY_RESULT}
-    ${'Existing key result'} | ${FORM_TYPES.add}    | ${WORK_ITEM_TYPE_ENUM_KEY_RESULT}
+    ${'New objective'}       | ${FORM_TYPES.create} | ${WORK_ITEM_TYPE_NAME_OBJECTIVE}
+    ${'Existing objective'}  | ${FORM_TYPES.add}    | ${WORK_ITEM_TYPE_NAME_OBJECTIVE}
+    ${'New key result'}      | ${FORM_TYPES.create} | ${WORK_ITEM_TYPE_NAME_KEY_RESULT}
+    ${'Existing key result'} | ${FORM_TYPES.add}    | ${WORK_ITEM_TYPE_NAME_KEY_RESULT}
   `(
     'when triggering action $option, renders the form passing $formType and $childType',
     async ({ formType, childType }) => {
@@ -193,8 +191,8 @@ describe('WorkItemTree', () => {
   describe('when subepics are not available', () => {
     it.each`
       option              | formType             | childType
-      ${'New issue'}      | ${FORM_TYPES.create} | ${WORK_ITEM_TYPE_ENUM_ISSUE}
-      ${'Existing issue'} | ${FORM_TYPES.add}    | ${WORK_ITEM_TYPE_ENUM_ISSUE}
+      ${'New issue'}      | ${FORM_TYPES.create} | ${WORK_ITEM_TYPE_NAME_ISSUE}
+      ${'Existing issue'} | ${FORM_TYPES.add}    | ${WORK_ITEM_TYPE_NAME_ISSUE}
     `(
       'when triggering action $option, renders the form passing $formType and $childType',
       async ({ formType, childType }) => {
@@ -215,10 +213,10 @@ describe('WorkItemTree', () => {
   describe('when subepics are available', () => {
     it.each`
       option              | formType             | childType
-      ${'New issue'}      | ${FORM_TYPES.create} | ${WORK_ITEM_TYPE_ENUM_ISSUE}
-      ${'Existing issue'} | ${FORM_TYPES.add}    | ${WORK_ITEM_TYPE_ENUM_ISSUE}
-      ${'New epic'}       | ${FORM_TYPES.create} | ${WORK_ITEM_TYPE_ENUM_EPIC}
-      ${'Existing epic'}  | ${FORM_TYPES.add}    | ${WORK_ITEM_TYPE_ENUM_EPIC}
+      ${'New issue'}      | ${FORM_TYPES.create} | ${WORK_ITEM_TYPE_NAME_ISSUE}
+      ${'Existing issue'} | ${FORM_TYPES.add}    | ${WORK_ITEM_TYPE_NAME_ISSUE}
+      ${'New epic'}       | ${FORM_TYPES.create} | ${WORK_ITEM_TYPE_NAME_EPIC}
+      ${'Existing epic'}  | ${FORM_TYPES.add}    | ${WORK_ITEM_TYPE_NAME_EPIC}
     `(
       'when triggering action $option, renders the form passing $formType and $childType',
       async ({ formType, childType }) => {
@@ -303,7 +301,7 @@ describe('WorkItemTree', () => {
   it('emits `addChild` event when form emits `addChild` event', async () => {
     createComponent();
 
-    wrapper.vm.showAddForm(FORM_TYPES.create, WORK_ITEM_TYPE_ENUM_OBJECTIVE);
+    wrapper.vm.showAddForm(FORM_TYPES.create, WORK_ITEM_TYPE_NAME_OBJECTIVE);
     await nextTick();
     findForm().vm.$emit('addChild');
 
@@ -420,8 +418,7 @@ describe('WorkItemTree', () => {
     expect(namespaceWorkItemTypesQueryHandler).toHaveBeenCalled();
     await nextTick();
 
-    expect(findWorkItemLinkChildrenWrapper().props('allowedChildrenByType')).toEqual({
-      Epic: ['Epic', 'Issue'],
+    expect(findWorkItemLinkChildrenWrapper().props('allowedChildrenByType')).toMatchObject({
       Incident: ['Task'],
       Issue: ['Task'],
       Objective: ['Key Result', 'Objective'],

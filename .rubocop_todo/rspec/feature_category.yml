@@ -366,7 +366,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/helpers/ee/subscribable_banner_helper_spec.rb'
     - 'ee/spec/helpers/ee/system_note_helper_spec.rb'
     - 'ee/spec/helpers/ee/users/callouts_helper_spec.rb'
-    - 'ee/spec/helpers/epics_helper_spec.rb'
     - 'ee/spec/helpers/gitlab_subscriptions/upcoming_reconciliation_helper_spec.rb'
     - 'ee/spec/helpers/groups/ldap_sync_helper_spec.rb'
     - 'ee/spec/helpers/incident_management/oncall_schedule_helper_spec.rb'

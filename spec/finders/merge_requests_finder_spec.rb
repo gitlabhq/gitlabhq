@@ -664,6 +664,18 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           it { is_expected.to contain_exactly(*expected_mr) }
         end
 
+        context 'by no review requested OR with reviewer states' do
+          let(:params) { { or: { reviewer_wildcard: 'none', review_states: %w[requested_changes reviewed] } } }
+          let(:expected_mr) { [merge_request1, merge_request2, merge_request4, merge_request5] }
+
+          before do
+            merge_request1.merge_request_reviewers.update_all(state: :requested_changes)
+            merge_request2.merge_request_reviewers.update_all(state: :reviewed)
+          end
+
+          it { is_expected.to contain_exactly(*expected_mr) }
+        end
+
         context 'by more than a single reviewer with username' do
           let_it_be(:merge_request6) do
             create(

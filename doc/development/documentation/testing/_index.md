@@ -15,9 +15,9 @@ Merge requests containing changes to Markdown (`.md`) files run these CI/CD jobs
 - `docs-lint markdown`: Runs several types of tests, including:
   - [Vale](vale.md): Checks documentation content.
   - [markdownlint](markdownlint.md): Checks Markdown structure.
-  - [`lint-docs.sh`](#tests-in-lint-docsh) script: Miscellaneous tests, including
-    [`mermaidlint`](#mermaid-chart-linting) to check for invalid Mermaid charts.
+  - [`lint-docs.sh`](#tests-in-lint-docsh) script: Miscellaneous tests
 - `docs-lint links`: Checks the validity of [relative links](links.md#run-the-relative-link-test-locally) in the documentation suite.
+- `docs-lint mermaid`: Runs [`mermaidlint`](#mermaid-chart-linting) to check for invalid Mermaid charts.
 - `rubocop-docs`: Checks links to documentation [from `.rb` files](links.md#run-rubocop-tests).
 - `eslint-docs`: Checks links to documentation [from `.js` and `.vue` files](links.md#run-eslint-tests).
 - `docs-lint redirects`: Checks for deleted or renamed documentation files without [redirects](../redirects.md).
@@ -64,7 +64,7 @@ The `docs-lint markdown` job fails if any of these `lint-doc.sh` tests fail:
 
 [Mermaid](https://mermaid.js.org/) builds charts and diagrams from code.
 
-The script (`scripts/lint/check_mermaid.mjs`) runs during `lint-doc.sh` checks on
+The script (`scripts/lint/check_mermaid.mjs`) runs in the `docs-lint mermaid` job for
 all merge requests that contain changes to Markdown files. The script returns an
 error if any Markdown files return a Mermaid syntax error.
 

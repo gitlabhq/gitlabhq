@@ -6,7 +6,7 @@ import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_help
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemTokenInput from '~/work_items/components/shared/work_item_token_input.vue';
-import { WORK_ITEM_TYPE_ENUM_TASK } from '~/work_items/constants';
+import { WORK_ITEM_TYPE_ENUM_TASK, WORK_ITEM_TYPE_NAME_TASK } from '~/work_items/constants';
 import groupWorkItemsQuery from '~/work_items/graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import workItemsByReferencesQuery from '~/work_items/graphql/work_items_by_references.query.graphql';
@@ -246,7 +246,7 @@ describe('WorkItemTokenInput', () => {
     parentConfidential = false,
     parentWorkItemId = WORK_ITEM_ID,
     childrenIds = [],
-    childrenType = WORK_ITEM_TYPE_ENUM_TASK,
+    childrenType = WORK_ITEM_TYPE_NAME_TASK,
     areWorkItemsToAddValid = true,
     workItemsResolver = searchWorkItemTextResolver,
     isGroup = false,

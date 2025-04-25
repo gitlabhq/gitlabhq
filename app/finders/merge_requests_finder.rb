@@ -91,6 +91,7 @@ class MergeRequestsFinder < IssuableFinder
     items = by_assignee_or_reviewer(items)
     items = by_blob_path(items)
     items = by_no_review_requested_or_only_user(items)
+    items = by_review_states_or_no_reviewer(items)
 
     by_approved(items)
   end
@@ -297,6 +298,16 @@ class MergeRequestsFinder < IssuableFinder
     return items unless not_params.reviewer_id? || not_params.reviewer_username?
 
     items.not_only_reviewer(not_params.reviewer)
+  end
+
+  def by_review_states_or_no_reviewer(items)
+    return items unless or_params&.fetch(:reviewer_wildcard, false).present?
+    return items unless or_params[:reviewer_wildcard].to_s.casecmp('NONE') == 0
+    return items unless or_params[:review_states]
+
+    states = or_params[:review_states].map { |state| MergeRequestReviewer.states[state] }
+
+    items.with_review_states_or_no_reviewer(states)
   end
 
   def by_no_review_requested_or_only_user(items)

@@ -20,6 +20,11 @@ module Types
       argument :assignee_usernames, [GraphQL::Types::String],
         required: false,
         description: 'Filters MRs that are assigned to at least one of the given users.'
+
+      argument :review_states, [::Types::MergeRequestReviewStateEnum],
+        required: false,
+        description: 'Filters merge requests that have been reviewed. Only compatible with reviewerWildcard.',
+        experiment: { milestone: '18.0' }
     end
   end
 end

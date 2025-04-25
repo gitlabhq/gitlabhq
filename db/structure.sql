@@ -17142,24 +17142,6 @@ CREATE SEQUENCE merge_request_cleanup_schedules_merge_request_id_seq
 
 ALTER SEQUENCE merge_request_cleanup_schedules_merge_request_id_seq OWNED BY merge_request_cleanup_schedules.merge_request_id;
 
-CREATE SEQUENCE merge_request_commits_metadata_commit_author_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE merge_request_commits_metadata_commit_author_id_seq OWNED BY merge_request_commits_metadata.commit_author_id;
-
-CREATE SEQUENCE merge_request_commits_metadata_committer_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE merge_request_commits_metadata_committer_id_seq OWNED BY merge_request_commits_metadata.committer_id;
-
 CREATE SEQUENCE merge_request_commits_metadata_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -17168,15 +17150,6 @@ CREATE SEQUENCE merge_request_commits_metadata_id_seq
     CACHE 1;
 
 ALTER SEQUENCE merge_request_commits_metadata_id_seq OWNED BY merge_request_commits_metadata.id;
-
-CREATE SEQUENCE merge_request_commits_metadata_project_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE merge_request_commits_metadata_project_id_seq OWNED BY merge_request_commits_metadata.project_id;
 
 CREATE TABLE merge_request_context_commit_diff_files (
     sha bytea NOT NULL,
@@ -27597,12 +27570,6 @@ ALTER TABLE ONLY merge_request_blocks ALTER COLUMN id SET DEFAULT nextval('merge
 ALTER TABLE ONLY merge_request_cleanup_schedules ALTER COLUMN merge_request_id SET DEFAULT nextval('merge_request_cleanup_schedules_merge_request_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_request_commits_metadata ALTER COLUMN id SET DEFAULT nextval('merge_request_commits_metadata_id_seq'::regclass);
-
-ALTER TABLE ONLY merge_request_commits_metadata ALTER COLUMN project_id SET DEFAULT nextval('merge_request_commits_metadata_project_id_seq'::regclass);
-
-ALTER TABLE ONLY merge_request_commits_metadata ALTER COLUMN commit_author_id SET DEFAULT nextval('merge_request_commits_metadata_commit_author_id_seq'::regclass);
-
-ALTER TABLE ONLY merge_request_commits_metadata ALTER COLUMN committer_id SET DEFAULT nextval('merge_request_commits_metadata_committer_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_request_context_commits ALTER COLUMN id SET DEFAULT nextval('merge_request_context_commits_id_seq'::regclass);
 

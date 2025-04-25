@@ -42,6 +42,37 @@ docs-lint markdown:
     - .default-retry
     - .docs:rules:docs-lint
     - .docs-markdown-lint-image
+  stage: lint
+  needs: []
+  script:
+    - |
+      cat << EOF >> .markdownlint-cli2.yaml
+      outputFormatters:
+        - - 'markdownlint-cli2-formatter-default'
+        - - 'markdownlint-cli2-formatter-codequality'
+          - severity: 'blocker'
+      EOF
+    - source ./scripts/utils.sh
+    - |
+      function docs_lint_markdown() {
+        install_gitlab_gem
+        scripts/lint-doc.sh
+      }
+
+      run_with_custom_exit_code docs_lint_markdown
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - markdownlint-cli2-codequality.json
+    reports:
+      codequality: markdownlint-cli2-codequality.json
+
+docs-lint mermaid:
+  extends:
+    - .default-retry
+    - .docs:rules:docs-lint
+    - .docs-markdown-lint-image
     - .yarn-cache
   stage: lint
   needs: []
@@ -50,8 +81,6 @@ docs-lint markdown:
     - |
       function docs_lint_markdown() {
         yarn_install_script
-        install_gitlab_gem
-        scripts/lint-doc.sh
         scripts/lint/check_mermaid.mjs
       }
 

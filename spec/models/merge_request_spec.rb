@@ -218,6 +218,16 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it { expect(merge_requests).to match_array([merge_request2]) }
     end
 
+    describe '.with_review_states_or_no_reviewer' do
+      let(:states) { [MergeRequestReviewer.states[:reviewed], MergeRequestReviewer.states[:requested_changes]] }
+
+      let_it_be(:merge_request5) { create(:merge_request, :prepared, :unique_branches, reviewers: [user1]) }
+
+      subject(:merge_requests) { described_class.with_review_states_or_no_reviewer(states) }
+
+      it { expect(merge_requests).to match_array([merge_request1, merge_request2, merge_request3, merge_request4]) }
+    end
+
     describe '.no_review_requested_or_only_user' do
       subject(:merge_requests) { described_class.no_review_requested_or_only_user(user1) }
 

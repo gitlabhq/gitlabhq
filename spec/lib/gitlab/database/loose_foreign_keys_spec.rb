@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :cell do
+RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database do
   describe 'verify all definitions' do
     subject(:definitions) { described_class.definitions }
 

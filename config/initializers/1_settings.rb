@@ -749,7 +749,7 @@ Settings.cron_jobs['ci_schedule_old_pipelines_removal_cron_worker'] ||= {}
 Settings.cron_jobs['ci_schedule_old_pipelines_removal_cron_worker']['cron'] ||= '*/11 * * * *'
 Settings.cron_jobs['ci_schedule_old_pipelines_removal_cron_worker']['job_class'] = 'Ci::ScheduleOldPipelinesRemovalCronWorker'
 Settings.cron_jobs['version_version_check_cron'] ||= {}
-Settings.cron_jobs['version_version_check_cron']['cron'] ||= "#{rand(60)} #{rand(24)} * * *"
+Settings.cron_jobs['version_version_check_cron']['cron'] ||= "#{rand(60)} #{rand(24)} * * *" # rubocop: disable Scalability/RandomCronSchedule -- https://gitlab.com/gitlab-org/gitlab/-/issues/536393
 Settings.cron_jobs['version_version_check_cron']['job_class'] = 'Gitlab::Version::VersionCheckCronWorker'
 
 Gitlab.ee do
@@ -868,10 +868,10 @@ Gitlab.ee do
   Settings.cron_jobs['concurrency_limit_resume_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['concurrency_limit_resume_worker']['job_class'] ||= 'ConcurrencyLimit::ResumeWorker'
   Settings.cron_jobs['sync_seat_link_worker'] ||= {}
-  Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} #{rand(3..4)} * * * UTC"
+  Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} #{rand(3..4)} * * * UTC" # rubocop: disable Scalability/RandomCronSchedule -- https://gitlab.com/gitlab-org/gitlab/-/issues/536393
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'
   Settings.cron_jobs['sync_service_token_worker'] ||= {}
-  Settings.cron_jobs['sync_service_token_worker']['cron'] ||= "#{rand(60)} * * * * UTC"
+  Settings.cron_jobs['sync_service_token_worker']['cron'] ||= "#{rand(60)} * * * * UTC" # rubocop: disable Scalability/RandomCronSchedule -- https://gitlab.com/gitlab-org/gitlab/-/issues/536393
   Settings.cron_jobs['sync_service_token_worker']['job_class'] = '::CloudConnector::SyncServiceTokenWorker'
   Settings.cron_jobs['users_create_statistics_worker'] ||= {}
   Settings.cron_jobs['users_create_statistics_worker']['cron'] ||= '2 15 * * *'

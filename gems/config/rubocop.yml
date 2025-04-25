@@ -153,3 +153,6 @@ Rake/TopLevelMethodDefinition:
   Include:
     - '**/Rakefile'
     - '**/*.rake'
+
+Scalability/RandomCronSchedule:
+  Enabled: false

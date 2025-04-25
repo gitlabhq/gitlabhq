@@ -40,7 +40,7 @@ module Gitlab
       private
 
       def snowplow_enabled?
-        Gitlab::CurrentSettings.snowplow_enabled?
+        Gitlab::Tracking.enabled?
       end
 
       def send_usage_data?

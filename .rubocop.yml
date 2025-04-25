@@ -1324,3 +1324,8 @@ Migration/PreventAddingAttrEncryptedColumns:
   Include:
     - 'db/migrate/*.rb'
   EnforcedSince: 20250311000000
+
+Scalability/RandomCronSchedule:
+  Enabled: true
+  Include:
+    - 'config/initializers/1_settings.rb'
