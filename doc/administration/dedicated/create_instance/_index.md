@@ -163,7 +163,7 @@ After you sign in to Switchboard, follow these steps to create your instance:
 
 1. On the **Account details** page, review and confirm your subscription settings. These settings are based on the information you provided to your account team:
 
-   - **Reference architecture**: The maximum number of users allowed in your instance. For more information, see [availability and scalability](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#availability-and-scalability). For example, up to 3,000 users.
+   - **Reference architecture**: The maximum number of users allowed in your instance. For more information, see [availability and scalability](../../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#availability-and-scalability). For example, up to 3,000 users.
 
    - **Total repository capacity**: The total storage space available for all repositories in your instance. For example, 16 GB. This setting cannot be reduced after you create your instance. You can increase storage capacity later if needed.
 
@@ -171,20 +171,20 @@ After you sign in to Switchboard, follow these steps to create your instance:
 
 1. On the **Configuration** page, choose your environment access, location, and maintenance window settings:
 
-   - **Tenant name**: Enter a name for your tenant. This name is permanent unless you [bring your own domain](configure_instance/network_security.md#bring-your-own-domain-byod).
+   - **Tenant name**: Enter a name for your tenant. This name is permanent unless you [bring your own domain](../configure_instance/network_security.md#bring-your-own-domain-byod).
 
    - **Tenant URL**: Your instance URL is automatically generated as `<tenant_name>.gitlab-dedicated.com`.
 
    - **Primary region**: Select the primary AWS region to use for data storage. Note the
-     [available AWS regions](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#available-aws-regions).
+     [available AWS regions](../../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#available-aws-regions).
 
-   - **Secondary region**: Select a secondary AWS region to use for data storage and [disaster recovery](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#disaster-recovery). This field does not appear for Geo migrations from an existing GitLab Self-Managed instance. Some regions have [limited support](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#secondary-regions-with-limited-support).
+   - **Secondary region**: Select a secondary AWS region to use for data storage and [disaster recovery](../../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#disaster-recovery). This field does not appear for Geo migrations from an existing GitLab Self-Managed instance. Some regions have [limited support](../../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#secondary-regions-with-limited-support).
 
    - **Backup region**: Select a region to replicate and store your primary data backups.
-     You can use the same option as your primary or secondary regions, or choose a different region for [increased redundancy](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#disaster-recovery).
+     You can use the same option as your primary or secondary regions, or choose a different region for [increased redundancy](../../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#disaster-recovery).
 
    - **Time zone**: Select a weekly four-hour time slot when GitLab performs routine
-     maintenance and upgrades. For more information, see [maintenance windows](maintenance.md#maintenance-windows).
+     maintenance and upgrades. For more information, see [maintenance windows](../maintenance.md#maintenance-windows).
 
 1. Optional. On the **Security** page, add your [AWS KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html) for encrypted AWS services. If you do not add keys, GitLab generates encryption keys for your instance. For more information, see [encrypting your data at rest](#encrypted-data-at-rest-byok).
 
@@ -198,7 +198,7 @@ After you sign in to Switchboard, follow these steps to create your instance:
    - Security keys and AWS KMS keys (BYOK) configuration
    - AWS regions (primary, secondary, backup)
    - Total repository capacity (you can increase storage but cannot reduce it)
-   - Tenant name and URL (unless you [bring your own domain](configure_instance/network_security.md#bring-your-own-domain-byod))
+   - Tenant name and URL (unless you [bring your own domain](../configure_instance/network_security.md#bring-your-own-domain-byod))
 
    {{< /alert >}}
 
@@ -219,22 +219,22 @@ To access and configure your GitLab Dedicated instance:
    {{< /alert >}}
 
 1. Go to the tenant URL for your GitLab Dedicated instance and sign in with your temporary root credentials.
-1. [Change your temporary root password](../../user/profile/user_passwords.md#change-your-password) to a new secure password.
-1. Go to the Admin area and [add the license key](../license_file.md#add-license-in-the-admin-area) for your GitLab Dedicated subscription.
-1. Return to Switchboard and [add users](configure_instance/users_notifications.md#add-switchboard-users), if needed.
-1. Review the [release rollout schedule](maintenance.md#release-rollout-schedule) for upgrades and maintenance.
+1. [Change your temporary root password](../../../user/profile/user_passwords.md#change-your-password) to a new secure password.
+1. Go to the Admin area and [add the license key](../../license_file.md#add-license-in-the-admin-area) for your GitLab Dedicated subscription.
+1. Return to Switchboard and [add users](../configure_instance/users_notifications.md#add-switchboard-users), if needed.
+1. Review the [release rollout schedule](../maintenance.md#release-rollout-schedule) for upgrades and maintenance.
 
 Also plan ahead if you need the following GitLab Dedicated features:
 
-- [Inbound Private Link](configure_instance/network_security.md#inbound-private-link)
-- [Outbound Private Link](configure_instance/network_security.md#outbound-private-link)
-- [SAML SSO](configure_instance/saml.md)
-- [Bring your own domain](configure_instance/network_security.md#bring-your-own-domain-byod)
+- [Inbound Private Link](../configure_instance/network_security.md#inbound-private-link)
+- [Outbound Private Link](../configure_instance/network_security.md#outbound-private-link)
+- [SAML SSO](../configure_instance/saml.md)
+- [Bring your own domain](../configure_instance/network_security.md#bring-your-own-domain-byod)
 
-To view all available infrastructure configuration options, see [Configure your GitLab Dedicated instance](configure_instance/_index.md).
+To view all available infrastructure configuration options, see [Configure your GitLab Dedicated instance](../configure_instance/_index.md).
 
 {{< alert type="note" >}}
 
-New GitLab Dedicated instances use the same default settings as GitLab Self-Managed. A GitLab administrator can change these settings from the [Admin Area](../admin_area.md).
+New GitLab Dedicated instances use the same default settings as GitLab Self-Managed. A GitLab administrator can change these settings from the [Admin Area](../../admin_area.md).
 
 {{< /alert >}}

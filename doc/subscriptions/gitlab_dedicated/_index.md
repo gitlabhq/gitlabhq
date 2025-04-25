@@ -61,7 +61,7 @@ Data is encrypted at rest and in transit using the latest encryption standards.
 
 Optionally, you can use your own AWS Key Management Service (KMS) encryption key for data at rest. This option gives you full control over the data you store in GitLab.
 
-For more information, see [Encrypted data at rest (BYOK)](../../administration/dedicated/create_instance.md#encrypted-data-at-rest-byok).
+For more information, see [Encrypted data at rest (BYOK)](../../administration/dedicated/create_instance/_index.md#encrypted-data-at-rest-byok).
 
 #### Email service
 
@@ -274,4 +274,4 @@ To migrate your data to GitLab Dedicated:
 
 For more information about GitLab Dedicated or to request a demo, see [GitLab Dedicated](https://about.gitlab.com/dedicated/).
 
-For more information on setting up your GitLab Dedicated instance, see [Create your GitLab Dedicated instance](../../administration/dedicated/create_instance.md).
+For more information on setting up your GitLab Dedicated instance, see [Create your GitLab Dedicated instance](../../administration/dedicated/create_instance/_index.md).

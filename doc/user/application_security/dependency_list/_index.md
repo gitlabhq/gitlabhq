@@ -81,8 +81,6 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 | License (for projects only) | Links to dependency's software licenses. A warning badge that includes the number of vulnerabilities detected in the dependency. |
 | Projects (for groups only) | Links to the project with the dependency. If multiple projects have the same dependency, the total number of these projects is shown. To go to a project with this dependency, select the **Projects** number, then search for and select its name. The project search feature is supported only on groups that have up to 600 occurrences in their group hierarchy. |
 
-![Dependency list](img/dependency_list_v16_3.png)
-
 ## Filter dependency list
 
 {{< history >}}
@@ -156,8 +154,6 @@ The dependency list shows the direct dependents of a listed component if the com
 The dependency path is only displayed for dependencies that have vulnerabilities.
 
 {{< /alert >}}
-
-![Dependency path](img/yarn_dependency_path_v13_6.png)
 
 Dependency paths are supported for the following package managers:
 

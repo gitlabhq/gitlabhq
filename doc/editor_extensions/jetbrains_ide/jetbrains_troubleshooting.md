@@ -149,9 +149,9 @@ Gather this information from affected users, and provide it in your bug report:
 1. Describe the scope of impact. How many users are affected?
 1. Describe how to reproduce the error. Include a screen recording, if possible.
 1. Describe how other GitLab Duo features are affected:
-   - Is **GitLab Quick Chat** functional?
-   - Is **Code Suggestions** working?
-   - Does **Web IDE Duo Chat** return responses?
+   - Is GitLab Quick Chat functional?
+   - Is Code Suggestions working?
+   - Does Web IDE Duo Chat return responses?
 1. Perform extension isolation testing. Try disabling (or uninstalling) all other extensions to determine
    if another extension is causing the issue. This helps determine if the problem is with our extension,
    or from an external source.

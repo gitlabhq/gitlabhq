@@ -34,14 +34,11 @@ branches.
 By default, only users with the Maintainer role can merge changes into a
 protected branch.
 
-**Advantages**
-
-- Fewer projects means less clutter.
-- Developers need to consider only one remote repository.
-
-**Disadvantages**
-
-- Manual setup of protected branch required for each new project
+- Advantages:
+  - Fewer projects means less clutter.
+  - Developers need to consider only one remote repository.
+- Disadvantages:
+  - Manual setup of protected branch required for each new project
 
 To set up a protected branch flow:
 
@@ -80,16 +77,13 @@ branches to their own forks.
 To get their changes into the default branch, they need to create a merge request across
 forks.
 
-**Advantages**
-
-- In an appropriately configured GitLab group, new projects automatically get
-  the required access restrictions for regular developers: fewer manual steps
-  to configure authorization for new projects.
-
-**Disadvantages**
-
-- The project need to keep their forks up to date, which requires more advanced
-  Git skills (managing multiple remotes).
+- Advantages:
+  - In an appropriately configured GitLab group, new projects automatically get
+    the required access restrictions for regular developers: fewer manual steps
+    to configure authorization for new projects.
+- Disadvantages:
+  - The project need to keep their forks up to date, which requires more advanced
+    Git skills (managing multiple remotes).
 
 <!-- ## Troubleshooting
 

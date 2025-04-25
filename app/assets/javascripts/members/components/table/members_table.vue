@@ -289,12 +289,16 @@ export default {
             <gl-button
               variant="link"
               :disabled="isRoleDrawerBusy"
-              class="gl-block"
+              button-text-classes="!gl-whitespace-normal gl-text-right lg:gl-text-left gl-line-clamp-2"
               @click="selectedMember = member"
             >
               {{ member.accessLevel.stringValue }}
             </gl-button>
-            <role-badges :member="member" :role="member.accessLevel" class="gl-mt-3" />
+            <role-badges
+              :member="member"
+              :role="member.accessLevel"
+              class="gl-mt-3 gl-justify-end lg:gl-justify-start"
+            />
           </div>
           <max-role v-else :permissions="permissions" :member="member" />
         </members-table-cell>

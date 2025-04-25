@@ -41,3 +41,30 @@ Replace these values in the directory path:
 
 - `WINDOWS_USERNAME`: Your Windows username.
 - `VS_VERSION`: The version of your Visual Studio installation.
+
+## Required Information for Support
+
+Before contacting Support, make sure the latest GitLab extension is installed. Visual Studio should automatically update to the latest version of the extension.
+
+Gather this information from affected users, and provide it in your bug report:
+
+1. The error message shown to the user.
+1. Workflow and Language Server logs:
+   1. [Enable debug logs](#view-more-logs).
+   1. [Retrieve log files](#view-activity-log).
+1. Diagnostics output:
+   1. With Visual Studio open, on the top banner, select **Help > About Microsoft Visual Studio**.
+   1. On the dialog, select **Copy Info** to copy all the required information for this section to your clipboard.
+1. System details:
+   1. With Visual Studio open, on the top banner, select **Help > About Microsoft Visual Studio**.
+   1. On the dialog, select **System Info** to see more detailed information.
+   1. For **OS type and version**: Copy the `OS Name` and `Version`.
+   1. For **Machine specifications (CPU, RAM)**: copy the `Processor` and `Installed Physical Memory (RAM)` sections.
+1. Describe the scope of impact. How many users are affected?
+1. Describe how to reproduce the error Include a screen recording, if possible.
+1. Describe how other GitLab Duo features are affected:
+   - Is Code Suggestions working?
+   - Does Web IDE Duo Chat return responses?
+1. Perform extension isolation testing. Try disabling (or uninstalling) all other extensions to determine
+   if another extension is causing the issue. This helps determine if the problem is with our extension,
+   or from an external source.

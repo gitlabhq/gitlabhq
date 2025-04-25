@@ -21,39 +21,39 @@ For more information, see [Recording Changes to the Repository](https://git-scm.
 When you use the command line, use [`git commit`](../../../topics/git/commands.md#git-commit).
 You can add multiple commits before pushing your changes.
 
-- **Commit message:**
+- Commit message:
 
   A commit message identifies what is changed and why. Use descriptive messages to clarify the changes.
   In GitLab, you can add keywords to the commit message to perform one of the following actions:
 
-  - **Trigger a GitLab CI/CD pipeline:**
+  - Trigger a GitLab CI/CD pipeline:
 
     If the project is configured with [GitLab CI/CD](../../../ci/_index.md),
     you trigger a pipeline per push, not per commit.
 
-  - **Skip pipelines:**
+  - Skip pipelines:
 
     Add the [`ci skip`](../../../ci/pipelines/_index.md#skip-a-pipeline) keyword to
     your commit message to make GitLab CI/CD skip the pipeline.
 
-  - **Cross-link issues and merge requests:**
+  - Cross-link issues and merge requests:
 
     Use [cross-linking](../issues/crosslinking_issues.md#from-commit-messages)
     to keep track of related parts of your workflow.
     If you mention an issue or a merge request in a commit message, they are displayed
     on their respective thread.
 
-- **Cherry-pick a commit:**
+- Cherry-pick a commit:
 
   In GitLab, you can [cherry-pick a commit](cherry_pick_changes.md#cherry-pick-a-single-commit)
   from the UI.
 
-- **Revert a commit:**
+- Revert a commit:
 
   [Revert a commit](revert_changes.md#revert-a-commit)
   from the UI to a selected branch.
 
-- **Sign a commit:**
+- Sign a commit:
 
   Add extra security by [signing your commits](../repository/signed_commits/_index.md).
 

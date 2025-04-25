@@ -15,7 +15,7 @@ title: Revert changes
 
 Mistakes happen in code. Version control makes it possible to fix those mistakes by reverting them.
 
-When you revert a commit, you create a new commit (a **revert commit**) that reverses the
+When you revert a commit, you create a new commit (a revert commit) that reverses the
 bad change, rather than erasing the existence of the problem from your project's history. Revert commits
 provide a clear audit trail, rather than a gap where the previous commit was. The revert commit
 follows your project's access controls and processes, and:
@@ -124,7 +124,7 @@ Replaces a list of strings with `***REMOVED***`.
 
 {{< alert type="warning" >}}
 
-**This action is irreversible.**
+This action is irreversible.
 After rewriting history and running housekeeping, the changes are permanent.
 Be aware of the following impacts when redacting text from your repository:
 

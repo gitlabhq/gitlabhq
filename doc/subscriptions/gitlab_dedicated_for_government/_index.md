@@ -40,7 +40,7 @@ GitLab Dedicated for Government uses [advanced search](../../user/search/advance
 
 ### Availability and scalability
 
-GitLab Dedicated for Government leverages modified versions of the [cloud native hybrid reference architectures](../../administration/reference_architectures/_index.md#cloud-native-hybrid) with high availability enabled. When [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance), GitLab matches you to the closest reference architecture size based on your number of users.
+GitLab Dedicated for Government leverages modified versions of the [cloud native hybrid reference architectures](../../administration/reference_architectures/_index.md#cloud-native-hybrid) with high availability enabled. When [onboarding](../../administration/dedicated/create_instance/_index.md#step-2-create-your-gitlab-dedicated-instance), GitLab matches you to the closest reference architecture size based on your number of users.
 
 {{< alert type="note" >}}
 

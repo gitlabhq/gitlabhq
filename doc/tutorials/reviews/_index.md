@@ -76,13 +76,13 @@ to your skillset, while asking yourself these questions:
 Start by looking at the description of the merge request. It should be the solution
 to a problem or a feature request in an issue.
 
-- **Who is the author?** Are you familiar with this person's work? If you're familiar with
+- Who is the author? Are you familiar with this person's work? If you're familiar with
   this person, what part of the codebase do they usually work on? Later, your
   knowledge of the author helps you gauge how to scrutinize their changes.
-- **What's the goal?** Read the description to understand the author's intent.
-- **Is it a draft?** Drafts are often incomplete or theoretical solutions. A draft merge request might require
+- What's the goal? Read the description to understand the author's intent.
+- Is it a draft? Drafts are often incomplete or theoretical solutions. A draft merge request might require
   a different level of scrutiny than fully-finished merge requests.
-- **How can you reproduce the problem?** Does the description explain how to reproduce
+- How can you reproduce the problem? Does the description explain how to reproduce
   the problem, test the changes, or try out the new feature? Does it include screenshots to guide you?
 
 Below the description, check the merge request widget to understand the
@@ -91,11 +91,11 @@ that is missing approvals, is still in draft mode, and has unresolved discussion
 
 ![Merge widget showing blocked status with three failed checks: missing approvals, draft mode, and unresolved discussions](img/widget_v17_0.png)
 
-- **Does it cross-link to an issue?** Check the description and merge widget
+- Does it cross-link to an issue? Check the description and merge widget
   for links to other issues. Some merge requests are straightforward, but
   some require you to read the corresponding issue to understand how this merge request
   came to be. More complex merge requests should point back to issues with full information.
-- **What's the pipeline status?** Is the pipeline green? Red pipelines point to problems.
+- What's the pipeline status? Is the pipeline green? Red pipelines point to problems.
   If you see incomplete or canceled pipelines, you can't assess the full mergeability of the work yet.
 
 ### Check related issues
@@ -103,15 +103,15 @@ that is missing approvals, is still in draft mode, and has unresolved discussion
 If related issues exist, and the merge request feels complex enough that you need
 more information, scan through the issue descriptions.
 
-- **Are the problem and solution separated?** The issue should describe and investigate
+- Are the problem and solution separated? The issue should describe and investigate
   the problem, and the merge request should focus on the solution.
-- **Is the merge request author involved in the issue?** Throughout the review process,
+- Is the merge request author involved in the issue? Throughout the review process,
   think about who helped define the problem (or the feature). Ideally, those people
   are also involved in the merge request.
 
 ### Check the sidebar
 
-- **What labels does it have?** Labels can provide cues to the content of the merge request.
+- What labels does it have? Labels can provide cues to the content of the merge request.
   Depending on your team's workflow, incomplete or missing labels might be innocuous, or
   might indicate this merge request lacks full information.
   - If the labels match your area of expertise, you're likely a good candidate
@@ -124,11 +124,11 @@ more information, scan through the issue descriptions.
 
   ![The Labels section of a merge request, showing 10 labels in different colors, including "database" and "type: bug"](img/labels_v17_0.png)
 
-- **Who are the reviewers?** Scan the names in the reviewer list. Do they match
+- Who are the reviewers? Scan the names in the reviewer list. Do they match
   the type of work you'd expect, based on the description and (optionally) the labels?
   Consider both who is present, and who is absent. What do those names tell you
   about where this merge request is in its review cycle? Do you need to add or remove anyone?
-- **Have any reviewers already approved?** If you know those reviewers and their areas of expertise,
+- Have any reviewers already approved? If you know those reviewers and their areas of expertise,
   you can gain some idea of what aspects of the proposed changes need your attention.
 
   In this example, both Thomas and Nick are reviewers. Thomas has not yet reviewed
@@ -169,15 +169,15 @@ When you first open the **Changes** page, focus on the broader details first:
 
   ![File browser showing 2 changed files with their locations and line change indicators](img/file_tree_v17_0.png)
 
-- **Does the file list match your expectations?** You've already read the description of
+- Does the file list match your expectations? You've already read the description of
   the merge request. Are these the files you'd expect to see changed for this kind
   of work? Pay extra attention to changes to unexpected files, or if changes
   you'd expect to see are missing.
-- **Are lines added, removed, or changed?** These numbers tell you what kind
+- Are lines added, removed, or changed? These numbers tell you what kind
   of work to expect in your deeper read: a new feature, a removed feature, or changes in behavior?
-- **Were any tests changed?** Are any of the files part of your testing suite?
+- Were any tests changed? Are any of the files part of your testing suite?
   If not, you might need to nudge the author to update tests.
-- **Are feature flags used?** If you see feature flags, make a note to check their
+- Are feature flags used? If you see feature flags, make a note to check their
   use in your deeper read-through.
 
 When you've finished skimming the changes, you're ready to read the changes line by line!
@@ -189,32 +189,32 @@ in and read the changes in full. Stay aware of where your knowledge is strong, a
 where it is weak. Do you know this project well? Are the changes written in a
 language you're comfortable working in?
 
-- **Are the changes clear and understandable?**
-- **Are feature flags used?** Do the changes test for the presence or absence of
+- Are the changes clear and understandable?
+- Are feature flags used? Do the changes test for the presence or absence of
   the feature flag? Make sure that feature-flagged changes don't accidentally leak out
   when the flag is disabled.
-- **Is it performant?** Are you comfortable testing the performance yourself,
+- Is it performant? Are you comfortable testing the performance yourself,
   or should you add a reviewer with more in-depth performance knowledge?
-- **Can it be simplified?**
-- **Does it take edge cases into account?**
-- **Is it commented and documented correctly?** Good code is maintainable by others,
+- Can it be simplified?
+- Does it take edge cases into account?
+- Is it commented and documented correctly? Good code is maintainable by others,
   not just the author. Has the author provided enough explanation to make this work maintainable?
-- **Does it follow your team's style expectations?**
-- **Is it backwards compatible?** Is this work a breaking change? Could it cause data loss?
-- **Are security concerns addressed?** Are the changes in an area of your project
+- Does it follow your team's style expectations?
+- Is it backwards compatible? Is this work a breaking change? Could it cause data loss?
+- Are security concerns addressed? Are the changes in an area of your project
   with special security concerns? Do they handle sensitive data appropriately?
   Do they accept user input, and has it been sanitized? Should you add a reviewer
   with more security knowledge?
-- **Were any debugging statements left in?**
+- Were any debugging statements left in?
 
 Different types of changes have different effects on your codebase. Consider, in broad terms:
 
-- **Lines added**: New code shouldn't be modifying existing behavior.
+- Lines added: New code shouldn't be modifying existing behavior.
   Are the new behaviors tested? Are the tests granular enough?
-- **Lines removed**: Is the removal clean and complete? Do the removed code and
+- Lines removed: Is the removal clean and complete? Do the removed code and
   tests match each other in scope? Make sure that no partial stubs are left behind
   in either place.
-- **Lines modified**: If the lines added and removed are roughly equal to each other,
+- Lines modified: If the lines added and removed are roughly equal to each other,
   are the changes a refactoring of existing code? For a refactoring, do you understand
   what the previous code did, and how the new code does it differently? Do the
   changes in behavior match the author's stated intent in the description? Do the
@@ -226,9 +226,9 @@ Unfortunately, we can't give you much guidance here. Every project is different!
 Without knowing your application firsthand, we can't tell you _how_ to test the
 changes, but we can offer some questions to consider:
 
-- **Does it work?** It's a deceptively simple question, but it's important to keep
+- Does it work? It's a deceptively simple question, but it's important to keep
   in mind. Code can be ugly, convoluted, and undocumented, but still work.
-- **How far along is the review process?** Is it early or late in the review process?
+- How far along is the review process? Is it early or late in the review process?
   Are you a specialist?
 
   - Reviewers early in the process should verify the code works the way the author
@@ -250,13 +250,13 @@ In this example, multiple jobs have failed:
 
 ![Pipeline status widget displaying successful and failed jobs in a merge result pipeline](img/failed_pipeline_v17_0.png)
 
-- **Did all the expected tests run?** Make sure the pipeline isn't just green, but complete.
-- **Did any tests fail?** Expand **Failed jobs** to see which tests, if any, failed.
-- **What happened in each failing job?** Select each job that failed. Scroll through the
+- Did all the expected tests run? Make sure the pipeline isn't just green, but complete.
+- Did any tests fail? Expand **Failed jobs** to see which tests, if any, failed.
+- What happened in each failing job? Select each job that failed. Scroll through the
   output, scanning for mentions of failures, errors, and lines marked in red. When
   you write your review comments, you want to help the author understand what needs
   fixing, and how to do it.
-- **Are the failures related to the changes?** If the failures feel unrelated,
+- Are the failures related to the changes? If the failures feel unrelated,
   consider rerunning the job or the pipeline.
 
 ### Re-review considerations
@@ -275,10 +275,10 @@ Now you do! Before you start writing, step back from the line-by-line view of th
 merge request and think about it broadly again. You now know what the merge request
 is trying to do, and how it's doing it.
 
-- **Do the changes in the merge request match the intended scope?** If not,
+- Do the changes in the merge request match the intended scope? If not,
   ask yourself if the work should be simplified, or broken apart into multiple
   merge requests. Be honest about your own scope of knowledge, and your limitations.
-- **Do you detect [code smells](https://martinfowler.com/bliki/CodeSmell.html)?**
+- Do you detect [code smells](https://martinfowler.com/bliki/CodeSmell.html)?
   If something you see isn't a bug, but it points to future quality, maintainability,
   or security problems, pay attention. Trust your instincts if something about the
   changes feels off, obfuscated, or poorly done. The code might be technically correct,
@@ -339,19 +339,19 @@ You've added your file- and line-specific feedback, and now you're ready to summ
 your review. It's time to think broadly, one last time.
 
 1. Go back to the **Overview** page of the merge request.
-1. **Scan your pending comments.** They should be helpful, thoughtful, kind, and - most importantly - _actionable_.
+1. Scan your pending comments. They should be helpful, thoughtful, kind, and - most importantly - _actionable_.
    Have you given the author an obvious next step to fix any problems you found?
-1. **Consider your tone.** Are you teaching, debating, or discussing? Do your comments
+1. Consider your tone. Are you teaching, debating, or discussing? Do your comments
    achieve your goal? If you were the author, would you know what to do next? Reinforce
    good behaviors, and nudge the author away from bad behaviors.
-1. **Do your comments still make sense?** In large merge requests, you might find that some comments are no longer useful, or some questions that you had have been answered in the meantime.
-1. **Start threads for generalized feedback.** Make sure unrelated items aren't clumped together
+1. Do your comments still make sense? In large merge requests, you might find that some comments are no longer useful, or some questions that you had have been answered in the meantime.
+1. Start threads for generalized feedback. Make sure unrelated items aren't clumped together
    in the same comment, so that when threads resolve, unaddressed feedback isn't hidden. Some possible topics:
    - Breaking large functions into smaller single-purpose functions.
    - Using meaningful variable names.
    - Adding more comments to explain complex code.
    - Checking for edge cases and errors.
-1. **Start a new thread for your summary comment.** Make sure you mention the author's
+1. Start a new thread for your summary comment. Make sure you mention the author's
    username, in case they work from to-do items. State clearly:
    - What's your overall finding?
    - Are you finished reviewing, or do you want to see this merge request again after more work is done?
@@ -370,15 +370,15 @@ displays next to your name.
 
 After you provide your feedback, tidy up.
 
-- **Make sure all pending comments are submitted.**
-- **Update labels and milestone.**
-- **Check the approval requirements.**
+- Make sure all pending comments are submitted.
+- Update labels and milestone.
+- Check the approval requirements.
   - Has each type of work (backend, frontend, documentation) in the merge request been reviewed by the right person?
   - If more reviews are needed, mention the usernames of the next reviewers, and add them as reviewers.
-- **Check the merge widget.**
+- Check the merge widget.
   - Address the blockers you can, and assign users to help with the ones you can't.
   - Add any needed Code Owners for review.
-- **Is this merge request ready to merge?** If the merge request is fully reviewed and approved, assign to a maintainer for merging!
+- Is this merge request ready to merge? If the merge request is fully reviewed and approved, assign to a maintainer for merging!
 
 ## Related topics
 

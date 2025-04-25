@@ -14,9 +14,9 @@ title: Merge request diff versions
 {{< /details >}}
 
 When you create a merge request, you select two branches to compare. The differences
-between the two branches are shown as a **diff** in the merge request. Each time
+between the two branches are shown as a diff in the merge request. Each time
 you push commits to a branch connected to a merge request, GitLab updates the
-merge request diff to a new **diff version**.
+merge request diff to a new diff version.
 
 {{< alert type="note" >}}
 

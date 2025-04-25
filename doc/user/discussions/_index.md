@@ -385,5 +385,5 @@ To generate a summary of issue discussions:
 The comments in the issue are summarized in as many as 10 list items.
 You can ask follow up questions based on the response.
 
-**Data usage**: When you use this feature, the text of all comments on the issue are sent to
+Data usage: When you use this feature, the text of all comments on the issue are sent to
 the large language model.

@@ -93,6 +93,32 @@ For more information about simplifying this process, see
 [issue 577](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/577)
 in the `gitlab-vscode-extension` project.
 
+## Known issue: Duo Chat fails to initialize in remote environments
+
+When using GitLab Duo Chat in remote development environments (such as browser-based VS Code or remote
+SSH connections), you might encounter initialization failures like:
+
+- Blank or non-loading Duo Chat panel.
+- Errors in logs: `The webview didn't initialize in 10000ms`.
+- Extension attempting to connect to inaccessible local URLs.
+
+To resolve these issues:
+
+1. In VS Code, on the top bar, go to **Code > Settings > Settings**.
+1. On the top right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
+   - Alternatively, press <kbd>F1</kbd>, enter **Preferences: Open Settings (JSON)**, and select it.
+1. Add or modify this setting:
+
+   ```json
+   "gitlab.featureFlags.languageServerWebviews": false
+   ```
+
+1. Save your changes and reload VS Code.
+
+For updates on a permanent solution, see
+[issue #1944](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1944) and
+[Issue #1943](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1943)
+
 ## Error: `can't access the OS Keychain`
 
 Error messages like these can occur on both MacOS and Ubuntu:
@@ -191,9 +217,9 @@ Gather this information from affected users, and provide it in your bug report:
 1. Describe the scope of impact. How many users are affected?
 1. Describe how to reproduce the error. Include a screen recording, if possible.
 1. Describe how other GitLab Duo features are affected:
-   - Is **GitLab Quick Chat** functional?
-   - Is **Code Suggestions** working?
-   - Does **Web IDE Duo Chat** return responses?
+   - Is GitLab Quick Chat functional?
+   - Is Code Suggestions working?
+   - Does Web IDE Duo Chat return responses?
 1. Perform extension isolation testing as described in the
    [GitLab Workflow Extension Isolation Guide](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/814#step-2-extension-isolation-testing).
    Try disabling (or uninstalling) all other extensions to determine if another extension is causing

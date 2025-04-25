@@ -37,14 +37,14 @@ To learn more, see [GitLab Dedicated Architecture](architecture.md).
 | [AWS data regions](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#available-aws-regions) | You choose regions for primary operations, disaster recovery, and backup. GitLab replicates your data across these regions. | Onboarding |
 | [Maintenance windows](maintenance.md#maintenance-windows) | You select a weekly 4-hour maintenance window. GitLab performs updates, configuration changes, and security patches during this time. | Onboarding |
 | [Release management](maintenance.md#release-rollout-schedule) | GitLab updates your instance monthly with new features and security patches. | Available by <br>default |
-| [Geo disaster recovery](create_instance.md#step-2-create-your-gitlab-dedicated-instance) | You choose the secondary region during onboarding. GitLab maintains a replicated secondary site in your chosen region using Geo. | Onboarding |
+| [Geo disaster recovery](create_instance/_index.md#step-2-create-your-gitlab-dedicated-instance) | You choose the secondary region during onboarding. GitLab maintains a replicated secondary site in your chosen region using Geo. | Onboarding |
 | [Backup and recovery](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#disaster-recovery) | GitLab backs up your data to your chosen AWS region. | Available by <br>default |
 
 ## Secure your instance
 
 | Feature | How it works | Set up with |
 |------------|-------------|-----------------|
-| [Encryption (BYOK)](create_instance.md#encrypted-data-at-rest-byok) | You provide AWS KMS keys for data encryption. GitLab integrates these keys with your instance. | Onboarding |
+| [Encryption (BYOK)](create_instance/_index.md#encrypted-data-at-rest-byok) | You provide AWS KMS keys for data encryption. GitLab integrates these keys with your instance. | Onboarding |
 | [SAML SSO](configure_instance/saml.md) | You configure the connection to your SAML identity providers. GitLab handles the authentication flow. | Switchboard |
 | [IP allowlists](configure_instance/network_security.md#ip-allowlist) | You specify approved IP addresses. GitLab blocks unauthorized access attempts. | Switchboard |
 | [Custom certificates](configure_instance/network_security.md#custom-certificates) | You import your SSL certificates. GitLab maintains secure connections to your private services. | Switchboard |
@@ -81,6 +81,6 @@ To learn more, see [GitLab Dedicated Architecture](architecture.md).
 
 To get started with GitLab Dedicated:
 
-1. [Create your GitLab Dedicated instance](create_instance.md).
+1. [Create your GitLab Dedicated instance](create_instance/_index.md).
 1. [Configure your GitLab Dedicated instance](configure_instance/_index.md).
 1. [Create a hosted runner](hosted_runners.md).

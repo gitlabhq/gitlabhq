@@ -150,7 +150,7 @@ Prerequisites:
 
 - You must be an administrator or have the Owner role for the group.
 
-You can't remove a custom role from a group if there are members assigned that role. See [unassign a custom role from a group or project member](#unassign-a-custom-role-from-a-group-or-project-member).
+You can't remove a custom role from a group if there are members assigned that role. See [assign a custom role to a user](#assign-a-custom-role-to-a-user).
 
 1. On the left sidebar:
    - For GitLab Self-Managed, at the bottom, select **Admin**.
@@ -161,101 +161,27 @@ You can't remove a custom role from a group if there are members assigned that r
 
 You can also [use the API](../../api/graphql/reference/_index.md#mutationmemberroledelete) to delete a custom role. To use the API, you must provide the `id` of the custom role. If you do not know this `id`, you can find it by making an [API request on the group](../../api/graphql/reference/_index.md#groupmemberroles) or an [API request on the instance](../../api/graphql/reference/_index.md#querymemberroles).
 
-## Add a user with a custom role to your group or project
+## Assign a custom role to a user
+
+You can assign or modify roles for members of your groups and projects. This can be done for existing
+users or when you add a user to the
+[group](../group/_index.md#add-users-to-a-group) or
+[project](../project/members/_index.md#add-users-to-a-project).
 
 Prerequisites:
 
-If you are adding a user with a custom role:
+- For groups, you must have the Owner role for the group.
+- For projects, you must have at least the Maintainer role for the project.
 
-- To your group, you must have the Owner role for the group.
-- To your project, you must have at least the Maintainer role for the project.
-
-To add a user with a custom role:
-
-- To a group, see [add users to a group](../group/_index.md#add-users-to-a-group).
-- To a project, see [add users to a project](../project/members/_index.md#add-users-to-a-project).
-
-If a group or project member has a custom role, the [group or project members list](../group/_index.md#view-group-members) displays **Custom Role** in the **Max role** column of the table.
-
-## Assign a custom role to an existing group or project member
-
-Prerequisites:
-
-If you are assigning a custom role to an existing:
-
-- Group member, you must have the Owner role for the group.
-- Project member, you must have at least the Maintainer role for the project.
-
-### Use the UI to assign a custom role
+To assign a role to an existing user:
 
 1. On the left sidebar, select **Search or go to** and find your group or project.
 1. Select **Manage > Members**.
-1. In the **Max role** column, select the role for the member. The **Role details** drawer opens.
-1. Using the **Role** dropdown list, select the custom role you want to assign to the member.
+1. In the **Role** column, select the role for an existing member. The **Role details** drawer opens.
+1. From the **Role** dropdown list, select a role to assign to the member.
 1. Select **Update role** to assign the role.
 
-### Use the API to assign a custom role
-
-1. Invite a user as a direct member to the top-level group or any subgroup or project in the
-   top-level group's hierarchy as a Guest. At this point, this Guest user cannot see any
-   code on the projects in the group or subgroup.
-1. Optional. If you do not know the `id` of the Guest user receiving a custom
-   role, find that `id` by making an [API request](../../api/member_roles.md).
-1. Use the [Group and Project Members API endpoint](../../api/members.md#edit-a-member-of-a-group-or-project) to
-   associate the member with the Guest+1 role:
-
-   ```shell
-   # to update a project membership
-   curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": '<member_role_id>', "access_level": 10}' "https://gitlab.example.com/api/v4/projects/<project_id>/members/<user_id>"
-
-   # to update a group membership
-   curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": '<member_role_id>', "access_level": 10}' "https://gitlab.example.com/api/v4/groups/<group_id>/members/<user_id>"
-   ```
-
-   Where:
-
-   - `<project_id` and `<group_id>`: The `id` or [URL-encoded path of the project or group](../../api/rest/_index.md#namespaced-paths) associated with the membership receiving the custom role.
-   - `<member_role_id>`: The `id` of the member role created in the previous section.
-   - `<user_id>`: The `id` of the user receiving a custom role.
-
-   Now the Guest+1 user can view code on all projects associated with this membership.
-
-## Unassign a custom role from a group or project member
-
-Prerequisites:
-
-If you are unassigning a custom role from a:
-
-- Group member, you must have the Owner role for the group.
-- Project member, you must have at least the Maintainer role for the project.
-
-You can remove a custom role from a group or project only if no group or project members have that role. To do this, you can use one of the following methods:
-
-- Remove a member with a custom role from a [group](../group/_index.md#remove-a-member-from-the-group) or [project](../project/members/_index.md#remove-a-member-from-a-project).
-- [Use the UI to change the user role](#use-the-ui-to-change-user-role).
-- [Use the API to change the user role](#use-the-api-to-change-user-role).
-
-### Use the UI to change user role
-
-To remove a custom role from a group member:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
-1. In the **Max role** column, select the role for the member. The **Role details** drawer opens.
-1. Using the **Role** dropdown list, select the default role you want to assign to the member.
-1. Select **Update role** to assign the role.
-
-### Use the API to change user role
-
-You can also use the [Group and Project Members API endpoint](../../api/members.md#edit-a-member-of-a-group-or-project) to update or remove a custom role from a group member by passing an empty `member_role_id` value:
-
-```shell
-# to update a project membership
-curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": null, "access_level": 10}' "https://gitlab.example.com/api/v4/projects/<project_id>/members/<user_id>"
-
-# to update a group membership
-curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": null, "access_level": 10}' "https://gitlab.example.com/api/v4/groups/<group_id>/members/<user_id>"
-```
+You can also use the [group and project members API](../../api/members.md#edit-a-member-of-a-group-or-project) to assign or modify role assignments.
 
 ## Assign a custom role to an invited group
 

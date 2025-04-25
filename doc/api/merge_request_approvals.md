@@ -654,7 +654,7 @@ PUT /projects/:id/approval_rules/:approval_rule_id
 {{< alert type="note" >}}
 
 Approvers and groups (except hidden groups not in the `users` or `groups`
-parameters) are **removed**. Hidden groups are private groups the user doesn't
+parameters) are removed. Hidden groups are private groups the user doesn't
 have permission to view. Hidden groups are not removed by default unless the
 `remove_hidden_groups` parameter is `true`. This ensures hidden groups are
 not removed unintentionally when a user updates an approval rule.
@@ -1199,7 +1199,7 @@ To update merge request approval rules, use this endpoint:
 PUT /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id
 ```
 
-This endpoint **removes** any approvers and groups not in the `users` or `groups` parameters.
+This endpoint removes any approvers and groups not in the `users` or `groups` parameters.
 
 You can't update `report_approver` or `code_owner` rules, as these rules are system-generated.
 

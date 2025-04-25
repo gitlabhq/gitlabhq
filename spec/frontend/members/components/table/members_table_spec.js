@@ -126,13 +126,9 @@ describe('MembersTable', () => {
     });
 
     describe('Role column', () => {
-      const createMaxRoleComponent = (member = memberMock) => {
-        createComponent({ members: [member], tableFields: ['maxRole'] });
-      };
+      beforeEach(() => createComponent({ members: [memberMock], tableFields: ['maxRole'] }));
 
       it('shows the role button', () => {
-        createMaxRoleComponent();
-
         expect(findRoleButton().text()).toBe('Owner');
       });
     });
@@ -320,12 +316,8 @@ describe('MembersTable', () => {
   });
 
   describe('QA testid', () => {
-    const createMaxRoleComponent = (member = memberMock) => {
-      createComponent({ members: [member], tableFields: ['maxRole'] });
-    };
-
     it('adds testid to table row', () => {
-      createMaxRoleComponent();
+      createComponent({ members: [memberMock], tableFields: ['maxRole'] });
 
       expect(findTable().find('tbody tr').attributes('data-testid')).toContain('members-table-row');
     });

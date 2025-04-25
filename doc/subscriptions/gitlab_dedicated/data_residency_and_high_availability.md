@@ -17,7 +17,7 @@ GitLab Dedicated offers enterprise-grade infrastructure and performance in a sec
 
 ## Data residency
 
-During [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance), you select the AWS region for your instance deployment and data storage.
+During [onboarding](../../administration/dedicated/create_instance/_index.md#step-2-create-your-gitlab-dedicated-instance), you select the AWS region for your instance deployment and data storage.
 
 Some AWS regions have limited features and may not be available for production instances.
 
@@ -108,7 +108,7 @@ You administer the application while GitLab manages the underlying infrastructur
 
 GitLab Dedicated uses modified versions of the [Cloud Native Hybrid reference architectures](../../administration/reference_architectures/_index.md#cloud-native-hybrid) with high availability.
 
-During [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance), GitLab matches you to the closest reference architecture size based on the number of users.
+During [onboarding](../../administration/dedicated/create_instance/_index.md#step-2-create-your-gitlab-dedicated-instance), GitLab matches you to the closest reference architecture size based on the number of users.
 
 {{< alert type="note" >}}
 
@@ -120,7 +120,7 @@ For more information, see the [Current Service Level Objective](https://handbook
 
 ## Disaster recovery
 
-During [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance),
+During [onboarding](../../administration/dedicated/create_instance/_index.md#step-2-create-your-gitlab-dedicated-instance),
 you specify a secondary AWS region for data storage and recovery. Regular backups of all GitLab Dedicated datastores (including databases and Git repositories) are taken, tested, and stored in your chosen secondary region.
 
 {{< alert type="note" >}}

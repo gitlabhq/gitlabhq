@@ -44,7 +44,7 @@ The description is inserted where your cursor was.
 
 Provide feedback on this feature in [issue 443236](https://gitlab.com/gitlab-org/gitlab/-/issues/443236).
 
-**Data usage**: The diff of changes between the source branch's head and the target branch is sent to the large language model.
+Data usage: The diff of changes between the source branch's head and the target branch is sent to the large language model.
 
 ## Have GitLab Duo review your code
 
@@ -85,7 +85,7 @@ Provide feedback on this feature in issue [517386](https://gitlab.com/gitlab-org
 
 {{< /alert >}}
 
-**Data usage**: When you use this feature, the following data is sent to the large language model:
+Data usage: When you use this feature, the following data is sent to the large language model:
 
 - Contents of the file
 - The filename
@@ -98,13 +98,28 @@ Interactions with GitLab Duo can help to improve the suggestions and feedback as
 
 ### Automatic reviews from GitLab Duo
 
-To enable `@GitLabDuo` to automatically review merge requests, edit your
-[merge request template](../description_templates.md#create-a-merge-request-template)
-and add the line `/assign_reviewer @GitLabDuo`. Add this line to your default template,
-and any other templates in your project where you want `@GitLabDuo` to perform a review.
+{{< history >}}
 
-Additional settings and configuration are planned. To that work, see
-[issue 506537](https://gitlab.com/gitlab-org/gitlab/-/issues/506537).
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/506537) to a UI setting in GitLab 18.0.
+
+{{< /history >}}
+
+Automatic reviews from GitLab Duo ensure that all merge requests in your project receive an initial review.
+After a merge request is created, GitLab Duo reviews it unless:
+
+- It's marked as draft. For GitLab Duo to review the merge request, mark it ready.
+- It contains no changes. For GitLab Duo to review the merge request, add changes to it.
+
+Prerequisites:
+
+- You must have the at least the [Maintainer role](../../permissions.md) in a project.
+
+To enable `@GitLabDuo` to automatically review merge requests:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
+1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
+1. Select **Save changes**.
 
 ## Summarize a code review
 
@@ -136,7 +151,7 @@ The summary is displayed in the comment box. You can edit and refine the summary
 
 Provide feedback on this experimental feature in [issue 408991](https://gitlab.com/gitlab-org/gitlab/-/issues/408991).
 
-**Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
+Data usage: When you use this feature, the following data is sent to the large language model referenced above:
 
 - Draft comment's text
 
@@ -168,7 +183,7 @@ by using GitLab Duo Merge Commit Message Generation.
 1. Select **Generate commit message**.
 1. Review the commit message provided and choose **Insert** to add it to the commit.
 
-**Data usage**: When you use this feature, the following data is sent to the large language model:
+Data usage: When you use this feature, the following data is sent to the large language model:
 
 - Contents of the file
 - The filename

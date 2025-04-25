@@ -300,17 +300,38 @@ describe('Work item comment form component', () => {
     });
   });
 
-  it('emits edit-current-user-last-note on `up` keypress', async () => {
-    await createComponent();
+  describe('keydown with `Up` arrow key', () => {
+    const triggerKeydown = async (commentText) => {
+      findMarkdownEditor().vm.$emit('input', commentText);
 
-    jest.spyOn(gfmEventHub, '$emit').mockImplementation(jest.fn());
+      await nextTick();
 
-    findMarkdownEditor().vm.$emit('keydown', new KeyboardEvent('keydown', { key: 'ArrowUp' }));
+      findMarkdownEditor().vm.$emit('keydown', new KeyboardEvent('keydown', { key: 'ArrowUp' }));
+    };
 
-    expect(gfmEventHub.$emit).toHaveBeenCalledWith(
-      'edit-current-user-last-note',
-      expect.any(Object),
-    );
+    beforeEach(async () => {
+      await createComponent();
+
+      jest.spyOn(gfmEventHub, '$emit').mockImplementation(jest.fn());
+    });
+
+    it('emits edit-current-user-last-note on `up` keypress when comment body is empty', async () => {
+      await triggerKeydown('');
+
+      expect(gfmEventHub.$emit).toHaveBeenCalledWith(
+        'edit-current-user-last-note',
+        expect.any(Object),
+      );
+    });
+
+    it('does not emit edit-current-user-last-note on `up` keypress when comment body not empty', async () => {
+      await triggerKeydown('comment text');
+
+      expect(gfmEventHub.$emit).not.toHaveBeenCalledWith(
+        'edit-current-user-last-note',
+        expect.any(Object),
+      );
+    });
   });
 
   it('cancels editing on clicking cancel button', async () => {

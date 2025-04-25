@@ -41,7 +41,6 @@ export default {
   constantOptions: {
     markdownDocsPath: helpPagePath('user/markdown'),
   },
-  gfmEventHub,
   components: {
     CommentFieldLayout,
     GlButton,
@@ -290,6 +289,11 @@ export default {
     },
   },
   methods: {
+    handleKeydownUpArrow(e) {
+      if (this.commentText === '') {
+        gfmEventHub.$emit('edit-current-user-last-note', e);
+      }
+    },
     setCommentText(newText) {
       /**
        * https://gitlab.com/gitlab-org/gitlab/-/issues/388314
@@ -378,7 +382,7 @@ export default {
             :autofocus="autofocus"
             :restricted-tool-bar-items="restrictedToolBarItems"
             @input="setCommentText"
-            @keydown.up="$options.gfmEventHub.$emit('edit-current-user-last-note', $event)"
+            @keydown.up="handleKeydownUpArrow"
             @keydown.meta.enter="submitForm()"
             @keydown.ctrl.enter="submitForm()"
             @keydown.esc.stop="cancelEditing"
