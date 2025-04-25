@@ -86,7 +86,7 @@ module ActiveContext
         # Builds an upsert operation for every ref where operation is :upsert
         # These operations will be processed in bulk
         def build_index_operations(ref)
-          return unless ref.operation.to_sym == :upsert
+          return unless [:upsert, :update].include?(ref.operation.to_sym)
 
           ref.jsons.map do |hash|
             add_index_operation([
@@ -111,6 +111,8 @@ module ActiveContext
               case ref.operation.to_sym
               when :upsert
                 shoulds << delete_with_version_query(ref)
+              when :update
+                # no-op
               when :delete
                 ref_ids_to_delete << ref.identifier
               else
@@ -118,7 +120,9 @@ module ActiveContext
               end
             end
 
-            delete_operations << { index: partition, body: build_delete_query(shoulds, ref_ids_to_delete) }
+            if shoulds.any? || ref_ids_to_delete.any?
+              delete_operations << { index: partition, body: build_delete_query(shoulds, ref_ids_to_delete) }
+            end
           end
 
           delete_operations

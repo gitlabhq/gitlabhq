@@ -3,6 +3,8 @@
 module MergeRequests
   module Mergeability
     class CheckMergeRequestTitleRegexService < CheckBaseService
+      include Gitlab::Utils::StrongMemoize
+
       identifier :title_regex
       description 'Checks whether the title matches the expected regex'
 
@@ -27,22 +29,23 @@ module MergeRequests
       private
 
       def valid_project_regex
-        project_regex = project.merge_request_title_regex
-
-        return unless project_regex.present?
-
         regexp = Gitlab::UntrustedRegexp.with_fallback(project_regex)
 
         regexp === merge_request.title
       end
 
       def validate_title_regex?
-        Feature.enabled?(:merge_request_title_regex, project) && project.merge_request_title_regex.present?
+        Feature.enabled?(:merge_request_title_regex, project) && project_regex.present?
       end
 
       def project
         merge_request.project
       end
+
+      def project_regex
+        project.merge_request_title_regex
+      end
+      strong_memoize_attr :project_regex
     end
   end
 end

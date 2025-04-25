@@ -9419,9 +9419,6 @@ msgstr ""
 msgid "Batch size"
 msgstr ""
 
-msgid "Batch size of namespaces for initial indexing"
-msgstr ""
-
 msgid "Batched Job|Background migrations"
 msgstr ""
 
@@ -39230,6 +39227,12 @@ msgstr ""
 msgid "Must be 90 days or more. Applies only to users with sign-in history. Users with no sign-in history are automatically deactivated after 7 days."
 msgstr ""
 
+msgid "Must be in the following format: `30m`, `2h`, or `1d`"
+msgstr ""
+
+msgid "Must be in the following format: `30m`, `2h`, or `1d`. Set to `%{val}` for no retries."
+msgstr ""
+
 msgid "Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses."
 msgstr ""
 
@@ -41275,6 +41278,9 @@ msgid "Number of employees"
 msgstr ""
 
 msgid "Number of files touched"
+msgstr ""
+
+msgid "Number of namespaces per indexing rollout"
 msgstr ""
 
 msgid "Number of references exceeds the limit. Please provide no more than %{refs_limit} references at the same time."
@@ -51142,6 +51148,9 @@ msgid "Retry all failed or cancelled jobs"
 msgstr ""
 
 msgid "Retry downstream pipeline"
+msgstr ""
+
+msgid "Retry interval for failed namespaces"
 msgstr ""
 
 msgid "Retry job"

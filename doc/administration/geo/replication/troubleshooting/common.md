@@ -34,15 +34,15 @@ to help identify if something is wrong:
 - Is the secondary site's tracking database configured?
 - Is the secondary site's tracking database connected?
 - Is the secondary site's tracking database up-to-date?
-- Is the secondary site's status less than 10 minutes old?
+- Is the secondary site's status less than 1 hour old?
 
-A site shows as "Unhealthy" if the site's status is more than 10 minutes old. In that case, try running the following in the [Rails console](../../../operations/rails_console.md) on the affected secondary site:
+A site shows as "Unhealthy" if the site's status is more than 1 hour old. In that case, try running the following in the [Rails console](../../../operations/rails_console.md) on the affected secondary site:
 
 ```ruby
 Geo::MetricsUpdateWorker.new.perform
 ```
 
-If it raises an error, then the error is probably also preventing the jobs from completing. If it takes longer than 10 minutes, then the status might flap or persist as "Unhealthy", even if the status does occasionally get updated. This might be due to growth in usage, growth in data over time, or performance bugs such as a missing database index.
+If it raises an error, then the error is probably also preventing the jobs from completing. If it takes longer than 1 hour, then the status might flap or persist as "Unhealthy", even if the status does occasionally get updated. This might be due to growth in usage, growth in data over time, or performance bugs such as a missing database index.
 
 You can monitor system CPU load with a utility like `top` or `htop`. If PostgreSQL is using a significant amount of CPU, it might indicate that there's a problem, or that the system is underprovisioned. System memory should also be monitored.
 
@@ -684,7 +684,7 @@ To determine if you might be experiencing this issue and remove the duplicate en
    puts 'BEGIN Package File IDs', package_file_ids, 'END Package File IDs'
    ```
 
-   If the output is empty, you are not affected. Otherwise, save 
+   If the output is empty, you are not affected. Otherwise, save
    the terminal output in a text file in case you lose connection later.
 
 1. Delete all duplicates:

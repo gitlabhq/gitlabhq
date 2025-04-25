@@ -240,6 +240,70 @@ RSpec.shared_examples 'an elastic indexer' do
         expect(delete_ops.first[:body][:query][:bool][:minimum_should_match]).to eq(1)
       end
     end
+
+    context 'when operation is :update' do
+      let(:update_ref) { double }
+
+      before do
+        allow(update_ref).to receive_messages(
+          operation: :update,
+          identifier: '1',
+          partition: 'issues_0'
+        )
+
+        indexer.instance_variable_set(:@refs, [update_ref])
+      end
+
+      it 'does not create delete operations' do
+        delete_ops = indexer.send(:build_delete_operations)
+
+        expect(delete_ops).to be_empty
+      end
+    end
+
+    context 'with mixed operation types' do
+      let(:upsert_ref) { double }
+      let(:update_ref) { double }
+      let(:delete_ref) { double }
+
+      before do
+        allow(upsert_ref).to receive_messages(
+          operation: :upsert,
+          identifier: '1',
+          partition: 'issues_0',
+          ref_version: 123456
+        )
+
+        allow(update_ref).to receive_messages(
+          operation: :update,
+          identifier: '2',
+          partition: 'issues_0'
+        )
+
+        allow(delete_ref).to receive_messages(
+          operation: :delete,
+          identifier: '3',
+          partition: 'issues_0'
+        )
+
+        indexer.instance_variable_set(:@refs, [upsert_ref, update_ref, delete_ref])
+      end
+
+      it 'creates delete operations only for :upsert and :delete but not for :update' do
+        delete_ops = indexer.send(:build_delete_operations)
+
+        should_clauses = delete_ops.first[:body][:query][:bool][:should]
+
+        # Should have two should clauses: one for the :upsert (with bool query) and one for :delete (with terms query)
+        expect(should_clauses.size).to eq(2)
+
+        bool_clause = should_clauses.find { |clause| clause[:bool].present? }
+        expect(bool_clause[:bool][:filter][:term][:ref_id]).to eq('1')
+
+        terms_clause = should_clauses.find { |clause| clause[:terms].present? }
+        expect(terms_clause[:terms][:ref_id]).to eq(['3'])
+      end
+    end
   end
 
   describe '#build_index_operations' do
@@ -248,6 +312,17 @@ RSpec.shared_examples 'an elastic indexer' do
       indexer.instance_variable_set(:@bulk_size, 0)
 
       allow(ref).to receive(:operation).and_return(:upsert)
+      indexer.send(:build_index_operations, ref)
+
+      expect(indexer.index_operations).not_to be_empty
+      expect(indexer.bulk_size).to be > 0
+    end
+
+    it 'adds index operations for update' do
+      indexer.instance_variable_set(:@index_operations, [])
+      indexer.instance_variable_set(:@bulk_size, 0)
+
+      allow(ref).to receive(:operation).and_return(:update)
       indexer.send(:build_index_operations, ref)
 
       expect(indexer.index_operations).not_to be_empty

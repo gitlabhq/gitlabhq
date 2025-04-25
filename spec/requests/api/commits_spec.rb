@@ -1891,7 +1891,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         let(:commit) { note.commit }
         let(:commit_id) { note.commit_id }
 
-        it 'are returned without N + 1' do
+        it 'are returned without N + 1', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448459' do
           get api(route, current_user) # warm up the cache
 
           control = ActiveRecord::QueryRecorder.new { get api(route, current_user) }

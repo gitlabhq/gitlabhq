@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Packages::Conan::FileMetadatum < ApplicationRecord
-  ignore_column :conan_package_reference, remove_with: '18.0', remove_after: '2025-04-17'
-
   belongs_to :package_file, inverse_of: :conan_file_metadatum
   belongs_to :recipe_revision, inverse_of: :file_metadata, class_name: 'Packages::Conan::RecipeRevision'
   belongs_to :package_revision, inverse_of: :file_metadata, class_name: 'Packages::Conan::PackageRevision'

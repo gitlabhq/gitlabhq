@@ -4,26 +4,7 @@
 
 Migrations are similiar to database migrations: they create collections, update schemas, run backfills, etc.
 
-### Migration to create a collection
-
-Create a file in `ActiveContext::Config.migrations_path`, e.g. `ee/db/active_context/migrate/20250311135734_create_merge_requests.rb`:
-
-```ruby
-# frozen_string_literal: true
-
-class CreateMergeRequests < ActiveContext::Migration[1.0]
-  milestone '17.9'
-
-  def migrate!
-    create_collection :merge_requests, number_of_partitions: 3 do |c|
-      c.bigint :issue_id, index: true
-      c.bigint :namespace_id, index: true
-      c.keyword :traversal_ids
-      c.vector :embeddings, dimensions: 768
-    end
-  end
-end
-```
+See [migrations](migrations.md) for more details.
 
 A migration worker will apply migrations for the active connection. See [Migrations](how_it_works.md#migrations).
 
@@ -86,7 +67,7 @@ Instance methods required:
 
 - `init`: reads from `serialized_args`
 - `as_indexed_json` or `as_indexed_jsons`: a hash or array of hashes containing the data representation of the object
-- `operation`: determines the operation which can be one of `upsert` or `delete`
+- `operation`: determines the operation which can be one of `upsert`, `update` or `delete`. See [operation types](#operation-types) for more details.
 - `identifier`: unique identifier
 
 Optional methods:
@@ -150,6 +131,24 @@ def title_and_description
   "Title: #{database_record.title}\n\nDescription: #{database_record.description}"
 end
 ```
+
+### Operation types
+
+#### `upsert`
+
+Creates or updates documents, handling cases where a single reference has less documents than before by performing a delete cleanup operation.
+
+The document content can be full or partial json.
+
+#### `update`
+
+Updates documents that already exist.
+
+The document content can be full or partial json.
+
+#### `delete`
+
+Deletes all documents belonging to a reference.
 
 ### Examples
 

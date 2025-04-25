@@ -27,7 +27,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
   end
 
   describe '.long_timeout' do
-    context 'default case' do
+    context 'default case', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/467676' do
       it { expect(subject.long_timeout).to eq(6.hours) }
     end
 

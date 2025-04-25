@@ -26287,7 +26287,8 @@ CREATE TABLE zoekt_enabled_namespaces (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     search boolean DEFAULT true NOT NULL,
-    metadata jsonb DEFAULT '{}'::jsonb NOT NULL
+    metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
+    last_rollout_failed_at timestamp with time zone
 );
 
 CREATE SEQUENCE zoekt_enabled_namespaces_id_seq
@@ -38349,6 +38350,8 @@ CREATE INDEX index_x509_commit_signatures_on_x509_certificate_id ON x509_commit_
 CREATE INDEX index_x509_issuers_on_subject_key_identifier ON x509_issuers USING btree (subject_key_identifier);
 
 CREATE UNIQUE INDEX index_xray_reports_on_project_id_and_lang ON xray_reports USING btree (project_id, lang);
+
+CREATE INDEX index_zens_on_last_rollout_failed_at ON zoekt_enabled_namespaces USING btree (last_rollout_failed_at);
 
 CREATE INDEX index_zentao_tracker_data_on_instance_integration_id ON zentao_tracker_data USING btree (instance_integration_id);
 

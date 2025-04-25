@@ -211,6 +211,44 @@ To set the number of concurrent indexing tasks:
 
 1. Select **Save changes**.
 
+## Set the number of namespaces per indexing rollout
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can set the number of namespaces per `RolloutWorker` job for initial indexing.
+The default value is `32`.
+You can adjust this value based on the node's performance and workload.
+
+To set the number of namespaces per indexing rollout:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Search**.
+1. Expand **Exact code search configuration**.
+1. In the **Number of namespaces per indexing rollout** text box,
+   enter a number greater than zero.
+1. Select **Save changes**.
+
+## Define the retry interval for failed namespaces
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can define the retry interval for namespaces that previously failed.
+The default value is `1d` (one day).
+A value of `0` means failed namespaces never retry.
+
+To define the retry interval for failed namespaces:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Search**.
+1. Expand **Exact code search configuration**.
+1. In the **Retry interval for failed namespaces** text box, enter a value
+   (for example, `30m` (30 minutes), `2h` (two hours), or `1d` (one day)).
+1. Select **Save changes**.
+
 ## Run Zoekt on a separate server
 
 Prerequisites:
