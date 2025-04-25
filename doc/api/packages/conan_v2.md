@@ -46,7 +46,41 @@ These endpoints all return `404 Not Found`.
 
 ## Create an authentication token
 
-Creates a JSON Web Token (JWT) for use as a Bearer header in other requests using the Conan v1 [`/authenticate`](conan_v1.md#create-an-authentication-token) endpoint.
+Creates a JSON Web Token (JWT) for use as a Bearer header in other requests.
+
+```shell
+"Authorization: Bearer <token>
+```
+
+The Conan 2 package manager client automatically uses this token.
+
+```plaintext
+GET /projects/:id/packages/conan/v2/users/authenticate
+```
+
+| Attribute | Type   | Required      | Description                                                                  |
+| --------- | ------ | ------------- | ---------------------------------------------------------------------------- |
+| `id`      | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
+
+Generate a base64-encoded Basic Auth token:
+
+```shell
+echo -n "<username>:<personal_access_token>"|base64
+```
+
+Use the base64-encoded Basic Auth token to get a JWT token:
+
+```shell
+curl --request GET \
+     --header 'Authorization: Basic <base64-encoded-token>' \
+     --url "https://gitlab.example.com/api/v4/packages/conan/v2/users/authenticate"
+```
+
+Example response:
+
+```shell
+eyJhbGciOiJIUzI1NiIiheR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdG9rZW4iOjMyMTQyMzAsqaVzZXJfaWQiOjQwNTkyNTQsImp0aSI6IjdlNzBiZTNjLWFlNWQtNDEyOC1hMmIyLWZiOThhZWM0MWM2OSIsImlhd3r1MTYxNjYyMzQzNSwibmJmIjoxNjE2NjIzNDMwLCJleHAiOjE2MTY2MjcwMzV9.QF0Q3ZIB2GW5zNKyMSIe0HIFOITjEsZEioR-27Rtu7E
+```
 
 ## Verify authentication credentials
 

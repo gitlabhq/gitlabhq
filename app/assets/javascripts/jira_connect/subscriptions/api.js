@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '~/lib/utils/axios_utils';
 import { buildApiUrl } from '~/api/api_utils';
 
 import { GITLAB_COM_BASE_PATH } from '~/jira_connect/subscriptions/constants';

@@ -1,7 +1,7 @@
 import { GlAlert, GlForm } from '@gitlab/ui';
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import axios from '~/lib/utils/axios_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';

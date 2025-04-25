@@ -1,5 +1,5 @@
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import testAction from 'helpers/vuex_action_helper';
 import * as actions from '~/admin/statistics_panel/store/actions';
 import * as types from '~/admin/statistics_panel/store/mutation_types';

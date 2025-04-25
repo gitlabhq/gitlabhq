@@ -1,5 +1,5 @@
-import axios from 'axios';
 import Visibility from 'visibilityjs';
+import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { __ } from '~/locale';

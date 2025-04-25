@@ -57,6 +57,25 @@ module API
               format :txt
               content_type :txt, 'text/plain'
 
+              desc 'Authenticate user against conan CLI' do
+                detail 'This feature was introduced in GitLab 12.2'
+                success code: 200
+                failure [
+                  { code: 401, message: 'Unauthorized' },
+                  { code: 404, message: 'Not Found' }
+                ]
+                tags %w[conan_packages]
+              end
+
+              route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+              route_setting :authorization, skip_job_token_policies: true
+
+              get 'authenticate', urgency: :low do
+                unauthorized! unless token
+
+                token.to_jwt
+              end
+
               desc 'Check for valid user credentials per conan CLI' do
                 detail 'This feature was introduced in GitLab 12.4'
                 success code: 200

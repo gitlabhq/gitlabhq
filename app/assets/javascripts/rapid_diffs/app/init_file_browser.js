@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import axios from 'axios';
+import axios from '~/lib/utils/axios_utils';
 import { pinia } from '~/pinia/instance';
 import { DiffFile } from '~/rapid_diffs/diff_file';
 import FileBrowserToggle from '~/diffs/components/file_browser_toggle.vue';

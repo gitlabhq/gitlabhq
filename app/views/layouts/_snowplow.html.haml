@@ -6,7 +6,7 @@
   = webpack_bundle_tag 'analytics'
 = javascript_tag do
   :plain
-    window.snowplowOptions = #{Gitlab::Tracking.options(@group).to_json}
+    window.snowplowOptions = #{Gitlab::Tracking.frontend_client_options(@group).to_json}
 
     gl = window.gl || {};
     gl.snowplowStandardContext = #{Gitlab::Tracking::StandardContext.new(

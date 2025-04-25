@@ -286,7 +286,12 @@ export default {
     @cancelEditing="$emit('cancelEditing')"
     @error="$emit('error', $event)"
   />
-  <timeline-entry-item v-else :data-note-id="noteId" class="note note-discussion gl-px-0">
+  <timeline-entry-item
+    v-else
+    :data-note-id="noteId"
+    :data-discussion-id="discussionId"
+    class="note note-discussion gl-px-0"
+  >
     <div class="timeline-content">
       <div class="discussion">
         <div class="discussion-body">

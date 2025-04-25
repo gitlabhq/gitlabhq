@@ -338,8 +338,9 @@ describe('issue_note_body component', () => {
 
         const result = wrapper.vm.duoFeedbackText;
         expect(result).toContain('Rate this response');
+        expect(result).toContain('Mention');
         expect(result).toContain('@GitLabDuo');
-        expect(result).toContain('in reply for more questions');
+        expect(result).toContain('to continue the conversation.');
       });
     });
   });

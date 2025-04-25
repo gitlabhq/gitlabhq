@@ -41,34 +41,6 @@ module API
               header 'X-Conan-Server-Capabilities', x_conan_server_capabilities_header.join(',')
             end
 
-            namespace 'users' do
-              before do
-                authenticate!
-              end
-
-              format :txt
-              content_type :txt, 'text/plain'
-
-              desc 'Authenticate user against conan CLI' do
-                detail 'This feature was introduced in GitLab 12.2'
-                success code: 200
-                failure [
-                  { code: 401, message: 'Unauthorized' },
-                  { code: 404, message: 'Not Found' }
-                ]
-                tags %w[conan_packages]
-              end
-
-              route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-              route_setting :authorization, skip_job_token_policies: true
-
-              get 'authenticate', urgency: :low do
-                unauthorized! unless token
-
-                token.to_jwt
-              end
-            end
-
             params do
               requires :package_name, type: String, regexp: SharedEndpoints::PACKAGE_COMPONENT_REGEX,
                 desc: 'Package name', documentation: { example: 'my-package' }

@@ -618,7 +618,7 @@ describe('WorkItemNotes component', () => {
     });
   });
 
-  describe('reply shortcut', () => {
+  describe('r key (reply) shortcut', () => {
     const triggerReplyShortcut = async () => {
       Mousetrap.trigger(keysFor(ISSUABLE_COMMENT_OR_REPLY)[0]);
       await nextTick();
@@ -669,5 +669,78 @@ describe('WorkItemNotes component', () => {
         expect(wrapper.vm.appendText).toHaveBeenCalledWith('foo');
       },
     );
+  });
+
+  describe('up-arrow key (edit last note) shortcut', () => {
+    const setupComponent = async ({
+      notesResponse = mockWorkItemNotesResponseWithComments(),
+    } = {}) => {
+      window.gon.current_user_id = 1;
+
+      jest.clearAllMocks();
+
+      jest.spyOn(gfmEventHub, '$emit').mockImplementation(jest.fn());
+      jest.spyOn(gfmEventHub, '$on').mockImplementation(jest.fn());
+
+      createComponent({
+        defaultWorkItemNotesQueryHandler: jest.fn().mockResolvedValue(notesResponse),
+        canCreateNote: true,
+      });
+
+      await waitForPromises();
+    };
+
+    it('attaches `edit-current-user-last-note` event listener on mount', async () => {
+      await setupComponent();
+
+      expect(gfmEventHub.$on).toHaveBeenCalledWith(
+        'edit-current-user-last-note',
+        wrapper.vm.editCurrentUserLastNote,
+      );
+    });
+
+    it('emits `edit-note` on markdown-editor event-hub with last user note', async () => {
+      const mockLastNote =
+        mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[1].notes.nodes[0];
+      await setupComponent();
+
+      const registeredHandler = gfmEventHub.$on.mock.calls.find(
+        (call) => call[0] === 'edit-current-user-last-note',
+      )[1];
+
+      const mockEvent = {
+        target: wrapper.findComponent(WorkItemAddNote).element,
+      };
+
+      await registeredHandler(mockEvent);
+
+      expect(gfmEventHub.$emit).toHaveBeenCalledWith('edit-note', {
+        note: {
+          ...mockLastNote,
+          discussion: {
+            ...mockLastNote.discussion,
+            resolvable: false,
+          },
+        },
+      });
+    });
+
+    it('does not emit `edit-note` on markdown-editor event-hub when no last user note is found', async () => {
+      await setupComponent({
+        notesResponse: mockWorkItemNotesByIidResponse,
+      });
+
+      const registeredHandler = gfmEventHub.$on.mock.calls.find(
+        (call) => call[0] === 'edit-current-user-last-note',
+      )[1];
+
+      const mockEvent = {
+        target: wrapper.findComponent(WorkItemAddNote).element,
+      };
+
+      await registeredHandler(mockEvent);
+
+      expect(gfmEventHub.$emit).not.toHaveBeenCalledWith('edit-note');
+    });
   });
 });

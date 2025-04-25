@@ -9,6 +9,7 @@ import * as autosave from '~/lib/utils/autosave';
 import { ESC_KEY, ENTER_KEY } from '~/lib/utils/keys';
 import { STATE_OPEN, i18n } from '~/work_items/constants';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import workItemEmailParticipantsByIidQuery from '~/work_items/graphql/notes/work_item_email_participants_by_iid.query.graphql';
 import * as confirmViaGlModal from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -297,6 +298,19 @@ describe('Work item comment form component', () => {
       expect(wrapper.emitted('cancelEditing')).toHaveLength(1);
       expect(autosave.clearDraft).toHaveBeenCalledWith(mockAutosaveKey);
     });
+  });
+
+  it('emits edit-current-user-last-note on `up` keypress', async () => {
+    await createComponent();
+
+    jest.spyOn(gfmEventHub, '$emit').mockImplementation(jest.fn());
+
+    findMarkdownEditor().vm.$emit('keydown', new KeyboardEvent('keydown', { key: 'ArrowUp' }));
+
+    expect(gfmEventHub.$emit).toHaveBeenCalledWith(
+      'edit-current-user-last-note',
+      expect.any(Object),
+    );
   });
 
   it('cancels editing on clicking cancel button', async () => {

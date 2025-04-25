@@ -5,7 +5,7 @@ import localRules from 'eslint-plugin-local-rules';
 import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
 import * as graphqlEslint from '@graphql-eslint/eslint-plugin';
-import * as todoLists from './.eslint_todo/index.mjs'
+import * as todoLists from './.eslint_todo/index.mjs';
 
 const { dirname } = import.meta;
 const compat = new FlatCompat({
@@ -66,6 +66,27 @@ const jestConfig = {
         ignore: ['^test_fixtures/', 'tmp/tests/graphql/gitlab_schema.graphql'],
       },
     ],
+  },
+};
+
+/** An object to make it easier to reuse restricted imports */
+const restrictedImports = {
+  axios: {
+    name: 'axios',
+    message: 'Import axios from ~/lib/utils/axios_utils instead.',
+  },
+  mousetrap: {
+    name: 'mousetrap',
+    message: 'Import { Mousetrap } from ~/lib/mousetrap instead.',
+  },
+  sentry: {
+    name: '@sentry/browser',
+    message: 'Use "import * as Sentry from \'~/sentry/sentry_browser_wrapper\';" instead',
+  },
+  vuex: {
+    name: 'vuex',
+    message:
+      'See our documentation on "Migrating from VueX" for tips on how to avoid adding new VueX stores.',
   },
 };
 
@@ -341,19 +362,10 @@ export default [
         'error',
         {
           paths: [
-            {
-              name: 'mousetrap',
-              message: 'Import { Mousetrap } from ~/lib/mousetrap instead.',
-            },
-            {
-              name: 'vuex',
-              message:
-                'See our documentation on "Migrating from VueX" for tips on how to avoid adding new VueX stores.',
-            },
-            {
-              name: '@sentry/browser',
-              message: 'Use "import * as Sentry from \'~/sentry/sentry_browser_wrapper\';" instead',
-            },
+            restrictedImports.axios,
+            restrictedImports.mousetrap,
+            restrictedImports.sentry,
+            restrictedImports.vuex,
           ],
 
           patterns: [
@@ -522,19 +534,10 @@ export default [
         'error',
         {
           paths: [
-            {
-              name: 'mousetrap',
-              message: 'Import { Mousetrap } from ~/lib/mousetrap instead.',
-            },
-            {
-              name: 'vuex',
-              message:
-                'See our documentation on "Migrating from VueX" for tips on how to avoid adding new VueX stores.',
-            },
-            {
-              name: '@sentry/browser',
-              message: 'Use "import * as Sentry from \'~/sentry/sentry_browser_wrapper\';" instead',
-            },
+            restrictedImports.axios,
+            restrictedImports.mousetrap,
+            restrictedImports.sentry,
+            restrictedImports.vuex,
             {
               name: '~/locale',
               importNames: ['__', 's__'],
@@ -703,7 +706,17 @@ export default [
     },
   },
 
-  // Consumer specs config
+  /*
+  contracts specs are a little different, as they are not "normal" jest specs.
+
+  They are actually executing `jest` and e.g. do proper non-mocked calls with axios in order
+  to check API contracts.
+
+  They also do not directly execute library code, so some of our usual linting rules for app code
+  like no-restricted-imports or i18n rules make no sense here and we can disable them.
+
+  For reference: https://docs.gitlab.com/development/testing_guide/contract/
+  */
   {
     files: ['{,ee/}spec/contracts/consumer/**/*.js'],
 
@@ -713,6 +726,7 @@ export default [
 
     rules: {
       '@gitlab/require-i18n-strings': 'off',
+      'no-restricted-imports': 'off',
     },
   },
   ...jhConfigs,

@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios';
+import axios from '~/lib/utils/axios_utils';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import { initFileBrowser } from '~/rapid_diffs/app/init_file_browser';
 import createEventHub from '~/helpers/event_hub_factory';

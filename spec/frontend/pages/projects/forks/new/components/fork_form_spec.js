@@ -6,11 +6,11 @@ import {
   GlFormRadio,
   GlSprintf,
 } from '@gitlab/ui';
-import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { kebabCase, merge } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
 import * as urlUtility from '~/lib/utils/url_utility';
 import ForkForm from '~/pages/projects/forks/new/components/fork_form.vue';

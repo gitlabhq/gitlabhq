@@ -5,6 +5,7 @@ import { s__, __ } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { STATE_OPEN, WORK_ITEM_TYPE_NAME_TASK, i18n } from '~/work_items/constants';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
+import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
@@ -40,6 +41,7 @@ export default {
   constantOptions: {
     markdownDocsPath: helpPagePath('user/markdown'),
   },
+  gfmEventHub,
   components: {
     CommentFieldLayout,
     GlButton,
@@ -376,6 +378,7 @@ export default {
             :autofocus="autofocus"
             :restricted-tool-bar-items="restrictedToolBarItems"
             @input="setCommentText"
+            @keydown.up="$options.gfmEventHub.$emit('edit-current-user-last-note', $event)"
             @keydown.meta.enter="submitForm()"
             @keydown.ctrl.enter="submitForm()"
             @keydown.esc.stop="cancelEditing"

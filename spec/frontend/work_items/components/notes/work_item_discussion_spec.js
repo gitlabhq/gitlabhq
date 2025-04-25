@@ -3,6 +3,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
+import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemNote from '~/work_items/components/notes/work_item_note.vue';
@@ -29,6 +30,7 @@ describe('Work Item Discussion', () => {
 
   const findToggleRepliesWidget = () => wrapper.findComponent(ToggleRepliesWidget);
   const findAllThreads = () => wrapper.findAllComponents(WorkItemNote);
+  const findTimelineEntryItem = () => wrapper.findComponent(TimelineEntryItem);
   const findThreadAtIndex = (index) => findAllThreads().at(index);
   const findWorkItemAddNote = () => wrapper.findComponent(WorkItemAddNote);
   const findWorkItemNoteReplying = () => wrapper.findComponent(WorkItemNoteReplying);
@@ -99,6 +101,17 @@ describe('Work Item Discussion', () => {
     beforeEach(() => {
       createComponent({
         discussion: mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes,
+      });
+    });
+
+    it('should render timeline-entry-item with required data attributes', () => {
+      const expectedDiscussion =
+        mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes[0];
+
+      expect(findTimelineEntryItem().attributes()).toEqual({
+        class: expect.any(String),
+        'data-note-id': expectedDiscussion.id.split('/').pop(),
+        'data-discussion-id': expectedDiscussion.discussion.id,
       });
     });
 

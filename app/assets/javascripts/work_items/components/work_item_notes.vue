@@ -7,6 +7,7 @@ import {
   TYPENAME_DISCUSSION_NOTE,
   TYPENAME_NOTE,
   TYPENAME_GROUP,
+  TYPENAME_USER,
 } from '~/graphql_shared/constants';
 import { Mousetrap } from '~/lib/mousetrap';
 import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybindings';
@@ -239,6 +240,11 @@ export default {
 
       return visibleNotes;
     },
+    userComments() {
+      return this.notesArray
+        .flatMap((discussion) => discussion.notes.nodes)
+        .filter((note) => !note.system);
+    },
     commentsDisabled() {
       return this.discussionFilter === WORK_ITEM_NOTES_FILTER_ONLY_HISTORY;
     },
@@ -278,11 +284,13 @@ export default {
     }
     if (this.canCreateNote) {
       Mousetrap.bind(keysFor(ISSUABLE_COMMENT_OR_REPLY), (e) => this.quoteReply(e));
+      gfmEventHub.$on('edit-current-user-last-note', this.editCurrentUserLastNote);
     }
   },
   beforeDestroy() {
     if (this.canCreateNote) {
       Mousetrap.unbind(keysFor(ISSUABLE_COMMENT_OR_REPLY), this.quoteReply);
+      gfmEventHub.$off('edit-current-user-last-note', this.editCurrentUserLastNote);
     }
   },
   apollo: {
@@ -385,6 +393,36 @@ export default {
     },
   },
   methods: {
+    editCurrentUserLastNote(e) {
+      const currentUserId = convertToGraphQLId(TYPENAME_USER, gon.current_user_id);
+      const isToplevelCommentForm = Boolean(e.target.closest('.js-comment-form'));
+      let availableNotes = [];
+
+      if (isToplevelCommentForm) {
+        // User hit `Up` key from top-level comment form, populate all the comments,
+        // also ensure to reverse them only if sort order is set to newest-first (DESC).
+        availableNotes = this.formAtTop ? [...this.userComments] : [...this.userComments].reverse();
+      } else {
+        // User hit `Up` key from a comment form within an existing thread, populate
+        // all the comments, from this thread, and reverse order so the latest comments come first.
+        const discussionId = convertToGraphQLId(
+          TYPENAME_DISCUSSION_NOTE,
+          e.target.closest('.js-timeline-entry').dataset.discussionId,
+        );
+        availableNotes = [
+          ...this.notesArray.find((discussion) => discussion.id === discussionId).notes.nodes,
+        ].reverse();
+      }
+
+      // Find current user's last note.
+      const currentUserLastNote = availableNotes.find((note) => note.author.id === currentUserId);
+
+      if (!currentUserLastNote) return;
+
+      gfmEventHub.$emit('edit-note', {
+        note: currentUserLastNote,
+      });
+    },
     getDiscussionIdFromSelection() {
       const selection = window.getSelection();
       if (selection.rangeCount <= 0) return null;

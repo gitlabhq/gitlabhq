@@ -1,6 +1,6 @@
-import axios from 'axios';
 import { GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import MemoryUsage from '~/vue_merge_request_widget/components/deployment/memory_usage.vue';

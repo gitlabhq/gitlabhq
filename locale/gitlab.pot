@@ -5732,6 +5732,9 @@ msgstr ""
 msgid "AiPowered|Enable AI logs"
 msgstr ""
 
+msgid "AiPowered|Enabled"
+msgstr ""
+
 msgid "AiPowered|Enabling self-hosted beta models and features is your acceptance of the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr ""
 
@@ -5765,6 +5768,9 @@ msgstr ""
 msgid "AiPowered|GitLab Duo Chat conversation expiration"
 msgstr ""
 
+msgid "AiPowered|GitLab Duo Core available to all users"
+msgstr ""
+
 msgid "AiPowered|GitLab Duo Self-Hosted"
 msgstr ""
 
@@ -5790,6 +5796,9 @@ msgid "AiPowered|Might result in requests having higher latency."
 msgstr ""
 
 msgid "AiPowered|Monitor, manage, and customize AI features to ensure efficient utilization and alignment."
+msgstr ""
+
+msgid "AiPowered|Not enabled"
 msgstr ""
 
 msgid "AiPowered|Off by default"
@@ -37044,6 +37053,9 @@ msgstr ""
 msgid "MemberRole|Are you sure you want to delete this role?"
 msgstr ""
 
+msgid "MemberRole|Automatically sync your LDAP directory to custom admin roles."
+msgstr ""
+
 msgid "MemberRole|Base role"
 msgstr ""
 
@@ -37057,6 +37069,9 @@ msgid "MemberRole|Change role"
 msgstr ""
 
 msgid "MemberRole|Could not fetch available permissions."
+msgstr ""
+
+msgid "MemberRole|Could not load LDAP synchronizations. Please refresh the page to try again."
 msgstr ""
 
 msgid "MemberRole|Could not update role."
@@ -37078,6 +37093,9 @@ msgid "MemberRole|Create role"
 msgstr ""
 
 msgid "MemberRole|Custom admin role"
+msgstr ""
+
+msgid "MemberRole|Custom admin role:"
 msgstr ""
 
 msgid "MemberRole|Custom member role"
@@ -37158,6 +37176,9 @@ msgstr ""
 msgid "MemberRole|Failed to save role: %{error}"
 msgstr ""
 
+msgid "MemberRole|Group cn:"
+msgstr ""
+
 msgid "MemberRole|Learn more about %{linkStart}available custom permissions%{linkEnd}."
 msgstr ""
 
@@ -37182,6 +37203,9 @@ msgstr ""
 msgid "MemberRole|New role"
 msgstr ""
 
+msgid "MemberRole|No active LDAP synchronizations. Add synchronization to connect your LDAP directory with custom admin roles."
+msgstr ""
+
 msgid "MemberRole|No description"
 msgstr ""
 
@@ -37189,6 +37213,9 @@ msgid "MemberRole|Overridden"
 msgstr ""
 
 msgid "MemberRole|Permission"
+msgstr ""
+
+msgid "MemberRole|Remove sync"
 msgstr ""
 
 msgid "MemberRole|Reverted to LDAP group sync settings. The role will be updated after the next LDAP sync."
@@ -37237,6 +37264,12 @@ msgid "MemberRole|Select a role"
 msgstr ""
 
 msgid "MemberRole|Select at least one permission."
+msgstr ""
+
+msgid "MemberRole|Server:"
+msgstr ""
+
+msgid "MemberRole|Sync all"
 msgstr ""
 
 msgid "MemberRole|The CSV report contains a list of users, assigned role and access in all groups, subgroups, and projects. When the export is completed, it will be sent as an attachment to %{email}."
@@ -37291,6 +37324,12 @@ msgid "MemberRole|Update role"
 msgstr ""
 
 msgid "MemberRole|Use LDAP sync role"
+msgstr ""
+
+msgid "MemberRole|User filter:"
+msgstr ""
+
+msgid "MemberRole|View LDAP synced users"
 msgstr ""
 
 msgid "MemberRole|View permissions"
@@ -49594,7 +49633,7 @@ msgstr ""
 msgid "Rate the review"
 msgstr ""
 
-msgid "Rate this response %{separator} %{codeStart}%{botUser}%{codeEnd} in reply for more questions"
+msgid "Rate this response %{separator} Mention %{codeStart}%{botUser}%{codeEnd} to continue the conversation."
 msgstr ""
 
 msgid "Raw blob request rate limit per minute"
@@ -66193,7 +66232,7 @@ msgstr ""
 msgid "ValueStreamAnalytics|Number of merge requests merged by month."
 msgstr ""
 
-msgid "ValueStreamAnalytics|Number of monthly unique users with contributions in the group."
+msgid "ValueStreamAnalytics|Number of monthly unique users with contributions."
 msgstr ""
 
 msgid "ValueStreamAnalytics|Number of new issues created."

@@ -1,8 +1,8 @@
-import axios from 'axios';
 import Autosize from 'autosize';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { GlAlert } from '@gitlab/ui';
+import axios from '~/lib/utils/axios_utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   EDITING_MODE_MARKDOWN_FIELD,

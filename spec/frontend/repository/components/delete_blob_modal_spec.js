@@ -1,6 +1,6 @@
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMount } from '@vue/test-utils';
+import axios from '~/lib/utils/axios_utils';
 import DeleteBlobModal from '~/repository/components/delete_blob_modal.vue';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';

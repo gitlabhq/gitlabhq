@@ -13774,6 +13774,28 @@ paths:
       tags:
       - composer_packages
       operationId: getApiV4ProjectsIdPackagesComposerArchives*packageName
+  "/api/v4/projects/{id}/packages/conan/v1/users/authenticate":
+    get:
+      summary: Authenticate user against conan CLI
+      description: This feature was introduced in GitLab 12.2
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Authenticate user against conan CLI
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: getApiV4ProjectsIdPackagesConanV1UsersAuthenticate
   "/api/v4/projects/{id}/packages/conan/v1/users/check_credentials":
     get:
       summary: Check for valid user credentials per conan CLI
@@ -13844,28 +13866,6 @@ paths:
       tags:
       - conan_packages
       operationId: getApiV4ProjectsIdPackagesConanV1Ping
-  "/api/v4/projects/{id}/packages/conan/v1/users/authenticate":
-    get:
-      summary: Authenticate user against conan CLI
-      description: This feature was introduced in GitLab 12.2
-      produces:
-      - application/json
-      parameters:
-      - in: path
-        name: id
-        description: The ID or URL-encoded path of the project
-        type: string
-        required: true
-      responses:
-        '200':
-          description: Authenticate user against conan CLI
-        '401':
-          description: Unauthorized
-        '404':
-          description: Not Found
-      tags:
-      - conan_packages
-      operationId: getApiV4ProjectsIdPackagesConanV1UsersAuthenticate
   ? "/api/v4/projects/{id}/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/packages/{conan_package_reference}"
   : get:
       summary: Package Snapshot
@@ -14801,6 +14801,28 @@ paths:
       tags:
       - conan_packages
       operationId: putApiV4ProjectsIdPackagesConanV1FilesPackageNamePackageVersionPackageUsernamePackageChannelRecipeRevisionPackageConanPackageReferencePackageRevisionFileNameAuthorize
+  "/api/v4/projects/{id}/packages/conan/v2/users/authenticate":
+    get:
+      summary: Authenticate user against conan CLI
+      description: This feature was introduced in GitLab 12.2
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Authenticate user against conan CLI
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: getApiV4ProjectsIdPackagesConanV2UsersAuthenticate
   "/api/v4/projects/{id}/packages/conan/v2/users/check_credentials":
     get:
       summary: Check for valid user credentials per conan CLI
@@ -38191,6 +38213,22 @@ paths:
       tags:
       - composer_packages
       operationId: getApiV4GroupIdPackagesComposer*packageName
+  "/api/v4/packages/conan/v1/users/authenticate":
+    get:
+      summary: Authenticate user against conan CLI
+      description: This feature was introduced in GitLab 12.2
+      produces:
+      - application/json
+      responses:
+        '200':
+          description: Authenticate user against conan CLI
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: getApiV4PackagesConanV1UsersAuthenticate
   "/api/v4/packages/conan/v1/users/check_credentials":
     get:
       summary: Check for valid user credentials per conan CLI
@@ -38244,22 +38282,6 @@ paths:
       tags:
       - conan_packages
       operationId: getApiV4PackagesConanV1Ping
-  "/api/v4/packages/conan/v1/users/authenticate":
-    get:
-      summary: Authenticate user against conan CLI
-      description: This feature was introduced in GitLab 12.2
-      produces:
-      - application/json
-      responses:
-        '200':
-          description: Authenticate user against conan CLI
-        '401':
-          description: Unauthorized
-        '404':
-          description: Not Found
-      tags:
-      - conan_packages
-      operationId: getApiV4PackagesConanV1UsersAuthenticate
   ? "/api/v4/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/packages/{conan_package_reference}"
   : get:
       summary: Package Snapshot

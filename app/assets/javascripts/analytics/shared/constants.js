@@ -292,10 +292,9 @@ export const VALUE_STREAM_METRIC_METADATA = {
     docsLink: helpPagePath('user/group/issues_analytics/_index'),
   },
   [CONTRIBUTOR_METRICS.COUNT]: {
-    description: s__(
-      'ValueStreamAnalytics|Number of monthly unique users with contributions in the group.',
-    ),
+    description: s__('ValueStreamAnalytics|Number of monthly unique users with contributions.'),
     groupLink: '-/contribution_analytics',
+    projectLink: '-/graphs/master?ref_type=heads',
     docsLink: helpPagePath('user/profile/contributions_calendar.html', {
       anchor: 'user-contribution-events',
     }),

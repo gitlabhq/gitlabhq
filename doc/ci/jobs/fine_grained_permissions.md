@@ -127,6 +127,7 @@ The following endpoints are available for CI/CD job tokens.
 | None |  | `GET /projects/:id/packages/conan/v1/users/authenticate` | Authenticate user against conan CLI |
 | None |  | `GET /projects/:id/packages/conan/v1/users/check_credentials` | Check for valid user credentials per conan CLI |
 | None |  | `GET /projects/:id/packages/conan/v2/conans/search` | Search for packages |
+| None |  | `GET /projects/:id/packages/conan/v2/users/authenticate` | Authenticate user against conan CLI |
 | None |  | `GET /projects/:id/packages/conan/v2/users/check_credentials` | Check for valid user credentials per conan CLI |
 | None |  | `GET /projects/:id/registry/repositories/:repository_id/tags/:tag_name` | Get details about a repository tag |
 | None |  | `GET /projects/:id/registry/repositories/:repository_id/tags` | List tags of a repository |

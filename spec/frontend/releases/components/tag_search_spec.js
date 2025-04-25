@@ -1,8 +1,8 @@
 import { GlButton, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
+import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { sprintf } from '~/locale';

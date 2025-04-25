@@ -40,16 +40,18 @@ module Gitlab
           emitter.input(payload)
         end
 
-        def options(group)
+        def frontend_client_options(group)
           additional_features = Feature.enabled?(:additional_snowplow_tracking, group, type: :ops)
+
+          # Using camel case as these keys will be used only in JavaScript
           {
             namespace: SNOWPLOW_NAMESPACE,
             hostname: hostname,
-            cookie_domain: cookie_domain,
-            app_id: app_id,
-            form_tracking: additional_features,
-            link_click_tracking: additional_features
-          }.transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
+            cookieDomain: cookie_domain,
+            appId: app_id,
+            formTracking: additional_features,
+            linkClickTracking: additional_features
+          }
         end
 
         def enabled?

@@ -1,7 +1,7 @@
 import { GlFormGroup, GlTruncate, GlPopover } from '@gitlab/ui';
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import axios from '~/lib/utils/axios_utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TagFieldNew from '~/releases/components/tag_field_new.vue';
 import TagSearch from '~/releases/components/tag_search.vue';

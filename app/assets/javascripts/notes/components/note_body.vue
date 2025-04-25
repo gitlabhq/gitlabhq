@@ -132,7 +132,7 @@ export default {
     duoFeedbackText() {
       return sprintf(
         __(
-          'Rate this response %{separator} %{codeStart}%{botUser}%{codeEnd} in reply for more questions',
+          'Rate this response %{separator} Mention %{codeStart}%{botUser}%{codeEnd} to continue the conversation.',
         ),
         {
           separator: '•',

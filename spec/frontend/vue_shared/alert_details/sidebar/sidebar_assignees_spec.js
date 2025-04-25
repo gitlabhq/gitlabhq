@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAvatar, GlDropdownItem } from '@gitlab/ui';
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import SidebarAssignee from '~/vue_shared/alert_details/components/sidebar/sidebar_assignee.vue';

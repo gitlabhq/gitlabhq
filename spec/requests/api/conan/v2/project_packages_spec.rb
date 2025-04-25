@@ -26,6 +26,12 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     it_behaves_like 'returning response status', :not_found
   end
 
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/users/authenticate' do
+    let(:url) { "/projects/#{project.id}/packages/conan/v2/users/authenticate" }
+
+    it_behaves_like 'conan authenticate endpoint'
+  end
+
   describe 'GET /api/v4/projects/:id/packages/conan/v2/users/check_credentials' do
     let(:url) { "/projects/#{project.id}/packages/conan/v2/users/check_credentials" }
 

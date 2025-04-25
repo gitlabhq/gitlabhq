@@ -1,8 +1,8 @@
 <script>
 import { GlAlert, GlForm } from '@gitlab/ui';
-import axios from 'axios';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
+import axios from '~/lib/utils/axios_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';

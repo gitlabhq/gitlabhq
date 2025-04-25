@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '~/lib/utils/axios_utils';
 import { uploadModel } from '~/ml/model_registry/services/upload_model';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 

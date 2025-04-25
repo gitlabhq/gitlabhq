@@ -1,9 +1,9 @@
 import Vue, { nextTick } from 'vue';
 import { GlForm, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import axios from 'axios';
 import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';

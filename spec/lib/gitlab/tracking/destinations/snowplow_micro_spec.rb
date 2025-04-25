@@ -56,7 +56,7 @@ RSpec.describe Gitlab::Tracking::Destinations::SnowplowMicro, feature_category: 
     end
   end
 
-  describe '#options' do
+  describe '#frontend_client_options' do
     let_it_be(:group) { create :group }
 
     before do
@@ -64,15 +64,15 @@ RSpec.describe Gitlab::Tracking::Destinations::SnowplowMicro, feature_category: 
     end
 
     it 'includes protocol with the correct value' do
-      expect(subject.options(group)[:protocol]).to eq 'http'
+      expect(subject.frontend_client_options(group)[:protocol]).to eq 'http'
     end
 
     it 'includes port with the correct value' do
-      expect(subject.options(group)[:port]).to eq 9091
+      expect(subject.frontend_client_options(group)[:port]).to eq 9091
     end
 
     it 'includes forceSecureTracker with value false' do
-      expect(subject.options(group)[:forceSecureTracker]).to eq false
+      expect(subject.frontend_client_options(group)[:forceSecureTracker]).to eq false
     end
   end
 end

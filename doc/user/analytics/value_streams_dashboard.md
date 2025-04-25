@@ -95,6 +95,7 @@ To view metrics on the Overview panel, the [background aggregation](#enable-or-d
 {{< history >}}
 
 - Contributor count metric at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433353) to GitLab.com in GitLab 16.9.
+- Contributor count metric at the project level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/474119) to GitLab.com in GitLab 18.0.
 
 {{< /history >}}
 
@@ -275,6 +276,7 @@ Prerequisites:
 
 - You must have at least the Reporter role for the project.
 - Overview background aggregation for Value Streams Dashboards must be enabled.
+- To view the contributor count metric in the comparison panel, you must [set up ClickHouse](../../integration/clickhouse.md).
 
 To view the Value Streams Dashboard as an analytics dashboard for a project:
 
