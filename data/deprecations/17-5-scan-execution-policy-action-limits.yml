@@ -17,4 +17,4 @@
 
     If additional actions are needed, limit existing polices to no more than 10 actions. Then, create new scan execution policies with additional actions, within the limit of 5 scan execution policies per security policy project.
 
-    For GitLab Self-Managed administrators, you can configure a custom limit with the `scan_execution_policies_action_limit` application setting.
+    For GitLab Self-Managed and GitLab Dedicated administrators, you can configure a custom limit with the `scan_execution_policies_action_limit` application setting.

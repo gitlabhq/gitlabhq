@@ -288,7 +288,7 @@ can trigger for every updated merge request.
 
 To remove the limit so that any number of pipelines can trigger for a single Git push event,
 administrators can enable the `git_push_create_all_pipelines` [feature flag](feature_flags.md).
-Enabling this feature flag is not recommended, as it can cause excessive load on the GitLab
+Enabling this feature flag is not recommended because it can cause excessive load on the GitLab
 instance if too many changes are pushed at once and a flood of pipelines are created accidentally.
 
 ## Retention of activity history
@@ -1092,9 +1092,9 @@ Setting a limit helps reduce the memory usage of the indexing processes and
 the overall index size. This value defaults to `1024 KiB` (1 MiB) as any
 text files larger than this likely aren't meant to be read by humans.
 
-You must set a limit, as unlimited file sizes aren't supported. Setting this
+You must set a limit because unlimited file sizes aren't supported. Setting this
 value to be greater than the amount of memory on GitLab Sidekiq nodes causes
-the GitLab Sidekiq nodes to run out of memory, as this amount of memory
+the GitLab Sidekiq nodes to run out of memory because this amount of memory
 is pre-allocated during indexing.
 
 ### Maximum field length
@@ -1271,7 +1271,7 @@ In addition to application-based limits, GitLab.com is configured to use Cloudfl
 
 ## Container Repository tag deletion limit
 
-Container repository tags are in the container registry and, as such, each tag deletion triggers network requests to the container registry. Because of this, we limit the number of tags that a single API call can delete to 20.
+Container repository tags are in the container registry, so each tag deletion triggers network requests to the container registry. Because of this, we limit the number of tags that a single API call can delete to 20.
 
 ## Project-level Secure Files API limits
 

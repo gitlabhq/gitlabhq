@@ -36,7 +36,7 @@ module RuboCop
 
           # rubocop:enable Lint/BooleanSymbol
 
-          high_traffic_tables.include?(table_name.to_sym)
+          large_or_over_limit_tables.include?(table_name.to_sym)
         end
       end
     end

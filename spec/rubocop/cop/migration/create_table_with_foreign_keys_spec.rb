@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/create_table_with_foreign_keys'
 
-RSpec.describe RuboCop::Cop::Migration::CreateTableWithForeignKeys do
+RSpec.describe RuboCop::Cop::Migration::CreateTableWithForeignKeys, feature_category: :database do
   context 'outside of a migration' do
     it 'does not register any offenses' do
       expect_no_offenses(<<~RUBY)
@@ -112,40 +112,7 @@ RSpec.describe RuboCop::Cop::Migration::CreateTableWithForeignKeys do
         end
 
         shared_context 'when there is a target to a high traffic table' do |dsl_method|
-          %w[
-            audit_events
-            ci_builds
-            ci_builds_metadata
-            ci_job_artifacts
-            ci_pipeline_variables
-            ci_pipelines
-            ci_stages
-            deployments
-            events
-            gitlab_subscriptions
-            issues
-            merge_request_diff_commits
-            merge_request_diff_files
-            merge_request_diffs
-            merge_request_metrics
-            merge_requests
-            namespaces
-            note_diff_files
-            notes
-            project_authorizations
-            projects
-            project_ci_cd_settings
-            project_features
-            push_event_payloads
-            resource_label_events
-            routes
-            sent_notifications
-            system_note_metadata
-            taggings
-            todos
-            users
-            web_hook_logs
-          ].each do |table|
+          described_class::HIGH_TRAFFIC_TABLES.map(&:to_s).each do |table|
             context "with #{table}" do
               let(:table_name) { table }
 

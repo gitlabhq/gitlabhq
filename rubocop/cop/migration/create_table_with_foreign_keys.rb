@@ -8,6 +8,42 @@ module RuboCop
       class CreateTableWithForeignKeys < RuboCop::Cop::Base
         include MigrationHelpers
 
+        # List of tables added to ensure backward compatibility with high traffic tables
+        HIGH_TRAFFIC_TABLES = [
+          :alert_management_alerts,
+          :approvals,
+          :ci_namespace_mirrors,
+          :ci_refs,
+          :deployment_merge_requests,
+          :diff_note_positions,
+          :error_tracking_error_events,
+          :gitlab_subscriptions,
+          :gpg_signatures,
+          :label_links,
+          :lfs_objects,
+          :lfs_objects_projects,
+          :members,
+          :merge_request_cleanup_schedules,
+          :merge_request_user_mentions,
+          :namespace_settings,
+          :oauth_access_grants,
+          :pm_package_version_licenses,
+          :pm_package_versions,
+          :project_ci_cd_settings,
+          :project_daily_statistics,
+          :project_features,
+          :project_settings,
+          :project_statistics,
+          :protected_branches,
+          :resource_state_events,
+          :routes,
+          :user_agent_details,
+          :user_details,
+          :user_preferences,
+          :users,
+          :vulnerability_occurrence_identifiers
+        ].freeze
+
         MSG = 'Creating a table with more than one foreign key at once violates our migration style guide. ' \
           'For more details check the ' \
           'https://docs.gitlab.com/ee/development/migration_style_guide.html#creating-a-new-table-when-we-have-two-foreign-keys'
@@ -57,7 +93,11 @@ module RuboCop
         def violates?(node)
           tables = all_target_tables(node).uniq
 
-          tables.length > 1 && !(tables & high_traffic_tables).empty?
+          tables.length > 1 && !(tables & forbidden_tables).empty?
+        end
+
+        def forbidden_tables
+          (large_or_over_limit_tables + HIGH_TRAFFIC_TABLES).uniq
         end
 
         def all_target_tables(node)
