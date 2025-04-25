@@ -638,7 +638,7 @@ GEM
     fast_blank (1.0.1)
     fast_gettext (2.3.0)
     ffaker (2.24.0)
-    ffi (1.17.1)
+    ffi (1.17.2)
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
@@ -1174,7 +1174,8 @@ GEM
     mixlib-cli (2.1.8)
     mixlib-config (3.0.27)
       tomlrb
-    mixlib-log (3.0.9)
+    mixlib-log (3.2.3)
+      ffi (>= 1.15.5)
     mixlib-shellout (3.2.7)
       chef-utils
     mize (0.6.1)

@@ -466,6 +466,7 @@ main quota. You can find pricing for additional storage on the
 
 To purchase additional storage for your group on GitLab.com:
 
+1. Sign in to GitLab.com.
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.
 1. Select the **Storage** tab.

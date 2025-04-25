@@ -109,6 +109,14 @@ module ActiveContext
       [identifier]
     end
 
+    def embedding_versions
+      collection_class&.current_indexing_embedding_versions || []
+    end
+
+    def collection_class
+      collection.collection_class&.safe_constantize
+    end
+
     def partition_name
       collection.name
     end

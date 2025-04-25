@@ -20,7 +20,7 @@
               = button_text
           - else
             - button_text = s_('Profiles|%{provider} Active') % { provider: label_for_provider(provider) }
-            = render Pajamas::ButtonComponent.new(button_options: { 'aria-label': button_text }) do
+            = render Pajamas::ButtonComponent.new(variant: :dashed, button_options: { 'aria-label': button_text }) do
               = button_text
         - elsif link_allowed
           - button_text = s_('Profiles|Connect %{provider}') % { provider: label_for_provider(provider) }

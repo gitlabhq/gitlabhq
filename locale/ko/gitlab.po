@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ko\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-04-24 22:45\n"
+"PO-Revision-Date: 2025-04-25 10:57\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} 에서 %{end}"
@@ -24356,9 +24356,6 @@ msgstr "%{bStart}%{parentEpicTitle}%{bEnd}에서 %{bStart}%{targetIssueTitle}%{b
 msgid "Epics|Learn more about linking child issues and epics"
 msgstr "하위 이슈와 에픽을 링크하는 방법에 대해 자세히 알아보세요."
 
-msgid "Epics|Leave empty to inherit from milestone dates"
-msgstr "마일스톤 날짜에서 상속하려면 비워 둡니다."
-
 msgid "Epics|Link child issues and epics together to show that they're related, or that one blocks another."
 msgstr "하위 이슈와 에픽을 함께 링크하여 서로 관련이 있거나 서로를 차단한다는 것을 보여줍니다."
 
@@ -24389,17 +24386,8 @@ msgstr "항목을 정렬하는 동안 문제가 발생했습니다."
 msgid "Epics|Something went wrong while updating epics."
 msgstr "에픽을 업데이트하는 동안 문제가 발생했습니다."
 
-msgid "Epics|The color for the epic when it's visualized, such as on roadmap timeline bars."
-msgstr "로드맵 타임라인 막대와 같이 시각화된 에픽의 색상입니다."
-
-msgid "Epics|This epic and any containing child epics are confidential and should only be visible to team members with at least the Planner role."
-msgstr "이 에픽과 해당 하위 에픽은 비공개이며, 적어도 플래너 역할을 가진 팀 사용자들에게만 보여집니다."
-
 msgid "Epics|This will also remove any descendents of %{bStart}%{targetEpicTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}. Are you sure?"
 msgstr "이렇게 하면 %{bStart}%{parentEpicTitle}%{bEnd}에서 %{bStart}%{targetEpicTitle}%{bEnd} 의 모든 하위 항목도 제거됩니다. 확실합니까?"
-
-msgid "Epics|Unable to save epic. Please try again"
-msgstr "에픽을 저장할 수 없습니다. 다시 시도해 보세요"
 
 msgid "Erased"
 msgstr "삭제됨"
@@ -27035,6 +27023,9 @@ msgstr "동기화 할 그룹"
 
 msgid "Geo|Healthy"
 msgstr "양호"
+
+msgid "Geo|Help us improve Geo for distributed teams and disaster recovery. We aim to make it simpler to use and operate."
+msgstr ""
 
 msgid "Geo|If enabled, GitLab will handle Object Storage replication using Geo."
 msgstr "만약 활성화된 경우, GitLab은 Geo를 사용하여 개체 스토리지 복제를 처리합니다."
@@ -39433,9 +39424,6 @@ msgstr "%{project}의 새로운 %{type}"
 
 msgid "New Application"
 msgstr "새로운 애플리케이션"
-
-msgid "New Epic"
-msgstr "새 에픽"
 
 msgid "New File"
 msgstr "새 파일"
@@ -53957,6 +53945,9 @@ msgstr "%{branches}%{branchExceptionsString} 상의 %{cadence}"
 msgid "SecurityOrchestration|%{frameworkName} has %{projectLength} %{projects}"
 msgstr "%{frameworkName} 에는 %{projectLength} %{projects}가 있습니다."
 
+msgid "SecurityOrchestration|%{listType} attempts from %{linkStart}other settings%{linkEnd} to override variables when the policy runs, except the variables defined in the %{list}."
+msgstr ""
+
 msgid "SecurityOrchestration|%{pageSize}+ projects which have compliance framework:"
 msgstr "%{pageSize}+ 규정 준수 프레임워크가 있는 프로젝트:"
 
@@ -54008,6 +53999,9 @@ msgstr "작업"
 
 msgid "SecurityOrchestration|Add a numeric suffix to ensure unique job names."
 msgstr "고유한 작업 이름을 보장하려면 숫자 접미사를 추가합니다."
+
+msgid "SecurityOrchestration|Add another variable"
+msgstr ""
 
 msgid "SecurityOrchestration|Add job name suffix %{suffixEditor} %{suffixIcon}"
 msgstr "작업 이름 접미사 추가 %{suffixEditor} %{suffixIcon}"
@@ -54165,9 +54159,6 @@ msgstr "보다 강력한 취약성 규칙을 만들어 모든 프로젝트에 �
 msgid "SecurityOrchestration|Create new framework label"
 msgstr "새 프레임워크 라벨 만들기"
 
-msgid "SecurityOrchestration|Create policy"
-msgstr "정책 생성"
-
 msgid "SecurityOrchestration|Create security policy"
 msgstr "보안 정책 생성"
 
@@ -54224,6 +54215,18 @@ msgstr "마우스로 드래그하여 편집기의 폭을 조정하세요"
 
 msgid "SecurityOrchestration|Edge case settings"
 msgstr "에지 케이스 설정"
+
+msgid "SecurityOrchestration|Edit allowlist"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit allowlist (%{variablesCount} %{variables})"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit denylist"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit denylist (%{variablesCount} %{variables})"
+msgstr ""
 
 msgid "SecurityOrchestration|Edit merge request approval policy"
 msgstr "머지 리퀘스트 승인 정책 편집"
@@ -54377,6 +54380,9 @@ msgstr "잘못된 정책 유형"
 
 msgid "SecurityOrchestration|Invalid syntax"
 msgstr "잘못된 구문"
+
+msgid "SecurityOrchestration|Key"
+msgstr ""
 
 msgid "SecurityOrchestration|Latest scan run against %{agent}"
 msgstr "%{agent}에 대해 최신 스캔 실행"
@@ -54601,8 +54607,11 @@ msgstr "다음 옵션을 사용하여 %{scannerStart}%{scanner}%{scannerEnd} 실
 msgid "SecurityOrchestration|Run a %{scannerStart}%{scanner}%{scannerEnd} scan with the following options:"
 msgstr "다음 옵션을 사용하여 %{scannerStart}%{scanner}%{scannerEnd} 스캔을 실행합니다."
 
-msgid "SecurityOrchestration|Save changes"
-msgstr "변경사항 저장"
+msgid "SecurityOrchestration|Save allowlist"
+msgstr ""
+
+msgid "SecurityOrchestration|Save denylist"
+msgstr ""
 
 msgid "SecurityOrchestration|Scan actions exceed the limit of %{maxScanExecutionPolicyActions} actions per policy."
 msgstr "스캔 동작이 정책당 %{maxScanExecutionPolicyActions} 동작 제한을 초과했습니다."
@@ -54634,6 +54643,9 @@ msgstr "다음 파이프라인 실행 정책을 예약하여 %{branchInfo} %{sch
 msgid "SecurityOrchestration|Schedule to run for %{branchSelector}"
 msgstr "%{branchSelector}에 대한 실행 일정"
 
+msgid "SecurityOrchestration|Scheduled pipeline execution"
+msgstr ""
+
 msgid "SecurityOrchestration|Scope"
 msgstr "범위"
 
@@ -54664,11 +54676,17 @@ msgstr "캐이던스 선택"
 msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"
 msgstr "보안 정책을 저장할 프로젝트를 선택하십시오. %{linkStart}추가 정보%{linkEnd}"
 
+msgid "SecurityOrchestration|Select a variable"
+msgstr ""
+
 msgid "SecurityOrchestration|Select days"
 msgstr "날짜 선택"
 
 msgid "SecurityOrchestration|Select frameworks"
 msgstr "프레임워크 선택"
+
+msgid "SecurityOrchestration|Select list type"
+msgstr ""
 
 msgid "SecurityOrchestration|Select policy"
 msgstr "정책 선택"
@@ -54862,6 +54880,15 @@ msgstr "사용자는 파이프라인을 생략할 수 없습니다."
 msgid "SecurityOrchestration|Validating branch names, which might take a while."
 msgstr "브랜치 이름을 검증하는 중입니다. 시간이 걸릴 수 있습니다."
 
+msgid "SecurityOrchestration|Variable option"
+msgstr ""
+
+msgid "SecurityOrchestration|Variables that can be overridden:"
+msgstr ""
+
+msgid "SecurityOrchestration|Variables that cannot be overriden:"
+msgstr ""
+
 msgid "SecurityOrchestration|View policy project"
 msgstr "정책 프로젝트 보기"
 
@@ -54979,6 +55006,9 @@ msgstr "링크된 그룹의 모든 프로젝트"
 msgid "SecurityOrchestration|all projects in this group"
 msgstr "이 그룹의 모든 프로젝트"
 
+msgid "SecurityOrchestration|allowlist"
+msgstr ""
+
 msgid "SecurityOrchestration|and run for %{hours}"
 msgstr "그리고 %{hours} 동안 실행"
 
@@ -55032,6 +55062,9 @@ msgstr "규정 준수 프레임워크"
 
 msgid "SecurityOrchestration|default"
 msgstr "기본값"
+
+msgid "SecurityOrchestration|denylist"
+msgstr ""
 
 msgid "SecurityOrchestration|except for:"
 msgstr "예외:"
@@ -72747,6 +72780,10 @@ msgstr "값: %{value} 은 63자 이하여야 하며 영숫자로 시작/끝나�
 
 msgid "value: %{value} must be a string"
 msgstr "값: %{value} 은 문자열이어야 합니다."
+
+msgid "variable"
+msgid_plural "variables"
+msgstr[0] ""
 
 msgid "verify ownership"
 msgstr "소유권 확인"

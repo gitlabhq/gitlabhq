@@ -46471,9 +46471,6 @@ msgstr ""
 msgid "Profiles|Achievements"
 msgstr ""
 
-msgid "Profiles|Active"
-msgstr ""
-
 msgid "Profiles|Add email address"
 msgstr ""
 
@@ -46552,10 +46549,13 @@ msgstr ""
 msgid "Profiles|Deleting an account has the following effects:"
 msgstr ""
 
-msgid "Profiles|Disconnect"
+msgid "Profiles|Disconnect %{provider}"
 msgstr ""
 
-msgid "Profiles|Disconnect %{provider}"
+msgid "Profiles|Disconnect SAML for %{group_name}"
+msgstr ""
+
+msgid "Profiles|Disconnecting your SAML provider will remove your access from groups, subgroups and projects which require SAML authentication. Are your sure?"
 msgstr ""
 
 msgid "Profiles|Discord ID is too long (maximum is %{max_length} characters)."
@@ -46733,6 +46733,9 @@ msgid "Profiles|Remove avatar"
 msgstr ""
 
 msgid "Profiles|Resend confirmation email"
+msgstr ""
+
+msgid "Profiles|SAML for %{group_name} Active"
 msgstr ""
 
 msgid "Profiles|SSH Key: %{title}"
@@ -52586,9 +52589,6 @@ msgid "SAML SSO"
 msgstr ""
 
 msgid "SAML discovery tokens"
-msgstr ""
-
-msgid "SAML for %{group_name}"
 msgstr ""
 
 msgid "SAML group membership settings"
@@ -59974,6 +59974,15 @@ msgid "TargetedMessages|Upload a csv file for targeted namespaces"
 msgstr ""
 
 msgid "TargetedMessages|the following namespace ids were invalid and have been ignored: %{invalid_ids_message}"
+msgstr ""
+
+msgid "TargettedMessages|Get access to both GitLab Premium and Duo Pro for %{strike}$48%{end_strike} $19 a month for a year!"
+msgstr ""
+
+msgid "TargettedMessages|Get in Touch"
+msgstr ""
+
+msgid "TargettedMessages|With GitLab Premium and Duo Pro, you’ll be able to stay ahead of the competition by shortening cycle times and increasing developer productivity. To take advantage of the offer, get in touch with our team today!"
 msgstr ""
 
 msgid "Task"
@@ -70048,6 +70057,9 @@ msgid "You don't have permission to manage email participants."
 msgstr ""
 
 msgid "You don't have permission to manage this issue."
+msgstr ""
+
+msgid "You don't have permission to update the setting %{attribute}."
 msgstr ""
 
 msgid "You don't have permission to view this epic"

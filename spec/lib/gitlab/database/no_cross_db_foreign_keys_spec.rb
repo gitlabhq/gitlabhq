@@ -16,7 +16,6 @@ RSpec.describe 'cross-database foreign keys' do
       'zoekt_replicas.zoekt_enabled_namespace_id',
       'zoekt_replicas.namespace_id',
       'system_access_microsoft_applications.namespace_id',
-      'ci_cost_settings.runner_id',                              # The fk_rails_6a70651f75 FK needs to be dropped
       'ci_runner_taggings.tag_id',                               # https://gitlab.com/gitlab-org/gitlab/-/issues/467664
       'ci_runner_taggings_instance_type.tag_id',                 # https://gitlab.com/gitlab-org/gitlab/-/issues/467664
       'ci_secure_file_states.ci_secure_file_id',

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe VsCode::Settings::VsCodeSetting, feature_category: :web_ide do
   let!(:user) { create(:user) }
-  let!(:setting) { create(:vscode_setting, user: user, setting_type: 'settings') }
+  let!(:setting) { create(:vscode_setting, user: user, setting_type: 'settings', settings_context_hash: nil) }
 
   describe 'validates the presence of required attributes' do
     it { is_expected.to validate_presence_of(:setting_type) }
@@ -14,8 +14,29 @@ RSpec.describe VsCode::Settings::VsCodeSetting, feature_category: :web_ide do
   end
 
   describe 'validates the uniqueness of attributes' do
-    it { is_expected.to validate_uniqueness_of(:setting_type).scoped_to([:user_id, :settings_context_hash]) }
-    it { is_expected.to validate_uniqueness_of(:settings_context_hash).scoped_to([:user_id, :setting_type]) }
+    context 'when testing setting_type uniqueness' do
+      subject do
+        build(:vscode_setting,
+          setting_type: 'keybindings',
+          user: user,
+          settings_context_hash: nil
+        )
+      end
+
+      it { is_expected.to validate_uniqueness_of(:setting_type).scoped_to([:user_id, :settings_context_hash]) }
+    end
+
+    context 'when testing settings_context_hash uniqueness' do
+      subject do
+        build(:vscode_setting,
+          setting_type: 'extensions',
+          user: user,
+          settings_context_hash: 'some_value'
+        )
+      end
+
+      it { is_expected.to validate_uniqueness_of(:setting_type).scoped_to([:user_id, :settings_context_hash]) }
+    end
   end
 
   describe 'relationship validation' do
@@ -30,14 +51,16 @@ RSpec.describe VsCode::Settings::VsCodeSetting, feature_category: :web_ide do
     it { is_expected.to validate_length_of(:settings_context_hash).is_at_most(255) }
 
     context 'when setting type is not extensions' do
-      subject { build(:vscode_setting, setting_type: 'settings') }
+      subject { build(:vscode_setting, setting_type: 'settings', settings_context_hash: nil) }
 
       it { is_expected.to allow_value(nil).for(:settings_context_hash) }
       it { is_expected.not_to allow_value('some_value').for(:settings_context_hash) }
     end
 
     context 'when setting type is extensions' do
-      subject { build(:vscode_setting, setting_type: VsCode::Settings::EXTENSIONS) }
+      subject do
+        build(:vscode_setting, setting_type: VsCode::Settings::EXTENSIONS, settings_context_hash: 'some_hashed_value')
+      end
 
       it { is_expected.not_to allow_value(nil).for(:settings_context_hash) }
       it { is_expected.to allow_value('some_value').for(:settings_context_hash) }

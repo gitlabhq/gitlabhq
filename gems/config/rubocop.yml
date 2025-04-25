@@ -49,6 +49,10 @@ Gemspec/AvoidExecutingGit:
 Gemspec/RequiredRubyVersion:
   Enabled: false
 
+# This cop doesn't make sense in the context of gems
+Gitlab/Ai/OrderConstants:
+  Enabled: false
+
 # This cop enforces domain bounded contexts which generally
 # are not applicable to gems.
 Gitlab/BoundedContexts:

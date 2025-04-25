@@ -40,7 +40,7 @@ module ActiveContext
         operation = initialize_operation("update_collection_metadata_#{metadata.to_json}")
 
         unless operation.completed?
-          collection.collection_record.update_metadata!(metadata)
+          collection.collection_record.update_metadata!(metadata.merge(collection_class: collection.name))
           operation.complete!
         end
 

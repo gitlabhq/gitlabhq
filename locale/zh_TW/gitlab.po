@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-04-24 22:44\n"
+"PO-Revision-Date: 2025-04-25 10:56\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} 到 %{end}"
@@ -24356,9 +24356,6 @@ msgstr "確定要從%{bStart}%{parentEpicTitle}%{bEnd}刪除%{bStart}%{targetIss
 msgid "Epics|Learn more about linking child issues and epics"
 msgstr "了解更多關於連結子問題和史詩的資訊"
 
-msgid "Epics|Leave empty to inherit from milestone dates"
-msgstr "留空以繼承里程碑日期"
-
 msgid "Epics|Link child issues and epics together to show that they're related, or that one blocks another."
 msgstr "將子問題和史詩連結在一起，以顯示它們之間的關聯性，或者其中一個封鎖了另一個。"
 
@@ -24389,17 +24386,8 @@ msgstr "排序時發生錯誤。"
 msgid "Epics|Something went wrong while updating epics."
 msgstr "更新史詩 (epics) 時發生錯誤。"
 
-msgid "Epics|The color for the epic when it's visualized, such as on roadmap timeline bars."
-msgstr "史詩 (Epic) 在可視覺化時的顏色，例如在路線圖的時間軸線上。"
-
-msgid "Epics|This epic and any containing child epics are confidential and should only be visible to team members with at least the Planner role."
-msgstr ""
-
 msgid "Epics|This will also remove any descendents of %{bStart}%{targetEpicTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}. Are you sure?"
 msgstr "該操作也會從%{bStart}%{parentEpicTitle}%{bEnd}中移除%{bStart}%{targetEpicTitle}%{bEnd}的所有級別子史詩 (epic)。確定繼續嗎？"
-
-msgid "Epics|Unable to save epic. Please try again"
-msgstr "無法保存史詩 (epic) ，請重試"
 
 msgid "Erased"
 msgstr "已刪除"
@@ -27035,6 +27023,9 @@ msgstr "群組同步"
 
 msgid "Geo|Healthy"
 msgstr "健康"
+
+msgid "Geo|Help us improve Geo for distributed teams and disaster recovery. We aim to make it simpler to use and operate."
+msgstr ""
 
 msgid "Geo|If enabled, GitLab will handle Object Storage replication using Geo."
 msgstr "如果啟用，GitLab將使用GEO處理物件儲存複製。"
@@ -39433,9 +39424,6 @@ msgstr "在 %{project} 中新建 %{type}"
 
 msgid "New Application"
 msgstr "新增應用"
-
-msgid "New Epic"
-msgstr "新增史詩 (Epic)"
 
 msgid "New File"
 msgstr "新增文件"
@@ -53957,6 +53945,9 @@ msgstr "%{cadence} 在 %{branches}%{branchExceptionsString}"
 msgid "SecurityOrchestration|%{frameworkName} has %{projectLength} %{projects}"
 msgstr "%{frameworkName} 有 %{projectLength} %{projects}"
 
+msgid "SecurityOrchestration|%{listType} attempts from %{linkStart}other settings%{linkEnd} to override variables when the policy runs, except the variables defined in the %{list}."
+msgstr ""
+
 msgid "SecurityOrchestration|%{pageSize}+ projects which have compliance framework:"
 msgstr ""
 
@@ -54007,6 +53998,9 @@ msgid "SecurityOrchestration|Actions"
 msgstr "行動"
 
 msgid "SecurityOrchestration|Add a numeric suffix to ensure unique job names."
+msgstr ""
+
+msgid "SecurityOrchestration|Add another variable"
 msgstr ""
 
 msgid "SecurityOrchestration|Add job name suffix %{suffixEditor} %{suffixIcon}"
@@ -54165,9 +54159,6 @@ msgstr "建立更健全的漏洞規則並將其套用於您的所有專案。"
 msgid "SecurityOrchestration|Create new framework label"
 msgstr "建立新的框架標籤"
 
-msgid "SecurityOrchestration|Create policy"
-msgstr "建立政策"
-
 msgid "SecurityOrchestration|Create security policy"
 msgstr "建立安全政策"
 
@@ -54223,6 +54214,18 @@ msgid "SecurityOrchestration|Drag with a mouse to adjust editor's width"
 msgstr ""
 
 msgid "SecurityOrchestration|Edge case settings"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit allowlist"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit allowlist (%{variablesCount} %{variables})"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit denylist"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit denylist (%{variablesCount} %{variables})"
 msgstr ""
 
 msgid "SecurityOrchestration|Edit merge request approval policy"
@@ -54376,6 +54379,9 @@ msgid "SecurityOrchestration|Invalid policy type"
 msgstr "無效的政策類型"
 
 msgid "SecurityOrchestration|Invalid syntax"
+msgstr ""
+
+msgid "SecurityOrchestration|Key"
 msgstr ""
 
 msgid "SecurityOrchestration|Latest scan run against %{agent}"
@@ -54601,8 +54607,11 @@ msgstr "安全編輯使用以下選項運行 %{scannerStart}%{scanner}%{scannerE
 msgid "SecurityOrchestration|Run a %{scannerStart}%{scanner}%{scannerEnd} scan with the following options:"
 msgstr ""
 
-msgid "SecurityOrchestration|Save changes"
-msgstr "儲存變更"
+msgid "SecurityOrchestration|Save allowlist"
+msgstr ""
+
+msgid "SecurityOrchestration|Save denylist"
+msgstr ""
 
 msgid "SecurityOrchestration|Scan actions exceed the limit of %{maxScanExecutionPolicyActions} actions per policy."
 msgstr ""
@@ -54632,6 +54641,9 @@ msgid "SecurityOrchestration|Schedule the following pipeline execution policy to
 msgstr ""
 
 msgid "SecurityOrchestration|Schedule to run for %{branchSelector}"
+msgstr ""
+
+msgid "SecurityOrchestration|Scheduled pipeline execution"
 msgstr ""
 
 msgid "SecurityOrchestration|Scope"
@@ -54664,11 +54676,17 @@ msgstr ""
 msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"
 msgstr "選擇一個專案來儲存您的安全政策。 %{linkStart}更多訊息。%{linkEnd}"
 
+msgid "SecurityOrchestration|Select a variable"
+msgstr ""
+
 msgid "SecurityOrchestration|Select days"
 msgstr ""
 
 msgid "SecurityOrchestration|Select frameworks"
 msgstr "選擇框架"
+
+msgid "SecurityOrchestration|Select list type"
+msgstr ""
 
 msgid "SecurityOrchestration|Select policy"
 msgstr "選擇政策"
@@ -54862,6 +54880,15 @@ msgstr ""
 msgid "SecurityOrchestration|Validating branch names, which might take a while."
 msgstr "正在驗證分支名稱，這可能需要一段時間。"
 
+msgid "SecurityOrchestration|Variable option"
+msgstr ""
+
+msgid "SecurityOrchestration|Variables that can be overridden:"
+msgstr ""
+
+msgid "SecurityOrchestration|Variables that cannot be overriden:"
+msgstr ""
+
 msgid "SecurityOrchestration|View policy project"
 msgstr "查看政策專案"
 
@@ -54979,6 +55006,9 @@ msgstr ""
 msgid "SecurityOrchestration|all projects in this group"
 msgstr ""
 
+msgid "SecurityOrchestration|allowlist"
+msgstr ""
+
 msgid "SecurityOrchestration|and run for %{hours}"
 msgstr ""
 
@@ -55032,6 +55062,9 @@ msgstr "合規架構"
 
 msgid "SecurityOrchestration|default"
 msgstr "預設"
+
+msgid "SecurityOrchestration|denylist"
+msgstr ""
 
 msgid "SecurityOrchestration|except for:"
 msgstr ""
@@ -72747,6 +72780,10 @@ msgstr ""
 
 msgid "value: %{value} must be a string"
 msgstr ""
+
+msgid "variable"
+msgid_plural "variables"
+msgstr[0] ""
 
 msgid "verify ownership"
 msgstr "驗證所有權"

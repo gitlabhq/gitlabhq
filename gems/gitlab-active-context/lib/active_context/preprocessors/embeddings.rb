@@ -14,21 +14,25 @@ module ActiveContext
       class_methods do
         def apply_embeddings(
           refs:,
-          target_field:,
           content_field: :content,
           content_method: nil,
-          remove_content_field: true
+          remove_content: true
         )
           refs.each do |ref|
             initialize_documents!(ref, content_method, content_field)
+            versions = ref.embedding_versions
+            batch_size = (BATCH_SIZE.to_f / versions.count).ceil
 
-            ref.documents.each_slice(BATCH_SIZE) do |docs_batch|
+            ref.documents.each_slice(batch_size) do |docs_batch|
               contents = docs_batch.pluck(content_field)
-              embeddings = ActiveContext::Embeddings.generate_embeddings(contents)
+
+              embeddings_by_version = generate_embeddings_for_each_version(versions, contents)
 
               docs_batch.each_with_index do |doc, index|
-                doc[target_field] = embeddings[index]
-                doc.delete(content_field) if remove_content_field
+                ref.embedding_versions.each do |version|
+                  doc[version[:field]] = embeddings_by_version[version[:field]][index]
+                end
+                doc.delete(content_field) if remove_content
               end
             end
           end
@@ -47,6 +51,13 @@ module ActiveContext
             next if doc.key?(content_field)
 
             doc[content_field] = ref.send(content_method) # rubocop: disable GitlabSecurity/PublicSend -- method is defined elsewhere
+          end
+        end
+
+        def generate_embeddings_for_each_version(versions, contents)
+          versions.each_with_object({}) do |version, embeddings_by_version|
+            embedding = ActiveContext::Embeddings.generate_embeddings(contents, model: version[:model])
+            embeddings_by_version[version[:field]] = embedding
           end
         end
       end

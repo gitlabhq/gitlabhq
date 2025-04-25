@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-04-24 22:44\n"
+"PO-Revision-Date: 2025-04-25 10:56\n"
 
 msgid " %{start} to %{end}"
 msgstr "从%{start}到%{end}"
@@ -24356,9 +24356,6 @@ msgstr "确定要从%{bStart}%{parentEpicTitle}%{bEnd}删除%{bStart}%{targetIss
 msgid "Epics|Learn more about linking child issues and epics"
 msgstr "了解更多关联子议题和史诗的信息"
 
-msgid "Epics|Leave empty to inherit from milestone dates"
-msgstr "留空以继承里程碑日期"
-
 msgid "Epics|Link child issues and epics together to show that they're related, or that one blocks another."
 msgstr "关联子议题和史诗，以表明它们有关联关系，或者其中一个阻塞了另一个。"
 
@@ -24389,17 +24386,8 @@ msgstr "排序时出错。"
 msgid "Epics|Something went wrong while updating epics."
 msgstr "更新史诗时出错。"
 
-msgid "Epics|The color for the epic when it's visualized, such as on roadmap timeline bars."
-msgstr "史诗在可视化时的颜色，例如在路线图时间线栏上。"
-
-msgid "Epics|This epic and any containing child epics are confidential and should only be visible to team members with at least the Planner role."
-msgstr "此史诗及其包含的任何子史诗均为机密，仅应向具有至少计划者角色的团队成员可见。"
-
 msgid "Epics|This will also remove any descendents of %{bStart}%{targetEpicTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}. Are you sure?"
 msgstr "该操作也会从%{bStart}%{parentEpicTitle}%{bEnd}中移除%{bStart}%{targetEpicTitle}%{bEnd}的所有级别子史诗。确定继续吗？"
-
-msgid "Epics|Unable to save epic. Please try again"
-msgstr "无法保存史诗。请再试一次"
 
 msgid "Erased"
 msgstr "已删除"
@@ -27035,6 +27023,9 @@ msgstr "要同步的群组"
 
 msgid "Geo|Healthy"
 msgstr "健康"
+
+msgid "Geo|Help us improve Geo for distributed teams and disaster recovery. We aim to make it simpler to use and operate."
+msgstr ""
 
 msgid "Geo|If enabled, GitLab will handle Object Storage replication using Geo."
 msgstr "如果启用，将使用 Geo 处理对象存储复制。"
@@ -39433,9 +39424,6 @@ msgstr "在 %{project} 中新建 %{type}"
 
 msgid "New Application"
 msgstr "新建应用"
-
-msgid "New Epic"
-msgstr "新建史诗"
 
 msgid "New File"
 msgstr "新建文件"
@@ -53957,6 +53945,9 @@ msgstr "%{cadence} 于 %{branches}%{branchExceptionsString}"
 msgid "SecurityOrchestration|%{frameworkName} has %{projectLength} %{projects}"
 msgstr "%{frameworkName} 有 %{projectLength} 个 %{projects}"
 
+msgid "SecurityOrchestration|%{listType} attempts from %{linkStart}other settings%{linkEnd} to override variables when the policy runs, except the variables defined in the %{list}."
+msgstr ""
+
 msgid "SecurityOrchestration|%{pageSize}+ projects which have compliance framework:"
 msgstr "%{pageSize}+ 项目具有合规框架："
 
@@ -54008,6 +53999,9 @@ msgstr "行动"
 
 msgid "SecurityOrchestration|Add a numeric suffix to ensure unique job names."
 msgstr "添加数字后缀以确保作业名称唯一。"
+
+msgid "SecurityOrchestration|Add another variable"
+msgstr ""
 
 msgid "SecurityOrchestration|Add job name suffix %{suffixEditor} %{suffixIcon}"
 msgstr "添加作业名称后缀 %{suffixEditor} %{suffixIcon}"
@@ -54165,9 +54159,6 @@ msgstr "创建更强大的漏洞规则并将其应用于您的所有项目。"
 msgid "SecurityOrchestration|Create new framework label"
 msgstr "创建框架标签"
 
-msgid "SecurityOrchestration|Create policy"
-msgstr "创建策略"
-
 msgid "SecurityOrchestration|Create security policy"
 msgstr "创建安全策略"
 
@@ -54224,6 +54215,18 @@ msgstr ""
 
 msgid "SecurityOrchestration|Edge case settings"
 msgstr "边缘情况设置"
+
+msgid "SecurityOrchestration|Edit allowlist"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit allowlist (%{variablesCount} %{variables})"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit denylist"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit denylist (%{variablesCount} %{variables})"
+msgstr ""
 
 msgid "SecurityOrchestration|Edit merge request approval policy"
 msgstr "编辑合并请求批准策略"
@@ -54377,6 +54380,9 @@ msgstr "无效的策略类型"
 
 msgid "SecurityOrchestration|Invalid syntax"
 msgstr "无效语法"
+
+msgid "SecurityOrchestration|Key"
+msgstr ""
 
 msgid "SecurityOrchestration|Latest scan run against %{agent}"
 msgstr "针对 %{agent} 运行的最新扫描"
@@ -54601,8 +54607,11 @@ msgstr "使用以下选项运行 %{scannerStart}%{scanner}%{scannerEnd}："
 msgid "SecurityOrchestration|Run a %{scannerStart}%{scanner}%{scannerEnd} scan with the following options:"
 msgstr "使用以下选项运行 %{scannerStart}%{scanner}%{scannerEnd} 扫描："
 
-msgid "SecurityOrchestration|Save changes"
-msgstr "保存更改"
+msgid "SecurityOrchestration|Save allowlist"
+msgstr ""
+
+msgid "SecurityOrchestration|Save denylist"
+msgstr ""
 
 msgid "SecurityOrchestration|Scan actions exceed the limit of %{maxScanExecutionPolicyActions} actions per policy."
 msgstr "扫描操作超过每个策略 %{maxScanExecutionPolicyActions} 个操作的限制。"
@@ -54632,6 +54641,9 @@ msgid "SecurityOrchestration|Schedule the following pipeline execution policy to
 msgstr ""
 
 msgid "SecurityOrchestration|Schedule to run for %{branchSelector}"
+msgstr ""
+
+msgid "SecurityOrchestration|Scheduled pipeline execution"
 msgstr ""
 
 msgid "SecurityOrchestration|Scope"
@@ -54664,11 +54676,17 @@ msgstr ""
 msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"
 msgstr "选择一个项目来存储您的安全策略。 %{linkStart}更多信息。%{linkEnd}"
 
+msgid "SecurityOrchestration|Select a variable"
+msgstr ""
+
 msgid "SecurityOrchestration|Select days"
 msgstr ""
 
 msgid "SecurityOrchestration|Select frameworks"
 msgstr "选择框架"
+
+msgid "SecurityOrchestration|Select list type"
+msgstr ""
 
 msgid "SecurityOrchestration|Select policy"
 msgstr "选择策略"
@@ -54862,6 +54880,15 @@ msgstr "用户不能跳过流水线"
 msgid "SecurityOrchestration|Validating branch names, which might take a while."
 msgstr "验证分支名称，可能需要一段时间。"
 
+msgid "SecurityOrchestration|Variable option"
+msgstr ""
+
+msgid "SecurityOrchestration|Variables that can be overridden:"
+msgstr ""
+
+msgid "SecurityOrchestration|Variables that cannot be overriden:"
+msgstr ""
+
 msgid "SecurityOrchestration|View policy project"
 msgstr "查看策略项目"
 
@@ -54979,6 +55006,9 @@ msgstr "链接组中的所有项目"
 msgid "SecurityOrchestration|all projects in this group"
 msgstr "此组中的所有项目"
 
+msgid "SecurityOrchestration|allowlist"
+msgstr ""
+
 msgid "SecurityOrchestration|and run for %{hours}"
 msgstr ""
 
@@ -55032,6 +55062,9 @@ msgstr "合规框架"
 
 msgid "SecurityOrchestration|default"
 msgstr "默认"
+
+msgid "SecurityOrchestration|denylist"
+msgstr ""
 
 msgid "SecurityOrchestration|except for:"
 msgstr "除了："
@@ -72747,6 +72780,10 @@ msgstr "值：%{value} 必须为 63 个字符或更少，并以字母数字字�
 
 msgid "value: %{value} must be a string"
 msgstr "值：%{value} 必须是字符串"
+
+msgid "variable"
+msgid_plural "variables"
+msgstr[0] ""
 
 msgid "verify ownership"
 msgstr "验证所有权"

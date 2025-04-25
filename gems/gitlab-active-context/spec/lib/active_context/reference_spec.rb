@@ -63,4 +63,40 @@ RSpec.describe ActiveContext::Reference do
       end
     end
   end
+
+  describe '#embedding_versions' do
+    let(:reference_class) { Class.new(Test::References::Mock) }
+    let(:reference) { reference_class.new(collection_id: 1, routing: 2, args: 3) }
+    let(:mock_collection) { double }
+    let(:collection_class) { double }
+    let(:current_embedding_versions) { [1, 2] }
+
+    before do
+      allow(ActiveContext::CollectionCache).to receive(:fetch).and_return(mock_collection)
+      allow(reference).to receive(:collection_class).and_return(collection_class)
+      allow(collection_class).to receive(:current_indexing_embedding_versions).and_return(current_embedding_versions)
+    end
+
+    it 'returns collection_class.current_embedding_versions' do
+      expect(reference.embedding_versions).to eq(current_embedding_versions)
+    end
+
+    context 'if collection_class does not have current_embedding_versions' do
+      let(:current_embedding_versions) { nil }
+
+      it 'returns empty array' do
+        expect(reference.embedding_versions).to be_empty
+      end
+    end
+
+    context 'if collection_class does not exist' do
+      before do
+        allow(reference).to receive(:collection_class).and_return(nil)
+      end
+
+      it 'returns empty array' do
+        expect(reference.embedding_versions).to be_empty
+      end
+    end
+  end
 end

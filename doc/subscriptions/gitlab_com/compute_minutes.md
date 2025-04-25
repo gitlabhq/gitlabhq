@@ -37,6 +37,7 @@ You can purchase additional compute minutes for your group.
 You cannot transfer purchased compute minutes from one group to another,
 so be sure to select the correct group.
 
+1. Sign in to GitLab.com.
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.
 1. Select **Pipelines**.
@@ -54,6 +55,7 @@ namespace.
 
 To purchase additional compute minutes for your personal namespace:
 
+1. Sign in to GitLab.com.
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Usage Quotas**.

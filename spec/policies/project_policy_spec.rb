@@ -1411,6 +1411,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
           it { is_expected.to be_disallowed(:read_container_image) }
           it { is_expected.to be_disallowed(:create_container_image) }
+          it { is_expected.to be_disallowed(:create_container_registry_protection_immutable_tag_rule) }
         end
       end
 

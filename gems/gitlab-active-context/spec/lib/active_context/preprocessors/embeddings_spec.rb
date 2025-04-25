@@ -6,7 +6,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
       include ::ActiveContext::Preprocessors::Embeddings
 
       add_preprocessor :embeddings do |refs|
-        apply_embeddings(refs: refs, target_field: :embedding, content_method: :embedding_content)
+        apply_embeddings(refs: refs, content_method: :embedding_content)
       end
 
       def embedding_content
@@ -33,7 +33,8 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
     allow(ActiveContext).to receive(:adapter).and_return(mock_adapter)
     allow(ActiveContext::CollectionCache).to receive(:fetch).and_return(mock_collection)
     allow(reference_class).to receive(:model_klass).and_return(mock_relation)
-    allow(ActiveContext::Embeddings).to receive(:generate_embeddings) do |contents|
+    allow(reference).to receive(:embedding_versions).and_return([{ field: :embedding, model: nil }])
+    allow(ActiveContext::Embeddings).to receive(:generate_embeddings) do |contents, **_kwargs|
       raise vertex_blank_error if contents.any?(&:nil?) # this is what vertex returns when the content is empty
 
       Array.new(contents.size, vectors)
@@ -57,7 +58,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
 
         it 'generates and sets embeddings for each document' do
           expect(ActiveContext::Embeddings).to receive(:generate_embeddings)
-            .once.with(['Some content']).and_return([vectors])
+            .once.with(['Some content'], model: nil).and_return([vectors])
 
           expect(preprocessed_reference.documents).to match_array([{ embedding: vectors }])
         end
@@ -82,7 +83,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
 
             it 'generates and sets embeddings for each document' do
               expect(ActiveContext::Embeddings).to receive(:generate_embeddings)
-                .once.with(['Other content']).and_return([vectors])
+                .once.with(['Other content'], model: nil).and_return([vectors])
 
               expect(preprocessed_reference.documents).to match_array([{ embedding: vectors }])
             end
@@ -105,7 +106,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
 
             it 'generates and sets embeddings for each document' do
               expect(ActiveContext::Embeddings).to receive(:generate_embeddings)
-                .once.with(['Some content']).and_return([vectors])
+                .once.with(['Some content'], model: nil).and_return([vectors])
 
               expect(preprocessed_reference.documents).to match_array([{ embedding: vectors }])
             end
@@ -117,8 +118,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
                 include ::ActiveContext::Preprocessors::Embeddings
 
                 add_preprocessor :embeddings do |refs|
-                  apply_embeddings(refs: refs, target_field: :embedding,
-                    content_method: :embedding_content, remove_content_field: false)
+                  apply_embeddings(refs: refs, content_method: :embedding_content, remove_content: false)
                 end
 
                 def embedding_content
@@ -143,8 +143,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
               include ::ActiveContext::Preprocessors::Embeddings
 
               add_preprocessor :embeddings do |refs|
-                apply_embeddings(refs: refs, target_field: :embedding,
-                  content_field: :other_field, content_method: :embedding_content)
+                apply_embeddings(refs: refs, content_field: :other_field, content_method: :embedding_content)
               end
 
               def embedding_content
@@ -170,7 +169,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
 
             it 'generates and sets embeddings for each document' do
               expect(ActiveContext::Embeddings).to receive(:generate_embeddings)
-                .once.with(['Some other content']).and_return([vectors])
+                .once.with(['Some other content'], model: nil).and_return([vectors])
 
               expect(preprocessed_reference.documents).to match_array([{ embedding: vectors }])
             end
@@ -193,7 +192,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
 
             it 'generates and sets embeddings for each document' do
               expect(ActiveContext::Embeddings).to receive(:generate_embeddings)
-                .once.with(['Some content']).and_return([vectors])
+                .once.with(['Some content'], model: nil).and_return([vectors])
 
               expect(preprocessed_reference.documents).to match_array([{ embedding: vectors }])
             end
@@ -205,8 +204,8 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
                 include ::ActiveContext::Preprocessors::Embeddings
 
                 add_preprocessor :embeddings do |refs|
-                  apply_embeddings(refs: refs, target_field: :embedding,
-                    content_field: :other_field, content_method: :embedding_content, remove_content_field: false)
+                  apply_embeddings(refs: refs, content_field: :other_field,
+                    content_method: :embedding_content, remove_content: false)
                 end
 
                 def embedding_content
@@ -234,7 +233,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
           include ::ActiveContext::Preprocessors::Embeddings
 
           add_preprocessor :embeddings do |refs|
-            apply_embeddings(refs: refs, target_field: :embedding, content_method: :embedding_content)
+            apply_embeddings(refs: refs, content_method: :embedding_content)
           end
         end
       end
@@ -256,7 +255,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
           include ::ActiveContext::Preprocessors::Embeddings
 
           add_preprocessor :embeddings do |refs|
-            apply_embeddings(refs: refs, target_field: :embedding)
+            apply_embeddings(refs: refs)
           end
         end
       end
@@ -286,7 +285,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
 
             it 'generates and sets embeddings for each document' do
               expect(ActiveContext::Embeddings).to receive(:generate_embeddings)
-                .once.with(['Other content']).and_return([vectors])
+                .once.with(['Other content'], model: nil).and_return([vectors])
 
               expect(preprocessed_reference.documents).to match_array([{ embedding: vectors }])
             end
@@ -311,7 +310,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
               include ::ActiveContext::Preprocessors::Embeddings
 
               add_preprocessor :embeddings do |refs|
-                apply_embeddings(refs: refs, target_field: :embedding, content_field: :other_field)
+                apply_embeddings(refs: refs, content_field: :other_field)
               end
             end
           end
@@ -327,7 +326,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
 
             it 'generates and sets embeddings for each document' do
               expect(ActiveContext::Embeddings).to receive(:generate_embeddings)
-                .once.with(['Some other content']).and_return([vectors])
+                .once.with(['Some other content'], model: nil).and_return([vectors])
 
               expect(preprocessed_reference.documents).to match_array([{ embedding: vectors }])
             end

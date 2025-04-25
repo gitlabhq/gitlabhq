@@ -50,7 +50,7 @@ module Gitlab
       'eo' => 0,
       'es' => 44,
       'fil_PH' => 0,
-      'fr' => 99,
+      'fr' => 98,
       'gl_ES' => 0,
       'id_ID' => 0,
       'it' => 86,

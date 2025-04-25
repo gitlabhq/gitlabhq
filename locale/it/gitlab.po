@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: it\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-04-24 23:09\n"
+"PO-Revision-Date: 2025-04-25 10:57\n"
 
 msgid " %{start} to %{end}"
 msgstr " Dal giorno %{start} al giorno %{end}"
@@ -24609,9 +24609,6 @@ msgstr "Vuoi rimuovere %{bStart}%{targetIssueTitle}%{bEnd} da %{bStart}%{parentE
 msgid "Epics|Learn more about linking child issues and epics"
 msgstr "Scopri di più su come collegare ticket ed epic secondari"
 
-msgid "Epics|Leave empty to inherit from milestone dates"
-msgstr "Non compilare se vuoi ereditare il valore dalle date dei traguardi"
-
 msgid "Epics|Link child issues and epics together to show that they're related, or that one blocks another."
 msgstr "Collega ticket ed epic secondari per mostrarne la correlazione o individuare l'elemento bloccante."
 
@@ -24642,17 +24639,8 @@ msgstr "Si è verificato un errore durante l'ordinamento dell'elemento."
 msgid "Epics|Something went wrong while updating epics."
 msgstr "Si è verificato un errore durante l'aggiornamento delle epic."
 
-msgid "Epics|The color for the epic when it's visualized, such as on roadmap timeline bars."
-msgstr "Il colore per l'epic quando viene visualizzata, come ad esempio sulle barre della sequenza temporale della roadmap."
-
-msgid "Epics|This epic and any containing child epics are confidential and should only be visible to team members with at least the Planner role."
-msgstr "Questa epic ed eventuali epic contengono elementi secondari sono riservate e devono essere visibili solo ai membri del team con almeno il ruolo Pianificatore."
-
 msgid "Epics|This will also remove any descendents of %{bStart}%{targetEpicTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}. Are you sure?"
 msgstr "Questo rimuoverà anche eventuali discendenti di %{bStart}%{targetEpicTitle}%{bEnd} da %{bStart}%{parentEpicTitle}%{bEnd}. Continuare?"
-
-msgid "Epics|Unable to save epic. Please try again"
-msgstr "Impossibile salvare l'epic. Riprova."
 
 msgid "Erased"
 msgstr "Cancellato"
@@ -27298,6 +27286,9 @@ msgstr "Gruppi da sincronizzare"
 
 msgid "Geo|Healthy"
 msgstr "Integro"
+
+msgid "Geo|Help us improve Geo for distributed teams and disaster recovery. We aim to make it simpler to use and operate."
+msgstr ""
 
 msgid "Geo|If enabled, GitLab will handle Object Storage replication using Geo."
 msgstr "Se l'opzione è abilitata, GitLab gestirà la replica del sistema di archiviazione di oggetti utilizzando Geo."
@@ -39740,9 +39731,6 @@ msgstr "Nuovo %{type} in %{project}"
 
 msgid "New Application"
 msgstr ""
-
-msgid "New Epic"
-msgstr "Nuova epic"
 
 msgid "New File"
 msgstr "Nuovo file"
@@ -54321,6 +54309,9 @@ msgstr "%{cadence} per %{branches}%{branchExceptionsString}"
 msgid "SecurityOrchestration|%{frameworkName} has %{projectLength} %{projects}"
 msgstr "%{frameworkName} ha %{projectLength} %{projects}"
 
+msgid "SecurityOrchestration|%{listType} attempts from %{linkStart}other settings%{linkEnd} to override variables when the policy runs, except the variables defined in the %{list}."
+msgstr ""
+
 msgid "SecurityOrchestration|%{pageSize}+ projects which have compliance framework:"
 msgstr "Oltre %{pageSize} progetti che hanno un framework di conformità:"
 
@@ -54373,6 +54364,9 @@ msgstr "Operazioni"
 
 msgid "SecurityOrchestration|Add a numeric suffix to ensure unique job names."
 msgstr "Aggiungi un suffisso numerico per assicurarti nomi di job univoci."
+
+msgid "SecurityOrchestration|Add another variable"
+msgstr ""
 
 msgid "SecurityOrchestration|Add job name suffix %{suffixEditor} %{suffixIcon}"
 msgstr "Aggiungi il suffisso al nome del job %{suffixEditor} %{suffixIcon}"
@@ -54530,9 +54524,6 @@ msgstr "Crea regole di vulnerabilità più solide e applicale a tutti i tuoi pro
 msgid "SecurityOrchestration|Create new framework label"
 msgstr "Crea nuova etichetta del framework"
 
-msgid "SecurityOrchestration|Create policy"
-msgstr "Crea criterio"
-
 msgid "SecurityOrchestration|Create security policy"
 msgstr "Crea criterio di sicurezza"
 
@@ -54589,6 +54580,18 @@ msgstr "Trascina con il mouse per regolare la larghezza dell'editor"
 
 msgid "SecurityOrchestration|Edge case settings"
 msgstr "Impostazioni del caso limite"
+
+msgid "SecurityOrchestration|Edit allowlist"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit allowlist (%{variablesCount} %{variables})"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit denylist"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit denylist (%{variablesCount} %{variables})"
+msgstr ""
 
 msgid "SecurityOrchestration|Edit merge request approval policy"
 msgstr "Modifica criteri di approvazione delle richieste di merge"
@@ -54742,6 +54745,9 @@ msgstr "Tipo di criterio non valido"
 
 msgid "SecurityOrchestration|Invalid syntax"
 msgstr "Sintassi non valida"
+
+msgid "SecurityOrchestration|Key"
+msgstr ""
 
 msgid "SecurityOrchestration|Latest scan run against %{agent}"
 msgstr "Ultima analisi eseguita rispetto a %{agent}"
@@ -54967,8 +54973,11 @@ msgstr "Esegui %{scannerStart}%{scanner}%{scannerEnd} con le seguenti opzioni:"
 msgid "SecurityOrchestration|Run a %{scannerStart}%{scanner}%{scannerEnd} scan with the following options:"
 msgstr "Esegui un'analisi con %{scannerStart}%{scanner}%{scannerEnd} con le seguenti opzioni:"
 
-msgid "SecurityOrchestration|Save changes"
-msgstr "Salva le modifiche"
+msgid "SecurityOrchestration|Save allowlist"
+msgstr ""
+
+msgid "SecurityOrchestration|Save denylist"
+msgstr ""
 
 msgid "SecurityOrchestration|Scan actions exceed the limit of %{maxScanExecutionPolicyActions} actions per policy."
 msgstr "Le azioni di analisi superano il limite di %{maxScanExecutionPolicyActions} azioni per policy."
@@ -55000,6 +55009,9 @@ msgstr "Pianifica l'esecuzione del seguente criterio di esecuzione della pipelin
 msgid "SecurityOrchestration|Schedule to run for %{branchSelector}"
 msgstr "Programma l'esecuzione per %{branchSelector}"
 
+msgid "SecurityOrchestration|Scheduled pipeline execution"
+msgstr ""
+
 msgid "SecurityOrchestration|Scope"
 msgstr "Ambito"
 
@@ -55030,11 +55042,17 @@ msgstr ""
 msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"
 msgstr "Seleziona un progetto in cui archiviare i tuoi criteri di sicurezza. %{linkStart}Ulteriori informazioni.%{linkEnd}"
 
+msgid "SecurityOrchestration|Select a variable"
+msgstr ""
+
 msgid "SecurityOrchestration|Select days"
 msgstr "Seleziona giorni"
 
 msgid "SecurityOrchestration|Select frameworks"
 msgstr "Seleziona framework"
+
+msgid "SecurityOrchestration|Select list type"
+msgstr ""
 
 msgid "SecurityOrchestration|Select policy"
 msgstr "Seleziona la policy"
@@ -55228,6 +55246,15 @@ msgstr "Gli utenti non possono ignorare le pipeline"
 msgid "SecurityOrchestration|Validating branch names, which might take a while."
 msgstr "Convalida dei nomi dei rami. L'operazione potrebbe richiedere un po' di tempo."
 
+msgid "SecurityOrchestration|Variable option"
+msgstr ""
+
+msgid "SecurityOrchestration|Variables that can be overridden:"
+msgstr ""
+
+msgid "SecurityOrchestration|Variables that cannot be overriden:"
+msgstr ""
+
 msgid "SecurityOrchestration|View policy project"
 msgstr "Visualizza il progetto di criteri"
 
@@ -55345,6 +55372,9 @@ msgstr "tutti i progetti nei gruppi collegati"
 msgid "SecurityOrchestration|all projects in this group"
 msgstr "tutti i progetti in questo gruppo"
 
+msgid "SecurityOrchestration|allowlist"
+msgstr ""
+
 msgid "SecurityOrchestration|and run for %{hours}"
 msgstr "ed esegui per %{hours}"
 
@@ -55398,6 +55428,9 @@ msgstr "framework di conformità"
 
 msgid "SecurityOrchestration|default"
 msgstr "predefinito"
+
+msgid "SecurityOrchestration|denylist"
+msgstr ""
 
 msgid "SecurityOrchestration|except for:"
 msgstr "ad eccezione di:"
@@ -73218,6 +73251,11 @@ msgstr ""
 
 msgid "value: %{value} must be a string"
 msgstr ""
+
+msgid "variable"
+msgid_plural "variables"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "verify ownership"
 msgstr "verifica la proprietà"

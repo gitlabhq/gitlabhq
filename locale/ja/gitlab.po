@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-04-24 23:09\n"
+"PO-Revision-Date: 2025-04-25 10:57\n"
 
 msgid " %{start} to %{end}"
 msgstr "%{start}から%{end}まで"
@@ -15813,16 +15813,16 @@ msgid "ComplianceStandardsAdherence|Enable reset approvals on push"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Enable stale branch cleanup"
-msgstr ""
+msgstr "古いブランチのクリーンアップの有効化"
 
 msgid "ComplianceStandardsAdherence|Enable version control"
-msgstr ""
+msgstr "バージョンコントロールの有効化"
 
 msgid "ComplianceStandardsAdherence|Enforce MFA for contributors"
-msgstr ""
+msgstr "コントリビューターに多要素認証を適用する"
 
 msgid "ComplianceStandardsAdherence|Ensure each repository has at least two administrators assigned for redundancy."
-msgstr ""
+msgstr "バックアップ体制として、それぞれのリポジトリに2人以上の管理者をアサインしてください。"
 
 msgid "ComplianceStandardsAdherence|Ensure version control is properly configured for your project."
 msgstr ""
@@ -15975,7 +15975,7 @@ msgid "ComplianceStandardsAdherence|External control"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Failed"
-msgstr ""
+msgstr "失敗"
 
 msgid "ComplianceStandardsAdherence|Failed controls: %{failed}"
 msgstr ""
@@ -16215,34 +16215,34 @@ msgid "ComplianceStandardsAdherence|Set up automatic cleanup of stale branches t
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Set up branch protection"
-msgstr ""
+msgstr "ブランチ保護の設定"
 
 msgid "ComplianceStandardsAdherence|Set up branch protection rules for your default branch to enforce quality standards."
-msgstr ""
+msgstr "デフォルトのブランチに適用するブランチ保護ルールを設定し、品質を保持します。"
 
 msgid "ComplianceStandardsAdherence|Set up branch protection rules to restrict push and merge access to protected branches."
-msgstr ""
+msgstr "保護ブランチへのプッシュやマージのアクセスを制限するブランチ保護ルールを設定します。"
 
 msgid "ComplianceStandardsAdherence|Set up code owners"
-msgstr ""
+msgstr "コードオーナーの設定"
 
 msgid "ComplianceStandardsAdherence|Set up container scanning"
-msgstr ""
+msgstr "コンテナスキャンの設定"
 
 msgid "ComplianceStandardsAdherence|Set up container scanning in your pipeline to identify vulnerabilities in your container images."
-msgstr ""
+msgstr "パイプラインにコンテナスキャンを設定して、コンテナイメージの脆弱性を特定します。"
 
 msgid "ComplianceStandardsAdherence|Set up error tracking to monitor and address application errors."
-msgstr ""
+msgstr "エラーのトラッキングを設定して、アプリケーションのエラーをモニタリングし特定します。"
 
 msgid "ComplianceStandardsAdherence|Set up fuzz testing"
-msgstr ""
+msgstr "ファズテストの設定"
 
 msgid "ComplianceStandardsAdherence|Set up fuzz testing in your pipeline to identify edge cases and potential crashes."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Set up license compliance scanning to identify potentially problematic open source licenses."
-msgstr ""
+msgstr "ライセンスコンプライアンススキャンを設定して、潜在的に問題となりうるオープンソースライセンスを特定します。"
 
 msgid "ComplianceStandardsAdherence|Set up required status checks to ensure code quality before merging."
 msgstr ""
@@ -16275,7 +16275,7 @@ msgid "ComplianceStandardsAdherence|This is an external control for %{link}"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Triage package hunter findings"
-msgstr ""
+msgstr "パッケージハンターの検出結果の優先順位付け"
 
 msgid "ComplianceStandardsAdherence|Unable to load the standards adherence report. Refresh the page and try again."
 msgstr "標準遵守レポートを読み込めません。ページを更新して再度お試し下さい。"
@@ -16284,16 +16284,16 @@ msgid "ComplianceStandardsAdherence|Update approval settings in the project's me
 msgstr "この要求事項を満たすよう、プロジェクトのマージリクエスト設定で承認設定を更新してください。"
 
 msgid "ComplianceStandardsAdherence|Update project visibility"
-msgstr ""
+msgstr "プロジェクトの表示の更新"
 
 msgid "ComplianceStandardsAdherence|Update your approval settings to prevent committers from approving merge requests containing their commits."
-msgstr ""
+msgstr "承認設定を変更して、コミッターが自身のコミットを含むマージリクエストを承認できないようにします。"
 
 msgid "ComplianceStandardsAdherence|Upgrade to Ultimate license"
-msgstr ""
+msgstr "Ultimateライセンスへのアップグレード"
 
 msgid "ComplianceStandardsAdherence|Upgrade your GitLab license to Ultimate to access all security and compliance features."
-msgstr ""
+msgstr "GitLabのライセンスをUltimateにアップグレードすると、すべてのセキュリティとコンプライアンスに関する機能にアクセスできます。"
 
 msgid "ComplianceStandardsAdherence|View details"
 msgstr "詳細を見る"
@@ -16674,7 +16674,7 @@ msgid "Container must be a project or a group."
 msgstr "コンテナはプロジェクトまたはグループである必要があります。"
 
 msgid "Container registry"
-msgstr ""
+msgstr "コンテナレジストリ"
 
 msgid "Container registry images"
 msgstr "コンテナレジストリのイメージ"
@@ -16683,7 +16683,7 @@ msgid "Container registry is not enabled on this GitLab instance. Ask an adminis
 msgstr "コンテナレジストリは、この GitLab インスタンスで有効になっていません。AutoDevOps が機能させるためには、管理者に有効にするようリクエストしてください。"
 
 msgid "Container scanning"
-msgstr ""
+msgstr "コンテナのスキャン"
 
 msgid "ContainerRegistry| Please visit the %{linkStart}administration settings%{linkEnd} to enable this feature."
 msgstr "%{linkStart}管理設定%{linkEnd}にアクセスしてこの機能を有効にしてください。"
@@ -16844,7 +16844,7 @@ msgid "ContainerRegistry|Deleting the image repository will delete all images an
 msgstr "イメージリポジトリを削除すると、内部のすべてのイメージとタグが削除されます。この操作は元に戻せません。確認のために次の文字列を入力してください。%{code}"
 
 msgid "ContainerRegistry|Developer (default)"
-msgstr ""
+msgstr "デベロッパー(デフォルト)"
 
 msgid "ContainerRegistry|Digest: %{imageId}"
 msgstr "ダイジェスト: %{imageId}"
@@ -16853,28 +16853,28 @@ msgid "ContainerRegistry|Disabled - tags will not be automatically deleted."
 msgstr "無効 - タグは自動的に削除されません。"
 
 msgid "ContainerRegistry|Docker build command"
-msgstr ""
+msgstr "Dockerビルドコマンド"
 
 msgid "ContainerRegistry|Docker connection error"
 msgstr "Docker 接続エラー"
 
 msgid "ContainerRegistry|Docker login command"
-msgstr ""
+msgstr "Dockerログインコマンド"
 
 msgid "ContainerRegistry|Docker push command"
-msgstr ""
+msgstr "Dockerプッシュコマンド"
 
 msgid "ContainerRegistry|Edit cleanup rules"
 msgstr "クリーンアップルールの編集"
 
 msgid "ContainerRegistry|Edit protection rule"
-msgstr ""
+msgstr "保護ルールを編集"
 
 msgid "ContainerRegistry|Enable cleanup policy"
 msgstr "クリーンアップポリシーを有効化"
 
 msgid "ContainerRegistry|Enabled"
-msgstr ""
+msgstr "有効"
 
 msgid "ContainerRegistry|Enabled - tags that match the rules on this page are automatically scheduled for deletion."
 msgstr "有効 - このページのルールに一致するタグは自動的に削除するようスケジュールされます。"
@@ -16883,7 +16883,7 @@ msgid "ContainerRegistry|GitLab is unable to validate this signature automatical
 msgstr "GitLabはこの署名を自動的に検証できません。署名を信頼する前に、署名を手動で検証します。"
 
 msgid "ContainerRegistry|If you are not already logged in, you need to authenticate to the container registry by using your GitLab username and password. If you have %{twofaDocLinkStart}Two-Factor Authentication%{twofaDocLinkEnd} enabled, use a %{personalAccessTokensDocLinkStart}personal access token%{personalAccessTokensDocLinkEnd} instead of a password."
-msgstr ""
+msgstr "まだログインしていない場合、GitLabのユーザー名とパスワードを使用してコンテナレジストリを認証する必要があります。%{twofaDocLinkStart}2要素認証%{twofaDocLinkEnd}が有効な場合は、パスワードの代わりに%{personalAccessTokensDocLinkStart}パーソナルアクセストークン%{personalAccessTokensDocLinkEnd}を使用します。"
 
 msgid "ContainerRegistry|Image repository deletion failed"
 msgstr "イメージリポジトリの削除に失敗しました"
@@ -16934,7 +16934,7 @@ msgid "ContainerRegistry|Maximum number of rules reached."
 msgstr "ルールの最大数に達しました。"
 
 msgid "ContainerRegistry|Minimum access level for delete"
-msgstr ""
+msgstr "削除に必要な最小アクセスレベル"
 
 msgid "ContainerRegistry|Minimum access level for push"
 msgstr "プッシュに必要な最小アクセスレベル"
@@ -17124,7 +17124,7 @@ msgid "ContainerRegistry|Tags with names that match this regex pattern are remov
 msgstr "この正規表現パターンに一致する名前を持つタグが削除されます。%{linkStart}正規表現の例を表示。%{linkEnd}"
 
 msgid "ContainerRegistry|The %{linkStart}GitLab container registry%{linkEnd} is a secure and private registry for container images. It’s built on open source software and completely integrated within GitLab. Use GitLab CI/CD to create and publish images. Use the GitLab API to manage the registry across groups and projects."
-msgstr ""
+msgstr "%{linkStart}GitLabコンテナレジストリ%{linkEnd}は、コンテナイメージ用の安全なプライベートレジストリです。オープンソースソフトウェアでビルドしており、GitLab内に完全に統合されています。GitLab CI/CDを使用して、イメージを作成および公開します。GitLab APIを使用して、グループやプロジェクト全体でレジストリを管理します。"
 
 msgid "ContainerRegistry|The cleanup policy timed out before it could delete all tags. An administrator can %{adminLinkStart}run cleanup now manually%{adminLinkEnd} or you can wait for the next scheduled run of the cleanup policy. %{docLinkStart}More information%{docLinkEnd}"
 msgstr "すべてのタグを削除する前にクリーンアップポリシーがタイムアウトしました。管理者は%{adminLinkStart}クリーンアップを手動ですぐに実行する%{adminLinkEnd}か、クリーンアップポリシーの次回の実行予定日時まで待つことができます。%{docLinkStart}詳細情報%{docLinkEnd}"
@@ -17142,7 +17142,7 @@ msgid "ContainerRegistry|The last tag related to this image was recently removed
 msgstr "この画像に関連する最後のタグは、最近削除されました。この空の画像とそれに関連したデータは、通常のガベージコレクションプロセスの一部として自動的に削除されます。質問がある場合は、管理者にお問い合わせください。"
 
 msgid "ContainerRegistry|The next-generation container registry is now available"
-msgstr ""
+msgstr "次世代のコンテナレジストリが利用できるようになりました"
 
 msgid "ContainerRegistry|The requested image repository does not exist or has been deleted. If you think this is an error, try refreshing the page."
 msgstr "要求されたイメージリポジトリが存在しないか削除されています。これがエラーだと思われる場合は、ページを更新してみてください。"
@@ -17157,7 +17157,7 @@ msgid "ContainerRegistry|There are no container images stored for this project"
 msgstr "このプロジェクトにはコンテナイメージが保存されていません"
 
 msgid "ContainerRegistry|This container image tag cannot be overwritten or deleted."
-msgstr ""
+msgstr "このコンテナイメージタグは上書きしたり削除したりできません。"
 
 msgid "ContainerRegistry|This field is required."
 msgstr "このフィールドは必須です。"
@@ -17187,22 +17187,22 @@ msgid "ContainerRegistry|Users with at least the Developer role for this project
 msgstr "このプロジェクトに対してデベロッパー以上のロールのユーザーは、このリポジトリパスにコンテナイメージをプッシュおよび削除できます。"
 
 msgid "ContainerRegistry|We are having trouble connecting to the container registry. Please try refreshing the page. If this error persists, please review %{docLinkStart}the troubleshooting documentation%{docLinkEnd}."
-msgstr ""
+msgstr "コンテナレジストリへの接続に問題があります。ページを更新してみてください。エラーが解決しない場合は、%{docLinkStart}トラブルシューティングのドキュメント%{docLinkEnd}をご覧ください。"
 
 msgid "ContainerRegistry|When a container image tag is protected, only certain user roles can create, update, and delete the protected tag, which helps to prevent unauthorized changes. You can add up to 5 protection rules per project."
 msgstr "コンテナイメージタグが保護されていると、特定のユーザーロールだけがその保護されたタグを作成、更新または削除できます。これにより承認されていない変更を回避できます。1つのプロジェクトに保護ルールを最大5件まで追加できます。"
 
 msgid "ContainerRegistry|When a container repository is protected, only users with specific roles can push and delete container images. This helps prevent unauthorized modifications."
-msgstr ""
+msgstr "コンテナリポジトリが保護されている場合、特定のロールを持つユーザーのみがコンテナイメージをプッシュおよび削除できます。これにより、認証されていない変更を防止できます。"
 
 msgid "ContainerRegistry|While the rename is in progress, new uploads to the container registry are blocked. Ongoing uploads may fail and need to be retried."
 msgstr "名前の変更が進行中ですが、コンテナレジストリへの新しいアップロードはブロックされます。実行中のアップロードは失敗し、再試行する必要があります。"
 
 msgid "ContainerRegistry|With the container registry, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}"
-msgstr ""
+msgstr "コンテナレジストリを使用すると、各プロジェクトにそれぞれのDockerイメージを格納する独自のスペースを持たせることができます。%{docLinkStart}詳しくはこちら%{docLinkEnd}"
 
 msgid "ContainerRegistry|With the container registry, every project can have its own space to store its Docker images. Push at least one Docker image in one of this group's projects in order to show up here. %{docLinkStart}More Information%{docLinkEnd}"
-msgstr ""
+msgstr "コンテナレジストリを使用すると、各プロジェクトにそれぞれのDockerイメージを格納する独自のスペースを持たせることができます。ここにイメージを表示するために、このグループのプロジェクトのいずれかに少なくとも1つのDockerイメージをプッシュします。%{docLinkStart}詳しくはこちら%{docLinkEnd}"
 
 msgid "ContainerRegistry|You are about to delete the container repository protection rule for %{repositoryPathPattern}."
 msgstr "%{repositoryPathPattern}のコンテナリポジトリ保護ルールを削除しようとしています。"
@@ -24356,9 +24356,6 @@ msgstr "本当に%{bStart}%{parentEpicTitle}%{bEnd}から%{bStart}%{targetIssueT
 msgid "Epics|Learn more about linking child issues and epics"
 msgstr "子のイシューとエピックのリンクの詳細について"
 
-msgid "Epics|Leave empty to inherit from milestone dates"
-msgstr "空のままにした場合、マイルストーンの日付を継承します"
-
 msgid "Epics|Link child issues and epics together to show that they're related, or that one blocks another."
 msgstr "子のイシューとエピックを一緒にリンクして、それらが関連していること、または片方がもう一方をブロックしていることを示します。"
 
@@ -24389,17 +24386,8 @@ msgstr "アイテムの並び替え中に問題が発生しました。"
 msgid "Epics|Something went wrong while updating epics."
 msgstr "エピックを更新している間に問題が発生しました。"
 
-msgid "Epics|The color for the epic when it's visualized, such as on roadmap timeline bars."
-msgstr "エピックが視覚化されたときの色、例えばロードマップのタイムラインバーなど。"
-
-msgid "Epics|This epic and any containing child epics are confidential and should only be visible to team members with at least the Planner role."
-msgstr "このエピック、およびエピックに含まれるすべての子エピックは非公開で、少なくともプランナーのロールを持つチームメンバーのみに表示されます。"
-
 msgid "Epics|This will also remove any descendents of %{bStart}%{targetEpicTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}. Are you sure?"
 msgstr "%{bStart}%{targetEpicTitle}%{bEnd} から以下の全ての課題を削除します %{bStart}%{parentEpicTitle}%{bEnd}。よろしいですか？"
-
-msgid "Epics|Unable to save epic. Please try again"
-msgstr "エピックを保存できませんでした。もう一度やり直してください。"
 
 msgid "Erased"
 msgstr "消去"
@@ -27035,6 +27023,9 @@ msgstr "同期対象のグループ"
 
 msgid "Geo|Healthy"
 msgstr "健全"
+
+msgid "Geo|Help us improve Geo for distributed teams and disaster recovery. We aim to make it simpler to use and operate."
+msgstr ""
 
 msgid "Geo|If enabled, GitLab will handle Object Storage replication using Geo."
 msgstr "有効にすると、GitLabではGeoを使用してオブジェクトストレージのレプリケーションを処理します。"
@@ -39434,9 +39425,6 @@ msgstr "%{project}プロジェクトの新しい%{type}"
 msgid "New Application"
 msgstr "新しいアプリケーション"
 
-msgid "New Epic"
-msgstr "新しいエピック"
-
 msgid "New File"
 msgstr "新規ファイル"
 
@@ -50547,7 +50535,7 @@ msgid "Requested %{time_ago}"
 msgstr "%{time_ago} にリクエスト"
 
 msgid "Requested a review from %{reviewer_users_sentence}."
-msgstr "%{reviewer_users_sentence}からレビューをリクエストしました。"
+msgstr "%{reviewer_users_sentence}にレビューをリクエストしました。"
 
 msgid "Requested design version does not exist."
 msgstr "リクエストされたデザインのバージョンがありません。"
@@ -53957,6 +53945,9 @@ msgstr "%{branches}%{branchExceptionsString}上の%{cadence}"
 msgid "SecurityOrchestration|%{frameworkName} has %{projectLength} %{projects}"
 msgstr "%{frameworkName} には %{projectLength} 件の%{projects}があります。"
 
+msgid "SecurityOrchestration|%{listType} attempts from %{linkStart}other settings%{linkEnd} to override variables when the policy runs, except the variables defined in the %{list}."
+msgstr ""
+
 msgid "SecurityOrchestration|%{pageSize}+ projects which have compliance framework:"
 msgstr "コンプライアンスフレームワークを持つ%{pageSize}+のプロジェクト："
 
@@ -54008,6 +53999,9 @@ msgstr "アクション"
 
 msgid "SecurityOrchestration|Add a numeric suffix to ensure unique job names."
 msgstr "数値的なサフィックスを追加して、ジョブ名が固有であることを保証します。"
+
+msgid "SecurityOrchestration|Add another variable"
+msgstr ""
 
 msgid "SecurityOrchestration|Add job name suffix %{suffixEditor} %{suffixIcon}"
 msgstr "ジョブ名のサフィックス%{suffixEditor} %{suffixIcon}を追加します"
@@ -54165,9 +54159,6 @@ msgstr "より堅牢な脆弱性ルールを作成し、あなたのプロジェ
 msgid "SecurityOrchestration|Create new framework label"
 msgstr "新しいフレームワークラベルを作成"
 
-msgid "SecurityOrchestration|Create policy"
-msgstr "ポリシーの作成"
-
 msgid "SecurityOrchestration|Create security policy"
 msgstr "セキュリティポリシーの作成"
 
@@ -54224,6 +54215,18 @@ msgstr ""
 
 msgid "SecurityOrchestration|Edge case settings"
 msgstr "エッジケース設定"
+
+msgid "SecurityOrchestration|Edit allowlist"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit allowlist (%{variablesCount} %{variables})"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit denylist"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit denylist (%{variablesCount} %{variables})"
+msgstr ""
 
 msgid "SecurityOrchestration|Edit merge request approval policy"
 msgstr "マージリクエストの認証ポリシーを編集する"
@@ -54377,6 +54380,9 @@ msgstr "無効なポリシータイプ"
 
 msgid "SecurityOrchestration|Invalid syntax"
 msgstr "構文が無効"
+
+msgid "SecurityOrchestration|Key"
+msgstr ""
 
 msgid "SecurityOrchestration|Latest scan run against %{agent}"
 msgstr "%{agent}に対して実行された最新のスキャン"
@@ -54601,8 +54607,11 @@ msgstr "次のオプションを使用して%{scannerStart}%{scanner}%{scannerEn
 msgid "SecurityOrchestration|Run a %{scannerStart}%{scanner}%{scannerEnd} scan with the following options:"
 msgstr "次のオプションを使用して%{scannerStart}%{scanner}%{scannerEnd}スキャンを実行します。"
 
-msgid "SecurityOrchestration|Save changes"
-msgstr "変更を保存"
+msgid "SecurityOrchestration|Save allowlist"
+msgstr ""
+
+msgid "SecurityOrchestration|Save denylist"
+msgstr ""
 
 msgid "SecurityOrchestration|Scan actions exceed the limit of %{maxScanExecutionPolicyActions} actions per policy."
 msgstr "スキャンアクションの回数は%{maxScanExecutionPolicyActions}回の単一ポリシーアクション制限数を超えました。"
@@ -54632,6 +54641,9 @@ msgid "SecurityOrchestration|Schedule the following pipeline execution policy to
 msgstr ""
 
 msgid "SecurityOrchestration|Schedule to run for %{branchSelector}"
+msgstr ""
+
+msgid "SecurityOrchestration|Scheduled pipeline execution"
 msgstr ""
 
 msgid "SecurityOrchestration|Scope"
@@ -54664,11 +54676,17 @@ msgstr ""
 msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"
 msgstr "セキュリティポリシーを保存するプロジェクトを選択します。%{linkStart}詳細はこちら。%{linkEnd}"
 
+msgid "SecurityOrchestration|Select a variable"
+msgstr ""
+
 msgid "SecurityOrchestration|Select days"
 msgstr ""
 
 msgid "SecurityOrchestration|Select frameworks"
 msgstr "フレームワークの選択"
+
+msgid "SecurityOrchestration|Select list type"
+msgstr ""
 
 msgid "SecurityOrchestration|Select policy"
 msgstr "ポリシーの選択"
@@ -54862,6 +54880,15 @@ msgstr ""
 msgid "SecurityOrchestration|Validating branch names, which might take a while."
 msgstr "ブランチ名を検証しています。時間がかかることがあります。"
 
+msgid "SecurityOrchestration|Variable option"
+msgstr ""
+
+msgid "SecurityOrchestration|Variables that can be overridden:"
+msgstr ""
+
+msgid "SecurityOrchestration|Variables that cannot be overriden:"
+msgstr ""
+
 msgid "SecurityOrchestration|View policy project"
 msgstr "ポリシープロジェクトを表示"
 
@@ -54979,6 +55006,9 @@ msgstr "リンクされたグループ内のすべてのプロジェクト"
 msgid "SecurityOrchestration|all projects in this group"
 msgstr "このグループのすべてのプロジェクト"
 
+msgid "SecurityOrchestration|allowlist"
+msgstr ""
+
 msgid "SecurityOrchestration|and run for %{hours}"
 msgstr ""
 
@@ -55032,6 +55062,9 @@ msgstr "コンプライアンスフレームワーク"
 
 msgid "SecurityOrchestration|default"
 msgstr "デフォルト"
+
+msgid "SecurityOrchestration|denylist"
+msgstr ""
 
 msgid "SecurityOrchestration|except for:"
 msgstr ""
@@ -72747,6 +72780,10 @@ msgstr "値：%{value}は63文字以下で、先頭と末尾は英数字であ�
 
 msgid "value: %{value} must be a string"
 msgstr "値：%{value}は文字列である必要があります"
+
+msgid "variable"
+msgid_plural "variables"
+msgstr[0] ""
 
 msgid "verify ownership"
 msgstr "所有者を確認する"

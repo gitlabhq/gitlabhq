@@ -364,6 +364,8 @@ class ProjectPolicy < BasePolicy
     enable :add_catalog_resource
 
     enable :destroy_pipeline
+
+    enable :create_container_registry_protection_immutable_tag_rule
   end
 
   rule { can?(:guest_access) }.policy do
@@ -785,6 +787,7 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:container_image))
     prevent :destroy_container_image_tag
     prevent :destroy_container_registry_protection_tag_rule
+    prevent :create_container_registry_protection_immutable_tag_rule
   end
 
   rule { anonymous & ~public_project }.prevent_all

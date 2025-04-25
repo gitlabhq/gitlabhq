@@ -25,6 +25,15 @@ information:
 - The `committed_date` and `authored_date` fields are generated from different sources,
   and may not be identical.
 
+### Pagination response headers
+
+For performance reasons, GitLab does not return the following headers in Commits API responses:
+
+- `x-total`
+- `x-total-pages`
+
+For more information, see [issue 389582](https://gitlab.com/gitlab-org/gitlab/-/issues/389582).
+
 ## List repository commits
 
 {{< history >}}

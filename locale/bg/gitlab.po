@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: bg\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-04-24 22:44\n"
+"PO-Revision-Date: 2025-04-25 10:56\n"
 
 msgid " %{start} to %{end}"
 msgstr ""
@@ -24609,9 +24609,6 @@ msgstr ""
 msgid "Epics|Learn more about linking child issues and epics"
 msgstr ""
 
-msgid "Epics|Leave empty to inherit from milestone dates"
-msgstr ""
-
 msgid "Epics|Link child issues and epics together to show that they're related, or that one blocks another."
 msgstr ""
 
@@ -24642,16 +24639,7 @@ msgstr ""
 msgid "Epics|Something went wrong while updating epics."
 msgstr ""
 
-msgid "Epics|The color for the epic when it's visualized, such as on roadmap timeline bars."
-msgstr ""
-
-msgid "Epics|This epic and any containing child epics are confidential and should only be visible to team members with at least the Planner role."
-msgstr ""
-
 msgid "Epics|This will also remove any descendents of %{bStart}%{targetEpicTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}. Are you sure?"
-msgstr ""
-
-msgid "Epics|Unable to save epic. Please try again"
 msgstr ""
 
 msgid "Erased"
@@ -27297,6 +27285,9 @@ msgid "Geo|Groups to synchronize"
 msgstr ""
 
 msgid "Geo|Healthy"
+msgstr ""
+
+msgid "Geo|Help us improve Geo for distributed teams and disaster recovery. We aim to make it simpler to use and operate."
 msgstr ""
 
 msgid "Geo|If enabled, GitLab will handle Object Storage replication using Geo."
@@ -39739,9 +39730,6 @@ msgid "New %{type} in %{project}"
 msgstr ""
 
 msgid "New Application"
-msgstr ""
-
-msgid "New Epic"
 msgstr ""
 
 msgid "New File"
@@ -54321,6 +54309,9 @@ msgstr ""
 msgid "SecurityOrchestration|%{frameworkName} has %{projectLength} %{projects}"
 msgstr ""
 
+msgid "SecurityOrchestration|%{listType} attempts from %{linkStart}other settings%{linkEnd} to override variables when the policy runs, except the variables defined in the %{list}."
+msgstr ""
+
 msgid "SecurityOrchestration|%{pageSize}+ projects which have compliance framework:"
 msgstr ""
 
@@ -54372,6 +54363,9 @@ msgid "SecurityOrchestration|Actions"
 msgstr ""
 
 msgid "SecurityOrchestration|Add a numeric suffix to ensure unique job names."
+msgstr ""
+
+msgid "SecurityOrchestration|Add another variable"
 msgstr ""
 
 msgid "SecurityOrchestration|Add job name suffix %{suffixEditor} %{suffixIcon}"
@@ -54530,9 +54524,6 @@ msgstr ""
 msgid "SecurityOrchestration|Create new framework label"
 msgstr ""
 
-msgid "SecurityOrchestration|Create policy"
-msgstr ""
-
 msgid "SecurityOrchestration|Create security policy"
 msgstr ""
 
@@ -54588,6 +54579,18 @@ msgid "SecurityOrchestration|Drag with a mouse to adjust editor's width"
 msgstr ""
 
 msgid "SecurityOrchestration|Edge case settings"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit allowlist"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit allowlist (%{variablesCount} %{variables})"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit denylist"
+msgstr ""
+
+msgid "SecurityOrchestration|Edit denylist (%{variablesCount} %{variables})"
 msgstr ""
 
 msgid "SecurityOrchestration|Edit merge request approval policy"
@@ -54741,6 +54744,9 @@ msgid "SecurityOrchestration|Invalid policy type"
 msgstr ""
 
 msgid "SecurityOrchestration|Invalid syntax"
+msgstr ""
+
+msgid "SecurityOrchestration|Key"
 msgstr ""
 
 msgid "SecurityOrchestration|Latest scan run against %{agent}"
@@ -54967,7 +54973,10 @@ msgstr ""
 msgid "SecurityOrchestration|Run a %{scannerStart}%{scanner}%{scannerEnd} scan with the following options:"
 msgstr ""
 
-msgid "SecurityOrchestration|Save changes"
+msgid "SecurityOrchestration|Save allowlist"
+msgstr ""
+
+msgid "SecurityOrchestration|Save denylist"
 msgstr ""
 
 msgid "SecurityOrchestration|Scan actions exceed the limit of %{maxScanExecutionPolicyActions} actions per policy."
@@ -55000,6 +55009,9 @@ msgstr ""
 msgid "SecurityOrchestration|Schedule to run for %{branchSelector}"
 msgstr ""
 
+msgid "SecurityOrchestration|Scheduled pipeline execution"
+msgstr ""
+
 msgid "SecurityOrchestration|Scope"
 msgstr ""
 
@@ -55030,10 +55042,16 @@ msgstr ""
 msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"
 msgstr ""
 
+msgid "SecurityOrchestration|Select a variable"
+msgstr ""
+
 msgid "SecurityOrchestration|Select days"
 msgstr ""
 
 msgid "SecurityOrchestration|Select frameworks"
+msgstr ""
+
+msgid "SecurityOrchestration|Select list type"
 msgstr ""
 
 msgid "SecurityOrchestration|Select policy"
@@ -55228,6 +55246,15 @@ msgstr ""
 msgid "SecurityOrchestration|Validating branch names, which might take a while."
 msgstr ""
 
+msgid "SecurityOrchestration|Variable option"
+msgstr ""
+
+msgid "SecurityOrchestration|Variables that can be overridden:"
+msgstr ""
+
+msgid "SecurityOrchestration|Variables that cannot be overriden:"
+msgstr ""
+
 msgid "SecurityOrchestration|View policy project"
 msgstr ""
 
@@ -55345,6 +55372,9 @@ msgstr ""
 msgid "SecurityOrchestration|all projects in this group"
 msgstr ""
 
+msgid "SecurityOrchestration|allowlist"
+msgstr ""
+
 msgid "SecurityOrchestration|and run for %{hours}"
 msgstr ""
 
@@ -55397,6 +55427,9 @@ msgid "SecurityOrchestration|compliance frameworks"
 msgstr ""
 
 msgid "SecurityOrchestration|default"
+msgstr ""
+
+msgid "SecurityOrchestration|denylist"
 msgstr ""
 
 msgid "SecurityOrchestration|except for:"
@@ -73218,6 +73251,11 @@ msgstr ""
 
 msgid "value: %{value} must be a string"
 msgstr ""
+
+msgid "variable"
+msgid_plural "variables"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "verify ownership"
 msgstr ""

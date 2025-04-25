@@ -91,7 +91,6 @@ RSpec.describe 'Database schema',
       ci_runner_taggings: %w[runner_id sharding_key_id], # The sharding_key_id value is meant to populate the partitioned table, no other usage. The runner_id FK exists at the partition level
       ci_runner_taggings_instance_type: %w[sharding_key_id], # This field is always NULL in this partition
       ci_runners: %w[sharding_key_id], # This value is meant to populate the partitioned table, no other usage
-      ci_runners_archived: %w[sharding_key_id creator_id], # This field is only used in the partitions, and has the appropriate FKs. We don't need the LFK for creator_id since that is already mirrored from ci_runners
       instance_type_ci_runners: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table.
       group_type_ci_runners: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table.
       project_type_ci_runners: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table.
@@ -269,7 +268,6 @@ RSpec.describe 'Database schema',
       ci_builds: 27,
       ci_pipelines: 24,
       ci_runners: 16,
-      ci_runners_archived: 17,
       deployments: 18,
       epics: 19,
       events: 16,

@@ -93,6 +93,12 @@ module Gitlab
       def remote_download_or_download_or_copy_upload
         import_export_upload = @importable.import_export_upload_by_user(@user)
 
+        if import_export_upload.nil?
+          raise ImporterError,
+            "Missing import file for #{@importable.class.name} #{@importable.id} and user #{@user.id}. " \
+              "#{@importable.class.name} has #{@importable.import_export_uploads.count} other file(s)."
+        end
+
         if import_export_upload.remote_import_url.present?
           download(
             import_export_upload.remote_import_url,

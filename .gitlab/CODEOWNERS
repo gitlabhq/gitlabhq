@@ -1680,22 +1680,37 @@ lib/gitlab/checks/**
 
 # CI/CD templates require approval from specific owners.
 /lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
-/lib/gitlab/ci/templates/Security/ @gonzoyumo @twoodham @amarpatel @theoretick @thiagocsf @agroleau
-/lib/gitlab/ci/templates/Security/API-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
-/lib/gitlab/ci/templates/Security/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
-/lib/gitlab/ci/templates/Security/DAST*.yml @gitlab-org/secure/dynamic-analysis
-/lib/gitlab/ci/templates/Security/Dependency-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Security/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Security/SAST.*.yml @gitlab-org/secure/static-analysis
-/lib/gitlab/ci/templates/Security/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
-/lib/gitlab/ci/templates/Security/Secure-Binaries.*.yml @gitlab-org/secure/static-analysis @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis
+
+# AST shared CI/CD templates
+[AST] @gitlab-org/secure/static-analysis @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis @gitlab-org/secure/secret-detection @mbenayoun
+/lib/gitlab/ci/templates/Security/Secure-Binaries.*.yml
+
+[AST:Composition Analysis] @gitlab-org/secure/composition-analysis-be @mbenayoun
+/lib/gitlab/ci/templates/Jobs/Container-Scanning.*.yml
+/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.*.yml
+/lib/gitlab/ci/templates/Jobs/License-Scanning.*.yml
+/lib/gitlab/ci/templates/Security/Container-Scanning.*.yml
+/lib/gitlab/ci/templates/Security/Dependency-Scanning.*.yml
+/lib/gitlab/ci/templates/Security/License-Scanning.*.yml
+
+[AST:Dynamic Analysis] @gitlab-org/secure/dynamic-analysis @mbenayoun
+/lib/gitlab/ci/templates/Jobs/DAST*.yml
+/lib/gitlab/ci/templates/Security/API-Discovery.*.yml
+/lib/gitlab/ci/templates/Security/API-Fuzzing.*.yml
+/lib/gitlab/ci/templates/Security/API-Security.*.yml
+/lib/gitlab/ci/templates/Security/BAS.*.yml
+/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.*.yml
+/lib/gitlab/ci/templates/Security/DAST*.yml
+
+[AST:Secret Detection] @gitlab-org/secure/secret-detection @mbenayoun
+/lib/gitlab/ci/templates/Jobs/Secret-Detection.*.yml
+/lib/gitlab/ci/templates/Security/Secret-Detection.*.yml
+
+[AST:Static Analysis] @gitlab-org/secure/static-analysis @mbenayoun
+/lib/gitlab/ci/templates/Jobs/SAST*.yml
+/lib/gitlab/ci/templates/Security/SAST*.yml
+
 # Note: The `Fortify-FoD-sast.gitlab-ci.yml` template is provided and maintained by Fortify, an official Technology Partner with GitLab.
-/lib/gitlab/ci/templates/Jobs/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Jobs/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Jobs/SAST.*.yml @gitlab-org/secure/static-analysis
-/lib/gitlab/ci/templates/Jobs/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
 
 # Verify Frontend, optional approvals
 ^[Verify frontend] @gitlab-org/ci-cd/verify/frontend
