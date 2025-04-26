@@ -629,7 +629,9 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
           'warden.user.user.key' => [[user.id], user.authenticatable_salt],
           '_csrf_token' => csrf_token
         }
-      )
+      ).tap do
+        cookies.delete(Gitlab::Application.config.session_options[:key])
+      end
     end
 
     def stub_user_session_with_no_user_id(user, csrf_token)
@@ -638,7 +640,9 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
           'warden.user.user.key' => [[nil], user.authenticatable_salt],
           '_csrf_token' => csrf_token
         }
-      )
+      ).tap do
+        cookies.delete(Gitlab::Application.config.session_options[:key])
+      end
     end
 
     def mask_token(encoded_token)

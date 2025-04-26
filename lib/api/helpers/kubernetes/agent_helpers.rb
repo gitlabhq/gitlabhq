@@ -124,9 +124,7 @@ module API
           unauthorized!('Invalid session') unless session
 
           # CSRF check
-          unless ::Gitlab::Kas::UserAccess.valid_authenticity_token?(
-            request, session.symbolize_keys, params[:csrf_token]
-          )
+          unless ::Gitlab::Kas::UserAccess.valid_authenticity_token?(session.symbolize_keys, params[:csrf_token])
             unauthorized!('CSRF token does not match')
           end
 

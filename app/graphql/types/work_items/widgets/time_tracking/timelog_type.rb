@@ -36,7 +36,9 @@ module Types
             description: 'Summary of how the time was spent.'
 
           def user
-            Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.user_id).find
+            Gitlab::Graphql::Loaders::BatchModelLoader.new(
+              User, object.user_id, default_value: ::Users::Internal.ghost
+            ).find
           end
 
           def spent_at
