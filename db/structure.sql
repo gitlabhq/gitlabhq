@@ -44251,7 +44251,7 @@ ALTER TABLE ONLY external_status_checks
     ADD CONSTRAINT fk_rails_1f5a8aa809 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ai_troubleshoot_job_events
-    ADD CONSTRAINT fk_rails_1fb7e812da FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_1fb7e812da FOREIGN KEY (project_id) REFERENCES projects(id);
 
 ALTER TABLE ONLY dora_daily_metrics
     ADD CONSTRAINT fk_rails_1fd07aff6f FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;

@@ -7,13 +7,12 @@ class ChangeAiTroubleshootJobEventsProjectFk < Gitlab::Database::Migration[2.2]
   milestone '18.0'
 
   def up
-    remove_foreign_key :ai_troubleshoot_job_events, column: :project_id
-    add_concurrent_partitioned_foreign_key :ai_troubleshoot_job_events, :projects, column: :project_id,
-      on_delete: :cascade
+    # NOP due to https://gitlab.com/gitlab-com/gl-infra/production/-/issues/19723
+    # This already ran on staging.
   end
 
   def down
-    remove_foreign_key :ai_troubleshoot_job_events, column: :project_id
-    add_concurrent_partitioned_foreign_key :ai_troubleshoot_job_events, :projects, column: :project_id, on_delete: nil
+    # NOP due to https://gitlab.com/gitlab-com/gl-infra/production/-/issues/19723
+    # This already ran on staging.
   end
 end
