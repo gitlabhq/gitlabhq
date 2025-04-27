@@ -30,9 +30,29 @@ RSpec.describe Clusters::Agents::ManagedResources::DeleteService, feature_catego
 
     context 'when KAS returns an error' do
       let(:attempt_count) { 1 }
+
+      let(:namespace) { managed_resource.tracked_objects.first }
+      let(:namespace_error) do
+        Gitlab::Agent::ManagedResources::Rpc::ObjectError.new(error: 'error message', object: namespace)
+      end
+
+      let(:namespace_error_message) do
+        "Error deleting managed resources: core/v1/Namespace 'production' failed with message 'error message'"
+      end
+
+      let(:role_binding) { managed_resource.tracked_objects.second }
+      let(:role_binding_error) do
+        Gitlab::Agent::ManagedResources::Rpc::ObjectError.new(error: 'error message', object: role_binding)
+      end
+
+      let(:role_binding_error_message) do
+        "Error deleting managed resources: rbac.authorization.k8s.io/v1/RoleBinding 'bind-ci-job-production' " \
+          "in namespace 'production' failed with message 'error message'"
+      end
+
       let(:kas_response) do
         Gitlab::Agent::ManagedResources::Rpc::DeleteEnvironmentResponse.new(
-          errors: [Gitlab::Agent::ManagedResources::Rpc::ObjectError.new(error: 'error message', object: {})],
+          errors: [namespace_error, role_binding_error],
           in_progress: []
         )
       end
@@ -46,6 +66,20 @@ RSpec.describe Clusters::Agents::ManagedResources::DeleteService, feature_catego
         expect(Clusters::Agents::ManagedResources::DeleteWorker).to receive(:perform_in)
           .with(described_class::POLLING_SCHEDULE.first, managed_resource.id, attempt_count)
           .and_call_original
+
+        expect_next_instance_of(Gitlab::Kubernetes::Logger) do |logger|
+          expect(logger).to receive(:error).with(
+            message: namespace_error_message,
+            agent_id: managed_resource.cluster_agent_id,
+            environment_id: managed_resource.environment_id
+          ).and_call_original
+
+          expect(logger).to receive(:error).with(
+            message: role_binding_error_message,
+            agent_id: managed_resource.cluster_agent_id,
+            environment_id: managed_resource.environment_id
+          ).and_call_original
+        end
 
         execute
 
@@ -115,6 +149,14 @@ RSpec.describe Clusters::Agents::ManagedResources::DeleteService, feature_catego
             .and_return(kas_response)
 
           expect(Clusters::Agents::ManagedResources::DeleteWorker).not_to receive(:perform_in)
+
+          expect_next_instance_of(Gitlab::Kubernetes::Logger) do |logger|
+            expect(logger).to receive(:error).with(
+              message: "Error deleting managed resources: timeout",
+              agent_id: managed_resource.cluster_agent_id,
+              environment_id: managed_resource.environment_id
+            ).and_call_original
+          end
 
           execute
 

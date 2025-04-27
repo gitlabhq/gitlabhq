@@ -4,6 +4,7 @@ module Clusters
   module Agents
     module ManagedResources
       class DeleteService
+        CORE_GROUP = 'core'
         POLLING_SCHEDULE = [
           10.seconds,
           30.seconds,
@@ -25,6 +26,10 @@ module Clusters
           if response.errors.any?
             requeue!
 
+            response.errors.each do |error|
+              log_error(details: format_error(error))
+            end
+
             return
           end
 
@@ -44,6 +49,7 @@ module Clusters
         def requeue!
           if attempt_count >= POLLING_SCHEDULE.length
             update_status!(:delete_failed)
+            log_error(details: 'timeout')
           else
             next_attempt_in = POLLING_SCHEDULE[attempt_count]
 
@@ -58,6 +64,28 @@ module Clusters
 
         def kas_client
           @kas_client ||= Gitlab::Kas::Client.new
+        end
+
+        def format_error(error)
+          object = error.object
+          group = object.group.presence || CORE_GROUP
+
+          object_details = "#{group}/#{object.version}/#{object.kind} '#{object.name}'"
+          object_details += " in namespace '#{object.namespace}'" if object.namespace.present?
+
+          "#{object_details} failed with message '#{error.error}'"
+        end
+
+        def log_error(details:)
+          logger.error(
+            message: "Error deleting managed resources: #{details}",
+            agent_id: managed_resource.cluster_agent_id,
+            environment_id: managed_resource.environment_id
+          )
+        end
+
+        def logger
+          @logger ||= Gitlab::Kubernetes::Logger.build
         end
       end
     end
