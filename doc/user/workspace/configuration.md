@@ -28,7 +28,7 @@ which you can customize to meet the specific needs of each project.
 ## Set up workspace infrastructure
 
 Before you [create a workspace](#create-a-workspace), you must set up your infrastructure only once.
-To set up infrastructure for workspaces:
+To set up infrastructure for workspaces, regardless of cloud provider, you must:
 
 1. Set up a Kubernetes cluster that the GitLab agent supports.
    See the [supported Kubernetes versions](../clusters/agent/_index.md#supported-kubernetes-versions-for-gitlab-features).
@@ -40,6 +40,9 @@ To set up infrastructure for workspaces:
 1. Optional. [Configure sudo access for a workspace](#configure-sudo-access-for-a-workspace).
 1. Optional. [Build and run containers in a workspace](#build-and-run-containers-in-a-workspace).
 1. Optional. [Configure support for private container registries](#configure-support-for-private-container-registries).
+
+If you use AWS, you can use our OpenTofu tutorial. For more information, see
+[Tutorial: Set up workspaces infrastructure on AWS](set_up_infrastructure.md).
 
 ## Create a workspace
 

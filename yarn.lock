@@ -2400,15 +2400,15 @@
   resolved "https://registry.yarnpkg.com/@radix-ui/rect/-/rect-1.1.0.tgz#f817d1d3265ac5415dadc67edab30ae196696438"
   integrity sha512-A9+lCBZoaMJlVKcRBz2YByCG+Cp2t6nAnMnNba+XiWxnj6r4JUFqfsgwocMBZU9LPtdxC6wB56ySYpc7LQIoJg==
 
-"@rails/actioncable@7.0.807":
-  version "7.0.807"
-  resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-7.0.807.tgz#4798b3edf421c417bfc75eb141590fa4fc44d83d"
-  integrity sha512-UffOlYh3naMDQg/cmWTcV7yEOQvDMMi4iVgx8hK2oYBFS/RQ4ogicA/B7Ive26OVsebrnSzps+CqpPauG2xDSw==
+"@rails/actioncable@7.1.501":
+  version "7.1.501"
+  resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-7.1.501.tgz#52e1abda14e213ebf1a62c4aed61563ca5c6cfb1"
+  integrity sha512-oQOkHNemn+xPdtOgO/nae2S/GSvuII560pb5BGjTXfOd70JJ4yw9LLp2geDth45we5PaGw2BSIY0ImaG71NPNQ==
 
-"@rails/ujs@7.0.807":
-  version "7.0.807"
-  resolved "https://registry.yarnpkg.com/@rails/ujs/-/ujs-7.0.807.tgz#2f9cf852c5da1d24a12b59fe170682b84cac7e49"
-  integrity sha512-6DW28OZWiSFeZnKlr2QQ5bAH2QjjVW08FrDrBz5JpGxJ/WFa4cYa6SH7tDWEdsSChlJVc3wvUrh4CGBM/R9x1Q==
+"@rails/ujs@7.1.501":
+  version "7.1.501"
+  resolved "https://registry.yarnpkg.com/@rails/ujs/-/ujs-7.1.501.tgz#e560a7b6885a12a659c4beb47f4336c8a9353056"
+  integrity sha512-7EDRGUlgns12IgP3SXVSaxA3CwRzbLOypPXn1EqEZiZ/NS/PwaQ/oa7Z2VRO4B46JifoVr0PYg+G5ERSGQJHxQ==
 
 "@remirror/core-constants@3.0.0":
   version "3.0.0"
@@ -4686,17 +4686,6 @@ babel-plugin-istanbul@^6.1.1:
     "@istanbuljs/load-nyc-config" "^1.0.0"
     "@istanbuljs/schema" "^0.1.2"
     istanbul-lib-instrument "^5.0.4"
-    test-exclude "^6.0.0"
-
-babel-plugin-istanbul@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-istanbul/-/babel-plugin-istanbul-7.0.0.tgz#629a178f63b83dc9ecee46fd20266283b1f11280"
-  integrity sha512-C5OzENSx/A+gt7t4VH1I2XsflxyPUmXRFPKBxt33xncdOmq7oROVM3bZv9Ysjjkv8OJYDMa+tKuKMvqU/H3xdw==
-  dependencies:
-    "@babel/helper-plugin-utils" "^7.0.0"
-    "@istanbuljs/load-nyc-config" "^1.0.0"
-    "@istanbuljs/schema" "^0.1.3"
-    istanbul-lib-instrument "^6.0.2"
     test-exclude "^6.0.0"
 
 babel-plugin-jest-hoist@^29.6.3:
@@ -9411,7 +9400,7 @@ istanbul-lib-instrument@^5.0.4:
     istanbul-lib-coverage "^3.2.0"
     semver "^6.3.0"
 
-istanbul-lib-instrument@^6.0.0, istanbul-lib-instrument@^6.0.2:
+istanbul-lib-instrument@^6.0.0:
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/istanbul-lib-instrument/-/istanbul-lib-instrument-6.0.3.tgz#fa15401df6c15874bcb2105f773325d78c666765"
   integrity sha512-Vtgk7L/R2JHyyGW07spoFlB8/lpjiOLTjMdms6AFMraYt3BaJauod/NGrfnVG/y4Ix1JEuMRPDPEj2ua+zz1/Q==

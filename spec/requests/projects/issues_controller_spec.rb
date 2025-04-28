@@ -35,6 +35,77 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
     end
   end
 
+  describe 'GET #index' do
+    before do
+      group.add_developer(user)
+      login_as(user)
+    end
+
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:project) { create(:project, group: group, developers: [user]) }
+    let_it_be(:issues) { create_list(:issue, 5, project: project, due_date: Date.current) }
+    let(:params) { {} }
+
+    subject(:get_index) { get project_issues_path(project, params: params) }
+
+    it 'redirects to work item listing page with correct type filter' do
+      get_index
+
+      expect(response).to redirect_to(project_work_items_path(project, 'type[]' => 'issue'))
+
+      follow_redirect!
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(response).to render_template('work_items/index')
+    end
+
+    context 'when params are set' do
+      let(:params) { { label_name: 'test', sort: 'updated_at' } }
+
+      it 'persists the params when redirecting' do
+        get_index
+
+        expect(response).to redirect_to(project_work_items_path(project, 'type[]' => 'issue',
+          label_name: 'test', sort: 'updated_at'
+        ))
+      end
+    end
+
+    context 'when type param is set' do
+      let(:params) { { 'type[]' => 'epic' } }
+
+      it 'overrides the existing param to issues' do
+        get_index
+
+        expect(response).to redirect_to(project_work_items_path(project, 'type[]' => 'issue'))
+      end
+    end
+
+    context 'when requesting RSS feed' do
+      it 'returns issues filtered by the custom field value' do
+        get project_issues_path(project, format: :atom)
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        issue_titles = Nokogiri::XML(response.body).css('feed entry title').map(&:text)
+        expect(issue_titles).to match_array(issues.map(&:title))
+      end
+    end
+
+    context 'when work_item_planning_view: false' do
+      before do
+        stub_feature_flags(work_item_planning_view: false)
+      end
+
+      it 'renders the page' do
+        get_index
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template('issues/index')
+      end
+    end
+  end
+
   describe 'GET #discussions' do
     before do
       login_as(user)

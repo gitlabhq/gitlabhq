@@ -23,6 +23,7 @@ import {
   WORK_ITEM_TYPE_NAME_EPIC,
   NAME_TO_ENUM_MAP,
   WIDGET_TYPE_CUSTOM_FIELDS,
+  WIDGET_TYPE_STATUS,
 } from '../constants';
 import { findHierarchyWidgetDefinition } from '../utils';
 import workItemParticipantsQuery from '../graphql/work_item_participants.query.graphql';
@@ -139,6 +140,9 @@ export default {
     workItemLabels() {
       return this.isWidgetPresent(WIDGET_TYPE_LABELS);
     },
+    workItemStatus() {
+      return this.isWidgetPresent(WIDGET_TYPE_STATUS);
+    },
     workItemStartAndDueDate() {
       return this.isWidgetPresent(WIDGET_TYPE_START_AND_DUE_DATE);
     },
@@ -188,7 +192,7 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_CUSTOM_FIELDS)?.customFieldValues;
     },
     showWorkItemStatus() {
-      return this.glFeatures.workItemStatusFeatureFlag;
+      return this.glFeatures.workItemStatusFeatureFlag && this.workItemStatus;
     },
   },
   methods: {

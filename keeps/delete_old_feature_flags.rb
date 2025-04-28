@@ -136,6 +136,7 @@ module Keeps
       change.description = build_description(feature_flag, latest_feature_flag_status)
 
       change.labels = [
+        'automation:feature-flag-removal',
         'maintenance::removal',
         'feature flag',
         feature_flag.group

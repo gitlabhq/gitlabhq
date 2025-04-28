@@ -7,6 +7,11 @@ RSpec.describe 'User filters issues', :js, feature_category: :team_planning do
   let_it_be(:project) { create(:project_empty_repo, :public) }
 
   before do
+    # TODO: When removing the feature flag,
+    # we won't need these tests for issues, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+
     %w[foobar barbaz].each do |title|
       create(
         :issue,

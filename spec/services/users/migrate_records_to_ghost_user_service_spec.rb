@@ -161,6 +161,12 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
       end
     end
 
+    context 'for timelogs' do
+      include_examples 'migrating records to the ghost user', Timelog, [:user] do
+        let(:created_record) { create(:timelog, user: user) }
+      end
+    end
+
     context 'for user achievements' do
       include_examples 'migrating records to the ghost user', Achievements::UserAchievement,
         [:awarded_by_user, :revoked_by_user] do

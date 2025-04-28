@@ -9,6 +9,13 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
   let(:issue)    { create(:issue, project: project, author: user) }
   let(:incident) { create(:incident, project: project, author: user) }
 
+  before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+  end
+
   context 'when user displays the issue' do
     before do
       visit project_issue_path(project, issue)

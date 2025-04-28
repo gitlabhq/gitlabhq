@@ -98,10 +98,6 @@ module QA
         enabled?(ENV['COVERBAND_ENABLED'], default: false)
       end
 
-      def istanbul_coverage_enabled?
-        ENV['BABEL_ENV'] == 'istanbul'
-      end
-
       def selective_execution_improved_enabled?
         enabled?(ENV['SELECTIVE_EXECUTION_IMPROVED'], default: false)
       end

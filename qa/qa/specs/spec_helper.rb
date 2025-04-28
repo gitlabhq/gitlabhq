@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'active_support'
 require 'active_support/testing/time_helpers'
 require 'factory_bot'
 
@@ -24,20 +25,6 @@ RSpec.configure(&:disable_monkey_patching!)
 
 # For JH additionally process when `jh/` exists
 require_relative('../../../jh/qa/qa/specs/spec_helper') if GitlabEdition.jh?
-
-front_end_coverage_by_example = {}
-
-def save_front_end_coverage_mapping(map_to_save)
-  return if map_to_save.empty?
-
-  file = "tmp/js-coverage-by-example-#{ENV['CI_JOB_NAME_SLUG'] || 'local'}-#{SecureRandom.hex(6)}.json"
-
-  # Write the mapping data
-  File.write(file, map_to_save.to_json)
-  QA::Runtime::Logger.info("Saved test coverage mapping data to #{file}")
-rescue StandardError => e
-  QA::Runtime::Logger.error("Failed to save JS coverage mapping data, error: #{e}")
-end
 
 RSpec.configure do |config|
   config.include ActiveSupport::Testing::TimeHelpers
@@ -66,11 +53,6 @@ RSpec.configure do |config|
 
     visit(QA::Runtime::Scenario.gitlab_address) if QA::Runtime::Env.mobile_layout?
 
-    # Reset coverage persistence at the start of each test
-    if Capybara::Session.instance_created? && QA::Runtime::Env.istanbul_coverage_enabled?
-      Capybara.current_session.execute_script("window.__coveragePathsPersistence.reset()")
-    end
-
     # Reset fabrication counters tracked in resource base
     Thread.current[:api_fabrication] = 0
     Thread.current[:browser_ui_fabrication] = 0
@@ -96,19 +78,6 @@ RSpec.configure do |config|
       QA::Support::PageErrorChecker.log_request_errors(page)
       QA::Support::PageErrorChecker.check_page_for_error_code(page) if example.exception
     end
-    # Get coverage paths and store in metadata
-    if Capybara::Session.instance_created? && QA::Runtime::Env.istanbul_coverage_enabled?
-      begin
-        Capybara.current_session.execute_script("window.__coveragePathsPersistence.update()")
-        coverage_paths = Capybara.current_session.evaluate_script("window.__coveragePathsPersistence.getPaths()")
-        QA::Runtime::Logger.debug("Coverage paths count: #{coverage_paths.length}")
-
-        example.metadata[:coverage_paths] = coverage_paths
-        front_end_coverage_by_example[example.metadata[:location]] = coverage_paths
-      rescue StandardError => e
-        QA::Runtime::Logger.warn("Failed to collect coverage paths: #{e.message}")
-      end
-    end
   end
 
   config.append_after do |example|
@@ -127,9 +96,8 @@ RSpec.configure do |config|
   end
 
   config.after(:suite) do |suite|
+    # Write all test created resources to JSON file
     QA::Tools::TestResourceDataProcessor.write_to_file(suite.reporter.failed_examples.any?)
-
-    save_front_end_coverage_mapping(front_end_coverage_by_example) if QA::Runtime::Env.istanbul_coverage_enabled?
   end
 
   config.expect_with :rspec do |expectations|

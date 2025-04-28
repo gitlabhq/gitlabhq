@@ -181,6 +181,12 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
 
       it { is_expected.to eq(false) }
     end
+
+    context 'with default value' do
+      subject(:above_threshold) { ci_partition.above_threshold? }
+
+      it { is_expected.to eq(false) }
+    end
   end
 
   describe '#all_partitions_exist?' do

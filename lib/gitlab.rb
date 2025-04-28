@@ -139,9 +139,6 @@ module Gitlab
   #
   # @return [Boolean]
   def self.next_rails?
-    return @next_bundle_gemfile unless @next_bundle_gemfile.nil?
-    return false unless ENV["BUNDLE_GEMFILE"]
-
-    @next_bundle_gemfile = File.exist?(ENV["BUNDLE_GEMFILE"]) && File.basename(ENV["BUNDLE_GEMFILE"]) == "Gemfile.next"
+    true
   end
 end

@@ -37,11 +37,23 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       end
 
       context 'when GitLab issues enabled' do
-        it 'renders the "index" template' do
+        it 'redirects to work items index page' do
           get :index, params: { namespace_id: project.namespace, project_id: project }
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template(:index)
+          expect(response).to redirect_to(project_work_items_path(project, 'type[]' => 'issue'))
+        end
+
+        context 'when work_item_planning_view: false' do
+          before do
+            stub_feature_flags(work_item_planning_view: false)
+          end
+
+          it 'renders the "index" template' do
+            get :index, params: { namespace_id: project.namespace, project_id: project }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to render_template(:index)
+          end
         end
       end
 
@@ -77,14 +89,26 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         project.add_developer(user)
       end
 
-      it_behaves_like 'set sort order from user preference' do
-        let(:sorting_param) { 'updated_asc' }
-      end
-
-      it "returns index" do
+      it 'redirects to work items index page' do
         get :index, params: { namespace_id: project.namespace, project_id: project }
 
-        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to redirect_to(project_work_items_path(project, 'type[]' => 'issue'))
+      end
+
+      context 'when work_item_planning_view: false' do
+        before do
+          stub_feature_flags(work_item_planning_view: false)
+        end
+
+        it "returns index" do
+          get :index, params: { namespace_id: project.namespace, project_id: project }
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it_behaves_like 'set sort order from user preference' do
+          let(:sorting_param) { 'updated_asc' }
+        end
       end
 
       it "returns 301 if request path doesn't match project path" do

@@ -522,9 +522,11 @@ class ApplicationSetting < ApplicationRecord
     if: ->(setting) { setting.external_auth_client_cert.present? }
 
   jsonb_accessor :ci_cd_settings,
-    ci_job_live_trace_enabled: [:boolean, { default: false }]
+    ci_job_live_trace_enabled: [:boolean, { default: false }],
+    ci_partitions_size_limit: [::Gitlab::Database::Type::JsonbInteger.new, { default: 100.gigabytes }]
 
   validate :validate_object_storage_for_live_trace_configuration, if: -> { ci_job_live_trace_enabled? }
+  validates :ci_partitions_size_limit, presence: true, numericality: { only_integer: true, greater_than: 0 }
 
   validates :default_ci_config_path,
     format: { without: %r{(\.{2}|\A/)}, message: N_('cannot include leading slash or directory traversal.') },

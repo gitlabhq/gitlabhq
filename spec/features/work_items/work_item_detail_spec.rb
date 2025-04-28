@@ -23,6 +23,13 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   let(:list_path) { project_issues_path(project) }
   let(:work_items_path) { project_work_item_path(project, work_item.iid) }
 
+  before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+  end
+
   shared_examples 'change type action is not displayed' do
     it 'change type action is not displayed' do
       click_button _('More actions'), match: :first

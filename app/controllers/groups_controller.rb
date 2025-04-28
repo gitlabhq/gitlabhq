@@ -20,12 +20,12 @@ class GroupsController < Groups::ApplicationController
   before_action :group, except: [:index, :new, :create]
 
   # Authorize
-  before_action :authorize_admin_group!, only: [:update, :projects, :transfer, :export, :download_export]
+  before_action :authorize_admin_group!, only: [:update, :transfer, :export, :download_export]
   before_action :authorize_view_edit_page!, only: :edit
   before_action :authorize_remove_group!, only: [:destroy, :restore]
   before_action :authorize_create_group!, only: [:new]
 
-  before_action :group_projects, only: [:projects, :activity, :issues, :merge_requests]
+  before_action :group_projects, only: [:activity, :issues, :merge_requests]
   before_action :event_filter, only: [:activity]
 
   before_action :user_actions, only: [:show]
@@ -47,7 +47,7 @@ class GroupsController < Groups::ApplicationController
     push_frontend_feature_flag(:mr_approved_filter, type: :ops)
   end
 
-  skip_cross_project_access_check :index, :new, :create, :edit, :update, :destroy, :projects
+  skip_cross_project_access_check :index, :new, :create, :edit, :update, :destroy
   # When loading show as an atom feed, we render events that could leak cross
   # project information
   skip_cross_project_access_check :show, if: -> { request.format.html? }
@@ -151,10 +151,6 @@ class GroupsController < Groups::ApplicationController
   end
 
   def merge_requests; end
-
-  def projects
-    @projects = @group.projects.with_statistics.page(params[:page])
-  end
 
   def update
     if Groups::UpdateService.new(@group, current_user, group_params).execute
@@ -329,7 +325,7 @@ class GroupsController < Groups::ApplicationController
   def determine_layout
     if [:new, :create].include?(action_name.to_sym)
       'dashboard'
-    elsif [:edit, :update, :projects].include?(action_name.to_sym)
+    elsif [:edit, :update].include?(action_name.to_sym)
       'group_settings'
     else
       'group'

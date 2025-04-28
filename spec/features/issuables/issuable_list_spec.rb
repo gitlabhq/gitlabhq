@@ -9,6 +9,11 @@ RSpec.describe 'issuable list', :js, feature_category: :team_planning do
   issuable_types = [:issue, :merge_request]
 
   before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+
     project.add_member(user, :developer)
     sign_in(user)
     issuable_types.each { |type| create_issuables(type) }

@@ -8,6 +8,11 @@ RSpec.describe 'New issue breadcrumb', :js, feature_category: :team_planning do
   let(:user) { project.creator }
 
   before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+
     sign_in(user)
     visit(new_project_issue_path(project))
   end

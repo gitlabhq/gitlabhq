@@ -22,6 +22,11 @@ RSpec.describe 'Project Issues Calendar Feed', feature_category: :groups_and_pro
     let!(:issue)    { create(:issue, author: user, assignees: [assignee], project: project) }
 
     before do
+      # TODO: When removing the feature flag,
+      # we won't need the tests for the issues listing page, since we'll be using
+      # the work items listing page.
+      stub_feature_flags(work_item_planning_view: false)
+
       project.add_developer(user)
     end
 

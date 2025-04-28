@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Application settings for the CI/CD domain",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "ci_job_live_trace_enabled": {
+      "type": "boolean",
+      "description": "Enable cloud native architecture for storing job logs."
+    },
+    "ci_partitions_size_limit": {
+      "type": "integer",
+      "description": "Maximum table size limit for a CI partition used for creating new partitions."
+    }
+  }
+}

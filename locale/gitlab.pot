@@ -61802,9 +61802,6 @@ msgstr ""
 msgid "This group has no inactive access tokens."
 msgstr ""
 
-msgid "This group has no projects yet"
-msgstr ""
-
 msgid "This group is linked to a subscription"
 msgstr ""
 
@@ -66538,9 +66535,6 @@ msgid "View labels"
 msgstr ""
 
 msgid "View log"
-msgstr ""
-
-msgid "View members"
 msgstr ""
 
 msgid "View merge requests you're involved with from start to finish by highlighting those that Needs Attention and those you are Following."

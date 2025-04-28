@@ -19,6 +19,11 @@ RSpec.describe Projects::IncidentsHelper do
   end
 
   before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+
     allow(helper).to receive(:current_user).and_return(user)
     allow(helper).to receive(:can?)
       .with(user, :create_incident, project)

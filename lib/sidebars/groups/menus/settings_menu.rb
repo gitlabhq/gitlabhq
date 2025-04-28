@@ -11,7 +11,6 @@ module Sidebars
           add_item(general_menu_item)
           add_item(integrations_menu_item)
           add_item(access_tokens_menu_item)
-          add_item(group_projects_menu_item)
           add_item(repository_menu_item)
           add_item(ci_cd_menu_item)
           add_item(applications_menu_item)
@@ -69,15 +68,6 @@ module Sidebars
             link: group_settings_access_tokens_path(context.group),
             active_routes: { path: 'access_tokens#index' },
             item_id: :access_tokens
-          )
-        end
-
-        def group_projects_menu_item
-          ::Sidebars::MenuItem.new(
-            title: _('Projects'),
-            link: projects_group_path(context.group),
-            active_routes: { path: 'groups#projects' },
-            item_id: :group_projects
           )
         end
 

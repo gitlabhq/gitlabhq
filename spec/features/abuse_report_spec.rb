@@ -11,6 +11,11 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
   let_it_be(:issue) { create(:issue, project: project, author: abusive_user) }
 
   before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+
     sign_in(reporter1)
   end
 

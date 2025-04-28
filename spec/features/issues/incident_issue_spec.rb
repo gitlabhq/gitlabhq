@@ -24,6 +24,13 @@ RSpec.describe 'Incident Detail', :js, feature_category: :team_planning do
   let_it_be(:alert) { create(:alert_management_alert, project: project, payload: payload, started_at: started_at) }
   let_it_be(:incident) { create(:incident, project: project, description: 'hello', alert_management_alert: alert) }
 
+  before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+  end
+
   context 'when user displays the incident' do
     before do
       project.add_developer(user)

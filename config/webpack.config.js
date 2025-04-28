@@ -278,7 +278,6 @@ module.exports = {
     return {
       default: defaultEntries,
       sentry: './sentry/index.js',
-      coverage_persistence: './entrypoints/coverage_persistence.js',
       performance_bar: './entrypoints/performance_bar.js',
       jira_connect_app: './jira_connect/subscriptions/index.js',
       sandboxed_mermaid: './lib/mermaid.js',

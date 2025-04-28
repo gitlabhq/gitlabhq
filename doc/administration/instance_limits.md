@@ -969,6 +969,24 @@ To set this limit to 100 KB on a GitLab Self-Managed instance, run the following
 Plan.default.actual_limits.update!(ci_job_annotations_size: 100.kilobytes)
 ```
 
+### Maximum database partition size for CI/CD tables
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189131) in GitLab 18.0.
+
+{{< /history >}}
+
+The maximum amount of disk space, in bytes, that can be used by a partition of a partitioned table,
+before new partitions are automatically created. Defaults to 100 GB.
+
+You can change this limit by using the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
+To change the limit, update `ci_partitions_size_limit` with the new value. For example, to set it to 20 GB:
+
+```ruby
+ApplicationSetting.update(ci_partitions_size_limit: 20.gigabytes)
+```
+
 ## Instance monitoring and metrics
 
 ### Limit inbound incident management alerts

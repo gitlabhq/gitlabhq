@@ -19,6 +19,11 @@ RSpec.describe 'Dashboard Issues filtering', :js, feature_category: :team_planni
   let_it_be(:label2) { create(:label, title: 'bug') }
 
   before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+
     project.labels << label
     project2.labels << label2
     project.add_maintainer(user)

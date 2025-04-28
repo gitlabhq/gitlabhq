@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-def next?
-  File.basename(__FILE__) == "Gemfile.next"
-end
-
 source 'https://rubygems.org'
 
 if ENV.fetch('BUNDLER_CHECKSUM_VERIFICATION_OPT_IN', 'false') != 'false' # this verification is still experimental
@@ -29,11 +25,7 @@ gem 'bundler-checksum', '~> 0.1.0', path: 'vendor/gems/bundler-checksum', requir
 #
 # See https://docs.gitlab.com/ee/development/gemfile.html#upgrade-rails for guidelines when upgrading Rails
 
-if next?
-  gem 'rails', '~> 7.1.5.1', feature_category: :shared
-else
-  gem 'rails', '~> 7.0.8.7', feature_category: :shared
-end
+gem 'rails', '~> 7.1.5.1', feature_category: :shared
 
 gem 'activerecord-gitlab', path: 'gems/activerecord-gitlab', feature_category: :shared
 # This can be dropped after upgrading to Rails 7.2: https://github.com/rails/rails/pull/49674

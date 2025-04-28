@@ -1517,6 +1517,8 @@ export const workItemResponseFactory = ({
   descriptionHtml = '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
   developmentWidgetPresent = false,
   customFieldsWidgetPresent = true,
+  statusWidgetPresent = false,
+  statusWidgetValues = null,
   customFieldValues = null,
   movedToWorkItemUrl = null,
   duplicatedToWorkItemUrl = null,
@@ -1863,6 +1865,13 @@ export const workItemResponseFactory = ({
           : { type: 'MOCK TYPE' },
         customFieldsWidgetPresent
           ? customFieldsWidgetResponseFactory(customFieldValues)
+          : { type: 'MOCK TYPE' },
+        statusWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetStatus',
+              status: statusWidgetValues,
+              type: 'STATUS',
+            }
           : { type: 'MOCK TYPE' },
       ],
     },
@@ -5932,6 +5941,7 @@ export const createWorkItemQueryResponse = (widgets = []) => ({
           },
           {
             type: 'STATUS',
+            status: null,
             __typename: 'WorkItemWidgetStatus',
           },
           {
@@ -6012,6 +6022,11 @@ export const createWorkItemQueryResponse = (widgets = []) => ({
               __typename: 'WorkItemWidgetDefinitionWeight',
             },
             __typename: 'WorkItemWidgetWeight',
+          },
+          {
+            __typename: 'WorkItemWidgetStatus',
+            status: null,
+            type: 'STATUS',
           },
           ...widgets,
         ],

@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     gitlab-orchestrator (0.0.1)
-      activesupport (>= 7)
+      activesupport (>= 7.1.5.1)
       rainbow (~> 3.1)
       require_all (~> 3.0)
       thor (~> 1.3)

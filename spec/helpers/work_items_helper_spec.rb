@@ -5,6 +5,13 @@ require "spec_helper"
 RSpec.describe WorkItemsHelper, feature_category: :team_planning do
   include Devise::Test::ControllerHelpers
 
+  before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+  end
+
   describe '#work_items_data' do
     describe 'with project context' do
       let_it_be(:project) { build(:project) }

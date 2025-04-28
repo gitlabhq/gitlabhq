@@ -112,7 +112,7 @@ After a merge request is created, GitLab Duo reviews it unless:
 
 Prerequisites:
 
-- You must have the at least the [Maintainer role](../../permissions.md) in a project.
+- You must have at least the [Maintainer role](../../permissions.md) in a project.
 
 To enable `@GitLabDuo` to automatically review merge requests:
 

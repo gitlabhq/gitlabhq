@@ -10,6 +10,13 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
   let_it_be(:project) { create(:project) }
   let_it_be_with_reload(:issue) { create(:issue, project: project) }
 
+  before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+  end
+
   describe '#award_user_list' do
     it 'returns a comma-separated list of the first X users' do
       user = build_stubbed(:user, name: 'Joe')

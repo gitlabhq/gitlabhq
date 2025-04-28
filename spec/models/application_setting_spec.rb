@@ -95,7 +95,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         },
         reindexing_minimum_index_size: 1.gigabyte,
         reindexing_minimum_relative_bloat_size: 0.2,
-        top_level_group_creation_enabled: true
+        top_level_group_creation_enabled: true,
+        ci_partitions_size_limit: 100.gigabytes
       )
     end
   end
@@ -384,6 +385,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           autocomplete_users_limit
           autocomplete_users_unauthenticated_limit
           bulk_import_concurrent_pipeline_batch_limit
+          ci_partitions_size_limit
           code_suggestions_api_rate_limit
           concurrent_bitbucket_import_jobs_limit
           concurrent_bitbucket_server_import_jobs_limit
