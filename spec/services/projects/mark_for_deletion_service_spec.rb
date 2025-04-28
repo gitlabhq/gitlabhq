@@ -28,7 +28,7 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
          .with(project.namespace_id).and_call_original
         expect(result[:status]).to eq(:success)
         expect(Project.unscoped.all).to include(project)
-        expect(project.archived).to be(true)
+        expect(project.archived).to be(false)
         expect(project.marked_for_deletion_at).not_to be_nil
         expect(project.deleting_user).to eq(user)
         expect(project).not_to be_hidden

@@ -13,8 +13,6 @@ In order to use SemanticVersionable you must first create a database migration t
 
 ```ruby
 class AddVersionPartsToModelVersions < Gitlab::Database::Migration[2.2]
-  enable_lock_retries!
-
   milestone '16.9'
 
   def up

@@ -2224,6 +2224,9 @@ msgstr ""
 msgid "A project’s repository name defines its URL (the one you use to access the project via a browser) and its place on the file disk where GitLab is installed. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
+msgid "A project’s repository name defines its URL (the one you use to access the project via a browser). %{link_start}Learn more.%{link_end}"
+msgstr ""
+
 msgid "A quarterly reconciliation is due on %{date}"
 msgstr ""
 
@@ -47785,7 +47788,7 @@ msgstr ""
 msgid "ProjectSettings|GitLab Duo"
 msgstr ""
 
-msgid "ProjectSettings|GitLab Duo reviews new merge requests immediately, and when a draft is marked ready."
+msgid "ProjectSettings|GitLab Duo reviews new merge requests immediately, unless they are drafts or contain no changes."
 msgstr ""
 
 msgid "ProjectSettings|Global"

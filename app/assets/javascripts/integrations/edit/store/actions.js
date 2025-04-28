@@ -12,17 +12,15 @@ export const requestJiraIssueTypes = ({ commit, dispatch, getters }, formData) =
   commit(types.SET_IS_LOADING_JIRA_ISSUE_TYPES, true);
 
   return testIntegrationSettings(getters.propsSource.testPath, formData)
-    .then(
-      ({
-        data: { issuetypes, error, message = I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE },
-      }) => {
-        if (error || !issuetypes?.length) {
-          throw new Error(message);
-        }
+    .then(({ data }) => {
+      if (data.error || !data.issuetypes?.length) {
+        throw new Error(
+          data.service_response || data.message || I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
+        );
+      }
 
-        dispatch('receiveJiraIssueTypesSuccess', issuetypes);
-      },
-    )
+      dispatch('receiveJiraIssueTypesSuccess', data.issuetypes);
+    })
     .catch(({ message = I18N_DEFAULT_ERROR_MESSAGE }) => {
       dispatch('receiveJiraIssueTypesError', message);
     });

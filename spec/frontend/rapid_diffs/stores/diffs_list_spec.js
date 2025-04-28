@@ -18,6 +18,7 @@ describe('Diffs list store', () => {
 
   const findStreamContainer = () => document.querySelector('#js-stream-container');
   const findDiffsList = () => document.querySelector('[data-diffs-list]');
+  const findDiffsOverlay = () => document.querySelector('[data-diffs-overlay]');
 
   const itCancelsRunningRequest = (action) => {
     it('cancels running request', async () => {
@@ -58,7 +59,11 @@ describe('Diffs list store', () => {
     const pinia = createTestingPinia({ stubActions: false });
     setActivePinia(pinia);
     store = useDiffsList();
-    setHTMLFixture(`<div id="js-stream-container"></div><div data-diffs-list>Existing data</div>`);
+    setHTMLFixture(`
+      <div id="js-stream-container"></div>
+      <div data-diffs-overlay></div>
+      <div data-diffs-list>Existing data</div>
+    `);
     global.fetch = jest.fn();
     toPolyfillReadable.mockImplementation((obj) => obj);
     streamResponse = { body: {} };
@@ -128,14 +133,14 @@ describe('Diffs list store', () => {
 
     it('sets loading state', () => {
       store.reloadDiffs('/stream');
-      expect(findDiffsList().dataset.loading).toBe('true');
+      expect(findDiffsOverlay().dataset.loading).toBe('true');
     });
 
     it('clears existing state', async () => {
       store.reloadDiffs('/stream');
       await waitForPromises();
       expect(findDiffsList().innerHTML).toBe('');
-      expect(findDiffsList().dataset.loading).toBe(undefined);
+      expect(findDiffsOverlay().dataset.loading).toBe(undefined);
     });
   });
 

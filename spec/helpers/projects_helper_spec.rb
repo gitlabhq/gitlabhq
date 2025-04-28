@@ -1320,44 +1320,118 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     it_behaves_like 'configure import method modal'
   end
 
-  describe "#show_archived_project_banner?" do
-    shared_examples 'does not show the banner' do |pass_project: true|
-      it do
-        expect(project.archived?).to be(false)
-        expect(helper.show_archived_project_banner?(pass_project ? project : nil)).to be(false)
-      end
-    end
+  describe "#archiving_available?" do
+    subject(:archiving_available?) { helper.archiving_available?(project) }
 
-    context 'with no project' do
-      it_behaves_like 'does not show the banner', pass_project: false
+    context 'with nil project' do
+      let_it_be(:project) { nil }
+
+      it { is_expected.to be(false) }
     end
 
     context 'with unsaved project' do
       let_it_be(:project) { build(:project) }
 
-      it_behaves_like 'does not show the banner'
+      it { is_expected.to be(false) }
     end
 
-    context 'with the setting enabled' do
-      context 'with an active project' do
-        it_behaves_like 'does not show the banner'
+    shared_context 'with current user :archive_project permission' do |can_manage|
+      before do
+        allow(helper)
+          .to receive(:can?)
+          .with(user, :archive_project, project)
+          .and_return(can_manage)
+      end
+    end
+
+    context 'with an active project' do
+      context 'when current user cannot manage archiving' do
+        include_context 'with current user :archive_project permission', false
+
+        it { is_expected.to be(false) }
       end
 
-      context 'with an inactive project' do
-        before do
-          project.archived = true
-          project.save!
-        end
+      context 'when current user can manage archiving' do
+        include_context 'with current user :archive_project permission', true
 
-        it 'shows the banner' do
-          expect(project.present?).to be(true)
-          expect(project.saved?).to be(true)
-          expect(project.archived?).to be(true)
-          expect(project.marked_for_deletion?).to be(false)
-          expect(helper.show_archived_project_banner?(project)).to be(true)
-          expect(helper.show_inactive_project_deletion_banner?(project)).to be(false)
-        end
+        it { is_expected.to be(true) }
       end
+    end
+
+    context 'with an archived project' do
+      before do
+        project.archived = true
+        project.save!
+      end
+
+      context 'when current user cannot manage archiving' do
+        include_context 'with current user :archive_project permission', false
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when current user can manage archiving' do
+        include_context 'with current user :archive_project permission', true
+
+        it { is_expected.to be(true) }
+      end
+    end
+
+    context 'with a project marked for deletion' do
+      before do
+        project.marked_for_deletion_at = Time.current
+        project.save!
+      end
+
+      context 'when current user cannot manage archiving' do
+        include_context 'with current user :archive_project permission', false
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when current user can manage archiving' do
+        include_context 'with current user :archive_project permission', true
+
+        it { is_expected.to be(false) }
+      end
+    end
+  end
+
+  describe "#show_archived_project_banner?" do
+    subject(:show_archived_project_banner?) { helper.show_archived_project_banner?(project) }
+
+    context 'with nil project' do
+      let_it_be(:project) { nil }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'with unsaved project' do
+      let_it_be(:project) { build(:project) }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'with an active project' do
+      it { is_expected.to be(false) }
+    end
+
+    context 'with an archived project' do
+      before do
+        project.archived = true
+        project.save!
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'with a project marked for deletion' do
+      before do
+        project.marked_for_deletion_at = Time.current
+        project.save!
+      end
+
+      it { is_expected.to be(false) }
     end
   end
 

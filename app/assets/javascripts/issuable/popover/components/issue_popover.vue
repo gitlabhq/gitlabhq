@@ -77,7 +77,8 @@ export default {
   },
   computed: {
     formattedTime() {
-      return this.timeFormatted(this.workItem.createdAt);
+      const { createdAt } = this.workItem;
+      return createdAt ? this.timeFormatted(createdAt) : '';
     },
     isIssueClosed() {
       return this.workItem.state === STATUS_CLOSED;

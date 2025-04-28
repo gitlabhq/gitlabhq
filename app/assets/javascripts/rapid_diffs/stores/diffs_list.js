@@ -85,12 +85,13 @@ export const useDiffsList = defineStore('diffsList', {
     reloadDiffs(url) {
       return this.withDebouncedAbortController(async ({ signal }) => {
         const container = document.querySelector('[data-diffs-list]');
-        container.dataset.loading = 'true';
+        const overlay = document.querySelector('[data-diffs-overlay]');
+        overlay.dataset.loading = 'true';
         this.loadedFiles = {};
         this.status = statuses.fetching;
         const { body } = await fetch(url, { signal });
         container.innerHTML = '';
-        delete container.dataset.loading;
+        delete overlay.dataset.loading;
         await this.renderDiffsStream(toPolyfillReadable(body), container, signal);
       });
     },

@@ -911,11 +911,17 @@ To link to another documentation (`.md`) file in the same repository:
 - Use an inline link with a relative file path. For example, `[GitLab.com settings](../user/gitlab_com/_index.md)`.
 - Put the entire link on a single line, even if the link is very long. ([Vale](../testing/vale.md) rule: [`MultiLineLinks.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/MultiLineLinks.yml)).
 
+{{< alert type="note" >}}
+
+In the GitLab repository, do not link to the `/development` directory from any other directory.
+
+{{< /alert >}}
+
 To link to a file outside of the documentation files, for example to link from development
 documentation to a specific code file:
 
 - Use a full URL. For example: ``[`app/views/help/show.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/views/help/show.html.haml)``
-- (Optional) Use a full URL with a specific ref. For example: ``[`app/views/help/show.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/6d01aa9f1cfcbdfa88edf9d003bd073f1a6fff1d/app/views/help/show.html.haml)``
+- Optional. Use a full URL with a specific ref. For example: ``[`app/views/help/show.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/6d01aa9f1cfcbdfa88edf9d003bd073f1a6fff1d/app/views/help/show.html.haml)``
 
 ### Links in separate repositories
 

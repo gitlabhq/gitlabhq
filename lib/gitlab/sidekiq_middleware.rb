@@ -81,9 +81,9 @@ module Gitlab
           ::Gitlab::SidekiqMiddleware::DuplicateJobs::Server,
           ::Gitlab::SidekiqMiddleware::PauseControl::Server,
           ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server,
+          skip_jobs ? ::Gitlab::SidekiqMiddleware::SkipJobs : nil,
           ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware,
           ::Gitlab::SidekiqMiddleware::ResourceUsageLimit::Server,
-          skip_jobs ? ::Gitlab::SidekiqMiddleware::SkipJobs : nil,
           ::Gitlab::SidekiqMiddleware::Identity::Restore
         ].compact
       end

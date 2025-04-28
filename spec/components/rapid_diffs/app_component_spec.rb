@@ -94,6 +94,12 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     expect(result).to have_text('custom_list')
   end
 
+  it "renders diffs list" do
+    render_component
+    expect(page).to have_css('[data-diffs-list]')
+    expect(page).to have_css('[data-diffs-overlay]')
+  end
+
   it 'preloads' do
     instance = create_instance
     render_inline(instance)

@@ -584,18 +584,23 @@ module ProjectsHelper
     configure_oauth_import_message('Bitbucket', help_page_path("integration/bitbucket.md"))
   end
 
-  def show_archived_project_banner?(project)
-    return false unless project.present? && project.saved?
-    return false if project.marked_for_deletion?
+  def archiving_available?(project)
+    return false unless project
 
-    project.archived?
+    project.persisted? && !project.marked_for_deletion? && can?(current_user, :archive_project, project)
+  end
+
+  def show_archived_project_banner?(project)
+    return false unless project
+
+    project.persisted? && project.archived?
   end
 
   def show_inactive_project_deletion_banner?(project)
-    return false unless project.present? && project.saved?
+    return false unless project
     return false unless delete_inactive_projects?
 
-    project.inactive?
+    project.persisted? && project.inactive?
   end
 
   def inactive_project_deletion_date(project)

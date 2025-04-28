@@ -25,7 +25,7 @@ RSpec::Matchers.define :contain_sidekiq_middlewares_exactly do |expected|
       MESSAGE
     elsif !@extra_elements.empty?
       <<~MESSAGE
-      Unexpected #{@extra_elements.inspect} in #{@actual.inspect}.
+      Unexpected #{@extra_elements.inspect} in #{@expected.inspect}.
 
       If #{@extra_elements.inspect} do not intercept job execution (return early or not yielding) between
       DuplicateJobs::Client and DuplicateJobs::Server, please add #{@extra_elements.inspect} to the allowed middlewares

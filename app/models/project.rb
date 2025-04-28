@@ -2888,6 +2888,10 @@ class Project < ApplicationRecord
     self.storage_version && self.storage_version >= HASHED_STORAGE_FEATURES[feature]
   end
 
+  def archived
+    super && !marked_for_deletion?
+  end
+
   def renamed?
     persisted? && path_changed?
   end

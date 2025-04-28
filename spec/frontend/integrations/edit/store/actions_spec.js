@@ -35,11 +35,13 @@ describe('Integration form store actions', () => {
 
   describe('requestJiraIssueTypes', () => {
     describe.each`
-      scenario                              | responseCode | response                              | action
-      ${'when successful'}                  | ${200}       | ${{ issuetypes: mockJiraIssueTypes }} | ${{ type: 'receiveJiraIssueTypesSuccess', payload: mockJiraIssueTypes }}
-      ${'when response has no issue types'} | ${200}       | ${{ issuetypes: [] }}                 | ${{ type: 'receiveJiraIssueTypesError', payload: I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE }}
-      ${'when response includes error'}     | ${200}       | ${{ error: new Error() }}             | ${{ type: 'receiveJiraIssueTypesError', payload: I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE }}
-      ${'when error occurs'}                | ${500}       | ${{}}                                 | ${{ type: 'receiveJiraIssueTypesError', payload: expect.any(String) }}
+      scenario                                                        | responseCode | response                                                                                 | action
+      ${'when successful'}                                            | ${200}       | ${{ issuetypes: mockJiraIssueTypes }}                                                    | ${{ type: 'receiveJiraIssueTypesSuccess', payload: mockJiraIssueTypes }}
+      ${'when response has no issue types'}                           | ${200}       | ${{ issuetypes: [] }}                                                                    | ${{ type: 'receiveJiraIssueTypesError', payload: I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE }}
+      ${'when response includes error w/ no message'}                 | ${200}       | ${{ error: true }}                                                                       | ${{ type: 'receiveJiraIssueTypesError', payload: I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE }}
+      ${'when response includes error w/ message'}                    | ${200}       | ${{ error: true, message: 'Validation failed' }}                                         | ${{ type: 'receiveJiraIssueTypesError', payload: 'Validation failed' }}
+      ${'when response includes error w/ message & service_response'} | ${200}       | ${{ error: true, message: 'Validation failed', service_response: "Url can't be blank" }} | ${{ type: 'receiveJiraIssueTypesError', payload: "Url can't be blank" }}
+      ${'when error occurs'}                                          | ${500}       | ${{}}                                                                                    | ${{ type: 'receiveJiraIssueTypesError', payload: expect.any(String) }}
     `('$scenario', ({ responseCode, response, action }) => {
       it(`should commit SET_JIRA_ISSUE_TYPES_ERROR_MESSAGE and SET_IS_LOADING_JIRA_ISSUE_TYPES mutations, and dispatch ${action.type}`, () => {
         mockAxios.onPut('/test').replyOnce(responseCode, response);

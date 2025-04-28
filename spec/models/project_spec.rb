@@ -9498,9 +9498,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it_behaves_like 'cascading settings', :only_allow_merge_if_all_discussions_are_resolved
   end
 
-  describe '#archived' do
+  describe '#archived & #archived?' do
     it { expect(subject.archived).to be_falsey }
+    it { expect(subject.archived?).to be_falsey }
     it { expect(described_class.new(archived: true).archived).to be_truthy }
+    it { expect(described_class.new(archived: true).archived?).to be_truthy }
+
+    context 'when project is marked for deletion' do
+      subject(:project) { described_class.new(archived: true, marked_for_deletion_at: Time.current) }
+
+      it { expect(project.archived).to be_falsey }
+      it { expect(project.archived?).to be_falsey }
+    end
   end
 
   describe '#resolve_outdated_diff_discussions' do

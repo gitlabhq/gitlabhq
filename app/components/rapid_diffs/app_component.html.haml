@@ -28,20 +28,23 @@
         = render RapidDiffs::EmptyStateComponent.new
 
       .rd-app-code-theme.code{ class: helpers.user_color_scheme }
-        .rd-app-diffs-list{ data: { diffs_list: true } }
-          = javascript_tag nonce: content_security_policy_nonce do
-            :plain
-              requestAnimationFrame(() => { window.performance.mark('rapid-diffs-first-diff-file-shown') })
-          - if diffs_list?
-            = diffs_list
-          - elsif !empty_diff?
-            = render RapidDiffs::DiffFileComponent.with_collection(@diffs_slice, parallel_view: @diff_view == :parallel)
-          - if @stream_url
-            #js-stream-container{ data: { diffs_stream_url: @stream_url } }
-          - else
+        .rd-app-diffs-list
+          -# performance optimization: using a sibling element to cover diffs list is faster than changing opacity on the parent
+          .rd-app-diffs-list-loading-overlay{ data: { diffs_overlay: true } }
+          %div{ data: { diffs_list: true } }
             = javascript_tag nonce: content_security_policy_nonce do
               :plain
-                requestAnimationFrame(() => {
-                  window.performance.mark('rapid-diffs-list-loaded');
-                  window.performance.measure('rapid-diffs-list-loading', 'rapid-diffs-first-diff-file-shown', 'rapid-diffs-list-loaded');
-                })
+                requestAnimationFrame(() => { window.performance.mark('rapid-diffs-first-diff-file-shown') })
+            - if diffs_list?
+              = diffs_list
+            - elsif !empty_diff?
+              = render RapidDiffs::DiffFileComponent.with_collection(@diffs_slice, parallel_view: @diff_view == :parallel)
+            - if @stream_url
+              #js-stream-container{ data: { diffs_stream_url: @stream_url } }
+            - else
+              = javascript_tag nonce: content_security_policy_nonce do
+                :plain
+                  requestAnimationFrame(() => {
+                    window.performance.mark('rapid-diffs-list-loaded');
+                    window.performance.measure('rapid-diffs-list-loading', 'rapid-diffs-first-diff-file-shown', 'rapid-diffs-list-loaded');
+                  })

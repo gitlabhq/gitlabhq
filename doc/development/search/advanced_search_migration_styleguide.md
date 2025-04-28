@@ -279,7 +279,7 @@ end
 
 Removes specified fields from an index.
 
-Requires the `index_name`, `document_type` methods. If there is one field to remove, add the `field_to_remove` method, otherwise add `fields_to_remove` with an array of fields.
+Requires the `index_name` method and `DOCUMENT_TYPE` constant. If there is one field to remove, add the `field_to_remove` method, otherwise add `fields_to_remove` with an array of fields.
 
 Checks in batches if any documents that match `document_type` have the fields specified in Elasticsearch. If documents exist, uses a Painless script to perform `update_by_query`.
 
