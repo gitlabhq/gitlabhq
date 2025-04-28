@@ -49,7 +49,7 @@ The usage of schema enforces the base class to be used:
 - `Geo::TrackingBase` for `gitlab_geo`
 - `Gitlab::Database::SharedModel` for `gitlab_shared`
 - `PackageMetadata::ApplicationRecord` for `gitlab_pm`
-- `Gitlab::Database::SecApplicationRecord` for `gitlab_sec`
+- `SecApplicationRecord` for `gitlab_sec`
 
 ### Choose either the `gitlab_main_cell` or `gitlab_main_clusterwide` schema
 

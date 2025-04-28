@@ -6,7 +6,7 @@ module Gitlab
       operation_name :rsync_has_vulnerabilities
       feature_category :vulnerability_management
 
-      class Vulnerability < Database::SecApplicationRecord
+      class Vulnerability < ::SecApplicationRecord
         self.table_name = 'vulnerabilities'
       end
 

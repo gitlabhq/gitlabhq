@@ -21,7 +21,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillProjectIdToSecurityScans, fe
       batch_column: 'id',
       sub_batch_size: 1,
       pause_ms: 0,
-      connection: Gitlab::Database::SecApplicationRecord.connection
+      connection: SecApplicationRecord.connection
     }
   end
 

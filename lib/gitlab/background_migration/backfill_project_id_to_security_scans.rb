@@ -6,7 +6,7 @@ module Gitlab
       feature_category :vulnerability_management
       operation_name :backfill_project_id_to_security_scans
 
-      class Scan < ::Gitlab::Database::SecApplicationRecord
+      class Scan < ::SecApplicationRecord
         self.table_name = 'security_scans'
       end
 

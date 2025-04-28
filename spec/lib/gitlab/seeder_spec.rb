@@ -26,7 +26,7 @@ RSpec.describe Gitlab::Seeder, feature_category: :shared do
       {
         main: ActiveRecord::Base,
         ci: Ci::ApplicationRecord,
-        sec: Gitlab::Database::SecApplicationRecord
+        sec: SecApplicationRecord
       }
     end
 

@@ -1187,6 +1187,7 @@ Gitlab/BoundedContexts:
     - 'app/models/resource_timebox_event.rb'
     - 'app/models/review.rb'
     - 'app/models/route.rb'
+    - 'app/models/sec_application_record.rb'
     - 'app/models/sent_notification.rb'
     - 'app/models/sentry_issue.rb'
     - 'app/models/service_desk_setting.rb'
