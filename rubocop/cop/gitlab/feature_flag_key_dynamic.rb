@@ -17,21 +17,23 @@ module RuboCop
       #   Feature.enabled?('some_flag')
       #   Feature.enabled?(flag_name)
       #   Feature.disabled?(flag)
+      #   Gitlab::AiGateway.push_feature_flag(flag)
       #
       #   # good
       #   Feature.enabled?(:some_flag)
       #   Feature.disabled?(:other_flag)
+      #   Gitlab::AiGateway.push_feature_flag(:another_flag)
       class FeatureFlagKeyDynamic < RuboCop::Cop::Base
         extend AutoCorrector
 
         MSG = 'First argument to `%<module>s.%<method>s` must be a literal symbol.'
 
-        RESTRICT_ON_SEND = %i[enabled? disabled?].to_set.freeze
+        RESTRICT_ON_SEND = %i[enabled? disabled? push_feature_flag].to_set.freeze
 
         # @!method feature_flag_method?(node)
         def_node_matcher :feature_flag_method?, <<~PATTERN
             (send
-              ${(const {nil? cbase} :Feature)}
+              ${(const {nil? cbase} :Feature) (const (const {nil? cbase} :Gitlab) :AiGateway)}
               ${RESTRICT_ON_SEND}
               $_
               ...

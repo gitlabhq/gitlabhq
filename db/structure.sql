@@ -20330,11 +20330,11 @@ CREATE VIEW postgres_autovacuum_activity AS
            FROM postgres_pg_stat_activity_autovacuum() postgres_pg_stat_activity_autovacuum(query, query_start)
           WHERE (postgres_pg_stat_activity_autovacuum.query ~* '^autovacuum: VACUUM \w+\.\w+'::text)
         )
- SELECT ((processes.matches[1] || '.'::text) || processes.matches[2]) AS table_identifier,
-    processes.matches[1] AS schema,
-    processes.matches[2] AS "table",
-    processes.query_start AS vacuum_start,
-    processes.wraparound_prevention
+ SELECT ((matches[1] || '.'::text) || matches[2]) AS table_identifier,
+    matches[1] AS schema,
+    matches[2] AS "table",
+    query_start AS vacuum_start,
+    wraparound_prevention
    FROM processes;
 
 COMMENT ON VIEW postgres_autovacuum_activity IS 'Contains information about PostgreSQL backends currently performing autovacuum operations on the tables indicated here.';
@@ -20388,10 +20388,10 @@ CREATE VIEW postgres_foreign_keys AS
   WHERE (pg_constraint.contype = 'f'::"char");
 
 CREATE VIEW postgres_index_bloat_estimates AS
- SELECT (((relation_stats.nspname)::text || '.'::text) || (relation_stats.idxname)::text) AS identifier,
+ SELECT (((nspname)::text || '.'::text) || (idxname)::text) AS identifier,
     (
         CASE
-            WHEN ((relation_stats.relpages)::double precision > relation_stats.est_pages_ff) THEN ((relation_stats.bs)::double precision * ((relation_stats.relpages)::double precision - relation_stats.est_pages_ff))
+            WHEN ((relpages)::double precision > est_pages_ff) THEN ((bs)::double precision * ((relpages)::double precision - est_pages_ff))
             ELSE (0)::double precision
         END)::bigint AS bloat_size_bytes
    FROM ( SELECT COALESCE(((1)::double precision + ceil((rows_hdr_pdg_stats.reltuples / floor((((((rows_hdr_pdg_stats.bs - (rows_hdr_pdg_stats.pageopqdata)::numeric) - (rows_hdr_pdg_stats.pagehdr)::numeric) * (rows_hdr_pdg_stats.fillfactor)::numeric))::double precision / ((100)::double precision * (((4)::numeric + rows_hdr_pdg_stats.nulldatahdrwidth))::double precision)))))), (0)::double precision) AS est_pages_ff,
@@ -20496,8 +20496,8 @@ END AS attrelname
                                     WHEN ((version() ~ 'mingw32'::text) OR (version() ~ '64-bit|x86_64|ppc64|ia64|amd64'::text)) THEN 8
                                     ELSE 4
                                 END, 24::integer, 16::integer) rows_data_stats) rows_hdr_pdg_stats) relation_stats
-  WHERE ((relation_stats.nspname = ANY (ARRAY["current_schema"(), 'gitlab_partitions_dynamic'::name, 'gitlab_partitions_static'::name])) AND (NOT relation_stats.is_na))
-  ORDER BY relation_stats.nspname, relation_stats.tblname, relation_stats.idxname;
+  WHERE ((nspname = ANY (ARRAY["current_schema"(), 'gitlab_partitions_dynamic'::name, 'gitlab_partitions_static'::name])) AND (NOT is_na))
+  ORDER BY nspname, tblname, idxname;
 
 CREATE VIEW postgres_indexes AS
  SELECT (((pg_namespace.nspname)::text || '.'::text) || (i.relname)::text) AS identifier,
@@ -20617,16 +20617,16 @@ CREATE VIEW postgres_sequences AS
   WHERE (seq_pg_class.relkind = 'S'::"char");
 
 CREATE VIEW postgres_table_sizes AS
- SELECT (((pg_stat_user_tables.schemaname)::text || '.'::text) || (pg_stat_user_tables.relname)::text) AS identifier,
-    pg_stat_user_tables.schemaname AS schema_name,
-    pg_stat_user_tables.relname AS table_name,
-    pg_size_pretty(pg_total_relation_size((((quote_ident((pg_stat_user_tables.schemaname)::text) || '.'::text) || quote_ident((pg_stat_user_tables.relname)::text)))::regclass)) AS total_size,
-    pg_size_pretty(pg_relation_size((((quote_ident((pg_stat_user_tables.schemaname)::text) || '.'::text) || quote_ident((pg_stat_user_tables.relname)::text)))::regclass)) AS table_size,
-    pg_size_pretty((pg_total_relation_size((((quote_ident((pg_stat_user_tables.schemaname)::text) || '.'::text) || quote_ident((pg_stat_user_tables.relname)::text)))::regclass) - pg_relation_size((((quote_ident((pg_stat_user_tables.schemaname)::text) || '.'::text) || quote_ident((pg_stat_user_tables.relname)::text)))::regclass))) AS index_size,
-    pg_total_relation_size((((quote_ident((pg_stat_user_tables.schemaname)::text) || '.'::text) || quote_ident((pg_stat_user_tables.relname)::text)))::regclass) AS size_in_bytes
+ SELECT (((schemaname)::text || '.'::text) || (relname)::text) AS identifier,
+    schemaname AS schema_name,
+    relname AS table_name,
+    pg_size_pretty(pg_total_relation_size((((quote_ident((schemaname)::text) || '.'::text) || quote_ident((relname)::text)))::regclass)) AS total_size,
+    pg_size_pretty(pg_relation_size((((quote_ident((schemaname)::text) || '.'::text) || quote_ident((relname)::text)))::regclass)) AS table_size,
+    pg_size_pretty((pg_total_relation_size((((quote_ident((schemaname)::text) || '.'::text) || quote_ident((relname)::text)))::regclass) - pg_relation_size((((quote_ident((schemaname)::text) || '.'::text) || quote_ident((relname)::text)))::regclass))) AS index_size,
+    pg_total_relation_size((((quote_ident((schemaname)::text) || '.'::text) || quote_ident((relname)::text)))::regclass) AS size_in_bytes
    FROM pg_stat_user_tables
-  WHERE (pg_total_relation_size((((quote_ident((pg_stat_user_tables.schemaname)::text) || '.'::text) || quote_ident((pg_stat_user_tables.relname)::text)))::regclass) IS NOT NULL)
-  ORDER BY (pg_total_relation_size((((quote_ident((pg_stat_user_tables.schemaname)::text) || '.'::text) || quote_ident((pg_stat_user_tables.relname)::text)))::regclass)) DESC;
+  WHERE (pg_total_relation_size((((quote_ident((schemaname)::text) || '.'::text) || quote_ident((relname)::text)))::regclass) IS NOT NULL)
+  ORDER BY (pg_total_relation_size((((quote_ident((schemaname)::text) || '.'::text) || quote_ident((relname)::text)))::regclass)) DESC;
 
 CREATE TABLE programming_languages (
     id bigint NOT NULL,
