@@ -5,7 +5,7 @@
   announcement_milestone: "15.9"  # (required) The milestone when this feature was first announced as deprecated.
   removal_milestone: "18.0"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
-  window: 1
+  window: 3
   impact: high  # Can be one of: [critical, high, medium, low]
   scope: project  # Can be one or a combination of: [instance, group, project]
   reporter: jocelynjane  # (required) GitLab username of the person reporting the deprecation

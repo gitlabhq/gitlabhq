@@ -385,3 +385,13 @@ The jobs have three paths of execution:
 - macOS path: The `mac:rspec` job runs as soon as the `mac:build: [gcp, data]` and
   `mac:build: [vultr, data]` jobs finish, without waiting for `linux:build` to finish.
 - The `production` job runs as soon as all previous jobs finish.
+
+## Troubleshooting
+
+### Inconsistent user assignment when running manual jobs
+
+In some edge cases, the user that runs a manual job does not get assigned as the user for later jobs
+that depend on the manual job.
+
+If you need strict security over who is assigned as the user for jobs that depend on a manual job,
+you should [protect the manual job](#protect-manual-jobs).

@@ -24,7 +24,6 @@ This window takes place on April 21 - 23, 2025 from 09:00 UTC to 22:00 UTC.
 
 | Deprecation | Impact | Stage | Scope | Check potential impact |
 |-------------|--------|-------|-------|------------------------|
-| [CI/CD job token - **Limit access from your project** setting removal](deprecations.md#cicd-job-token---limit-access-from-your-project-setting-removal) | High | Software supply chain security | Project | Refer to the [Understanding this change](https://gitlab.com/gitlab-org/gitlab/-/issues/395708#understanding-this-change) section for details. |
 | [CI/CD job token - **Authorized groups and projects** allowlist enforcement](deprecations.md#cicd-job-token---authorized-groups-and-projects-allowlist-enforcement) | High | Software supply chain security | Project | Refer to the [Understanding this change](https://gitlab.com/gitlab-org/gitlab/-/issues/383084#understanding-this-change) section for details. |
 | [Deprecation of `name` field in `ProjectMonthlyUsageType` GraphQL API](deprecations.md#deprecation-of-name-field-in-projectmonthlyusagetype-graphql-api) | Low | Fulfillment | Project |  |
 | [Deprecation of `STORAGE` enum in `NamespaceProjectSortEnum` GraphQL API](deprecations.md#deprecation-of-storage-enum-in-namespaceprojectsortenum-graphql-api) | Low | Fulfillment | Group |  |
@@ -49,6 +48,7 @@ This window takes place on May 5 - 7, 2025 from 09:00 UTC to 22:00 UTC.
 
 | Deprecation | Impact | Stage | Scope | Check potential impact |
 |-------------|--------|-------|-------|------------------------|
+| [CI/CD job token - **Limit access from your project** setting removal](deprecations.md#cicd-job-token---limit-access-from-your-project-setting-removal) | High | Software supply chain security | Project | Refer to the [Understanding this change](https://gitlab.com/gitlab-org/gitlab/-/issues/395708#understanding-this-change) section for details. |
 | [Deprecate Terraform CI/CD templates](deprecations.md#deprecate-terraform-cicd-templates) | Medium | Deploy | Project |  |
 | [Deprecate license metadata format V1](deprecations.md#deprecate-license-metadata-format-v1) | Low | Secure | Instance |  |
 | [The `direction` GraphQL argument for `ciJobTokenScopeRemoveProject` is deprecated](deprecations.md#the-direction-graphql-argument-for-cijobtokenscoperemoveproject-is-deprecated) | Low | Govern | Project |  |

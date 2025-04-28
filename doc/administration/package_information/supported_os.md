@@ -86,8 +86,8 @@ These versions of Red Hat Enterprise Linux are supported.
 
 | Operating system version   | First supported GitLab version | Architecture      | Installation documentation                                                          | Operating system EOL | Details |
 |:---------------------------|:-------------------------------|:------------------|:------------------------------------------------------------------------------------|:---------------------|:--------|
-| Red Hat Enterprise Linux 8 | GitLab CE / GitLab EE 12.8.1   | `x86_64`, `arm64` | [Use CentOS installation documentation](https://about.gitlab.com/install/#centos-7) | May 2029             | [Red Hat Enterprise Linux details](https://access.redhat.com/support/policy/updates/errata/#Life_Cycle_Dates) |
-| Red Hat Enterprise Linux 9 | GitLab CE / GitLab EE 16.0.0   | `x86_64`, `arm64` | [Use CentOS installation documentation](https://about.gitlab.com/install/#centos-7) | May 2032             | [Red Hat Enterprise Linux details](https://access.redhat.com/support/policy/updates/errata/#Life_Cycle_Dates) |
+| Red Hat Enterprise Linux 8 | GitLab CE / GitLab EE 12.8.1   | `x86_64`, `arm64` | [Use AlmaLinux installation documentation](https://about.gitlab.com/install/#almalinux) | May 2029             | [Red Hat Enterprise Linux details](https://access.redhat.com/support/policy/updates/errata/#Life_Cycle_Dates) |
+| Red Hat Enterprise Linux 9 | GitLab CE / GitLab EE 16.0.0   | `x86_64`, `arm64` | [Use AlmaLinux installation documentation](https://about.gitlab.com/install/#almalinux) | May 2032             | [Red Hat Enterprise Linux details](https://access.redhat.com/support/policy/updates/errata/#Life_Cycle_Dates) |
 
 ## Ubuntu
 
