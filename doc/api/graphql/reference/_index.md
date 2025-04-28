@@ -22587,7 +22587,17 @@ Compute usage data for hosted runners on GitLab Dedicated.
 | <a id="cidedicatedhostedrunnerusagebillingmonthiso8601"></a>`billingMonthIso8601` | [`ISO8601Date!`](#iso8601date) | Timestamp of the billing month in ISO 8601 format. |
 | <a id="cidedicatedhostedrunnerusagecomputeminutes"></a>`computeMinutes` | [`Int!`](#int) | Total compute minutes used across all namespaces. |
 | <a id="cidedicatedhostedrunnerusagedurationseconds"></a>`durationSeconds` | [`Int!`](#int) | Total duration in seconds of runner usage. |
-| <a id="cidedicatedhostedrunnerusagerootnamespace"></a>`rootNamespace` | [`Namespace`](#namespace) | Namespace associated with the usage data. Null for instance aggregate data. |
+| <a id="cidedicatedhostedrunnerusagerootnamespace"></a>`rootNamespace` | [`NamespaceUnion`](#namespaceunion) | Namespace associated with the usage data. Null for instance aggregate data. |
+
+### `CiDeletedNamespace`
+
+Reference to a namespace that no longer exists.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cideletednamespaceid"></a>`id` | [`NamespaceID`](#namespaceid) | ID of the deleted namespace. |
 
 ### `CiDeletedRunner`
 
@@ -27720,6 +27730,27 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupcomplianceframeworksid"></a>`id` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | Global ID of a specific compliance framework to return. |
 | <a id="groupcomplianceframeworksids"></a>`ids` | [`[ComplianceManagementFrameworkID!]`](#compliancemanagementframeworkid) | List of Global IDs of compliance frameworks to return. |
 | <a id="groupcomplianceframeworkssearch"></a>`search` | [`String`](#string) | Search framework with most similar names. |
+
+##### `Group.componentVersions`
+
+Find software dependency versions by component name.
+
+{{< details >}}
+**Introduced** in GitLab 18.0.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`ComponentVersionConnection!`](#componentversionconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupcomponentversionscomponentname"></a>`componentName` | [`String!`](#string) | Name of the SBoM component. |
 
 ##### `Group.components`
 
@@ -35327,7 +35358,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.componentVersions`
 
-Find software dependency versions by component.
+Find software dependency versions by component name.
 
 {{< details >}}
 **Introduced** in GitLab 17.10.
@@ -35344,7 +35375,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectcomponentversionscomponentid"></a>`componentId` | [`SbomComponentID!`](#sbomcomponentid) | Global ID of the SBoM component. |
+| <a id="projectcomponentversionscomponentname"></a>`componentName` | [`String!`](#string) | Name of the SBoM component. |
 
 ##### `Project.components`
 
@@ -47180,6 +47211,15 @@ One of:
 
 - [`CiBuildNeed`](#cibuildneed)
 - [`CiJob`](#cijob)
+
+#### `NamespaceUnion`
+
+Represents either a namespace or a reference to a deleted namespace.
+
+One of:
+
+- [`CiDeletedNamespace`](#cideletednamespace)
+- [`Namespace`](#namespace)
 
 #### `NoteableType`
 

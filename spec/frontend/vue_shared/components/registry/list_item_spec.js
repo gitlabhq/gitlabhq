@@ -1,24 +1,24 @@
 import { GlButton } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import component from '~/vue_shared/components/registry/list_item.vue';
+import ListItem from '~/vue_shared/components/registry/list_item.vue';
 
 describe('list item', () => {
   let wrapper;
 
-  const findLeftActionSlot = () => wrapper.find('[data-testid="left-action"]');
-  const findLeftPrimarySlot = () => wrapper.find('[data-testid="left-primary"]');
-  const findLeftSecondarySlot = () => wrapper.find('[data-testid="left-secondary"]');
-  const findLeftAfterToggleSlot = () => wrapper.find('[data-testid="left-after-toggle"]');
-  const findRightPrimarySlot = () => wrapper.find('[data-testid="right-primary"]');
-  const findRightSecondarySlot = () => wrapper.find('[data-testid="right-secondary"]');
-  const findRightActionSlot = () => wrapper.find('[data-testid="right-action"]');
+  const findLeftActionSlot = () => wrapper.findByTestId('left-action');
+  const findLeftPrimarySlot = () => wrapper.findByTestId('left-primary');
+  const findLeftSecondarySlot = () => wrapper.findByTestId('left-secondary');
+  const findLeftAfterToggleSlot = () => wrapper.findByTestId('left-after-toggle');
+  const findRightPrimarySlot = () => wrapper.findByTestId('right-primary');
+  const findRightSecondarySlot = () => wrapper.findByTestId('right-secondary');
+  const findRightActionSlot = () => wrapper.findByTestId('right-action');
   const findDetailsSlot = (name) => wrapper.find(`[data-testid="${name}"]`);
   const findToggleDetailsButton = () => wrapper.findComponent(GlButton);
 
   const mountComponent = (propsData, slots) => {
-    wrapper = shallowMount(component, {
+    wrapper = shallowMountExtended(ListItem, {
       propsData,
       slots: {
         'left-action': '<div data-testid="left-action" />',

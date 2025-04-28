@@ -176,19 +176,15 @@ To keep artifacts from the latest successful pipelines:
 
 To allow artifacts to expire according to their expiration settings, clear the checkbox instead.
 
-#### Display external redirect warning page
+#### Display or hide the external redirect warning page
 
-Display a warning page when users view job artifacts through GitLab Pages.
+Control whether to display a warning page when users view job artifacts through GitLab Pages.
 This warning alerts about potential security risks from user-generated content.
 
-By default, this setting is turned on.
+The external redirect warning page is displayed by default. To hide it:
 
-To display the warning page when viewing job artifacts:
-
-1. Select the **Enable the external redirect page for job artifacts** checkbox.
+1. Clear the **Enable the external redirect page for job artifacts** checkbox.
 1. Select **Save changes**.
-
-To allow direct access to job artifacts without warnings, clear the checkbox instead.
 
 ### Jobs
 
@@ -217,14 +213,15 @@ To set up job archiving:
 
 #### Protect CI/CD variables by default
 
-To set all new [CI/CD variables](../../ci/variables/_index.md) as
-[protected](../../ci/variables/_index.md#protect-a-cicd-variable) by default:
+Set all new CI/CD variables in projects and groups to be protected by default.
+Protected variables are available only to pipelines that run on protected branches or protected tags.
 
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Select **Protect CI/CD variables by default**.
+To protect all new CI/CD variables by default:
 
-#### Maximum includes
+1. Select the **Protect CI/CD variables by default** checkbox.
+1. Select **Save changes**.
+
+#### Set maximum includes
 
 {{< history >}}
 
@@ -232,15 +229,18 @@ To set all new [CI/CD variables](../../ci/variables/_index.md) as
 
 {{< /history >}}
 
-The maximum number of [includes](../../ci/yaml/includes.md) per pipeline can be set for the entire instance.
-The default is `150`.
+Limit how many external YAML files a pipeline can include using the [`include` keyword](../../ci/yaml/includes.md).
+This limit prevents performance issues when pipelines include too many files.
 
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Change the value of **Maximum includes**.
-1. Select **Save changes** for the changes to take effect.
+By default, a pipeline can include up to 150 files.
+When a pipeline exceeds this limit, it fails with an error.
 
-#### Maximum downstream pipeline trigger rate
+To set the maximum number of included files per pipeline:
+
+1. Enter a value in the **Maximum includes** field.
+1. Select **Save changes**.
+
+#### Limit downstream pipeline trigger rate
 
 {{< history >}}
 
@@ -248,42 +248,47 @@ The default is `150`.
 
 {{< /history >}}
 
-The maximum number of [downstream pipelines](../../ci/pipelines/downstream_pipelines.md) that can be triggered per minute
-(for a given project, user, and commit) can be set for the entire instance.
-The default value is `0` (no restriction).
+Restrict how many [downstream pipelines](../../ci/pipelines/downstream_pipelines.md)
+can be triggered per minute from a single source.
 
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Change the value of **Maximum downstream pipeline trigger rate**.
-1. Select **Save changes** for the changes to take effect.
+The maximum downstream pipeline trigger rate limits how many downstream pipelines
+can be triggered per minute for a given combination of project, user, and commit.
+The default value is `0`, which means there is no restriction.
 
-#### Default CI/CD configuration file
+To set the maximum downstream pipeline trigger rate:
 
-The default CI/CD configuration file and path for new projects can be set in the **Admin** area
-of your GitLab instance (`.gitlab-ci.yml` if not set):
+1. Enter a value in the **Maximum downstream pipeline trigger rate** field.
+1. Select **Save changes**.
 
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Input the new file and path in the **Default CI/CD configuration file** field.
-1. Select **Save changes** for the changes to take effect.
+#### Specify a default CI/CD configuration file
 
-It is also possible to specify a [custom CI/CD configuration file for a specific project](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file).
+Set a custom path and filename to use as the default for CI/CD configuration files in all new projects.
+By default, GitLab uses the `.gitlab-ci.yml` file in the project's root directory.
 
-#### Disable the pipeline suggestion banner
+This setting applies only to new projects created after you change it.
+Existing projects continue to use their current CI/CD configuration file path.
 
-By default, a banner displays in merge requests with no pipeline suggesting a
-walkthrough on how to add one.
+To set a custom default CI/CD configuration file path:
 
-![A banner displays guidance on how to get started with GitLab Pipelines.](img/suggest_pipeline_banner_v14_5.png)
+1. Enter a value in the **Default CI/CD configuration file** field.
+1. Select **Save changes**.
 
-To disable the banner:
+Individual projects can override this instance default by
+[specifying a custom CI/CD configuration file](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file).
 
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
+#### Display or hide the pipeline suggestion banner
+
+Control whether to display a guidance banner in merge requests that have no pipelines.
+This banner provides a walkthrough on how to add a `.gitlab-ci.yml` file.
+
+![A banner displays guidance on how to get started with GitLab pipelines.](img/suggest_pipeline_banner_v14_5.png)
+
+The pipeline suggestion banner is displayed by default. To hide it:
+
 1. Clear the **Enable pipeline suggestion banner** checkbox.
 1. Select **Save changes**.
 
-#### Disable the migrate from Jenkins banner
+#### Display or hide the Jenkins migration banner
 
 {{< history >}}
 
@@ -291,15 +296,15 @@ To disable the banner:
 
 {{< /history >}}
 
-By default, a banner shows in merge requests in projects with the [Jenkins integration enabled](../../integration/jenkins.md) to prompt migration to GitLab CI/CD.
+Control whether to display a banner encouraging migration from Jenkins to GitLab CI/CD.
+This banner appears in merge requests for projects that have the
+[Jenkins integration enabled](../../integration/jenkins.md).
 
 ![A banner prompting migration from Jenkins to GitLab CI](img/suggest_migrate_from_jenkins_v17_7.png)
 
-To disable the banner:
+The Jenkins migration banner is displayed by default. To hide it:
 
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Clear the **Show the migrate from Jenkins banner** checkbox.
+1. Select the **Show the migrate from Jenkins banner** checkbox.
 1. Select **Save changes**.
 
 ### Set CI/CD limits
@@ -314,26 +319,30 @@ To disable the banner:
 
 {{< /history >}}
 
-You can configure some [CI/CD limits](../instance_limits.md#cicd-limits)
-from the **Admin** area:
+Set CI/CD limits to control resource usage and help prevent performance issues.
+
+You can configure the following CI/CD limits:
 
 <!-- vale gitlab_base.CurrentStatus = NO -->
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand **Continuous Integration and Deployment**.
-1. In the **CI/CD limits** section, you can set the following limits:
-   - **Maximum number of instance-level CI/CD variables**
-   - **Maximum size of a dotenv artifact in bytes**
-   - **Maximum number of variables in a dotenv artifact**
-   - **Maximum number of jobs in a single pipeline**
-   - **Total number of jobs in currently active pipelines**
-   - **Maximum number of pipeline subscriptions to and from a project**
-   - **Maximum number of pipeline schedules**
-   - **Maximum number of needs dependencies that a job can have**
-   - **Maximum number of runners created or active in a group during the past seven days**
-   - **Maximum number of runners created or active in a project during the past seven days**
-   - **Maximum number of downstream pipelines in a pipeline's hierarchy tree**
+- Maximum number of instance-level CI/CD variables
+- Maximum size of a dotenv artifact in bytes
+- Maximum number of variables in a dotenv artifact
+- Maximum number of jobs in a single pipeline
+- Total number of jobs in currently active pipelines
+- Maximum number of pipeline subscriptions to and from a project
+- Maximum number of pipeline schedules
+- Maximum number of needs dependencies that a job can have
+- Maximum number of runners created or active in a group during the past seven days
+- Maximum number of runners created or active in a project during the past seven days
+- Maximum number of downstream pipelines in a pipeline's hierarchy tree
 <!-- vale gitlab_base.CurrentStatus = YES -->
+
+For more information on what these limits control, see [CI/CD limits](../instance_limits.md#cicd-limits).
+
+To configure CI/CD limits:
+
+1. Under **CI/CD limits**, set values for the limits you want to configure.
+1. Select **Save changes**.
 
 ## Package registry configuration
 

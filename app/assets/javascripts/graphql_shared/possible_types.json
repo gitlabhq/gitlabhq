@@ -135,6 +135,10 @@
     "PendingProjectMember",
     "ProjectMember"
   ],
+  "NamespaceUnion": [
+    "CiDeletedNamespace",
+    "Namespace"
+  ],
   "NoteableInterface": [
     "AlertManagementAlert",
     "BoardEpic",

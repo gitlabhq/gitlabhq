@@ -1,7 +1,7 @@
 import { GlIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
-import component from '~/vue_shared/components/registry/history_item.vue';
+import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
 
 describe('History Item', () => {
   let wrapper;
@@ -10,7 +10,7 @@ describe('History Item', () => {
   };
 
   const mountComponent = () => {
-    wrapper = shallowMount(component, {
+    wrapper = shallowMountExtended(HistoryItem, {
       propsData: { ...defaultProps },
       stubs: {
         TimelineEntryItem,
@@ -24,8 +24,8 @@ describe('History Item', () => {
 
   const findTimelineEntry = () => wrapper.findComponent(TimelineEntryItem);
   const findGlIcon = () => wrapper.findComponent(GlIcon);
-  const findDefaultSlot = () => wrapper.find('[data-testid="default-slot"]');
-  const findBodySlot = () => wrapper.find('[data-testid="body-slot"]');
+  const findDefaultSlot = () => wrapper.findByTestId('default-slot');
+  const findBodySlot = () => wrapper.findByTestId('body-slot');
 
   it('renders the correct markup', () => {
     mountComponent();

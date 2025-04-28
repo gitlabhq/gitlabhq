@@ -24,6 +24,7 @@
               = link_to "#{Gitlab::CurrentSettings.gitpod_url}##{merge_request_url(@merge_request)}", target: '_blank', class: 'dropdown-item' do
                 .gl-dropdown-item-text-wrapper
                   = _('Open in Gitpod')
+          = render_if_exists 'projects/merge_requests/code_dropdown_open_in_workspace'
           %li.gl-dropdown-divider
             %hr.dropdown-divider
           %li.gl-dropdown-section-header

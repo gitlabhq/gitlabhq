@@ -1,7 +1,7 @@
 import { GlToggle, GlSprintf } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { GlFormGroup } from 'jest/packages_and_registries/shared/stubs';
-import component from '~/packages_and_registries/settings/project/components/expiration_toggle.vue';
+import ExpirationToggle from '~/packages_and_registries/settings/project/components/expiration_toggle.vue';
 import {
   ENABLED_TOGGLE_DESCRIPTION,
   DISABLED_TOGGLE_DESCRIPTION,
@@ -11,27 +11,29 @@ describe('ExpirationToggle', () => {
   let wrapper;
 
   const findToggle = () => wrapper.findComponent(GlToggle);
-  const findDescription = () => wrapper.find('[data-testid="description"]');
+  const findDescription = () => wrapper.findByTestId('description');
 
-  const mountComponent = (propsData) => {
-    wrapper = shallowMount(component, {
+  const createComponent = (props = {}) => {
+    wrapper = shallowMountExtended(ExpirationToggle, {
       stubs: {
         GlFormGroup,
         GlSprintf,
       },
-      propsData,
+      propsData: {
+        ...props,
+      },
     });
   };
 
   describe('structure', () => {
     it('has a toggle component', () => {
-      mountComponent();
+      createComponent();
 
-      expect(findToggle().props('label')).toBe(component.i18n.toggleLabel);
+      expect(findToggle().props('label')).toBe(ExpirationToggle.i18n.toggleLabel);
     });
 
     it('has a description', () => {
-      mountComponent();
+      createComponent();
 
       expect(findDescription().exists()).toBe(true);
     });
@@ -39,7 +41,7 @@ describe('ExpirationToggle', () => {
 
   describe('model', () => {
     it('assigns the right props to the toggle component', () => {
-      mountComponent({ value: true, disabled: true });
+      createComponent({ value: true, disabled: true });
 
       expect(findToggle().props()).toMatchObject({
         value: true,
@@ -48,7 +50,7 @@ describe('ExpirationToggle', () => {
     });
 
     it('emits input event when toggle is updated', () => {
-      mountComponent();
+      createComponent();
 
       findToggle().vm.$emit('change', false);
 
@@ -58,13 +60,13 @@ describe('ExpirationToggle', () => {
 
   describe('toggle description', () => {
     it('says enabled when the toggle is on', () => {
-      mountComponent({ value: true });
+      createComponent({ value: true });
 
       expect(findDescription().text()).toMatchInterpolatedText(ENABLED_TOGGLE_DESCRIPTION);
     });
 
     it('says disabled when the toggle is off', () => {
-      mountComponent({ value: false });
+      createComponent({ value: false });
 
       expect(findDescription().text()).toMatchInterpolatedText(DISABLED_TOGGLE_DESCRIPTION);
     });

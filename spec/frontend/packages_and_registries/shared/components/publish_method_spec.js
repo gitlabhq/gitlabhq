@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PublishMethod from '~/packages_and_registries/shared/components/publish_method.vue';
 import { packageList } from 'jest/packages_and_registries/infrastructure_registry/components/mock_data';
 
@@ -7,12 +7,12 @@ describe('publish_method', () => {
 
   const [packageWithoutPipeline, packageWithPipeline] = packageList;
 
-  const findPipelineRef = () => wrapper.find('[data-testid="pipeline-ref"]');
-  const findPipelineSha = () => wrapper.find('[data-testid="pipeline-sha"]');
-  const findManualPublish = () => wrapper.find('[data-testid="manually-published"]');
+  const findPipelineRef = () => wrapper.findByTestId('pipeline-ref');
+  const findPipelineSha = () => wrapper.findByTestId('pipeline-sha');
+  const findManualPublish = () => wrapper.findByTestId('manually-published');
 
   const mountComponent = (packageEntity = {}, isGroup = false) => {
-    wrapper = shallowMount(PublishMethod, {
+    wrapper = shallowMountExtended(PublishMethod, {
       propsData: {
         packageEntity,
         isGroup,

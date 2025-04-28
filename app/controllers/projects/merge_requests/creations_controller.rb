@@ -130,7 +130,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     @source_project = @merge_request.source_project
 
     recent_commits = @merge_request.recent_commits(
-      load_from_gitaly: Feature.enabled?(:more_commits_from_gitaly, @target_project)
+      load_from_gitaly: Feature.enabled?(:commits_from_gitaly, @target_project)
     ).with_latest_pipeline(@merge_request.source_branch)
 
     @commits = set_commits_for_rendering(

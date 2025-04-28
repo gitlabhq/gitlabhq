@@ -57,7 +57,6 @@ ee/spec/frontend/status_checks/mount_spec.js
 ee/spec/frontend/usage_quotas/transfer/components/usage_by_month_spec.js
 ee/spec/frontend/users/identity_verification/components/international_phone_input_spec.js
 ee/spec/frontend/users/identity_verification/components/verify_phone_verification_code_spec.js
-ee/spec/frontend/vue_shared/components/projects_list/projects_list_item_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js
 spec/frontend/access_tokens/index_spec.js
 spec/frontend/admin/abuse_report/components/reported_content_spec.js

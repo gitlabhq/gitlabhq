@@ -4,9 +4,9 @@ import { GlIcon, GlBadge, GlTooltip } from '@gitlab/ui';
 import {
   renderDeleteSuccessToast,
   deleteParams,
-} from 'ee_else_ce/vue_shared/components/projects_list/utils';
+} from '~/vue_shared/components/projects_list/utils';
 import ProjectListItemDescription from '~/vue_shared/components/projects_list/project_list_item_description.vue';
-import ProjectListItemActions from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_actions.vue';
+import ProjectListItemActions from '~/vue_shared/components/projects_list/project_list_item_actions.vue';
 import ProjectListItemInactiveBadge from '~/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
 import { VISIBILITY_TYPE_ICON, PROJECT_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
@@ -15,6 +15,7 @@ import { __, s__, n__, sprintf } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
+import ProjectListItemDelayedDeletionModalFooter from '~/vue_shared/components/projects_list/project_list_item_delayed_deletion_modal_footer.vue';
 import {
   TIMESTAMP_TYPES,
   TIMESTAMP_TYPE_CREATED_AT,
@@ -53,10 +54,7 @@ export default {
     ProjectListItemInactiveBadge,
     CiIcon,
     TopicBadges,
-    ProjectListItemDelayedDeletionModalFooter: () =>
-      import(
-        'ee_component/vue_shared/components/projects_list/project_list_item_delayed_deletion_modal_footer.vue'
-      ),
+    ProjectListItemDelayedDeletionModalFooter,
   },
   props: {
     /**

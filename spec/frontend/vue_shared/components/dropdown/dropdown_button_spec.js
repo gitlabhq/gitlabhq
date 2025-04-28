@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 
 describe('DropdownButton component', () => {
@@ -8,7 +8,10 @@ describe('DropdownButton component', () => {
   const customLabel = 'Select project';
 
   const createComponent = (props, slots = {}) => {
-    wrapper = mount(DropdownButton, { propsData: props, slots });
+    wrapper = mountExtended(DropdownButton, {
+      propsData: { ...props },
+      slots,
+    });
   };
 
   describe('computed', () => {
@@ -54,7 +57,7 @@ describe('DropdownButton component', () => {
     it('renders dropdown button icon', () => {
       createComponent();
 
-      expect(wrapper.find('[data-testid="chevron-down-icon"]').exists()).toBe(true);
+      expect(wrapper.findByTestId('chevron-down-icon').exists()).toBe(true);
     });
 
     it('renders slot, if default slot exists', () => {

@@ -1,19 +1,15 @@
-import { mount } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 
 describe('PackagesListLoader', () => {
   let wrapper;
 
-  const createComponent = (props = {}) => {
-    wrapper = mount(PackagesListLoader, {
-      propsData: {
-        ...props,
-      },
-    });
+  const createComponent = () => {
+    wrapper = mountExtended(PackagesListLoader);
   };
 
-  const findDesktopShapes = () => wrapper.find('[data-testid="desktop-loader"]');
-  const findMobileShapes = () => wrapper.find('[data-testid="mobile-loader"]');
+  const findDesktopShapes = () => wrapper.findByTestId('desktop-loader');
+  const findMobileShapes = () => wrapper.findByTestId('mobile-loader');
 
   beforeEach(createComponent);
 

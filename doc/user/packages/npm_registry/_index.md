@@ -37,7 +37,7 @@ To authenticate, you can use:
 
 If your organization uses two-factor authentication (2FA), you must use a personal access token with the scope set to `api`.
 If you want to publish a package with a CI/CD pipeline, you must use a CI/CD job token.
-For more information, review the [guidance on tokens](../package_registry/_index.md#authenticate-with-the-registry).
+For more information, review the [guidance on tokens](../package_registry/supported_functionality.md#authenticate-with-the-registry).
 
 Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.
 

@@ -1,5 +1,5 @@
 import { GlIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import IssuableMilestone from '~/vue_shared/issuable/list/components/issuable_milestone.vue';
 import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
@@ -19,11 +19,14 @@ describe('IssuableMilestone component', () => {
   const findWorkItemAttribute = () => wrapper.findComponent(WorkItemAttribute);
 
   const mountComponent = ({ milestone = milestoneObject() } = {}) =>
-    shallowMount(IssuableMilestone, { propsData: { milestone }, stubs: { WorkItemAttribute } });
+    shallowMountExtended(IssuableMilestone, {
+      propsData: { milestone },
+      stubs: { WorkItemAttribute },
+    });
 
   it('renders milestone link', () => {
     wrapper = mountComponent();
-    const milestoneEl = wrapper.find('[data-testid="issuable-milestone"]');
+    const milestoneEl = wrapper.findByTestId('issuable-milestone');
 
     expect(findWorkItemAttribute().props('title')).toBe('My milestone');
     expect(milestoneEl.findComponent(GlIcon).props('name')).toBe('milestone');

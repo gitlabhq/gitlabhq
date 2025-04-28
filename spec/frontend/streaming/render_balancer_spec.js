@@ -66,4 +66,17 @@ describe('renderBalancer', () => {
     expect(increase).toHaveBeenCalled();
     expect(decrease).not.toHaveBeenCalled();
   });
+
+  it('aborts', () => {
+    let tick;
+    jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      tick = () => cb();
+    });
+    const callback = jest.fn();
+    const balancer = createBalancer();
+    balancer.render(callback);
+    balancer.abort();
+    tick();
+    expect(callback).not.toHaveBeenCalled();
+  });
 });

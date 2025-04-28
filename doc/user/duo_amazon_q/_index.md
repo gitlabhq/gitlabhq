@@ -30,10 +30,11 @@ If you have a GitLab Duo Pro or Duo Enterprise add-on, this feature is not avail
 At Re:Invent 2024, Amazon announced the GitLab Duo with Amazon Q integration.
 With this integration, you can automate tasks and increase productivity.
 
-To get a subscription to GitLab Duo with Amazon Q, contact your Account Executive.
-
-For a click-through demo, see [the GitLab Duo with Amazon Q Product Tour](https://gitlab.navattic.com/duo-with-q).
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab Duo with Amazon Q - From idea to merge request](https://youtu.be/jxxzNst3jpo?si=QHO8JnPgMoFIllbL) <!-- Video published on 2025-04-17 -->
+- For a click-through demo, see [the GitLab Duo with Amazon Q Product Tour](https://gitlab.navattic.com/duo-with-q).
 <!-- Demo published on 2025-04-23 -->
+
+To get a subscription to GitLab Duo with Amazon Q, contact your Account Executive.
 
 ## Set up GitLab Duo with Amazon Q
 

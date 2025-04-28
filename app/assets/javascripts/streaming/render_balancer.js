@@ -1,5 +1,6 @@
 export class RenderBalancer {
   previousTimestamp = undefined;
+  #aborted = false;
 
   constructor({ increase, decrease, highFrameTime, lowFrameTime }) {
     this.increase = increase;
@@ -12,7 +13,7 @@ export class RenderBalancer {
     return new Promise((resolve) => {
       const callback = (timestamp) => {
         this.throttle(timestamp);
-        if (fn()) requestAnimationFrame(callback);
+        if (!this.#aborted && fn()) requestAnimationFrame(callback);
         else resolve();
       };
       requestAnimationFrame(callback);
@@ -32,5 +33,9 @@ export class RenderBalancer {
     } else if (duration < this.lowFrameTime) {
       this.increase();
     }
+  }
+
+  abort() {
+    this.#aborted = true;
   }
 }

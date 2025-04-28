@@ -28,7 +28,7 @@ Learn how to [install NuGet](../workflows/build_packages.md#nuget).
 ## Authenticate to the package registry
 
 You need an authentication token to access the GitLab package registry. Different tokens are available depending on what you're trying to
-achieve. For more information, review the [guidance on tokens](../package_registry/_index.md#authenticate-with-the-registry).
+achieve. For more information, review the [guidance on tokens](../package_registry/supported_functionality.md#authenticate-with-the-registry).
 
 - If your organization uses two-factor authentication (2FA), you must use a
   [personal access token](../../profile/personal_access_tokens.md) with the scope set to `api`.

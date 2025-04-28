@@ -202,7 +202,7 @@ And optionally:
     pipeline run, the new pipeline uses the changed configuration.
 - You can have up to 150 includes per pipeline by default, including [nested](includes.md#use-nested-includes). Additionally:
   - In [GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) users on GitLab Self-Managed can
-    change the [maximum includes](../../administration/settings/continuous_integration.md#maximum-includes) value.
+    change the [maximum includes](../../administration/settings/continuous_integration.md#set-maximum-includes) value.
   - In [GitLab 15.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367150) you can have up to 150 includes.
     In nested includes, the same file can be included multiple times, but duplicated includes
     count towards the limit.

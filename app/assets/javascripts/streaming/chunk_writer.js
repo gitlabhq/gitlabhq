@@ -159,6 +159,7 @@ export class ChunkWriter {
   }
 
   abort() {
+    this.balancer.abort();
     this.scheduleAccumulatorFlush.cancel();
     this.buffer = null;
     this.htmlStream.abort();

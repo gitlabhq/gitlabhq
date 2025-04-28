@@ -548,15 +548,16 @@ and the analysis is tracked as a Snowplow event.
 
 The analysis can contain any of the attributes defined in the latest [iglu schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/ai_question_category/jsonschema).
 
-- All possible "category" and "detailed_category" are listed [here](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/fixtures/categories.xml).
-- The following is yet to be implemented:
-  - "is_proper_sentence"
-- The following are deprecated:
-  - "number_of_questions_in_history"
-  - "length_of_questions_in_history"
-  - "time_since_first_question"
+- The categories and detailed categories have been predefined by the product manager and the product designer, as we are not allowed to look at the actual questions from users. If there is reason to believe that there are missing or confusing categories, they can be changed. To edit the definitions, update `categories.xml` in both [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/ai_gateway/prompts/definitions/categorize_question/categories.xml) and [monolith](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/fixtures/categories.xml). 
+- The list of attributes captured can be found in [labesl.xml](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/ai_gateway/prompts/definitions/categorize_question/labels.xml).
+  - The following is yet to be implemented:
+    - `is_proper_sentence`
+  - The following are deprecated:
+    - `number_of_questions_in_history`
+    - `length_of_questions_in_history`
+    - `time_since_first_question`
 
-[Dashboards](https://handbook.gitlab.com/handbook/engineering/development/data-science/duo-chat/#-dashboards-internal-only) can be created to visualize the collected data.
+The request count and the user count for each question category and detail category can be reviewed in [this Tableau dashboard](https://10az.online.tableau.com/#/site/gitlab/views/DuoCategoriesofQuestions/DuoCategories) (GitLab team members only).
 
 ## How `access_duo_chat` policy works
 

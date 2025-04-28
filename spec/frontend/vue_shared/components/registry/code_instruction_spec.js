@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
@@ -14,7 +14,7 @@ describe('Package code instruction', () => {
   };
 
   function createComponent(props = {}) {
-    wrapper = shallowMount(CodeInstruction, {
+    wrapper = shallowMountExtended(CodeInstruction, {
       propsData: {
         ...defaultProps,
         ...props,
@@ -23,8 +23,8 @@ describe('Package code instruction', () => {
   }
 
   const findCopyButton = () => wrapper.findComponent(ClipboardButton);
-  const findInputElement = () => wrapper.find('[data-testid="instruction-input"]');
-  const findMultilineInstruction = () => wrapper.find('[data-testid="multiline-instruction"]');
+  const findInputElement = () => wrapper.findByTestId('instruction-input');
+  const findMultilineInstruction = () => wrapper.findByTestId('multiline-instruction');
 
   describe('single line', () => {
     beforeEach(() =>

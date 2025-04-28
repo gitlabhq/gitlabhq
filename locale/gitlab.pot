@@ -704,6 +704,9 @@ msgstr ""
 msgid "%{commit_author_link} authored %{commit_authored_timeago} and %{commit_committer_avatar} %{commit_committer_link} committed %{commit_committer_timeago}"
 msgstr ""
 
+msgid "%{completedCount} completed"
+msgstr ""
+
 msgid "%{completedCount} completed weight"
 msgstr ""
 
@@ -822,6 +825,9 @@ msgid "%{count} selected"
 msgstr ""
 
 msgid "%{count} tags"
+msgstr ""
+
+msgid "%{count} total"
 msgstr ""
 
 msgid "%{count} total weight"
@@ -1572,6 +1578,9 @@ msgstr ""
 msgid "%{total} remaining issue weight"
 msgstr ""
 
+msgid "%{total} remaining weight"
+msgstr ""
+
 msgid "%{total} warnings found: showing first %{warningsDisplayed}"
 msgstr ""
 
@@ -1739,6 +1748,9 @@ msgstr ""
 msgid "(Unlimited compute minutes)"
 msgstr ""
 
+msgid "(closed)"
+msgstr ""
+
 msgid "(code expired)"
 msgstr ""
 
@@ -1758,6 +1770,9 @@ msgid "(leave blank if you don't want to change it)"
 msgstr ""
 
 msgid "(no user)"
+msgstr ""
+
+msgid "(open and unassigned)"
 msgstr ""
 
 msgid "(optional)"
@@ -18262,6 +18277,9 @@ msgid "Couldn't re-order due to an internal error."
 msgstr ""
 
 msgid "Couldn't reorder child due to an internal error."
+msgstr ""
+
+msgid "Count"
 msgstr ""
 
 msgid "Counter exceeded max value"
@@ -38291,6 +38309,9 @@ msgstr ""
 msgid "MilestoneSidebar|Until"
 msgstr ""
 
+msgid "MilestoneSidebar|Work items"
+msgstr ""
+
 msgid "MilestoneSidebar|complete"
 msgstr ""
 
@@ -38301,6 +38322,9 @@ msgid "Milestones| You’re about to permanently delete the milestone %{mileston
 msgstr ""
 
 msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle}. This milestone is not currently used in any issues or merge requests."
+msgstr ""
+
+msgid "Milestones|Completed"
 msgstr ""
 
 msgid "Milestones|Completed Issues (closed)"
@@ -38327,6 +38351,9 @@ msgstr ""
 msgid "Milestones|No labels found"
 msgstr ""
 
+msgid "Milestones|Ongoing"
+msgstr ""
+
 msgid "Milestones|Ongoing Issues (open and assigned)"
 msgstr ""
 
@@ -38349,6 +38376,9 @@ msgid "Milestones|There are no open milestones"
 msgstr ""
 
 msgid "Milestones|This action cannot be reversed."
+msgstr ""
+
+msgid "Milestones|Unstarted"
 msgstr ""
 
 msgid "Milestones|Unstarted Issues (open and unassigned)"
@@ -42221,6 +42251,9 @@ msgid "Open in Gitpod"
 msgstr ""
 
 msgid "Open in Web IDE"
+msgstr ""
+
+msgid "Open in Workspace"
 msgstr ""
 
 msgid "Open in file view"
@@ -57410,6 +57443,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Showing %{limit} of %{total_count} issues. "
+msgstr ""
+
+msgid "Showing %{limit} of %{total_count} items. "
 msgstr ""
 
 msgid "Showing %{pageSize} of %{total} %{issuableType}"

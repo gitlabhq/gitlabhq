@@ -65,10 +65,7 @@ To change profile details, including name and email address:
 1. Edit **Your personal details**.
 1. Select **Save changes**.
 
-If you want to transfer ownership of the Customers Portal profile
-to another person, after you enter that person's personal details, you must also:
-
-- [Change the linked GitLab.com account](#change-the-linked-account), if you have one linked.
+You can also [transfer ownership of the Customers Portal profile and billing account](https://support.gitlab.com/hc/en-us/articles/17767356437148-How-to-transfer-subscription-ownership) to another person.
 
 ## Change your company details
 

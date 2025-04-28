@@ -13,7 +13,7 @@ script job block that is responsible for calling `yarn publish`. The Yarn versio
 ## Authenticating to the package registry
 
 You need a token to interact with the package registry. Different tokens are available depending on what you're trying to
-achieve. For more information, review the [guidance on tokens](../package_registry/_index.md#authenticate-with-the-registry).
+achieve. For more information, review the [guidance on tokens](../package_registry/supported_functionality.md#authenticate-with-the-registry).
 
 - If your organization uses two-factor authentication (2FA), you must use a
   [personal access token](../../profile/personal_access_tokens.md) with the scope set to `api`.

@@ -1,6 +1,6 @@
 import { GlIcon, GlBadge, GlButton, GlIntersectionObserver } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 import IssuableTitle from '~/vue_shared/issuable/show/components/issuable_title.vue';
@@ -14,7 +14,7 @@ const issuableTitleProps = {
 };
 
 const createComponent = (propsData = issuableTitleProps) =>
-  shallowMount(IssuableTitle, {
+  shallowMountExtended(IssuableTitle, {
     propsData,
     slots: {
       'status-badge': 'Open',
@@ -27,7 +27,7 @@ const createComponent = (propsData = issuableTitleProps) =>
 describe('IssuableTitle', () => {
   let wrapper;
 
-  const findStickyHeader = () => wrapper.find('[data-testid="header"]');
+  const findStickyHeader = () => wrapper.findByTestId('header');
 
   beforeEach(() => {
     wrapper = createComponent();
@@ -66,7 +66,7 @@ describe('IssuableTitle', () => {
       });
 
       await nextTick();
-      const titleEl = wrapperWithTitle.find('[data-testid="issuable-title"]');
+      const titleEl = wrapperWithTitle.findByTestId('issuable-title');
 
       expect(titleEl.exists()).toBe(true);
       expect(titleEl.element.innerHTML).toBe('<b>Sample</b> title');

@@ -4,9 +4,10 @@ import projects from 'test_fixtures/api/users/projects/get.json';
 import { stubComponent } from 'helpers/stub_component';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ProjectListItemDescription from '~/vue_shared/components/projects_list/project_list_item_description.vue';
-import ProjectListItemActions from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_actions.vue';
+import ProjectListItemActions from '~/vue_shared/components/projects_list/project_list_item_actions.vue';
 import ProjectListItemInactiveBadge from '~/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
 import ProjectsListItem from '~/vue_shared/components/projects_list/projects_list_item.vue';
+import ProjectListItemDelayedDeletionModalFooter from '~/vue_shared/components/projects_list/project_list_item_delayed_deletion_modal_footer.vue';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -27,7 +28,7 @@ import {
 import {
   renderDeleteSuccessToast,
   deleteParams,
-} from 'ee_else_ce/vue_shared/components/projects_list/utils';
+} from '~/vue_shared/components/projects_list/utils';
 import { deleteProject } from '~/api/projects_api';
 import { createAlert } from '~/alert';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -36,8 +37,8 @@ const MOCK_DELETE_PARAMS = {
   testParam: true,
 };
 
-jest.mock('ee_else_ce/vue_shared/components/projects_list/utils', () => ({
-  ...jest.requireActual('ee_else_ce/vue_shared/components/projects_list/utils'),
+jest.mock('~/vue_shared/components/projects_list/utils', () => ({
+  ...jest.requireActual('~/vue_shared/components/projects_list/utils'),
   renderDeleteSuccessToast: jest.fn(),
   deleteParams: jest.fn(() => MOCK_DELETE_PARAMS),
 }));
@@ -84,6 +85,8 @@ describe('ProjectsListItem', () => {
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findTopicBadges = () => wrapper.findComponent(TopicBadges);
   const findDeleteModal = () => wrapper.findComponent(DeleteModal);
+  const findDelayedDeletionModalFooter = () =>
+    wrapper.findComponent(ProjectListItemDelayedDeletionModalFooter);
   const deleteModalFirePrimaryEvent = async () => {
     findDeleteModal().vm.$emit('primary');
     await nextTick();
@@ -611,5 +614,23 @@ describe('ProjectsListItem', () => {
     createComponent({ propsData: { listItemClass: 'foo' } });
 
     expect(wrapper.element.firstChild.classList).toContain('foo');
+  });
+
+  describe('ProjectListItemDelayedDeletionModalFooter', () => {
+    const deleteProps = {
+      project: {
+        ...project,
+        availableActions: [ACTION_DELETE],
+        actionLoadingStates: { [ACTION_DELETE]: false },
+      },
+    };
+
+    it('renders modal footer', () => {
+      createComponent({ propsData: deleteProps });
+      findListActions().vm.$emit('delete');
+
+      expect(findDeleteModal().exists()).toBe(true);
+      expect(findDelayedDeletionModalFooter().exists()).toBe(false);
+    });
   });
 });

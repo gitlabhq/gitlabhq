@@ -12,6 +12,7 @@ describe('ChunkWriter', () => {
   let abort;
   let config;
   let render;
+  let abortBalancer;
   let cancelTimer;
   let runTimer;
 
@@ -58,7 +59,8 @@ describe('ChunkWriter', () => {
         // render until 'false'
       }
     });
-    RenderBalancer.mockImplementation(() => ({ render }));
+    abortBalancer = jest.fn();
+    RenderBalancer.mockImplementation(() => ({ render, abort: abortBalancer }));
     cancelTimer = jest.fn();
     throttle.mockImplementation((fn) => {
       const promise = new Promise((resolve) => {
@@ -253,6 +255,7 @@ describe('ChunkWriter', () => {
     config = { signal: controller.signal };
     createWriter().write(createChunk('1234567890'));
     controller.abort();
+    expect(abortBalancer).toHaveBeenCalledTimes(1);
     expect(abort).toHaveBeenCalledTimes(1);
     expect(write).not.toHaveBeenCalled();
   });

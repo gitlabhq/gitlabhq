@@ -1,6 +1,6 @@
 import { GlFormInput } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import IssuableEditForm from '~/vue_shared/issuable/show/components/issuable_edit_form.vue';
 import IssuableEventHub from '~/vue_shared/issuable/show/event_hub';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
@@ -21,7 +21,7 @@ const issuableEditFormProps = {
 };
 
 const createComponent = ({ propsData = issuableEditFormProps } = {}) =>
-  shallowMount(IssuableEditForm, {
+  shallowMountExtended(IssuableEditForm, {
     propsData,
     stubs: {
       MarkdownEditor,
@@ -43,6 +43,10 @@ describe('IssuableEditForm', () => {
     expect(eventSpy).toHaveBeenNthCalledWith(1, 'update.issuable', expect.any(Function));
     expect(eventSpy).toHaveBeenNthCalledWith(2, 'close.form', expect.any(Function));
   };
+
+  const findActions = () => wrapper.findByTestId('actions');
+  const findTitle = () => wrapper.findByTestId('title');
+  const findDescription = () => wrapper.findByTestId('description');
 
   beforeEach(() => {
     wrapper = createComponent();
@@ -134,7 +138,7 @@ describe('IssuableEditForm', () => {
 
   describe('template', () => {
     it('renders title input field', () => {
-      const titleInputEl = wrapper.find('[data-testid="title"]');
+      const titleInputEl = findTitle();
 
       expect(titleInputEl.exists()).toBe(true);
       expect(titleInputEl.findComponent(GlFormInput).attributes()).toMatchObject({
@@ -144,7 +148,7 @@ describe('IssuableEditForm', () => {
     });
 
     it('renders description textarea field', () => {
-      const descriptionEl = wrapper.find('[data-testid="description"]');
+      const descriptionEl = findDescription();
 
       expect(descriptionEl.exists()).toBe(true);
       expect(descriptionEl.findComponent(MarkdownField).props()).toMatchObject({
@@ -161,13 +165,11 @@ describe('IssuableEditForm', () => {
     });
 
     it('allows switching to rich text editor', () => {
-      const descriptionEl = wrapper.find('[data-testid="description"]');
-
-      expect(descriptionEl.text()).toContain('Switch to rich text editing');
+      expect(findDescription().text()).toContain('Switch to rich text editing');
     });
 
     it('renders form actions', () => {
-      const actionsEl = wrapper.find('[data-testid="actions"]');
+      const actionsEl = findActions();
 
       expect(actionsEl.find('button.js-save').exists()).toBe(true);
       expect(actionsEl.find('button.js-cancel').exists()).toBe(true);
@@ -194,7 +196,7 @@ describe('IssuableEditForm', () => {
       });
 
       it('component emits `keydown-description` event with event object and issuableMeta params via textarea', () => {
-        const descriptionInputEl = wrapper.find('[data-testid="description"] textarea');
+        const descriptionInputEl = findDescription().find('textarea');
 
         descriptionInputEl.trigger('keydown', eventObj, 'description');
         expect(wrapper.emitted('keydown-description')).toHaveLength(1);
