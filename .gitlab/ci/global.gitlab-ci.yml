@@ -468,6 +468,21 @@
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.es8-services, services]
 
+.opensearch-latest-services:
+  services:
+    - !reference [.zoekt-services, services]
+    - name: opensearchproject/opensearch:latest
+      alias: elasticsearch
+      command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
+
+.use-pg16-opensearch-latest-ee:
+  extends:
+    - .use-pg16
+    - .zoekt-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.opensearch-latest-services, services]
+
 .os1-services:
   services:
     - !reference [.zoekt-services, services]

@@ -313,7 +313,6 @@ RSpec/BeEq:
     - 'ee/spec/requests/api/graphql/audit_events/streaming/http/namespace_filters/create_spec.rb'
     - 'ee/spec/requests/api/graphql/audit_events/streaming/instance_headers/create_spec.rb'
     - 'ee/spec/requests/api/graphql/boards/boards_query_spec.rb'
-    - 'ee/spec/requests/api/graphql/gitlab_subscriptions/add_on_purchase_spec.rb'
     - 'ee/spec/requests/api/graphql/gitlab_subscriptions/namespaces/add_on_purchase_spec.rb'
     - 'ee/spec/requests/api/graphql/group/ci_cd_settings_spec.rb'
     - 'ee/spec/requests/api/graphql/group/dast_profile_schedule_spec.rb'

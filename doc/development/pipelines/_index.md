@@ -755,6 +755,7 @@ NOTE: With the addition of PG17, we are close to the limit of nightly jobs, with
 | `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05)   | 16 (default version)                | 3.2 (default version) |
 | `maintenance` scheduled pipelines for the `ruby-next` branch (every odd-numbered hour at XX:10) | 16 (default version)                | 3.3                   |
 | `nightly` scheduled pipelines for the `master` branch                                           | 16 (default version), 14, 15 and 17 | 3.2 (default version) |
+| `weekly` scheduled pipelines for the `master` branch                                            | 16 (default version)                | 3.2 (default version) |
 
 For the next Ruby versions we're testing against with, we run
 maintenance scheduled pipelines every 2 hours on the `ruby-next` branch.
@@ -811,6 +812,7 @@ test suites use PostgreSQL 16 because there is no dependency between the databas
 |-------------------------------------------------------------------------------------------------|-----------------------|----------------------|----------------------|
 | Merge requests with label `~group::global search` or `~pipeline:run-search-tests`               | 8.X (production)      |                      | 16 (default version) |
 | `nightly` scheduled pipelines for the `master` branch                                           | 7.X, 8.X (production) | 1.X, 2.X             | 16 (default version) |
+| `weekly` scheduled pipelines for the `master` branch                                            |                       | latest               | 16 (default version) |
 
 ## Monitoring
 

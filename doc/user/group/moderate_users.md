@@ -85,14 +85,6 @@ To unban a user:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461339) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `group_remove_dormant_members`. Disabled by default.
 > [Released](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178851) as a [beta](../../policy/development_stages_support.md#beta) feature in GitLab 17.9.
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
-
 Prerequisites:
 
 - You must have the Owner role for the group.

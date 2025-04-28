@@ -249,7 +249,11 @@ You can also add additional instructions to be considered. For example:
 - `/explain how concurrency works in this context` (Go)
 - `/explain how the request reaches the client` (REST API, database)
 
-For more information, see [Use GitLab Duo Chat in VS Code](_index.md#use-gitlab-duo-chat-in-vs-code).
+For more information, see:
+
+- [Use GitLab Duo Chat in VS Code](_index.md#use-gitlab-duo-chat-in-vs-code).
+- <i class="fa-youtube-play" aria-hidden="true"></i> [Application modernization with GitLab Duo (C++ to Java)](https://youtu.be/FjoAmt5eeXA?si=SLv9Mv8eSUAVwW5Z).
+  <!-- Video published on 2025-03-18 -->
 
 In the GitLab UI, you can also explain code in:
 
@@ -419,6 +423,9 @@ You can include additional instructions to be considered. For example:
 - Refactor to a different programming language, for example `/refactor to TypeScript`.
 - Focus on performance, for example `/refactor improving performance`.
 - Focus on potential vulnerabilities, for example `/refactor avoiding memory leaks and exploits`.
+
+For more information, see <i class="fa-youtube-play" aria-hidden="true"></i> [Application modernization with GitLab Duo (C++ to Java)](https://youtu.be/FjoAmt5eeXA?si=SLv9Mv8eSUAVwW5Z).
+  <!-- Video published on 2025-03-18 -->
 
 ## Fix code in the IDE
 

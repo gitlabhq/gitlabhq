@@ -252,8 +252,9 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     describe '.review_states' do
       let(:states) { MergeRequestReviewer.states[:requested_changes] }
+      let(:ignored_reviewer) { nil }
 
-      subject(:merge_requests) { described_class.review_states(states) }
+      subject(:merge_requests) { described_class.review_states(states, ignored_reviewer) }
 
       it 'returns MRs that have a reviewer with the passed state' do
         expect(merge_requests).to eq([merge_request1])
@@ -264,14 +265,32 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         it { expect(merge_requests).to match_array([merge_request1, merge_request2]) }
       end
+
+      context 'when ignoring a reviewer' do
+        let(:states) { [MergeRequestReviewer.states[:reviewed], MergeRequestReviewer.states[:requested_changes]] }
+        let(:ignored_reviewer) { user1 }
+
+        it { expect(merge_requests).to contain_exactly(merge_request2) }
+      end
     end
 
     describe '.no_review_states' do
       let(:states) { [MergeRequestReviewer.states[:requested_changes]] }
+      let(:ignored_reviewer) { nil }
 
-      subject(:merge_requests) { described_class.no_review_states(states) }
+      subject(:merge_requests) { described_class.no_review_states(states, ignored_reviewer) }
 
       it { expect(merge_requests).to contain_exactly(merge_request2) }
+
+      context 'when ignoring a reviewer' do
+        let(:ignored_reviewer) { user2 }
+
+        before_all do
+          merge_request2.merge_request_reviewers.find_by(user_id: user2.id).update!(state: :requested_changes)
+        end
+
+        it { expect(merge_requests).to contain_exactly(merge_request2) }
+      end
     end
 
     describe '.assignee_or_reviewer' do

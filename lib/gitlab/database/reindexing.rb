@@ -40,6 +40,9 @@ module Gitlab
 
           automatic_reindexing
         end
+
+        # Temporary in order to truncate this table during low traffic
+        TruncateTaggings.new.execute
       rescue StandardError => e
         Gitlab::AppLogger.error(e)
         raise

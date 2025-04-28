@@ -518,12 +518,13 @@ class MergeRequest < ApplicationRecord
     )
   end
 
-  scope :review_states, ->(states) do
-    where(
-      reviewers_subquery
-        .where(Arel::Table.new("#{to_ability_name}_reviewers")[:state].in(states))
-        .exists
-    )
+  scope :review_states, ->(states, ignored_reviewer = nil) do
+    reviewers = Arel::Table.new("#{to_ability_name}_reviewers")
+
+    scope = reviewers_subquery.where(reviewers[:state].in(states))
+    scope = scope.where(reviewers[:user_id].not_eq(ignored_reviewer.id)) if ignored_reviewer
+
+    where(scope.exists)
   end
 
   scope :not_only_reviewer, ->(user) do
@@ -539,16 +540,15 @@ class MergeRequest < ApplicationRecord
     review_requested.where.not(subquery.exists)
   end
 
-  scope :no_review_states, ->(states) do
-    where(
-      reviewers_subquery.exists
-    )
-    .where(
-      reviewers_subquery
-        .where(Arel::Table.new("#{to_ability_name}_reviewers")[:state].in(states))
-        .exists
-        .not
-    )
+  scope :no_review_states, ->(states, ignored_reviewer = nil) do
+    reviewers = Arel::Table.new("#{to_ability_name}_reviewers")
+
+    scope = reviewers_subquery
+    scope = scope.where(reviewers[:user_id].not_eq(ignored_reviewer.id)) if ignored_reviewer
+
+    forbidden = scope.clone.where(reviewers[:state].in(states))
+
+    where(scope.exists).where(forbidden.exists.not)
   end
 
   scope :assignee_or_reviewer, ->(user, assigned_review_states, reviewer_state) do

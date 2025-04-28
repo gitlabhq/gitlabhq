@@ -232,7 +232,7 @@ export FINGERPRINTS_PACKAGE_URL="${API_PACKAGES_BASE_URL}/auto-explain-logs/mast
 
 function extract_and_upload_fingerprints() {
   echo "Extracting SQL query fingerprints from ${RSPEC_AUTO_EXPLAIN_LOG_PATH}"
-  ruby scripts/extract_fingerprints "${RSPEC_AUTO_EXPLAIN_LOG_PATH}" "${FINGERPRINTS_FILE}.new"
+  ruby scripts/sql_fingerprint_extractor.rb "${RSPEC_AUTO_EXPLAIN_LOG_PATH}" "${FINGERPRINTS_FILE}.new"
 
   # Check if any new fingerprints were found
   new_count=$(wc -l < "${FINGERPRINTS_FILE}.new")

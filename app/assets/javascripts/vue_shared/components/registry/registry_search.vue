@@ -126,7 +126,9 @@ export default {
 </script>
 
 <template>
-  <div class="row-content-block gl-flex gl-flex-col gl-gap-3 md:gl-flex-row">
+  <div
+    class="row-content-block !-gl-mt-3 gl-flex gl-flex-col gl-gap-3 gl-border-y-0 md:gl-flex-row"
+  >
     <gl-filtered-search
       v-model="internalFilter"
       class="gl-min-w-0 gl-grow"

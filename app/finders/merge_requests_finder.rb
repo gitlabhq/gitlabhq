@@ -273,13 +273,13 @@ class MergeRequestsFinder < IssuableFinder
     return items unless params.review_state.present?
     return items if params.reviewer_id? || params.reviewer_username?
 
-    items.review_states(params.review_state)
+    items.review_states(params.review_state, params.ignored_reviewer)
   end
 
   def by_negated_review_states(items)
     return items unless params.not_review_states.present?
 
-    items.no_review_states(params.not_review_states)
+    items.no_review_states(params.not_review_states, params.ignored_reviewer)
   end
 
   def by_negated_reviewer(items)

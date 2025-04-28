@@ -74,7 +74,7 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
         result = service.execute
 
         expect(result).to be_error
-        expect(result.message).to eq('insufficient permissions to read inputs')
+        expect(result.message).to eq(s_('Pipelines|Insufficient permissions to read inputs'))
       end
     end
 
@@ -90,7 +90,7 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
           result = service.execute
 
           expect(result).to be_error
-          expect(result.message).to eq('ref can only be an existing branch or tag')
+          expect(result.message).to eq(s_('Pipelines|Can only run new pipelines for an existing branch or tag'))
         end
       end
 
@@ -101,7 +101,7 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
           result = service.execute
 
           expect(result).to be_error
-          expect(result.message).to eq('ref can only be an existing branch or tag')
+          expect(result.message).to eq(s_('Pipelines|Can only run new pipelines for an existing branch or tag'))
         end
       end
 
@@ -143,7 +143,7 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
             result = service.execute
 
             expect(result).to be_error
-            expect(result.message).to eq('invalid YAML config')
+            expect(result.message).to eq(s_('Pipelines|Invalid YAML syntax'))
           end
         end
       end
@@ -191,7 +191,7 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
           result = service.execute
 
           expect(result).to be_error
-          expect(result.message).to eq('inputs not supported for this CI config source')
+          expect(result.message).to eq(s_('Pipelines|Inputs not supported for this CI config source'))
         end
       end
     end

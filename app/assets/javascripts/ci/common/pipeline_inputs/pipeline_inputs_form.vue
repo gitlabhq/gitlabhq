@@ -59,9 +59,7 @@ export default {
         }));
       },
       error(error) {
-        createAlert({
-          message: s__('Pipelines|There was a problem fetching the pipeline inputs.'),
-        });
+        this.createErrorAlert(error);
         reportToSentry(this.$options.name, error);
       },
     },
@@ -97,6 +95,14 @@ export default {
       });
 
       this.$emit('update-inputs', nameValuePairs);
+    },
+    createErrorAlert(error) {
+      const graphQLErrors = error?.graphQLErrors?.map((err) => err.message) || [];
+      const message = graphQLErrors.length
+        ? graphQLErrors.join(', ')
+        : s__('Pipelines|There was a problem fetching the pipeline inputs. Please try again.');
+
+      createAlert({ message });
     },
   },
 };

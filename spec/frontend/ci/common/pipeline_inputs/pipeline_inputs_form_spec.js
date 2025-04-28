@@ -139,15 +139,21 @@ describe('PipelineInputsForm', () => {
     });
 
     describe('with empty ref (error case)', () => {
-      beforeEach(() => {
-        pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsErrorResponse);
-      });
-
       it('handles GraphQL error', async () => {
+        pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsErrorResponse);
         await createComponent();
 
         expect(createAlert).toHaveBeenCalledWith({
-          message: 'There was a problem fetching the pipeline inputs.',
+          message: 'ref can only be an existing branch or tag',
+        });
+      });
+
+      it('handles generic error', async () => {
+        pipelineInputsHandler = jest.fn().mockRejectedValue('Error');
+        await createComponent();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'There was a problem fetching the pipeline inputs. Please try again.',
         });
       });
     });

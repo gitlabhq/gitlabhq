@@ -1701,7 +1701,6 @@ RSpec/FeatureCategory:
     - 'spec/helpers/export_helper_spec.rb'
     - 'spec/helpers/external_link_helper_spec.rb'
     - 'spec/helpers/feature_flags_helper_spec.rb'
-    - 'spec/helpers/git_helper_spec.rb'
     - 'spec/helpers/gitlab_routing_helper_spec.rb'
     - 'spec/helpers/gitlab_script_tag_helper_spec.rb'
     - 'spec/helpers/graph_helper_spec.rb'

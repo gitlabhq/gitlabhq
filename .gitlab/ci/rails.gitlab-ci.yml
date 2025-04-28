@@ -650,9 +650,15 @@ rspec:merge-auto-explain-logs:
   script:
     - scripts/merge-auto-explain-logs
     - |
-      if [[ -f "$RSPEC_AUTO_EXPLAIN_LOG_PATH" ]] && [[ "$CI_PROJECT_PATH" == "gitlab-org/gitlab" ]] && [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
-        source scripts/gitlab_component_helpers.sh
-        extract_and_upload_fingerprints
+      if [[ -f "$RSPEC_AUTO_EXPLAIN_LOG_PATH" ]] && [[ "$CI_PROJECT_PATH" == "gitlab-org/gitlab" ]]; then
+        if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+          # For the default branch (e.g., master), extract and upload fingerprints
+          source scripts/gitlab_component_helpers.sh
+          extract_and_upload_fingerprints
+        else
+          # For MRs, compare against master fingerprints and generate a report
+          scripts/merge_request_query_differ.rb "$RSPEC_AUTO_EXPLAIN_LOG_PATH"
+        fi
       fi
   artifacts:
     name: auto-explain-logs
@@ -1212,6 +1218,35 @@ rspec-ee system pg17:
     - .rspec-ee-system-parallel
 # EE: default branch nightly scheduled jobs #
 #####################################
+
+##################################################
+# EE: default branch weekly scheduled jobs #
+# Integration tests with latest OpenSearch versions
+# and the actual PG production version (PG16)
+
+rspec-ee unit pg16 opensearch-latest:
+  extends:
+    - .rspec-base-pg16
+    - .rspec-ee-base-pg16-opensearch-latest
+    - .rspec-ee-unit-parallel
+    - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
+
+rspec-ee integration pg16 opensearch-latest:
+  extends:
+    - .rspec-base-pg16
+    - .rspec-ee-base-pg16-opensearch-latest
+    - .rspec-ee-integration-parallel
+    - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
+
+rspec-ee system pg16 opensearch-latest:
+  extends:
+    - .rspec-base-pg16
+    - .rspec-ee-base-pg16-opensearch-latest
+    - .rspec-ee-system-parallel
+    - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
+
+# EE: default branch weekly scheduled jobs #
+##################################################
 
 ##################################################
 # EE: Canonical MR pipelines

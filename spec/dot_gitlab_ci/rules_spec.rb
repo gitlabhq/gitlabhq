@@ -67,6 +67,14 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
             next
           end
 
+          # exception: `.if-default-branch-schedule-weekly` should both be set to "never"
+          #            because the weekly job is a small subset of tests. We don't want to run either jobs.
+          if base['if'] == config['.if-default-branch-schedule-weekly']['if']
+            expect(derived).to eq(base)
+            expect(derived['when']).to eq('never')
+            next
+          end
+
           # exception: `.if-merge-request-not-approved` in the base should be `.if-merge-request-approved` in derived.
           #            The base wants to run when the MR is approved, and the derived wants to run if it's not approved,
           #            and both are specifying this with `when: never`.

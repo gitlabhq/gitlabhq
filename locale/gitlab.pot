@@ -44702,6 +44702,9 @@ msgstr ""
 msgid "Pipelines|By revoking a trigger token you will break any processes making use of it. Are you sure?"
 msgstr ""
 
+msgid "Pipelines|Can only run new pipelines for an existing branch or tag"
+msgstr ""
+
 msgid "Pipelines|Child pipeline (%{linkStart}parent%{linkEnd})"
 msgstr ""
 
@@ -44775,6 +44778,18 @@ msgid "Pipelines|If you are unsure, please ask a project maintainer to review it
 msgstr ""
 
 msgid "Pipelines|Inputs"
+msgstr ""
+
+msgid "Pipelines|Inputs not supported for this CI config source"
+msgstr ""
+
+msgid "Pipelines|Insufficient permissions to read inputs"
+msgstr ""
+
+msgid "Pipelines|Invalid YAML syntax"
+msgstr ""
+
+msgid "Pipelines|Invalid input specification: expected a hash-like object, got %{class_name}"
 msgstr ""
 
 msgid "Pipelines|It is recommended the code is reviewed thoroughly before running this pipeline with the parent project's CI resource."
@@ -44921,7 +44936,7 @@ msgstr ""
 msgid "Pipelines|There was a problem fetching the pipeline iid."
 msgstr ""
 
-msgid "Pipelines|There was a problem fetching the pipeline inputs."
+msgid "Pipelines|There was a problem fetching the pipeline inputs. Please try again."
 msgstr ""
 
 msgid "Pipelines|There was a problem fetching the pipeline stage jobs."
@@ -59514,6 +59529,9 @@ msgstr ""
 msgid "SuperSonics|Cannot activate instance due to a connectivity issue"
 msgstr ""
 
+msgid "SuperSonics|Could not activate subscription"
+msgstr ""
+
 msgid "SuperSonics|Customers Portal"
 msgstr ""
 
@@ -59554,6 +59572,9 @@ msgid "SuperSonics|Select that you agree before activating the subscription."
 msgstr ""
 
 msgid "SuperSonics|Start free trial"
+msgstr ""
+
+msgid "SuperSonics|Subscription cannot be activated if %{silentModeDocsLinkStart}Silent Mode%{silentModeDocsLinkEnd} is enabled. Disable Silent Mode and try again."
 msgstr ""
 
 msgid "SuperSonics|Subscription detail synchronization has started and will complete soon."

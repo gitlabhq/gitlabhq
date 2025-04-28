@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitHelper do
+RSpec.describe GitHelper, feature_category: :source_code_management do
   describe '#short_sha' do
     let(:short_sha) { helper.short_sha('d4e043f6c20749a3ab3f4b8e23f2a8979f4b9100') }
 
@@ -26,6 +26,12 @@ RSpec.describe GitHelper do
       let(:strip_signature) { helper.strip_signature(x509_message_tag) }
 
       it { expect(strip_signature).to eq("this is Roger's signed tag\n\n") }
+    end
+
+    context 'strips SSH MESSAGE' do
+      let(:strip_signature) { helper.strip_signature(ssh_message_tag) }
+
+      it { expect(strip_signature).to eq("Version 1.70.0\n\n") }
     end
   end
 
@@ -60,6 +66,23 @@ RSpec.describe GitHelper do
     4OFe1H0zIfpPRFsyX2toaum3EX6QBA==
     =hefg
     -----END PGP MESSAGE-----
+    SIGNATURE
+  end
+
+  def ssh_message_tag
+    <<~SIGNATURE
+    Version 1.70.0
+    -----BEGIN SSH SIGNATURE-----
+
+    iQEzBAABCAAdFiEEFMo1pwRq9j04Jovq68Q/GjfvLIoFAl2l64QACgkQ68Q/Gjfv
+    LIqRDggAm0d1ceVRsfldlwC6guR2ly8aWoTtZZ19E12bsfXd4lJqcQv7JXTP0og0
+    cwbV0l92iBJKGW6bFBipKDFmSgr5le5zFsXYOr9bJCQNOhFNMmtAgaHEIeVI16+c
+    S3pA+qIe516d4wRs/hcbxDJKC68iIlDaLXObdzTTLGMgbCYBFTjYJldNUfTkdvbB
+    oGEpFXuxV9EyfBtPLsz2vUea5GdZcRSVyJbcgm9ZU+ekdLZckroP5M0I5SQTbD3y
+    VrbCY3ziYtau4zK4cV66ybRz1G7tR6dcoC4kGUbaZlKsVZ1Af80agx2d9k5MR1wS
+    4OFe1H0zIfpPRFsyX2toaum3EX6QBA==
+    =hefg
+    -----END SSH SIGNATURE-----
     SIGNATURE
   end
 

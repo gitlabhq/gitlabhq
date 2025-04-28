@@ -291,6 +291,11 @@ include:
     - .use-pg16-es8-ee
     - .rails:rules:run-search-tests
 
+.rspec-ee-base-pg16-opensearch-latest:
+  extends:
+    - .rspec-base
+    - .use-pg16-opensearch-latest-ee
+
 .rspec-ee-base-pg16-opensearch1:
   extends:
     - .rspec-base

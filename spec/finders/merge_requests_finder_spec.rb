@@ -694,15 +694,22 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
 
       context 'review state filtering' do
         let(:params) { { review_state: 'requested_changes' } }
-        let(:expected_mr) { [merge_request1] }
+        let(:expected_mr) { [merge_request1, merge_request3] }
 
         subject { described_class.new(user, params).execute }
 
         before do
           merge_request1.merge_request_reviewers.update_all(state: :requested_changes)
+          merge_request3.merge_request_reviewers.update_all(state: :requested_changes)
         end
 
         it { is_expected.to contain_exactly(*expected_mr) }
+
+        context 'when ignoring a reviewer' do
+          let(:params) { { review_state: 'requested_changes', ignored_reviewer_username: user2.username } }
+
+          it { is_expected.to contain_exactly(merge_request3) }
+        end
       end
 
       context 'multiple review state filtering' do
@@ -727,6 +734,12 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           end
 
           it { is_expected.to contain_exactly(*expected_mr) }
+
+          context 'when ignoring a reviewer' do
+            let(:params) { { not: { review_states: %w[requested_changes reviewed] }, ignored_reviewer_username: user2.username } }
+
+            it { is_expected.to contain_exactly(*expected_mr) }
+          end
         end
       end
 

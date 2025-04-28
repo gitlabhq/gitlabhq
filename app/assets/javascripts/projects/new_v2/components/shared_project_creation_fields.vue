@@ -1,13 +1,18 @@
 <script>
-import { GlFormGroup, GlFormInput } from '@gitlab/ui';
+import { GlFormGroup, GlFormInput, GlFormSelect, GlSprintf, GlLink } from '@gitlab/ui';
 import { kebabCase } from 'lodash';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import validation, { initForm } from '~/vue_shared/directives/validation';
+import { K8S_OPTION, DEPLOYMENT_TARGET_SELECTIONS } from '../form_constants';
 import NewProjectDestinationSelect from './project_destination_select.vue';
 
 export default {
   components: {
     GlFormGroup,
     GlFormInput,
+    GlFormSelect,
+    GlSprintf,
+    GlLink,
     NewProjectDestinationSelect,
   },
   directives: {
@@ -29,7 +34,13 @@ export default {
     return {
       form,
       selectedNamespace: this.namespace,
+      selectedTarget: null,
     };
+  },
+  computed: {
+    isK8sOptionSelected() {
+      return this.selectedTarget === K8S_OPTION.value;
+    },
   },
   methods: {
     updateSlug() {
@@ -39,6 +50,9 @@ export default {
       this.$emit('onSelectNamespace', newNamespace);
     },
   },
+  helpPageK8s: helpPagePath('user/clusters/agent/_index'),
+  K8S_OPTION,
+  DEPLOYMENT_TARGET_SELECTIONS,
 };
 </script>
 
@@ -71,17 +85,21 @@ export default {
 
     <div class="gl-flex gl-flex-col gl-gap-4 sm:gl-flex-row">
       <gl-form-group
-        :label="s__('ProjectsNew|Choose a group or namespace')"
         class="sm:gl-w-1/2"
-        label-for="namespace"
         :invalid-feedback="
           s__('ProjectsNew|Pick a group or namespace where you want to create this project.')
         "
         :state="selectedNamespace.id !== null"
         data-testid="project-namespace-group"
       >
+        <template #label>
+          <label id="namespace-selector" for="namespace" class="gl-mb-0">
+            {{ s__('ProjectsNew|Choose a group or namespace') }}
+          </label>
+        </template>
         <new-project-destination-select
-          toggle-aria-labelled-by="namespace"
+          toggle-aria-labelled-by="namespace-selector"
+          toggle-id="namespace"
           :namespace-id="selectedNamespace.id"
           :namespace-full-path="selectedNamespace.fullPath"
           @onSelectNamespace="onSelectNamespace"
@@ -111,6 +129,45 @@ export default {
       </gl-form-group>
     </div>
 
-    <!-- Deployment Target and Visibility Level should be added in: https://gitlab.com/gitlab-org/gitlab/-/issues/514700 -->
+    <gl-form-group
+      :label="s__('Deployment Target|Project deployment target (optional)')"
+      label-for="deployment-target-select"
+      data-testid="deployment-target-form-group"
+    >
+      <gl-form-select
+        id="deployment-target-select"
+        v-model="selectedTarget"
+        :options="$options.DEPLOYMENT_TARGET_SELECTIONS"
+        class="gl-w-full"
+        data-testid="deployment-target-select"
+      >
+        <template #first>
+          <option :value="null" disabled>
+            {{ s__('Deployment Target|Select the deployment target') }}
+          </option>
+        </template>
+      </gl-form-select>
+
+      <template v-if="isK8sOptionSelected" #description>
+        <gl-sprintf
+          :message="
+            s__(
+              'Deployment Target|%{linkStart}How to provision or deploy to Kubernetes clusters from GitLab?%{linkEnd}',
+            )
+          "
+        >
+          <template #link="{ content }">
+            <gl-link
+              :href="$options.helpPageK8s"
+              data-track-action="visit_docs"
+              data-track-label="new_project_deployment_target"
+              >{{ content }}</gl-link
+            >
+          </template>
+        </gl-sprintf>
+      </template>
+    </gl-form-group>
+
+    <!-- Visibility Level should be added in: https://gitlab.com/gitlab-org/gitlab/-/issues/514700 -->
   </div>
 </template>

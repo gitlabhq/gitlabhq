@@ -72,25 +72,11 @@ RSpec.describe Settings, feature_category: :system_access do
     end
   end
 
-  describe '.attr_encrypted_db_key_base_truncated' do
-    it 'returns the first item from #db_key_base_keys_truncated' do
-      expect(described_class.attr_encrypted_db_key_base_truncated)
-        .to eq(described_class.db_key_base_keys_truncated.first)
-    end
-  end
-
   describe '.db_key_base_keys_truncated' do
     it 'is an array of string with maximum 32 bytes size' do
       described_class.db_key_base_keys_truncated.each do |key|
         expect(key.bytesize).to be <= 32
       end
-    end
-  end
-
-  describe '.attr_encrypted_db_key_base_32' do
-    it 'returns the first item from #db_key_base_keys_32_bytes' do
-      expect(described_class.attr_encrypted_db_key_base_32)
-        .to eq(described_class.db_key_base_keys_32_bytes.first)
     end
   end
 
@@ -138,13 +124,6 @@ RSpec.describe Settings, feature_category: :system_access do
         expect(described_class.db_key_base_keys_32_bytes.last.bytesize).to eq(32)
         expect(described_class.db_key_base_keys_32_bytes.last).to eq(('❤' * 10) + ('0' * 2))
       end
-    end
-  end
-
-  describe '.attr_encrypted_db_key_base' do
-    it 'returns the first item from #attr_encrypted_db_key_base' do
-      expect(described_class.attr_encrypted_db_key_base)
-        .to eq(described_class.db_key_base_keys.first)
     end
   end
 

@@ -132,21 +132,11 @@ Settings = GitlabSettings.load(file, Rails.env) do
     File.expand_path(path, Rails.root)
   end
 
-  # FIXME: Deprecated in favor of Gitlab::Encryption::KeyProvider
-  def attr_encrypted_db_key_base_truncated
-    db_key_base_keys_truncated.first
-  end
-
   # Don't use this in new code, use db_key_base_keys_32_bytes instead!
   def db_key_base_keys_truncated
     db_key_base_keys.map do |key| # rubocop:disable Rails/Pluck -- No Rails context
       key[0..31]
     end
-  end
-
-  # FIXME: Deprecated in favor of Gitlab::Encryption::KeyProvider
-  def attr_encrypted_db_key_base_32
-    db_key_base_keys_32_bytes.first
   end
 
   # Ruby 2.4+ requires passing in the exact required length for OpenSSL keys
@@ -160,11 +150,6 @@ Settings = GitlabSettings.load(file, Rails.env) do
     db_key_base_keys.map do |key|
       Gitlab::Utils.ensure_utf8_size(key, bytes: 32.bytes)
     end
-  end
-
-  # FIXME: Deprecated in favor of Gitlab::Encryption::KeyProvider
-  def attr_encrypted_db_key_base
-    db_key_base_keys.first
   end
 
   # This should be used for :per_attribute_iv_and_salt mode. There is no

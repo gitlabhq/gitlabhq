@@ -1411,4 +1411,7 @@ exists to create this tutorial.
 - <i class="fa-youtube-play" aria-hidden="true"></i>
   [GitLab Duo Code Suggestions](https://youtu.be/ds7SG1wgcVM?si=MfbzPIDpikGhoPh7)
 <!-- Video published on 2024-01-24 -->
+- <i class="fa-youtube-play" aria-hidden="true"></i>
+  [Application modernization with GitLab Duo (C++ to Java)](https://youtu.be/FjoAmt5eeXA?si=SLv9Mv8eSUAVwW5Z)
+<!-- Video published on 2025-03-18 -->
 <!-- markdownlint-enable -->

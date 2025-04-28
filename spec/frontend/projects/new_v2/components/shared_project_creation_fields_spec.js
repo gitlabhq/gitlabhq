@@ -1,8 +1,9 @@
 import { nextTick } from 'vue';
-import { GlFormInput } from '@gitlab/ui';
+import { GlFormInput, GlFormSelect } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SharedProjectCreationFields from '~/projects/new_v2/components/shared_project_creation_fields.vue';
 import NewProjectDestinationSelect from '~/projects/new_v2/components/project_destination_select.vue';
+import { DEPLOYMENT_TARGET_SELECTIONS } from '~/projects/new_v2/form_constants';
 
 describe('Project creation form fields component', () => {
   let wrapper;
@@ -23,6 +24,7 @@ describe('Project creation form fields component', () => {
       },
       stubs: {
         GlFormInput,
+        GlFormSelect,
       },
     });
   };
@@ -34,6 +36,19 @@ describe('Project creation form fields component', () => {
   const findProjectNameInput = () => wrapper.findByTestId('project-name-input');
   const findProjectSlugInput = () => wrapper.findByTestId('project-slug-input');
   const findNamespaceSelect = () => wrapper.findComponent(NewProjectDestinationSelect);
+  const findDeploymentTargetSelect = () => wrapper.findByTestId('deployment-target-select');
+  const findKubernetesHelpLink = () => wrapper.findByTestId('kubernetes-help-link');
+
+  describe('target select', () => {
+    it('renders the optional deployment target select', () => {
+      expect(findDeploymentTargetSelect().exists()).toBe(true);
+      expect(findKubernetesHelpLink().exists()).toBe(false);
+    });
+
+    it('has all the options', () => {
+      expect(findDeploymentTargetSelect().props('options')).toEqual(DEPLOYMENT_TARGET_SELECTIONS);
+    });
+  });
 
   it('updates project slug according to a project name', async () => {
     // NOTE: vue3 test needs the .setValue(value) and the vm.$emit('input'),
