@@ -165,7 +165,7 @@ After you sign in to Switchboard, follow these steps to create your instance:
 
    - **Reference architecture**: The maximum number of users allowed in your instance. For more information, see [availability and scalability](../../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#availability-and-scalability). For example, up to 3,000 users.
 
-   - **Total repository capacity**: The total storage space available for all repositories in your instance. For example, 16 GB. This setting cannot be reduced after you create your instance. You can increase storage capacity later if needed.
+   - **Total repository capacity**: The total storage space available for all repositories in your instance. For example, 16 GB. This setting cannot be reduced after you create your instance. You can increase storage capacity later if needed. For more information about how storage is calculated for GitLab Dedicated, see [GitLab Dedicated storage types](storage_types.md).
 
    If you need to change either of these values, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 

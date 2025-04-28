@@ -50,6 +50,8 @@ Workflow:
 For a click-through demo, see [GitLab Duo Workflow](https://gitlab.navattic.com/duo-workflow).
 <!-- Demo published on 2025-03-18 -->
 
+For an overview, watch <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Enhancing your quality assurance with GitLab Duo Workflow](https://youtu.be/Tuj7TgqY81Q?si=IbxaKv7IhAHYnHkN). <!-- Video published on 2025-03-20-->
+
 ## Prerequisites
 
 Before you can use Workflow, you must:
@@ -183,3 +185,7 @@ On your GitLab Self-Managed instance, you can view these events on the
 Workflow is a private beta and your feedback is crucial to improve it for you and others.
 To report issues or suggest improvements,
 [complete this survey](https://gitlab.fra1.qualtrics.com/jfe/form/SV_9GmCPTV7oH9KNuu).
+
+## Related topics
+
+- [Use GitLab Duo Workflow to improve application quality assurance](https://about.gitlab.com/blog/2025/04/10/use-gitlab-duo-workflow-to-improve-application-quality-assurance/)

@@ -6,7 +6,7 @@ import { PACKAGE_REGISTRY_TITLE } from '~/packages_and_registries/package_regist
 
 Vue.use(VueRouter);
 
-export default function createRouter(base, breadCrumbState) {
+export default function createRouter(base) {
   const router = new VueRouter({
     base,
     mode: 'history',
@@ -24,15 +24,8 @@ export default function createRouter(base, breadCrumbState) {
         name: 'details',
         path: '/:id',
         component: Details,
-        meta: {
-          nameGenerator: () => breadCrumbState.name,
-        },
       },
     ],
-  });
-
-  router.afterEach(() => {
-    breadCrumbState.updateName('');
   });
 
   return router;

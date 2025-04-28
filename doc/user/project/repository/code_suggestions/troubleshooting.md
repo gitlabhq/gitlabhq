@@ -191,7 +191,7 @@ For non-Code Suggestions troubleshooting for Microsoft Visual Studio, see
 
 ### IntelliCode is missing
 
-Code Suggestions requires the **IntelliCode** component of Visual Studio. If the component
+Code Suggestions requires the IntelliCode component of Visual Studio. If the component
 is missing, you might see an error like this when you start Visual Studio:
 
 ```plaintext
@@ -211,7 +211,7 @@ but found 0 after applying applicable constraints.
 [...]
 ```
 
-To fix this problem, install the **IntelliCode** component:
+To fix this problem, install the IntelliCode component:
 
 1. In the Windows start menu, search for the **Visual Studio Installer** and open it.
 1. Select your Visual Studio instance, then select **Modify**.

@@ -17,7 +17,7 @@ For each of the vulnerabilities listed in this document, AppSec aims to have a S
 | Guideline | Rule | Status |
 |---|---|---|
 | [Regular Expressions](#regular-expressions-guidelines)  | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_regex.yml)  | ✅ |
-| [ReDOS](#denial-of-service-redos--catastrophic-backtracking) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_redos_1.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_redos_2.yml)  | ✅ |
+| [ReDOS](#denial-of-service-redos--catastrophic-backtracking) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_redos_1.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_redos_2.yml), [3](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/merge_requests/59#note_2443657926)  | ✅ |
 | [JWT](#json-web-tokens-jwt) | Pending | ❌ |
 | [SSRF](#server-side-request-forgery-ssrf) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_url-1.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_http.yml?ref_type=heads)  | ✅ |
 | [XSS](#xss-guidelines) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xss_redirect.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xss_html_safe.yml)  | ✅ |
@@ -300,6 +300,37 @@ For other regular expressions, here are a few guidelines:
 #### Go
 
 Go's [`regexp`](https://pkg.go.dev/regexp) package uses `re2` and isn't vulnerable to backtracking issues.
+
+#### Python Regular Expression Denial of Service (ReDoS) Prevention
+
+Python offers three main regular expression libraries:
+
+| Library | Security            | Notes                                                                 |
+|---------|---------------------|-----------------------------------------------------------------------|
+| `re`    | Vulnerable to ReDoS | Built-in library. Must use timeout parameter.                        |
+| `regex` | Vulnerable to ReDoS | Third-party library with extended features. Must use timeout parameter. |
+| `re2`   | Secure by default   | Wrapper for the Google RE2 engine. Prevents backtracking by design.     |
+
+Both `re` and `regex` use backtracking algorithms that can cause exponential execution time with certain patterns.
+
+```python
+evil_input = 'a' * 30 + '!'
+
+# Vulnerable - can cause exponential execution time with nested quantifiers
+# 30 'a's -> ~30 seconds
+# 31 'a's -> ~60 seconds
+re.match(r'^(a+)+$', evil_input)
+regex.match(r'^(a|aa)+$', evil_input)
+
+# Secure - adds timeout to limit execution time
+re.match(r'^(a+)+$', evil_input, timeout=1.0)
+regex.match(r'^(a|aa)+$', evil_input, timeout=1.0)
+
+# Preferred - re2 prevents catastrophic backtracking by design
+re2.match(r'^(a+)+$', evil_input)
+```
+
+When working with regular expressions in Python, use `re2` when possible or always include timeouts with `re` and `regex`.
 
 ### Further Links
 

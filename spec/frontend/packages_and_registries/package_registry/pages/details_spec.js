@@ -336,15 +336,6 @@ describe('PackagesApp', () => {
     });
   });
 
-  it('calls the appropriate function to set the breadcrumbState', async () => {
-    const { name, version } = packageData();
-    createComponent();
-
-    await waitForPromises();
-
-    expect(breadCrumbState.updateName).toHaveBeenCalledWith(`${name} v${version}`);
-  });
-
   describe('delete package', () => {
     const originalReferrer = document.referrer;
     const setReferrer = (value = packageDetailsQuery().data.package.project.name) => {

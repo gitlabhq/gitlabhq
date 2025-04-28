@@ -11,6 +11,7 @@ query mergeRequestReviewers($fullPath: ID!, $iid: String!) {
         nodes {
           ...User
           ...UserAvailability
+          type
           mergeRequestInteraction {
             canMerge
             canUpdate

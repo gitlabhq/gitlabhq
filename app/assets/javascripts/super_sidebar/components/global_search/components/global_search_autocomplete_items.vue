@@ -37,6 +37,8 @@ import {
   ISSUES_GROUP_TITLE,
   PAGES_GROUP_TITLE,
   GROUPS_GROUP_TITLE,
+  GROUPS_GROUP_HANDLE,
+  PROJECTS_GROUP_HANDLE,
 } from '../command_palette/constants';
 import SearchResultFocusLayover from './global_search_focus_overlay.vue';
 import GlobalSearchNoResults from './global_search_no_results.vue';
@@ -81,7 +83,7 @@ export default {
     groups() {
       return this.autocompleteGroupedSearchOptions.map((group) => {
         return {
-          name: group?.name,
+          name: this.modifiedGroupName(group?.name),
           items: group?.items?.map((item) => {
             return {
               ...item,
@@ -159,6 +161,17 @@ export default {
           this.trackEvent(EVENT_CLICK_USER_RESULT_IN_COMMAND_PALETTE);
         }
       }
+    },
+    modifiedGroupName(groupName) {
+      if (groupName === GROUPS_GROUP_HANDLE) {
+        return this.$options.i18n.GROUPS_GROUP_TITLE;
+      }
+
+      if (groupName === PROJECTS_GROUP_HANDLE) {
+        return this.$options.i18n.PROJECTS_GROUP_TITLE;
+      }
+
+      return groupName;
     },
   },
   AVATAR_SHAPE_OPTION_RECT,

@@ -274,15 +274,15 @@ describe('GlobalSearchAutocompleteItems', () => {
 
       describe('tracking', () => {
         it.each`
-          action                     | event
-          ${'Projects'}              | ${EVENT_CLICK_PROJECT_RESULT_IN_COMMAND_PALETTE}
-          ${'Groups'}                | ${EVENT_CLICK_GROUP_RESULT_IN_COMMAND_PALETTE}
-          ${'Merge requests'}        | ${EVENT_CLICK_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE}
-          ${'Issues'}                | ${EVENT_CLICK_ISSUE_RESULT_IN_COMMAND_PALETTE}
-          ${'Recent issues'}         | ${EVENT_CLICK_RECENT_ISSUE_RESULT_IN_COMMAND_PALETTE}
-          ${'Recent epics'}          | ${EVENT_CLICK_RECENT_EPIC_RESULT_IN_COMMAND_PALETTE}
-          ${'Recent merge requests'} | ${EVENT_CLICK_RECENT_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE}
-          ${undefined}               | ${EVENT_CLICK_USER_RESULT_IN_COMMAND_PALETTE}
+          action                        | event
+          ${"Projects I'm a member of"} | ${EVENT_CLICK_PROJECT_RESULT_IN_COMMAND_PALETTE}
+          ${"Groups I'm a member of"}   | ${EVENT_CLICK_GROUP_RESULT_IN_COMMAND_PALETTE}
+          ${'Merge requests'}           | ${EVENT_CLICK_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE}
+          ${'Issues'}                   | ${EVENT_CLICK_ISSUE_RESULT_IN_COMMAND_PALETTE}
+          ${'Recent issues'}            | ${EVENT_CLICK_RECENT_ISSUE_RESULT_IN_COMMAND_PALETTE}
+          ${'Recent epics'}             | ${EVENT_CLICK_RECENT_EPIC_RESULT_IN_COMMAND_PALETTE}
+          ${'Recent merge requests'}    | ${EVENT_CLICK_RECENT_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE}
+          ${undefined}                  | ${EVENT_CLICK_USER_RESULT_IN_COMMAND_PALETTE}
         `(
           "triggers tracking event '$event' after emiting action '$action'",
           ({ action, event }) => {

@@ -245,12 +245,22 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
     end
 
     context 'when user is a bot' do
-      it_behaves_like 'internal event tracking' do
-        let(:event) { 'request_todos_by_bot_user' }
-        let(:user) { create(:user, :service_account) }
-        let(:additional_properties) { { label: 'user_type', property: user.user_type } }
-        let(:event_attribute_overrides) { { project: nil, namespace: nil } }
-        subject(:api_request) { get api('/todos', user) }
+      let(:user) { create(:user, :service_account) }
+
+      it "triggers an internal event" do
+        expect { get api('/todos', user) }
+         .to trigger_internal_events('request_todos_by_bot_user')
+         .with(
+           category: 'InternalEventTracking',
+           user: user,
+           additional_properties: {
+             label: 'user_type',
+             property: user.user_type
+           }
+         ).and increment_usage_metrics(
+           'redis_hll_counters.count_distinct_user_id_from_request_todos_by_bot_user_weekly',
+           'redis_hll_counters.count_distinct_user_id_from_request_todos_by_bot_user_monthly'
+         )
       end
     end
 

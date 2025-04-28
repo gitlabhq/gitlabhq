@@ -135,9 +135,6 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:bio).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:bio=).to(:user_detail).with_arguments(:args).allow_nil }
 
-    it { is_expected.to delegate_method(:registration_objective).to(:user_detail).allow_nil }
-    it { is_expected.to delegate_method(:registration_objective=).to(:user_detail).with_arguments(:args).allow_nil }
-
     it { is_expected.to delegate_method(:discord).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:discord=).to(:user_detail).with_arguments(:args).allow_nil }
 

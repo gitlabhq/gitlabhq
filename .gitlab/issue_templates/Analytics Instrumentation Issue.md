@@ -23,4 +23,4 @@
 <!-- Make sure to add one of the type labels (as per https://handbook.gitlab.com/handbook/product/groups/product-analysis/engineering/metrics/#work-type-classification):-->
 <!-- /label ~"type::bug" ~"type::feature" ~"type::tooling" ~"type::maintenance" -->
 
-/label ~devops::analytics ~"group::analytics instrumentation"
+/label ~"group::analytics instrumentation"

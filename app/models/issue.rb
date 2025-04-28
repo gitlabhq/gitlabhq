@@ -233,7 +233,13 @@ class Issue < ApplicationRecord
   scope :confidential_only, -> { where(confidential: true) }
 
   scope :without_hidden, -> {
-    where('NOT EXISTS (?)', Users::BannedUser.select(1).where('issues.author_id = banned_users.user_id'))
+    if Feature.enabled?(:optimize_issues_banned_users_query, :instance)
+      # We add `+ 0` to the author_id to make the query planner use a nested loop and prevent
+      # loading of all banned user IDs for certain queries
+      where_not_exists(Users::BannedUser.where('banned_users.user_id = (issues.author_id + 0)'))
+    else
+      where_not_exists(Users::BannedUser.where('banned_users.user_id = issues.author_id'))
+    end
   }
 
   scope :counts_by_state, -> { reorder(nil).group(:state_id).count }

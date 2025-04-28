@@ -7,7 +7,7 @@
 require 'parallel'
 require 'rainbow'
 
-UNUSED_METHODS = 56
+UNUSED_METHODS = 52
 
 print_output = %w[true 1].include? ENV["REPORT_ALL_UNUSED_METHODS"]
 

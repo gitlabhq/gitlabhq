@@ -473,7 +473,6 @@ class User < ApplicationRecord
   delegate :webauthn_xid, :webauthn_xid=, to: :user_detail, allow_nil: true
   delegate :pronouns, :pronouns=, to: :user_detail, allow_nil: true
   delegate :pronunciation, :pronunciation=, to: :user_detail, allow_nil: true
-  delegate :registration_objective, :registration_objective=, to: :user_detail, allow_nil: true
   delegate :bluesky, :bluesky=, to: :user_detail, allow_nil: true
   delegate :mastodon, :mastodon=, to: :user_detail, allow_nil: true
   delegate :linkedin, :linkedin=, to: :user_detail, allow_nil: true

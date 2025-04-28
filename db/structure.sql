@@ -10912,7 +10912,8 @@ CREATE TABLE ci_build_needs (
     build_id bigint NOT NULL,
     partition_id bigint NOT NULL,
     id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_4fab85ecdc CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ci_build_needs_id_seq
@@ -23245,7 +23246,9 @@ CREATE TABLE ssh_signatures (
     verification_status smallint DEFAULT 0 NOT NULL,
     commit_sha bytea NOT NULL,
     user_id bigint,
-    key_fingerprint_sha256 bytea
+    key_fingerprint_sha256 bytea,
+    author_email text,
+    CONSTRAINT check_5ff707c7f9 CHECK ((char_length(author_email) <= 255))
 );
 
 CREATE SEQUENCE ssh_signatures_id_seq
@@ -29139,9 +29142,6 @@ ALTER TABLE security_scans
 
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
-
-ALTER TABLE ci_build_needs
-    ADD CONSTRAINT check_4fab85ecdc CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ONLY instance_type_ci_runners
     ADD CONSTRAINT check_5c34a3c1db UNIQUE (id);

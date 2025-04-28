@@ -1051,7 +1051,6 @@ export default {
               :work-item-type="selectedWorkItemTypeName"
               :custom-fields="workItemCustomFields"
               :full-path="selectedProjectFullPath"
-              :is-group="isGroup"
               :can-update="canUpdate"
               @error="$emit('error', $event)"
             />

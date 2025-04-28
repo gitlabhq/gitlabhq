@@ -164,7 +164,7 @@ Code Suggestions is aware of the context you're working in.
 | [Open tab files](#using-open-files-as-context) | Files open in tabs in your IDE. These files give GitLab Duo more information about the standards and practices in your code project. | Optional, but on by default. |
 | [Imported files](#using-imported-files-as-context) | Files imported in the current opened file. These imported files give GitLab Duo more information about the classes and methods used in the current file. | Optional and off by default. |
 
-**Footnotes:**
+Footnotes:
 
 1. Code completion is aware of all [supported languages](supported_extensions.md#supported-languages-by-ide).
    Code generation is aware of files in these languages only:
@@ -321,10 +321,10 @@ When using Code Suggestions, [code review best practice](../../../../development
 
 To learn about the code that builds the prompt, see these files:
 
-- **Code generation**:
+- Code generation:
   [`ee/lib/api/code_suggestions.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/code_suggestions.rb#L76)
   in the `gitlab` repository.
-- **Code completion**:
+- Code completion:
   [`ai_gateway/code_suggestions/processing/completions.py`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/fcb3f485a8f047a86a8166aad81f93b6d82106a7/ai_gateway/code_suggestions/processing/completions.py#L273)
   in the `modelops` repository.
 

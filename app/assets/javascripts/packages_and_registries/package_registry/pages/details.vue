@@ -84,7 +84,7 @@ export default {
     GlModal: GlModalDirective,
   },
   mixins: [Tracking.mixin()],
-  inject: ['emptyListIllustration', 'projectListUrl', 'groupListUrl', 'breadCrumbState'],
+  inject: ['emptyListIllustration', 'projectListUrl', 'groupListUrl'],
   trackingActions: {
     DELETE_PACKAGE_TRACKING_ACTION,
     REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
@@ -116,11 +116,6 @@ export default {
           captureError: true,
           error,
         });
-      },
-      result() {
-        this.breadCrumbState.updateName(
-          `${this.packageEntity?.name} v${this.packageEntity?.version}`,
-        );
       },
     },
     groupSettings: {

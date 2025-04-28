@@ -35,7 +35,7 @@ The **Overview** page displays:
 The top section shows important information about your tenant, including:
 
 - Tenant name and URL
-- Total Git repository capacity
+- [Total Git repository capacity](create_instance/storage_types.md#view-repository-storage-per-gitaly-node)
 - Current GitLab version
 - Reference architecture
 - Maintenance window

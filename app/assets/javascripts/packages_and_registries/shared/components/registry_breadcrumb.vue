@@ -20,7 +20,7 @@ export default {
       return this.$route.name === this.rootRoute.name;
     },
     detailsRouteName() {
-      return this.detailsRoute.meta.nameGenerator();
+      return `${this.$route.params?.id}`;
     },
     isLoaded() {
       return this.isRootRoute || this.detailsRouteName;
@@ -35,7 +35,7 @@ export default {
       if (!this.isRootRoute) {
         crumbs.push({
           text: this.detailsRouteName,
-          href: this.detailsRoute.meta.path,
+          href: this.detailsRoute.path,
         });
       }
       return crumbs;

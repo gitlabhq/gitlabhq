@@ -27,10 +27,6 @@ export default {
       type: Object,
       required: true,
     },
-    fullPath: {
-      type: String,
-      required: true,
-    },
     isStickyHeaderShowing: {
       type: Boolean,
       required: true,
@@ -44,22 +40,7 @@ export default {
       required: false,
       default: false,
     },
-    parentWorkItemConfidentiality: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    parentId: {
-      type: String,
-      required: false,
-      default: null,
-    },
     showWorkItemCurrentUserTodos: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    isModal: {
       type: Boolean,
       required: false,
       default: false,
@@ -68,38 +49,6 @@ export default {
       type: Array,
       required: false,
       default: () => [],
-    },
-    workItemAuthorId: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    isGroup: {
-      type: Boolean,
-      required: true,
-    },
-    allowedChildTypes: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    namespaceFullName: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    hasChildren: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    showSidebar: {
-      type: Boolean,
-      required: true,
-    },
-    truncationEnabled: {
-      type: Boolean,
-      required: true,
     },
   },
   computed: {

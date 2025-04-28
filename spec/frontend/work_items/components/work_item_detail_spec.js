@@ -1222,13 +1222,6 @@ describe('WorkItemDetail component', () => {
   describe('work item parent id', () => {
     const parentId = 'gid://gitlab/Issue/1';
 
-    it('passes the `parentWorkItemId` value down to the `WorkItemStickyHeader` component', async () => {
-      createComponent();
-      await waitForPromises();
-
-      expect(findStickyHeader().props('parentId')).toBe(parentId);
-    });
-
     it('passes the `parentWorkItemId` value down to the `WorkItemActions` component', async () => {
       createComponent();
       await waitForPromises();
