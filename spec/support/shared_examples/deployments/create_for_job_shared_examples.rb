@@ -69,8 +69,8 @@ RSpec.shared_examples 'create deployment for job' do
 
     context 'when job has environment attribute' do
       let!(:job) do
-        create(factory_type, environment: 'production', project: project,
-                          options: { environment: { name: 'production', **kubernetes_options } }) # rubocop:disable Layout/ArgumentAlignment
+        create(factory_type, environment: 'production', project: project, user: user,
+          options: { environment: { name: 'production', **kubernetes_options } })
       end
 
       let!(:environment) { create(:environment, project: project, name: job.expanded_environment_name) }
@@ -89,9 +89,16 @@ RSpec.shared_examples 'create deployment for job' do
         let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project], managed: managed_cluster) }
         let(:managed_cluster) { true }
 
-        it 'sets the cluster and deployment_cluster' do
-          expect(subject.cluster).to eq(cluster) # until we stop double writing in 12.9: https://gitlab.com/gitlab-org/gitlab/issues/202628
+        it 'creates a deployment_cluster' do
           expect(subject.deployment_cluster.cluster).to eq(cluster)
+        end
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'create_deployment_to_cluster' }
+          let(:category) { described_class.name }
+          let(:additional_properties) do
+            { label: project.namespace.actual_plan_name, value: cluster.id, property: cluster.managed.to_s }
+          end
         end
 
         context 'when a custom namespace is given' do

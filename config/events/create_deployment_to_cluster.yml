@@ -1,0 +1,24 @@
+---
+description: Deployment created to certificate-based cluster
+internal_events: true
+action: create_deployment_to_cluster
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: Pricing tier
+  value:
+    description: Cluster ID
+  property:
+    description: Cluster managed by GitLab
+product_group: environments
+product_categories:
+- deployment_management
+milestone: '18.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189398
+tiers:
+- free
+- premium
+- ultimate

@@ -229,6 +229,29 @@ describe('RunnerProjects', () => {
     });
   });
 
+  describe('When runner.projectCount > 0 but runner.projects.nodes is empty', () => {
+    beforeEach(() => {
+      runnerProjectsData.data.runner.projectCount = 1;
+      runnerProjectsData.data.runner.projects = {
+        nodes: [],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: '',
+          endCursor: '',
+        },
+      };
+
+      mockRunnerProjectsQuery.mockResolvedValueOnce(runnerProjectsData);
+      createComponent();
+      return waitForPromises();
+    });
+
+    it('does not render anything', () => {
+      expect(findCrud().exists()).toBe(false);
+    });
+  });
+
   describe('When an error occurs', () => {
     beforeEach(async () => {
       mockRunnerProjectsQuery.mockRejectedValue(new Error('Error!'));

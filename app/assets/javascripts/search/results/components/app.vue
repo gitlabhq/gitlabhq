@@ -3,6 +3,7 @@
 import { mapState } from 'vuex';
 import { __, s__ } from '~/locale';
 import getBlobSearchQuery from '~/search/graphql/blob_search_zoekt.query.graphql';
+import { ERROR_POLICY_NONE } from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { logError } from '~/lib/logger';
 import { DEFAULT_FETCH_CHUNKS } from '../constants';
@@ -38,7 +39,7 @@ export default {
       query() {
         return getBlobSearchQuery;
       },
-      errorPolicy: 'none',
+      errorPolicy: ERROR_POLICY_NONE,
       variables() {
         const variables = {
           search: this.query.search || '',

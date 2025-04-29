@@ -68,11 +68,11 @@ GitLab users can then [enable the Gitpod integration for themselves](#enable-git
 After you [enable Gitpod](#enable-gitpod-in-your-user-preferences),
 you can launch it from GitLab in one of these ways:
 
-- **From a project repository:**
+- From a project repository:
   1. On the left sidebar, select **Search or go to** and find your project.
   1. In the upper right, select **Edit > Gitpod**.
 
-- **From a merge request:**
+- From a merge request:
   1. Go to your merge request.
   1. In the upper-right corner, select **Code > Open in Gitpod**.
 

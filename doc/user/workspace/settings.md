@@ -84,7 +84,7 @@ running workspaces to remove those workspaces from the Kubernetes cluster.
 
 Use this setting to define the DNS zone of the URL where workspaces are available.
 
-**Example configuration:**
+Example configuration:
 
 ```yaml
 remote_development:
@@ -99,7 +99,7 @@ Use this setting to define the namespace where
 [`gitlab-workspaces-proxy`](set_up_gitlab_agent_and_proxies.md) is installed.
 The default value for `gitlab_workspaces_proxy.namespace` is `gitlab-workspaces`.
 
-**Example configuration:**
+Example configuration:
 
 ```yaml
 remote_development:
@@ -163,7 +163,7 @@ Each element of the list defines an `allow` attribute with an optional `except` 
 `allow` defines an IP range to allow traffic from.
 `except` lists IP ranges to exclude from the `allow` range.
 
-**Example configuration:**
+Example configuration:
 
 ```yaml
 remote_development:
@@ -199,7 +199,7 @@ Any resources you define in your [devfile](_index.md#devfile) override this sett
 For `default_resources_per_workspace_container`, `requests` and `limits` are required.
 For more information about possible CPU and memory values, see [Resource units in Kubernetes](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes).
 
-**Example configuration:**
+Example configuration:
 
 ```yaml
 remote_development:
@@ -233,7 +233,7 @@ For more information about possible CPU and memory values, see:
 
 Workspaces fail when they exceed the values you set for `requests` and `limits`.
 
-**Example configuration:**
+Example configuration:
 
 ```yaml
 remote_development:
@@ -272,7 +272,7 @@ for an agent, the agent's workspaces are not terminated automatically.
 The default value is `-1` (unlimited).
 Possible values are greater than or equal to `-1`.
 
-**Example configuration:**
+Example configuration:
 
 ```yaml
 remote_development:
@@ -302,7 +302,7 @@ for a user, the user's workspaces are not terminated automatically.
 The default value is `-1` (unlimited).
 Possible values are greater than or equal to `-1`.
 
-**Example configuration:**
+Example configuration:
 
 ```yaml
 remote_development:
@@ -326,7 +326,7 @@ running inside the container from the user on the host.
 
 The default value is `false`. Before you set the value to `true`, ensure your Kubernetes cluster supports user namespaces.
 
-**Example configuration:**
+Example configuration:
 
 ```yaml
 remote_development:
@@ -350,7 +350,7 @@ Use this setting to select the container runtime configuration used to run the c
 
 The default value is `""`, which denotes the absence of a value.
 
-**Example configuration:**
+Example configuration:
 
 ```yaml
 remote_development:
@@ -387,7 +387,7 @@ The default value is `false`. The value can be set to `true` only if either:
 - [`default_runtime_class`](#default_runtime_class) is set to a non-empty value.
 - [`use_kubernetes_user_namespaces`](#use_kubernetes_user_namespaces) is set to `true`.
 
-**Example configuration:**
+Example configuration:
 
 ```yaml
 remote_development:
@@ -413,7 +413,7 @@ or `kubernetes.io/dockerconfigjson` required by workspaces to pull private image
 
 The default value is `[]`.
 
-**Example configuration:**
+Example configuration:
 
 ```yaml
 remote_development:
@@ -446,7 +446,7 @@ Use this setting to attach arbitrary non-identifying metadata to the Kubernetes 
 
 The default value is `{}`.
 
-**Example configuration:**
+Example configuration:
 
 ```yaml
 remote_development:
@@ -481,7 +481,7 @@ Use this setting to attach arbitrary identifying metadata to the Kubernetes obje
 
 The default value is `{}`.
 
-**Example configuration:**
+Example configuration:
 
 ```yaml
 remote_development:
@@ -527,7 +527,7 @@ It also applies even if the workspace is in an error or failure state.
 The default value is `36`, or one and a half days. This avoids stopping the workspace during
 the user's typical working hours.
 
-**Example configuration:**
+Example configuration:
 
 ```yaml
 remote_development:
@@ -559,7 +559,7 @@ state for the specified number of hours.
 
 The default value is `722`, or approximately one month.
 
-**Example configuration:**
+Example configuration:
 
 ```yaml
 remote_development:

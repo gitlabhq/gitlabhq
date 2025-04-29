@@ -744,8 +744,8 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
 
   context 'FastDestroyAll' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-    let_it_be(:job) { create(:ci_build, pipeline: pipeline, project: project) }
+    let_it_be_with_refind(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be_with_refind(:job) { create(:ci_build, pipeline: pipeline, project: project) }
 
     let!(:job_artifact) { create(:ci_job_artifact, :archive, job: job) }
     let(:subjects) { pipeline.job_artifacts }

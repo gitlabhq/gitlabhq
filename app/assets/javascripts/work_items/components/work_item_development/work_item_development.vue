@@ -1,6 +1,7 @@
 <script>
 import { GlIcon, GlAlert, GlTooltipDirective } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { ERROR_POLICY_ALL } from '~/lib/graphql';
 import { s__, __ } from '~/locale';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import workItemDevelopmentQuery from '~/work_items/graphql/work_item_development.query.graphql';
@@ -201,6 +202,7 @@ export default {
       skip() {
         return !this.workItemIid;
       },
+      errorPolicy: ERROR_POLICY_ALL,
       error(error) {
         this.error = s__(
           "WorkItem|One or more items cannot be shown. If you're using SAML authentication, this could mean your session has expired.",

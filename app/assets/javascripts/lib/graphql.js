@@ -16,6 +16,9 @@ import { persistenceMapper } from './apollo/persistence_mapper';
 import { sentryBreadcrumbLink } from './apollo/sentry_breadcrumb_link';
 import { correlationIdLink } from './apollo/correlation_id_link';
 
+export const ERROR_POLICY_ALL = 'all';
+export const ERROR_POLICY_NONE = 'none';
+
 export const fetchPolicies = {
   CACHE_FIRST: 'cache-first',
   CACHE_AND_NETWORK: 'cache-and-network',

@@ -240,8 +240,8 @@ in the container that has a defined `gl/inject-editor` attribute in the devfile.
 The workspace container where the GitLab VS Code fork is injected
 must meet the following system requirements:
 
-- **System architecture:** AMD64
-- **System libraries:**
+- System architecture: AMD64
+- System libraries:
   - `glibc` 2.28 and later
   - `glibcxx` 3.4.25 and later
 
