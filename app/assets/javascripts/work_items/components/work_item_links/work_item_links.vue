@@ -246,7 +246,6 @@ export default {
       this.showClosed = !this.showClosed;
       saveToggleToLocalStorage(this.showClosedLocalStorageKey, this.showClosed);
     },
-    setShowLabelsFromLocalStorage() {},
     async fetchNextPage() {
       if (this.hasNextPage && !this.fetchNextPageInProgress) {
         this.fetchNextPageInProgress = true;
@@ -345,7 +344,6 @@ export default {
         :full-name="workItem.namespace.fullName"
         :is-group="false"
         :issuable-gid="issuableGid"
-        :work-item-iid="iid"
         :children-ids="childrenIds"
         :parent-confidential="confidential"
         :parent-iteration="issuableIteration"
@@ -369,7 +367,6 @@ export default {
           :can-update="canUpdate"
           :full-path="fullPath"
           :work-item-id="issuableGid"
-          :work-item-iid="iid"
           :show-labels="showLabels"
           :show-closed="showClosed"
           :disable-content="disableContent"

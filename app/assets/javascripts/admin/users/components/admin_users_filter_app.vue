@@ -1,7 +1,7 @@
 <script>
 import { GlFilteredSearch } from '@gitlab/ui';
 import { setUrlParams, visitUrl } from '~/lib/utils/url_utility';
-import { TOKENS } from '../constants';
+import { TOKENS } from 'ee_else_ce/admin/users/constants';
 import { initializeValuesFromQuery } from '../utils';
 
 const TOKEN_TYPES = TOKENS.map(({ type }) => type);

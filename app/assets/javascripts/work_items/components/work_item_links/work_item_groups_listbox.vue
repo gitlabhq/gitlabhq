@@ -25,11 +25,6 @@ export default {
       type: String,
       default: '',
     },
-    isGroup: {
-      required: false,
-      type: Boolean,
-      default: false,
-    },
     selectedGroupFullPath: {
       required: false,
       type: String,

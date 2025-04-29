@@ -280,6 +280,7 @@ module ApplicationSettingImplementation
         bulk_import_max_download_file_size: 5120,
         silent_admin_exports_enabled: false,
         allow_contribution_mapping_to_admins: false,
+        allow_bypass_placeholder_confirmation: false,
         allow_runner_registration_token: true,
         user_defaults_to_private_profile: false,
         projects_api_rate_limit_unauthenticated: 400,

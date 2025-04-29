@@ -10,6 +10,12 @@ const runningPod = {
   spec: { restartPolicy: 'Never', terminationGracePeriodSeconds: 30 },
   __typename: 'LocalWorkloadItem',
 };
+const runningPod1 = {
+  status: runningPod.status,
+  spec: runningPod.spec,
+  metadata: { ...runningPod.metadata, name: 'pod-1-1' },
+  __typename: 'LocalWorkloadItem',
+};
 const pendingPod = {
   status: { phase: 'Pending' },
   metadata: {
@@ -35,7 +41,19 @@ const succeededPod = {
   __typename: 'LocalWorkloadItem',
 };
 const failedPod = {
-  status: { phase: 'Failed' },
+  status: {
+    phase: 'Failed',
+    message: 'Failed details',
+    containerStatuses: [
+      {
+        state: {
+          waiting: {
+            reason: 'Error',
+          },
+        },
+      },
+    ],
+  },
   metadata: {
     name: 'pod-4',
     namespace: 'default',
@@ -46,8 +64,21 @@ const failedPod = {
   spec: {},
   __typename: 'LocalWorkloadItem',
 };
+const failedPod1 = {
+  status: failedPod.status,
+  spec: failedPod.spec,
+  metadata: { ...failedPod.metadata, name: 'pod-4-1' },
+  __typename: 'LocalWorkloadItem',
+};
 
-export const k8sPodsMock = [runningPod, runningPod, pendingPod, succeededPod, failedPod, failedPod];
+export const k8sPodsMock = [
+  runningPod,
+  runningPod1,
+  pendingPod,
+  succeededPod,
+  failedPod,
+  failedPod1,
+];
 
 export const mockPodStats = [
   {
@@ -68,7 +99,7 @@ export const mockPodStats = [
   },
 ];
 
-export const mockPodsTableItems = [
+const basePods = [
   {
     name: 'pod-1',
     namespace: 'default',
@@ -81,7 +112,7 @@ export const mockPodsTableItems = [
     fullStatus: { phase: 'Running', ready: true, restartCount: 4 },
   },
   {
-    name: 'pod-1',
+    name: 'pod-1-1',
     namespace: 'default',
     status: 'Running',
     age: '114d',
@@ -122,7 +153,7 @@ export const mockPodsTableItems = [
     spec: {},
   },
   {
-    name: 'pod-4',
+    name: 'pod-4-1',
     namespace: 'default',
     status: 'Failed',
     age: '1d',
@@ -132,6 +163,22 @@ export const mockPodsTableItems = [
     spec: {},
   },
 ];
+
+export const mockPodsTableBasicItems = [...basePods];
+
+export const mockPodsTableItems = basePods.map((pod) => {
+  const newPod = { ...pod };
+
+  if (pod.name === 'pod-1') {
+    newPod.statusText = 'Running';
+  }
+  if (pod.name === 'pod-4') {
+    newPod.statusText = 'Error';
+    newPod.statusTooltip = 'Failed details';
+  }
+
+  return newPod;
+});
 
 const pendingDeployment = {
   status: {

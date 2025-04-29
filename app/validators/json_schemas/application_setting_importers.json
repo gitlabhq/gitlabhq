@@ -8,6 +8,9 @@
     },
     "allow_contribution_mapping_to_admins": {
       "type": "boolean"
+    },
+    "allow_bypass_placeholder_confirmation": {
+      "type": "boolean"
     }
   },
   "additionalProperties": false

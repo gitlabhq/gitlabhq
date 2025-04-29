@@ -1127,11 +1127,6 @@ msgid_plural "parents"
 msgstr[0] "padre"
 msgstr[1] "padres"
 
-msgid "CycleAnalytics|%{stageName}"
-msgid_plural "CycleAnalytics|%d stages selected"
-msgstr[0] "%{stageName}"
-msgstr[1] "%d stages selected"
-
 msgid "Example: (feature|hotfix)\\/.*"
 msgstr "Ejemplo: (feature|hotfix)\\/.*"
 

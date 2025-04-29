@@ -165,7 +165,7 @@ module Gitlab
         end
 
         if entry.has_plural?
-          validate_variables_in_message(errors, entry.plural_id, entry.plural_id)
+          validate_single_and_plural_variables(errors, entry)
 
           entry.plural_translations.each do |translation|
             validate_variables_in_message(errors, entry.plural_id, translation)
@@ -178,6 +178,28 @@ module Gitlab
 
         validate_unnamed_variables(errors, required_variables)
         validate_variable_usage(errors, message_translation, required_variables)
+      end
+
+      # rubocop: disable Style/AsciiComments -- Need for clarity
+      # Don't allow mixing named and positional variables in singular
+      # and plural forms for languages such as Japanese. For example:
+      #
+      # msgid "GlobalSearch|Showing 1 code result for %{term}"
+      # msgid_plural "GlobalSearch|Showing %{resultsTotal} code results for %{term}"
+      # msgstr[0] "%{term}の%{resultsTotal}個のコード結果を表示しています" variables
+      #
+      # Here we see that both `term` and `resultsTotal` are needed in
+      # the final translation. If we mix named and positional variables
+      # in the singular and plural forms, it could be ambiguous as to which
+      # variables belong where.
+      # rubocop: enable Style/AsciiComments
+      def validate_single_and_plural_variables(errors, entry)
+        variables = entry.msgid.scan(VARIABLE_REGEX)
+        plural_variables = entry.plural_id.scan(VARIABLE_REGEX)
+
+        all_variables = (variables + plural_variables).uniq
+        validate_unnamed_variables(errors, all_variables)
+        validate_variables_in_message(errors, entry.plural_id, entry.plural_id)
       end
 
       def validate_translation(errors, entry)
@@ -199,7 +221,7 @@ module Gitlab
       # `FastGettext::Translation` could raise `ArgumentError` as subclassess
       # `InvalidEncoding`, `IllegalSequence` & `InvalidCharacter`
       rescue ArgumentError, TypeError, RuntimeError => e
-        errors << "Failure translating to #{locale}: #{e.message}"
+        errors << "Failure translating to #{locale} in #{po_path}: #{e.message}"
       end
 
       def translate_singular(entry)
@@ -213,16 +235,23 @@ module Gitlab
                       end
 
         translation % variables if used_variables.any?
+      rescue KeyError => e
+        raise "Failed translation '#{translation}' with variables #{variables.keys}: #{e}"
       end
 
       def translate_plural(entry)
         numbers_covering_all_plurals.map do |number|
           translation = FastGettext::Translation.n_(entry.msgid, entry.plural_id, number)
-          index = index_for_pluralization(number)
-          used_variables = index == 0 ? entry.msgid.scan(VARIABLE_REGEX) : entry.plural_id.scan(VARIABLE_REGEX)
+          variables = entry.msgid.scan(VARIABLE_REGEX)
+          plural_variables = entry.plural_id.scan(VARIABLE_REGEX)
+          used_variables = (variables + plural_variables).uniq
           variables = fill_in_variables(used_variables)
 
-          translation % variables if variables.any?
+          begin
+            translation % variables if variables.any?
+          rescue KeyError => e
+            raise "Failed translation '#{translation}' with variables #{variables.keys}: #{e}"
+          end
         end
       end
 
@@ -275,7 +304,10 @@ module Gitlab
         else
           variables.each_with_object({}) do |variable, hash|
             variable_name = variable[/\w+/]
-            hash[variable_name] = random_string
+            # The variable must be a symbol for Ruby string interpolation to work:
+            # "Hello, %{world}!" % { world: 'hi' }      # Works correctly
+            # "Hello, %{world}!" % { 'world' => 'hi' }  # Fails with KeyError
+            hash[variable_name.to_sym] = random_string
           end
         end
       end

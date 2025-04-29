@@ -399,7 +399,6 @@ describe('WorkItemTree', () => {
     expect(findRolledUpCount().exists()).toBe(true);
 
     expect(findRolledUpData().props()).toEqual({
-      workItemId: 'gid://gitlab/WorkItem/2',
       workItemIid: '2',
       workItemType: 'Objective',
       fullPath: 'test/project',

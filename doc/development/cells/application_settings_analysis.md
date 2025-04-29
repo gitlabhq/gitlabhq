@@ -14,12 +14,12 @@ title: Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 497
+- Number of attributes: 488
 - Number of encrypted attributes: 41 (8.0%)
-- Number of attributes documented: 298 (60.0%)
-- Number of attributes on GitLab.com different from the defaults: 222 (45.0%)
-- Number of attributes with `clusterwide` set: 497 (100.0%)
-- Number of attributes with `clusterwide: true` set: 128 (26.0%)
+- Number of attributes documented: 294 (60.0%)
+- Number of attributes on GitLab.com different from the defaults: 221 (45.0%)
+- Number of attributes with `clusterwide` set: 488 (100.0%)
+- Number of attributes with `clusterwide: true` set: 129 (26.0%)
 
 ## Individual columns
 
@@ -33,6 +33,7 @@ title: Application Settings analysis
 | `akismet_api_key` | `true` | `text` | `string` | `false` | `null` | `true` | `false`| `true` |
 | `akismet_enabled` | `false` | `boolean` | `boolean` | `false` | `false` | `false` | `false`| `true` |
 | `allow_account_deletion` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
+| `allow_bypass_placeholder_confirmation` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `true`| `true` |
 | `allow_deploy_tokens_and_keys_with_external_authn` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `allow_group_owners_to_manage_ldap` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `allow_local_requests_from_system_hooks` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |

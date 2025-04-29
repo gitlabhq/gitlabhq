@@ -2,7 +2,7 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
-import { STATE_OPEN, WORK_ITEM_TYPE_NAME_TASK } from '../../constants';
+import { WORK_ITEM_TYPE_NAME_TASK } from '../../constants';
 import { findHierarchyWidget, getDefaultHierarchyChildrenCount, getItems } from '../../utils';
 import toggleHierarchyTreeChildMutation from '../../graphql/client/toggle_hierarchy_tree_child.mutation.graphql';
 import isExpandedHierarchyTreeChildQuery from '../../graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
@@ -179,23 +179,8 @@ export default {
     endCursor() {
       return this.pageInfo?.endCursor || '';
     },
-    isItemOpen() {
-      return this.childItem.state === STATE_OPEN;
-    },
     childItemType() {
       return this.childItem.workItemType.name;
-    },
-    iconClass() {
-      if (this.childItemType === WORK_ITEM_TYPE_NAME_TASK) {
-        return this.isItemOpen ? 'gl-fill-icon-success' : 'gl-fill-icon-info';
-      }
-      return '';
-    },
-    stateTimestamp() {
-      return this.isItemOpen ? this.childItem.createdAt : this.childItem.closedAt;
-    },
-    stateTimestampTypeText() {
-      return this.isItemOpen ? __('Created') : __('Closed');
     },
     chevronType() {
       return this.isExpanded ? 'chevron-down' : 'chevron-right';
@@ -315,7 +300,6 @@ export default {
         v-if="isExpanded || showChildrenDropzone"
         :can-update="canUpdate"
         :work-item-id="issuableGid"
-        :work-item-iid="childItem.iid"
         :work-item-type="workItemType"
         :children="displayableChildren"
         :parent="childItem"

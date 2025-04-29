@@ -247,9 +247,6 @@ export default {
     workItemNamespaceName() {
       return this.workItem?.namespace?.fullName;
     },
-    shouldRolledUpWeightBeVisible() {
-      return this.showRolledUpWeight && this.rolledUpWeight !== null;
-    },
     showTaskWeight() {
       return this.workItemType !== WORK_ITEM_TYPE_NAME_EPIC;
     },
@@ -404,7 +401,6 @@ export default {
       <work-item-rolled-up-data
         v-if="!isLoadingChildren"
         class="gl-hidden sm:gl-flex"
-        :work-item-id="workItemId"
         :work-item-iid="workItemIid"
         :work-item-type="workItemType"
         :full-path="fullPath"
@@ -415,7 +411,6 @@ export default {
       <work-item-rolled-up-data
         v-if="!isLoadingChildren"
         class="gl-mt-2 sm:gl-hidden"
-        :work-item-id="workItemId"
         :work-item-iid="workItemIid"
         :work-item-type="workItemType"
         :full-path="fullPath"
@@ -444,7 +439,6 @@ export default {
         :full-name="workItemNamespaceName"
         :is-group="isGroup"
         :issuable-gid="workItemId"
-        :work-item-iid="workItemIid"
         :form-type="formType"
         :parent-work-item-type="parentWorkItemType"
         :children-type="childType"
@@ -479,7 +473,6 @@ export default {
           :can-update="canUpdateChildren"
           :full-path="fullPath"
           :work-item-id="workItemId"
-          :work-item-iid="workItemIid"
           :work-item-type="workItemType"
           :show-labels="showLabels"
           :show-closed="showClosed"

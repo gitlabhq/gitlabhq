@@ -77,7 +77,7 @@ describe('Workload table component', () => {
         mockPodsTableItems.forEach((data, index) => {
           expect(findRow(index).text()).toContain(data.name);
           expect(findRow(index).text()).toContain(data.namespace);
-          expect(findRow(index).text()).toContain(data.status);
+          expect(findRow(index).text()).toContain(data.statusText || data.status);
           expect(findRow(index).text()).toContain(data.age);
         });
       });
@@ -87,17 +87,17 @@ describe('Workload table component', () => {
       });
 
       it.each`
-        status         | variant      | index
-        ${'Running'}   | ${'info'}    | ${0}
-        ${'Running'}   | ${'info'}    | ${1}
-        ${'Pending'}   | ${'warning'} | ${2}
-        ${'Succeeded'} | ${'success'} | ${3}
-        ${'Failed'}    | ${'danger'}  | ${4}
-        ${'Failed'}    | ${'danger'}  | ${5}
+        status         | statusText | variant      | index
+        ${'Running'}   | ${''}      | ${'info'}    | ${0}
+        ${'Running'}   | ${''}      | ${'info'}    | ${1}
+        ${'Pending'}   | ${''}      | ${'warning'} | ${2}
+        ${'Succeeded'} | ${''}      | ${'success'} | ${3}
+        ${'Failed'}    | ${'Error'} | ${'danger'}  | ${4}
+        ${'Failed'}    | ${''}      | ${'danger'}  | ${5}
       `(
         'renders "$variant" badge for status "$status" at index "$index"',
-        ({ status, variant, index }) => {
-          expect(findBadge(index).text()).toBe(status);
+        ({ status, statusText, variant, index }) => {
+          expect(findBadge(index).text()).toBe(statusText || status);
           expect(findBadge(index).props('variant')).toBe(variant);
         },
       );

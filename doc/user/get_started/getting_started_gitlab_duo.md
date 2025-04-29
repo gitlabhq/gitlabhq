@@ -44,7 +44,7 @@ For more information, see:
 
 Confirm that Chat is available in the GitLab UI.
 
-Go to a project and in the upper-right corner, a button named **Ask Duo Chat** should be displayed.
+Go to a project and in the upper-right corner, a button named **GitLab Duo Chat** should be displayed.
 If this button is available, it means everything is configured properly.
 Try asking Chat a question or type `/` to see a list of slash commands.
 

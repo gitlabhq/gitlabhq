@@ -4,6 +4,7 @@ class GroupChildEntity < Grape::Entity
   include ActionView::Helpers::NumberHelper
   include RequestAwareEntity
   include MarkupHelper
+  include ::NamespacesHelper
 
   expose :id, :name, :description, :visibility, :full_name,
     :created_at, :updated_at, :avatar_url
@@ -32,6 +33,10 @@ class GroupChildEntity < Grape::Entity
     membership&.human_access
   end
 
+  expose :marked_for_deletion_on
+  expose :adjourned_deletion?, as: :is_adjourned_deletion_enabled
+  expose :permanent_deletion_date
+
   # Project only attributes
   expose :last_activity_at, if: ->(instance) { project? }
 
@@ -45,6 +50,8 @@ class GroupChildEntity < Grape::Entity
   expose :has_subgroups?, as: :has_subgroups, unless: ->(_instance) { project? }
 
   expose :project_count, if: ->(group) { access_group_counts?(group) }
+
+  expose :linked_to_subscription?, as: :is_linked_to_subscription, unless: ->(_instance, _options) { project? }
 
   expose :leave_path, unless: ->(_instance, _options) { project? } do |instance|
     leave_group_members_path(instance)
@@ -65,6 +72,8 @@ class GroupChildEntity < Grape::Entity
   expose :number_users_with_delimiter, unless: ->(_instance, _options) { project? } do |instance|
     number_with_delimiter(instance.member_count)
   end
+
+  expose :member_count, as: :group_members_count, unless: ->(_instance, _options) { project? }
 
   expose :markdown_description do |instance|
     markdown_description
@@ -112,6 +121,18 @@ class GroupChildEntity < Grape::Entity
     else
       can?(request.current_user, :admin_group, object)
     end
+  end
+
+  def marked_for_deletion_on
+    return unless object.adjourned_deletion?
+
+    object.marked_for_deletion_on
+  end
+
+  def permanent_deletion_date
+    return unless object.adjourned_deletion?
+
+    permanent_deletion_date_formatted(object.marked_for_deletion_on || Date.current)
   end
 end
 

@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { visitUrl, getBaseURL } from '~/lib/utils/url_utility';
 import AdminUsersFilterApp from '~/admin/users/components/admin_users_filter_app.vue';
-import { TOKENS } from '~/admin/users/constants';
+import { TOKENS } from 'ee_else_ce/admin/users/constants';
 
 const mockToken = [
   {

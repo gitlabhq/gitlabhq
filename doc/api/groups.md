@@ -1809,13 +1809,6 @@ A GitLab.com group can't be deleted if it is linked to a subscription. To delete
 
 #### Restore a group marked for deletion
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
 Restores a group marked for deletion.
 
 ```plaintext

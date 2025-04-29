@@ -88,3 +88,17 @@ export function generateServicePortsString(ports) {
     })
     .join(', ');
 }
+
+export function getPodStatusText(status) {
+  if (!status) {
+    return '';
+  }
+
+  const containerStatuses = status.containerStatuses || [];
+  return containerStatuses.reduce((acc, container) => {
+    const waitingReason = container.state?.waiting?.reason;
+    const terminatedReason = container.state?.terminated?.reason;
+
+    return waitingReason || terminatedReason || acc;
+  }, status.reason || status.phase);
+}

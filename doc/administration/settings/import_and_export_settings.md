@@ -119,6 +119,28 @@ To allow mapping of imported user contributions to administrators:
 1. Scroll to **Allow contribution mapping to administrators**.
 1. Select the **Enabled** checkbox.
 
+## Skip confirmation when reassigning placeholder users
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/534330) in GitLab 18.0 [with a flag](../feature_flags.md) named `importer_user_mapping_allow_bypass_of_confirmation`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+To skip confirmation when reassigning placeholder users:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand **Import and export settings**.
+1. Under **Skip confirmation when reassigning placeholder users**, select the **Enabled** checkbox.
+
 ## Max export size
 
 {{< history >}}

@@ -2180,13 +2180,6 @@ Supported attributes:
 
 ### Restore a project marked for deletion
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
 Restore a project that is marked for deletion.
 
 ```plaintext

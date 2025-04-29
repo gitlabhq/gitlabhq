@@ -6,7 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import PodsPage from '~/kubernetes_dashboard/pages/pods_page.vue';
 import WorkloadLayout from '~/kubernetes_dashboard/components/workload_layout.vue';
 import { useFakeDate } from 'helpers/fake_date';
-import { k8sPodsMock, mockPodStats, mockPodsTableItems } from '../graphql/mock_data';
+import { k8sPodsMock, mockPodStats, mockPodsTableBasicItems } from '../graphql/mock_data';
 
 Vue.use(VueApollo);
 
@@ -74,7 +74,7 @@ describe('Kubernetes dashboard pods page', () => {
       createWrapper();
       await waitForPromises();
 
-      expect(findWorkloadLayout().props('items')).toMatchObject(mockPodsTableItems);
+      expect(findWorkloadLayout().props('items')).toMatchObject(mockPodsTableBasicItems);
     });
   });
 

@@ -50,11 +50,6 @@ export default {
       required: false,
       default: null,
     },
-    workItemIid: {
-      type: String,
-      required: false,
-      default: null,
-    },
     childrenIds: {
       type: Array,
       required: false,
@@ -465,7 +460,6 @@ export default {
             class="gl-w-full"
             :full-path="fullPath"
             :current-group-name="fullName"
-            :is-group="isGroup"
             @error="$emit('error', $event)"
           />
         </gl-form-group>

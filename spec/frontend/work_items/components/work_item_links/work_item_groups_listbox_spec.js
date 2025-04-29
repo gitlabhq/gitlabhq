@@ -25,7 +25,6 @@ describe('WorkItemGroupsListbox', () => {
   const findDropdownItemFor = (fullPath) => wrapper.findByTestId(`listbox-item-${fullPath}`);
 
   const createComponent = async ({
-    isGroup = true,
     fullPath = 'group-a',
     selectedGroupFullPath = null,
     queryResolver = namespaceGroupsFormLinksWidgetResolver,
@@ -34,7 +33,6 @@ describe('WorkItemGroupsListbox', () => {
       apolloProvider: createMockApollo([[namespaceGroupsForLinksWidgetQuery, queryResolver]]),
       propsData: {
         fullPath,
-        isGroup,
         selectedGroupFullPath,
       },
     });

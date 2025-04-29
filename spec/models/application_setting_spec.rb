@@ -96,6 +96,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         reindexing_minimum_index_size: 1.gigabyte,
         reindexing_minimum_relative_bloat_size: 0.2,
         top_level_group_creation_enabled: true,
+        allow_bypass_placeholder_confirmation: false,
         ci_partitions_size_limit: 100.gigabytes,
         ci_delete_pipelines_in_seconds_limit: ChronicDuration.parse('1 year')
       )

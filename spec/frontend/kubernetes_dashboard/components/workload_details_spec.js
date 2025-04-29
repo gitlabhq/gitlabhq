@@ -115,6 +115,23 @@ describe('Workload details component', () => {
       expect(findWorkloadDetailsItem(index).props('collapsible')).toBe(true);
     });
 
+    describe('when statusText is provided', () => {
+      const mockTableItemsWithStatusText = {
+        ...mockPodsTableItems[2],
+        statusText: 'customStatus',
+      };
+
+      beforeEach(() => {
+        createWrapper({ item: mockTableItemsWithStatusText });
+      });
+
+      it('renders a badge for the statusText value', () => {
+        const { status } = mockTableItemsWithStatusText;
+        expect(findBadge(1).text()).toBe('customStatus');
+        expect(findBadge(1).props('variant')).toBe(WORKLOAD_STATUS_BADGE_VARIANTS[status]);
+      });
+    });
+
     describe('when actions are provided', () => {
       const actions = [
         {

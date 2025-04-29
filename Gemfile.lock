@@ -648,7 +648,9 @@ GEM
       aws-sigv4 (~> 1.0)
       faraday (>= 2.0, < 3)
     fast_blank (1.0.1)
-    fast_gettext (2.3.0)
+    fast_gettext (4.1.0)
+      prime
+      racc
     ffaker (2.24.0)
     ffi (1.17.2)
     ffi-compiler (1.0.1)

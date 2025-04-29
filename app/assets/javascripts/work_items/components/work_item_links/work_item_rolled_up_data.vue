@@ -28,10 +28,6 @@ export default {
       type: String,
       required: true,
     },
-    workItemId: {
-      type: String,
-      required: true,
-    },
     workItemIid: {
       type: String,
       required: false,

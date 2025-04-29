@@ -10,7 +10,7 @@ import {
   PODS_TABLE_FIELDS,
 } from '~/kubernetes_dashboard/constants';
 import { DELETE_POD_ACTION } from '~/environments/constants';
-import { getAge } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
+import { getAge, getPodStatusText } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
 import WorkloadStats from '~/kubernetes_dashboard/components/workload_stats.vue';
 import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
 import k8sPodsQuery from '~/environments/graphql/queries/k8s_pods.query.graphql';
@@ -47,6 +47,8 @@ export default {
               kind: s__('KubernetesDashboard|Pod'),
               spec: pod.spec,
               fullStatus: pod.status,
+              statusText: getPodStatusText(pod.status),
+              statusTooltip: pod.status.message,
               containers: pod.spec.containers,
               actions: [DELETE_POD_ACTION],
             };

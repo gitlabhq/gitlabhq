@@ -53,11 +53,6 @@ export default {
     },
   },
   methods: {
-    workItemTypeCount(workItemTypeName) {
-      return this.rolledUpCountsByType.find(
-        (rollUpCount) => rollUpCount?.workItemType?.name === workItemTypeName,
-      );
-    },
     rolledUpCountExists(rolledUpCount) {
       return rolledUpCount?.countsByState?.all > 0;
     },

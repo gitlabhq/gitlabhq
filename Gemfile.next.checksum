@@ -171,7 +171,7 @@
 {"name":"faraday_middleware-aws-sigv4","version":"1.0.1","platform":"ruby","checksum":"a001ea4f687ca1c60bad8f2a627196905ce3dbf285e461dc153240e92eaabe8f"},
 {"name":"fast_blank","version":"1.0.1","platform":"java","checksum":"90d82106b0e4aa19ac24ba1604c79a0c5a4c471601e800c9b2b072938a6d9a92"},
 {"name":"fast_blank","version":"1.0.1","platform":"ruby","checksum":"269fc30414fed4e6403bc4a49081e1ea539f8b9226e59276ed1efaefabaa17ea"},
-{"name":"fast_gettext","version":"2.3.0","platform":"ruby","checksum":"0253e26423ccab68061c42387827e3b99243a1b15ad614df1c800ba870d64f84"},
+{"name":"fast_gettext","version":"4.1.0","platform":"ruby","checksum":"8e6b612676d601209662d2cd793ed4a067f834c8ca65ede793bacc9bcc1c2763"},
 {"name":"ffaker","version":"2.24.0","platform":"ruby","checksum":"43e3f8c12d602fbc70398be8bd1ac841a031eabdc12af01507e76a8d675a5d52"},
 {"name":"ffi","version":"1.17.2","platform":"aarch64-linux-gnu","checksum":"c910bd3cae70b76690418cce4572b7f6c208d271f323d692a067d59116211a1a"},
 {"name":"ffi","version":"1.17.2","platform":"aarch64-linux-musl","checksum":"69e6556b091d45df83e6c3b19d3c54177c206910965155a6ec98de5e893c7b7c"},

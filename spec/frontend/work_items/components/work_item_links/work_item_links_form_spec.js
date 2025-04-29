@@ -321,7 +321,6 @@ describe('WorkItemLinksForm', () => {
         expect(findInput().exists()).toBe(true);
         expect(findGroupsSelector().props()).toMatchObject({
           fullPath: 'group-a',
-          isGroup: true,
           selectedGroupFullPath: 'group-a',
         });
         expect(findAddChildButton().text()).toBe('Create epic');
