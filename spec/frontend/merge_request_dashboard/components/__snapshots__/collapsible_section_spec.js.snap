@@ -6,7 +6,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
   id=""
 >
   <header
-    class="crud-header gl-bg-section gl-border-b gl-border-section gl-flex gl-flex-wrap gl-gap-x-5 gl-gap-y-2 gl-justify-between gl-pr-10 gl-px-5 gl-py-4 gl-relative gl-rounded-t-base"
+    class="crud-header gl-bg-section gl-border-b gl-border-section gl-flex gl-flex-wrap gl-gap-x-5 gl-gap-y-2 gl-justify-between gl-pr-10 gl-px-5 gl-py-4 gl-relative gl-rounded-t-base md:gl-flex-nowrap"
   >
     <div
       class="gl-flex gl-flex-col gl-grow gl-self-center"

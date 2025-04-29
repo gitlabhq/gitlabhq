@@ -11,6 +11,10 @@
     "ci_partitions_size_limit": {
       "type": "integer",
       "description": "Maximum table size limit for a CI partition used for creating new partitions."
+    },
+    "ci_delete_pipelines_in_seconds_limit": {
+      "type": "integer",
+      "description": "Maximum value allowed for configuring pipeline retention."
     }
   }
 }

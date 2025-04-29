@@ -8,7 +8,7 @@ import getPipelineAnalytics from '../graphql/queries/get_pipeline_analytics.quer
 
 import DashboardHeader from './dashboard_header.vue';
 import PipelinesDashboardClickhouseFilters from './pipelines_dashboard_clickhouse_filters.vue';
-import StatisticsList from './statistics_list.vue';
+import PipelinesStats from './pipelines_stats.vue';
 import PipelineDurationChart from './pipeline_duration_chart.vue';
 import PipelineStatusChart from './pipeline_status_chart.vue';
 
@@ -17,7 +17,7 @@ export default {
   components: {
     DashboardHeader,
     PipelinesDashboardClickhouseFilters,
-    StatisticsList,
+    PipelinesStats,
     PipelineDurationChart,
     PipelineStatusChart,
   },
@@ -92,16 +92,6 @@ export default {
         toTime: today,
       };
     },
-    formattedCounts() {
-      const { count, successCount, failedCount, durationStatistics } =
-        this.pipelineAnalytics.aggregate;
-      return {
-        total: count === null ? '-' : count,
-        medianDuration: durationStatistics.p50,
-        successRatio: Number(count) ? (successCount / count) * 100 : 0,
-        failureRatio: Number(count) ? (failedCount / count) * 100 : 0,
-      };
-    },
   },
   mounted() {
     window.addEventListener('popstate', this.updateParamsFromQuery);
@@ -134,7 +124,7 @@ export default {
       @input="onFiltersInput($event)"
     />
     <div>
-      <statistics-list :loading="loading" :counts="formattedCounts" />
+      <pipelines-stats :loading="loading" :aggregate="pipelineAnalytics.aggregate" />
       <pipeline-duration-chart :loading="loading" :time-series="pipelineAnalytics.timeSeries" />
       <pipeline-status-chart :loading="loading" :time-series="pipelineAnalytics.timeSeries" />
     </div>

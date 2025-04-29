@@ -208,6 +208,7 @@ export default {
       mergeRequestToResolveDiscussionsOf: getParameterByName('merge_request_id'),
       vulnerabilityId: getParameterByName('vulnerability_id'),
       numberOfDiscussionsResolved: '',
+      selectedParentMilestone: null,
     };
   },
   apollo: {
@@ -443,7 +444,7 @@ export default {
       return weightWidget?.weight ?? null;
     },
     workItemMilestoneId() {
-      return this.workItemMilestone?.milestone?.id || null;
+      return this.workItemMilestone?.milestone?.id || this.selectedParentMilestone?.id || null;
     },
     workItemCrmContactIds() {
       return this.workItemCrmContacts?.contacts?.nodes?.map((item) => item.id) || [];
@@ -838,6 +839,9 @@ export default {
         this.selectedWorkItemTypeIconName,
       );
     },
+    onParentMilestone(parentMilestone) {
+      this.selectedParentMilestone = parentMilestone;
+    },
   },
   NEW_WORK_ITEM_IID,
   NEW_WORK_ITEM_GID,
@@ -999,10 +1003,11 @@ export default {
               :full-path="selectedProjectFullPath"
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
-              :work-item-milestone="workItemMilestone.milestone"
+              :work-item-milestone="workItemMilestone.milestone || selectedParentMilestone"
               :work-item-type="selectedWorkItemTypeName"
               :can-update="canUpdate"
               @error="$emit('error', $event)"
+              @parentMilestone="onParentMilestone"
             />
             <work-item-weight
               v-if="workItemWeight"
@@ -1065,6 +1070,7 @@ export default {
               :parent="workItemParent"
               :is-group="isGroup"
               @error="$emit('error', $event)"
+              @parentMilestone="onParentMilestone"
             />
             <work-item-crm-contacts
               v-if="workItemCrmContacts"

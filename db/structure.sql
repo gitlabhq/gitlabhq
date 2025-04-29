@@ -24496,7 +24496,11 @@ CREATE TABLE virtual_registries_packages_maven_registries (
     id bigint NOT NULL,
     group_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    name text DEFAULT ''::text NOT NULL,
+    description text,
+    CONSTRAINT check_1c00ac80ea CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_ee44adc558 CHECK ((char_length(description) <= 1024))
 );
 
 CREATE SEQUENCE virtual_registries_packages_maven_registries_id_seq
@@ -24537,9 +24541,13 @@ CREATE TABLE virtual_registries_packages_maven_upstreams (
     cache_validity_hours smallint DEFAULT 24 NOT NULL,
     username jsonb,
     password jsonb,
+    name text DEFAULT ''::text NOT NULL,
+    description text,
     CONSTRAINT check_26c0572777 CHECK ((char_length(url) <= 255)),
     CONSTRAINT check_4db365ecc9 CHECK (((num_nonnulls(username, password) = 2) OR (num_nulls(username, password) = 2))),
-    CONSTRAINT check_a3593dca3a CHECK ((cache_validity_hours >= 0))
+    CONSTRAINT check_a3593dca3a CHECK ((cache_validity_hours >= 0)),
+    CONSTRAINT check_c827be970e CHECK ((char_length(description) <= 1024)),
+    CONSTRAINT check_f92d4b3613 CHECK ((char_length(name) <= 255))
 );
 
 CREATE SEQUENCE virtual_registries_packages_maven_upstreams_id_seq

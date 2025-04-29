@@ -91,11 +91,11 @@ You can refine user search with `simple_query_string`.
 
 ## Known issues
 
-- You can only search files smaller than 1 MB.
+- You can search only files smaller than 1 MB.
   For more information, see [issue 195764](https://gitlab.com/gitlab-org/gitlab/-/issues/195764).
   For GitLab Self-Managed, an administrator can
   [configure the **Maximum file size indexed** setting](../../integration/advanced_search/elasticsearch.md#advanced-search-configuration).
-- You can use advanced search on the default branch of a project only.
+- You can use advanced search only on the default branch of a project.
   For more information, see [issue 229966](https://gitlab.com/gitlab-org/gitlab/-/issues/229966).
 - The search query must not contain any of the following characters:
 

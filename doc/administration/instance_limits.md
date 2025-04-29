@@ -987,6 +987,25 @@ To change the limit, update `ci_partitions_size_limit` with the new value. For e
 ApplicationSetting.update(ci_partitions_size_limit: 20.gigabytes)
 ```
 
+### Maximum config value for automatic pipeline cleanup
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189191) in GitLab 18.0.
+
+{{< /history >}}
+
+Configures the upper limit for [CI/CD pipeline expiry time](../ci/pipelines/settings.md#automatic-pipeline-cleanup).
+Defaults to 1 year.
+
+You can change this limit by using the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
+To change the limit, update `ci_delete_pipelines_in_seconds_limit_human_readable` with the new value.
+For example, to set it to 3 years:
+
+```ruby
+ApplicationSetting.update(ci_delete_pipelines_in_seconds_limit_human_readable: '3 years')
+```
+
 ## Instance monitoring and metrics
 
 ### Limit inbound incident management alerts

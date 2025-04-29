@@ -32,6 +32,18 @@ query groupWorkItems(
           name
           iconName
         }
+        widgets {
+          type
+          ... on WorkItemWidgetMilestone {
+            milestone {
+              id
+              dueDate
+              startDate
+              title
+              webPath
+            }
+          }
+        }
       }
     }
     workItemsByIid: workItems(

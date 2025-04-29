@@ -32,6 +32,18 @@ RSpec.describe 'Container registry (JavaScript fixtures)', feature_category: :co
         }
       end
 
+      shared_examples 'container registry protection tag rules' do |fixture_suffix|
+        before do
+          create(:container_registry_protection_tag_rule, :immutable, project: project)
+        end
+
+        it "graphql/#{project_container_protection_tag_rules_query_path}.#{fixture_suffix}.json" do
+          post_graphql(query, current_user: user, variables: variables)
+
+          expect_graphql_errors_to_be_empty
+        end
+      end
+
       before do
         stub_gitlab_api_client_to_support_gitlab_api(supported: true)
       end
@@ -71,6 +83,18 @@ RSpec.describe 'Container registry (JavaScript fixtures)', feature_category: :co
 
             expect_graphql_errors_to_be_empty
           end
+        end
+
+        context 'with immutable tag protection rules' do
+          it_behaves_like 'container registry protection tag rules', 'immutable_rules'
+        end
+
+        context 'with immutable tag protection rules as maintainer' do
+          before_all do
+            project.add_maintainer(user)
+          end
+
+          it_behaves_like 'container registry protection tag rules', 'immutable_rules_maintainer'
         end
 
         context 'with maximum number of tag protection rules' do

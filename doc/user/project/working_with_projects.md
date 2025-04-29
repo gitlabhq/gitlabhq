@@ -543,8 +543,7 @@ To view only the projects you are the owner of:
 
 ## Rename a repository
 
-A project's repository name defines its URL and its place on the file disk
-where GitLab is installed.
+A project's repository name defines its URL.
 
 Prerequisites:
 

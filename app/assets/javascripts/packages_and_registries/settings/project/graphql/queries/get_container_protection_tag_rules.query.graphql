@@ -5,8 +5,12 @@ query getProjectContainerProtectionTagRules($projectPath: ID!, $first: Int) {
       nodes {
         id
         tagNamePattern
+        immutable
         minimumAccessLevelForPush
         minimumAccessLevelForDelete
+        userPermissions {
+          destroyContainerRegistryProtectionTagRule
+        }
       }
     }
   }

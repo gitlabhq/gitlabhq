@@ -42,8 +42,11 @@ class ProjectCiCdSetting < ApplicationRecord
     numericality: {
       only_integer: true,
       greater_than_or_equal_to: ChronicDuration.parse('1 day'),
-      less_than_or_equal_to: ChronicDuration.parse('1 year'),
-      message: N_('must be between 1 day and 1 year')
+      less_than_or_equal_to: ->(_) { ::Gitlab::CurrentSettings.ci_delete_pipelines_in_seconds_limit },
+      message: ->(*) {
+        format(N_('must be between 1 day and %{limit}'),
+          limit: ::Gitlab::CurrentSettings.ci_delete_pipelines_in_seconds_limit_human_readable_long)
+      }
     }
 
   attribute :forward_deployment_enabled, default: true

@@ -267,6 +267,7 @@ module ApplicationSettingsHelper
       :auto_devops_domain,
       :autocomplete_users_limit,
       :autocomplete_users_unauthenticated_limit,
+      :ci_delete_pipelines_in_seconds_limit_human_readable,
       :ci_job_live_trace_enabled,
       :ci_partitions_size_limit,
       :concurrent_github_import_jobs_limit,

@@ -175,4 +175,4 @@ For more information, see the [JetBrains product documentation](https://www.jetb
 
 ### Turn off GitLab Duo
 
-Alternatively, you can [turn off GitLab Duo](../../../gitlab_duo/turn_on_off.md#turn-off-gitlab-duo-features) (which includes Code Suggestions) completely for a group, project, or instance.
+Alternatively, you can [turn off GitLab Duo](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-features-on-or-off) (which includes Code Suggestions) completely for a group, project, or instance.

@@ -156,6 +156,11 @@ export default {
         return;
       }
 
+      if (!selectedMilestoneId) {
+        this.localMilestone = null;
+        this.$emit('parentMilestone', null);
+      }
+
       this.localMilestone = selectedMilestoneId
         ? this.milestones.find(({ id }) => id === selectedMilestoneId)
         : null;

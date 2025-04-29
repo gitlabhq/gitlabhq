@@ -14,14 +14,14 @@ import {
   DATE_RANGE_180_DAYS,
 } from '~/projects/pipelines/charts/constants';
 import PipelinesDashboardClickhouseFilters from '~/projects/pipelines/charts/components/pipelines_dashboard_clickhouse_filters.vue';
-import StatisticsList from '~/projects/pipelines/charts/components/statistics_list.vue';
+import PipelinesStats from '~/projects/pipelines/charts/components/pipelines_stats.vue';
 import PipelineDurationChart from '~/projects/pipelines/charts/components/pipeline_duration_chart.vue';
 import PipelineStatusChart from '~/projects/pipelines/charts/components/pipeline_status_chart.vue';
 import getPipelineAnalyticsQuery from '~/projects/pipelines/charts/graphql/queries/get_pipeline_analytics.query.graphql';
 import { createAlert } from '~/alert';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { useFakeDate } from 'helpers/fake_date';
-import { pipelineAnalyticsEmptyData, pipelineAnalyticsData } from 'jest/analytics/ci_cd/mock_data';
+import { pipelineAnalyticsData } from 'jest/analytics/ci_cd/mock_data';
 import setWindowLocation from 'helpers/set_window_location_helper';
 
 Vue.use(VueApollo);
@@ -44,7 +44,7 @@ describe('PipelinesDashboardClickhouse', () => {
 
   const findPipelinesDashboardClickhouseFilters = () =>
     wrapper.findComponent(PipelinesDashboardClickhouseFilters);
-  const findStatisticsList = () => wrapper.findComponent(StatisticsList);
+  const findPipelinesStats = () => wrapper.findComponent(PipelinesStats);
   const findPipelineDurationChart = () => wrapper.findComponent(PipelineDurationChart);
   const findPipelineStatusChart = () => wrapper.findComponent(PipelineStatusChart);
   const findAllSingleStats = () => wrapper.findAllComponents(GlSingleStat);
@@ -221,26 +221,7 @@ describe('PipelinesDashboardClickhouse', () => {
     it('renders loading state', () => {
       createComponent();
 
-      expect(findStatisticsList().props('loading')).toEqual(true);
-    });
-
-    it('renders with empty data', async () => {
-      getPipelineAnalyticsHandler.mockResolvedValue(pipelineAnalyticsEmptyData);
-
-      createComponent({ mountFn: mount });
-
-      await waitForPromises();
-
-      expect(findStatisticsList().props('counts')).toEqual({
-        failureRatio: 0,
-        medianDuration: 0,
-        successRatio: 0,
-        total: '0',
-      });
-
-      expect(findAllSingleStats().at(0).text()).toBe('Total pipeline runs 0');
-      expect(findAllSingleStats().at(1).text()).toBe('Failure rate 0%');
-      expect(findAllSingleStats().at(2).text()).toBe('Success rate 0%');
+      expect(findPipelinesStats().props('loading')).toEqual(true);
     });
 
     it('renders with data', async () => {
@@ -250,12 +231,9 @@ describe('PipelinesDashboardClickhouse', () => {
 
       await waitForPromises();
 
-      expect(findStatisticsList().props('counts')).toEqual({
-        failureRatio: 25,
-        medianDuration: 1800,
-        successRatio: 25,
-        total: '8',
-      });
+      expect(findPipelinesStats().props('aggregate')).toEqual(
+        pipelineAnalyticsData.data.project.pipelineAnalytics.aggregate,
+      );
 
       expect(findAllSingleStats().at(0).text()).toBe('Total pipeline runs 8');
       expect(findAllSingleStats().at(1).text()).toBe('Median duration 30m');

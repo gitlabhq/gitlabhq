@@ -14,6 +14,8 @@ class AutoMergeProcessWorker # rubocop:disable Scalability/IdempotentWorker
   feature_category :continuous_delivery
   worker_resource_boundary :cpu
 
+  PROJECT_MR_LIMIT = 30
+
   def perform(params = {})
     # Passing an integer id to AutoMergeProcessWorker is deprecated.
     # This is here to support existing implementations while we transition
@@ -30,7 +32,16 @@ class AutoMergeProcessWorker # rubocop:disable Scalability/IdempotentWorker
       end
     end
 
-    all_merge_requests = merge_requests.to_a + pipeline_merge_requests.to_a
+    project_merge_requests = params['project_id'].try do |proj_id|
+      project = Project.id_in(proj_id).first
+
+      break [] unless project
+      break [] unless Feature.enabled?(:merge_request_title_regex, project)
+
+      project.merge_requests&.with_auto_merge_enabled&.take(PROJECT_MR_LIMIT)
+    end
+
+    all_merge_requests = (merge_requests.to_a + pipeline_merge_requests.to_a + project_merge_requests.to_a).uniq
 
     all_merge_requests.each do |merge_request|
       AutoMergeService.new(merge_request.project, merge_request.merge_user).process(merge_request)

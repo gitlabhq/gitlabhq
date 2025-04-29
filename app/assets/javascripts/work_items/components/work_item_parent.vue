@@ -8,6 +8,12 @@ import updateParentMutation from '~/work_items/graphql/update_parent.mutation.gr
 import { isValidURL } from '~/lib/utils/url_utility';
 
 import updateNewWorkItemMutation from '~/work_items/graphql/update_new_work_item.mutation.graphql';
+import {
+  findMilestoneWidget,
+  findHierarchyWidgetDefinition,
+  isReference,
+  newWorkItemId,
+} from '~/work_items/utils';
 import { updateParent } from '../graphql/cache_utils';
 import groupWorkItemsQuery from '../graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '../graphql/project_work_items.query.graphql';
@@ -19,9 +25,9 @@ import {
   NO_WORK_ITEM_IID,
   sprintfWorkItem,
   WORK_ITEM_TYPE_ENUM_EPIC,
+  WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
 } from '../constants';
-import { findHierarchyWidgetDefinition, isReference, newWorkItemId } from '../utils';
 
 export default {
   linkId: uniqueId('work-item-parent-link-'),
@@ -86,6 +92,9 @@ export default {
     isIssue() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE;
     },
+    isEpic() {
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
+    },
     isLoading() {
       return (
         this.$apollo.queries.workspaceWorkItems.loading ||
@@ -108,6 +117,16 @@ export default {
     parentWebUrl() {
       return this.parent?.webUrl;
     },
+    visibleWorkItems() {
+      return this.workItemsByReference.concat(this.workspaceWorkItems);
+    },
+    isSelectedParentAvailable() {
+      return this.localSelectedItem && this.visibleWorkItems.length;
+    },
+    selectedParentMilestone() {
+      const selectedParent = this.visibleWorkItems?.find(({ id }) => id === this.localSelectedItem);
+      return findMilestoneWidget(selectedParent)?.milestone || null;
+    },
     showCustomNoneValue() {
       return this.hasParent && this.parent === null;
     },
@@ -123,6 +142,9 @@ export default {
       handler(newVal) {
         this.localSelectedItem = newVal?.id;
       },
+    },
+    localSelectedItem() {
+      if (this.isEpic) this.handleSelectedParentMilestone();
     },
   },
   apollo: {
@@ -208,21 +230,18 @@ export default {
         this.updateInProgress = true;
 
         if (this.workItemId === newWorkItemId(this.workItemType)) {
-          const visibleWorkItems = this.workItemsByReference.concat(this.workspaceWorkItems);
-
           this.$apollo
             .mutate({
               mutation: updateNewWorkItemMutation,
               variables: {
                 input: {
                   fullPath: this.fullPath,
-                  parent:
-                    this.localSelectedItem && visibleWorkItems.length
-                      ? {
-                          ...visibleWorkItems?.find(({ id }) => id === this.localSelectedItem),
-                          webUrl: this.parentWebUrl ?? null,
-                        }
-                      : null,
+                  parent: this.isSelectedParentAvailable
+                    ? {
+                        ...this.visibleWorkItems.find(({ id }) => id === this.localSelectedItem),
+                        webUrl: this.parentWebUrl ?? null,
+                      }
+                    : null,
                   workItemType: this.workItemType,
                 },
               },
@@ -293,6 +312,9 @@ export default {
     onListboxHide() {
       this.searchStarted = false;
       this.searchTerm = '';
+    },
+    handleSelectedParentMilestone() {
+      this.$emit('parentMilestone', this.selectedParentMilestone);
     },
   },
 };

@@ -12,12 +12,6 @@ title: Export issues to CSV
 
 {{< /details >}}
 
-{{< history >}}
-
-- Minimum role to export issues [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
-
-{{< /history >}}
-
 You can export issues from GitLab to a plain-text CSV
 ([comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values))
 file. The CSV file is attached to an email, and sent to your default
@@ -45,7 +39,7 @@ You can export issues from individual projects, but not groups.
 
 Prerequisites:
 
-- You must have at least the Planner role.
+- You must have at least the Guest role.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.

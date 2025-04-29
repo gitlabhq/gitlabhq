@@ -163,6 +163,15 @@ describe('WorkItemMilestone component', () => {
       expect(findSidebarDropdownWidget().props('itemValue')).toBe(null);
     });
 
+    it('clears the autofilled parent milestone when user clicks on Clear', async () => {
+      findSidebarDropdownWidget().vm.$emit('updateValue', null);
+
+      await waitForPromises();
+
+      expect(wrapper.emitted('parentMilestone')).toEqual([[null]]);
+      expect(findSidebarDropdownWidget().props('itemValue')).toBe(null);
+    });
+
     it('changes the milestone to the selected milestone', async () => {
       const milestoneAtIndex = projectMilestonesResponse.data.workspace.attributes.nodes[0];
 

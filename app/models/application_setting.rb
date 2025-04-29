@@ -523,10 +523,15 @@ class ApplicationSetting < ApplicationRecord
 
   jsonb_accessor :ci_cd_settings,
     ci_job_live_trace_enabled: [:boolean, { default: false }],
-    ci_partitions_size_limit: [::Gitlab::Database::Type::JsonbInteger.new, { default: 100.gigabytes }]
+    ci_partitions_size_limit: [::Gitlab::Database::Type::JsonbInteger.new, { default: 100.gigabytes }],
+    ci_delete_pipelines_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 year') }]
+
+  chronic_duration_attr :ci_delete_pipelines_in_seconds_limit_human_readable, :ci_delete_pipelines_in_seconds_limit
 
   validate :validate_object_storage_for_live_trace_configuration, if: -> { ci_job_live_trace_enabled? }
   validates :ci_partitions_size_limit, presence: true, numericality: { only_integer: true, greater_than: 0 }
+  validates :ci_delete_pipelines_in_seconds_limit, presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 1.day }
 
   validates :default_ci_config_path,
     format: { without: %r{(\.{2}|\A/)}, message: N_('cannot include leading slash or directory traversal.') },
@@ -1152,6 +1157,11 @@ class ApplicationSetting < ApplicationRecord
 
   def failed_login_attempts_unlock_period_in_minutes_column_exists?
     self.class.database.cached_column_exists?(:failed_login_attempts_unlock_period_in_minutes)
+  end
+
+  def ci_delete_pipelines_in_seconds_limit_human_readable_long
+    value = ci_delete_pipelines_in_seconds_limit
+    ChronicDuration.output(value, format: :long) if value
   end
 
   private

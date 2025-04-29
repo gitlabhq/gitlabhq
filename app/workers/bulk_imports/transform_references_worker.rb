@@ -91,6 +91,8 @@ module BulkImports
         next unless parsed_url.path&.start_with?("/#{source_full_path}")
 
         array << [url, new_url(object, parsed_url)]
+      rescue URI::InvalidURIError
+        # Some strings like http://[127.0.0.1] are captured by URI.extract, but fail to parse. We can ignore these cases
       end
     end
 

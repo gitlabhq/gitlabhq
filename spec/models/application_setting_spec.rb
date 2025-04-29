@@ -96,7 +96,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         reindexing_minimum_index_size: 1.gigabyte,
         reindexing_minimum_relative_bloat_size: 0.2,
         top_level_group_creation_enabled: true,
-        ci_partitions_size_limit: 100.gigabytes
+        ci_partitions_size_limit: 100.gigabytes,
+        ci_delete_pipelines_in_seconds_limit: ChronicDuration.parse('1 year')
       )
     end
   end
@@ -451,6 +452,22 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
 
     it { is_expected.not_to allow_value(nil).for(:math_rendering_limits_enabled) }
+
+    context 'with pipeline retention limits' do
+      it 'allows only integers' do
+        is_expected.to validate_numericality_of(:ci_delete_pipelines_in_seconds_limit)
+          .only_integer.is_greater_than_or_equal_to(1.day)
+      end
+
+      it { is_expected.not_to allow_value(nil).for(:ci_delete_pipelines_in_seconds_limit) }
+
+      describe '#ci_delete_pipelines_in_seconds_limit_human_readable=' do
+        it 'propagates values' do
+          expect { setting.ci_delete_pipelines_in_seconds_limit_human_readable = '1 month' }
+            .to change { setting.ci_delete_pipelines_in_seconds_limit }.to eq(ChronicDuration.parse('1 month'))
+        end
+      end
+    end
 
     context 'when deactivate_dormant_users is enabled' do
       before do
@@ -2149,5 +2166,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     # invalid json
     it { is_expected.not_to allow_value({ reindexing_minimum_index_size: "3" }).for(:database_reindexing) }
     it { is_expected.not_to allow_value({ reindexing_minimum_relative_bloat_size: true }).for(:database_reindexing) }
+  end
+
+  describe '#ci_delete_pipelines_in_seconds_limit_human_readable_long' do
+    it { expect(setting.ci_delete_pipelines_in_seconds_limit_human_readable_long).to eq('1 year') }
   end
 end

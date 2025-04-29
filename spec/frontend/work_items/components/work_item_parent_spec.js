@@ -24,6 +24,7 @@ import {
   updateWorkItemMutationErrorResponse,
   mockWorkItemReferenceQueryResponse,
   allowedParentTypesResponse,
+  groupEpicsWithMilestonesQueryResponse,
 } from '../mock_data';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -37,10 +38,13 @@ describe('WorkItemParent component', () => {
   let wrapper;
 
   const workItemId = 'gid://gitlab/WorkItem/1';
-  const workItemType = 'Objective';
   const mockFullPath = 'full-path';
 
-  const groupWorkItemsSuccessHandler = jest.fn().mockResolvedValue(availableObjectivesResponse);
+  const firstParentOption = groupEpicsWithMilestonesQueryResponse.data.group.workItems.nodes[0];
+
+  const groupWorkItemsSuccessHandler = jest
+    .fn()
+    .mockResolvedValue(groupEpicsWithMilestonesQueryResponse);
   const availableWorkItemsSuccessHandler = jest.fn().mockResolvedValue(availableObjectivesResponse);
   const failedQueryHandler = jest.fn().mockRejectedValue(new Error());
   const allowedParentTypesHandler = jest.fn().mockResolvedValue(allowedParentTypesResponse);
@@ -64,11 +68,13 @@ describe('WorkItemParent component', () => {
   };
 
   const createComponent = ({
+    workItemType = 'Objective',
     canUpdate = true,
     parent = null,
     searchQueryHandler = availableWorkItemsSuccessHandler,
     mutationHandler = successUpdateWorkItemMutationHandler,
     hasParent = true,
+    isGroup = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemParent, {
       apolloProvider: createMockApollo([
@@ -87,11 +93,16 @@ describe('WorkItemParent component', () => {
         workItemId,
         workItemType,
         hasParent,
+        isGroup,
       },
       stubs: {
         IssuePopover: true,
       },
     });
+  };
+
+  const selectWorkItem = (workItem) => {
+    findSidebarDropdownWidget().vm.$emit('updateValue', workItem);
   };
 
   describe('when loaded', () => {
@@ -134,10 +145,6 @@ describe('WorkItemParent component', () => {
   });
 
   describe('loading icon', () => {
-    const selectWorkItem = (workItem) => {
-      findSidebarDropdownWidget().vm.$emit('updateValue', workItem);
-    };
-
     it('shows loading icon while update is in progress', async () => {
       createComponent();
 
@@ -339,10 +346,6 @@ describe('WorkItemParent component', () => {
   });
 
   describe('listbox', () => {
-    const selectWorkItem = (workItem) => {
-      findSidebarDropdownWidget().vm.$emit('updateValue', workItem);
-    };
-
     it('calls mutation when item is selected', async () => {
       createComponent();
 
@@ -438,6 +441,29 @@ describe('WorkItemParent component', () => {
       expect(findPopover().text()).toEqual(
         `You don't have the necessary permission to view the ancestor.`,
       );
+    });
+  });
+
+  describe('on group level', () => {
+    beforeEach(() => {
+      createComponent({ isGroup: true, hasParent: false, workItemType: 'Epic' });
+    });
+
+    it('calls group mutation when selecting a parent', async () => {
+      showDropdown();
+      await waitForPromises();
+
+      expect(groupWorkItemsSuccessHandler).toHaveBeenCalled();
+    });
+
+    it('emits parentMilestone if a selected parent has an assigned milestone', async () => {
+      showDropdown();
+      await waitForPromises();
+
+      selectWorkItem(firstParentOption.id);
+      await nextTick();
+
+      expect(wrapper.emitted('parentMilestone')).toBeDefined();
     });
   });
 });

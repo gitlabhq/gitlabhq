@@ -8,13 +8,15 @@ namespace :ci do
         only_ids = ENV['ONLY_PROJECT_IDS']
         exclude_ids = ENV['EXCLUDE_PROJECT_IDS']
         preview = ENV['PREVIEW']
+        concurrency = ENV['CONCURRENCY'] || 1
 
         require_relative '../../../app/models/ci/job_token/allowlist_migration_task'
 
         task = ::Ci::JobToken::AllowlistMigrationTask.new(only_ids: only_ids,
           exclude_ids: exclude_ids,
           preview: preview,
-          user: ::Users::Internal.admin_bot)
+          user: ::Users::Internal.admin_bot,
+          concurrency: concurrency.to_i)
 
         task.execute
       end

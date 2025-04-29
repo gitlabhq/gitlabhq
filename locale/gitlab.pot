@@ -11758,7 +11758,7 @@ msgstr ""
 msgid "CICD|Pipelines and jobs cannot be cancelled"
 msgstr ""
 
-msgid "CICD|Pipelines older than the configured time are deleted. Leave empty to never delete pipelines automatically. The default unit is in seconds, but you can use other units, for example %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}1 year%{code_close}. Can be between 1 day to 1 year."
+msgid "CICD|Pipelines older than the configured time are deleted. Leave empty to never delete pipelines automatically. The default unit is in seconds, but you can use other units, for example %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}1 year%{code_close}. Can be between 1 day to %{limit}."
 msgstr ""
 
 msgid "CICD|Pipelines triggered by composite identities, including AI agents, run automatically without review or manual interaction."
@@ -16984,6 +16984,9 @@ msgstr ""
 msgid "ContainerRegistry|Add rule"
 msgstr ""
 
+msgid "ContainerRegistry|Apply immutability rule to tags matching"
+msgstr ""
+
 msgid "ContainerRegistry|Are you sure you want to delete the protected container tags rule %{tagNamePattern}?"
 msgstr ""
 
@@ -17045,6 +17048,12 @@ msgid "ContainerRegistry|Container Scanning for Registry: Off"
 msgstr ""
 
 msgid "ContainerRegistry|Container Scanning for Registry: On"
+msgstr ""
+
+msgid "ContainerRegistry|Container image tags can be created, overwritten, or deleted by specific user roles."
+msgstr ""
+
+msgid "ContainerRegistry|Container image tags can never be overwritten or deleted."
 msgstr ""
 
 msgid "ContainerRegistry|Container protection rule created."
@@ -17170,6 +17179,9 @@ msgstr ""
 msgid "ContainerRegistry|Image tags"
 msgstr ""
 
+msgid "ContainerRegistry|Immutable"
+msgstr ""
+
 msgid "ContainerRegistry|Includes both tagged and untagged images"
 msgstr ""
 
@@ -17266,10 +17278,16 @@ msgstr ""
 msgid "ContainerRegistry|Protect container tags matching"
 msgstr ""
 
+msgid "ContainerRegistry|Protected"
+msgstr ""
+
 msgid "ContainerRegistry|Protected container image tags"
 msgstr ""
 
 msgid "ContainerRegistry|Protected container repositories"
+msgstr ""
+
+msgid "ContainerRegistry|Protection type"
 msgstr ""
 
 msgid "ContainerRegistry|Published %{timeInfo}"
@@ -17320,6 +17338,9 @@ msgid "ContainerRegistry|Set cleanup rules"
 msgstr ""
 
 msgid "ContainerRegistry|Set up cleanup"
+msgstr ""
+
+msgid "ContainerRegistry|Set up rules to protect container image tags from unauthorized changes or make them permanently immutable. Protection rules are checked first, followed by immutable rules. You can add up to 5 protection rules per project."
 msgstr ""
 
 msgid "ContainerRegistry|Show full path"
@@ -17380,6 +17401,9 @@ msgid "ContainerRegistry|Tags that match %{strongStart}all%{strongEnd} these rul
 msgstr ""
 
 msgid "ContainerRegistry|Tags that match %{strongStart}any of%{strongEnd} these rules are %{strongStart}kept%{strongEnd}, even if they match %{strongStart}all%{strongEnd} removal rules below. The %{strongStart}latest%{strongEnd} tag is always kept."
+msgstr ""
+
+msgid "ContainerRegistry|Tags with names that match this regex pattern are immutable. Must be less than 100 characters. %{linkStart}What regex patterns are supported?%{linkEnd}"
 msgstr ""
 
 msgid "ContainerRegistry|Tags with names that match this regex pattern are kept. %{linkStart}View regex examples.%{linkEnd}"
@@ -17488,6 +17512,9 @@ msgid "ContainerRegistry|immutable"
 msgstr ""
 
 msgid "ContainerRegistry|index"
+msgstr ""
+
+msgid "ContainerRegistry|protected"
 msgstr ""
 
 msgid "Containers"
@@ -72737,7 +72764,7 @@ msgstr ""
 msgid "must be before %{expiry_date}"
 msgstr ""
 
-msgid "must be between 1 day and 1 year"
+msgid "must be between 1 day and %{limit}"
 msgstr ""
 
 msgid "must be enabled."

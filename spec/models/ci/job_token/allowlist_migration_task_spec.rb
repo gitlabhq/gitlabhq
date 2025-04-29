@@ -9,10 +9,11 @@ RSpec.describe Ci::JobToken::AllowlistMigrationTask, :silence_stdout, feature_ca
   let(:output_stream) { StringIO.new }
   let(:path) { Rails.root.join('tmp/tests/doc/ci/jobs') }
   let(:user) { ::Users::Internal.admin_bot }
+  let(:concurrency) { 4 }
 
   let(:task) do
     described_class.new(only_ids: only_ids, exclude_ids: exclude_ids, preview: preview, user: user,
-      output_stream: output_stream)
+      output_stream: output_stream, concurrency: concurrency)
   end
 
   let_it_be(:origin_project) { create(:project) }
@@ -49,7 +50,7 @@ RSpec.describe Ci::JobToken::AllowlistMigrationTask, :silence_stdout, feature_ca
       it 'logs the expected messages' do
         messages = []
         messages << task.send(:preview_banner)
-        messages << "\n\nMigrating project(s) in preview mode...\n"
+        messages << "\n\nMigrating project(s) in preview mode, concurrency: 4...\n"
         accessed_projects.each do |accessed_project|
           messages << "\nWould have migrated project id: #{accessed_project.id}."
         end
@@ -57,7 +58,9 @@ RSpec.describe Ci::JobToken::AllowlistMigrationTask, :silence_stdout, feature_ca
 
         task.execute
 
-        expect(output_stream.string).to eq(messages.join)
+        messages.each do |message|
+          expect(output_stream.string).to include(message)
+        end
       end
     end
 
@@ -72,7 +75,7 @@ RSpec.describe Ci::JobToken::AllowlistMigrationTask, :silence_stdout, feature_ca
 
       it 'logs the expected messages' do
         messages = []
-        messages << "Migrating project(s)..."
+        messages << "Migrating project(s), concurrency: 4..."
         accessed_projects.each do |accessed_project|
           messages << "Migrated project id: #{accessed_project.id}."
         end

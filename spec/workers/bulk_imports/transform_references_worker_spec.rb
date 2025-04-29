@@ -284,4 +284,30 @@ RSpec.describe BulkImports::TransformReferencesWorker, feature_category: :import
       expect(body).to eq(expected_body)
     end
   end
+
+  context 'when a non-URI string that URI.extract considers a URI is returned' do
+    let_it_be(:note_with_bad_uri) do
+      create(
+        :note,
+        noteable: issue,
+        project: project,
+        note: 'Invalid: http://[127.0.0.1] Valid: https://my.gitlab.com/source/full/path/-/issues/1'
+      )
+    end
+
+    let(:expected_body) { "Invalid: http://[127.0.0.1] Valid: http://localhost:80/#{object.namespace.full_path}/-/issues/1" }
+
+    let(:object) { note_with_bad_uri }
+    let(:body) { object.reload.note }
+
+    it 'does not log an error and updates the other URI correctly' do
+      # On URI 1.0.3 'http://[127.0.0.1]' will match for URI.extract, but is invalid for URI.parse.
+      # We are stubbing the result so the spec remains valid if this example case is fixed
+      allow(URI).to receive(:extract).and_return(['http://[127.0.0.1]', 'https://my.gitlab.com/source/full/path/-/issues/1'])
+
+      expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+      perform
+      expect(body).to eq(expected_body)
+    end
+  end
 end

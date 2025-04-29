@@ -72,11 +72,11 @@ export default {
 </script>
 <template>
   <div class="gl-mb-6 gl-flex gl-flex-wrap gl-gap-6">
-    <gl-skeleton-loader v-if="loading" :height="30">
-      <rect width="45" height="30" rx="4" />
-      <rect x="50" width="45" height="30" rx="4" />
-      <rect x="100" width="45" height="30" rx="4" />
-      <rect x="150" width="45" height="30" rx="4" />
+    <gl-skeleton-loader v-if="loading" :height="18">
+      <rect width="45" height="18" rx="4" />
+      <rect x="50" width="45" height="18" rx="4" />
+      <rect x="100" width="45" height="18" rx="4" />
+      <rect x="150" width="45" height="18" rx="4" />
     </gl-skeleton-loader>
     <template v-else>
       <div v-for="statistic in statistics" :key="statistic.label">

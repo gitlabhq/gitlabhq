@@ -5451,6 +5451,58 @@ export const groupWorkItemStateCountsQueryResponse = {
   },
 };
 
+export const groupEpicsWithMilestonesQueryResponse = {
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/3',
+      __typename: 'Group',
+      workItems: {
+        __typename: 'WorkItemConnection',
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/58',
+            iid: '23',
+            title: 'Epic 1',
+            confidential: false,
+            widgets: [
+              {
+                __typename: 'WorkItemWidgetMilestone',
+                type: 'MILESTONE',
+                milestone: mockMilestone,
+              },
+            ],
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/8',
+              name: 'Epic',
+              iconName: 'issue-type-epic',
+              __typename: 'WorkItemType',
+            },
+          },
+          {
+            id: 'gid://gitlab/WorkItem/59',
+            iid: '24',
+            title: 'Epic 2',
+            confidential: false,
+            widgets: [
+              {
+                __typename: 'WorkItemWidgetMilestone',
+                type: 'MILESTONE',
+                milestone: mockMilestone,
+              },
+            ],
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/8',
+              name: 'Epic',
+              iconName: 'issue-type-epic',
+              __typename: 'WorkItemType',
+            },
+          },
+        ],
+      },
+    },
+  },
+};
+
 export const groupWorkItemsQueryResponse = {
   data: {
     group: {
