@@ -530,7 +530,6 @@ export default {
     <mr-widget-migrate-jenkins
       v-if="showRenderMigrateFromJenkins"
       class="mr-widget-workflow"
-      :human-access="formattedHumanAccess"
       :path="mr.userCalloutsPath"
       :feature-id="mr.migrateJenkinsFeatureId"
       @dismiss="dismissMigrateFromJenkins"

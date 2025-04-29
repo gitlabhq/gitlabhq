@@ -66,6 +66,7 @@ module Gitlab
           ProjectTemplate.new('hugo', 'Pages/Hugo', _('Everything you need to create a GitLab Pages site using Hugo'), 'https://gitlab.com/pages/hugo', 'illustrations/logos/hugo.svg'),
           ProjectTemplate.new('pelican', 'Pages/Pelican', _('Everything you need to create a GitLab Pages site using Pelican'), 'https://gitlab.com/pages/pelican', 'illustrations/third-party-logos/pelican.svg'),
           ProjectTemplate.new('jekyll', 'Pages/Jekyll', _('Everything you need to create a GitLab Pages site using Jekyll'), 'https://gitlab.com/pages/jekyll', 'illustrations/logos/jekyll.svg'),
+          ProjectTemplate.new('nextjs', 'Pages/Next.js', _('Everything you need to create a GitLab Pages site using Next.js'), 'https://gitlab.com/pages/nextjs'),
           ProjectTemplate.new('nuxt', 'Pages/Nuxt', _('Everything you need to create a GitLab Pages site using Nuxt'), 'https://gitlab.com/pages/nuxt', 'illustrations/third-party-logos/nuxt.svg'),
           ProjectTemplate.new('plainhtml', 'Pages/Plain HTML', _('Everything you need to create a GitLab Pages site using plain HTML'), 'https://gitlab.com/pages/plain-html'),
           ProjectTemplate.new('hexo', 'Pages/Hexo', _('Everything you need to create a GitLab Pages site using Hexo'), 'https://gitlab.com/pages/hexo', 'illustrations/logos/hexo.svg'),

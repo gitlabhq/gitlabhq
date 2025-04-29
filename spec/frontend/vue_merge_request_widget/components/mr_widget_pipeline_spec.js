@@ -40,13 +40,11 @@ describe('MRWidgetPipeline', () => {
 
   const defaultProps = {
     pipeline: mockData.pipeline,
-    pipelineEtag: '/api/graphql:pipelines/sha/a3cf305c10be3fafdd89b12cb1c389e6bde45875',
     pipelineMiniGraphVariables: {
       iid: '12',
       fullPath: 'project/path',
     },
     ciStatus: SUCCESS,
-    hasCi: true,
     mrTroubleshootingDocsPath: 'help',
     ciTroubleshootingDocsPath: 'ci-help',
     targetProjectId: 1,

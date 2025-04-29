@@ -5,7 +5,6 @@ import csrf from '~/lib/utils/csrf';
 import { STATUS_MERGED } from '~/issues/constants';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __, n__, sprintf } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import approvalsMixin from '../../mixins/approvals';
@@ -26,7 +25,7 @@ export default {
     GlForm,
   },
   csrf,
-  mixins: [approvalsMixin, glFeatureFlagsMixin()],
+  mixins: [approvalsMixin],
   props: {
     mr: {
       type: Object,
@@ -38,11 +37,6 @@ export default {
     },
     isOptionalDefault: {
       type: Boolean,
-      required: false,
-      default: null,
-    },
-    approveDefault: {
-      type: Function,
       required: false,
       default: null,
     },
@@ -76,15 +70,11 @@ export default {
     return {
       hasApprovalAuthError: false,
       isApproving: false,
-      userPermissions: {},
     };
   },
   computed: {
     isLoading() {
       return this.$apollo.queries.approvals.loading || !this.approvals;
-    },
-    isBasic() {
-      return this.mr.approvalsWidgetType === 'base';
     },
     isApproved() {
       return this.hasAllApprovals;
@@ -217,10 +207,6 @@ export default {
           ),
       );
     },
-    approveWithSamlAuth() {
-      // Intentionally direct to SAML Identity Provider for renewed authorization even if SSO session exists
-      this.$refs.form.$el.submit();
-    },
     approveWithAuth(data) {
       this.updateApproval(
         () => this.service.approveMergeRequestWithAuth(data),
@@ -273,7 +259,6 @@ export default {
   <div v-if="approvals" class="js-mr-approvals mr-section-container">
     <state-container
       :is-loading="isLoading"
-      :mr="mr"
       status="approval"
       is-collapsible
       collapse-on-desktop

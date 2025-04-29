@@ -35,11 +35,6 @@ export default {
     GlSprintf,
   },
   props: {
-    canMerge: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     isFork: {
       type: Boolean,
       required: false,
@@ -51,11 +46,6 @@ export default {
       default: '',
     },
     sourceProjectPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    targetBranch: {
       type: String,
       required: false,
       default: '',

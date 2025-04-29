@@ -55,4 +55,12 @@ RSpec.describe Banzai::Filter::MinimumMarkdownSanitizationFilter, feature_catego
     let(:expected_result) { described_class::COMPLEX_MARKDOWN_MESSAGE }
     let(:expected_timeout) { described_class::SANITIZATION_RENDER_TIMEOUT }
   end
+
+  context 'when the document is empty' do
+    it 'returns an empty result' do
+      act = ''
+
+      expect(filter(act).to_html).to eq ''
+    end
+  end
 end

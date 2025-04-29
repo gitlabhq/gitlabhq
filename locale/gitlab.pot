@@ -25298,6 +25298,9 @@ msgstr ""
 msgid "Everything you need to create a GitLab Pages site using Middleman"
 msgstr ""
 
+msgid "Everything you need to create a GitLab Pages site using Next.js"
+msgstr ""
+
 msgid "Everything you need to create a GitLab Pages site using Nuxt"
 msgstr ""
 
@@ -37257,6 +37260,9 @@ msgstr ""
 msgid "MemberRole|Permission"
 msgstr ""
 
+msgid "MemberRole|Remove LDAP synchronization"
+msgstr ""
+
 msgid "MemberRole|Remove sync"
 msgstr ""
 
@@ -37348,6 +37354,9 @@ msgid "MemberRole|The Reporter role is suitable for team members who need to sta
 msgstr ""
 
 msgid "MemberRole|This member is an LDAP user. Changing their role will override the settings from the LDAP group sync."
+msgstr ""
+
+msgid "MemberRole|This removes automatic syncing with your LDAP server. Users will keep their current role but future changes will require manual updates. %{confirmStart}Are you sure you want to remove LDAP synchronization?%{confirmEnd}"
 msgstr ""
 
 msgid "MemberRole|This role has been manually selected and will not sync to the LDAP sync role."
@@ -48281,6 +48290,9 @@ msgid "ProjectTemplates|Pages/Jekyll"
 msgstr ""
 
 msgid "ProjectTemplates|Pages/Middleman"
+msgstr ""
+
+msgid "ProjectTemplates|Pages/Next.js"
 msgstr ""
 
 msgid "ProjectTemplates|Pages/Nuxt"
@@ -64909,6 +64921,9 @@ msgid "UsageQuota|Compute usage since %{usageSince}"
 msgstr ""
 
 msgid "UsageQuota|Container registry"
+msgstr ""
+
+msgid "UsageQuota|Deleted Namespace #%{id}"
 msgstr ""
 
 msgid "UsageQuota|Dependency proxy"

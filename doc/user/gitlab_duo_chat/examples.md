@@ -355,20 +355,13 @@ Programming languages that require compiling the source code may throw cryptic e
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
 Add repository files to your Duo Chat conversations in VS Code or JetBrains IDEs
 by typing `/include` and choosing the files.
 
 Prerequisites:
 
-- You cannot add local files that are not part of a repository.
-- Only text-based files can be included. Binary files (such as PDFs or images) are not supported.
+- The files must be part of a repository.
+- The files must be text-based. Binary files, like PDFs or images, are not supported.
 
 To do this:
 
@@ -380,7 +373,7 @@ To do this:
 For example, if you are developing an e-commerce app, you can add the `cart_service.py` and `checkout_flow.js` files to Chat's context and ask:
 
 - `How does checkout_flow.js interact with cart_service.py? Please generate a sequence diagram using Mermaid.`
-- `Thanks, that helps. I want to extend the checkout process by showing products related to the ones in the user's cart. I want to move the checkout logic to the backend before proceeding. Generate the Python backend code and change the frontend code to work with the new backend.`
+- `Can you extend the checkout process by showing products related to the ones in the user's cart? I want to move the checkout logic to the backend before proceeding. Generate the Python backend code and change the frontend code to work with the new backend.`
 
 {{< alert type="note" >}}
 

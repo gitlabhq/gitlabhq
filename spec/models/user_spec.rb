@@ -62,9 +62,6 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:gitpod_enabled).to(:user_preference) }
     it { is_expected.to delegate_method(:gitpod_enabled=).to(:user_preference).with_arguments(:args) }
 
-    it { is_expected.to delegate_method(:setup_for_company).to(:user_preference) }
-    it { is_expected.to delegate_method(:setup_for_company=).to(:user_preference).with_arguments(:args) }
-
     it { is_expected.to delegate_method(:project_shortcut_buttons).to(:user_preference) }
     it { is_expected.to delegate_method(:project_shortcut_buttons=).to(:user_preference).with_arguments(:args) }
 

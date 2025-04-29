@@ -22,8 +22,10 @@ module Banzai
         # The markdown filter always wraps it's output in a `<p>` tag.
         # The sanitizer will turn it into a text node of space. So let's remove
         # the leading and trailing spaces if it exists.
-        doc.children.first.remove if doc.children.first.blank?
-        doc.children.last.remove if doc.children.last.blank?
+        if doc.children.present?
+          doc.children.first.remove if doc.children.first.blank?
+          doc.children.last.remove if doc.children.last.blank?
+        end
 
         doc
       end

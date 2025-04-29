@@ -375,14 +375,7 @@ class GroupsController < Groups::ApplicationController
   private
 
   def successful_creation_hooks
-    update_user_setup_for_company
-  end
-
-  def update_user_setup_for_company
-    return if @group.setup_for_company.nil? || current_user.setup_for_company.present?
-
-    Users::UpdateService.new(current_user,
-      { setup_for_company: @group.setup_for_company }.merge(user: current_user)).execute
+    # overwritten in EE
   end
 
   def groups

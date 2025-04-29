@@ -447,7 +447,6 @@ class User < ApplicationRecord
     :extensions_marketplace_opt_in_url, :extensions_marketplace_opt_in_url=,
     :organization_groups_projects_sort, :organization_groups_projects_sort=,
     :organization_groups_projects_display, :organization_groups_projects_display=,
-    :setup_for_company, :setup_for_company=,
     :project_shortcut_buttons, :project_shortcut_buttons=,
     :keyboard_shortcuts_enabled, :keyboard_shortcuts_enabled=,
     :render_whitespace_in_code, :render_whitespace_in_code=,

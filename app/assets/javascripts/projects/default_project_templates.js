@@ -53,6 +53,10 @@ export default {
     text: s__('ProjectTemplates|Pages/Jekyll'),
     icon: '.template-option .icon-jekyll',
   },
+  nextjs: {
+    text: s__('ProjectTemplates|Pages/Next.js'),
+    icon: '.template-option .icon-nextjs',
+  },
   nuxt: {
     text: s__('ProjectTemplates|Pages/Nuxt'),
     icon: '.template-option .icon-nuxt',

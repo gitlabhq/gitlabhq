@@ -48,10 +48,6 @@ export default {
           return false;
         }
 
-        if (token.type === 'user_type' && !gon.features?.serviceAccountsCrud) {
-          return false;
-        }
-
         return this.filteredSearchBar.tokens?.includes(token.type);
       });
     },
