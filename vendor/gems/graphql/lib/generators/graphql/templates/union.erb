@@ -1,9 +1,0 @@
-# frozen_string_literal: true
-
-<% module_namespacing_when_supported do -%>
-module Types
-  class <%= ruby_class_name %> < Types::BaseUnion
-<% if custom_fields.any? %>    possible_types <%= normalized_possible_types.join(", ") %>
-<% end %>  end
-end
-<% end -%>
