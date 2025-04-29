@@ -1,3 +1,0 @@
-query GetStuff {
-  ...Frag1
-}
