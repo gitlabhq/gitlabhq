@@ -22,6 +22,11 @@ class Admin::IntegrationsController < Admin::ApplicationController
   private
 
   def find_or_initialize_non_project_specific_integration(name)
-    Integration.find_or_initialize_non_project_specific_integration(name, instance: true)
+    Integration.find_or_initialize_non_project_specific_integration(
+      name,
+      instance: true
+    ).tap do |integration|
+      integration.organization_id = Current.organization.id if integration&.new_record?
+    end
   end
 end

@@ -106,7 +106,6 @@ module Ci
 
     has_many :job_artifacts, through: :builds
     has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
-    has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id, inverse_of: :pipeline # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, ->(pipeline) { in_partition(pipeline) }, class_name: 'Ci::PipelineVariable', inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :latest_builds, ->(pipeline) { in_partition(pipeline).latest.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Build'
     has_many :downloadable_artifacts, -> do
@@ -927,10 +926,6 @@ module Ci
 
     def protected_ref?
       strong_memoize(:protected_ref) { project.protected_for?(git_ref) }
-    end
-
-    def legacy_trigger
-      strong_memoize(:legacy_trigger) { trigger_requests.first }
     end
 
     def variables_builder

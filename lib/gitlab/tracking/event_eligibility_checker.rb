@@ -30,7 +30,7 @@ module Gitlab
       end.freeze
 
       def eligible?(event, app_id = nil)
-        if ::Feature.enabled?('collect_product_usage_events', :instance)
+        if ::Feature.enabled?(:collect_product_usage_events, :instance)
           snowplow_enabled? || send_usage_data? || duo_event?(event, app_id)
         else
           snowplow_enabled?
@@ -40,7 +40,7 @@ module Gitlab
       private
 
       def snowplow_enabled?
-        Gitlab::Tracking.enabled?
+        Gitlab::CurrentSettings.snowplow_enabled?
       end
 
       def send_usage_data?

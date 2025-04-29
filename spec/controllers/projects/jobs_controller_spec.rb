@@ -24,7 +24,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     project.add_guest(guest)
     create_default(:owner)
     create_default(:user)
-    create_default(:ci_trigger_request, project_id: project.id)
+    create_default(:ci_trigger, project_id: project.id)
     create_default(:ci_stage)
   end
 
@@ -109,7 +109,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
       def create_job(name, status)
         user = create(:user)
-        pipeline = create(:ci_pipeline, project: project, user: user)
+        pipeline = create(:ci_pipeline, :triggered, project: project, user: user)
         create(
           :ci_build, :tags, :triggered, :artifacts,
           pipeline: pipeline, name: name, status: status, user: user
@@ -538,8 +538,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     context 'when requesting triggered job JSON' do
       let_it_be(:trigger) { create(:ci_trigger, project: project) }
       let_it_be(:pipeline) { create(:ci_pipeline, project: project, trigger: trigger) }
-      let_it_be(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
-      let_it_be(:job) { create(:ci_build, pipeline: pipeline, trigger_request: trigger_request) }
+      let_it_be(:job) { create(:ci_build, pipeline: pipeline) }
       let(:user) { developer }
 
       before do

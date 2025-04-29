@@ -32,6 +32,7 @@ import {
 import { deleteProject } from '~/api/projects_api';
 import { createAlert } from '~/alert';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
 
 const MOCK_DELETE_PARAMS = {
   testParam: true,
@@ -95,6 +96,17 @@ describe('ProjectsListItem', () => {
     wrapper
       .findAllComponents(GlTooltip)
       .wrappers.find((tooltip) => tooltip.props('target')() === target.element);
+
+  describe('when ListItem component emits click-avatar event', () => {
+    beforeEach(() => {
+      createComponent();
+      wrapper.findComponent(ListItem).vm.$emit('click-avatar');
+    });
+
+    it('emits click-avatar event', () => {
+      expect(wrapper.emitted('click-avatar')).toEqual([[]]);
+    });
+  });
 
   it('renders project avatar', () => {
     createComponent();

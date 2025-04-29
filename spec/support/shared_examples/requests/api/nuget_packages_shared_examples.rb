@@ -863,6 +863,92 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
       it_behaves_like 'returning response status', :created
     end
   end
+
+  context 'with package protection rule for different roles and package_name_patterns', unless: symbol_package do
+    let_it_be_with_reload(:package_protection_rule) do
+      create(:package_protection_rule, package_type: :nuget, project: project)
+    end
+
+    let(:user_headers) do
+      { 'X-NuGet-ApiKey' => personal_access_token.token }
+    end
+
+    let(:headers) { user_headers.merge(workhorse_headers) }
+
+    # The value "DummyProject.DummyPackage" is the package name defined
+    # inside the file `spec/fixtures/packages/nuget/package.nupkg`
+    let(:nuget_package_name) { 'DummyProject.DummyPackage' }
+    let(:nuget_package_name_other) { 'otherScope.DummyProject.DummyPackage' }
+
+    before do
+      package_protection_rule.update!(
+        package_name_pattern: package_name_pattern,
+        minimum_access_level_for_push: minimum_access_level_for_push
+      )
+    end
+
+    shared_examples 'successful nuget upload' do
+      it_behaves_like 'returning response status', :created
+    end
+
+    shared_examples 'protected package' do
+      it_behaves_like 'returning response status', :forbidden
+
+      it 'returns error message' do
+        subject
+
+        expect(json_response).to include 'message' => '403 Forbidden - Package protected.'
+      end
+
+      context 'when feature flag :packages_protected_packages_nuget is disabled' do
+        before do
+          stub_feature_flags(packages_protected_packages_nuget: false)
+        end
+
+        it_behaves_like 'successful nuget upload'
+      end
+    end
+
+    context 'for personal access token' do
+      let_it_be(:pat_project_developer) { create(:personal_access_token, user: create(:user, developer_of: project)) }
+      let_it_be(:pat_project_maintainer) { create(:personal_access_token, user: create(:user, maintainer_of: project)) }
+      let_it_be(:pat_project_owner) { create(:personal_access_token, user: create(:user, owner_of: project)) }
+      let_it_be(:pat_with_scope_admin_mode) do
+        create(:personal_access_token, :admin_mode, user: create(:admin, developer_of: project))
+      end
+
+      # -- Avoid formatting to keep one-line table syntax
+      where(:package_name_pattern, :minimum_access_level_for_push, :personal_access_token, :shared_examples_name) do
+        ref(:nuget_package_name)       | :maintainer | ref(:pat_project_developer)     | 'protected package'
+        ref(:nuget_package_name)       | :maintainer | ref(:pat_project_maintainer)    | 'successful nuget upload'
+        ref(:nuget_package_name)       | :owner      | ref(:pat_project_developer)     | 'protected package'
+        ref(:nuget_package_name)       | :owner      | ref(:pat_project_owner)         | 'successful nuget upload'
+        ref(:nuget_package_name)       | :admin      | ref(:pat_project_owner)         | 'protected package'
+        ref(:nuget_package_name)       | :admin      | ref(:pat_with_scope_admin_mode) | 'successful nuget upload'
+        ref(:nuget_package_name_other) | :maintainer | ref(:pat_project_developer)     | 'successful nuget upload'
+        ref(:nuget_package_name_other) | :maintainer | ref(:pat_project_maintainer)    | 'successful nuget upload'
+        ref(:nuget_package_name_other) | :admin      | ref(:pat_project_owner)         | 'successful nuget upload'
+      end
+      with_them do
+        it_behaves_like params[:shared_examples_name]
+      end
+    end
+
+    context 'for deploy token' do
+      let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_headers) }
+
+      where(:package_name_pattern, :minimum_access_level_for_push, :shared_examples_name) do
+        ref(:nuget_package_name)       | :maintainer | 'protected package'
+        ref(:nuget_package_name)       | :owner      | 'protected package'
+        ref(:nuget_package_name)       | :admin      | 'protected package'
+        ref(:nuget_package_name_other) | :maintainer | 'successful nuget upload'
+      end
+
+      with_them do
+        it_behaves_like params[:shared_examples_name]
+      end
+    end
+  end
 end
 
 RSpec.shared_examples 'process nuget delete request' do |user_type, status, auth|

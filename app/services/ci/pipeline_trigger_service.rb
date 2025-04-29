@@ -33,7 +33,6 @@ module Ci
         .new(project, trigger.owner, ref: params[:ref], variables_attributes: variables)
         .execute(:trigger, ignore_skip_ci: true, inputs: inputs) do |pipeline|
           pipeline.trigger = trigger
-          pipeline.trigger_requests.build(trigger: trigger, project_id: project.id)
         end
 
       pipeline_service_response(response.payload)

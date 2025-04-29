@@ -248,6 +248,18 @@ must meet the following system requirements:
 These requirements have been tested on Debian 10.13 and Ubuntu 20.04.
 For more information, see the [VS Code documentation](https://code.visualstudio.com/docs/remote/linux).
 
+{{< alert type="note" >}}
+
+GitLab always pulls the workspace injector image (`gl-tools-injector`) and project cloner image
+(`gl-project-cloner`) from the GitLab registry (`registry.gitlab.com/gitlab-org/gitlab-web-ide-vscode-fork/web-ide-injector`).
+These images cannot be overridden.
+
+If you use a private container registry for your other images, GitLab still needs to fetch these
+specific images from the GitLab registry. This requirement may impact environments with strict network
+controls, such as offline environments.
+
+{{< /alert >}}
+
 ## Workspace add-ons
 
 {{< history >}}

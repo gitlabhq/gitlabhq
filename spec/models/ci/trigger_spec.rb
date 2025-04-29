@@ -8,7 +8,6 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:owner) }
-    it { is_expected.to have_many(:trigger_requests) }
     it { is_expected.to have_many(:pipelines) }
   end
 
@@ -45,8 +44,7 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
 
     context 'when there is one pipeline' do
       let_it_be(:pipeline1) { create(:ci_empty_pipeline, trigger: trigger, project: project, created_at: '2025-02-13') }
-      let_it_be(:build1) { create(:ci_build, pipeline: pipeline1, trigger_request: trigger_request1) }
-      let_it_be(:trigger_request1) { create(:ci_trigger_request, trigger: trigger, created_at: '2025-02-12') }
+      let_it_be(:build1) { create(:ci_build, pipeline: pipeline1) }
 
       it { is_expected.to eq(pipeline1.reload.created_at) }
 
@@ -55,8 +53,7 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
           create(:ci_empty_pipeline, trigger: trigger, project: project, created_at: '2025-02-11')
         end
 
-        let_it_be(:build2) { create(:ci_build, pipeline: pipeline2, trigger_request: trigger_request2) }
-        let_it_be(:trigger_request2) { create(:ci_trigger_request, trigger: trigger, created_at: '2025-02-10') }
+        let_it_be(:build2) { create(:ci_build, pipeline: pipeline2) }
 
         it { is_expected.to eq(pipeline2.reload.created_at) }
       end

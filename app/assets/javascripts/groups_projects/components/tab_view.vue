@@ -126,6 +126,9 @@ export default {
             pageInfo,
           };
         },
+        result() {
+          this.$emit('query-complete');
+        },
         error(error) {
           createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
         },
@@ -295,6 +298,35 @@ export default {
     onOffsetInput(page) {
       this.$emit('offset-page-change', page);
     },
+    onClickAvatar() {
+      if (!this.eventTracking?.clickItemAfterFilter) {
+        return;
+      }
+
+      const activeFilters = Object.entries(this.filters).reduce((accumulator, [key, value]) => {
+        // Exclude filters that have no value.
+        if (!value) {
+          return accumulator;
+        }
+
+        if (key === this.filteredSearchTermKey) {
+          // For privacy reasons, don't keep track of user provided values
+          // eslint-disable-next-line @gitlab/require-i18n-strings
+          return { ...accumulator, search: 'user provided value' };
+        }
+
+        return { ...accumulator, [key]: value };
+      }, {});
+
+      if (!Object.keys(activeFilters).length) {
+        return;
+      }
+
+      this.trackEvent(this.eventTracking.clickItemAfterFilter, {
+        label: this.tab.value,
+        property: JSON.stringify(activeFilters),
+      });
+    },
   },
 };
 </script>
@@ -310,6 +342,7 @@ export default {
       @hover-visibility="onHoverVisibility"
       @hover-stat="onHoverStat"
       @click-stat="onClickStat"
+      @click-avatar="onClickAvatar"
     />
     <template v-if="paginationType === $options.PAGINATION_TYPE_OFFSET">
       <div v-if="pageInfo.nextPage || pageInfo.previousPage" class="gl-mt-5">

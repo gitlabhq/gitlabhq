@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_context 'instance integration activation' do
+RSpec.shared_context 'instance integration activation', :with_current_organization do
   include_context 'instance and group integration activation'
 
   let_it_be(:user) { create(:user, :admin) }

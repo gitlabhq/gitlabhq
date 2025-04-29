@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Chain::Build do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::Build, feature_category: :continuous_integration do
   let_it_be(:project, reload: true) { create(:project, :repository) }
   let_it_be(:user) { create(:user, developer_of: project) }
 
@@ -15,7 +15,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build do
       checkout_sha: project.commit.id,
       after_sha: nil,
       before_sha: nil,
-      trigger_request: nil,
       schedule: nil,
       merge_request: nil,
       project: project,
@@ -61,7 +60,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build do
         checkout_sha: project.commit.id,
         after_sha: nil,
         before_sha: nil,
-        trigger_request: nil,
         schedule: nil,
         merge_request: nil,
         project: project,
@@ -99,7 +97,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build do
         before_sha: nil,
         source_sha: merge_request.diff_head_sha,
         target_sha: merge_request.target_branch_sha,
-        trigger_request: nil,
         schedule: nil,
         merge_request: merge_request,
         project: project,
@@ -133,7 +130,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build do
         before_sha: nil,
         source_sha: external_pull_request.source_sha,
         target_sha: external_pull_request.target_sha,
-        trigger_request: nil,
         schedule: nil,
         external_pull_request: external_pull_request,
         project: project,

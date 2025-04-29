@@ -6,6 +6,8 @@ feature_categories:
 description: Information about runner managers associated to Ci::Runner models
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107801
 milestone: '15.8'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189308
+removed_in_milestone: '18.0'
 gitlab_schema: gitlab_ci
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/460084
 table_size: medium

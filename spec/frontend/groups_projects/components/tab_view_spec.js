@@ -69,6 +69,7 @@ describe('TabView', () => {
       clickStat: 'click_stat_on_your_work_projects',
       hoverStat: 'hover_stat_on_your_work_projects',
       hoverVisibility: 'hover_visibility_icon_on_your_work_projects',
+      clickItemAfterFilter: 'click_project_after_filter_on_your_work_projects',
     },
     paginationType: PAGINATION_TYPE_KEYSET,
   };
@@ -139,6 +140,10 @@ describe('TabView', () => {
             minAccessLevel: ACCESS_LEVEL_OWNER_STRING,
             ...expectedVariables,
           });
+        });
+
+        it('emits query-complete event', () => {
+          expect(wrapper.emitted('query-complete')).toEqual([[]]);
         });
 
         it('passes items to `ProjectsList` component', () => {
@@ -580,6 +585,27 @@ describe('TabView', () => {
         expect(trackEventSpy).toHaveBeenCalledWith(
           defaultPropsData.eventTracking.clickStat,
           { label: 'stars-count' },
+          undefined,
+        );
+      });
+    });
+
+    describe('when avatar is clicked', () => {
+      beforeEach(() => {
+        findProjectsList().vm.$emit('click-avatar');
+      });
+
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          defaultPropsData.eventTracking.clickItemAfterFilter,
+          {
+            label: PERSONAL_TAB.value,
+            property: JSON.stringify({
+              search: 'user provided value',
+              language: '8',
+              min_access_level: 50,
+            }),
+          },
           undefined,
         );
       });

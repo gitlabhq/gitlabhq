@@ -44656,6 +44656,7 @@ Package type of a package protection rule resource.
 | <a id="packagesprotectionrulepackagetypeconan"></a>`CONAN` | Packages of the Conan format. |
 | <a id="packagesprotectionrulepackagetypemaven"></a>`MAVEN` | Packages of the Maven format. |
 | <a id="packagesprotectionrulepackagetypenpm"></a>`NPM` | Packages of the npm format. |
+| <a id="packagesprotectionrulepackagetypenuget"></a>`NUGET` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.0. **Status**: Experiment. Packages of the NuGet format. Available only when feature flag `packages_protected_packages_nuget` is enabled. |
 | <a id="packagesprotectionrulepackagetypepypi"></a>`PYPI` | Packages of the PyPI format. |
 
 ### `PipelineAnalyticsJobStatus`

@@ -69,6 +69,19 @@ RSpec.describe Ci::AbortPipelinesService, feature_category: :continuous_integrat
         expect(other_users_pipeline.stages.map(&:status)).to all(eq('failed'))
       end
 
+      context 'when batching limit is exceeded' do
+        before do
+          stub_const("#{described_class}::ABORT_PIPELINE_BATCHING_LIMIT", 0)
+        end
+
+        it 'raises PipelinesAbortLimitExceededError if batching limit is exceeded' do
+          error_msg = 'Exceeded the maximum batching limit to abort pipelines'
+
+          expect { abort_project_pipelines }.to raise_error(described_class::PipelinesAbortLimitExceededError, error_msg)
+          expect(cancelable_build.status).to eq('running')
+        end
+      end
+
       it 'avoids N+1 queries' do
         control = ActiveRecord::QueryRecorder.new { abort_project_pipelines }
 

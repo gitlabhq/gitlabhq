@@ -126,7 +126,15 @@ request to run tests with the production versions of Elasticsearch and PostgreSQ
 #### Testing a migration that changes a mapping of an index
 
 1. Make sure the index doesn't already have the changes applied. Remember the migration cron worker runs in the background so it's possible the migration was already applied.
-   - You can consider disabling the migration worker to have more control: `Feature.disable(:elastic_migration_worker)`.
+   - Optional. [In GitLab 18.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/352424),
+     to disable the migration worker, run the following commands:
+
+     ```ruby
+       settings = ApplicationSetting.last # Ensure this setting does not return `nil`
+       settings.elastic_migration_worker_enabled = false
+       settings.save!
+     ```
+
    - See if the migration is pending: `::Elastic::DataMigrationService.pending_migrations`.
    - Check that the migration is not completed: `Elastic::DataMigrationService.pending_migrations.first.completed?`.
    - Make sure the mappings aren't already applied
@@ -134,7 +142,8 @@ request to run tests with the production versions of Elasticsearch and PostgreSQ
       - or sending a curl request `curl "http://localhost:9200/gitlab-development-some-index/_mappings" | jq`
 1. Tail the logs to see logged messages: `tail -f log/elasticsearch.log`.
 1. Execute the migration in one of the following ways:
-   - Run the migration worker: `Elastic::MigrationWorker.new.perform` (remember the flag should be enabled).
+   - Run the `Elastic::MigrationWorker.new.perform` migration worker.
+     [In GitLab 18.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/352424), the `elastic_migration_worker_enabled` application setting must be enabled.
    - Use pending migrations: `::Elastic::DataMigrationService.pending_migrations.first.migrate`.
    - Use the version: `Elastic::DataMigrationService[20250220214819].migrate`, replacing the version with the migration version.
 1. View the status of the migration.

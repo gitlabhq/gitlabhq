@@ -276,6 +276,7 @@ export default {
     :timestamp-type="timestampType"
     :data-testid="dataTestid"
     content-testid="project-content"
+    @click-avatar="$emit('click-avatar')"
   >
     <template #avatar-meta>
       <template v-if="visibility">

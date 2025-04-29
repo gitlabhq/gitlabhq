@@ -8,7 +8,6 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
   describe 'associations' do
     it { is_expected.to have_one(:trigger).through(:pipeline) }
-    it { is_expected.to belong_to(:trigger_request) }
   end
 
   describe 'delegations' do
@@ -61,7 +60,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       let_it_be(:internal_job_variable) { create(:ci_job_variable, job: processable) }
 
       let(:clone_accessors) do
-        %i[pipeline project ref tag options name allow_failure stage_idx trigger_request yaml_variables
+        %i[pipeline project ref tag options name allow_failure stage_idx yaml_variables
            when environment coverage_regex description tag_list protected needs_attributes job_variables_attributes
            resource_group scheduling_type ci_stage partition_id id_tokens interruptible]
       end

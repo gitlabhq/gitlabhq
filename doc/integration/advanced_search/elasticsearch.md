@@ -801,9 +801,11 @@ scoped to a group or project return no results.
 
 Reindex migrations run in the background, which means
 you do not have to reindex the instance manually.
-With the `elastic_migration_worker_enabled` application setting,
-you can turn on or off the migration worker.
-By default, the migration worker is on.
+
+[In GitLab 18.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/352424),
+you can use the `elastic_migration_worker_enabled` application setting
+to enable or disable the migration worker.
+By default, the migration worker is enabled.
 
 ### Migration dictionary files
 

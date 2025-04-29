@@ -17,6 +17,7 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
         conan: Packages::Package.package_types[:conan],
         maven: Packages::Package.package_types[:maven],
         npm: Packages::Package.package_types[:npm],
+        nuget: Packages::Package.package_types[:nuget],
         pypi: Packages::Package.package_types[:pypi]
       )
     }

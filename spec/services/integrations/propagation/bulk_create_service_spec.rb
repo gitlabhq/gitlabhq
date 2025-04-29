@@ -17,7 +17,7 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
     %w[
       id project_id group_id inherit_from_id instance template
       created_at updated_at
-      encrypted_properties encrypted_properties_iv
+      encrypted_properties encrypted_properties_iv organization_id
     ]
   end
 
@@ -51,6 +51,23 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
           created_at: eq(Time.current),
           updated_at: eq(Time.current)
         )
+      end
+    end
+
+    context 'when integration has organization' do
+      let(:excluded_attributes) do
+        %w[
+          id project_id group_id inherit_from_id instance template
+          created_at updated_at
+          encrypted_properties encrypted_properties_iv organization_id
+        ]
+      end
+
+      it 'does not propagate organization' do
+        execute_service
+
+        expect(instance_integration.organization).not_to be_nil
+        expect(created_integration.organization).to be_nil
       end
     end
 

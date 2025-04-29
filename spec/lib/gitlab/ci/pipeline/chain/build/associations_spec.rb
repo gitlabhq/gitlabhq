@@ -24,7 +24,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
       checkout_sha: project.commit.id,
       after_sha: nil,
       before_sha: nil,
-      trigger_request: nil,
       schedule: nil,
       merge_request: nil,
       project: project,

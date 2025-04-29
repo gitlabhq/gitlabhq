@@ -311,8 +311,7 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
       let_it_be(:trigger) { create(:ci_trigger, project: project) }
       let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, trigger: trigger) }
       let_it_be(:pipeline_variable) { create(:ci_pipeline_variable, pipeline: pipeline) }
-      let_it_be(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
-      let_it_be(:build) { create(:ci_build, pipeline: pipeline, trigger_request: trigger_request).present(current_user: user) }
+      let_it_be(:build) { create(:ci_build, pipeline: pipeline).present(current_user: user) }
 
       it 'exposes trigger' do
         expect(subject[:trigger]).to be_present

@@ -25,6 +25,7 @@ module Organizations
     has_many :projects
     has_many :snippets
     has_many :topics, class_name: "Projects::Topic"
+    has_many :integrations
 
     has_one :settings, class_name: "OrganizationSetting"
     has_one :organization_detail, inverse_of: :organization, autosave: true

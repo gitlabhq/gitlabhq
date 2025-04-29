@@ -17,7 +17,6 @@ module Ci
     has_one :sourced_pipeline, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id, inverse_of: :source_job
     has_one :trigger, through: :pipeline
 
-    belongs_to :trigger_request
     belongs_to :resource_group, class_name: 'Ci::ResourceGroup', inverse_of: :processables
 
     accepts_nested_attributes_for :needs

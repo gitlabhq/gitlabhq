@@ -23,7 +23,6 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       before: '00000000',
       after: project.commit.id,
       ref: ref_name,
-      trigger_request: nil,
       variables_attributes: nil,
       merge_request: nil,
       external_pull_request: nil,
@@ -45,7 +44,6 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
       described_class.new(project, user, params).execute(source,
         save_on_errors: save_on_errors,
-        trigger_request: trigger_request,
         merge_request: merge_request,
         external_pull_request: external_pull_request) do |pipeline|
         yield(pipeline) if block_given?
@@ -992,10 +990,10 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
       context 'when trigger belongs to no one' do
         let(:user) {}
-        let(:trigger_request) { create(:ci_trigger_request, project_id: project.id) }
+        let(:trigger) { create(:ci_trigger, project: project) }
 
         it 'does not create a pipeline', :aggregate_failures do
-          response = execute_service(trigger_request: trigger_request)
+          response = execute_service
 
           expect(response).to be_error
           expect(response.payload).not_to be_persisted
@@ -1006,14 +1004,13 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       context 'when trigger belongs to a developer' do
         let(:user) { create(:user) }
         let(:trigger) { create(:ci_trigger, owner: user, project: project) }
-        let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
 
         before do
           project.add_developer(user)
         end
 
         it 'does not create a pipeline', :aggregate_failures do
-          response = execute_service(trigger_request: trigger_request)
+          response = execute_service
 
           expect(response).to be_error
           expect(response.payload).not_to be_persisted
@@ -1024,14 +1021,13 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       context 'when trigger belongs to a maintainer' do
         let(:user) { create(:user) }
         let(:trigger) { create(:ci_trigger, owner: user, project: project) }
-        let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
 
         before do
           project.add_maintainer(user)
         end
 
         it 'creates a pipeline' do
-          expect(execute_service(trigger_request: trigger_request).payload)
+          expect(execute_service.payload)
             .to be_persisted
           expect(Ci::Pipeline.count).to eq(1)
         end

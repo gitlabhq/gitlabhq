@@ -69,7 +69,7 @@ RSpec.describe Packages::Protection::CheckRuleExistenceService, feature_category
       lazy { "@other-scope/#{project.full_path}" } | :npm          | ref(:project_owner)     | 'a service response for protection rule does not exist'
 
       # Edge cases
-      lazy { "@#{project.full_path}" }             | :npm          | nil                     | 'an error service response for unauthorized actor'
+      lazy { "@#{project.full_path}" }             | :npm          | nil                     | 'a service response for protection rule exists'
       lazy { "@#{project.full_path}" }             | :invalid_type | nil                     | 'an error service response for invalid package type'
       lazy { "@#{project.full_path}" }             | nil           | ref(:project_developer) | 'an error service response for invalid package type'
       nil                                          | :npm          | ref(:project_developer) | 'a service response for protection rule does not exist'
@@ -96,7 +96,7 @@ RSpec.describe Packages::Protection::CheckRuleExistenceService, feature_category
         lazy { "@#{project.full_path}" }             | :npm          | ref(:deploy_token_for_other_project) | 'an error service response for unauthorized actor'
 
         # Edge cases
-        lazy { "@#{project.full_path}" }             | :npm          | nil                                  | 'an error service response for unauthorized actor'
+        lazy { "@#{project.full_path}" }             | :npm          | nil                                  | 'a service response for protection rule exists'
         lazy { "@#{project.full_path}" }             | :invalid_type | ref(:deploy_token_for_project)       | 'an error service response for invalid package type'
         lazy { "@#{project.full_path}" }             | nil           | ref(:deploy_token_for_project)       | 'an error service response for invalid package type'
         nil                                          | :npm          | ref(:deploy_token_for_project)       | 'a service response for protection rule does not exist'

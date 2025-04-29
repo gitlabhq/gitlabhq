@@ -6,17 +6,20 @@ RSpec.describe TrackingHelper do
   describe '#tracking_attrs' do
     using RSpec::Parameterized::TableSyntax
 
+    let(:snowplow_enabled) { true }
     let(:input) { %w[a b c] }
     let(:result) { { data: { track_label: 'a', track_action: 'b', track_property: 'c' } } }
 
     before do
-      stub_application_setting(snowplow_enabled: true)
+      allow(Gitlab::Tracking).to receive(:enabled?).and_return(snowplow_enabled)
     end
 
-    it 'returns no data if snowplow is disabled' do
-      stub_application_setting(snowplow_enabled: false)
+    context 'when tracking is disabled' do
+      let(:snowplow_enabled) { false }
 
-      expect(helper.tracking_attrs(*input)).to eq({})
+      it 'returns no data if snowplow is disabled' do
+        expect(helper.tracking_attrs(*input)).to eq({})
+      end
     end
 
     it 'returns data hash' do

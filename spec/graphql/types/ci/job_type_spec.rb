@@ -108,11 +108,8 @@ RSpec.describe Types::Ci::JobType, feature_category: :continuous_integration do
 
     context 'when triggered' do
       let_it_be(:trigger) { create(:ci_trigger, project: project) }
-      let_it_be(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
       let_it_be(:pipeline) { create(:ci_empty_pipeline, trigger: trigger, project: project) }
-      let_it_be(:build) do
-        create(:ci_build, trigger_request: trigger_request, pipeline: pipeline, project: project, user: user)
-      end
+      let_it_be(:build) { create(:ci_build, pipeline: pipeline, project: project, user: user) }
 
       it 'returns true' do
         expect(build.pipeline).to receive(:trigger_id).and_call_original

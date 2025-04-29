@@ -58917,6 +58917,7 @@ definitions:
         - conan
         - maven
         - npm
+        - nuget
         - pypi
       minimum_access_level_for_delete:
         type: string
@@ -58957,6 +58958,7 @@ definitions:
         - conan
         - maven
         - npm
+        - nuget
         - pypi
       minimum_access_level_for_delete:
         type: string

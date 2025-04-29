@@ -30,7 +30,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   it { is_expected.to belong_to(:trigger).class_name('Ci::Trigger').inverse_of(:pipelines) }
 
   it { is_expected.to have_many(:statuses) }
-  it { is_expected.to have_many(:trigger_requests).with_foreign_key(:commit_id).inverse_of(:pipeline) }
   it { is_expected.to have_many(:variables) }
   it { is_expected.to have_many(:builds) }
   it { is_expected.to have_many(:build_execution_configs).class_name('Ci::BuildExecutionConfig').inverse_of(:pipeline) }
@@ -1576,15 +1575,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     it 'delegates method to project' do
       expect(pipeline).not_to be_protected_ref
-    end
-  end
-
-  describe '#legacy_trigger' do
-    let(:trigger_request) { build(:ci_trigger_request) }
-    let(:pipeline) { build(:ci_empty_pipeline, :created, trigger_requests: [trigger_request]) }
-
-    it 'returns first trigger request' do
-      expect(pipeline.legacy_trigger).to eq trigger_request
     end
   end
 

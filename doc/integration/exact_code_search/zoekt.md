@@ -144,6 +144,12 @@ To resume indexing, clear the **Pause indexing for exact code search** checkbox.
 
 ## Index root namespaces automatically
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455533) in GitLab 17.1.
+
+{{< /history >}}
+
 Prerequisites:
 
 - You must have administrator access to the instance.
@@ -171,6 +177,12 @@ When you disable this setting:
 
 ## Delete offline nodes automatically
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/487162) in GitLab 17.5.
+
+{{< /history >}}
+
 Prerequisites:
 
 - You must have administrator access to the instance.
@@ -186,6 +198,12 @@ To delete offline nodes automatically:
 1. Select **Save changes**.
 
 ## Cache search results
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/523213) in GitLab 18.0.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -203,6 +221,12 @@ To cache search results:
 1. Select **Save changes**.
 
 ## Set concurrent indexing tasks
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481725) in GitLab 17.4.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -229,6 +253,12 @@ To set the number of concurrent indexing tasks:
 
 ## Set the number of namespaces per indexing rollout
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536175) in GitLab 18.0.
+
+{{< /history >}}
+
 Prerequisites:
 
 - You must have administrator access to the instance.
@@ -247,6 +277,12 @@ To set the number of namespaces per indexing rollout:
 1. Select **Save changes**.
 
 ## Define the retry interval for failed namespaces
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182581) in GitLab 17.10.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -278,7 +314,7 @@ To run Zoekt on a different server than GitLab:
 
 Zoekt does not support any authentication, so ensure:
 
-- The zoekt instance is not publicly accessible.
+- The Zoekt instance is not publicly accessible.
 - Only the GitLab server has access to the Zoekt server through firewall policies or IP rules.
 
 ## Troubleshooting

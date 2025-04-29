@@ -2,7 +2,7 @@
 
 module Packages
   module Nuget
-    class CreateOrUpdatePackageService < BaseService
+    class CreateOrUpdatePackageService < Packages::CreatePackageService
       include ::Gitlab::Utils::StrongMemoize
       include ExclusiveLeaseGuard
 
@@ -24,6 +24,7 @@ module Packages
       def execute
         return UNAUTHORIZED_ERROR unless can?(current_user, :create_package, project)
         return DUPLICATE_ERROR unless ::Namespace::PackageSetting.duplicates_allowed?(existing_package)
+        return ERROR_RESPONSE_PACKAGE_PROTECTED if package_protected?
 
         package = try_obtain_lease { process_package }
 
@@ -35,6 +36,12 @@ module Packages
       end
 
       private
+
+      def package_protected?
+        return false if Feature.disabled?(:packages_protected_packages_nuget, project)
+
+        super(package_name: metadata[:package_name], package_type: :nuget)
+      end
 
       def existing_package
         ::Packages::Nuget::PackageFinder

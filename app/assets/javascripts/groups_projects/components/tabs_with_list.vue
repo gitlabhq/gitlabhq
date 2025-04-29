@@ -126,6 +126,7 @@ export default {
           [tab.value]: undefined,
         };
       }, {}),
+      initialLoad: true,
     };
   },
   computed: {
@@ -380,6 +381,19 @@ export default {
         });
       }
     },
+    onQueryComplete() {
+      if (!this.initialLoad) {
+        return;
+      }
+
+      this.initialLoad = false;
+
+      if (!this.eventTracking?.initialLoad) {
+        return;
+      }
+
+      this.trackEvent(this.eventTracking.initialLoad, { label: this.activeTab.value });
+    },
   },
 };
 </script>
@@ -416,6 +430,7 @@ export default {
         @keyset-page-change="onKeysetPageChange"
         @offset-page-change="onOffsetPageChange"
         @refetch="onRefetch"
+        @query-complete="onQueryComplete"
       />
       <template v-else>{{ tab.text }}</template>
     </gl-tab>

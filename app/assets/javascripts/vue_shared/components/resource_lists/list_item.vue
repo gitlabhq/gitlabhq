@@ -114,6 +114,7 @@ export default {
             :src="resource.avatarUrl"
             shape="rect"
             :size="32"
+            @label-link-click="$emit('click-avatar')"
           >
             <template #meta>
               <div class="gl-px-1">

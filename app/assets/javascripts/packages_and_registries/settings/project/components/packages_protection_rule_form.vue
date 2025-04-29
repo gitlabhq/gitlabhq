@@ -121,6 +121,10 @@ export default {
         { value: 'CONAN', text: s__('PackageRegistry|Conan') },
       ];
 
+      if (this.glFeatures.packagesProtectedPackagesNuget) {
+        packageTypeOptions.push({ value: 'NUGET', text: s__('PackageRegistry|NuGet') });
+      }
+
       return packageTypeOptions.sort((a, b) => a.text.localeCompare(b.text));
     },
     minimumAccessLevelForPushOptions() {

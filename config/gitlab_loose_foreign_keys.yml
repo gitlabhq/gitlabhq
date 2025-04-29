@@ -185,7 +185,7 @@ ci_running_builds:
     on_delete: async_delete
   - table: ci_runners
     column: runner_id
-    on_delete: async_nullify
+    on_delete: async_delete
 ci_secure_files:
   - table: projects
     column: project_id

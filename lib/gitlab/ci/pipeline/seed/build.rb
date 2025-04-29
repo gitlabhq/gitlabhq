@@ -160,7 +160,6 @@ module Gitlab
               user: @pipeline.user,
               ref: @pipeline.ref,
               tag: @pipeline.tag,
-              trigger_request: @pipeline.legacy_trigger,
               protected: @pipeline.protected_ref?,
               partition_id: @pipeline.partition_id,
               metadata_attributes: { partition_id: @pipeline.partition_id }

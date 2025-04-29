@@ -14,6 +14,7 @@ module Packages
       ::Packages::Nuget::UpdatePackageFromMetadataService::InvalidMetadataError,
       ::Packages::Nuget::UpdatePackageFromMetadataService::ZipError,
       ::Packages::Nuget::UpdatePackageFromMetadataService::DuplicatePackageError,
+      ::Packages::Nuget::UpdatePackageFromMetadataService::ProtectedPackageError,
       ::Packages::Rubygems::ProcessGemService::ExtractionError,
       ::Packages::Rubygems::ProcessGemService::InvalidMetadataError,
       ::Packages::Npm::ProcessPackageFileService::ExtractionError,

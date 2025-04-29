@@ -43,53 +43,57 @@ RSpec.describe Packages::Nuget::CreateOrUpdatePackageService, feature_category: 
     XML
   end
 
+  shared_examples 'valid package' do
+    it 'creates a new package with the correct attributes and associations' do
+      expect { execute_service }
+        .to change { ::Packages::Nuget::Package.count }.by(1)
+        .and change { ::Packages::PackageFile.count }.by(1)
+        .and change { ::Packages::Tag.count }.by(2)
+        .and change { ::Packages::BuildInfo.count }.by(1)
+        .and change { ::Packages::Dependency.count }.by(1)
+        .and change { ::Packages::DependencyLink.count }.by(1)
+        .and change { ::Packages::Nuget::DependencyLinkMetadatum.count }.by(1)
+
+      expect(execute_service).to be_success
+
+      created_package = execute_service[:package]
+      expect(created_package).to have_attributes(
+        name: package_name,
+        version: package_version,
+        project: project,
+        creator: user
+      )
+
+      package_file = created_package.package_files.first
+      expect(package_file).to have_attributes(
+        file_name: "#{package_name.downcase}.#{package_version.downcase}.nupkg"
+      )
+
+      expect(created_package.nuget_metadatum).to have_attributes(
+        authors: 'Test Author',
+        description: 'This is a dummy package',
+        project_url: 'http://example.com',
+        license_url: 'http://example.com/license',
+        icon_url: 'http://example.com/icon'
+      )
+
+      expect(created_package.tag_names).to contain_exactly('tag1', 'tag2')
+
+      dependency = created_package.dependency_links.first.dependency
+      expect(dependency).to have_attributes(name: 'Dep1', version_pattern: '12.0.3')
+
+      build_info = created_package.build_infos.first
+      expect(build_info).to have_attributes(pipeline: pipeline)
+    end
+  end
+
   describe '#execute' do
     include ExclusiveLeaseHelpers
 
     subject(:execute_service) { service.execute }
 
     context 'when creating a new package' do
-      it 'creates a new package with the correct attributes and associations' do
-        expect { execute_service }
-          .to change { ::Packages::Nuget::Package.count }.by(1)
-          .and change { ::Packages::PackageFile.count }.by(1)
-          .and change { ::Packages::Tag.count }.by(2)
-          .and change { ::Packages::BuildInfo.count }.by(1)
-          .and change { ::Packages::Dependency.count }.by(1)
-          .and change { ::Packages::DependencyLink.count }.by(1)
-          .and change { ::Packages::Nuget::DependencyLinkMetadatum.count }.by(1)
-
-        expect(execute_service).to be_success
-
-        created_package = execute_service[:package]
-        expect(created_package).to have_attributes(
-          name: package_name,
-          version: package_version,
-          project: project,
-          creator: user
-        )
-
-        package_file = created_package.package_files.first
-        expect(package_file).to have_attributes(
-          file_name: "#{package_name.downcase}.#{package_version.downcase}.nupkg"
-        )
-
-        expect(created_package.nuget_metadatum).to have_attributes(
-          authors: 'Test Author',
-          description: 'This is a dummy package',
-          project_url: 'http://example.com',
-          license_url: 'http://example.com/license',
-          icon_url: 'http://example.com/icon'
-        )
-
-        expect(created_package.tag_names).to contain_exactly('tag1', 'tag2')
-
-        dependency = created_package.dependency_links.first.dependency
-        expect(dependency).to have_attributes(name: 'Dep1', version_pattern: '12.0.3')
-
-        build_info = created_package.build_infos.first
-        expect(build_info).to have_attributes(pipeline: pipeline)
-      end
+      it_behaves_like 'valid package'
     end
 
     context 'when updating an existing package' do
@@ -165,6 +169,93 @@ RSpec.describe Packages::Nuget::CreateOrUpdatePackageService, feature_category: 
 
       it_behaves_like 'returning an error service response', message: 'Unauthorized'
       it { is_expected.to have_attributes(reason: :unauthorized) }
+    end
+
+    context 'with package protection rule for different roles and package_name_patterns', :enable_admin_mode do
+      using RSpec::Parameterized::TableSyntax
+
+      let_it_be_with_reload(:package_protection_rule) do
+        create(:package_protection_rule, package_type: :nuget, project: project)
+      end
+
+      let_it_be(:project_developer) { create(:user, developer_of: project) }
+      let_it_be(:project_maintainer) { create(:user, maintainer_of: project) }
+      let_it_be(:project_owner) { project.owner }
+      let_it_be(:instance_admin) { create(:admin) }
+      let_it_be(:deploy_token) { create(:deploy_token, :project, projects: [project], write_package_registry: true) }
+
+      before do
+        package_protection_rule.update!(
+          package_name_pattern: package_name_pattern,
+          minimum_access_level_for_push: minimum_access_level_for_push
+        )
+      end
+
+      shared_examples 'protected package' do
+        it_behaves_like 'returning an error service response', message: "Package protected."
+        it { is_expected.to have_attributes(reason: :package_protected) }
+
+        it 'does not create any nuget-related package records' do
+          expect { subject }
+            .to not_change { Packages::Package.count }
+            .and not_change { ::Packages::Nuget::Package.count }
+            .and not_change { ::Packages::PackageFile.count }
+            .and not_change { ::Packages::Tag.count }
+            .and not_change { ::Packages::BuildInfo.count }
+            .and not_change { ::Packages::Dependency.count }
+            .and not_change { ::Packages::DependencyLink.count }
+            .and not_change { ::Packages::Nuget::DependencyLinkMetadatum.count }
+        end
+
+        context 'when feature flag :packages_protected_packages_nuget is disabled' do
+          before do
+            stub_feature_flags(packages_protected_packages_nuget: false)
+          end
+
+          it_behaves_like 'valid package'
+        end
+      end
+
+      shared_examples 'protected package from deploy token' do
+        let(:service) { described_class.new(project, deploy_token, params) }
+        let(:user) { nil }
+
+        it_behaves_like 'protected package'
+      end
+
+      shared_examples 'valid package from deploy token' do
+        let(:service) { described_class.new(project, deploy_token, params) }
+        let(:user) { nil }
+
+        it_behaves_like 'valid package'
+      end
+
+      # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table syntax
+      where(:package_name_pattern, :minimum_access_level_for_push, :user, :shared_examples_name) do
+        ref(:package_name)               | :maintainer | ref(:project_developer)  | 'protected package'
+        ref(:package_name)               | :maintainer | ref(:project_maintainer) | 'valid package'
+        ref(:package_name)               | :maintainer | ref(:project_owner)      | 'valid package'
+        ref(:package_name)               | :maintainer | ref(:instance_admin)     | 'valid package'
+        ref(:package_name)               | :maintainer | ref(:deploy_token)       | 'protected package from deploy token'
+
+        ref(:package_name)               | :owner      | ref(:project_maintainer) | 'protected package'
+        ref(:package_name)               | :owner      | ref(:project_owner)      | 'valid package'
+        ref(:package_name)               | :owner      | ref(:instance_admin)     | 'valid package'
+        ref(:package_name)               | :owner      | ref(:deploy_token)       | 'protected package from deploy token'
+
+        ref(:package_name)               | :admin      | ref(:project_owner)      | 'protected package'
+        ref(:package_name)               | :admin      | ref(:instance_admin)     | 'valid package'
+        ref(:package_name)               | :admin      | ref(:deploy_token)       | 'protected package from deploy token'
+
+        lazy { "Other.#{package_name}" } | :maintainer | ref(:project_owner)      | 'valid package'
+        lazy { "Other.#{package_name}" } | :admin      | ref(:project_owner)      | 'valid package'
+        lazy { "Other.#{package_name}" } | :admin      | ref(:deploy_token)       | 'valid package from deploy token'
+      end
+      # rubocop:enable Layout/LineLength
+
+      with_them do
+        it_behaves_like params[:shared_examples_name]
+      end
     end
   end
 end

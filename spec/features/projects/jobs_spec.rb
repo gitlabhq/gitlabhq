@@ -445,8 +445,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
     describe 'Variables' do
       let(:trigger) { create(:ci_trigger, project: project) }
       let(:pipeline) { create(:ci_pipeline, trigger: trigger, project: project, sha: project.commit('HEAD').sha) }
-      let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
-      let(:job) { create(:ci_build, pipeline: pipeline, trigger_request: trigger_request) }
+      let(:job) { create(:ci_build, pipeline: pipeline) }
 
       context 'when user is a maintainer' do
         shared_examples 'no reveal button variables behavior' do

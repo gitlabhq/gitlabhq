@@ -5848,7 +5848,6 @@
 - './spec/models/ci/secure_file_spec.rb'
 - './spec/models/ci/sources/pipeline_spec.rb'
 - './spec/models/ci/stage_spec.rb'
-- './spec/models/ci/trigger_request_spec.rb'
 - './spec/models/ci/trigger_spec.rb'
 - './spec/models/ci/unit_test_failure_spec.rb'
 - './spec/models/ci/unit_test_spec.rb'

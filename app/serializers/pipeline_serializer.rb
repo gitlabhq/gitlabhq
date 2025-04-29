@@ -40,7 +40,6 @@ class PipelineSerializer < BaseSerializer
       :retryable_builds,
       :stages,
       :trigger,
-      :trigger_requests,
       :user,
       (:latest_statuses if preload_statuses),
       (:limited_failed_builds if disable_failed_builds),

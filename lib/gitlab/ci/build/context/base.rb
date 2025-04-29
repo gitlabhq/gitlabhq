@@ -54,7 +54,6 @@ module Gitlab
               user: pipeline.user,
               ref: pipeline.ref,
               tag: pipeline.tag,
-              trigger_request: pipeline.legacy_trigger,
               protected: pipeline.protected_ref?
             }
           end

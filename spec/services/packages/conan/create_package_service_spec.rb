@@ -137,7 +137,7 @@ RSpec.describe Packages::Conan::CreatePackageService, feature_category: :package
         ref(:package_name_pattern_no_match) | :maintainer | ref(:project_owner)      | 'a service response for valid package'
         ref(:package_name_pattern_no_match) | :admin      | ref(:project_owner)      | 'a service response for valid package'
 
-        ref(:package_name)                  | :maintainer | nil                      | 'an error service response for unauthorized'
+        ref(:package_name)                  | :maintainer | nil                      | 'an error service response for protected package'
       end
       # rubocop:enable Layout/LineLength
 

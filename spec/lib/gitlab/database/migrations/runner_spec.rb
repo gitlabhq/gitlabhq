@@ -68,7 +68,7 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
     skip_if_shared_database(database)
 
     stub_const('Gitlab::Database::Migrations::Runner::BASE_RESULT_DIR', base_result_dir)
-    allow(ActiveRecord::Migrator).to receive(:new) do |dir, _all_migrations, _schema_migration_class, version_to_migrate|
+    allow(ActiveRecord::Migrator).to receive(:new) do |dir, _all_migrations, _schema_migration_class, _internal_metadata, version_to_migrate|
       migrator = double(ActiveRecord::Migrator)
       expect(migrator).to receive(:run) do
         config_for_migration_run = ActiveRecord::Base.connection_db_config
@@ -79,7 +79,8 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
 
     all_versions = (applied_migrations_other_branches + applied_migrations_this_branch).map(&:version)
     migrations = applied_migrations_other_branches + applied_migrations_this_branch + pending_migrations
-    ctx = double(ActiveRecord::MigrationContext, get_all_versions: all_versions, migrations: migrations, schema_migration: ActiveRecord::SchemaMigration)
+    internal_metadata = double(ActiveRecord::InternalMetadata)
+    ctx = double(ActiveRecord::MigrationContext, get_all_versions: all_versions, migrations: migrations, schema_migration: ActiveRecord::SchemaMigration, internal_metadata: internal_metadata)
 
     allow(ActiveRecord::Base.connection).to receive(:migration_context).and_return(ctx)
 

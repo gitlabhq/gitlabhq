@@ -13,6 +13,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
 
   before do
     stub_application_setting(
+      snowplow_enabled?: true,
       snowplow_collector_hostname: 'gitfoo.com',
       snowplow_app_id: '_abc123_'
     )
@@ -179,6 +180,62 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     it "forwards the payload to the emitter" do
       expect(emitter).to receive(:input).with(payload)
       subject.emit_event_payload(payload)
+    end
+  end
+
+  describe '#enabled?' do
+    context 'when snowplow is enabled' do
+      before do
+        stub_application_setting(snowplow_enabled?: true)
+      end
+
+      it 'returns true' do
+        expect(subject.enabled?).to be_truthy
+      end
+    end
+
+    context 'when snowplow is disabled' do
+      before do
+        stub_application_setting(snowplow_enabled?: false)
+      end
+
+      context 'and collect_product_usage_events is enabled' do
+        it 'returns true' do
+          expect(subject.enabled?).to be_truthy
+        end
+      end
+
+      context 'and collect_product_usage_events is disabled' do
+        before do
+          stub_feature_flags(collect_product_usage_events: false)
+        end
+
+        it 'returns false' do
+          expect(subject.enabled?).to be_falsey
+        end
+      end
+    end
+  end
+
+  describe '#hostname' do
+    context 'when snowplow is enabled' do
+      before do
+        stub_application_setting(snowplow_enabled?: true)
+      end
+
+      it 'returns snowplow_collector_hostname' do
+        expect(subject.hostname).to eq('gitfoo.com')
+      end
+    end
+
+    context 'when snowplow is disabled' do
+      before do
+        stub_application_setting(snowplow_enabled?: false)
+      end
+
+      it 'returns product usage event collection hostname' do
+        expect(subject.hostname).to eq('events.gitlab.net')
+      end
     end
   end
 end

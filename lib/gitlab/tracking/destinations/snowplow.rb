@@ -9,6 +9,7 @@ module Gitlab
         extend ::Gitlab::Utils::Override
 
         SNOWPLOW_NAMESPACE = 'gl'
+        PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT = 'events.gitlab.net'
 
         def initialize
           @event_eligibility_checker = Gitlab::Tracking::EventEligibilityChecker.new
@@ -55,11 +56,16 @@ module Gitlab
         end
 
         def enabled?
-          Gitlab::CurrentSettings.snowplow_enabled?
+          Gitlab::CurrentSettings.snowplow_enabled? ||
+            ::Feature.enabled?(:collect_product_usage_events, :instance)
         end
 
         def hostname
-          Gitlab::CurrentSettings.snowplow_collector_hostname
+          if Gitlab::CurrentSettings.snowplow_enabled?
+            Gitlab::CurrentSettings.snowplow_collector_hostname
+          else
+            PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT
+          end
         end
 
         private

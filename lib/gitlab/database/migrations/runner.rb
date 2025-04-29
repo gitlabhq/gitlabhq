@@ -144,7 +144,7 @@ module Gitlab
           within_context_for_database(@database) do
             sorted_migrations.each do |migration|
               instrumentation.observe(version: migration.version, name: migration.name, connection: ActiveRecord::Migration.connection) do
-                ActiveRecord::Migrator.new(direction, migration_context.migrations, migration_context.schema_migration, migration.version).run
+                ActiveRecord::Migrator.new(direction, migration_context.migrations, migration_context.schema_migration, migration_context.internal_metadata, migration.version).run
               end
             end
           end

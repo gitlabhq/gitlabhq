@@ -15,7 +15,6 @@ module Gitlab
               source_sha: @command.source_sha,
               target_sha: @command.target_sha,
               tag: @command.tag_exists?,
-              trigger_requests: Array(@command.trigger_request),
               user: @command.current_user,
               pipeline_schedule: @command.schedule,
               merge_request: @command.merge_request,

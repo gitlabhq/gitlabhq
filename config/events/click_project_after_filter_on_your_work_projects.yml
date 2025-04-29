@@ -1,0 +1,20 @@
+---
+description: Click project after search on Your work > Projects
+internal_events: true
+action: click_project_after_filter_on_your_work_projects
+identifiers:
+- user
+additional_properties:
+  label:
+    description: Tab name (e.g. "contributed")
+  property:
+    description: Applied filters
+product_group: organizations
+product_categories:
+- groups_and_projects
+milestone: '18.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188801
+tiers:
+- free
+- premium
+- ultimate

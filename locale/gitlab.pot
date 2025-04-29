@@ -54653,6 +54653,9 @@ msgstr ""
 msgid "SecurityOrchestration|Configure your conditions in the pipeline execution file. %{linkStart}What can pipeline execution do?%{linkEnd}"
 msgstr ""
 
+msgid "SecurityOrchestration|Create custom variable"
+msgstr ""
+
 msgid "SecurityOrchestration|Create more robust vulnerability rules and apply them to all your projects."
 msgstr ""
 
@@ -55012,6 +55015,9 @@ msgstr ""
 msgid "SecurityOrchestration|Please remove duplicated values"
 msgstr ""
 
+msgid "SecurityOrchestration|Please remove duplicates."
+msgstr ""
+
 msgid "SecurityOrchestration|Policies"
 msgstr ""
 
@@ -55337,6 +55343,9 @@ msgid "SecurityOrchestration|To widen your search, change filters above or selec
 msgstr ""
 
 msgid "SecurityOrchestration|Turn off default mode to edit scope."
+msgstr ""
+
+msgid "SecurityOrchestration|Type in custom variable"
 msgstr ""
 
 msgid "SecurityOrchestration|Unlink project"

@@ -89,6 +89,7 @@ const defaultPropsData = {
     pagination: 'click_pagination_on_your_work_projects',
     tabs: 'click_tab_on_your_work_projects',
     sort: 'click_sort_on_your_work_projects',
+    initialLoad: 'initial_load_on_your_work_projects',
   },
   tabCountsQuery: projectCountsQuery,
   tabCountsQueryErrorMessage: 'An error occurred loading the project counts.',
@@ -739,6 +740,37 @@ describe('TabsWithList', () => {
 
     it('refetches tab counts', () => {
       expect(successHandler).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('when TabView emits query-complete event', () => {
+    let trackEventSpy;
+
+    beforeEach(async () => {
+      await createComponent();
+      trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
+      findTabView().vm.$emit('query-complete');
+    });
+
+    describe('on initial load', () => {
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          defaultPropsData.eventTracking.initialLoad,
+          { label: CONTRIBUTED_TAB.value },
+          undefined,
+        );
+      });
+    });
+
+    describe('on second load', () => {
+      beforeEach(() => {
+        trackEventSpy.mockClear();
+        findTabView().vm.$emit('query-complete');
+      });
+
+      it('does not track event', () => {
+        expect(trackEventSpy).not.toHaveBeenCalled();
+      });
     });
   });
 });

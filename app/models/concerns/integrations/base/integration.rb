@@ -41,7 +41,7 @@ module Integrations
       BASE_CLASSES = %w[].freeze
 
       BASE_ATTRIBUTES = %w[id instance project_id group_id created_at updated_at
-        encrypted_properties encrypted_properties_iv properties].freeze
+        encrypted_properties encrypted_properties_iv properties organization_id].freeze
 
       SECTION_TYPE_CONFIGURATION = 'configuration'
       SECTION_TYPE_CONNECTION = 'connection'
@@ -508,6 +508,7 @@ module Integrations
 
         belongs_to :project, inverse_of: :integrations
         belongs_to :group, inverse_of: :integrations
+        belongs_to :organization, class_name: 'Organizations::Organization', inverse_of: :integrations, optional: true
 
         validates :project_id, presence: true, unless: -> { instance_level? || group_level? }
         validates :group_id, presence: true, unless: -> { instance_level? || project_level? }
