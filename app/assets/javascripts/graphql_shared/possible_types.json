@@ -60,6 +60,10 @@
     "MergeRequest",
     "WorkItemWidgetCurrentUserTodos"
   ],
+  "DependencyInterface": [
+    "Dependency",
+    "DependencyAggregation"
+  ],
   "DependencyLinkMetadata": [
     "NugetDependencyLinkMetadata"
   ],

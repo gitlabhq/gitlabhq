@@ -598,10 +598,7 @@ module MergeRequestsHelper
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
                   reviewStates: %w[REVIEWED REQUESTED_CHANGES],
-                  not: {
-                    onlyReviewer: true,
-                    reviewerUsername: 'GitlabDuo'
-                  }
+                  ignoredReviewerUsername: ::Users::Internal.duo_code_review_bot.username
                 }
               },
               {
@@ -628,7 +625,7 @@ module MergeRequestsHelper
                 variables: {
                   or: {
                     reviewerWildcard: 'NONE',
-                    onlyReviewerUsername: 'GitlabDuo'
+                    onlyReviewerUsername: ::Users::Internal.duo_code_review_bot.username
                   }
                 }
               }
@@ -654,6 +651,7 @@ module MergeRequestsHelper
                 helpContent: _('Your merge requests that are waiting for approvals.'),
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
+                  ignoredReviewerUsername: ::Users::Internal.duo_code_review_bot.username,
                   reviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED],
                   not: {
                     reviewStates: %w[REQUESTED_CHANGES REVIEWED]
@@ -677,6 +675,7 @@ module MergeRequestsHelper
                 helpContent: _('Your merge requests with approvals by all assigned reviewers.'),
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
+                  ignoredReviewerUsername: ::Users::Internal.duo_code_review_bot.username,
                   reviewState: 'APPROVED',
                   not: {
                     reviewStates: %w[REQUESTED_CHANGES REVIEWED UNREVIEWED REVIEW_STARTED UNAPPROVED]

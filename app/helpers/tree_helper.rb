@@ -166,7 +166,7 @@ module TreeHelper
       ssh_url: ssh_enabled? ? ssh_clone_url_to_repo(project) : '',
       http_url: http_enabled? ? http_clone_url_to_repo(project) : '',
       xcode_url: show_xcode_link?(project) ? xcode_uri_to_repo(project) : '',
-      download_links: !project.empty_repo? ? download_links(project, ref, archive_prefix).to_json : '',
+      download_links: !project.empty_repo? ? download_links(project, ref, archive_prefix).to_json : [],
       download_artifacts: pipeline &&
         (previous_artifacts(project, ref, pipeline.latest_builds_with_artifacts).to_json || []),
       escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref)

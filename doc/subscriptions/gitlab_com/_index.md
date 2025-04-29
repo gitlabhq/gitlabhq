@@ -142,7 +142,7 @@ When the purchase has been processed, you receive confirmation of your new subsc
 Contacts can renew a subscription, cancel a subscription, or transfer the subscription to a different namespace.
 
 You can [change profile owner information](../customers_portal.md#change-profile-owner-information)
-and [add a secondary contact for your subscription](../customers_portal.md#add-a-secondary-contact).
+and [add another billing account manager](../customers_portal.md#add-a-billing-account-manager).
 
 ## How seat usage is determined
 

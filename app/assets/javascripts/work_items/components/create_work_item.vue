@@ -911,9 +911,9 @@ export default {
               :full-path="selectedProjectFullPath"
               :show-buttons-below-field="false"
               :hide-fullscreen-markdown-button="isModal"
+              :new-work-item-type="selectedWorkItemTypeName"
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
-              :work-item-type-name="selectedWorkItemTypeName"
               @error="updateError = $event"
               @updateDraft="updateDraftData('description', $event)"
             />

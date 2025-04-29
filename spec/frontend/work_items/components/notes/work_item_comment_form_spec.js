@@ -5,6 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
+import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import * as autosave from '~/lib/utils/autosave';
 import { ESC_KEY, ENTER_KEY } from '~/lib/utils/keys';
 import { STATE_OPEN, i18n } from '~/work_items/constants';
@@ -35,6 +36,11 @@ jest.mock('~/lib/utils/autosave', () => ({
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal', () => ({
   confirmAction: jest.fn().mockResolvedValue(true),
 }));
+jest.mock('~/lib/utils/secret_detection', () => {
+  return {
+    detectAndConfirmSensitiveTokens: jest.fn(() => Promise.resolve(true)),
+  };
+});
 
 const workItemId = 'gid://gitlab/WorkItem/1';
 const fullPath = 'test-path';
@@ -53,6 +59,14 @@ describe('Work item comment form component', () => {
     .fn()
     .mockResolvedValue(workItemEmailParticipantsEmptyResponse);
   const errorHandler = jest.fn().mockRejectedValue('Error');
+
+  beforeEach(() => {
+    detectAndConfirmSensitiveTokens.mockReturnValue(true);
+  });
+
+  afterEach(() => {
+    detectAndConfirmSensitiveTokens.mockReset();
+  });
 
   const findCommentFieldLayout = () => wrapper.findComponent(CommentFieldLayout);
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
@@ -344,37 +358,59 @@ describe('Work item comment form component', () => {
     expect(autosave.clearDraft).toHaveBeenCalledWith(mockAutosaveKey);
   });
 
-  it('emits `submitForm` event on confirm button click', () => {
+  it('emits `submitForm` event on confirm button click', async () => {
     createComponent();
     findConfirmButton().vm.$emit('click');
 
+    await waitForPromises();
+
+    expect(detectAndConfirmSensitiveTokens).toHaveBeenCalledWith({ content: draftComment });
     expect(wrapper.emitted('submitForm')).toEqual([
       [{ commentText: draftComment, isNoteInternal: false }],
     ]);
   });
 
-  it('emits `submitForm` event on pressing enter with meta key on markdown editor', () => {
+  it('emits `submitForm` event on pressing enter with meta key on markdown editor', async () => {
     createComponent();
     findMarkdownEditor().vm.$emit(
       'keydown',
       new KeyboardEvent('keydown', { key: ENTER_KEY, metaKey: true }),
     );
 
+    await waitForPromises();
+
+    expect(detectAndConfirmSensitiveTokens).toHaveBeenCalledWith({ content: draftComment });
     expect(wrapper.emitted('submitForm')).toEqual([
       [{ commentText: draftComment, isNoteInternal: false }],
     ]);
   });
 
-  it('emits `submitForm` event on pressing ctrl+enter on markdown editor', () => {
+  it('emits `submitForm` event on pressing ctrl+enter on markdown editor', async () => {
     createComponent();
     findMarkdownEditor().vm.$emit(
       'keydown',
       new KeyboardEvent('keydown', { key: ENTER_KEY, ctrlKey: true }),
     );
 
+    await waitForPromises();
+
+    expect(detectAndConfirmSensitiveTokens).toHaveBeenCalledWith({ content: draftComment });
     expect(wrapper.emitted('submitForm')).toEqual([
       [{ commentText: draftComment, isNoteInternal: false }],
     ]);
+  });
+
+  it('does not emit `submitForm` when detectAndConfirmSensitiveTokens returns false', async () => {
+    detectAndConfirmSensitiveTokens.mockReturnValue(false);
+
+    createComponent();
+    findConfirmButton().vm.$emit('click');
+
+    await waitForPromises();
+
+    expect(detectAndConfirmSensitiveTokens).toHaveBeenCalledWith({ content: draftComment });
+
+    expect(wrapper.emitted('submitForm')).toBeUndefined();
   });
 
   describe('when used as a top level/is a new discussion', () => {
@@ -406,6 +442,7 @@ describe('Work item comment form component', () => {
 
       await waitForPromises();
 
+      expect(detectAndConfirmSensitiveTokens).toHaveBeenCalledWith({ content: draftComment });
       expect(wrapper.emitted('submitForm')).toEqual([
         [{ commentText: draftComment, isNoteInternal: false }],
       ]);
@@ -465,6 +502,7 @@ describe('Work item comment form component', () => {
 
         await waitForPromises();
 
+        expect(detectAndConfirmSensitiveTokens).toHaveBeenCalledWith({ content: draftComment });
         expect(wrapper.emitted('submitForm')).toEqual([
           [{ commentText: draftComment, isNoteInternal: true }],
         ]);
@@ -502,6 +540,7 @@ describe('Work item comment form component', () => {
 
       await waitForPromises();
 
+      expect(detectAndConfirmSensitiveTokens).toHaveBeenCalledWith({ content: 'new comment' });
       expect(wrapper.emitted('submitForm')).toEqual([
         [{ commentText: 'new comment', isNoteInternal: false }],
       ]);

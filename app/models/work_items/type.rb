@@ -221,7 +221,7 @@ module WorkItems
       WorkItems::Type.base_types.keys.excluding(*EE_BASE_TYPES)
     end
 
-    # overriden in EE to check for EE-specific restrictions
+    # overridden in EE to check for EE-specific restrictions
     def authorized_types(types, _resource_parent, _relation)
       types
     end

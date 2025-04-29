@@ -84,7 +84,11 @@ describe('WorkItemDescriptionRendered', () => {
 
       await findReadMore().vm.$emit('click');
 
-      expect(trackEventSpy).toHaveBeenCalledWith('expand_description_on_workitem', {}, undefined);
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'expand_description_on_workitem',
+        { label: 'ISSUE' },
+        undefined,
+      );
     });
   });
 

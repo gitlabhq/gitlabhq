@@ -58,6 +58,7 @@ workflow:
     - !reference [.qa-install, before_script]
     - !reference [.cng-deploy-cmd, script]
   after_script:
+    - !reference [.failure_category_after_script, after_script]
     - !reference [.gitlab-qa-report, after_script]
     - bundle exec orchestrator log events --save
     - bundle exec orchestrator log pods --save --containers all --no-fail-on-missing-pods

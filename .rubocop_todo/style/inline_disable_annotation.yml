@@ -150,7 +150,6 @@ Style/InlineDisableAnnotation:
     - 'app/graphql/graphql_triggers.rb'
     - 'app/graphql/mutations/issues/update.rb'
     - 'app/graphql/mutations/projects/sync_fork.rb'
-    - 'app/graphql/mutations/work_items/export.rb'
     - 'app/graphql/resolvers/base_resolver.rb'
     - 'app/graphql/resolvers/ci/runner_groups_resolver.rb'
     - 'app/graphql/resolvers/ci/runner_job_count_resolver.rb'

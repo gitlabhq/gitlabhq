@@ -68,7 +68,7 @@ export default {
     workItemState() {
       return this.workItem?.state;
     },
-    workItemTypeName() {
+    workItemType() {
       return this.workItem?.workItemType?.name;
     },
     isLoading() {
@@ -113,17 +113,17 @@ export default {
             s__(
               'WorkItem|This %{workItemType} will be closed when any of the following is merged.',
             ),
-            this.workItemTypeName,
+            this.workItemType,
           )
         : sprintfWorkItem(
             s__('WorkItem|This %{workItemType} will be closed when the following is merged.'),
-            this.workItemTypeName,
+            this.workItemType,
           );
     },
     closedStateText() {
       return sprintfWorkItem(
         s__('WorkItem|The %{workItemType} was closed automatically when a branch was merged.'),
-        this.workItemTypeName,
+        this.workItemType,
       );
     },
     tooltipText() {
@@ -300,7 +300,7 @@ export default {
       :show-merge-request-flow="showMergeRequestFlow"
       :work-item-iid="workItemIid"
       :work-item-id="workItemId"
-      :work-item-type="workItemTypeName"
+      :work-item-type="workItemType"
       :work-item-full-path="workItemFullPath"
       :is-confidential-work-item="isConfidentialWorkItem"
       :project-id="projectId"

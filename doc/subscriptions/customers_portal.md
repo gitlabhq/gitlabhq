@@ -92,9 +92,11 @@ To change the subscription contact:
 1. Edit the contact details.
 1. Select **Save changes**.
 
-### Add a secondary contact
+### Add a billing account manager
 
-To add a secondary contact for your account:
+Billing account managers can view and manage subscriptions and billing account information in the Customers Portal.
+
+To add another billing account manager for your account:
 
 1. Ensure an account exists in the [Customers Portal](https://customers.gitlab.com/customers/sign_in) for the user you want to add.
 1. [Create a ticket with the Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293). Include any relevant material in your request.

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module WorkItems
-  class ImportCsvService < ImportCsv::BaseService
+  class ImportCsvService < Issuable::ImportCsv::BaseService
+    include Issues::IssueTypeHelpers
     extend ::Gitlab::Utils::Override
 
     FeatureNotAvailableError = StandardError.new(
@@ -49,10 +50,7 @@ module WorkItems
 
     override :attributes_for
     def attributes_for(row)
-      {
-        title: row[:title],
-        work_item_type: match_work_item_type(row[:type])
-      }
+      super.merge({ work_item_type: match_work_item_type(csv_work_item_type_symbol(row)) })
     end
 
     override :validate_headers_presence!
@@ -67,30 +65,26 @@ module WorkItems
     end
 
     def match_work_item_type(work_item_type)
-      match = available_work_item_types[work_item_type&.downcase]
-      match[:type] if match
+      available_work_item_types[work_item_type&.downcase]
     end
 
     def available_work_item_types
-      {
-        issue: {
-          allowed: Ability.allowed?(user, :create_issue, project),
-          type: WorkItems::Type.default_by_type(:issue)
-        }
-      }.with_indifferent_access
+      WorkItems::Type.all.index_by(&:name).with_indifferent_access.transform_keys(&:strip).transform_keys(&:downcase)
     end
     strong_memoize_attr :available_work_item_types
 
     def preprocess!
+      preprocess_milestones!
+
       with_csv_lines.each do |row, line_no|
-        work_item_type = row[:type]&.strip&.downcase
+        work_item_type = csv_work_item_type_symbol(row)
 
         if work_item_type.blank?
           type_errors[:blank] << line_no
         elsif missing?(work_item_type)
           # does this work item exist in the range of work items we support?
           (type_errors[:missing][work_item_type] ||= []) << line_no
-        elsif !allowed?(work_item_type)
+        elsif !work_item_type_allowed?(work_item_type)
           (type_errors[:disallowed][work_item_type] ||= []) << line_no
         end
       end
@@ -103,14 +97,33 @@ module WorkItems
       raise PreprocessError
     end
 
+    def csv_work_item_type_symbol(row)
+      row_type = row[:type]
+
+      strong_memoize_with(:csv_work_item_type_symbol, row_type) do
+        row_type&.strip&.downcase
+      end
+    end
+
     def missing?(work_item_type_name)
       !available_work_item_types.key?(work_item_type_name)
     end
 
-    def allowed?(work_item_type_name)
-      !!available_work_item_types[work_item_type_name][:allowed]
+    def work_item_type_allowed?(work_item_type)
+      strong_memoize_with(:work_item_type_allowed, work_item_type) do
+        create_issue_type_allowed?(project, work_item_type)
+      end
+    end
+
+    def preprocess_milestones!
+      # Find if these milestones exist in the project or its group and group ancestors
+      provided_titles = with_csv_lines.filter_map { |row| row[:milestone]&.strip }.uniq
+      finder_params = {
+        project_ids: [project.id],
+        title: provided_titles
+      }
+      finder_params[:group_ids] = project.group.self_and_ancestors.select(:id) if project.group
+      @available_milestones = MilestonesFinder.new(finder_params).execute
     end
   end
 end
-
-WorkItems::ImportCsvService.prepend_mod

@@ -1,4 +1,4 @@
-import { GlDisclosureDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import CompactCodeDropdown from '~/repository/components/code_dropdown/compact_code_dropdown.vue';
 import CodeDropdownCloneItem from '~/repository/components/code_dropdown/code_dropdown_clone_item.vue';
@@ -39,6 +39,8 @@ describe('Compact Code Dropdown component', () => {
   };
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDropdownGroups = () => wrapper.findAllComponents(GlDisclosureDropdownGroup);
+  const findDropdownGroupAtIndex = (index) => findDropdownGroups().at(index);
 
   const findCodeDropdownCloneItems = () => wrapper.findAllComponents(CodeDropdownCloneItem);
   const findCodeDropdownCloneItemAtIndex = (index) => findCodeDropdownCloneItems().at(index);
@@ -62,6 +64,23 @@ describe('Compact Code Dropdown component', () => {
       },
     });
   };
+
+  describe('groups computed property', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('sets bordered=false for the first visible group', () => {
+      expect(findDropdownGroupAtIndex(0).props('bordered')).toBe(false);
+    });
+
+    it('sets bordered=true for subsequent visible groups', () => {
+      const dropdownGroups = findDropdownGroups();
+      for (let i = 1; i < dropdownGroups.length; i += 1) {
+        expect(findDropdownGroupAtIndex(i).props('bordered')).toBe(true);
+      }
+    });
+  });
 
   describe('copyGroup', () => {
     describe('rendering', () => {

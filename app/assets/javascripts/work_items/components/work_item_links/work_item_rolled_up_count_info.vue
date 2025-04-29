@@ -14,8 +14,8 @@ export default {
     },
   },
   methods: {
-    getItemsClosedLabel(workItemTypeName) {
-      return sprintfWorkItem(s__('WorkItem| %{workItemType}s closed'), workItemTypeName);
+    getItemsClosedLabel(workItemType) {
+      return sprintfWorkItem(s__('WorkItem| %{workItemType}s closed'), workItemType);
     },
   },
 };

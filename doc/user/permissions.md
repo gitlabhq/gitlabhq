@@ -258,7 +258,7 @@ Project permissions for [tasks](tasks.md):
 | Action                                                              | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | ------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
 | View tasks                                                          |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Create tasks                                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can create tasks for issues they authored. |
+| Create tasks                                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |  |
 | Edit tasks, including metadata, item locking, and resolving threads |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guest users can modify the title and description that they authored or are assigned to. |
 | Add a linked item                                                   |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
 | Convert to another item type                                        |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |

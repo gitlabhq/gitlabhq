@@ -59,7 +59,7 @@ export default {
     @action="trackAndClose(ideItem.tracking)"
   >
     <template #list-item>
-      <span class="gl-mb-2 gl-flex gl-items-center gl-justify-between">
+      <span class="gl-flex gl-items-center gl-justify-between">
         <span>{{ ideItem.text }}</span>
         <kbd v-if="ideItem.shortcut && !shortcutsDisabled" class="flat">{{ ideItem.shortcut }}</kbd>
       </span>

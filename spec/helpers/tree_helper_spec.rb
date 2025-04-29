@@ -159,7 +159,7 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
       end
 
       it 'does not include download_links' do
-        expect(subject[:download_links]).to be_empty
+        expect(subject[:download_links]).to eq([])
       end
     end
 

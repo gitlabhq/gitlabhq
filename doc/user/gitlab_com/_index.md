@@ -706,6 +706,15 @@ The limit varies depending on your plan and the number of seats in your subscrip
 | GitLab Ultimate and open source, `1,000-4,999` seats   | `9,000`                |
 | GitLab Ultimate and open source, `5,000` seats or more | `13,000`               |
 
+### Security policy limits
+
+| Policy type                                                         | Default limit            |
+|:--------------------------------------------------------------------|:-----------------------|
+| Merge request approval policy                                       | 5 per security policy project |
+| Scan execution policy                                               | 5 per security policy project |
+| Pipeline execution policy                                           | 5 per security policy project |
+| Vulnerability management policy                                     | 5 per security policy project |
+
 ### Other limits
 
 | Setting                                                             | Default for GitLab.com |

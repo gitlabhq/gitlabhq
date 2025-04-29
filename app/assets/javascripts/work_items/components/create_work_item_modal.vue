@@ -9,8 +9,8 @@ import {
   sprintfWorkItem,
   ROUTES,
   RELATED_ITEM_ID_URL_QUERY_PARAM,
-  WORK_ITEM_TYPE_ENUM_INCIDENT,
   NAME_TO_ENUM_MAP,
+  WORK_ITEM_TYPE_NAME_INCIDENT,
 } from '../constants';
 import CreateWorkItem from './create_work_item.vue';
 import CreateWorkItemCancelConfirmationModal from './create_work_item_cancel_confirmation_modal.vue';
@@ -231,7 +231,7 @@ export default {
             // Take incidents to the legacy detail view with a full page load
             if (
               this.useVueRouter &&
-              NAME_TO_ENUM_MAP[workItem?.workItemType?.name] !== WORK_ITEM_TYPE_ENUM_INCIDENT &&
+              workItem?.workItemType?.name !== WORK_ITEM_TYPE_NAME_INCIDENT &&
               this.$router.getRoutes().some((route) => route.name === 'workItem')
             ) {
               this.$router.push({ name: 'workItem', params: { iid: workItem.iid } });

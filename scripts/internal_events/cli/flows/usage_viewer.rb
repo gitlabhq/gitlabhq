@@ -131,34 +131,16 @@ module InternalEventsCli
       end
 
       def rspec_examples
-        identifier_args = identifiers.map do |identifier|
-          "  let(:#{identifier}) { create(:#{identifier}) }\n"
-        end.join('')
-
-        property_args = format_additional_properties do |property, value|
-          "    #{property}: #{value}"
-        end
-
-        if property_args.any?
-          property_arg = format_prefix '  ', <<~TEXT
-            let(:additional_properties) do
-              {
-            #{property_args.join(",\n")}
-              }
-            end
-          TEXT
-        end
-
-        args = [*identifier_args, *property_arg].join('')
-
         cli.say format_warning <<~TEXT
           #{divider}
-          #{format_help('# RSPEC')}
+          #{format_help('# RSPEC -- COMPOSABLE MATCHERS (recommended)')}
 
-          it_behaves_like 'internal event tracking' do
-            let(:event) { '#{action}' }
-            let(:category) { described_class.name }
-          #{args}end
+          #{format_warning(rspec_composable_matchers)}
+
+          #{divider}
+          #{format_help('# RSPEC -- SHARED EXAMPLE GROUP')}
+
+          #{format_warning(rspec_tests_example_group)}
 
           #{divider}
         TEXT
@@ -319,6 +301,81 @@ module InternalEventsCli
 
           yield(property, example_value, description)
         end
+      end
+
+      def rspec_composable_matchers
+        identifier_args = identifiers.map do |identifier|
+          "    #{identifier}: #{identifier}"
+        end.join(",\n")
+
+        property_args = format_additional_properties do |property, value|
+          "  #{property}: #{value}"
+        end
+
+        if property_args.any?
+          property_args = format_prefix '    ', <<~TEXT.chomp
+            additional_properties: {
+            #{property_args.join(",\n")}
+            }
+          TEXT
+        end
+
+        args = [*identifier_args, *property_args].compact.join(",\n")
+
+        unless args.empty?
+          args = <<~TEXT.chomp
+            .with(
+            #{args}
+              )
+          TEXT
+        end
+
+        metrics_list = related_metrics.map do |metric|
+          "    '#{metric.key_path}'"
+        end.join(",\n")
+
+        unless metrics_list.empty?
+          metrics_list = <<~TEXT.chomp
+            .and increment_usage_metrics(
+            #{metrics_list}
+              )
+          TEXT
+        end
+
+        <<~TEXT.chomp
+          it "triggers an internal event" do
+            expect { subject }.to trigger_internal_events('#{action}')#{args}#{metrics_list}
+          end
+        TEXT
+      end
+
+      def rspec_tests_example_group
+        identifier_args = identifiers.map do |identifier|
+          "  let(:#{identifier}) { create(:#{identifier}) }\n"
+        end.join('')
+
+        property_args = format_additional_properties do |property, value|
+          "    #{property}: #{value}"
+        end
+
+        if property_args.any?
+          property_arg = format_prefix '  ', <<~TEXT
+            let(:additional_properties) do
+              {
+            #{property_args.join(",\n")}
+              }
+            end
+          TEXT
+        end
+
+        args = [*identifier_args, *property_arg].join('')
+
+        <<~TEXT.chomp
+          it_behaves_like 'internal event tracking' do
+            let(:event) { '#{action}' }
+            let(:category) { described_class.name }
+          #{args}end
+        TEXT
       end
 
       def js_formatted_args(indent:)

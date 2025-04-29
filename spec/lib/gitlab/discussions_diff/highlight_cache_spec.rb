@@ -38,6 +38,20 @@ RSpec.describe Gitlab::DiscussionsDiff::HighlightCache, :clean_gitlab_redis_cach
         expect(described_class.gzip_decompress(found_key)).to eq(value.to_json)
       end
     end
+
+    it 'writes content that can be correctly retrieved by read_multiple' do
+      described_class.write_multiple(mapping)
+
+      retrieved_values = described_class.read_multiple(mapping.keys)
+
+      # Transform each retrieved array of Gitlab::Diff::Line objects back to hashes for comparison
+      retrieved_hashes = {}
+      mapping.keys.each_with_index do |key, index|
+        retrieved_hashes[key] = retrieved_values[index]&.map(&:to_hash)
+      end
+
+      expect(retrieved_hashes).to match(mapping)
+    end
   end
 
   describe '#read_multiple' do

@@ -333,7 +333,7 @@ export default {
           v-on="$listeners"
         />
         <!-- code + mobile panel -->
-        <div v-if="!isReadmeView" class="project-code-holder gl-w-full sm:gl-w-auto">
+        <div class="project-code-holder gl-w-full sm:gl-w-auto">
           <div v-if="showCompactCodeDropdown" class="gl-flex gl-justify-end gl-gap-3">
             <add-to-tree
               v-if="!isReadmeView"
@@ -371,7 +371,7 @@ export default {
             />
             <repository-overflow-menu v-if="comparePath" />
           </div>
-          <template v-else>
+          <template v-else-if="!isReadmeView">
             <code-dropdown
               class="git-clone-holder js-git-clone-holder gl-hidden sm:gl-inline-block"
               :ssh-url="sshUrl"

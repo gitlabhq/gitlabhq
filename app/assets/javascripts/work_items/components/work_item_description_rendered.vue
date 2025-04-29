@@ -338,7 +338,7 @@ export default {
     showAll() {
       this.truncated = false;
       this.trackEvent('expand_description_on_workitem', {
-        label: this.workItemTypeName,
+        label: this.workItemType,
       });
     },
     stripHeadingAnchors(htmlString) {

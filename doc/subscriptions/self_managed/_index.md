@@ -600,7 +600,7 @@ Contacts can manage subscriptions and billing account settings.
 For information about how to transfer ownership of the Customers Portal account to another person, see
 [Change profile owner information](../customers_portal.md#change-profile-owner-information).
 
-To add another contact for your subscription, see [Add a secondary contact](../customers_portal.md#add-a-secondary-contact).
+To add another contact for your subscription, see [Add a billing account manager](../customers_portal.md#add-a-billing-account-manager).
 
 ## Subscription expiry
 

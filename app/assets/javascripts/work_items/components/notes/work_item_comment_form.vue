@@ -2,6 +2,7 @@
 import { GlButton, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
+import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { STATE_OPEN, WORK_ITEM_TYPE_NAME_TASK, i18n } from '~/work_items/constants';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
@@ -329,7 +330,7 @@ export default {
       this.$emit('cancelEditing');
       clearDraft(this.autosaveKey);
     },
-    submitForm(shouldMeasureTemperature = true) {
+    async submitForm(shouldMeasureTemperature = true) {
       this.isMeasuringCommentTemperature =
         this.glAbilities.measureCommentTemperature && shouldMeasureTemperature;
 
@@ -341,6 +342,12 @@ export default {
       if (this.isSubmitting) {
         return;
       }
+
+      const confirmSubmit = await detectAndConfirmSensitiveTokens({ content: this.commentText });
+      if (!confirmSubmit) {
+        return;
+      }
+
       if (this.toggleResolveChecked) {
         this.$emit('toggleResolveDiscussion');
       }

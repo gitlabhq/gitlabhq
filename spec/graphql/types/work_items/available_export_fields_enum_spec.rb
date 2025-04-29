@@ -9,13 +9,30 @@ RSpec.describe GitlabSchema.types['AvailableExportFields'], feature_category: :t
     using RSpec::Parameterized::TableSyntax
 
     where(:field_name, :field_value) do
-      'ID'              | 'id'
-      'TYPE'            | 'type'
-      'TITLE'           | 'title'
-      'DESCRIPTION'     | 'description'
-      'AUTHOR'          | 'author'
-      'AUTHOR_USERNAME' | 'author username'
-      'CREATED_AT'      | 'created_at'
+      'ID'                | 'id'
+      'IID'               | 'iid'
+      'ASSIGNEE'          | 'assignee'
+      'ASSIGNEE_USERNAME' | 'assignee username'
+      'AUTHOR'            | 'author'
+      'AUTHOR_USERNAME'   | 'author username'
+      'CONFIDENTIAL'      | 'confidential'
+      'DESCRIPTION'       | 'description'
+      'LOCKED'            | 'locked'
+      'MILESTONE'         | 'milestone'
+      'START_DATE'        | 'start date'
+      'DUE_DATE'          | 'due date'
+      'CLOSED_AT'         | 'closed at'
+      'CREATED_AT'        | 'created at'
+      'UPDATED_AT'        | 'updated at'
+      'PARENT_ID'         | 'parent id'
+      'PARENT_IID'        | 'parent iid'
+      'PARENT_TITLE'      | 'parent title'
+      'STATE'             | 'state'
+      'TITLE'             | 'title'
+      'TIME_ESTIMATE'     | 'time estimate'
+      'TIME_SPENT'        | 'time spent'
+      'TYPE'              | 'type'
+      'URL'               | 'url'
     end
 
     with_them do

@@ -3,6 +3,7 @@
 module ImportCsv
   class BaseService
     include Gitlab::Utils::StrongMemoize
+    include Gitlab::Allowable
 
     def initialize(user, project, csv_io)
       @user = user
@@ -27,6 +28,7 @@ module ImportCsv
     private
 
     attr_reader :user, :project, :csv_io, :results
+    alias_method :current_user, :user
 
     def attributes_for(row)
       raise NotImplementedError

@@ -143,7 +143,7 @@ Use the following attributes to customize the field GitLab checks and the format
 
 For `issuer_and_serial_number`, the `<SR>` portion is in reverse-byte-order, with the least-significant byte first. For more information, see [how to map a user to a certificate using the altSecurityIdentities attribute](https://learn.microsoft.com/en-us/archive/blogs/spatdsg/howto-map-a-user-to-a-certificate-via-all-the-methods-available-in-the-altsecurityidentities-attribute).
 
-The reverse issuer formats sort the issuer string from the smallest unit to the largest. Some 
+The reverse issuer formats sort the issuer string from the smallest unit to the largest. Some
 Active Directory servers store certificates in this format.
 
 {{< alert type="note" >}}
@@ -410,15 +410,3 @@ For self-compiled installations:
 ## Passwords for users created via smart card authentication
 
 The [Generated passwords for users created through integrated authentication](../../security/passwords_for_integrated_authentication_methods.md) guide provides an overview of how GitLab generates and sets passwords for users created via smart card authentication.
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->

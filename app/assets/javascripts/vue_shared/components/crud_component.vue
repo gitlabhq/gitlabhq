@@ -105,7 +105,7 @@ export default {
   data() {
     return {
       isCollapsed:
-        this.collapsed ||
+        (this.collapsed && !this.persistCollapsedState) ||
         (this.persistCollapsedState &&
           localStorage.getItem(this.getLocalStorageKeyName()) === 'true'),
       isFormVisible: false,
@@ -146,6 +146,11 @@ export default {
   },
   mounted() {
     if (this.persistCollapsedState) {
+      // If collapsed by default and not yet toggled.
+      if (this.collapsed && localStorage.getItem(this.getLocalStorageKeyName()) === null) {
+        this.isCollapsed = true;
+      }
+
       if (localStorage.getItem(this.getLocalStorageKeyName()) === 'true') {
         this.$emit('collapsed');
       } else {

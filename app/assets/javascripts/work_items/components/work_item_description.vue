@@ -85,7 +85,7 @@ export default {
       required: false,
       default: true,
     },
-    workItemTypeName: {
+    newWorkItemType: {
       type: String,
       required: false,
       default: '',
@@ -141,11 +141,11 @@ export default {
   },
   computed: {
     createFlow() {
-      return this.workItemId === newWorkItemId(this.workItemTypeName);
+      return this.workItemId === newWorkItemId(this.newWorkItemType);
     },
     workItemFullPath() {
       return this.createFlow
-        ? newWorkItemFullPath(this.fullPath, this.workItemTypeName)
+        ? newWorkItemFullPath(this.fullPath, this.newWorkItemType)
         : this.fullPath;
     },
     autosaveKey() {

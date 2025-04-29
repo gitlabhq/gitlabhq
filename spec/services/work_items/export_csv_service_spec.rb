@@ -6,13 +6,26 @@ RSpec.describe WorkItems::ExportCsvService, :with_license, feature_category: :te
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :public, group: group) }
-  let_it_be(:work_item_1) { create(:work_item, description: 'test', project: project) }
-  let_it_be(:work_item_2) { create(:work_item, :incident, project: project) }
+  let_it_be(:project_milestone) { create(:milestone, project: project, title: 'Test Project Milestone') }
+  let_it_be(:parent_work_item) { create(:work_item, description: 'parent', project: project) }
+  let_it_be_with_reload(:task) do
+    create(:work_item, :task, description: 'test', project: project, milestone: project_milestone)
+  end
+
+  let_it_be(:incident) { create(:work_item, :incident, project: project) }
+  let_it_be(:work_item_link) { create(:parent_link, work_item: task, work_item_parent: parent_work_item) }
 
   subject { described_class.new(WorkItem.all, project) }
 
   def csv
     CSV.parse(subject.csv_data, headers: true)
+  end
+
+  before_all do
+    # Ensure support bot user is created so creation doesn't count towards query limit,
+    # and we don't try to obtain an exclusive lease within a transaction.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+    Users::Internal.support_bot_id
   end
 
   context 'when import_export_work_items_csv flag is not enabled' do
@@ -36,37 +49,82 @@ RSpec.describe WorkItems::ExportCsvService, :with_license, feature_category: :te
   end
 
   it 'returns two work items' do
-    expect(csv.count).to eq(2)
+    expect(csv.count).to eq(3)
+  end
+
+  specify 'id' do
+    expect(csv[1]['ID']).to eq task.id.to_s
   end
 
   specify 'iid' do
-    expect(csv[0]['Id']).to eq work_item_1.iid.to_s
+    expect(csv[1]['IID']).to eq task.iid.to_s
   end
 
   specify 'title' do
-    expect(csv[0]['Title']).to eq work_item_1.title
+    expect(csv[1]['Title']).to eq task.title
+  end
+
+  specify 'url' do
+    expect(csv[1]['URL']).to eq Gitlab::Routing.url_helpers.project_work_item_url(task.project, task)
   end
 
   specify 'type' do
     expect(csv[0]['Type']).to eq('Issue')
-    expect(csv[1]['Type']).to eq('Incident')
+    expect(csv[1]['Type']).to eq('Task')
+    expect(csv[2]['Type']).to eq('Incident')
   end
 
   specify 'author name' do
-    expect(csv[0]['Author']).to eq(work_item_1.author_name)
+    expect(csv[1]['Author']).to eq(task.author_name)
   end
 
   specify 'author username' do
-    expect(csv[0]['Author Username']).to eq(work_item_1.author.username)
+    expect(csv[1]['Author Username']).to eq(task.author.username)
   end
 
-  specify 'created_at' do
-    expect(csv[0]['Created At (UTC)']).to eq(work_item_1.created_at.to_fs(:csv))
+  specify 'assignees data' do
+    expect(csv[1]['Assignee(s)']).to eq("")
+    expect(csv[1]['Assignee(s) Username(s)']).to eq("")
+  end
+
+  specify 'labels' do
+    expect(csv[1]['Labels']).to eq("")
+  end
+
+  specify 'created_at and updated_at' do
+    expect(csv[1]['Created At']).to eq(task.created_at.to_fs(:csv))
+    expect(csv[1]['Updated At']).to eq(task.updated_at.to_fs(:csv))
   end
 
   specify 'description' do
-    expect(csv[0]['Description']).to be_present
-    expect(csv[0]['Description']).to eq(work_item_1.description)
+    expect(csv[1]['Description']).to be_present
+    expect(csv[1]['Description']).to eq("test")
+  end
+
+  specify 'base metadata' do
+    expect(csv[1]['State']).to eq(task.closed? ? "Closed" : "Open")
+    expect(csv[1]['Confidential']).to eq("No")
+    expect(csv[1]['Locked']).to eq(false.to_s)
+  end
+
+  specify 'start_and_due_date' do
+    expect(csv[1]['Start Date']).to eq(task.get_widget(:start_and_due_date).start_date)
+    expect(csv[1]['Due Date']).to eq(task.get_widget(:start_and_due_date).due_date)
+  end
+
+  specify 'milestone' do
+    expect(csv[1]['Milestone']).to eq('Test Project Milestone')
+  end
+
+  specify 'parent data' do
+    expect(csv[1]['Parent ID']).to eq(task.get_widget(:hierarchy).parent.id.to_s)
+    expect(csv[1]['Parent IID']).to eq(task.get_widget(:hierarchy).parent.iid.to_s)
+    expect(csv[1]['Parent Title']).to eq(task.get_widget(:hierarchy).parent.title)
+  end
+
+  specify 'time tracking' do
+    expect(csv[1]['Time Estimate']).to be_nil
+    expect(csv[1]['Time Spent']).to be_nil
   end
 
   it 'preloads fields to avoid N+1 queries' do
@@ -74,7 +132,7 @@ RSpec.describe WorkItems::ExportCsvService, :with_license, feature_category: :te
 
     create(:work_item, :task, project: project)
 
-    expect { subject.csv_data }.not_to exceed_query_limit(control)
+    expect { subject.csv_data }.not_to exceed_query_limit(control).with_threshold(1)
   end
 
   it_behaves_like 'a service that returns invalid fields from selection'

@@ -12718,8 +12718,8 @@ Input type: `WorkItemDeleteInput`
 ### `Mutation.workItemExport`
 
 {{< details >}}
-**Introduced** in GitLab 15.10.
-**Status**: Experiment.
+**Deprecated** in GitLab 18.0.
+Use WorkItemsCsvExport.
 {{< /details >}}
 
 Input type: `WorkItemExportInput`
@@ -12893,6 +12893,55 @@ Input type: `WorkItemUserPreferenceUpdateInput`
 | <a id="mutationworkitemuserpreferenceupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitemuserpreferenceupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationworkitemuserpreferenceupdateuserpreferences"></a>`userPreferences` | [`WorkItemTypesUserPreference`](#workitemtypesuserpreference) | User preferences. |
+
+### `Mutation.workItemsCsvExport`
+
+{{< details >}}
+**Introduced** in GitLab 15.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `WorkItemsCsvExportInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemscsvexportassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the work item. |
+| <a id="mutationworkitemscsvexportassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee wildcard. Incompatible with `assigneeUsernames`. |
+| <a id="mutationworkitemscsvexportauthorusername"></a>`authorUsername` | [`String`](#string) | Filter work items by author username. |
+| <a id="mutationworkitemscsvexportclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemscsvexportclosedafter"></a>`closedAfter` | [`Time`](#time) | Work items closed after the date. |
+| <a id="mutationworkitemscsvexportclosedbefore"></a>`closedBefore` | [`Time`](#time) | Work items closed before the date. |
+| <a id="mutationworkitemscsvexportconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter for confidential work items. If `false`, excludes confidential work items. If `true`, returns only confidential work items. |
+| <a id="mutationworkitemscsvexportcreatedafter"></a>`createdAfter` | [`Time`](#time) | Work items created after the timestamp. |
+| <a id="mutationworkitemscsvexportcreatedbefore"></a>`createdBefore` | [`Time`](#time) | Work items created before the timestamp. |
+| <a id="mutationworkitemscsvexportdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
+| <a id="mutationworkitemscsvexportduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
+| <a id="mutationworkitemscsvexportiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
+| <a id="mutationworkitemscsvexportin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
+| <a id="mutationworkitemscsvexportlabelname"></a>`labelName` | [`[String!]`](#string) | Labels applied to the work item. |
+| <a id="mutationworkitemscsvexportmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Milestone applied to the work item. |
+| <a id="mutationworkitemscsvexportmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter by milestone ID wildcard. Incompatible with `milestoneTitle`. |
+| <a id="mutationworkitemscsvexportmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values `NONE` and `ANY` are supported. |
+| <a id="mutationworkitemscsvexportnot"></a>`not` | [`NegatedWorkItemFilterInput`](#negatedworkitemfilterinput) | Negated work item arguments. |
+| <a id="mutationworkitemscsvexportor"></a>`or` | [`UnionedWorkItemFilterInput`](#unionedworkitemfilterinput) | List of arguments with inclusive `OR`. |
+| <a id="mutationworkitemscsvexportprojectpath"></a>`projectPath` | [`ID!`](#id) | Full project path. |
+| <a id="mutationworkitemscsvexportsearch"></a>`search` | [`String`](#string) | Search query for title or description. |
+| <a id="mutationworkitemscsvexportselectedfields"></a>`selectedFields` | [`[AvailableExportFields!]`](#availableexportfields) | List of selected fields to be exported. Omit to export all available fields. |
+| <a id="mutationworkitemscsvexportstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
+| <a id="mutationworkitemscsvexportsubscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Work items the current user is subscribed to. |
+| <a id="mutationworkitemscsvexporttypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
+| <a id="mutationworkitemscsvexportupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Work items updated after the timestamp. |
+| <a id="mutationworkitemscsvexportupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Work items updated before the timestamp. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemscsvexportclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemscsvexporterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationworkitemscsvexportmessage"></a>`message` | [`String`](#string) | Export request result message. |
 
 ### `Mutation.workItemsHierarchyReorder`
 
@@ -15391,6 +15440,29 @@ The edge type for [`DastSiteValidation`](#dastsitevalidation).
 | ---- | ---- | ----------- |
 | <a id="dastsitevalidationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="dastsitevalidationedgenode"></a>`node` | [`DastSiteValidation`](#dastsitevalidation) | The item at the end of the edge. |
+
+#### `DependencyAggregationConnection`
+
+The connection type for [`DependencyAggregation`](#dependencyaggregation).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyaggregationconnectionedges"></a>`edges` | [`[DependencyAggregationEdge]`](#dependencyaggregationedge) | A list of edges. |
+| <a id="dependencyaggregationconnectionnodes"></a>`nodes` | [`[DependencyAggregation]`](#dependencyaggregation) | A list of nodes. |
+| <a id="dependencyaggregationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DependencyAggregationEdge`
+
+The edge type for [`DependencyAggregation`](#dependencyaggregation).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyaggregationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="dependencyaggregationedgenode"></a>`node` | [`DependencyAggregation`](#dependencyaggregation) | The item at the end of the edge. |
 
 #### `DependencyConnection`
 
@@ -25228,7 +25300,6 @@ A software dependency used by a project.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="dependencycomponent"></a>`component` | [`Component!`](#component) | Information about the component associated to the dependency. |
 | <a id="dependencyid"></a>`id` | [`GlobalID!`](#globalid) | ID of the dependency. |
 | <a id="dependencylicenses"></a>`licenses` | [`[License!]`](#license) | Licenses associated to the dependency. |
 | <a id="dependencylocation"></a>`location` | [`Location`](#location) | Information about where the dependency is located. |
@@ -25237,6 +25308,24 @@ A software dependency used by a project.
 | <a id="dependencyreachability"></a>`reachability` | [`ReachabilityType`](#reachabilitytype) | Information about reachability of a dependency. |
 | <a id="dependencyversion"></a>`version` | [`String`](#string) | Version of the dependency. |
 | <a id="dependencyvulnerabilitycount"></a>`vulnerabilityCount` | [`Int!`](#int) | Number of vulnerabilities within the dependency. |
+
+### `DependencyAggregation`
+
+A software dependency aggregation used by a group.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyaggregationid"></a>`id` | [`GlobalID!`](#globalid) | ID of the dependency. |
+| <a id="dependencyaggregationlicenses"></a>`licenses` | [`[License!]`](#license) | Licenses associated to the dependency. |
+| <a id="dependencyaggregationlocation"></a>`location` | [`Location`](#location) | Information about where the dependency is located. |
+| <a id="dependencyaggregationname"></a>`name` | [`String!`](#string) | Name of the dependency. |
+| <a id="dependencyaggregationoccurrencecount"></a>`occurrenceCount` | [`Int!`](#int) | Number of occurrences of the dependency across projects. |
+| <a id="dependencyaggregationpackager"></a>`packager` | [`PackageManager`](#packagemanager) | Description of the tool used to manage the dependency. |
+| <a id="dependencyaggregationreachability"></a>`reachability` | [`ReachabilityType`](#reachabilitytype) | Information about reachability of a dependency. |
+| <a id="dependencyaggregationversion"></a>`version` | [`String`](#string) | Version of the dependency. |
+| <a id="dependencyaggregationvulnerabilitycount"></a>`vulnerabilityCount` | [`Int!`](#int) | Number of vulnerabilities within the dependency. |
 
 ### `DependencyPath`
 
@@ -27957,6 +28046,33 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupdependenciespackagemanagers"></a>`packageManagers` | [`[PackageManager!]`](#packagemanager) | Filter dependencies by package managers. |
 | <a id="groupdependenciessort"></a>`sort` | [`DependencySort`](#dependencysort) | Sort dependencies by given criteria. |
 | <a id="groupdependenciessourcetypes"></a>`sourceTypes` | [`[SbomSourceType!]`](#sbomsourcetype) | Filter dependencies by source type. |
+
+##### `Group.dependencyAggregations`
+
+Software dependencies used by projects under this group.
+
+{{< details >}}
+**Introduced** in GitLab 18.0.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`DependencyAggregationConnection`](#dependencyaggregationconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupdependencyaggregationscomponentids"></a>`componentIds` | [`[SbomComponentID!]`](#sbomcomponentid) | Filter dependencies by component IDs. |
+| <a id="groupdependencyaggregationscomponentnames"></a>`componentNames` | [`[String!]`](#string) | Filter dependencies by component names. |
+| <a id="groupdependencyaggregationspackagemanagers"></a>`packageManagers` | [`[PackageManager!]`](#packagemanager) | Filter dependencies by package managers. |
+| <a id="groupdependencyaggregationsprojectcountmax"></a>`projectCountMax` | [`Int`](#int) | Filter dependencies by maximum project count. |
+| <a id="groupdependencyaggregationsprojectcountmin"></a>`projectCountMin` | [`Int`](#int) | Filter dependencies by minimum project count. |
+| <a id="groupdependencyaggregationssort"></a>`sort` | [`DependencySort`](#dependencysort) | Sort dependencies by given criteria. |
+| <a id="groupdependencyaggregationssourcetypes"></a>`sourceTypes` | [`[SbomSourceType!]`](#sbomsourcetype) | Filter dependencies by source type. |
 
 ##### `Group.descendantGroups`
 
@@ -42368,13 +42484,31 @@ Available fields to be exported as CSV.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="availableexportfieldsauthor"></a>`AUTHOR` | Author name. |
-| <a id="availableexportfieldsauthor_username"></a>`AUTHOR_USERNAME` | Author username. |
-| <a id="availableexportfieldscreated_at"></a>`CREATED_AT` | Date of creation. |
-| <a id="availableexportfieldsdescription"></a>`DESCRIPTION` | Description. |
-| <a id="availableexportfieldsid"></a>`ID` | Unique identifier. |
-| <a id="availableexportfieldstitle"></a>`TITLE` | Title. |
+| <a id="availableexportfieldsassignee"></a>`ASSIGNEE` | Assignee(s) name of the work item. |
+| <a id="availableexportfieldsassignee_username"></a>`ASSIGNEE_USERNAME` | Assignee(s) username of the work item. |
+| <a id="availableexportfieldsauthor"></a>`AUTHOR` | Author name of the work item. |
+| <a id="availableexportfieldsauthor_username"></a>`AUTHOR_USERNAME` | Author username of the work item. |
+| <a id="availableexportfieldsclosed_at"></a>`CLOSED_AT` | Closed at (UTC) date of the work item. |
+| <a id="availableexportfieldsconfidential"></a>`CONFIDENTIAL` | Confidentiality flag of the work item. |
+| <a id="availableexportfieldscreated_at"></a>`CREATED_AT` | Crated at (UTC) date of the work item. |
+| <a id="availableexportfieldsdescription"></a>`DESCRIPTION` | Description of the work item. |
+| <a id="availableexportfieldsdue_date"></a>`DUE_DATE` | Due date (UTC) of the work item. |
+| <a id="availableexportfieldsid"></a>`ID` | Unique identifier of the work item. |
+| <a id="availableexportfieldsiid"></a>`IID` | IID identifier of the work item. |
+| <a id="availableexportfieldslocked"></a>`LOCKED` | Locked discussions flag of the work item. |
+| <a id="availableexportfieldsmilestone"></a>`MILESTONE` | Milestone of the work item. |
+| <a id="availableexportfieldsparent_id"></a>`PARENT_ID` | Parent ID of the work item. |
+| <a id="availableexportfieldsparent_iid"></a>`PARENT_IID` | Parent IID of the work item. |
+| <a id="availableexportfieldsparent_title"></a>`PARENT_TITLE` | Parent title of the work item. |
+| <a id="availableexportfieldsstart_date"></a>`START_DATE` | Start date (UTC) of the work item. |
+| <a id="availableexportfieldsstate"></a>`STATE` | State of the work item. |
+| <a id="availableexportfieldstime_estimate"></a>`TIME_ESTIMATE` | Time estimate of the work item. |
+| <a id="availableexportfieldstime_spent"></a>`TIME_SPENT` | Time spent of the work item. |
+| <a id="availableexportfieldstitle"></a>`TITLE` | Title of the work item. |
 | <a id="availableexportfieldstype"></a>`TYPE` | Type of the work item. |
+| <a id="availableexportfieldsupdated_at"></a>`UPDATED_AT` | Updated at (UTC) date of the work item. |
+| <a id="availableexportfieldsurl"></a>`URL` | Web URL to the work item. |
+| <a id="availableexportfieldsweight"></a>`WEIGHT` | Weight of the work item. |
 
 ### `BlobViewersType`
 
@@ -47568,6 +47702,26 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="currentusertodoscurrentusertodosstate"></a>`state` | [`TodoStateEnum`](#todostateenum) | State of the to-do items. |
+
+#### `DependencyInterface`
+
+Implementations:
+
+- [`Dependency`](#dependency)
+- [`DependencyAggregation`](#dependencyaggregation)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyinterfaceid"></a>`id` | [`GlobalID!`](#globalid) | ID of the dependency. |
+| <a id="dependencyinterfacelicenses"></a>`licenses` | [`[License!]`](#license) | Licenses associated to the dependency. |
+| <a id="dependencyinterfacelocation"></a>`location` | [`Location`](#location) | Information about where the dependency is located. |
+| <a id="dependencyinterfacename"></a>`name` | [`String!`](#string) | Name of the dependency. |
+| <a id="dependencyinterfacepackager"></a>`packager` | [`PackageManager`](#packagemanager) | Description of the tool used to manage the dependency. |
+| <a id="dependencyinterfacereachability"></a>`reachability` | [`ReachabilityType`](#reachabilitytype) | Information about reachability of a dependency. |
+| <a id="dependencyinterfaceversion"></a>`version` | [`String`](#string) | Version of the dependency. |
+| <a id="dependencyinterfacevulnerabilitycount"></a>`vulnerabilityCount` | [`Int!`](#int) | Number of vulnerabilities within the dependency. |
 
 #### `DesignFields`
 

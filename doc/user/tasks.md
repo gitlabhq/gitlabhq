@@ -60,13 +60,12 @@ the task opens in a full-page view.
 {{< history >}}
 
 - Option to select the project where tasks are created [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436255) in GitLab 17.1.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
 
 Prerequisites:
 
-- You must have at least the Planner role for the project, or the project must be public.
+- You must have at least the Guest role for the project, or the project must be public.
 
 To create a task:
 
@@ -83,13 +82,12 @@ To create a task:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have at least the Guest role for the project.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.

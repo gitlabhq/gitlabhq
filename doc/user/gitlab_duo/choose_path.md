@@ -74,9 +74,13 @@ Follow this path to learn how to:
 
 Want to start using GitLab Duo right now? Here's how:
 
-1. Open GitLab Duo Chat by selecting **GitLab Duo Chat** in the upper-right corner of the GitLab UI.
+1. Open GitLab Duo Chat by selecting **GitLab Duo Chat** in the upper-right corner of the GitLab UI,
+   or in your IDE.
 1. Ask a question about your project, code, or how to use GitLab.
-1. Try one of the AI-native features like Code Suggestions in your IDE, or use Chat to summarize a bulky issue.
+1. Try one of the AI-native features like Code Suggestions in your IDE, or use Chat:
+
+   - In the UI to summarize a bulky issue.
+   - In the IDE to refactor some existing code.
 
 [View all of the GitLab Duo possibilities →](_index.md)
 
@@ -108,6 +112,7 @@ GitLab Duo is integrated with your development processes and is available:
 If you're new to GitLab Duo, start with these features:
 
 - **[GitLab Duo Chat](../gitlab_duo_chat/_index.md)** - Ask questions about GitLab and get help with basic tasks
+- **[Code Suggestions](../project/repository/code_suggestions/_index.md)** - Get AI-native code completion in your IDE
 - **[Code Explanation](../project/repository/code_explain.md)** - Understand code in files or merge requests
 - **[Merge Request Summary](../project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes)** - Generate descriptions for your changes automatically
 
@@ -115,7 +120,6 @@ If you're new to GitLab Duo, start with these features:
 
 After you're comfortable with the basics, try these more advanced features:
 
-- **[Code Suggestions](../project/repository/code_suggestions/_index.md)** - Get AI-native code completion in your IDE
 - **[Test Generation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide)** - Create tests for your code automatically
 - **[Root Cause Analysis](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)** - Troubleshoot failed CI/CD jobs
 

@@ -28,6 +28,7 @@ static-analysis:
   extends:
     - .static-analysis-base
     - .static-analysis-cache
+    - .failure_category_after_script
     - .static-analysis:rules:static-analysis
   parallel: 2
   script:
@@ -140,6 +141,7 @@ rubocop:
   extends:
     - .static-analysis-base
     - .rubocop-job-cache
+    - .failure_category_after_script
     - .static-analysis:rules:rubocop
   needs:
     - job: detect-tests
@@ -211,6 +213,7 @@ rails-next-dependency-check:
         echo "Gemfile.next.lock contains outdated dependencies, please run the following command and push the changes:"
         echo "bundle exec rake bundler:gemfile:sync"
       fi
+    - !reference [.failure_category_after_script, after_script]
 
 feature-flags-usage:
   extends:

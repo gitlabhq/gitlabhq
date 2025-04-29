@@ -52,6 +52,13 @@ default:
     - gem install bundler --version "$bundle_version" --no-document # Bundler is not installed with the image
     - bundle config                             # Show bundler configuration
     - bundle install --jobs=$(nproc) --retry=3
+  after_script:
+    # We need this at the very top, because the section_start/section_end logic is defined there.
+    - source $CI_PROJECT_DIR/scripts/utils.sh
+    - |
+      section_start "failure-analyzer" "Report failure category"
+      $CI_PROJECT_DIR/tooling/lib/tooling/glci/failure_analyzer.rb $CI_JOB_ID || true
+      section_end "failure-analyzer"
 
 .ruby_matrix:
   parallel:
@@ -77,23 +84,26 @@ validate-gem:
     - $CI_PROJECT_DIR/scripts/validate-monorepo-gem "$[[inputs.gem_name]]"
 
 validate-gemfile-lock:
-  extends: .ruby_matrix
   rules:
     # Validate all Gemfile.lock stored in `gems/`.
     - if: "'$[[inputs.gem_path_prefix]]' == 'gems/'"
       exists: ["$[[inputs.gem_path_prefix]]$[[inputs.gem_name]]/Gemfile.lock"]
+  extends:
+    - .ruby_matrix
   script:
     - bundle lock --add-checksums
 
 rubocop:
-  extends: .ruby_matrix
   rules:
     - exists: ["$[[inputs.gem_path_prefix]]$[[inputs.gem_name]]/.rubocop.yml"]
+  extends:
+    - .ruby_matrix
   script:
     - bundle exec rubocop
 
 rspec:
-  extends: .ruby_and_postgres_matrix
+  extends:
+    - .ruby_and_postgres_matrix
   variables:
     POSTGRES_USER: gitlab
     POSTGRES_PASSWORD: password

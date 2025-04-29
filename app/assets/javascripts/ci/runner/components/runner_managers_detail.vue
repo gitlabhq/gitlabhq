@@ -1,7 +1,9 @@
 <script>
-import { GlCollapse, GlButton, GlIcon, GlSkeletonLoader } from '@gitlab/ui';
-import { __, s__, formatNumber } from '~/locale';
+import { GlLink, GlSprintf } from '@gitlab/ui';
+import { s__, formatNumber } from '~/locale';
 import { createAlert } from '~/alert';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import runnerManagersQuery from '../graphql/show/runner_managers.query.graphql';
 import { I18N_FETCH_ERROR } from '../constants';
 import { captureException } from '../sentry_utils';
@@ -11,11 +13,11 @@ import RunnerManagersTable from './runner_managers_table.vue';
 export default {
   name: 'RunnerManagersDetail',
   components: {
-    GlCollapse,
-    GlButton,
-    GlIcon,
-    GlSkeletonLoader,
+    GlLink,
+    GlSprintf,
     RunnerManagersTable,
+    CrudComponent,
+    HelpPopover,
   },
   props: {
     runner: {
@@ -28,17 +30,12 @@ export default {
   },
   data() {
     return {
-      skip: true,
-      expanded: false,
       managers: [],
     };
   },
   apollo: {
     managers: {
       query: runnerManagersQuery,
-      skip() {
-        return this.skip;
-      },
       variables() {
         return { runnerId: this.runner.id };
       },
@@ -58,22 +55,8 @@ export default {
     runnerManagersCountFormatted() {
       return formatNumber(this.runnerManagersCount);
     },
-    icon() {
-      return this.expanded ? 'chevron-down' : 'chevron-right';
-    },
-    text() {
-      return this.expanded ? __('Hide details') : __('Show details');
-    },
     loading() {
       return this.$apollo?.queries.managers.loading;
-    },
-  },
-  methods: {
-    fetchManagers() {
-      this.skip = false;
-    },
-    toggleExpanded() {
-      this.expanded = !this.expanded;
     },
   },
   fields: [
@@ -89,24 +72,37 @@ export default {
 </script>
 
 <template>
-  <div>
-    <gl-icon name="container-image" variant="subtle" />
-    {{ runnerManagersCountFormatted }}
-    <gl-button
-      v-if="runnerManagersCount"
-      data-testid="runner-button"
-      variant="link"
-      @mouseover.once="fetchManagers"
-      @focus.once="fetchManagers"
-      @click.once="fetchManagers"
-      @click="toggleExpanded"
-    >
-      <gl-icon :name="icon" /> {{ text }}
-    </gl-button>
+  <crud-component
+    v-if="runnerManagersCount > 0"
+    :title="s__('Runners|Runners')"
+    icon="container-image"
+    :count="runnerManagersCountFormatted"
+    :is-loading="loading"
+    anchor-id="runner-managers"
+    is-collapsible
+    collapsed
+    persist-collapsed-state
+    class="!gl-mt-0"
+    data-testid="runner-managers"
+  >
+    <template #count>
+      <help-popover>
+        <gl-sprintf
+          :message="
+            s__(
+              'Runners|Runners are grouped when they have the same authentication token. This happens when you re-use a runner configuration in more than one runner manager. %{linkStart}How does this work?%{linkEnd}',
+            )
+          "
+        >
+          <template #link="{ content }"
+            ><gl-link :href="$options.RUNNER_MANAGERS_HELP_URL" target="_blank">{{
+              content
+            }}</gl-link></template
+          >
+        </gl-sprintf>
+      </help-popover>
+    </template>
 
-    <gl-collapse :visible="expanded" class="gl-mt-5">
-      <gl-skeleton-loader v-if="loading" />
-      <runner-managers-table v-else-if="managers.length" :items="managers" />
-    </gl-collapse>
-  </div>
+    <runner-managers-table :items="managers" />
+  </crud-component>
 </template>
