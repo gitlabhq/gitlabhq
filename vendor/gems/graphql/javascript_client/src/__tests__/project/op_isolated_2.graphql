@@ -1,6 +1,0 @@
-query GetStuffIsolated2 {
-  things {
-    existHere
-  }
-}
-
