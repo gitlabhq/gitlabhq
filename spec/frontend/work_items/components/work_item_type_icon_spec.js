@@ -18,32 +18,25 @@ describe('Work Item type component', () => {
   const findIcon = () => wrapper.findComponent(GlIcon);
 
   describe.each`
-    workItemType           | workItemIconName      | iconName                     | text              | showTooltipOnHover | iconVariant
-    ${'TASK'}              | ${''}                 | ${'issue-type-task'}         | ${'Task'}         | ${false}           | ${'default'}
-    ${''}                  | ${'issue-type-task'}  | ${'issue-type-task'}         | ${''}             | ${true}            | ${'default'}
-    ${'ISSUE'}             | ${''}                 | ${'issue-type-issue'}        | ${'Issue'}        | ${true}            | ${'default'}
-    ${''}                  | ${'issue-type-issue'} | ${'issue-type-issue'}        | ${''}             | ${true}            | ${'default'}
-    ${'REQUIREMENT'}       | ${''}                 | ${'issue-type-requirements'} | ${'Requirements'} | ${true}            | ${'default'}
-    ${'INCIDENT'}          | ${''}                 | ${'issue-type-incident'}     | ${'Incident'}     | ${false}           | ${'default'}
-    ${'TEST_CASE'}         | ${''}                 | ${'issue-type-test-case'}    | ${'Test case'}    | ${true}            | ${'default'}
-    ${'random-issue-type'} | ${''}                 | ${'issue-type-issue'}        | ${''}             | ${true}            | ${'default'}
-    ${'Task'}              | ${''}                 | ${'issue-type-task'}         | ${'Task'}         | ${false}           | ${'default'}
-    ${'Issue'}             | ${''}                 | ${'issue-type-issue'}        | ${'Issue'}        | ${true}            | ${'default'}
-    ${'Requirement'}       | ${''}                 | ${'issue-type-requirements'} | ${'Requirements'} | ${true}            | ${'default'}
-    ${'Incident'}          | ${''}                 | ${'issue-type-incident'}     | ${'Incident'}     | ${false}           | ${'default'}
-    ${'Test_case'}         | ${''}                 | ${'issue-type-test-case'}    | ${'Test case'}    | ${true}            | ${'default'}
-    ${'Objective'}         | ${''}                 | ${'issue-type-objective'}    | ${'Objective'}    | ${true}            | ${'default'}
-    ${'Key Result'}        | ${''}                 | ${'issue-type-keyresult'}    | ${'Key result'}   | ${true}            | ${'subtle'}
+    workItemType           | iconName                     | text             | showTooltipOnHover | iconVariant
+    ${'TASK'}              | ${'issue-type-task'}         | ${'Task'}        | ${false}           | ${'default'}
+    ${'ISSUE'}             | ${'issue-type-issue'}        | ${'Issue'}       | ${true}            | ${'default'}
+    ${'REQUIREMENT'}       | ${'issue-type-requirements'} | ${'Requirement'} | ${true}            | ${'default'}
+    ${'INCIDENT'}          | ${'issue-type-incident'}     | ${'Incident'}    | ${false}           | ${'default'}
+    ${'TEST_CASE'}         | ${'issue-type-test-case'}    | ${'Test case'}   | ${true}            | ${'default'}
+    ${'random-issue-type'} | ${'issue-type-issue'}        | ${''}            | ${true}            | ${'default'}
+    ${'Task'}              | ${'issue-type-task'}         | ${'Task'}        | ${false}           | ${'default'}
+    ${'Issue'}             | ${'issue-type-issue'}        | ${'Issue'}       | ${true}            | ${'default'}
+    ${'Requirement'}       | ${'issue-type-requirements'} | ${'Requirement'} | ${true}            | ${'default'}
+    ${'Incident'}          | ${'issue-type-incident'}     | ${'Incident'}    | ${false}           | ${'default'}
+    ${'Test_case'}         | ${'issue-type-test-case'}    | ${'Test case'}   | ${true}            | ${'default'}
+    ${'Objective'}         | ${'issue-type-objective'}    | ${'Objective'}   | ${true}            | ${'default'}
+    ${'Key Result'}        | ${'issue-type-keyresult'}    | ${'Key result'}  | ${true}            | ${'subtle'}
   `(
-    'with workItemType set to "$workItemType" and workItemIconName set to "$workItemIconName"',
-    ({ workItemType, workItemIconName, iconName, text, showTooltipOnHover, iconVariant }) => {
+    'with workItemType set to "$workItemType"',
+    ({ workItemType, iconName, text, showTooltipOnHover, iconVariant }) => {
       beforeEach(() => {
-        createComponent({
-          workItemType,
-          workItemIconName,
-          showTooltipOnHover,
-          iconVariant,
-        });
+        createComponent({ workItemType, showTooltipOnHover, iconVariant });
       });
 
       it(`renders icon with name '${iconName}'`, () => {

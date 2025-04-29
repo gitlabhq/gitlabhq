@@ -292,7 +292,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'ee/app/workers/geo/verification_cron_worker.rb'
     - 'ee/app/workers/geo/verification_state_backfill_worker.rb'
     - 'ee/app/workers/geo/verification_timeout_worker.rb'
-    - 'ee/app/workers/geo/verification_worker.rb'
     - 'ee/app/workers/gitlab_subscriptions/schedule_refresh_seats_worker.rb'
     - 'ee/app/workers/gitlab_subscriptions/trials/apply_trial_worker.rb'
     - 'ee/app/workers/group_saml_group_sync_worker.rb'

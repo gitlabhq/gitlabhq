@@ -995,6 +995,26 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
+  describe 'traversal_path' do
+    it 'formats the traversal ids with slashes' do
+      expect(namespace.traversal_path).to eq("#{namespace.id}/")
+    end
+
+    context 'for subgroup' do
+      let(:subgroup) { Group.new(traversal_ids: [1, 2, 3], organization_id: 1111) }
+
+      it 'formats the traversal ids with slashes' do
+        expect(subgroup.traversal_path).to eq("1/2/3/")
+      end
+
+      context 'when with_organization option is enabled' do
+        it 'prepends the organization id' do
+          expect(subgroup.traversal_path(with_organization: true)).to eq("1111/1/2/3/")
+        end
+      end
+    end
+  end
+
   describe "after_commit :expire_child_caches" do
     let(:namespace) { create(:group, organization: organization) }
 

@@ -33,4 +33,17 @@ RSpec.describe NumbersHelper do
       it { is_expected.to eq(expected_result) }
     end
   end
+
+  describe '#number_in_words' do
+    it 'returns the correct word for the given number' do
+      expect(number_in_words(0)).to eq('zero')
+      expect(number_in_words(1)).to eq('one')
+      expect(number_in_words(9)).to eq('nine')
+    end
+
+    it 'raises an error for numbers outside the range 0-9' do
+      expect { number_in_words(-1) }.to raise_error(ArgumentError, _('Input must be an integer between 0 and 9'))
+      expect { number_in_words(10) }.to raise_error(ArgumentError, _('Input must be an integer between 0 and 9'))
+    end
+  end
 end

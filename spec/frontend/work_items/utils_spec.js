@@ -27,7 +27,6 @@ import {
   markdownPreviewPath,
   newWorkItemPath,
   isReference,
-  getWorkItemIcon,
   workItemRoadmapPath,
   saveToggleToLocalStorage,
   getToggleFromLocalStorage,
@@ -185,7 +184,7 @@ describe('newWorkItemPath', () => {
 
   it('returns correct path for workItemType', () => {
     expect(
-      newWorkItemPath({ fullPath: 'group/project', workItemTypeName: WORK_ITEM_TYPE_ENUM_ISSUE }),
+      newWorkItemPath({ fullPath: 'group/project', workItemType: WORK_ITEM_TYPE_NAME_ISSUE }),
     ).toBe('/foobar/group/project/-/issues/new');
   });
 
@@ -194,7 +193,7 @@ describe('newWorkItemPath', () => {
       newWorkItemPath({
         fullPath: 'group',
         isGroup: true,
-        workItemTypeName: WORK_ITEM_TYPE_ENUM_EPIC,
+        workItemType: WORK_ITEM_TYPE_NAME_EPIC,
       }),
     ).toBe('/foobar/groups/group/-/epics/new');
   });
@@ -220,12 +219,6 @@ describe('convertTypeEnumToName', () => {
     ${WORK_ITEM_TYPE_NAME_TICKET}       | ${WORK_ITEM_TYPE_ENUM_TICKET}
   `('returns %name when given the enum %enumValue', ({ name, enumValue }) => {
     expect(convertTypeEnumToName(enumValue)).toBe(name);
-  });
-});
-
-describe('getWorkItemIcon', () => {
-  it.each(['epic', 'issue-type-epic'])('returns epic icon in case of %s', (icon) => {
-    expect(getWorkItemIcon(icon)).toBe('epic');
   });
 });
 

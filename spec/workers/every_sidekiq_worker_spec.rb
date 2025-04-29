@@ -251,7 +251,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Geo::VerificationBatchWorker' => 0,
         'Geo::VerificationStateBackfillWorker' => false,
         'Geo::VerificationTimeoutWorker' => false,
-        'Geo::VerificationWorker' => 3,
         'Gitlab::BitbucketImport::AdvanceStageWorker' => 6,
         'Gitlab::BitbucketImport::Stage::FinishImportWorker' => 6,
         'Gitlab::BitbucketImport::Stage::ImportIssuesWorker' => 6,

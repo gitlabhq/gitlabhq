@@ -79,8 +79,12 @@ module Namespaces
         end
       end
 
-      def traversal_path
-        "#{traversal_ids.join('/')}/"
+      def traversal_path(with_organization: false)
+        ids = traversal_ids.clone
+
+        ids.prepend(organization_id) if with_organization
+
+        "#{ids.join('/')}/"
       end
 
       def use_traversal_ids?

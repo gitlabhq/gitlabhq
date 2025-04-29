@@ -21,8 +21,12 @@ import {
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,
+  WORK_ITEM_TYPE_NAME_KEY_RESULT,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_REQUIREMENTS,
   WORK_ITEM_TYPE_NAME_TASK,
-  WORK_ITEMS_TYPE_MAP,
+  WORK_ITEM_TYPE_NAME_TEST_CASE,
+  WORK_ITEM_TYPE_NAME_TICKET,
 } from '~/work_items/constants';
 import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
@@ -187,14 +191,24 @@ describe('Create work item component', () => {
       expect(setNewWorkItemCache).toHaveBeenCalled();
     });
 
-    it.each(Object.keys(WORK_ITEMS_TYPE_MAP))(
-      'Clears cache on cancel for workItemType: %s with the correct data',
-      async (type) => {
-        const typeName = WORK_ITEMS_TYPE_MAP[type].value;
+    it.each`
+      workItemType
+      ${WORK_ITEM_TYPE_NAME_EPIC}
+      ${WORK_ITEM_TYPE_NAME_INCIDENT}
+      ${WORK_ITEM_TYPE_NAME_ISSUE}
+      ${WORK_ITEM_TYPE_NAME_KEY_RESULT}
+      ${WORK_ITEM_TYPE_NAME_OBJECTIVE}
+      ${WORK_ITEM_TYPE_NAME_REQUIREMENTS}
+      ${WORK_ITEM_TYPE_NAME_TASK}
+      ${WORK_ITEM_TYPE_NAME_TEST_CASE}
+      ${WORK_ITEM_TYPE_NAME_TICKET}
+    `(
+      'Clears cache on cancel for workItemType=$workItemType with the correct data',
+      async ({ workItemType }) => {
         const expectedWorkItemTypeData = namespaceWorkItemTypes.find(
-          ({ name }) => name === typeName,
+          ({ name }) => name === workItemType,
         );
-        createComponent({ preselectedWorkItemType: typeName });
+        createComponent({ preselectedWorkItemType: workItemType });
         await waitForPromises();
 
         findCancelButton().vm.$emit('click');

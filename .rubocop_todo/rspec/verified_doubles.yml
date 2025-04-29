@@ -173,7 +173,6 @@ RSpec/VerifiedDoubles:
     - 'ee/spec/workers/geo/verification_batch_worker_spec.rb'
     - 'ee/spec/workers/geo/verification_cron_worker_spec.rb'
     - 'ee/spec/workers/geo/verification_timeout_worker_spec.rb'
-    - 'ee/spec/workers/geo/verification_worker_spec.rb'
     - 'ee/spec/workers/iterations/cadences/create_iterations_worker_spec.rb'
     - 'ee/spec/workers/iterations/roll_over_issues_worker_spec.rb'
     - 'ee/spec/workers/ldap_group_sync_worker_spec.rb'

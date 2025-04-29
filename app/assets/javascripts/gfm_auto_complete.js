@@ -11,11 +11,7 @@ import { isUserBusy } from '~/set_status_modal/utils';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import { currentAssignees, linkedItems } from '~/graphql_shared/issuable_client';
 import { state } from '~/sidebar/components/reviewers/sidebar_reviewers.vue';
-import {
-  ISSUABLE_EPIC,
-  WORK_ITEMS_TYPE_MAP,
-  WORK_ITEM_TYPE_ENUM_EPIC,
-} from '~/work_items/constants';
+import { ISSUABLE_EPIC, NAME_TO_ICON_MAP, WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
 import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
 import { newDate } from './lib/utils/datetime_utility';
@@ -1259,7 +1255,7 @@ GfmAutoComplete.Issues = {
   },
   templateFunction({ id, title, reference, iconName }) {
     const mappedIconName =
-      iconName === ISSUABLE_EPIC ? WORK_ITEMS_TYPE_MAP[WORK_ITEM_TYPE_ENUM_EPIC].icon : iconName;
+      iconName === ISSUABLE_EPIC ? NAME_TO_ICON_MAP[WORK_ITEM_TYPE_NAME_EPIC] : iconName;
     const icon = mappedIconName
       ? spriteIcon(mappedIconName, 'gl-fill-icon-subtle s16 gl-mr-2')
       : '';

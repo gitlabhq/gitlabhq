@@ -2394,7 +2394,6 @@
 - './ee/spec/workers/geo/verification_state_backfill_service_spec.rb'
 - './ee/spec/workers/geo/verification_state_backfill_worker_spec.rb'
 - './ee/spec/workers/geo/verification_timeout_worker_spec.rb'
-- './ee/spec/workers/geo/verification_worker_spec.rb'
 - './ee/spec/workers/group_saml_group_sync_worker_spec.rb'
 - './ee/spec/workers/groups/create_event_worker_spec.rb'
 - './ee/spec/workers/groups/export_memberships_worker_spec.rb'

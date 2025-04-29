@@ -72,6 +72,9 @@ module ActiveContext
             when Field::Bigint
               # Bigint is 8 bytes
               fixed_columns << [field, 8]
+            when Field::Boolean
+              # Boolean is 1 byte
+              fixed_columns << [field, 1]
             when Field::Keyword, Field::Text
               # Text fields are variable width
               variable_columns << field
@@ -91,6 +94,8 @@ module ActiveContext
           case field
           when Field::Bigint
             table.bigint(field.name, **field.options.except(:index))
+          when Field::Boolean
+            table.boolean(field.name, **field.options.except(:index))
           when Field::Keyword, Field::Text
             table.text(field.name, **field.options.except(:index))
           when Field::Vector

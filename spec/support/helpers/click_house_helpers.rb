@@ -4,18 +4,25 @@ module ClickHouseHelpers
   extend ActiveRecord::ConnectionAdapters::Quoting
 
   def insert_events_into_click_house(events = Event.all)
-    clickhouse_fixture(:events, events.map do |event|
-      {
-        id: event.id,
-        path: event.project.reload.project_namespace.traversal_path,
-        author_id: event.author_id,
-        target_id: event.target_id,
-        target_type: event.target_type,
-        action: Event.actions[event.action],
-        created_at: event.created_at,
-        updated_at: event.updated_at
-      }
-    end)
+    # Insert into both events table until legacy table is removed
+    %i[events events_new].each do |clickhouse_table_name|
+      clickhouse_fixture(clickhouse_table_name, events.map do |event|
+        project_namespace = event.project.reload.project_namespace
+        include_organization_on_path = clickhouse_table_name == :events_new
+        path = project_namespace.traversal_path(with_organization: include_organization_on_path)
+
+        {
+          id: event.id,
+          path: path,
+          author_id: event.author_id,
+          target_id: event.target_id,
+          target_type: event.target_type,
+          action: Event.actions[event.action],
+          created_at: event.created_at,
+          updated_at: event.updated_at
+        }
+      end)
+    end
   end
 
   # rubocop:disable Metrics/CyclomaticComplexity -- the method is straightforward, just a lot of &.

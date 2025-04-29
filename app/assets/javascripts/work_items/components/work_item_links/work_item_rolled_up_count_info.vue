@@ -32,7 +32,7 @@ export default {
       :key="rolledUpCount.workItemType.name"
       data-testid="rolled-up-type-info"
     >
-      <work-item-type-icon :work-item-icon-name="rolledUpCount.workItemType.iconName" />
+      <work-item-type-icon :work-item-type="rolledUpCount.workItemType.name" />
       <span class="gl-font-bold"
         >{{ rolledUpCount.countsByState.closed }}/{{ rolledUpCount.countsByState.all }}</span
       >

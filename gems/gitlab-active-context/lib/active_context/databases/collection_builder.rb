@@ -13,6 +13,10 @@ module ActiveContext
         fields << Field::Bigint.new(name, index: index)
       end
 
+      def boolean(name, index: true)
+        fields << Field::Boolean.new(name, index: index)
+      end
+
       def keyword(name)
         fields << Field::Keyword.new(name, index: true)
       end
@@ -35,6 +39,7 @@ module ActiveContext
       end
 
       class Bigint < Field; end
+      class Boolean < Field; end
       class Keyword < Field; end
       class Text < Field; end
       class Vector < Field; end

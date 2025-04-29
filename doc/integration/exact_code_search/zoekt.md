@@ -125,22 +125,22 @@ To check indexing status:
 
    {{< /tabs >}}
 
-## Delete offline nodes automatically
+## Pause indexing
 
 Prerequisites:
 
 - You must have administrator access to the instance.
 
-You can automatically delete Zoekt nodes that are offline for more than 12 hours
-and their related indices, repositories, and tasks.
-
-To delete offline nodes automatically:
+To pause indexing for [exact code search](../../user/search/exact_code_search.md):
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Exact code search configuration**.
-1. Select the **Delete offline nodes after 12 hours** checkbox.
+1. Select the **Pause indexing** checkbox.
 1. Select **Save changes**.
+
+When you pause indexing for exact code search, all changes in your repository are queued.
+To resume indexing, clear the **Pause indexing for exact code search** checkbox.
 
 ## Index root namespaces automatically
 
@@ -169,22 +169,38 @@ When you disable this setting:
 - Existing root namespaces remain indexed.
 - New root namespaces are no longer indexed.
 
-## Pause indexing
+## Delete offline nodes automatically
 
 Prerequisites:
 
 - You must have administrator access to the instance.
 
-To pause indexing for [exact code search](../../user/search/exact_code_search.md):
+You can automatically delete Zoekt nodes that are offline for more than 12 hours
+and their related indices, repositories, and tasks.
+To delete offline nodes automatically:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Exact code search configuration**.
-1. Select the **Pause indexing** checkbox.
+1. Select the **Delete offline nodes after 12 hours** checkbox.
 1. Select **Save changes**.
 
-When you pause indexing for exact code search, all changes in your repository are queued.
-To resume indexing, clear the **Pause indexing for exact code search** checkbox.
+## Cache search results
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can cache search results for better performance.
+This feature is enabled by default and caches results for five minutes.
+
+To cache search results:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Search**.
+1. Expand **Exact code search configuration**.
+1. Select the **Cache search results for five minutes** checkbox.
+1. Select **Save changes**.
 
 ## Set concurrent indexing tasks
 

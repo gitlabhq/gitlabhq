@@ -115,7 +115,6 @@ describe('WorkItemCreatedUpdated component', () => {
 
     expect(findWorkItemTypeIcon().props()).toMatchObject({
       showText: true,
-      workItemIconName: workItem.workItemType.iconName,
       workItemType: workItem.workItemType.name,
     });
   });

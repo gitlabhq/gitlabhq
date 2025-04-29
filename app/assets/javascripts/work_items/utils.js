@@ -6,8 +6,9 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import {
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
-  ISSUABLE_EPIC,
   NAME_TO_ENUM_MAP,
+  NAME_TO_ICON_MAP,
+  NAME_TO_ROUTE_MAP,
   NEW_WORK_ITEM_GID,
   NEW_WORK_ITEM_IID,
   STATE_CLOSED,
@@ -34,9 +35,7 @@ import {
   WIDGET_TYPE_TIME_TRACKING,
   WIDGET_TYPE_VULNERABILITIES,
   WIDGET_TYPE_WEIGHT,
-  WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
-  WORK_ITEMS_TYPE_MAP,
 } from './constants';
 
 export const isAssigneesWidget = (widget) => widget.type === WIDGET_TYPE_ASSIGNEES;
@@ -129,11 +128,6 @@ export const formatLabelForListbox = (label) => ({
 export const convertTypeEnumToName = (workItemTypeEnum) =>
   Object.keys(NAME_TO_ENUM_MAP).find((name) => NAME_TO_ENUM_MAP[name] === workItemTypeEnum);
 
-export const getWorkItemIcon = (icon) => {
-  if (icon === ISSUABLE_EPIC) return WORK_ITEMS_TYPE_MAP[WORK_ITEM_TYPE_ENUM_EPIC].icon;
-  return icon;
-};
-
 /**
  * TODO: Remove this method with https://gitlab.com/gitlab-org/gitlab/-/issues/479637
  * We're currently setting children count per page based on `DEFAULT_PAGE_SIZE_CHILD_ITEMS`
@@ -149,7 +143,7 @@ export const getDefaultHierarchyChildrenCount = () => {
 export const formatAncestors = (workItem) =>
   findHierarchyWidgetAncestors(workItem).map((ancestor) => ({
     ...ancestor,
-    icon: getWorkItemIcon(ancestor.workItemType?.iconName),
+    icon: NAME_TO_ICON_MAP[ancestor.workItemType?.name],
     href: ancestor.webUrl,
   }));
 
@@ -279,11 +273,10 @@ export const markdownPreviewPath = ({ fullPath, iid, isGroup = false }) => {
 };
 
 // the path for creating a new work item of that type, e.g. /groups/gitlab-org/-/epics/new
-export const newWorkItemPath = ({ fullPath, isGroup = false, workItemTypeName, query = '' }) => {
+export const newWorkItemPath = ({ fullPath, isGroup = false, workItemType, query = '' }) => {
   const domain = gon.relative_url_root || '';
   const basePath = isGroup ? `groups/${fullPath}` : fullPath;
-  const type =
-    WORK_ITEMS_TYPE_MAP[workItemTypeName]?.routeParamName || WORK_ITEM_TYPE_ROUTE_WORK_ITEM;
+  const type = NAME_TO_ROUTE_MAP[workItemType] || WORK_ITEM_TYPE_ROUTE_WORK_ITEM;
   return `${domain}/${basePath}/-/${type}/new${query}`;
 };
 

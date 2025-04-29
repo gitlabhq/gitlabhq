@@ -53,9 +53,6 @@ export default {
     workItemType() {
       return this.workItem?.workItemType?.name;
     },
-    workItemIconName() {
-      return this.workItem?.workItemType?.iconName;
-    },
     workItemMovedToWorkItemUrl() {
       return this.workItem?.movedToWorkItemUrl;
     },
@@ -120,7 +117,6 @@ export default {
     <locked-badge v-if="isDiscussionLocked" class="gl-align-middle" :issuable-type="workItemType" />
     <work-item-type-icon
       class="gl-align-middle"
-      :work-item-icon-name="workItemIconName"
       :work-item-type="workItemType"
       show-text
       icon-class="gl-fill-icon-subtle"

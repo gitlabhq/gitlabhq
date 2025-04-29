@@ -131,7 +131,7 @@ export default {
       return newWorkItemPath({
         fullPath: this.fullPath,
         isGroup: this.isGroup,
-        workItemTypeName: NAME_TO_ENUM_MAP[this.selectedWorkItemTypeName],
+        workItemType: this.selectedWorkItemTypeName,
         query: this.newWorkItemPathQuery,
       });
     },

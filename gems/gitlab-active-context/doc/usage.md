@@ -6,7 +6,7 @@ Migrations are similiar to database migrations: they create collections, update 
 
 See [migrations](migrations.md) for more details.
 
-A migration worker will apply migrations for the active connection. See [Migrations](how_it_works.md#migrations).
+A migration worker applies migrations for the active connection. See [Migrations](how_it_works.md#migrations).
 
 If you want to run the worker manually, execute:
 

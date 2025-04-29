@@ -11884,6 +11884,9 @@ msgstr ""
 msgid "CVS|Only a project maintainer or owner can toggle this feature."
 msgstr ""
 
+msgid "Cache search results for %{label}"
+msgstr ""
+
 msgid "Cadence"
 msgstr ""
 
@@ -32384,6 +32387,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Input host keys manually"
+msgstr ""
+
+msgid "Input must be an integer between 0 and 9"
 msgstr ""
 
 msgid "Input the remote repository URL"
@@ -53838,9 +53844,6 @@ msgstr ""
 msgid "Secrets|Delete secret"
 msgstr ""
 
-msgid "Secrets|Description must be 200 characters or less."
-msgstr ""
-
 msgid "Secrets|Edit %{id}"
 msgstr ""
 
@@ -53908,6 +53911,9 @@ msgid "Secrets|Stored secrets"
 msgstr ""
 
 msgid "Secrets|The name should be unique within this project."
+msgstr ""
+
+msgid "Secrets|This field is required and must be 200 characters or less."
 msgstr ""
 
 msgid "Secrets|To confirm, enter %{secretName}:"
@@ -69028,9 +69034,6 @@ msgstr ""
 msgid "WorkItem|Requirement"
 msgstr ""
 
-msgid "WorkItem|Requirements"
-msgstr ""
-
 msgid "WorkItem|Reset template"
 msgstr ""
 
@@ -69155,6 +69158,12 @@ msgid "WorkItem|Something went wrong while fetching items. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong while fetching milestones. Please try again."
+msgstr ""
+
+msgid "WorkItem|Something went wrong while fetching more related vulnerabilities."
+msgstr ""
+
+msgid "WorkItem|Something went wrong while fetching related vulnerabilities."
 msgstr ""
 
 msgid "WorkItem|Something went wrong while fetching the %{workItemType}. Please try again."
