@@ -101,3 +101,4 @@ export const POLLING_INTERVAL_BACKOFF = 2;
 export const CONFLICTS_MODAL_ID = 'fork-sync-conflicts-modal';
 
 export const FORK_UPDATED_EVENT = 'fork:updated';
+export const EVENT_FILE_SIZE_LIMIT_EXCEEDED = 'repository_file_size_limit_exceeded';

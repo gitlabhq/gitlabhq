@@ -36,13 +36,13 @@ RSpec.describe WorkItems::RelatedWorkItemLink, type: :model, feature_category: :
       using RSpec::Parameterized::TableSyntax
 
       where(:source_type_sym, :target_types, :valid) do
-        :incident  | [:incident, :test_case, :issue, :task, :ticket] | false
-        :ticket    | [:incident, :test_case, :issue, :task, :ticket] | false
-        :test_case | [:incident, :test_case, :issue, :task, :ticket] | false
-        :task      | [:incident, :test_case, :ticket]                | false
-        :issue     | [:incident, :test_case, :ticket]                | false
-        :task      | [:task, :issue]                                 | true
-        :issue     | [:task, :issue]                                 | true
+        :ticket    | [:test_case, :issue, :task, :ticket]            | false
+        :test_case | [:test_case, :issue, :task, :ticket]            | false
+        :task      | [:test_case, :ticket]                           | false
+        :issue     | [:test_case, :ticket]                           | false
+        :task      | [:task, :issue, :incident]                      | true
+        :issue     | [:task, :issue, :incident]                      | true
+        :incident  | [:incident, :issue, :task]                      | true
       end
 
       with_them do

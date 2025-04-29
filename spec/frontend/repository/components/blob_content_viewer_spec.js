@@ -43,6 +43,7 @@ import {
   projectMock,
   getProjectMockWithOverrides,
 } from 'ee_else_ce_jest/repository/mock_data';
+import { mockTracking } from 'helpers/tracking_helper';
 
 jest.mock('~/repository/components/blob_viewers');
 jest.mock('~/lib/utils/url_utility');
@@ -53,6 +54,7 @@ jest.mock('~/alert');
 let wrapper;
 let blobInfoMockResolver;
 let projectInfoMockResolver;
+let trackingSpy;
 
 Vue.use(Vuex);
 
@@ -135,6 +137,7 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
       },
     }),
   );
+  trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
 
   await waitForPromises();
 };
@@ -420,7 +423,7 @@ describe('Blob content viewer component', () => {
       language  | size             | tooLarge | renderError    | expectedTooLarge
       ${'ruby'} | ${100}           | ${false} | ${null}        | ${false}
       ${'ruby'} | ${FILE_SIZE_3MB} | ${false} | ${null}        | ${true}
-      ${'nyan'} | ${null}          | ${true}  | ${null}        | ${true}
+      ${'nyan'} | ${FILE_SIZE_3MB} | ${true}  | ${null}        | ${true}
       ${'nyan'} | ${null}          | ${false} | ${'collapsed'} | ${true}
     `(
       'correctly handles file size limits when language=$language, size=$size, tooLarge=$tooLarge, renderError=$renderError',
@@ -437,6 +440,13 @@ describe('Blob content viewer component', () => {
             },
           },
         });
+
+        if (tooLarge) {
+          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'view_source', {
+            label: 'repository_file_size_limit_exceeded',
+            property: { label: language, property: size },
+          });
+        }
 
         await waitForPromises();
         expect(loadViewer).toHaveBeenCalledWith('text', false, expectedTooLarge);

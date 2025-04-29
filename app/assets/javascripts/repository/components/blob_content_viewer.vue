@@ -18,6 +18,7 @@ import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
 import highlightMixin from '~/repository/mixins/highlight_mixin';
 import projectInfoQuery from 'ee_else_ce/repository/queries/project_info.query.graphql';
 import eventHub from '~/notes/event_hub';
+import { InternalEvents } from '~/tracking';
 import getRefMixin from '../mixins/get_ref';
 import { getRefType } from '../utils/ref_type';
 import {
@@ -26,10 +27,13 @@ import {
   LFS_STORAGE,
   LEGACY_FILE_TYPES,
   EMPTY_FILE,
+  EVENT_FILE_SIZE_LIMIT_EXCEEDED,
 } from '../constants';
 import BlobButtonGroup from './blob_button_group.vue';
 import ForkSuggestion from './fork_suggestion.vue';
 import { loadViewer } from './blob_viewers';
+
+const trackingMixin = InternalEvents.mixin();
 
 export default {
   components: {
@@ -42,7 +46,7 @@ export default {
     CodeIntelligence,
     AiGenie: () => import('ee_component/ai/components/ai_genie.vue'),
   },
-  mixins: [getRefMixin, highlightMixin, glFeatureFlagMixin()],
+  mixins: [getRefMixin, highlightMixin, glFeatureFlagMixin(), trackingMixin],
   inject: {
     originalBranch: {
       default: '',
@@ -94,6 +98,13 @@ export default {
         const usePlain = this.$route?.query?.plain === '1'; // When the 'plain' URL param is present, its value determines which viewer to render
         const urlHash = getLocationHash(); // If there is a code line hash in the URL we render with the simple viewer
         const useSimpleViewer = usePlain || urlHash?.startsWith('L') || !this.hasRichViewer;
+
+        if (this.isTooLarge) {
+          this.trackEvent(EVENT_FILE_SIZE_LIMIT_EXCEEDED, {
+            label: this.blobInfo.language,
+            property: this.blobInfo.size,
+          });
+        }
 
         if (this.isUnsupportedLanguage(this.blobInfo.language) && this.isTooLarge) return;
         this.initHighlightWorker(this.blobInfo, this.isUsingLfs);

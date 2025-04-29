@@ -154,7 +154,7 @@ describe('Branch rules app', () => {
             disabled: true,
             variant: 'confirm',
           },
-          text: 'Create protected branch',
+          text: 'Create branch rule',
         },
       });
     });

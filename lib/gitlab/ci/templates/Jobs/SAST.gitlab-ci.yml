@@ -68,6 +68,12 @@ gitlab-advanced-sast:
     SEARCH_MAX_DEPTH: 20
     SAST_ANALYZER_IMAGE_TAG: '2'
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gitlab-advanced-sast:$SAST_ANALYZER_IMAGE_TAG$SAST_IMAGE_SUFFIX"
+  cache:
+    key: "scan-metrics-$CI_COMMIT_REF_SLUG"
+    fallback_keys:
+      - "scan-metrics-$CI_DEFAULT_BRANCH"
+    paths:
+      - "scan_metrics.csv"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never

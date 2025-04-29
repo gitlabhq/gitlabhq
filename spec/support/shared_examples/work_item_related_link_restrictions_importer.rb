@@ -3,7 +3,7 @@
 RSpec.shared_examples 'work item related links restrictions importer' do
   shared_examples_for 'adds restrictions' do
     it "adds all restrictions if they don't exist" do
-      expect { subject }.to change { WorkItems::RelatedLinkRestriction.count }.from(0).to(34)
+      expect { subject }.to change { WorkItems::RelatedLinkRestriction.count }.from(0).to(56)
     end
   end
 
@@ -33,7 +33,7 @@ RSpec.shared_examples 'work item related links restrictions importer' do
       expect { subject }.to make_queries_matching(/INSERT/, 1).and(
         change { WorkItems::RelatedLinkRestriction.count }.by(1)
       )
-      expect(WorkItems::RelatedLinkRestriction.count).to eq(34)
+      expect(WorkItems::RelatedLinkRestriction.count).to eq(56)
     end
   end
 end

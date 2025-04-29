@@ -206,7 +206,7 @@ export default {
         :id="$options.modalId"
         :ref="$options.modalId"
         :title="$options.i18n.createBranchRule"
-        :action-primary-text="$options.i18n.createProtectedBranch"
+        :action-primary-text="$options.i18n.createBranchRule"
         @primary="addBranchRule({ name: $event })"
       />
       <gl-modal

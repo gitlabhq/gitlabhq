@@ -1017,14 +1017,6 @@ RSpec.describe Snippet, feature_category: :source_code_management do
       let_it_be(:author) { build(:user, :banned) }
 
       it { is_expected.to eq(true) }
-
-      context 'when the `hide_snippets_of_banned_users` feature flag is disabled' do
-        before do
-          stub_feature_flags(hide_snippets_of_banned_users: false)
-        end
-
-        it { is_expected.to eq(false) }
-      end
     end
   end
 end

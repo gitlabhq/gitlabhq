@@ -692,7 +692,7 @@
 {"name":"securerandom","version":"0.4.1","platform":"ruby","checksum":"cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1"},
 {"name":"seed-fu","version":"2.3.9","platform":"ruby","checksum":"6d902d12dc1b88a16d487506baacc93b3a92e3671fdd603110d1600d35fbf478"},
 {"name":"selenium-webdriver","version":"4.27.0","platform":"ruby","checksum":"8821f4ad60b935cfcdc5954c0a6642d894e936250aece8bf37a6fcbebe5eb6e0"},
-{"name":"semver_dialects","version":"3.6.0","platform":"ruby","checksum":"bb8a78037c6c748114267d0e00f0a19e2701a3837c00cc37336e8224bc8473a3"},
+{"name":"semver_dialects","version":"3.7.0","platform":"ruby","checksum":"6110b05266f7c8ce7794869d4d9dd3e15c3e5878eb1ffe5f0cea00060141dd1e"},
 {"name":"sentry-rails","version":"5.22.1","platform":"ruby","checksum":"23227608dc0e202de8cf96840a591e52bd7d6967ebaed6eb2da50a7d2a2d3fb7"},
 {"name":"sentry-ruby","version":"5.22.1","platform":"ruby","checksum":"ed77bdd76da7a4c6a3de43dc6d19d3c0412b2675b014a2654bc5bafd4d5b3289"},
 {"name":"sentry-sidekiq","version":"5.22.1","platform":"ruby","checksum":"bd7a3f915e58e13ea67251d9a458667fc4bee6dfbbd12614c47daa239e822a89"},
