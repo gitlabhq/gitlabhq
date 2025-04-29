@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer, feature_cat
     it 'gracefully handles analysis errors', :aggregate_failures do
       expect_next_instance_of(described_class::FIELD_USAGE_ANALYZER) do |instance|
         # pretend it times out on a nested analyzer
-        expect(instance).to receive(:result).and_raise(Timeout::Error)
+        expect(instance).to receive(:result).and_raise(GraphQL::Analysis::TimeoutError)
       end
 
       results = GraphQL::Analysis::AST.analyze_query(query, [described_class], multiplex_analyzers: [])

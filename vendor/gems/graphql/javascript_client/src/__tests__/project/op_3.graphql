@@ -1,7 +1,0 @@
-query GetStuff3 {
-  stuff {
-    withStuffInside
-  }
-  ...Frag2
-  ...Frag4
-}
