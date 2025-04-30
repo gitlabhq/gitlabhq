@@ -13753,7 +13753,8 @@ CREATE TABLE design_management_versions (
     issue_id bigint,
     created_at timestamp with time zone NOT NULL,
     author_id bigint,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_1d0291f47a CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE design_management_versions_id_seq
@@ -32990,6 +32991,12 @@ CREATE UNIQUE INDEX i_pm_package_versions_on_package_id_and_version ON pm_packag
 
 CREATE UNIQUE INDEX i_pm_packages_purl_type_and_name ON pm_packages USING btree (purl_type, name);
 
+CREATE INDEX i_project_requirement_statuses_on_namespace_id_framework_id ON project_requirement_compliance_statuses USING btree (namespace_id, compliance_framework_id, id);
+
+CREATE INDEX i_project_requirement_statuses_on_namespace_id_project_id ON project_requirement_compliance_statuses USING btree (namespace_id, project_id, id);
+
+CREATE INDEX i_project_requirement_statuses_on_namespace_id_requirement_id ON project_requirement_compliance_statuses USING btree (namespace_id, compliance_requirement_id, id);
+
 CREATE INDEX i_project_requirement_statuses_on_namespace_id_updated_at_id ON project_requirement_compliance_statuses USING btree (namespace_id, updated_at DESC, id DESC);
 
 CREATE INDEX i_protected_branch_unprotect_access_levels_protected_branch_nam ON protected_branch_unprotect_access_levels USING btree (protected_branch_namespace_id);
@@ -37745,6 +37752,8 @@ CREATE UNIQUE INDEX index_vuln_mgmt_policy_rules_on_unique_policy_rule_index ON 
 CREATE INDEX index_vuln_namespace_hist_statistics_for_traversal_ids_update ON vulnerability_namespace_historical_statistics USING btree (namespace_id, id);
 
 CREATE UNIQUE INDEX index_vuln_namespace_historical_statistics_traversal_ids_date ON vulnerability_namespace_historical_statistics USING btree (traversal_ids, date);
+
+CREATE UNIQUE INDEX index_vuln_namespace_statistics_btree_traversal_ids ON vulnerability_namespace_statistics USING btree (traversal_ids);
 
 CREATE INDEX index_vuln_namespace_statistics_gin_traversal_ids ON vulnerability_namespace_statistics USING gin (traversal_ids);
 
@@ -44146,7 +44155,7 @@ ALTER TABLE ONLY external_status_checks
     ADD CONSTRAINT fk_rails_1f5a8aa809 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ai_troubleshoot_job_events
-    ADD CONSTRAINT fk_rails_1fb7e812da FOREIGN KEY (project_id) REFERENCES projects(id);
+    ADD CONSTRAINT fk_rails_1fb7e812da FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dora_daily_metrics
     ADD CONSTRAINT fk_rails_1fd07aff6f FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;

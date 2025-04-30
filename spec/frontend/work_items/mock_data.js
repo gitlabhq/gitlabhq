@@ -333,6 +333,85 @@ export const workItemQueryResponse = {
   },
 };
 
+export const workItemWithEpicParentQueryResponse = {
+  data: {
+    workItem: {
+      __typename: 'WorkItem',
+      id: 'gid://gitlab/WorkItem/1',
+      iid: '1',
+      archived: false,
+      title: 'Test',
+      movedToWorkItemUrl: null,
+      duplicatedToWorkItemUrl: null,
+      promotedToEpicUrl: null,
+      state: 'OPEN',
+      description: 'description',
+      confidential: false,
+      createdAt: '2022-08-03T12:41:54Z',
+      updatedAt: null,
+      closedAt: null,
+      author: {
+        avatarUrl: 'http://127.0.0.1:3000/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+        id: 'gid://gitlab/User/1',
+        name: 'Administrator',
+        username: 'root',
+        webUrl: 'http://127.0.0.1:3000/root',
+        webPath: '/root',
+        __typename: 'UserCore',
+      },
+      project: {
+        id: 'gid://gitlab/Project/7',
+        __typename: 'Project',
+      },
+      namespace: {
+        __typename: 'Project',
+        id: '1',
+        fullPath: 'test-project-path',
+        name: 'Project name',
+        fullName: 'Group name',
+      },
+      workItemType: {
+        __typename: 'WorkItemType',
+        id: 'gid://gitlab/WorkItems::Type/5',
+        name: 'Task',
+        iconName: 'issue-type-task',
+      },
+      userPermissions: {
+        adminParentLink: false,
+        adminWorkItemLink: true,
+        deleteWorkItem: false,
+        createNote: false,
+        markNoteAsInternal: true,
+        moveWorkItem: false,
+        reportSpam: false,
+        setWorkItemMetadata: false,
+        summarizeComments: false,
+        updateWorkItem: false,
+        __typename: 'WorkItemPermissions',
+      },
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetHierarchy',
+          type: 'HIERARCHY',
+          hasChildren: true,
+          parent: {
+            id: 'gid://gitlab/WorkItem/3',
+            title: 'Work Item Epic',
+            webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/work_items/130',
+            __typename: 'WorkItem',
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/6',
+              name: 'Epic',
+              iconName: 'issue-type-epic',
+              __typename: 'WorkItemType',
+            },
+          },
+        },
+      ],
+    },
+  },
+};
+
 export const updateWorkItemMutationResponse = {
   data: {
     workItemUpdate: {

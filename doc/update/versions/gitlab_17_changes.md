@@ -235,8 +235,7 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 ## Issues to be aware of when upgrading to 17.8
 
 - In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9).
-  If you have a multi-node configuration, follow the steps relevant to your installation from
-  the [17.8.0](#1780) section below.
+  If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
 
 - Migration failures when upgrading to GitLab 17.8.
 
@@ -266,8 +265,7 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 ## Issues to be aware of when upgrading to 17.9
 
 - In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9).
-  If you have a multi-node configuration, follow the steps relevant to your installation from
-  the [17.9.0](#1790) section below.
+  If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
 
 - Runner tags missing when upgrading to GitLab 17.9
 
@@ -289,14 +287,12 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 ## Issues to be aware of when upgrading to 17.10
 
 - In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9).
-  If you have a multi-node configuration, follow the steps relevant to your installation from
-  the [17.9.0](#1790) section below.
+  If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
 
 ## Issues to be aware of when upgrading to 17.11
 
 - In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9).
-  If you have a multi-node configuration, follow the steps relevant to your installation from
-  the [17.9.0](#1790) section below.
+  If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
 
 ## 17.11.0
 
@@ -308,9 +304,7 @@ In GitLab 17.8, three new secrets have been added to support the new encryption 
 - `active_record_encryption_deterministic_key`
 - `active_record_encryption_key_derivation_salt`
 
-**If you have a multi-node configuration, you must ensure these secrets are the same on all nodes.** Otherwise, the application automatically generates the missing secrets at startup.
-
-Follow the steps relevant to your installation from the [17.9.0](#1790) section below.
+If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
 
 ## 17.10.0
 
@@ -322,9 +316,7 @@ In GitLab 17.8, three new secrets have been added to support the new encryption 
 - `active_record_encryption_deterministic_key`
 - `active_record_encryption_key_derivation_salt`
 
-**If you have a multi-node configuration, you should ensure these secrets are the same on all nodes.** Otherwise, the application automatically generates the missing secrets at startup.
-
-Follow the steps relevant to your installation from the [17.9.0](#1790) section below.
+If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
 
 ## 17.9.0
 
@@ -336,71 +328,7 @@ In GitLab 17.8, three new secrets have been added to support the new encryption 
 - `active_record_encryption_deterministic_key`
 - `active_record_encryption_key_derivation_salt`
 
-**If you have a multi-node configuration, you should ensure these secrets are the same on all nodes.** Otherwise, the application automatically generates the missing secrets at startup.
-
-{{< tabs >}}
-
-{{< tab title="Linux package (Omnibus)" >}}
-
-1. Optional. If possible, put your instance in [maintenance mode](../../administration/maintenance_mode/_index.md) (otherwise if the steps 3 and 6 return `true`, it's fine).
-1. Delete all `CloudConnector::Keys` records:
-
-   ```shell
-   gitlab-rails r 'CloudConnector::Keys.delete_all'
-   ```
-
-1. Check if any records with encrypted attributes exist:
-
-   ```shell
-   gitlab-rails r 'Rails.application.eager_load!; puts ApplicationRecord.descendants.select { |d| d.encrypted_attributes.present? }.index_with { |model| model.count }.values.all?(&:zero?)'
-   ```
-
-   If the result is `true`, you can proceed to the next step. Otherwise, we need to check what are the existing records
-   and decide if we can delete them before proceeding further.
-
-1. Pick one Sidekiq or Rails node as a reference node from which you will copy
-   `/etc/gitlab/gitlab-secrets.json` to all other Sidekiq and Rails nodes.
-1. On all Sidekiq and Rails nodes (except the reference node):
-
-   1. Back up your [configuration files](https://docs.gitlab.com/omnibus/settings/backups/#backup-and-restore-configuration-on-a-linux-package-installation):
-
-      ```shell
-      sudo gitlab-ctl backup-etc
-      ```
-
-   1. Copy `/etc/gitlab/gitlab-secrets.json` from the reference node, and replace the file of the
-      same name on the current node.
-   1. Reconfigure GitLab:
-
-      ```shell
-      sudo gitlab-ctl reconfigure
-      ```
-
-1. Check again if any records with encrypted attributes exist (to ensure no records were created while
-   you performed the previous steps). The return value should be `true`:
-
-   ```shell
-   gitlab-rails r 'Rails.application.eager_load!; puts ApplicationRecord.descendants.select { |d| d.encrypted_attributes.present? }.index_with { |model| model.count }.values.all?(&:zero?)'
-   ```
-
-1. Create a new Cloud Connector key: `gitlab-rake cloud_connector:keys:create`
-1. Optional. On all Sidekiq and Rails nodes, check that the encrypted attributes can be read
-   (if no `ActiveRecord::Encryption::Errors::Decryption` exception is raised, it's good):
-
-   ```shell
-   gitlab-rails r 'CloudConnector::Keys.first.secret_key; nil'
-   ```
-
-{{< /tab >}}
-
-{{< tab title="Helm chart (Kubernetes)" >}}
-
-If you disabled the [shared-secrets chart](https://docs.gitlab.com/charts/charts/shared-secrets/),
-you need to [manually create these secrets](https://docs.gitlab.com/charts/releases/8_0.html).
-
-{{< /tab >}}
-
-{{< /tabs >}}
+If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
 
 ## 17.8.0
 
@@ -412,57 +340,7 @@ In GitLab 17.8, three new secrets have been added to support the new encryption 
 - `active_record_encryption_deterministic_key`
 - `active_record_encryption_key_derivation_salt`
 
-**If you have a multi-node configuration, you should ensure these secrets are the same on all nodes.** Otherwise, the application automatically generates the missing secrets at startup.
-
-{{< tabs >}}
-
-{{< tab title="Linux package (Omnibus)" >}}
-
-1. Optional. If possible, put your instance in [maintenance mode](../../administration/maintenance_mode/_index.md) (otherwise if the steps 2 and 5 return `true`, it's fine).
-1. Check if any records with encrypted attributes exist:
-
-   ```shell
-   gitlab-rails r 'Rails.application.eager_load!; puts ApplicationRecord.descendants.select { |d| d.encrypted_attributes.present? }.index_with { |model| model.count }.values.all?(&:zero?)'
-   ```
-
-   If the result is `true`, proceed to the next step. Otherwise, we need to check what are the existing records
-   and decide if we can delete them before proceeding further.
-
-1. Pick one Sidekiq or Rails node as a reference node from which you will copy
-   `/etc/gitlab/gitlab-secrets.json` to all other Sidekiq and Rails nodes.
-1. On all Sidekiq and Rails nodes (except the reference node):
-
-   1. Back up your [configuration files](https://docs.gitlab.com/omnibus/settings/backups/#backup-and-restore-configuration-on-a-linux-package-installation):
-
-      ```shell
-      sudo gitlab-ctl backup-etc
-      ```
-
-   1. Copy `/etc/gitlab/gitlab-secrets.json` from the reference node, and replace the file of the
-      same name on the current node.
-   1. Reconfigure GitLab:
-
-      ```shell
-      sudo gitlab-ctl reconfigure
-      ```
-
-1. Check again if any records with encrypted attributes exist (to ensure no records were created while
-   you performed the previous steps). The return value should be `true`:
-
-   ```shell
-   gitlab-rails r 'Rails.application.eager_load!; puts ApplicationRecord.descendants.select { |d| d.encrypted_attributes.present? }.index_with { |model| model.count }.values.all?(&:zero?)'
-   ```
-
-{{< /tab >}}
-
-{{< tab title="Helm chart (Kubernetes)" >}}
-
-If you disabled the [shared-secrets chart](https://docs.gitlab.com/charts/charts/shared-secrets/),
-you need to [manually create these secrets](https://docs.gitlab.com/charts/releases/8_0.html).
-
-{{< /tab >}}
-
-{{< /tabs >}}
+If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
 
 ### Change to the GitLab agent server for Kubernetes
 
@@ -809,3 +687,194 @@ Feedback about this conditional stop on the upgrade path can be provided [in the
   | 17.1                    |  All                    | 17.1.7   |
   | 17.2                    |  All                    | 17.2.5   |
   | 17.3                    |  All                    | 17.3.1   |
+
+## Unify new encryption secrets
+
+[GitLab 17.8 introduced three new secrets](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175154) to support the new encryption framework, [which was introduced in GitLab 17.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179559):
+
+- `active_record_encryption_primary_key`
+- `active_record_encryption_deterministic_key`
+- `active_record_encryption_key_derivation_salt`
+
+If you have a multi-node configuration, you must ensure these secrets are the same on all nodes. Otherwise, the application automatically generates the missing secrets at startup.
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+1. If possible, [enable maintenance mode](../../administration/maintenance_mode/_index.md#enable-maintenance-mode).
+1. (Only for GitLab >= 17.9) Delete all `CloudConnector::Keys` records:
+
+   ```shell
+   gitlab-rails runner 'CloudConnector::Keys.delete_all'
+   ```
+
+1. On all Sidekiq and GitLab application nodes, gather information about encryption keys and their usage.
+
+   On GitLab >= 18.0.0, >= 17.11.2, >= 17.10.6, or >= 17.9.8, run:
+
+      ```shell
+      gitlab-rake gitlab:doctor:encryption_keys
+      ```
+
+   If you're using other versions, check the content of [`encryption_keys.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/doctor/encryption_keys.rb) and
+   then download it:
+
+      ```shell
+      wget -O encryption_keys.rb https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/doctor/encryption_keys.rb?inline=false
+      ```
+
+   Then run the file:
+
+   ```shell
+   gitlab-rails runner 'require_relative Pathname(Dir.pwd).join("encryption_keys.rb"); Gitlab::Doctor::EncryptionKeys.new(Logger.new($stdout)).run!'
+   ```
+
+   The output of the command indicates which one of three possible processes you must follow.
+
+   - If all "Encryption keys usage for \<model\>" report `NONE`, select any Sidekiq or GitLab application node as a reference
+     node from which to copy `/etc/gitlab/gitlab-secrets.json` to all other Sidekiq and GitLab application nodes.
+   - If all reported keys usage are for the same key ID, select the node where the key exists as a reference node from which to copy `/etc/gitlab/gitlab-secrets.json` to all
+     other Sidekiq and GitLab application nodes. For example, let's say you get the following output on node 1:
+
+      ```shell
+      Gathering existing encryption keys:
+      - active_record_encryption_primary_key: ID => `bb32`; truncated secret => `bEt...eBU`
+      - active_record_encryption_deterministic_key: ID => `445f`; truncated secret => `MJo...yg5`
+
+      [... snipped for brevity ...]
+
+      Encryption keys usage for VirtualRegistries::Packages::Maven::Upstream: NONE
+      Encryption keys usage for Ai::ActiveContext::Connection: NONE
+      Encryption keys usage for CloudConnector::Keys: NONE
+      Encryption keys usage for DependencyProxy::GroupSetting:
+      - `bb32` => 8
+      Encryption keys usage for Ci::PipelineScheduleInput:
+      - `bb32` => 1
+      ```
+
+      And let's say you get the following output on node 2 (the `(UNKNOWN KEY!)` is fine as long as a single key ID is used. For example, `bb32` here):
+
+      ```shell
+      Gathering existing encryption keys:
+      - active_record_encryption_primary_key: ID => `83kf`; truncated secret => `pKq...ikC`
+      - active_record_encryption_deterministic_key: ID => `b722`; truncated secret => `Lma...iJ7`
+
+      [... snipped for brevity ...]
+
+      Encryption keys usage for VirtualRegistries::Packages::Maven::Upstream: NONE
+      Encryption keys usage for Ai::ActiveContext::Connection: NONE
+      Encryption keys usage for CloudConnector::Keys: NONE
+      Encryption keys usage for DependencyProxy::GroupSetting:
+      - `bb32` (UNKNOWN KEY!) => 8
+      Encryption keys usage for Ci::PipelineScheduleInput:
+      - `bb32` (UNKNOWN KEY!) => 1
+      ```
+
+      With the above examples, you would pick node 1 as the reference node.
+   1. Not all reported keys usage are for the same key ID. For instance, if node 1 shows `` -`bb32` => 1 `` and node 2 shows
+      `` - `83kf` => 1 ``. In that case, the resolution is more complex as it involves re-encrypting all data with a single encryption key.
+      Alternatively, if you're ok losing some data, you can delete records so that all remaining records use the same key ID.
+      Contact [support](https://about.gitlab.com/support/) for further assistance.
+
+1. After deciding which node is the reference node, decide which of the reference node's secrets must be copied to the other nodes.
+1. On all Sidekiq and Rails nodes except the reference node:
+
+   1. Back up your [configuration files](https://docs.gitlab.com/omnibus/settings/backups/#backup-and-restore-configuration-on-a-linux-package-installation):
+
+      ```shell
+      sudo gitlab-ctl backup-etc
+      ```
+
+   1. Copy `/etc/gitlab/gitlab-secrets.json` from the reference node, and replace the file of the
+      same name on the current node.
+   1. Reconfigure GitLab:
+
+      ```shell
+      sudo gitlab-ctl reconfigure
+      ```
+
+   1. Check again encryption keys and their usage with one of the following command depending on your version:
+
+      On GitLab >= 18.0.0, >= 17.11.2, >= 17.10.6, or >= 17.9.8, run:
+
+         ```shell
+         gitlab-rake gitlab:doctor:encryption_keys
+         ```
+
+      If you're using other versions:
+
+         ```shell
+         gitlab-rails runner 'require_relative Pathname(Dir.pwd).join("encryption_keys.rb"); Gitlab::Doctor::EncryptionKeys.new(Logger.new($stdout)).run!'
+         ```
+
+      All reported keys usage are for the same key ID. For example, on node 1:
+
+         ```shell
+         Gathering existing encryption keys:
+         - active_record_encryption_primary_key: ID => `bb32`; truncated secret => `bEt...eBU`
+         - active_record_encryption_deterministic_key: ID => `445f`; truncated secret => `MJo...yg5`
+
+         [... snipped for brevity ...]
+
+         Encryption keys usage for VirtualRegistries::Packages::Maven::Upstream: NONE
+         Encryption keys usage for Ai::ActiveContext::Connection: NONE
+         Encryption keys usage for CloudConnector::Keys:
+         - `bb32` => 1
+         Encryption keys usage for DependencyProxy::GroupSetting:
+         - `bb32` => 8
+         Encryption keys usage for Ci::PipelineScheduleInput:
+         - `bb32` => 1
+         ```
+
+         And for example, on node 2 (you should not see any `(UNKNOWN KEY!)` this time):
+
+         ```shell
+         Gathering existing encryption keys:
+         - active_record_encryption_primary_key: ID => `bb32`; truncated secret => `bEt...eBU`
+         - active_record_encryption_deterministic_key: ID => `445f`; truncated secret => `MJo...yg5`
+
+         [... snipped for brevity ...]
+
+         Encryption keys usage for VirtualRegistries::Packages::Maven::Upstream: NONE
+         Encryption keys usage for Ai::ActiveContext::Connection: NONE
+         Encryption keys usage for CloudConnector::Keys:
+         - `bb32` => 1
+         Encryption keys usage for DependencyProxy::GroupSetting:
+         - `bb32` => 8
+         Encryption keys usage for Ci::PipelineScheduleInput:
+         - `bb32` => 1
+         ```
+
+   1. Remove the `encryption_keys.rb` file if you downloaded it previously:
+
+      ```shell
+      rm encryption_keys.rb
+      ```
+
+1. Create a new Cloud Connector key:
+
+   For GitLab >= 17.10:
+
+      ```shell
+      gitlab-rake cloud_connector:keys:create
+      ```
+
+   For GitLab 17.9:
+
+      ```shell
+      gitlab-rails runner 'CloudConnector::Keys.create!(secret_key: OpenSSL::PKey::RSA.new(2048).to_pem)'
+      ```
+
+1. [Disable maintenance mode](../../administration/maintenance_mode/_index.md#disable-maintenance-mode).
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+If you disabled the [shared-secrets chart](https://docs.gitlab.com/charts/charts/shared-secrets/),
+you need to [manually create these secrets](https://docs.gitlab.com/charts/releases/8_0.html).
+
+{{< /tab >}}
+
+{{< /tabs >}}

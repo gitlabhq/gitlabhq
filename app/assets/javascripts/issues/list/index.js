@@ -116,6 +116,7 @@ export async function mountIssuesListApp() {
     wiNewCommentTemplatePaths,
     hasLinkedItemsEpicsFeature,
     timeTrackingLimitToHours,
+    hasSubepicsFeature,
   } = el.dataset;
 
   return new Vue({
@@ -200,7 +201,7 @@ export async function mountIssuesListApp() {
       issuesListPath: wiIssuesListPath,
       labelsManagePath: wiLabelsManagePath,
       reportAbusePath: wiReportAbusePath,
-      hasSubepicsFeature: false,
+      hasSubepicsFeature: parseBoolean(hasSubepicsFeature),
       hasLinkedItemsEpicsFeature: parseBoolean(hasLinkedItemsEpicsFeature),
       commentTemplatePaths: JSON.parse(wiNewCommentTemplatePaths),
       timeTrackingLimitToHours: parseBoolean(timeTrackingLimitToHours),

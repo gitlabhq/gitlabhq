@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import WorkItemLinkChildContents from 'ee_else_ce/work_items/components/shared/work_item_link_child_contents.vue';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { WORK_ITEM_TYPE_NAME_TASK } from '../../constants';
@@ -7,7 +8,6 @@ import { findHierarchyWidget, getDefaultHierarchyChildrenCount, getItems } from 
 import toggleHierarchyTreeChildMutation from '../../graphql/client/toggle_hierarchy_tree_child.mutation.graphql';
 import isExpandedHierarchyTreeChildQuery from '../../graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
-import WorkItemLinkChildContents from '../shared/work_item_link_child_contents.vue';
 import WorkItemChildrenLoadMore from '../shared/work_item_children_load_more.vue';
 
 export default {
@@ -283,13 +283,9 @@ export default {
           :child-item="childItem"
           :can-update="canUpdate"
           :class="childItemClass"
-          :parent-work-item-id="issuableGid"
-          :work-item-type="workItemType"
           :show-labels="showLabels"
-          :show-closed="showClosed"
           :work-item-full-path="workItemFullPath"
           :show-weight="shouldShowWeight"
-          :is-active="isActive"
           @click="$emit('click', $event)"
           @removeChild="$emit('removeChild', childItem)"
         />

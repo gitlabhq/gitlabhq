@@ -145,8 +145,19 @@ module IssuesHelper
       is_signed_in: current_user.present?.to_s,
       rss_path: url_for(safe_params.merge(rss_url_options)),
       sign_in_path: new_user_session_path,
-      wi: work_items_data(namespace, current_user)
+      wi: work_items_data(namespace, current_user),
+      has_subepics_feature: has_subepics_feature?(namespace).to_s
     }
+  end
+
+  def has_subepics_feature?(namespace)
+    if namespace.is_a?(Group)
+      return namespace.licensed_feature_available?(:subepics)
+    elsif namespace.respond_to?(:group) && namespace.group
+      return namespace.group.licensed_feature_available?(:subepics)
+    end
+
+    false
   end
 
   def has_issue_date_filter_feature?(namespace, current_user)

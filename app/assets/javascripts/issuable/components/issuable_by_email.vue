@@ -128,10 +128,11 @@ export default {
         <gl-sprintf
           :message="
             __(
-              'The subject will be used as the title of the new issue, and the message will be the description. %{quickActionsLinkStart}Quick actions%{quickActionsLinkEnd} and styling with %{markdownLinkStart}Markdown%{markdownLinkEnd} are supported.',
+              'The subject will be used as the title of the new %{name}, and the message will be the description. %{quickActionsLinkStart}Quick actions%{quickActionsLinkEnd} and styling with %{markdownLinkStart}Markdown%{markdownLinkEnd} are supported.',
             )
           "
         >
+          <template #name>{{ issuableName }}</template>
           <template #quickActionsLink="{ content }">
             <gl-link :href="quickActionsHelpPath" target="_blank">{{ content }}</gl-link>
           </template>

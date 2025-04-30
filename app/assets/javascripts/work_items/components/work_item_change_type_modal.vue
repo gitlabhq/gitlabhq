@@ -28,6 +28,7 @@ export default {
     GlAlert,
   },
   mixins: [glFeatureFlagMixin()],
+  inject: ['hasSubepicsFeature'],
   actionCancel: {
     text: __('Cancel'),
   },
@@ -352,7 +353,9 @@ export default {
       this.warningMessage = '';
       this.valueNotPresentWarning = '';
 
-      if (this.hasParent) {
+      const isEpicWithSubepicsFeature =
+        this.parentWorkItemType === WORK_ITEM_TYPE_NAME_EPIC && this.hasSubepicsFeature;
+      if (this.hasParent && !isEpicWithSubepicsFeature) {
         this.warningMessage = sprintfWorkItem(
           s__(
             'WorkItem|Parent item type %{parentWorkItemType} is not supported on %{workItemType}. Remove the parent item to change type.',

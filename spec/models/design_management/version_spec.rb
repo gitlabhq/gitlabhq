@@ -103,7 +103,7 @@ RSpec.describe DesignManagement::Version do
 
       it 'has an appropriate cause' do
         expect { call_with_empty_actions }
-          .to raise_error(have_attributes(cause: ActiveRecord::RecordInvalid))
+          .to raise_error(have_attributes(cause: ActiveRecord::StatementInvalid))
       end
 
       it 'provides extra data sentry can consume' do

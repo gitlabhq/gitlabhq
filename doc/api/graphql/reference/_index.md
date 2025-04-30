@@ -13015,7 +13015,8 @@ Input type: `WorkspaceCreateInput`
 | <a id="mutationworkspacecreatemaxhoursbeforetermination"></a>`maxHoursBeforeTermination` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Deprecated:** Field is not used. Deprecated in GitLab 17.9. |
 | <a id="mutationworkspacecreateprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | ID of the project that will provide the Devfile for the created workspace. |
 | <a id="mutationworkspacecreateprojectref"></a>`projectRef` | [`String`](#string) | Project repo git ref. |
-| <a id="mutationworkspacecreatevariables"></a>`variables` | [`[WorkspaceVariableInput!]`](#workspacevariableinput) | Variables to inject into the workspace. |
+| <a id="mutationworkspacecreatevariables"></a>`variables` {{< icon name="warning-solid" >}} | [`[WorkspaceVariableInput!]`](#workspacevariableinput) | **Deprecated:** Argument is renamed to workspace_variables. Deprecated in GitLab 18.0. |
+| <a id="mutationworkspacecreateworkspacevariables"></a>`workspaceVariables` {{< icon name="warning-solid" >}} | [`[WorkspaceVariableInput!]`](#workspacevariableinput) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 18.0. |
 
 #### Fields
 
@@ -28696,7 +28697,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.projectComplianceRequirementsStatus`
 
-Compliance standards adherence for the projects in a group and its subgroups.
+Compliance statuses for the projects in a group and its subgroups.
 
 {{< details >}}
 **Introduced** in GitLab 17.10.
@@ -28714,6 +28715,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupprojectcompliancerequirementsstatusfilters"></a>`filters` | [`GroupProjectRequirementComplianceStatusInput`](#groupprojectrequirementcompliancestatusinput) | Filters applied when retrieving compliance requirement statuses. |
+| <a id="groupprojectcompliancerequirementsstatusorderby"></a>`orderBy` | [`ProjectComplianceRequirementStatusOrderBy`](#projectcompliancerequirementstatusorderby) | Field used to sort compliance requirement statuses. |
 
 ##### `Group.projectComplianceStandardsAdherence`
 
@@ -30502,7 +30504,18 @@ Represents an instance-level LDAP link.
 | <a id="ldapadminrolelinkcn"></a>`cn` | [`String`](#string) | Common Name (CN) of the LDAP group. |
 | <a id="ldapadminrolelinkfilter"></a>`filter` | [`String`](#string) | Search filter for the LDAP group. |
 | <a id="ldapadminrolelinkid"></a>`id` | [`ID!`](#id) | ID of the LDAP link. |
-| <a id="ldapadminrolelinkprovider"></a>`provider` | [`String!`](#string) | LDAP provider for the LDAP link. |
+| <a id="ldapadminrolelinkprovider"></a>`provider` | [`LdapProvider!`](#ldapprovider) | LDAP provider for the LDAP link. |
+
+### `LdapProvider`
+
+Represents a LDAP provider.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ldapproviderid"></a>`id` | [`String`](#string) | ID of the LDAP provider. |
+| <a id="ldapproviderlabel"></a>`label` | [`String`](#string) | Display name of the LDAP provider. |
 
 ### `LfsObjectRegistry`
 
@@ -44993,6 +45006,16 @@ Compliance status of the project control.
 | <a id="projectcompliancecontrolstatusfail"></a>`FAIL` | Fail. |
 | <a id="projectcompliancecontrolstatuspass"></a>`PASS` | Pass. |
 | <a id="projectcompliancecontrolstatuspending"></a>`PENDING` | Pending. |
+
+### `ProjectComplianceRequirementStatusOrderBy`
+
+Values for order_by field for project requirement statuses.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="projectcompliancerequirementstatusorderbyframework"></a>`FRAMEWORK` | Order by frameworks. |
+| <a id="projectcompliancerequirementstatusorderbyproject"></a>`PROJECT` | Order by projects. |
+| <a id="projectcompliancerequirementstatusorderbyrequirement"></a>`REQUIREMENT` | Order by requirements. |
 
 ### `ProjectFeatureAccessLevel`
 

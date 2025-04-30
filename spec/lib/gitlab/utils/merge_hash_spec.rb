@@ -13,10 +13,15 @@ RSpec.describe Gitlab::Utils::MergeHash do
 
   describe '.elements' do
     it 'deep merges an array of elements' do
-      input = [{ hello: ["world"] },
-               { hello: "Everyone" },
-               { hello: { greetings: ['Bonjour', 'Hello', 'Hallo', 'Dzień dobry'] } },
-               "Goodbye", "Hallo"]
+      input = [
+        :hello,
+        "Howdy",
+        { hello: ["world"] },
+        { hello: "Everyone" },
+        { hello: { greetings: ['Bonjour', 'Hello', 'Hallo', 'Dzień dobry'] } },
+        "Goodbye",
+        "Hallo"
+      ]
       expected_output = [
         {
           hello:
@@ -26,6 +31,7 @@ RSpec.describe Gitlab::Utils::MergeHash do
               { greetings: ['Bonjour', 'Hello', 'Hallo', 'Dzień dobry'] }
             ]
         },
+        "Howdy",
         "Goodbye"
       ]
 
