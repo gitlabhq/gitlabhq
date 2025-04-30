@@ -5,6 +5,9 @@ class NamespaceSetting < ApplicationRecord
   include Sanitizable
   include ChronicDurationAttribute
   include EachBatch
+  include SafelyChangeColumnDefault
+
+  columns_changing_default :require_dpop_for_manage_api_endpoints
 
   ignore_column :token_expiry_notify_inherited, remove_with: '17.9', remove_after: '2025-01-11'
   enum pipeline_variables_default_role: ProjectCiCdSetting::PIPELINE_VARIABLES_OVERRIDE_ROLES, _prefix: true

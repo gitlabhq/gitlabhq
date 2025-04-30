@@ -38,6 +38,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         concurrent_github_import_jobs_limit: 1000,
         concurrent_bitbucket_import_jobs_limit: 100,
         concurrent_bitbucket_server_import_jobs_limit: 100,
+        deletion_adjourned_period: 7,
         nuget_skip_metadata_url_validation: false,
         silent_admin_exports_enabled: false,
         autocomplete_users_limit: 300,
@@ -760,6 +761,11 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         expect(setting.errors.messages)
           .to have_key(:default_artifacts_expire_in)
       end
+    end
+
+    it 'validates deletion_adjourned_period' do
+      is_expected.to validate_numericality_of(:deletion_adjourned_period)
+        .is_greater_than(0).is_less_than_or_equal_to(90)
     end
 
     it 'validates local_markdown_version is an integer between 0 and 65535' do

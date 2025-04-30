@@ -204,7 +204,7 @@ export default {
 </script>
 
 <template>
-  <div class="work-item-attributes-wrapper">
+  <div class="work-item-attributes-wrapper work-item-sidebar-container">
     <work-item-status
       v-if="showWorkItemStatus"
       class="work-item-attributes-item"

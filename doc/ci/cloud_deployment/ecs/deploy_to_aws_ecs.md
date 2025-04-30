@@ -252,7 +252,7 @@ set `CI_AWS_ECS_WAIT_FOR_ROLLOUT_COMPLETE_DISABLED` to a non-empty value.
 
 ## Set up review apps
 
-To use [review apps](../../../development/testing_guide/review_apps.md) with ECS:
+To use review apps with ECS:
 
 1. Set up a new [service](#create-an-ecs-service).
 1. Use the `CI_AWS_ECS_SERVICE` variable to set the name.

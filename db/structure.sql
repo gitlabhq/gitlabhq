@@ -18006,7 +18006,7 @@ CREATE TABLE namespace_settings (
     extended_grat_expiry_webhooks_execute boolean DEFAULT false NOT NULL,
     jwt_ci_cd_job_token_enabled boolean DEFAULT false NOT NULL,
     jwt_ci_cd_job_token_opted_out boolean DEFAULT false NOT NULL,
-    require_dpop_for_manage_api_endpoints boolean DEFAULT true NOT NULL,
+    require_dpop_for_manage_api_endpoints boolean DEFAULT false NOT NULL,
     job_token_policies_enabled boolean DEFAULT false NOT NULL,
     security_policies jsonb DEFAULT '{}'::jsonb NOT NULL,
     duo_nano_features_enabled boolean,
@@ -24172,7 +24172,8 @@ CREATE TABLE user_member_roles (
     user_id bigint NOT NULL,
     member_role_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    ldap boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE user_member_roles_id_seq

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'OAuth Login', :allow_forgery_protection, feature_category: :system_access do
+RSpec.describe 'OAuth Login', :with_current_organization, :allow_forgery_protection, feature_category: :system_access do
   include DeviseHelpers
 
   def enter_code(code)

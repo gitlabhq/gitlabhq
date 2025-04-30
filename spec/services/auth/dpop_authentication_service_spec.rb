@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Auth::DpopAuthenticationService, feature_category: :system_access do
+RSpec.describe Auth::DpopAuthenticationService, :aggregate_failures, feature_category: :system_access do
   include Auth::DpopTokenHelper
 
   let_it_be(:user, freeze: true) { create(:user) }
@@ -28,7 +28,7 @@ RSpec.describe Auth::DpopAuthenticationService, feature_category: :system_access
     user.user_preference.update!(dpop_enabled: dpop_enabled)
   end
 
-  shared_examples "failed dpop check" do
+  shared_examples "failed dpop checks after DPoP is enforced" do
     context 'when the DPoP header is missing' do
       it 'raises a DpopValidationError' do
         headers.delete('dpop')
@@ -62,54 +62,106 @@ RSpec.describe Auth::DpopAuthenticationService, feature_category: :system_access
     end
   end
 
-  describe '#execute' do
-    context 'when DPoP is not enabled for the user' do
-      let(:dpop_enabled) { false }
+  shared_examples "user-level DPoP is enabled" do
+    let_it_be(:dpop_enabled) { true }
 
-      context 'when enforce_dpop_authentication false' do
-        it 'succeeds' do
-          expect(service.execute).to be_success
-        end
+    context 'when a valid DPoP header is provided' do
+      it 'returns success and enforces DPoP on a user' do
+        expect(service_execute_with_enforce_dpop_authentication).to be_success
+      end
+    end
+
+    context 'when invalid DPoP header(s) is/are provided' do
+      it_behaves_like "failed dpop checks after DPoP is enforced"
+    end
+  end
+
+  shared_examples "user-level DPoP is disabled" do
+    let_it_be(:dpop_enabled) { false }
+
+    it 'returns success but does not enforce DPoP on a user' do
+      expect(service.execute).to be_success
+
+      service.execute
+      expect(Gitlab::Auth::DpopTokenUser).not_to receive(:new)
+    end
+  end
+
+  describe '#execute' do
+    describe 'User-level DPoP enforcement' do
+      let(:enforce_dpop_authentication) { false } # Same result if true as the group will not apply
+
+      context 'when user-level DPoP is disabled' do
+        it_behaves_like 'user-level DPoP is disabled'
       end
 
-      context 'when enforce_dpop_authentication true' do
-        let(:enforce_dpop_authentication) { true }
+      context 'when user-level DPoP is enabled' do
+        it_behaves_like 'user-level DPoP is enabled'
+      end
+    end
 
-        context 'when group setting require_dpop_for_manage_api_endpoints is true' do
+    describe 'Group-level DPoP enforcement to a `/manage` endpoint' do
+      context 'when User-level DPoP is disabled' do
+        context 'when its not a `/manage` endpoint (enforce_dpop_authentication=false)' do
+          let(:enforce_dpop_authentication) { false }
+
           before do
             group.update!(require_dpop_for_manage_api_endpoints: true)
           end
 
-          it_behaves_like "failed dpop check"
+          it_behaves_like 'user-level DPoP is disabled'
         end
 
-        context 'when group setting require_dpop_for_manage_api_endpoints is false' do
+        context 'when group-level DPoP is not enforced (require_dpop_for_manage_api_endpoints=false)' do
+          let(:enforce_dpop_authentication) { true }
+
           before do
             group.update!(require_dpop_for_manage_api_endpoints: false)
           end
 
-          it 'succeeds' do
-            expect(service_execute_with_enforce_dpop_authentication).to be_success
-          end
-        end
-      end
-    end
-
-    context 'when DPoP is enabled' do
-      let(:dpop_enabled) { true }
-      let(:enforce_dpop_authentication) { false }
-
-      context 'when a valid DPoP header is provided' do
-        it 'succeeds' do
-          expect(service.execute).to be_success
+          it_behaves_like 'user-level DPoP is disabled'
         end
 
-        context 'when enforce_dpop_authentication is passed as true' do
+        context 'when enforce_dpop_authentication AND require_dpop_for_manage_api_endpoints are true' do
           let(:enforce_dpop_authentication) { true }
 
-          it "does not impact the DPoP check and response is success" do
-            expect(service_execute_with_enforce_dpop_authentication).to be_success
+          before do
+            group.update!(require_dpop_for_manage_api_endpoints: true)
           end
+
+          it_behaves_like 'user-level DPoP is enabled'
+        end
+      end
+
+      context 'when User-level DPoP is enabled' do
+        context 'when its not a `/manage` endpoint (enforce_dpop_authentication=false)' do
+          let(:enforce_dpop_authentication) { false }
+
+          before do
+            group.update!(require_dpop_for_manage_api_endpoints: true)
+          end
+
+          it_behaves_like 'user-level DPoP is enabled'
+        end
+
+        context 'when group-level DPoP is not enforced (require_dpop_for_manage_api_endpoints=false)' do
+          let(:enforce_dpop_authentication) { true }
+
+          before do
+            group.update!(require_dpop_for_manage_api_endpoints: false)
+          end
+
+          it_behaves_like 'user-level DPoP is enabled'
+        end
+
+        context 'when enforce_dpop_authentication AND require_dpop_for_manage_api_endpoints are true' do
+          let(:enforce_dpop_authentication) { true }
+
+          before do
+            group.update!(require_dpop_for_manage_api_endpoints: true)
+          end
+
+          it_behaves_like 'user-level DPoP is enabled'
         end
       end
     end

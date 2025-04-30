@@ -27,13 +27,6 @@ For an example of feature flags in action, see [Eliminating risk with feature fl
 For a click-through demo, see [Feature Flags](https://tech-marketing.gitlab.io/static-demos/feature-flags/feature-flags-html.html).
 <!-- Demo published on 2023-07-13 -->
 
-{{< alert type="note" >}}
-
-To contribute to the development of the GitLab product, view
-[this feature flag content](../development/feature_flags/_index.md) instead.
-
-{{< /alert >}}
-
 ## How it works
 
 GitLab offers an [Unleash](https://github.com/Unleash/unleash)-compatible API for feature flags.

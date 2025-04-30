@@ -180,4 +180,36 @@ describe('HighlightMixin', () => {
       });
     });
   });
+
+  describe('Glimmer language handling', () => {
+    beforeEach(() => workerMock.postMessage.mockClear());
+
+    it('sets language to glimmer for .glimmer files regardless of passed language', () => {
+      createComponent({ language: 'plaintext', name: 'test.glimmer' });
+
+      expect(workerMock.postMessage.mock.calls[0][0]).toMatchObject({
+        language: 'glimmer',
+      });
+    });
+  });
+
+  describe('Glimmer javascript language handling', () => {
+    beforeEach(() => workerMock.postMessage.mockClear());
+
+    it('sets language to glimmer-javascript for .gjs files regardless of passed language', () => {
+      createComponent({ language: 'plaintext', name: 'test.gjs' });
+
+      expect(workerMock.postMessage.mock.calls[0][0]).toMatchObject({
+        language: 'glimmer-javascript',
+      });
+    });
+
+    it('sets language to glimmer-javascript for .gts files regardless of passed language', () => {
+      createComponent({ language: 'plaintext', name: 'test.gts' });
+
+      expect(workerMock.postMessage.mock.calls[0][0]).toMatchObject({
+        language: 'glimmer-javascript',
+      });
+    });
+  });
 });

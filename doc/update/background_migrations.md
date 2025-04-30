@@ -24,7 +24,7 @@ Read below for detailed information about the two types of migrations.
 {{< history >}}
 
 - Feature [flag](../user/feature_flags.md) `execute_batched_migrations_on_schedule` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/329511) in GitLab 13.12.
-- For GitLab Self-Managed, administrators can opt to [disable it](../development/database/batched_background_migrations.md#enable-or-disable-background-migrations).
+- For GitLab Self-Managed, administrators can opt to disable it.
 
 {{< /history >}}
 
@@ -49,7 +49,7 @@ limited in scope to help with migrating some `integer` database columns to `bigi
 prevent integer overflow for some tables.
 
 Batched background migrations are handled by Sidekiq and
-[run in isolation](../development/database/batched_background_migrations.md#isolation),
+run in isolation,
 so an instance can remain operational while the migrations are processed. However,
 performance might degrade on larger instances that are heavily used while
 batched background migrations are run. You should
@@ -135,7 +135,7 @@ Refer to each feature's history for more details.
 {{< /alert >}}
 
 To pause an ongoing batched background migration,
-[disable the batched background migrations feature](../development/database/batched_background_migrations.md#enable-or-disable-background-migrations).
+disable the batched background migrations feature.
 Disabling the feature completes the current batch of migrations, then waits to start
 the next batch until after the feature is enabled again.
 
@@ -251,7 +251,7 @@ with a **failed** status:
 ![failed batched background migrations table](img/batched_background_migrations_failed_v14_3.png)
 
 To determine why the batched background migration failed,
-[view the failure error logs](../development/database/batched_background_migrations.md#viewing-failure-error-logs)
+view the failure error logs
 or view error information in the UI.
 
 Prerequisites:
@@ -291,7 +291,7 @@ use the information in the failure error logs or the database:
 
 {{< tab title="From the failure error logs" >}}
 
-1. [View the failure error logs](../development/database/batched_background_migrations.md#viewing-failure-error-logs)
+1. View the failure error logs
    and look for an `An error has occurred, all later migrations canceled` error message, like this:
 
    ```plaintext

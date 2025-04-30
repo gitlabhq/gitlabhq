@@ -23,7 +23,7 @@ work and timelines to make it production ready.
 
 {{< alert type="note" >}}
 
-The Conan registry is not FIPS compliant and is disabled when [FIPS mode](../../../development/fips_gitlab.md) is enabled.
+The Conan registry is not FIPS compliant and is disabled when FIPS mode is enabled.
 
 {{< /alert >}}
 

@@ -26,7 +26,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
     end
   end
 
-  shared_examples 'a dismissible Broadcast Messages' do
+  shared_examples 'a dismissible Broadcast Messages', :with_current_organization do
     it 'hides broadcast message after dismiss', :js do
       visit path
 

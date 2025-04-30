@@ -274,7 +274,7 @@ export default {
           />
         </gl-form-group>
         <gl-form-group
-          class="gl-m-0 gl-flex gl-items-center gl-gap-3"
+          class="gl-m-0 gl-flex gl-flex-wrap gl-items-center gl-gap-3"
           :label="s__('WorkItem|Due')"
           :label-for="$options.dueDateInputId"
           label-class="!gl-font-normal !gl-pb-0 gl-min-w-7 sm:gl-min-w-fit md:gl-min-w-7 gl-break-words"

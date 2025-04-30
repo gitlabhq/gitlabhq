@@ -272,7 +272,7 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
   When upgrading from 17.5 through a version older than the 17.8.6 or 17.9.3 patch releases, there is a chance of the
   runner tags table becoming empty. Upgrading first to GitLab 17.6 sidesteps the issue.
 
-  The upcoming 17.9.4 patch release addresses the migration problem.
+  The 17.9.5 patch release addresses the migration problem.
 
   Run the following PostgreSQL query on the `ci` database to check the runner tags table to determine if you are
   affected:
@@ -288,6 +288,23 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 
 - In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9).
   If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
+
+- Runner tags missing when upgrading to GitLab 17.10
+
+  When upgrading from 17.5 through a version older than the 17.8.6 or 17.9.5 patch releases, there is a chance of the
+  runner tags table becoming empty. Upgrading first to GitLab 17.6 sidesteps the issue.
+
+  The 17.10.5 patch release addresses the migration problem.
+
+  Run the following PostgreSQL query on the `ci` database to check the runner tags table to determine if you are
+  affected:
+
+  ```sql
+  SELECT 'OK, ci_runner_taggings is populated.' FROM ci_runner_taggings LIMIT 1;
+  ```
+
+  If the query returns an empty result instead of `OK, ci_runner_taggings is populated.`,
+  see the [workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/524402#workaround) in the related issue.
 
 ## Issues to be aware of when upgrading to 17.11
 

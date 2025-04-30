@@ -14,10 +14,6 @@ title: Run GraphQL API queries and mutations
 
 This guide demonstrates basic usage of the GitLab GraphQL API.
 
-Read the [GraphQL API style guide](../../development/api_graphql_styleguide.md)
-for implementation details aimed at developers who wish to work on developing
-the API itself.
-
 ## Running examples
 
 The examples documented here can be run using:

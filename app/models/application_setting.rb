@@ -441,6 +441,10 @@ class ApplicationSetting < ApplicationRecord
 
   validates :allowed_key_types, presence: true
 
+  validates :deletion_adjourned_period,
+    presence: true,
+    numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: 90 }
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     value&.each do |level|
       unless Gitlab::VisibilityLevel.options.value?(level)

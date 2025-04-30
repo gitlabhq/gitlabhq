@@ -197,9 +197,8 @@ You can view audit events:
 
 ## Accepting contributions
 
-The following table lists unsupported package manager formats that we are accepting contributions for.
-See the [development guidelines](../../../development/packages/_index.md)
-to learn how to contribute to GitLab.
+The following table lists package formats that are not supported.
+Consider contributing to GitLab to add support for these formats.
 
 <!-- vale gitlab_base.Spelling = NO -->
 

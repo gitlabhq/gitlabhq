@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin Mode Login', feature_category: :system_access do
+RSpec.describe 'Admin Mode Login', :with_current_organization, feature_category: :system_access do
   include TermsHelper
   include UserLoginHelper
   include LdapHelpers

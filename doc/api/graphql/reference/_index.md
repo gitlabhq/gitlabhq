@@ -17,7 +17,7 @@ title: GraphQL API resources
 
 This documentation is self-generated based on GitLab current GraphQL schema.
 
-The API can be explored using the [interactive GraphQL explorer](../_index.md#interactive-graphql-explorer). Developers can also [generate a machine-readable GraphQL schema in IDL and JSON formats](../../../development/rake_tasks.md#update-machine-readable-schema-files).
+The API can be explored using the [interactive GraphQL explorer](../_index.md#interactive-graphql-explorer). Developers can also generate a machine-readable GraphQL schema in IDL and JSON formats.
 
 Each table below documents a GraphQL type. Types match loosely to models, but not all
 fields and methods on a model are available via GraphQL.
@@ -27633,23 +27633,6 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupaddoneligibleuserssearch"></a>`search` | [`String`](#string) | Search the user list. |
 | <a id="groupaddoneligibleuserssort"></a>`sort` | [`GitlabSubscriptionsUserSort`](#gitlabsubscriptionsusersort) | Sort the user list. |
 
-##### `Group.addOnPurchase`
-
-AddOnPurchase associated with the namespace.
-
-{{< details >}}
-**Deprecated** in GitLab 17.5.
-Use root addOnPurchases instead.
-{{< /details >}}
-
-Returns [`AddOnPurchase`](#addonpurchase).
-
-###### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="groupaddonpurchaseaddonname"></a>`addOnName` | [`String!`](#string) | AddOn name. |
-
 ##### `Group.aiMetrics`
 
 AI-related metrics.
@@ -33101,23 +33084,6 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceaddoneligibleusersfilterbyassignedseat"></a>`filterByAssignedSeat` | [`String`](#string) | Filter users list by assigned seat. |
 | <a id="namespaceaddoneligibleuserssearch"></a>`search` | [`String`](#string) | Search the user list. |
 | <a id="namespaceaddoneligibleuserssort"></a>`sort` | [`GitlabSubscriptionsUserSort`](#gitlabsubscriptionsusersort) | Sort the user list. |
-
-##### `Namespace.addOnPurchase`
-
-AddOnPurchase associated with the namespace.
-
-{{< details >}}
-**Deprecated** in GitLab 17.5.
-Use root addOnPurchases instead.
-{{< /details >}}
-
-Returns [`AddOnPurchase`](#addonpurchase).
-
-###### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="namespaceaddonpurchaseaddonname"></a>`addOnName` | [`String!`](#string) | AddOn name. |
 
 ##### `Namespace.approvalPolicies`
 

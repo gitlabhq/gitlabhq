@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Step-up authentication', :js, feature_category: :shared do
+RSpec.describe 'Step-up authentication', :with_current_organization, :js, feature_category: :shared do
   let_it_be(:extern_uid) { 'my-uid' }
   let_it_be(:provider_oidc) { 'openid_connect' }
 
