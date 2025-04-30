@@ -14,7 +14,7 @@ RSpec.describe Types::Ci::DetailedStatusType do
       :id, :group, :icon, :favicon,
       :details_path, :has_details,
       :label, :name, :text, :tooltip,
-      :action
+      :action, :deployment_details_path
     )
   end
 

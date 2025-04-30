@@ -325,7 +325,7 @@ export default {
             @mouseover="setActionTooltip(true)"
             @mouseout="setActionTooltip(false)"
           >
-            <gl-icon :name="action.icon" size="12" />
+            <gl-icon :name="action.icon" :size="12" />
           </gl-button>
         </div>
       </div>

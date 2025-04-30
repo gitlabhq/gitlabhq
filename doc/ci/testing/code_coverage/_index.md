@@ -65,7 +65,7 @@ Test the regex patterns carefully. Tool output formats can change over time, and
 
 | Tool       | Language | Command        | Regex pattern |
 |------------|----------|----------------|---------------|
-| pytest-cov | Python   | `pytest --cov` | `/TOTAL.*? (100(?:\.0+)?\%\|[1-9]?\d(?:\.\d+)?\%)$/` |
+| pytest-cov | Python   | `pytest --cov` | `/TOTAL.*? (100(?:\.0+)?\%\\|[1-9]?\d(?:\.\d+)?\%)$/` |
 | Simplecov  | Ruby     | `rspec spec`   | `/\(\d+.\d+\%\) covered/` |
 
 {{< /tab >}}
@@ -84,7 +84,7 @@ Test the regex patterns carefully. Tool output formats can change over time, and
 | Tool      | Language    | Command                            | Regex pattern |
 |-----------|-------------|------------------------------------|---------------|
 | JaCoCo    | Java/Kotlin | `./gradlew test jacocoTestReport`  | `/Total.*?([0-9]{1,3})%/` |
-| Scoverage | Scala       | `sbt coverage test coverageReport` | `/(?i)total.*? (100(?:\.0+)?\%\|[1-9]?\d(?:\.\d+)?\%)$/` |
+| Scoverage | Scala       | `sbt coverage test coverageReport` | `/(?i)total.*? (100(?:\.0+)?\%\\|[1-9]?\d(?:\.\d+)?\%)$/` |
 
 {{< /tab >}}
 
@@ -131,7 +131,7 @@ Test the regex patterns carefully. Tool output formats can change over time, and
 | Tool        | Command            | Regex pattern |
 |-------------|--------------------|---------------|
 | excoveralls | None               | `/\[TOTAL\]\s+(\d+\.\d+)%/` |
-| mix         | `mix test --cover` | `/\d+.\d+\%\s+\|\s+Total/` |
+| mix         | `mix test --cover` | `/\d+.\d+\%\s+\\|\s+Total/` |
 
 {{< /tab >}}
 

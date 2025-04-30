@@ -2,6 +2,7 @@
 
 class AddDuoFeaturesEnabledCascadingSetting < Gitlab::Database::Migration[2.2]
   include Gitlab::Database::MigrationHelpers::CascadingNamespaceSettings
+
   enable_lock_retries!
 
   milestone '16.10'

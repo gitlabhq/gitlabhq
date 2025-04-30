@@ -9,6 +9,7 @@ module Gitlab
       # Migration only version of MergeRequest table
       class MergeRequest < ::ApplicationRecord
         include EachBatch
+
         validates :suggested_reviewers, json_schema: { filename: 'merge_request_suggested_reviewers' }
 
         CORRECTED_REGEXP_STR = "^(\\[draft\\]|\\(draft\\)|draft:|draft|\\[WIP\\]|WIP:|WIP)"

@@ -8,10 +8,10 @@ module Gitlab
         class LabelFilter < Issuables::LabelFilter
           extend ::Gitlab::Utils::Override
 
-          def initialize(stage:, project:, group:, **kwargs)
+          def initialize(stage:, **kwargs)
             @stage = stage
 
-            super(project: project, group: group, **kwargs)
+            super(**kwargs)
           end
 
           private

@@ -97,6 +97,7 @@
 }
 
 .rd-line-number {
+  position: relative;
   padding: 0 10px 0 5px;
   text-align: right;
   background-color: var(--code-line-nubmer-background-color, $white);
@@ -145,6 +146,12 @@
 
   &::before {
     content: attr(data-line-number);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0 -1px;
   }
 }
 

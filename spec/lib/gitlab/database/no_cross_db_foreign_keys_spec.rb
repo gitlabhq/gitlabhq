@@ -18,20 +18,20 @@ RSpec.describe 'cross-database foreign keys' do
       'system_access_microsoft_applications.namespace_id',
       'ci_runner_taggings.tag_id',                               # https://gitlab.com/gitlab-org/gitlab/-/issues/467664
       'ci_runner_taggings_instance_type.tag_id',                 # https://gitlab.com/gitlab-org/gitlab/-/issues/467664
-      'ci_secure_file_states.ci_secure_file_id',
-      'dependency_proxy_blob_states.dependency_proxy_blob_id',
-      'dependency_proxy_blob_states.group_id',
-      'dependency_proxy_manifest_states.dependency_proxy_manifest_id',
-      'dependency_proxy_manifest_states.group_id',
-      'lfs_objects_projects.lfs_object_id',
-      'merge_request_diff_details.merge_request_diff_id',
-      'merge_request_diff_details.project_id',
-      'pages_deployment_states.pages_deployment_id',
-      'pages_deployment_states.project_id',
-      'snippet_repositories.snippet_id',
-      'snippet_repositories.snippet_organization_id',
-      'snippet_repositories.snippet_project_id',
-      'upload_states.upload_id',
+      'ci_secure_file_states.ci_secure_file_id',                         # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'dependency_proxy_blob_states.dependency_proxy_blob_id',           # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'dependency_proxy_blob_states.group_id',                           # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'dependency_proxy_manifest_states.dependency_proxy_manifest_id',   # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'dependency_proxy_manifest_states.group_id',                       # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'lfs_objects_projects.lfs_object_id',                              # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'merge_request_diff_details.merge_request_diff_id',                # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'merge_request_diff_details.project_id',                           # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'pages_deployment_states.pages_deployment_id',                     # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'pages_deployment_states.project_id',                              # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'snippet_repositories.snippet_id',                                 # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'snippet_repositories.snippet_organization_id',                    # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'snippet_repositories.snippet_project_id',                         # https://gitlab.com/groups/gitlab-org/-/epics/17347
+      'upload_states.upload_id',                                         # https://gitlab.com/groups/gitlab-org/-/epics/17347
       'application_settings.web_ide_oauth_application_id',          # https://gitlab.com/gitlab-org/gitlab/-/issues/531355
       'ai_settings.amazon_q_oauth_application_id',                  # https://gitlab.com/gitlab-org/gitlab/-/issues/531356
       'ai_settings.duo_workflow_oauth_application_id',              # https://gitlab.com/gitlab-org/gitlab/-/issues/531356

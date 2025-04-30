@@ -5,13 +5,6 @@ module Issuables
     include Gitlab::Utils::StrongMemoize
     extend Gitlab::Cache::RequestCache
 
-    def initialize(project:, group:, **kwargs)
-      @project = project
-      @group = group
-
-      super(**kwargs)
-    end
-
     def filter(issuables)
       filtered = by_label(issuables)
       filtered = by_label_union(filtered)
@@ -39,8 +32,6 @@ module Issuables
     # rubocop: enable CodeReuse/ActiveRecord
 
     private
-
-    attr_reader :project, :group
 
     # rubocop: disable CodeReuse/ActiveRecord
     def by_label(issuables)
@@ -195,7 +186,7 @@ module Issuables
 
     def root_namespace
       strong_memoize(:root_namespace) do
-        (@project || @group)&.root_ancestor
+        parent&.root_ancestor
       end
     end
   end

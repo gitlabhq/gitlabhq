@@ -11,6 +11,8 @@ module Types
         null: true,
         calls_gitaly: true,
         description: 'Action information for the status. This includes method, button title, icon, path, and title.'
+      field :deployment_details_path, GraphQL::Types::String, null: true,
+        description: 'Path of the deployment details for the status.'
       field :details_path, GraphQL::Types::String, null: true,
         description: 'Path of the details for the status.'
       field :favicon, GraphQL::Types::String, null: true,

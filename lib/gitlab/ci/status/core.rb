@@ -91,6 +91,10 @@ module Gitlab
         def confirmation_message
           nil
         end
+
+        def deployment_details_path
+          nil
+        end
       end
     end
   end

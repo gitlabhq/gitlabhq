@@ -20,4 +20,10 @@ RSpec.describe Gitlab::Ci::Status::Core do
       expect(status.confirmation_message).to be_nil
     end
   end
+
+  describe '#deployment_details_path' do
+    it 'returns nil by default' do
+      expect(status.deployment_details_path).to be_nil
+    end
+  end
 end

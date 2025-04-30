@@ -412,8 +412,7 @@ class IssuableFinder
     strong_memoize(:label_filter) do
       Issuables::LabelFilter.new(
         params: original_params,
-        project: params.project,
-        group: params.group
+        parent: params.parent
       )
     end
   end
@@ -493,15 +492,19 @@ class IssuableFinder
   end
 
   def by_crm_contact(items)
-    return items unless can_filter_by_crm_contact?
-
-    Issuables::CrmContactFilter.new(params: original_params).filter(items)
+    Issuables::CrmContactFilter.new(
+      params: original_params,
+      parent: params.parent,
+      current_user: current_user
+    ).filter(items)
   end
 
   def by_crm_organization(items)
-    return items unless can_filter_by_crm_organization?
-
-    Issuables::CrmOrganizationFilter.new(params: original_params).filter(items)
+    Issuables::CrmOrganizationFilter.new(
+      params: original_params,
+      parent: params.parent,
+      current_user: current_user
+    ).filter(items)
   end
 
   def by_subscribed(items)
@@ -514,20 +517,6 @@ class IssuableFinder
       items.explicitly_unsubscribed(current_user)
     else
       items
-    end
-  end
-
-  def can_filter_by_crm_contact?
-    current_user&.can?(:read_crm_contact, crm_group)
-  end
-
-  def can_filter_by_crm_organization?
-    current_user&.can?(:read_crm_organization, crm_group)
-  end
-
-  def crm_group
-    strong_memoize(:crm_group) do
-      params.group&.crm_group || params.project&.crm_group
     end
   end
 end

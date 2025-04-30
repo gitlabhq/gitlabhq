@@ -10,6 +10,7 @@ module Gitlab
         self.inheritance_column = :_type_disabled
 
         include ::Integrations::BaseDataFields
+
         attr_encrypted :url, encryption_options
         attr_encrypted :api_url, encryption_options
 

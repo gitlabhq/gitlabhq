@@ -12,7 +12,6 @@ Gitlab/FeatureFlagKeyDynamic:
     - 'app/workers/concerns/worker_attributes.rb'
     - 'app/workers/loose_foreign_keys/cleanup_worker.rb'
     - 'ee/app/graphql/resolvers/ai/user_available_features_resolver.rb'
-    - 'ee/app/graphql/resolvers/ai/user_code_suggestions_contexts_resolver.rb'
     - 'ee/app/models/concerns/geo/verifiable_replicator.rb'
     - 'ee/app/models/members/member_role.rb'
     - 'ee/app/services/search/zoekt/info_service.rb'

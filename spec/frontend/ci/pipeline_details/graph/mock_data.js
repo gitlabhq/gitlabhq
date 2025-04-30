@@ -222,6 +222,7 @@ export const wrappedPipelineReturn = {
                             label: 'passed',
                             hasDetails: true,
                             detailsPath: '/root/elemenohpee/-/jobs/1662',
+                            deploymentDetailsPath: null,
                             group: 'success',
                             action: {
                               __typename: 'StatusAction',
@@ -296,6 +297,26 @@ export const delayedJob = {
       title: 'Unschedule',
       path: '/frontend-fixtures/builds-project/-/jobs/142/unschedule',
       buttonTitle: 'Unschedule job',
+    },
+  },
+};
+
+export const bridgeJob = {
+  id: 4255,
+  name: 'test',
+  kind: BRIDGE_KIND,
+  status: {
+    icon: 'status_manual',
+    text: 'Manual',
+    label: 'manual action',
+    tooltip: 'View deployment details page',
+    group: 'manual',
+    deploymentDetailsPath: 'path/to/deployment',
+    hasDetails: false,
+    action: {
+      icon: null,
+      title: null,
+      path: null,
     },
   },
 };

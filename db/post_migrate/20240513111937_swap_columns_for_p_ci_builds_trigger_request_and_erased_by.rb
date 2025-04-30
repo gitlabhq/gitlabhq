@@ -2,6 +2,7 @@
 
 class SwapColumnsForPCiBuildsTriggerRequestAndErasedBy < Gitlab::Database::Migration[2.2]
   include ::Gitlab::Database::MigrationHelpers::Swapping
+
   milestone '17.1'
   disable_ddl_transaction!
 
