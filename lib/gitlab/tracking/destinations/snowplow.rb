@@ -42,17 +42,11 @@ module Gitlab
         end
 
         def frontend_client_options(group)
-          additional_features = Feature.enabled?(:additional_snowplow_tracking, group, type: :ops)
-
-          # Using camel case as these keys will be used only in JavaScript
-          {
-            namespace: SNOWPLOW_NAMESPACE,
-            hostname: hostname,
-            cookieDomain: cookie_domain,
-            appId: app_id,
-            formTracking: additional_features,
-            linkClickTracking: additional_features
-          }
+          if Gitlab::CurrentSettings.snowplow_enabled? || ::Feature.disabled?(:collect_product_usage_events, :instance)
+            snowplow_options(group)
+          else
+            product_usage_events_options
+          end
         end
 
         def enabled?
@@ -69,6 +63,31 @@ module Gitlab
         end
 
         private
+
+        def snowplow_options(group)
+          additional_features = Feature.enabled?(:additional_snowplow_tracking, group, type: :ops)
+
+          # Using camel case as these keys will be used only in JavaScript
+          {
+            namespace: SNOWPLOW_NAMESPACE,
+            hostname: hostname,
+            cookieDomain: cookie_domain,
+            appId: app_id,
+            formTracking: additional_features,
+            linkClickTracking: additional_features
+          }
+        end
+
+        def product_usage_events_options
+          # Using camel case as these keys will be used only in JavaScript
+          {
+            namespace: SNOWPLOW_NAMESPACE,
+            hostname: Gitlab.host_with_port,
+            postPath: Rails.application.routes.url_helpers.event_forwarding_path,
+            forceSecureTracker: Gitlab.config.gitlab.https,
+            appId: app_id
+          }
+        end
 
         def app_id
           Gitlab::CurrentSettings.snowplow_app_id

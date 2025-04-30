@@ -218,6 +218,90 @@ describe('CI Variable Drawer', () => {
     });
   });
 
+  describe('when selected variable changes', () => {
+    beforeEach(() => {
+      createComponent({
+        props: { selectedVariable: mockProjectVariable },
+      });
+    });
+
+    describe('when selected variable is not empty', () => {
+      const newVariable = mockVariablesWithScopes(projectString)[1];
+
+      it('updates the variable key', async () => {
+        expect(findKeyField().props('value')).toBe(mockProjectVariable.key);
+
+        await wrapper.setProps({
+          selectedVariable: newVariable,
+        });
+        expect(findKeyField().props('value')).toBe(newVariable.key);
+      });
+
+      it('updates the variable value', async () => {
+        expect(findValueField().props('value')).toBe(mockProjectVariable.value);
+
+        await wrapper.setProps({
+          selectedVariable: newVariable,
+        });
+        expect(findValueField().props('value')).toBe(newVariable.value);
+      });
+
+      it('updates the visibility value', async () => {
+        expect(findVisibilityRadioGroup().attributes('checked')).toBe(VISIBILITY_VISIBLE);
+
+        await wrapper.setProps({
+          selectedVariable: { ...newVariable, masked: true, hidden: true },
+        });
+        expect(findVisibilityRadioGroup().attributes('checked')).toBe(VISIBILITY_HIDDEN);
+      });
+
+      it('updates the protected value', async () => {
+        expect(findProtectedCheckbox().attributes('checked')).toBeDefined();
+
+        await wrapper.setProps({
+          selectedVariable: { ...newVariable, protected: false },
+        });
+        expect(findProtectedCheckbox().attributes('checked')).toBeUndefined();
+      });
+    });
+
+    describe('when selected variable is empty', () => {
+      const newVariable = {};
+
+      it('resets the variable key', async () => {
+        expect(findKeyField().props('value')).toBe(mockProjectVariable.key);
+
+        await wrapper.setProps({
+          selectedVariable: newVariable,
+        });
+        expect(findKeyField().props('value')).toBe('');
+      });
+
+      it('resets the variable value', async () => {
+        expect(findValueField().props('value')).toBe(mockProjectVariable.value);
+
+        await wrapper.setProps({
+          selectedVariable: newVariable,
+        });
+        expect(findValueField().props('value')).toBe('');
+      });
+
+      it('updates the protected value to true if isProtectedByDefault', async () => {
+        expect(findProtectedCheckbox().attributes('checked')).toBeDefined();
+
+        await wrapper.setProps({
+          selectedVariable: { ...mockProjectVariable, protected: false },
+        });
+        expect(findProtectedCheckbox().attributes('checked')).toBeUndefined();
+
+        await wrapper.setProps({
+          selectedVariable: newVariable,
+        });
+        expect(findProtectedCheckbox().attributes('checked')).toBeDefined();
+      });
+    });
+  });
+
   describe('validations', () => {
     describe('type dropdown', () => {
       beforeEach(() => {

@@ -38,6 +38,20 @@ of Sidekiq threads from 25 to 50. See the
 [Sidekiq concurrency documentation](../../sidekiq/extra_sidekiq_processes.md#concurrency)
 for more details.
 
+## Tuning low default settings
+
+To avoid excessive load when setting up new Geo sites, starting with GitLab 18.0,
+Geo's concurrency settings are set to low defaults for most environments.
+To increase these settings:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Geo > Sites**.
+1. Decide which data types are progressing too slowly.
+1. Watch load metrics of the primary and secondary sites.
+1. Increase *concurrency limits* by 10 to be conservative.
+1. Watch changes in progress and load metrics for at least 3 minutes.
+1. Repeat increasing the limits until either load metrics reach your desired maximum, or syncing and verification is progressing as quickly as desired.
+
 ## Repository re-verification
 
 See

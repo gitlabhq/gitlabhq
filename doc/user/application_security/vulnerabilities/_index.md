@@ -180,7 +180,9 @@ We are actively working to expand coverage to more types of vulnerabilities.
 <ul>
   <li>CWE-23: Relative Path Traversal</li>
   <li>CWE-73: External Control of File Name or Path</li>
+  <li>CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')</li>
   <li>CWE-80: Improper Neutralization of Script-Related HTML Tags in a Web Page (Basic XSS)</li>
+  <li>CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')</li>
   <li>CWE-116: Improper Encoding or Escaping of Output</li>
   <li>CWE-118: Incorrect Access of Indexable Resource ('Range Error')</li>
   <li>CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer</li>

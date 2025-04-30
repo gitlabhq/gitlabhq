@@ -119,7 +119,7 @@ Enable the Dependency Scanning using SBOM feature with one of the following opti
   - The (deprecated) Gemnasium analyzer is used by default.
   - To enable the new Dependency Scanning analyzer, set the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
 - Use the [Dependency Scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) to enable the new Dependency Scanning analyzer.
-- Provide your own CycloneDX SBOM document.
+- Provide your own CycloneDX SBOM document as [a CI/CD artifact report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) from a successful pipeline.
 
 The preferred method is to use the new Dependency Scanning analyzer and this is what is documented in the next section.
 To enable the (deprecated) Gemnasium analyzer please refer to the enablement instructions for the [legacy Dependency Scanning feature](../_index.md#enabling-the-analyzer).

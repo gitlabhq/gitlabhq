@@ -36,6 +36,7 @@ The following policy types are available:
 - [Merge request approval policy](merge_request_approval_policies.md). Enforce project-level settings and
   approval rules based on scan results.
 - [Pipeline execution policy](pipeline_execution_policies.md). Enforce CI/CD jobs as part of project pipelines.
+  - [Scheduled pipeline execution policy (experiment)](scheduled_pipeline_execution_policies.md). Enforce custom CI/CD jobs on a scheduled cadence across projects, independent of commit activity.
 - [Vulnerability management policy](vulnerability_management_policy.md). Automatically resolve
   vulnerabilities that are no longer detected in the default branch.
 

@@ -183,6 +183,52 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     end
   end
 
+  describe '#frontend_client_options' do
+    let_it_be(:group) { create(:group) }
+
+    context 'when snowplow is enabled' do
+      before do
+        stub_application_setting(snowplow_enabled?: true)
+        stub_feature_flags(additional_snowplow_tracking: true)
+      end
+
+      it 'returns snowplow options' do
+        expected = {
+          namespace: 'gl',
+          hostname: 'gitfoo.com',
+          cookieDomain: nil,
+          appId: '_abc123_',
+          formTracking: true,
+          linkClickTracking: true
+        }
+
+        expect(subject.frontend_client_options(group)).to eq(expected)
+      end
+    end
+
+    context 'when snowplow is disabled' do
+      before do
+        stub_application_setting(snowplow_enabled?: false, snowplow_app_id: nil)
+
+        allow(Gitlab).to receive(:host_with_port).and_return('gitlab.example.com')
+        allow(Gitlab.config.gitlab).to receive(:https).and_return(true)
+        allow(Rails.application.routes.url_helpers).to receive(:event_forwarding_path).and_return('/events')
+      end
+
+      it 'returns product_usage_events options' do
+        expected = {
+          namespace: 'gl',
+          hostname: 'gitlab.example.com',
+          postPath: '/events',
+          forceSecureTracker: true,
+          appId: nil
+        }
+
+        expect(subject.frontend_client_options(group)).to eq(expected)
+      end
+    end
+  end
+
   describe '#enabled?' do
     context 'when snowplow is enabled' do
       before do

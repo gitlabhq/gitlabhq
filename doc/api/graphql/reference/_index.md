@@ -3062,6 +3062,7 @@ Input type: `BoardListCreateInput`
 | <a id="mutationboardlistcreatelabelid"></a>`labelId` | [`LabelID`](#labelid) | Global ID of an existing label. |
 | <a id="mutationboardlistcreatemilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | Global ID of an existing milestone. |
 | <a id="mutationboardlistcreateposition"></a>`position` | [`Int`](#int) | Position of the list. |
+| <a id="mutationboardlistcreatestatusid"></a>`statusId` {{< icon name="warning-solid" >}} | [`WorkItemsStatusesStatusID`](#workitemsstatusesstatusid) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 18.0. |
 
 #### Fields
 

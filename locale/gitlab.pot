@@ -58830,6 +58830,9 @@ msgstr ""
 msgid "Status checks must pass."
 msgstr ""
 
+msgid "Status lists not available with your current license"
+msgstr ""
+
 msgid "Status not supported"
 msgstr ""
 
@@ -73143,6 +73146,9 @@ msgid "reply should have same confidentiality as top-level note"
 msgstr ""
 
 msgid "repositories"
+msgstr ""
+
+msgid "repositories (Gitaly server-side)"
 msgstr ""
 
 msgid "repository"

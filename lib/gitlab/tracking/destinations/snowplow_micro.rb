@@ -11,8 +11,8 @@ module Gitlab
 
         DEFAULT_URI = 'http://localhost:9090'
 
-        override :frontend_client_options
-        def frontend_client_options(group)
+        override :snowplow_options
+        def snowplow_options(group)
           super.merge(
             protocol: uri.scheme,
             port: uri.port,
