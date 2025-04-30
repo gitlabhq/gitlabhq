@@ -16,10 +16,10 @@ The `CODEOWNERS` file uses a syntax to define ownership rules.
 Each line in the file represents a rule, and specifies a file path pattern and one or more owners.
 The key elements are:
 
-- **File paths**: Specific files, directories, or wildcards.
-- **Code Owners**: Use `@mentions` for users, groups, or roles.
-- **Comments**: Lines starting with `#` are ignored.
-- **Sections**: Optional groupings of rules, defined using `[Section name]`.
+- File paths: Specific files, directories, or wildcards.
+- Code Owners: Use `@mentions` for users, groups, or roles.
+- Comments: Lines starting with `#` are ignored.
+- Sections: Optional groupings of rules, defined using `[Section name]`.
 
 {{< alert type="note" >}}
 
@@ -105,7 +105,7 @@ internal/README.md @user2
 ```
 
 Each Code Owner in the merge request widget is listed under a label.
-The following image shows **Default**, **Frontend**, and **Technical Writing** sections:
+The following image shows `Default`, `Frontend`, and `Technical Writing` sections:
 
 ![MR widget - Sectional Code Owners](../img/sectional_code_owners_v17_4.png)
 
@@ -251,7 +251,7 @@ role as Code Owners for `file.md`:
 
 ## Add a group as a Code Owner
 
-You can set **direct members** of a group or subgroup as a Code Owner.
+You can set direct members of a group or subgroup as a Code Owner.
 For more information about group membership, see [Membership types](../members/_index.md#membership-types).
 
 Prerequisites:

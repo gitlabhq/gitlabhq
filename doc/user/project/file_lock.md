@@ -46,7 +46,7 @@ collaborator workflows in other branches.
 When a file or directory is locked by a user:
 
 - Only the user who created the lock can modify the file or directory on the default branch.
-- For other users, the locked file or directory is **read-only** on the default branch.
+- For other users, the locked file or directory is read-only on the default branch.
 - Direct changes to locked files or directories on the default branch are blocked.
 - Merge requests that modify locked files or directories cannot be merged to the default branch.
 

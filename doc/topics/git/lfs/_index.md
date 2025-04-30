@@ -28,9 +28,9 @@ using Git LFS, GitLab:
    size 804
    ```
 
-   - **Version** - the version of the Git LFS specification in use
-   - **OID** - The hashing method used, and a unique object ID, in the form `{hash-method}:{hash}`.
-   - **Size** - The file size, in bytes.
+   - Version - the version of the Git LFS specification in use
+   - OID - The hashing method used, and a unique object ID, in the form `{hash-method}:{hash}`.
+   - Size - The file size, in bytes.
 
 1. Queues a job to recalculate your project's statistics, including storage size and
    LFS object storage. Your LFS object storage is the sum of the size of all LFS
@@ -136,9 +136,9 @@ on how to migrate an existing Git repository with Git LFS.
 
 It's important to understand the differences between untracking a file in Git LFS and deleting a file:
 
-- **Untrack**: The file remains on disk and in your repository history.
+- Untrack: The file remains on disk and in your repository history.
 If users check out historical branches or tags, they still need the LFS version of the file.
-- **Delete**: The file is removed but remains in your repository history.
+- Delete: The file is removed but remains in your repository history.
 
 To delete a tracked file with Git LFS, see [Remove a file](../undo.md#remove-a-file-from-a-repository).
 

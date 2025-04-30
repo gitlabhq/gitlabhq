@@ -59,6 +59,8 @@ describe('useAccessTokens store', () => {
     const mockAxios = new MockAdapter(axios);
     const filters = ['dummy'];
     const id = 235;
+    const page = 1;
+    const sorting = DEFAULT_SORT;
     const urlCreate = '/api/v4/groups/1/service_accounts/:id/personal_access_tokens';
     const urlRevoke = '/api/v4/groups/2/service_accounts/:id/personal_access_tokens';
     const urlRotate = '/api/v4/groups/3/service_accounts/:id/personal_access_tokens';
@@ -81,7 +83,7 @@ describe('useAccessTokens store', () => {
       const scopes = ['dummy-scope'];
 
       beforeEach(() => {
-        store.setup({ id, filters, urlCreate, urlShow });
+        store.setup({ filters, id, page, sorting, urlCreate, urlShow });
       });
 
       it('dismisses any existing alert', () => {
@@ -182,7 +184,7 @@ describe('useAccessTokens store', () => {
       const title = 'Active tokens';
       const tooltipTitle = 'Filter for active tokens';
       beforeEach(() => {
-        store.setup({ id, filters, urlShow });
+        store.setup({ filters, id, page, sorting, urlShow });
         update2WeekFromNow.mockReturnValueOnce([{ title, tooltipTitle, filters }]);
       });
 
@@ -230,7 +232,7 @@ describe('useAccessTokens store', () => {
 
     describe('fetchTokens', () => {
       beforeEach(() => {
-        store.setup({ id, filters, urlShow });
+        store.setup({ filters, id, page, sorting, urlShow });
       });
 
       it('sets busy to true when fetching', () => {
@@ -299,7 +301,7 @@ describe('useAccessTokens store', () => {
 
     describe('revokeToken', () => {
       beforeEach(() => {
-        store.setup({ id, filters, urlRevoke, urlShow });
+        store.setup({ filters, id, page, sorting, urlRevoke, urlShow });
       });
 
       it('sets busy to true when revoking', () => {
@@ -412,7 +414,7 @@ describe('useAccessTokens store', () => {
 
     describe('rotateToken', () => {
       beforeEach(() => {
-        store.setup({ id, filters, urlRotate, urlShow });
+        store.setup({ filters, id, page, sorting, urlRotate, urlShow });
       });
 
       it('sets busy to true when rotating', () => {
@@ -555,10 +557,12 @@ describe('useAccessTokens store', () => {
 
     describe('setup', () => {
       it('sets up the store', () => {
-        store.setup({ filters, id, urlCreate, urlRevoke, urlRotate, urlShow });
+        store.setup({ filters, id, page, sorting, urlCreate, urlRevoke, urlRotate, urlShow });
 
         expect(store.filters).toEqual(filters);
         expect(store.id).toBe(id);
+        expect(store.page).toBe(page);
+        expect(store.sorting).toEqual(sorting);
         expect(store.urlCreate).toBe(urlCreate);
         expect(store.urlRevoke).toBe(urlRevoke);
         expect(store.urlRotate).toBe(urlRotate);

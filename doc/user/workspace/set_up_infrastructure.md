@@ -177,6 +177,7 @@ To configure CI/CD variables:
    - `AWS_ACCESS_KEY_ID`: Your AWS access key ID
    - `AWS_SECRET_ACCESS_KEY`: Your AWS secret access key
    - `TF_VAR_agent_token`: GitLab Agent for Kubernetes token
+   - `TF_VAR_kas_address`: GitLab Kubernetes Agent Server address. Required if on a GitLab Self-Managed instance.
    - `TF_VAR_workspaces_proxy_auth_client_id`: OAuth application client ID
    - `TF_VAR_workspaces_proxy_auth_client_secret`: OAuth application secret
    - `TF_VAR_workspaces_proxy_auth_redirect_uri`: OAuth callback URL
@@ -195,10 +196,12 @@ To configure CI/CD variables:
    - `TF_VAR_zones`: AWS availability zones.
    - `TF_VAR_name`: Name prefix for resources.
    - `TF_VAR_cluster_endpoint_public_access`: Enable public access to cluster endpoint.
-   - `TF_VAR_instance_type`: EC2 instance type for Kubernetes nodes.
-   - `TF_VAR_instance_count`: Number of worker nodes.
+   - `TF_VAR_cluster_node_instance_type`: EC2 instance type for Kubernetes nodes.
+   - `TF_VAR_cluster_node_count_min`: Minimum number of worker nodes.
+   - `TF_VAR_cluster_node_count_max`: Maximum number of worker nodes.
+   - `TF_VAR_cluster_node_count`: Number of worker nodes.
+   - `TF_VAR_cluster_node_labels`: Map of labels to apply on the cluster nodes
    - `TF_VAR_agent_namespace`: Kubernetes namespace for the agent.
-   - `TF_VAR_kas_address`: GitLab Kubernetes Agent Server address. Required if on a GitLab Self-Managed instance.
    - `TF_VAR_workspaces_proxy_namespace`: Kubernetes namespace for workspaces proxy.
    - `TF_VAR_workspaces_proxy_ingress_class_name`: Ingress class name.
    - `TF_VAR_ingress_nginx_namespace`: Kubernetes namespace for Ingress-NGINX.

@@ -369,7 +369,11 @@ export default {
               :show-web-ide-button="showWebIdeButton"
               :show-gitpod-button="isGitpodEnabledForInstance"
             />
-            <repository-overflow-menu v-if="comparePath" />
+            <repository-overflow-menu
+              :full-path="projectPath"
+              :path="currentPath"
+              :current-ref="currentRef"
+            />
           </div>
           <template v-else-if="!isReadmeView">
             <code-dropdown
@@ -381,25 +385,27 @@ export default {
               :current-path="currentPath"
               :directory-download-links="downloadLinks"
             />
-            <div class="gl-flex gl-items-stretch gl-gap-3 sm:gl-hidden">
-              <source-code-download-dropdown
-                :download-links="downloadLinks"
-                :download-artifacts="downloadArtifacts"
+            <div class="gl-flex gl-w-full gl-gap-3 sm:gl-inline-block sm:gl-w-auto">
+              <div class="gl-flex gl-w-full gl-items-stretch gl-gap-3 sm:gl-hidden">
+                <source-code-download-dropdown
+                  :download-links="downloadLinks"
+                  :download-artifacts="downloadArtifacts"
+                />
+                <clone-code-dropdown
+                  class="mobile-git-clone js-git-clone-holder !gl-w-full"
+                  :ssh-url="sshUrl"
+                  :http-url="httpUrl"
+                  :kerberos-url="kerberosUrl"
+                />
+              </div>
+              <repository-overflow-menu
+                :full-path="projectPath"
+                :path="currentPath"
+                :current-ref="currentRef"
               />
-              <clone-code-dropdown
-                class="mobile-git-clone js-git-clone-holder !gl-w-full"
-                :ssh-url="sshUrl"
-                :http-url="httpUrl"
-                :kerberos-url="kerberosUrl"
-              />
-              <repository-overflow-menu v-if="comparePath" />
             </div>
           </template>
         </div>
-        <repository-overflow-menu
-          v-if="comparePath && !showCompactCodeDropdown"
-          class="gl-hidden sm:gl-inline-flex"
-        />
       </div>
 
       <!-- Blob controls -->

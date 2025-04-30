@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Create a Git branch for your changes
 ---
 
-A **branch** is a copy of the files in the repository at the time you create the branch.
+A branch is a copy of the files in the repository at the time you create the branch.
 You can work in your branch without affecting other branches. When
 you're ready to add your changes to the main codebase, you can merge your branch into
 the default branch, for example, `main`.

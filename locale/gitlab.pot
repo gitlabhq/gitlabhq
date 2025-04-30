@@ -35989,6 +35989,9 @@ msgid_plural "Licenses|This package also includes %{count} licenses which were n
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Lifecycle can only have a maximum of %{limit} statuses."
+msgstr ""
+
 msgid "Limit display of time tracking units to hours."
 msgstr ""
 
@@ -71259,6 +71262,12 @@ msgid "can only have a maximum of %{limit} active custom fields."
 msgstr ""
 
 msgid "can only have a maximum of %{limit} custom fields."
+msgstr ""
+
+msgid "can only have a maximum of %{limit} lifecycles."
+msgstr ""
+
+msgid "can only have a maximum of %{limit} statuses."
 msgstr ""
 
 msgid "can only have one escalation policy"

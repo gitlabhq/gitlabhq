@@ -1,17 +1,3 @@
-.breadcrumbs {
-  flex: 1;
-  min-width: 0;
-  align-self: center;
-  @apply gl-text-subtle;
-
-  .avatar-tile {
-    margin-right: 4px;
-    @apply gl-border;
-    border-radius: 50%;
-    vertical-align: sub;
-  }
-}
-
 #js-vue-page-breadcrumbs-wrapper {
   display: flex;
   flex-grow: 1;

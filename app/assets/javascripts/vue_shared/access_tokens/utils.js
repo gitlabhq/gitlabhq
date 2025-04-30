@@ -1,4 +1,5 @@
 import { getDateInFuture, nWeeksAfter, toISODateFormat } from '~/lib/utils/datetime_utility';
+import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { STATISTICS_CONFIG } from '~/access_tokens/constants';
 
 /**
@@ -53,4 +54,18 @@ export function update2WeekFromNow(stats = STATISTICS_CONFIG) {
   });
 
   return clonedStats;
+}
+
+/**
+ * Sets the URL parameters based on the provided query parameters.
+ * @param {Object} options
+ * @param {Object<string, string|number>} options.params
+ * @param {string} options.sort
+ */
+export function updateUrlWithQueryParams({ params, sort }) {
+  const queryParams = { ...params, sort };
+  updateHistory({
+    url: setUrlParams(queryParams, window.location.href, true),
+    replace: true,
+  });
 }

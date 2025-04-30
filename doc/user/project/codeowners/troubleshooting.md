@@ -44,7 +44,7 @@ if any of these conditions are true:
 
 - A rule prevents the specific user from approving the merge request.
   Check the project [merge request approval](../merge_requests/approvals/settings.md#edit-merge-request-approval-settings) settings.
-- A Code Owner group has a visibility of **private**, and the current user is not a
+- A Code Owner group has a visibility of private, and the current user is not a
   member of the Code Owner group.
 - The specific username is spelled incorrectly or
   [malformed in the `CODEOWNERS` file](advanced.md#malformed-owners).

@@ -7,6 +7,7 @@ import AccessTokenForm from '~/vue_shared/access_tokens/components/access_token_
 import { useAccessTokens } from '~/vue_shared/access_tokens/stores/access_tokens';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { DEFAULT_FILTER, DEFAULT_SORT } from '~/access_tokens/constants';
 
 Vue.use(PiniaVuePlugin);
 
@@ -48,8 +49,10 @@ describe('AccessTokens', () => {
     waitForPromises();
 
     expect(store.setup).toHaveBeenCalledWith({
-      filters: [{ type: 'state', value: { data: 'active', operator: '=' } }],
+      filters: DEFAULT_FILTER,
       id: 235,
+      page: 1,
+      sorting: DEFAULT_SORT,
       urlCreate: '/api/v4/groups/1/service_accounts/:id/personal_access_tokens/',
       urlRevoke: '/api/v4/groups/2/service_accounts/:id/personal_access_tokens/',
       urlRotate: '/api/v4/groups/3/service_accounts/:id/personal_access_tokens/',

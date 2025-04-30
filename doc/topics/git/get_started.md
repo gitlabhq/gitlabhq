@@ -38,9 +38,9 @@ When you clone a Git repository, you create a local copy of the repository in yo
 You can edit files, add new ones, and test your code.
 To collaborate, you can:
 
-- **Commit**: After you make changes in your working directory, commit those changes to your local repository.
-- **Push**: Push your changes to a remote Git repository hosted on GitLab. This makes your changes available to other team members.
-- **Pull**: Pull changes made by others from the remote repository, and ensure that your local repository is updated with the latest changes.
+- Commit: After you make changes in your working directory, commit those changes to your local repository.
+- Push: Push your changes to a remote Git repository hosted on GitLab. This makes your changes available to other team members.
+- Pull: Pull changes made by others from the remote repository, and ensure that your local repository is updated with the latest changes.
 
 For more information, see [Common Git commands](commands.md).
 
@@ -83,20 +83,20 @@ You can manage your code, collaborate with others, and keep your project organiz
 with a Git workflow.
 A standard Git workflow includes the following steps:
 
-1. **Clone a repository**: Create a local copy of the repository by cloning it to your machine.
+1. Clone a repository: Create a local copy of the repository by cloning it to your machine.
    You can work on the project without affecting the original repository.
-1. **Create a new branch**: Before you make any changes, it's recommended to create a new branch.
+1. Create a new branch: Before you make any changes, it's recommended to create a new branch.
    This ensures that your changes are isolated and don't interfere with the work of others on the
    default branch.
-1. **Make changes**: Make changes to files in your working directory.
+1. Make changes: Make changes to files in your working directory.
    You can add new features, fix bugs, or make other modifications.
-1. **Stage changes**: After you make changes to your files, stage the changes you want to commit.
+1. Stage changes: After you make changes to your files, stage the changes you want to commit.
    Staging tells Git which changes should be included in the next commit.
-1. **Commit changes**: Commit your staged changes to your local repository.
+1. Commit changes: Commit your staged changes to your local repository.
    A commit saves a snapshot of your work and creates a history of the changes to your files.
-1. **Push changes**: To share your changes with others, push them to the remote repository.
+1. Push changes: To share your changes with others, push them to the remote repository.
    This makes your changes available to other collaborators.
-1. **Merge your branch**: After your changes are reviewed and approved, merge your branch into the
+1. Merge your branch: After your changes are reviewed and approved, merge your branch into the
    default branch. For example, `main`. This step incorporates your changes into the project.
 
 ## Forks

@@ -1139,6 +1139,20 @@ into similar problems in the future (e.g. when new tables are created).
         YAML.safe_load_file(File.join(INTEGER_IDS_YET_TO_INITIALIZED_TO_BIGINT_FILE_PATH))
       end
 
+      def feature_flag_enabled?(feature_flag_name)
+        quoted_name = connection.quote(feature_flag_name)
+
+        result = execute <<~SQL.squish
+          SELECT 1
+          FROM feature_gates
+          WHERE feature_key = #{quoted_name}
+          AND value = 'true'
+          LIMIT 1;
+        SQL
+
+        result.ntuples > 0
+      end
+
       private
 
       def multiple_columns(columns, separator: ', ')

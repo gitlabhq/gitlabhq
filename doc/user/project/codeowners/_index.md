@@ -16,10 +16,10 @@ title: Code Owners
 Use the Code Owners feature to define who has expertise for specific parts of your project's codebase.
 Define the owners of files and directories in a repository to:
 
-- **Require owners to approve changes.** Combine protected branches with Code Owners to require
+- Require owners to approve changes. Combine protected branches with Code Owners to require
   experts to approve merge requests before they merge into a protected branch. For more information,
   see [Code Owners and protected branches](#code-owners-and-protected-branches).
-- **Identify owners.** Code Owner names are displayed on the files and directories they own:
+- Identify owners. Code Owner names are displayed on the files and directories they own:
 
   ![Code Owners displayed in UI](../img/codeowners_in_UI_v15_10.png)
 
@@ -29,9 +29,9 @@ Combine Code Owners with merge request
 [approval rules](../merge_requests/approvals/rules.md) (either optional or required)
 to build a flexible approval workflow:
 
-- Use **Code Owners** to ensure quality. Define the users who have domain expertise
+- Use Code Owners to ensure quality. Define the users who have domain expertise
   for specific paths in your repository.
-- Use **Approval rules** to define areas of expertise that don't correspond to specific
+- Use approval rules to define areas of expertise that don't correspond to specific
   file paths in your repository. Approval rules help guide merge request creators to
   the correct set of reviewers, such as frontend developers or a security team.
 
@@ -133,7 +133,7 @@ This permission is often granted to accounts associated with
 automation ([internal users](../../../administration/internal_users.md))
 and release tooling.
 
-All changes from users _without_ the **Allowed to push** permission must be routed through a merge request.
+All changes from users without the **Allowed to push** permission must be routed through a merge request.
 
 ## Related topics
 

@@ -209,19 +209,27 @@ describe('HeaderArea', () => {
     });
 
     describe('RepositoryOverflowMenu', () => {
-      it('does not render RepositoryOverflowMenu component on default ref', () => {
-        expect(findRepositoryOverflowMenu().exists()).toBe(false);
+      it('renders RepositoryOverflowMenu component with correct props when on default branch', () => {
+        wrapper = createComponent({
+          route: { name: 'treePathDecoded' },
+        });
+        expect(findRepositoryOverflowMenu().props()).toStrictEqual({
+          currentRef: 'main',
+          fullPath: 'test/project',
+          path: 'index.js',
+        });
       });
 
-      it('renders RepositoryOverflowMenu component with correct props when on ref different than default branch', () => {
+      it('renders RepositoryOverflowMenu component with correct props when on non-default branch', () => {
         wrapper = createComponent({
           route: { name: 'treePathDecoded' },
           provided: { comparePath: 'test/project/compare' },
         });
-        expect(findRepositoryOverflowMenu().exists()).toBe(true);
-        expect(findRepositoryOverflowMenu().props('comparePath')).toBe(
-          headerAppInjected.comparePath,
-        );
+        expect(findRepositoryOverflowMenu().props()).toStrictEqual({
+          currentRef: 'main',
+          fullPath: 'test/project',
+          path: 'index.js',
+        });
       });
     });
   });

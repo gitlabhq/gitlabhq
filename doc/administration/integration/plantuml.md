@@ -23,7 +23,7 @@ blocks to an HTML image tag, with the source pointing to the PlantUML instance. 
 diagram delimiters `@startuml`/`@enduml` aren't required, as these are replaced
 by the `plantuml` block:
 
-- **Markdown** files with the extension `.md`:
+- Markdown files with the extension `.md`:
 
   ````markdown
   ```plantuml
@@ -35,7 +35,7 @@ by the `plantuml` block:
   For additional acceptable extensions, review the
   [`languages.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/languages.yml#L3174) file.
 
-- **AsciiDoc** files with the extension `.asciidoc`, `.adoc`, or `.asc`:
+- AsciiDoc files with the extension `.asciidoc`, `.adoc`, or `.asc`:
 
   ```plaintext
   [plantuml, format="png", id="myDiagram", width="200px"]
@@ -45,7 +45,7 @@ by the `plantuml` block:
   ----
   ```
 
-- **reStructuredText**
+- reStructuredText:
 
   ```plaintext
   .. plantuml::
@@ -91,7 +91,7 @@ You can include or embed a PlantUML diagram from separate files in the repositor
 the `include` directive. Use this to maintain complex diagrams in dedicated files, or to
 reuse diagrams. For example:
 
-- **Markdown**:
+- Markdown:
 
   ````markdown
   ```plantuml
@@ -99,7 +99,7 @@ reuse diagrams. For example:
   ```
   ````
 
-- **AsciiDoc**:
+- AsciiDoc:
 
   ```plaintext
   [plantuml, format="png", id="myDiagram", width="200px"]

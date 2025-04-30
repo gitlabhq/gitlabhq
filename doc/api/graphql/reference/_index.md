@@ -1701,7 +1701,7 @@ Returns [`WorkItemDescriptionTemplate`](#workitemdescriptiontemplate).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryworkitemdescriptiontemplatecontenttemplatecontentinput"></a>`templateContentInput` | [`WorkItemDescriptionTemplateContentInput!`](#workitemdescriptiontemplatecontentinput) | Input for fetching a specific Descriptiontemplate. |
+| <a id="queryworkitemdescriptiontemplatecontenttemplatecontentinput"></a>`templateContentInput` | [`WorkItemDescriptionTemplateContentInput!`](#workitemdescriptiontemplatecontentinput) | Input for fetching a specific description template. |
 
 ### `Query.workItemsByReference`
 

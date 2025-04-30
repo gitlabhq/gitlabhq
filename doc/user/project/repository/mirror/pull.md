@@ -60,8 +60,8 @@ After you configure a GitLab repository as a pull mirror:
    - How many mirrors are already in the queue and due for updates. Being due depends
      on when the repository mirror was last updated, and how many times updates have been retried.
 1. Sidekiq becomes available to process updates, mirrors are updated. If the update process:
-   - **Succeeds**: An update is enqueued again with at least a 30 minute wait.
-   - **Fails**: The update is attempted again later. After 14 failures, a mirror is marked as a
+   - Succeeds: An update is enqueued again with at least a 30 minute wait.
+   - Fails: The update is attempted again later. After 14 failures, a mirror is marked as a
      [hard failure](#fix-hard-failures-when-mirroring) and is no longer enqueued for updates. A branch diverging
      from its upstream counterpart can cause failures. To prevent branches from
      diverging, configure [Overwrite diverged branches](#overwrite-diverged-branches) when

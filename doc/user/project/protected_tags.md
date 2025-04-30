@@ -88,13 +88,13 @@ graph TD
 
 In this example:
 
-- **Parent group X** (`group-x`) owns **Project A**.
-- **Parent group X** also contains a subgroup, **Subgroup Y**. (`group-x/subgroup-y`)
-- **Project A** is shared with **Subgroup Y**.
+- Parent group X (`group-x`) owns Project A.
+- Parent group X also contains a subgroup, Subgroup Y. (`group-x/subgroup-y`)
+- Project A is shared with Subgroup Y.
 
 The eligible groups for protected tag permissions are:
 
-- **Project A**: Both **Group X** and **Subgroup Y**, because **Project A** is shared with **Subgroup Y**.
+- Project A: Both Group X and Subgroup Y, because Project A is shared with Subgroup Y.
 
 #### Share projects with groups for protected tag permissions
 
@@ -114,7 +114,7 @@ graph LR
     F -.-> |Add Subgroup Y<br/> to protected tag settings| J[Settings will not<br/>take effect] -.-> B
 ```
 
-To grant access to **Subgroup Y** members for **Project A**, you must share the project with the subgroup.
+To grant access to Subgroup Y members for Project A, you must share the project with the subgroup.
 Adding the subgroup directly to the protected tag settings is not effective and isn't applicable to subgroup members.
 
 {{< alert type="note" >}}

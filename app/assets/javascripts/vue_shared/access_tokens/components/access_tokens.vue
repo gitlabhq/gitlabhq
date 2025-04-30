@@ -3,6 +3,7 @@ import { GlButton, GlFilteredSearch, GlPagination, GlSorting } from '@gitlab/ui'
 import { mapActions, mapState } from 'pinia';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { FILTER_OPTIONS, SORT_OPTIONS } from '~/access_tokens/constants';
+import { initializeValuesFromQuery } from '~/access_tokens/utils';
 
 import { useAccessTokens } from '../stores/access_tokens';
 import AccessToken from './access_token.vue';
@@ -44,15 +45,7 @@ export default {
   },
   created() {
     this.setup({
-      filters: [
-        {
-          type: 'state',
-          value: {
-            data: 'active',
-            operator: '=',
-          },
-        },
-      ],
+      ...initializeValuesFromQuery(),
       id: this.id,
       urlCreate: this.accessTokenCreate,
       urlRevoke: this.accessTokenRevoke,

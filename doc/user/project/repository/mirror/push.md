@@ -25,7 +25,8 @@ push mirrors only receive changes when:
 - Commits are pushed to the upstream GitLab repository.
 - An administrator [force-updates the mirror](_index.md#force-an-update).
 
-When you push a change to the upstream repository, the push mirror receives it in five minutes, or one minute if the setting **Only mirror protected branches** is on.
+When you push a change to the upstream repository, the push mirror receives it in five minutes, or
+one minute if the setting **Only mirror protected branches** is on.
 
 When a branch is merged into the default branch and deleted in the source project,
 it is deleted from the remote mirror on the next push. Branches with unmerged

@@ -39,7 +39,7 @@ on your instance, configure these maximum values for diffs:
 
 When a diff reaches 10% of any of these values, the files are shown in a
 collapsed view, with a link to expand the diff. Diffs that exceed any of the
-set values are presented as **Too large** are cannot be expanded in the UI.
+set values are presented as **Too large** and cannot be expanded in the UI.
 
 To configure these values:
 

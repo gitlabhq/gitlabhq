@@ -186,7 +186,7 @@ You should use the
 ### Migrating to object storage
 
 You can migrate the LFS objects from local storage to object storage. The
-processing is done in the background and requires **no downtime**.
+processing is done in the background and requires no downtime.
 
 1. [Configure the object storage](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 1. Migrate the LFS objects:

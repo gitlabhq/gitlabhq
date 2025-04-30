@@ -11,7 +11,7 @@ import {
 import { joinPaths } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { SORT_OPTIONS, DEFAULT_SORT } from '~/access_tokens/constants';
-import { serializeParams, update2WeekFromNow } from '../utils';
+import { serializeParams, update2WeekFromNow, updateUrlWithQueryParams } from '../utils';
 
 /**
  * @typedef {{type: string, value: {data: string, operator: string}}} Filter
@@ -133,6 +133,7 @@ export const useAccessTokens = defineStore('accessTokens', {
       this.busy = true;
       try {
         const url = Api.buildUrl(this.urlShow.replace(':id', this.id));
+        updateUrlWithQueryParams({ params: this.params, sort: this.sort });
         const { data, perPage, total } = await fetchTokens({
           url,
           id: this.id,
@@ -249,9 +250,11 @@ export const useAccessTokens = defineStore('accessTokens', {
      *    @param {string} options.urlRotate
      *    @param {string} options.urlShow
      */
-    setup({ filters, id, urlCreate, urlRevoke, urlRotate, urlShow }) {
+    setup({ filters, id, page, sorting, urlCreate, urlRevoke, urlRotate, urlShow }) {
       this.filters = filters;
       this.id = id;
+      this.page = page;
+      this.sorting = sorting;
       this.urlCreate = urlCreate;
       this.urlRevoke = urlRevoke;
       this.urlRotate = urlRotate;

@@ -53,7 +53,7 @@ The method you choose depends on whether the language already has a Highlight.js
 
 We can add third-party dependencies to our [`package.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/package.json) and import the dependency in [`highlight_js_language_loader`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/content_editor/services/highlight_js_language_loader.js#L260).
 
-**Example:**
+Example:
 
 - Add the dependency to `package.json`:
 

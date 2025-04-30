@@ -452,16 +452,19 @@ deleting feature flags.
 To migrate an `ops` feature flag to an application setting:
 
 1. In application settings, create or identify an existing `JSONB` column to store the setting.
-1. Write a migration to backfill the column.
-   For an example, see [merge request 148014](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148014).
+1. Write a migration to backfill the column. Avoid using `Feature.enabled?` in the migration. Use the `feature_flag_enabled?` migration helper method.
 1. Optional. In application settings, update the documentation for the setting.
 1. In the **Admin** area, create a setting to enable or disable the feature.
 1. Replace the feature flag everywhere with the application setting.
 1. Update all the relevant documentation pages.
-1. Mark the backfill migration as a `NOOP` and remove the feature flag after the mandatory upgrade path is crossed.
-   For an example, see [merge request 151080](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151080).
+1. To remove a feature flag from an existing migration, replace `Feature.enabled?` with migration helper method `feature_flag_enabled?`.
+
+{{< alert type="warning" >}}
 
 The changes to backfill application settings and use the settings in the code must be merged in the same milestone.
+
+{{< /alert >}}
+
 If frontend changes are merged in a later milestone, you should add documentation about how to update the settings
 by using the [application settings API](../../api/settings.md) or the Rails console.
 

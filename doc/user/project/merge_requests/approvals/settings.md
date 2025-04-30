@@ -123,7 +123,7 @@ When you change this field, it can affect all open merge requests depending on t
 
 - If users could edit approval rules previously, and you disable this behavior,
   GitLab updates all open merge requests to enforce the approval rules.
-- If users could **not** edit approval rules previously, and you enable approval rule
+- If users could not edit approval rules previously, and you enable approval rule
   editing, open merge requests remain unchanged. This preserves any changes already
   made to approval rules in those merge requests.
 

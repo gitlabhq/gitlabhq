@@ -24,7 +24,7 @@ content changes.
 To configure the snippet size limit, you can use the Rails console
 or the [Application settings API](../../api/settings.md).
 
-The limit **must** be in bytes.
+The limit must be in bytes.
 
 This setting is not available in the [**Admin** area settings](../settings/_index.md).
 
