@@ -193,6 +193,9 @@ export default {
     toggleClosedItemsClasses() {
       return { '!gl-px-3 gl-pb-3 gl-pt-2': !this.hasAllLinkedItemsHidden };
     },
+    shouldShowRelationshipsWidget() {
+      return this.linkedWorkItems.length > 0 || this.canAdminWorkItemLink;
+    },
   },
   mounted() {
     this.showLabels = getToggleFromLocalStorage(this.showLabelsLocalStorageKey);
@@ -333,6 +336,7 @@ export default {
 </script>
 <template>
   <crud-component
+    v-if="shouldShowRelationshipsWidget"
     ref="widget"
     :anchor-id="widgetName"
     :title="$options.i18n.title"

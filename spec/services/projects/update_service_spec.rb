@@ -31,6 +31,10 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
     let_it_be(:developer) { create(:user) }
     let_it_be(:owner) { create(:user) }
 
+    before do
+      stub_container_registry_config(enabled: false)
+    end
+
     context 'when changing restrict_user_defined_variables' do
       using RSpec::Parameterized::TableSyntax
 
@@ -615,7 +619,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         end
 
         def stub_rename_base_repository_in_registry(dry_run:, result: nil)
-          options = { name: new_name }
+          options = { name: new_name, project: project }
           options[:dry_run] = true if dry_run
 
           allow(ContainerRegistry::GitlabApiClient)
@@ -625,7 +629,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         end
 
         def expect_rename_of_base_repository_in_registry(dry_run:, path: nil)
-          options = { name: new_name }
+          options = { name: new_name, project: project }
           options[:dry_run] = true if dry_run
 
           expect(ContainerRegistry::GitlabApiClient)

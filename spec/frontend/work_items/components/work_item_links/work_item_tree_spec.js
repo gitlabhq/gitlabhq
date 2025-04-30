@@ -466,6 +466,15 @@ describe('WorkItemTree', () => {
     expect(findShowClosedButton().exists()).toBe(true);
   });
 
+  it('does not render the component if there are no children and user does not have permission to update children', async () => {
+    await createComponent({
+      workItemHierarchyTreeHandler: jest.fn().mockResolvedValue(workItemHierarchyTreeEmptyResponse),
+      canUpdateChildren: false,
+    });
+
+    expect(wrapper.findByTestId('work-item-tree').exists()).toBe(false);
+  });
+
   describe('when there is show URL parameter', () => {
     it('emits `show-modal` event when child work item id is encoded in the URL', async () => {
       const encodedWorkItemId = btoa(JSON.stringify({ id: 31 }));

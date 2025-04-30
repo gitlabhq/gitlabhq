@@ -460,7 +460,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
         context 'when the dry run in the registry succeeds' do
           it 'allows the transfer to continue' do
             expect(ContainerRegistry::GitlabApiClient).to receive(:move_repository_to_namespace).with(
-              project.full_path, namespace: target.full_path, dry_run: true)
+              project.full_path, namespace: target.full_path, project: project, dry_run: true)
 
             expect(execute_transfer).to eq true
           end
@@ -472,7 +472,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
           before do
             expect(ContainerRegistry::GitlabApiClient)
               .to receive(:move_repository_to_namespace)
-              .with(project.full_path, namespace: target.full_path, dry_run: true)
+              .with(project.full_path, namespace: target.full_path, project: project, dry_run: true)
               .and_return(dry_run_result)
           end
 

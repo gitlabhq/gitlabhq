@@ -1403,7 +1403,10 @@ module Ci
       return unless bridge_waiting?
       return unless current_user.can?(:update_pipeline, source_bridge.pipeline)
 
-      Ci::EnqueueJobService.new(source_bridge, current_user: current_user).execute(&:pending!) # rubocop:disable CodeReuse/ServiceClass
+      # Before enqueuing the trigger job again, its status must be one of :created, :skipped, :manual, and :scheduled.
+      # Also, we use `skip_pipeline_processing` to prevent processing the pipeline to avoid redundant process.
+      source_bridge.created!(current_user, skip_pipeline_processing: true)
+      Ci::EnqueueJobService.new(source_bridge, current_user: current_user).execute # rubocop:disable CodeReuse/ServiceClass
     end
 
     # EE-only

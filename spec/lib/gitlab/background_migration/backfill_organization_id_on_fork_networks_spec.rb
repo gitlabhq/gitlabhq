@@ -41,7 +41,23 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillOrganizationIdOnForkNetworks
     }
   end
 
+  let(:connection) { ActiveRecord::Base.connection }
+
   subject(:perform_migration) { described_class.new(**args).perform }
+
+  around do |example|
+    connection.transaction do
+      connection.execute(<<~SQL)
+        ALTER TABLE fork_networks ALTER COLUMN organization_id DROP NOT NULL;
+      SQL
+
+      example.run
+
+      connection.execute(<<~SQL)
+        ALTER TABLE fork_networks ALTER COLUMN organization_id SET NOT NULL;
+      SQL
+    end
+  end
 
   context 'when root project exists' do
     let(:fork_network) { fork_networks_table.create!(root_project_id: project.id) }

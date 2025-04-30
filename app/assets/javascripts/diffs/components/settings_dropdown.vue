@@ -23,7 +23,13 @@ export default {
     },
     viewDiffsFileByFile: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
+    },
+    fileByFileSupported: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   methods: {
@@ -68,6 +74,7 @@ export default {
             {{ $options.i18n.whitespace }}
           </gl-form-checkbox>
           <gl-form-checkbox
+            v-if="fileByFileSupported"
             data-testid="file-by-file"
             class="gl-mb-0"
             :checked="viewDiffsFileByFile"

@@ -2,7 +2,7 @@
 
 class ForkNetwork < ApplicationRecord
   belongs_to :root_project, class_name: 'Project'
-  belongs_to :organization, class_name: 'Organizations::Organization', optional: true
+  belongs_to :organization, class_name: 'Organizations::Organization'
 
   has_many :fork_network_members
   has_many :projects, through: :fork_network_members

@@ -14589,7 +14589,7 @@ CREATE TABLE fork_networks (
     id bigint NOT NULL,
     root_project_id bigint,
     deleted_root_project_name character varying,
-    organization_id bigint
+    organization_id bigint NOT NULL
 );
 
 CREATE SEQUENCE fork_networks_id_seq

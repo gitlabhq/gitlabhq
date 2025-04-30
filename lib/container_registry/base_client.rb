@@ -54,13 +54,13 @@ module ContainerRegistry
 
           Auth::ContainerRegistryAuthenticationService.pull_nested_repositories_access_token(config[:path])
         when :push_pull_nested_repositories_token
-          return unless config[:path]
+          return unless [:path, :project].all? { |key| config[key].present? }
 
-          Auth::ContainerRegistryAuthenticationService.push_pull_nested_repositories_access_token(config[:path])
+          Auth::ContainerRegistryAuthenticationService.push_pull_nested_repositories_access_token(config[:path], project: config[:project])
         when :push_pull_move_repositories_access_token
-          return unless config[:path].present? && config[:new_path].present?
+          return unless [:path, :new_path, :project].all? { |key| config[key].present? }
 
-          Auth::ContainerRegistryAuthenticationService.push_pull_move_repositories_access_token(config[:path], config[:new_path])
+          Auth::ContainerRegistryAuthenticationService.push_pull_move_repositories_access_token(config[:path], config[:new_path], project: config[:project])
         end
       end
     end

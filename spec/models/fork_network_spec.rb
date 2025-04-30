@@ -2,13 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe ForkNetwork do
+RSpec.describe ForkNetwork, feature_category: :source_code_management do
   include ProjectForksHelper
+
+  describe "validations" do
+    it { is_expected.to belong_to(:organization) }
+  end
 
   describe '#add_root_as_member' do
     it 'adds the root project as a member when creating a new root network' do
       project = create(:project)
-      fork_network = described_class.create!(root_project: project)
+      fork_network = described_class.create!(root_project: project, organization_id: project.organization_id)
 
       expect(fork_network.projects).to include(project)
     end

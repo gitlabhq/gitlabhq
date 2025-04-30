@@ -197,7 +197,7 @@ export default {
   line-height: 16px;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-left: calc(var(--level) * 16px);
+  margin-left: calc(var(--level) * var(--file-row-level-padding, 16px));
 }
 
 .file-row-name .file-row-icon {

@@ -120,6 +120,15 @@ describe('WorkItemRelationships', () => {
     expect(findWorkItemRelationshipForm().exists()).toBe(false);
   });
 
+  it('does not render the component if there are no linked items and user does not have permission to admin work item link', async () => {
+    await createComponent({
+      workItemLinkedItemsHandler: jest.fn().mockResolvedValue(workItemEmptyLinkedItemsResponse),
+      canAdminWorkItemLink: false,
+    });
+
+    expect(wrapper.findByTestId('work-item-relationships').exists()).toBe(false);
+  });
+
   it.each`
     hasBlockedWorkItemsFeature | emptyStateMessage
     ${true}                    | ${"Link items together to show that they're related or that one is blocking others."}

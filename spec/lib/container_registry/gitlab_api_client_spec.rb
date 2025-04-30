@@ -9,6 +9,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
   include_context 'container registry client stubs'
 
   let(:path) { 'namespace/path/to/repository' }
+  let_it_be(:project) { create(:project) }
 
   shared_examples 'returning the correct result based on status code' do
     where(:dry_run, :status_code, :expected_result) do
@@ -710,7 +711,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
     let(:dry_run) { true }
     let(:expected_dry_run) { true }
 
-    subject(:request) { described_class.rename_base_repository_path(path, name: name, dry_run: true) }
+    subject(:request) { described_class.rename_base_repository_path(path, name: name, project: project, dry_run: true) }
 
     context 'when both path and name are present' do
       before do
@@ -738,7 +739,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
         let(:expected_dry_run) { false }
 
         it 'defaults to false' do
-          described_class.rename_base_repository_path(path, name: 'newname')
+          described_class.rename_base_repository_path(path, name: 'newname', project: project)
         end
       end
     end
@@ -761,7 +762,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
     let(:expected_dry_run) { true }
     let(:namespace) { 'group_a/subgroup_b' }
 
-    subject(:request) { described_class.move_repository_to_namespace(path, namespace: namespace, dry_run: dry_run) }
+    subject(:request) { described_class.move_repository_to_namespace(path, namespace: namespace, project: project, dry_run: dry_run) }
 
     context 'when both path and namespace are present' do
       before do
@@ -789,7 +790,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
         let(:expected_dry_run) { false }
 
         it 'defaults to false' do
-          described_class.move_repository_to_namespace(path, namespace: namespace)
+          described_class.move_repository_to_namespace(path, namespace: namespace, project: project)
         end
       end
     end

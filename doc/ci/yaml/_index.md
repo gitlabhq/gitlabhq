@@ -5059,7 +5059,7 @@ In this example, the job has two steps:
 **Additional details**:
 
 - A step can have either a `script` or a `step` key, but not both.
-- A `run` configuration cannot be used together with existing [`script`](#script) keyword.
+- A `run` configuration cannot be used together with existing [`script`](#script), [`after_script`](#after_script) or [`before_script`](#before_script) keywords.
 - Multi-line scripts can be defined using [YAML block scalar syntax](script.md#split-long-commands).
 
 ### `script`

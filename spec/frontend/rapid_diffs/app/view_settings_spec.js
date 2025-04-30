@@ -23,6 +23,7 @@ jest.mock('~/diffs/components/diff_app_controls.vue', () => ({
         'data-added-lines': JSON.stringify(this.addedLines),
         'data-removed-lines': JSON.stringify(this.removedLines),
         'data-diffs-count': JSON.stringify(this.diffsCount),
+        'data-file-by-file-supported': JSON.stringify(this.fileByFileSupported),
       },
     });
   },
@@ -86,6 +87,7 @@ describe('View settings', () => {
     expect(getProp('addedLines')).toBe(1);
     expect(getProp('removedLines')).toBe(2);
     expect(getProp('diffsCount')).toBe(3);
+    expect(getProp('fileByFileSupported')).toBe(false);
   });
 
   it('triggers collapse all files', () => {

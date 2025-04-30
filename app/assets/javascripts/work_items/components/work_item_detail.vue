@@ -1032,7 +1032,7 @@ export default {
               @click="$emit('close')"
             />
           </div>
-          <div :class="{ 'gl-mt-3': !editMode }">
+          <div>
             <work-item-title
               v-if="workItem.title && shouldShowAncestors"
               ref="title"

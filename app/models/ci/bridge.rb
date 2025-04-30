@@ -36,6 +36,10 @@ module Ci
         end
       end
 
+      event :created do
+        transition all => :created
+      end
+
       event :pending do
         transition all => :pending
       end

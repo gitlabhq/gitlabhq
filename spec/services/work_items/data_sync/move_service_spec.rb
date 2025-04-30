@@ -139,7 +139,7 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
           author: original_work_item.author,
           title: original_work_item.title,
           description: original_work_item.description,
-          state_id: original_work_item.state_id,
+          state_id: original_work_item.reload.state_id,
           created_at: original_work_item.reload.created_at,
           updated_by: original_work_item.updated_by,
           updated_at: original_work_item.reload.updated_at,
@@ -162,6 +162,15 @@ RSpec.describe WorkItems::DataSync::MoveService, feature_category: :team_plannin
       end
 
       it_behaves_like 'cloneable and moveable work item'
+
+      context 'when original work item is closed', :freeze_time do
+        before do
+          original_work_item.update_columns(state_id: 2)
+          original_work_item_attrs[:state_id] = 2
+        end
+
+        it_behaves_like 'cloneable and moveable work item'
+      end
 
       context 'when moving a project level work item to same project' do
         let(:target_namespace) { project }

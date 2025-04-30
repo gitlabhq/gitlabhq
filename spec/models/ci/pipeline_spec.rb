@@ -5523,7 +5523,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         let(:current_user) { owner }
 
         context 'when the downstream has strategy: depend' do
-          it 'marks source bridge as pending' do
+          it 'enqueues the source bridge and marks it as pending' do
             expect { reset_bridge }
               .to change { bridge.reload.status }
               .to('pending')
@@ -5604,6 +5604,18 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
                 expect { reset_bridge }.to not_change { bridge.status }
                   .and not_change { upstream_bridge.status }
               end
+            end
+          end
+
+          context 'when the source bridge has a resource group' do
+            before do
+              bridge.update!(resource_group: create(:ci_resource_group, project: bridge.project))
+            end
+
+            it 'enqueues the source bridge and marks it as waiting_for_resource' do
+              expect { reset_bridge }
+                .to change { bridge.reload.status }
+                .to('waiting_for_resource')
             end
           end
         end

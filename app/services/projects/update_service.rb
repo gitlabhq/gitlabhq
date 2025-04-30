@@ -131,7 +131,8 @@ module Projects
       end
 
       dry_run = ContainerRegistry::GitlabApiClient.rename_base_repository_path(
-        project.full_path, name: params[:path], dry_run: true)
+        project.full_path, name: params[:path], project: project, dry_run: true
+      )
 
       return if dry_run == :accepted
 

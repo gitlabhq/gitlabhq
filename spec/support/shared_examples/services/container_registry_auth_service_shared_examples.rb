@@ -199,6 +199,24 @@ end
 RSpec.shared_examples 'a container registry auth service' do
   include_context 'container registry auth service context'
 
+  let(:push_delete_patterns_meta) { {} }
+
+  shared_examples 'returning tag name patterns when tag rules exist' do
+    context 'when the project has protection rules' do
+      let(:push_delete_patterns_meta) { { 'tag_immutable_patterns' => %w[immutable1 immutable2] } }
+
+      before do
+        create(:container_registry_protection_tag_rule, project: project, tag_name_pattern: 'mutable')
+        create(:container_registry_protection_tag_rule, :immutable, project: project, tag_name_pattern: 'immutable1')
+        create(:container_registry_protection_tag_rule, :immutable, project: project, tag_name_pattern: 'immutable2')
+      end
+
+      it_behaves_like 'having the correct scope'
+      it_behaves_like 'a valid token'
+      it_behaves_like 'not a container repository factory'
+    end
+  end
+
   describe '.full_access_token' do
     let_it_be(:project) { create(:project) }
 
@@ -275,14 +293,15 @@ RSpec.shared_examples 'a container registry auth service' do
   describe '.push_pull_nested_repositories_access_token' do
     let_it_be(:project) { create(:project) }
     let(:name) { project.full_path }
-    let(:token) { described_class.push_pull_nested_repositories_access_token(name) }
+    let(:token) { described_class.push_pull_nested_repositories_access_token(name, project:) }
+
     let(:access) do
       [
         {
           'type' => 'repository',
           'name' => project.full_path,
           'actions' => %w[pull push],
-          'meta' => { 'project_path' => project.full_path }
+          'meta' => { 'project_path' => project.full_path }.merge(push_delete_patterns_meta)
         },
         {
           'type' => 'repository',
@@ -296,7 +315,7 @@ RSpec.shared_examples 'a container registry auth service' do
     subject { { token: token } }
 
     it 'sends override project path as true for the access token' do
-      expect(described_class).to receive(:access_token).with(anything, use_key_as_project_path: true)
+      expect(described_class).to receive(:access_token).with(anything, project: project, use_key_as_project_path: true)
 
       subject
     end
@@ -312,20 +331,23 @@ RSpec.shared_examples 'a container registry auth service' do
       it_behaves_like 'a valid token'
       it_behaves_like 'not a container repository factory'
     end
+
+    it_behaves_like 'returning tag name patterns when tag rules exist'
   end
 
   describe '.push_pull_move_repositories_access_token' do
     let_it_be(:project) { create(:project) }
     let_it_be(:group) { create(:group) }
     let(:name) { project.full_path }
-    let(:token) { described_class.push_pull_move_repositories_access_token(name, group.full_path) }
+    let(:token) { described_class.push_pull_move_repositories_access_token(name, group.full_path, project:) }
+
     let(:access) do
       [
         {
           'type' => 'repository',
           'name' => project.full_path,
           'actions' => %w[pull push],
-          'meta' => { 'project_path' => project.full_path }
+          'meta' => { 'project_path' => project.full_path }.merge(push_delete_patterns_meta)
         },
         {
           'type' => 'repository',
@@ -337,7 +359,7 @@ RSpec.shared_examples 'a container registry auth service' do
           'type' => 'repository',
           'name' => "#{group.full_path}/*",
           'actions' => %w[push],
-          'meta' => { 'project_path' => group.full_path }
+          'meta' => { 'project_path' => group.full_path }.merge(push_delete_patterns_meta)
         }
       ]
     end
@@ -355,6 +377,8 @@ RSpec.shared_examples 'a container registry auth service' do
       it_behaves_like 'a valid token'
       it_behaves_like 'not a container repository factory'
     end
+
+    it_behaves_like 'returning tag name patterns when tag rules exist'
   end
 
   context 'user authorization' do
