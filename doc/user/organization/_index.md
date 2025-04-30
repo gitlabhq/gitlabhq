@@ -155,5 +155,4 @@ The Organization description field supports a limited subset of [GitLab Flavored
 
 ## Related topics
 
-- [Organization developer documentation](../../development/organization/_index.md)
 - [Organization design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/)

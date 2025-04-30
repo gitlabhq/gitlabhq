@@ -124,7 +124,7 @@ the difference between Geo and Gitaly Cluster, see [Comparison to Geo](../gitaly
 
 ## How it works
 
-This is a brief summary of how Geo works in your GitLab environment. For a more detailed information, see the [Geo Development page](../../development/geo.md).
+This is a brief summary of how Geo works in your GitLab environment. For more details, see the Geo development documentation.
 
 Your Geo instance can be used for cloning and fetching projects, in addition to reading any data. This makes working with large repositories over large distances much faster.
 

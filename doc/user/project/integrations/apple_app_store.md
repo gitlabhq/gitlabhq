@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: This is a GitLab Incubation Engineering program. No technical writer assigned to this group.
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Apple App Store Connect
 ---
 
@@ -19,7 +19,7 @@ title: Apple App Store Connect
 
 {{< /history >}}
 
-This feature is part of [Mobile DevOps](../../../ci/mobile_devops/_index.md) developed by [GitLab Incubation Engineering](https://handbook.gitlab.com/handbook/engineering/development/incubation/).
+This feature is part of [Mobile DevOps](../../../ci/mobile_devops/_index.md) developed by GitLab.
 The feature is still in development, but you can:
 
 - [Request a feature](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=feature_request).

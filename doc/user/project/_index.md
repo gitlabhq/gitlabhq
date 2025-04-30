@@ -40,7 +40,7 @@ To create a blank project:
 Built-in templates populate a new project with files to help you get started.
 These templates are sourced from the [`project-templates`](https://gitlab.com/gitlab-org/project-templates)
 and [`pages`](https://gitlab.com/pages) groups.
-Anyone can [contribute to built-in project templates](../../development/project_templates/add_new_template.md).
+Anyone can contribute to built-in project templates.
 
 To create a project from a built-in template:
 

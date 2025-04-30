@@ -15,4 +15,4 @@ If you're learning about GitLab, to find more tutorial content:
   to find video tutorials.
 
 If you find an article, video, or other resource that would be a
-great addition to the tutorial pages, add it in a [merge request](../development/documentation/_index.md).
+great addition to the tutorial pages, add it in a merge request.

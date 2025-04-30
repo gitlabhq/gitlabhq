@@ -5,8 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Detect
 ---
 
-Detect vulnerabilities in your project's repository and your application's behavior. Enable GitLab
-security tools for your project's entire lifecycle, starting before the first commit.
+Detect vulnerabilities in your project's repository and your application's behavior throughout the
+software development lifecycle. During development, automated scanning provides immediate contextual
+feedback, enabling developers to address potential vulnerabilities early. After development, you can
+schedule or run security scanning manually, to identify new risks. A vulnerability report collates
+all relevant details, enabling efficient vulnerability management.
+
+To get the best from GitLab vulnerability detection it's important to understand:
+
+- What aspects of your application or repository are scanned.
+- What determines which scanners run.
+- When vulnerability detection occurs.
+- How to evaluate the results of vulnerability detection.
 
 ## Detection coverage
 
@@ -42,43 +52,38 @@ Behavioral testing tools include:
 - API security testing: Test your application's API for known attacks and vulnerabilities to input.
 - Coverage-guided fuzz testing: Test your application for unexpected behavior.
 
-## Early detection
+## Scanner selection
 
-Enable GitLab application security scanning tools from before the first commit. Early detection
-provides benefits such as easier, quicker, and cheaper remediation, compared to detection later in
-the software development lifecycle. GitLab provides developers immediate feedback of security
-scanning, enabling them to address vulnerabilities early.
+Security scanners are enabled for a project by either:
 
-Security scans:
+- Adding the scanner's CI/CD template to the `.gitlab-ci.yml` file, either directly or by using
+  AutoDevOps.
+- Enforcing the scanner by using a scan execution policy, pipeline execution policy, or
+  compliance framework. This enforcement can be applied directly to the project or inherited from
+  the project's parent group.
 
-- Run automatically in the CI/CD pipeline when developers commit changes. Vulnerabilities detected
-  in a feature branch are listed, enabling you to investigate and address them before they're merged
-  into the default branch. For more details, see
-  [Security scan results](security_scan_results.md).
-- Can be scheduled or run manually to detect vulnerabilities. When a project is idle and no changes
-  are being made, security scans configured to run in a CI/CD pipeline are not run. Risks such as
-  newly-discovered vulnerabilities can go undetected in this situation. Running security scans
-  outside a CI/CD pipeline helps address this risk. For more details, see
-  [Scan execution policies](../policies/scan_execution_policies.md).
+## Vulnerability detection
 
-## Prevention
+Vulnerability detection runs in a CI/CD pipeline when:
 
-Security scanning in the pipeline can help minimize the risk of vulnerabilities in the default
-branch:
+- Code changes are committed and pushed to the repository.
+- A pipeline is run manually.
+- Started manually, for example, a DAST on-demand scan.
+- Scheduled by a scan execution policy.
 
-- Extra approval can be enforced on merge requests according to the results of pipeline
-  security scanning. For example, you can require that a member of the security team **also**
-  approve a merge request if one or more critical vulnerabilities are detected in the code
-  changes. For more details, see
-  [Merge request approval policies](../policies/merge_request_approval_policies.md).
-- Secret push protection can prevent commits being pushed to GitLab if they contain secret
-  information - for example, a GitLab personal access token.
+Vulnerability detection runs by default in branch pipelines, and in merge request pipelines if it's
+enabled in the CI/CD template.
 
-## Vulnerability management workflow
+- On branch pipelines:
 
-Vulnerabilities detected in the default branch are listed in the vulnerability report. To address
-these vulnerabilities, follow the vulnerability management workflow:
+  - Detect vulnerabilities on feature branches before you merge them into the default branch.
+  - Investigate and respond to new vulnerabilities in your long-lived branches.
+  - Run periodic, scheduled scans of your projects to identify new vulnerabilities, even if development has stopped.
 
-- Triage: Evaluate vulnerabilities to identify those that need immediate attention.
-- Analyze: Examine details of a vulnerability to determine if it can and should be remediated.
-- Remediate: Resolve the root cause of the vulnerability, reduce the associated risks, or both.
+- On merge request pipelines:
+
+  - Enforce additional approval requirements to manage the risk of new vulnerabilities.
+  - Keep your project open to contributions while securing it against adversarial changes.
+
+View the results of security scanning in either the branch pipeline or the merge request.
+Vulnerabilities detected in the default branch are listed in the vulnerability report.

@@ -144,6 +144,9 @@
           "username": {
             "type": "string"
           },
+          "public_email": {
+            "type": ["string", "null"]
+          },
           "id": {
             "type": "integer"
           },
@@ -177,6 +180,12 @@
         "username": {
           "type": "string"
         },
+        "public_email": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "id": {
           "type": "integer"
         },
@@ -205,6 +214,12 @@
         },
         "username": {
           "type": "string"
+        },
+        "public_email": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "id": {
           "type": "integer"

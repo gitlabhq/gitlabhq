@@ -156,7 +156,6 @@ Key Highlights:
 
 Designed for simplicity and performance, Ollama empowers users to harness the power of LLMs without the complexity of traditional AI infrastructure. Further details on setup and supported models will be covered later in the documentation.
 
-- [Ollama Installation](../../development/ai_features/local_models.md)
 - [Ollama Model Support](https://ollama.com/search)
 
 ## Installation

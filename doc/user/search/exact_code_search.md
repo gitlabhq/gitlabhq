@@ -47,6 +47,17 @@ and is used by default in groups where the feature is enabled.
 In user preferences, you can [disable exact code search](../profile/preferences.md#disable-exact-code-search)
 to use [advanced search](advanced_search.md) instead.
 
+## Available scopes
+
+Scopes describe the type of data you're searching.
+The following scopes are available for exact code search:
+
+| Search level | Code | Notes                                                                                                                                                                    |
+|--------------|:----:|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Global       |      | An administrator can [disable global search scopes](_index.md#disable-global-search-scopes). On GitLab Self-Managed, an administrator can enable global search with the [`zoekt_cross_namespace_search`](exact_code_search.md#global-code-search) feature flag. |
+| Group        |  ✓   |                                                                                                                                                                          |
+| Project      |  ✓   |                                                                                                                                                                          |
+
 ## Zoekt search API
 
 {{< history >}}

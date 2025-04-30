@@ -25,6 +25,17 @@ For code search, GitLab uses these types in this order:
   or when you search against a non-default branch.
   This type does not support group or global search.
 
+## Available scopes
+
+Scopes describe the type of data you're searching.
+The following scopes are available for basic search:
+
+| Search level | Code | Comments | Commits | Epics | Issues | Merge requests | Milestones | Projects | Users | Wikis | Notes                                              |
+|--------------|:----:|:--------:|:-------:|:-----:|:------:|:--------------:|:----------:|:--------:|:-----:|:-----:|----------------------------------------------------|
+| Global       |      |          |         |       |   ✓    |       ✓        |     ✓      |    ✓     |   ✓   |       | An administrator can [disable global search scopes](#disable-global-search-scopes). |
+| Group        |      |          |         |   ✓   |   ✓    |       ✓        |     ✓      |    ✓     |   ✓   |       |                                                    |
+| Project      |  ✓   |    ✓     |    ✓    |       |   ✓    |       ✓        |     ✓      |          |   ✓   |   ✓   |                                                    |
+
 ## Specify a search type
 
 {{< history >}}

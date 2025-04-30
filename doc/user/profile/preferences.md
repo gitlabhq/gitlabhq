@@ -294,7 +294,7 @@ Change localization settings such as your language, calendar start day, and time
 
 ### Change your display language on the GitLab UI
 
-GitLab supports multiple languages on the UI. To help improve translations or request support for an unlisted language, view [Translating GitLab](../../development/i18n/translation.md).
+GitLab supports multiple languages on the UI.
 
 To choose a language for the GitLab UI:
 

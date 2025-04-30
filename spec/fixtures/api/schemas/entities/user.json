@@ -38,6 +38,9 @@
     "username": {
       "type": "string"
     },
+    "public_email": {
+      "type": ["string", "null"]
+    },
     "status_tooltip_html": {
       "$ref": "../types/nullable_string.json"
     }

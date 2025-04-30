@@ -276,6 +276,15 @@ Placeholder users are created per [import source](#supported-import-sources) and
 - If you import the same project twice, but to a different top-level group on the destination instance, the second import
   creates new placeholder users under that top-level group.
 
+{{< alert type="note" >}}
+
+Placeholder users are associated only with the top-level group.
+When you delete a subgroup or project, their placeholder users
+no longer reference any contributions in the top-level group.
+For testing, you should use a designated top-level group.
+
+{{< /alert >}}
+
 When a user [accepts the reassignment](#accept-contribution-reassignment),
 subsequent imports from the same source instance to the same top-level group or
 subgroup on the destination instance do not create placeholder users.

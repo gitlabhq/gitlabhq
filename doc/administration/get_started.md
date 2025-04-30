@@ -105,7 +105,6 @@ Unlike other monitoring solutions (for example, Zabbix or New Relic), Prometheus
   [these GitLab metrics](monitoring/prometheus/gitlab_metrics.md#metrics-available).
 - Learn more about GitLab [bundled software metrics](monitoring/prometheus/_index.md#bundled-software-metrics).
 - Prometheus and its exporters are on by default. However, you need to [configure the service](monitoring/prometheus/_index.md#configuring-prometheus).
-- Learn more about [GitLab architecture](../development/architecture.md).
 - Find out why [application performance metrics](https://about.gitlab.com/blog/2020/05/07/working-with-performance-metrics/) matter.
 - Integrate Grafana to [build visual dashboards](https://youtu.be/f4R7s0An1qE) based on performance metrics.
 

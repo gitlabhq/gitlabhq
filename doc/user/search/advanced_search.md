@@ -38,6 +38,17 @@ users, epics, code, comments, commits, and wikis.
 - For [GitLab Self-Managed](../../subscriptions/self_managed/_index.md), an administrator must
   [enable advanced search](../../integration/advanced_search/elasticsearch.md#enable-advanced-search).
 
+## Available scopes
+
+Scopes describe the type of data you're searching.
+The following scopes are available for advanced search:
+
+| Search level | Code | Comments | Commits | Epics | Issues | Merge requests | Milestones | Projects | Users | Wikis | Notes                                                                                                                                                                                                                                          |
+|--------------|:----:|:--------:|:-------:|:-----:|:------:|:--------------:|:----------:|:--------:|:-----:|:-----:|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Global       |  ✓   |    ✓     |    ✓    |   ✓   |   ✓    |       ✓        |     ✓      |    ✓     |   ✓   |   ✓   | An administrator can [disable global search scopes](_index.md#disable-global-search-scopes). On GitLab Self-Managed, global search is not available when limited indexing is enabled by default. An administrator can [enable global search for limited indexing](../../integration/advanced_search/elasticsearch.md#indexed-namespaces). |
+| Group        |  ✓   |    ✓     |    ✓    |   ✓   |   ✓    |       ✓        |     ✓      |    ✓     |   ✓   |   ✓   |                                                                                                                                                                                                                                                |
+| Project      |  ✓   |    ✓     |    ✓    |       |   ✓    |       ✓        |     ✓      |          |   ✓   |   ✓   |                                                                                                                                                                                                                                                |
+
 ## Syntax
 
 <!-- Remember to also update the tables in `doc/drawers/advanced_search_syntax.md` -->

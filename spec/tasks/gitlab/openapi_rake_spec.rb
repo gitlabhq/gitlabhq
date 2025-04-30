@@ -37,5 +37,30 @@ RSpec.describe 'gitlab:openapi namespace rake tasks', :silence_stdout, feature_c
           .and raise_error(SystemExit)
       end
     end
+
+    context 'when debug is enabled' do
+      let(:documentation) { { 'outdated' => true } }
+      let(:verbose) { Rake::FileUtilsExt.verbose }
+      let(:nowrite) { Rake::FileUtilsExt.nowrite }
+
+      before do
+        stub_env('OPENAPI_CHECK_DEBUG', 'true')
+
+        Rake::FileUtilsExt.verbose(false)
+        Rake::FileUtilsExt.nowrite(true)
+      end
+
+      after do
+        Rake::FileUtilsExt.verbose(verbose)
+        Rake::FileUtilsExt.nowrite(nowrite)
+      end
+
+      it 'outputs a diff' do
+        expected_command = 'diff -u doc/api/openapi/openapi_v2.yaml doc/api/openapi/openapi_v2.yaml.generated'
+
+        expect(main_object).to receive(:sh).with(expected_command).and_return(true)
+        expect { run_rake_task('gitlab:openapi:check_docs') }.to raise_error(SystemExit)
+      end
+    end
   end
 end

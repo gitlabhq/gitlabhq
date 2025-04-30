@@ -48,6 +48,12 @@ namespace :gitlab do
         puts '#'
         puts heading
 
+        if ENV['OPENAPI_CHECK_DEBUG'] == 'true'
+          yaml_content = Gitlab::Json.parse(File.read('tmp/openapi_swagger_doc.json')).to_yaml
+          File.write("doc/api/openapi/openapi_v2.yaml.generated", yaml_content)
+          sh 'diff -u doc/api/openapi/openapi_v2.yaml doc/api/openapi/openapi_v2.yaml.generated'
+        end
+
         abort
       end
     end

@@ -113,7 +113,7 @@ For most JSON requests, `POST`, `PUT`, `PATCH`, and `DELETE` are blocked, and th
 | `POST` | `/admin/session`, `/admin/session/destroy` | To allow [Admin Mode for GitLab administrators](https://gitlab.com/groups/gitlab-org/-/epics/2158) |
 | `POST` | Paths ending with `/compare`| Git revision routes. |
 | `POST` | `.git/git-upload-pack` | To allow Git pull/clone. |
-| `POST` | `/api/v4/internal` | [internal API routes](../../development/internal_api/_index.md) |
+| `POST` | `/api/v4/internal` | internal API routes |
 | `POST` | `/admin/sidekiq` | To allow management of background jobs in the **Admin** area |
 | `POST` | `/admin/geo` | To allow updating Geo Nodes in the administrator UI |
 | `POST` | `/api/v4/geo_replication`| To allow certain Geo-specific administrator UI actions on secondary sites |
@@ -190,7 +190,7 @@ To monitor queues and disable jobs:
 
 ### Feature flags
 
-- [Development feature flags](../../development/feature_flags/_index.md) cannot be turned on or off through the API, but can be toggled through the Rails console.
+- Development feature flags cannot be turned on or off through the API, but can be toggled through the Rails console.
 - [The feature flag service](../../operations/feature_flags.md) responds to feature flag checks but feature flags cannot be toggled
 
 ### Geo secondaries

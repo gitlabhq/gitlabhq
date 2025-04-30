@@ -30,7 +30,7 @@ secondary Geo site, you can:
 
 [You can force a resync and reverify individual items](https://gitlab.com/gitlab-org/gitlab/-/issues/364727)
 for all component types managed by the
-[self-service framework](../../../../development/geo/framework.md) using the UI. On the secondary
+self-service framework using the UI. On the secondary
 site, visit **Admin > Geo > Replication**.
 
 However, if this doesn't work, you can perform the same action using the Rails console. The
@@ -469,7 +469,6 @@ destroy_artifacts_not_checksummable
 The `last_sync_failure` error
 `Error syncing repository: 13:fatal: could not read Username for 'https://gitlab.example.com': terminal prompts disabled`
 indicates that JWT authentication is failing during a Geo clone or fetch request.
-See [Geo (development) > Authentication](../../../../development/geo.md#authentication) for more context.
 
 First, check that system clocks are synced. Run the [Health check Rake task](common.md#health-check-rake-task), or
 manually check that `date`, on all Sidekiq nodes on the secondary site and all Puma nodes on the primary site, are the

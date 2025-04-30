@@ -2,21 +2,29 @@
 stage: Security Risk Management
 group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Scheduled pipeline execution policies (Experimental)
+title: Scheduled pipeline execution policies
 ---
 
 {{< details >}}
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Experiment
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14147) as an experiment in GitLab 18.0 with an experimental flag named `scheduled_pipeline_execution_policy_type` defined in the `policy.yml` file.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14147) as an experiment in GitLab 18.0 with a flag named `scheduled_pipeline_execution_policy_type` defined in the `policy.yml` file.
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history. This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 Pipeline execution policies enforce custom CI/CD jobs in your projects' pipelines. With scheduled pipeline execution policies, you can extend this enforcement to run the CI/CD job on a regular cadence (daily, weekly, or monthly), ensuring that compliance scripts, security scans, or other custom CI/CD job are executed even when there are no new commits.
 

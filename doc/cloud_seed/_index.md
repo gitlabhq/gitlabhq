@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: This is a GitLab Incubation Engineering program. No technical writer assigned to this group.
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Cloud Seed
 ---
 
@@ -20,7 +20,7 @@ title: Cloud Seed
 {{< /history >}}
 
 Cloud Seed is an open-source program led
-by [GitLab Incubation Engineering](https://handbook.gitlab.com/handbook/engineering/development/incubation/) in collaboration with
+by GitLab in collaboration with
 [Google Cloud](https://cloud.google.com/).
 
 Cloud Seed combines Heroku-like ease-of-use with hyper-cloud flexibility. We do this by using OAuth 2 to provision
@@ -170,7 +170,7 @@ There are several ways you can contribute to Cloud Seed:
 
 - Use Cloud Seed and [share feedback](https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/feedback/-/issues/new?template=general_feedback).
 - If you are familiar with Ruby on Rails or Vue.js,
-  consider [contributing to GitLab](../development/contributing/_index.md) as a developer.
+  consider contributing to GitLab as a developer.
   - Much of Cloud Seed is an internal module in the GitLab codebase.
 - If you are familiar with GitLab pipelines, consider contributing to
   the [Cloud Seed Library](https://gitlab.com/gitlab-org/incubation-engineering/five-minute-production/library) project.
