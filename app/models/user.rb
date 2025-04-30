@@ -1220,7 +1220,7 @@ class User < ApplicationRecord
   # to the session cookie. When remember me is disabled this method ensures these
   # values aren't set.
   def remember_me!
-    super if ::Gitlab::Database.read_write? && ::Gitlab::CurrentSettings.remember_me_enabled?
+    super if ::Gitlab::Database.read_write? && ::Gitlab::CurrentSettings.allow_user_remember_me?
   end
 
   def forget_me!
@@ -1246,7 +1246,7 @@ class User < ApplicationRecord
   # and compares to the stored value. When remember me is disabled this method ensures
   # the upstream comparison does not happen.
   def remember_me?(token, generated_at)
-    return false unless ::Gitlab::CurrentSettings.remember_me_enabled?
+    return false unless ::Gitlab::CurrentSettings.allow_user_remember_me?
 
     super
   end

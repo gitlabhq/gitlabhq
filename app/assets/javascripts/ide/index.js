@@ -1,14 +1,9 @@
 import Vue from 'vue';
 import { IDE_ELEMENT_ID } from '~/ide/constants';
-import PerformancePlugin from '~/performance/vue_performance_plugin';
 import Translate from '~/vue_shared/translate';
 import { OAuthCallbackDomainMismatchErrorApp } from './oauth_callback_domain_mismatch_error';
 
 Vue.use(Translate);
-
-Vue.use(PerformancePlugin, {
-  components: ['FileTree'],
-});
 
 /**
  * Start the IDE.

@@ -89,7 +89,7 @@ export default {
       :icon="statusIcon"
       :href="badgeHref"
       tabindex="0"
-      @click.native="onClick"
+      @click="onClick"
     >
       {{ badgeText }}
     </gl-badge>

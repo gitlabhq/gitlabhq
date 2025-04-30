@@ -3,6 +3,7 @@
 Rails.application.configure do |config|
   Warden::Manager.after_set_user(scope: :user) do |user, auth, opts|
     Gitlab::Auth::UniqueIpsLimiter.limit_user!(user)
+    Gitlab::Auth::SessionExpireFromInitEnforcer.new(auth, opts).enforce!
 
     activity = Gitlab::Auth::Activity.new(opts)
 
@@ -24,6 +25,7 @@ Rails.application.configure do |config|
   Warden::Manager.after_authentication(scope: :user) do |user, auth, opts|
     ActiveSession.cleanup(user)
     ActiveSession.set_marketing_user_cookies(auth, user) if ::Gitlab.ee? && ::Gitlab.com?
+    Gitlab::Auth::SessionExpireFromInitEnforcer.new(auth, opts).set_login_time
     Gitlab::AnonymousSession.new(auth.request.remote_ip).cleanup_session_per_ip_count
   end
 

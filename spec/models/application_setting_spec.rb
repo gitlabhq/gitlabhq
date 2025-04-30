@@ -2104,6 +2104,32 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
   end
 
+  describe '#session_expire_from_init_enabled?' do
+    subject(:session_expire_from_init_enabled) { setting.session_expire_from_init_enabled? }
+
+    before do
+      setting.session_expire_from_init = true
+    end
+
+    it { is_expected.to be true }
+
+    context 'when session_expire_from_init is set to false' do
+      before do
+        setting.session_expire_from_init = false
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when session_expire_from_init FF is disabled' do
+      before do
+        stub_feature_flags(session_expire_from_init: false)
+      end
+
+      it { is_expected.to be false }
+    end
+  end
+
   context 'for security txt content' do
     it { is_expected.to validate_length_of(:security_txt_content).is_at_most(2048) }
   end

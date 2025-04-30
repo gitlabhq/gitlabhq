@@ -54,4 +54,12 @@ RSpec.describe 'layouts/_flash' do
       expect(rendered).to have_selector(".flash-container.#{flash_container_no_margin_class}")
     end
   end
+
+  describe 'with Warden timedout flash message' do
+    let(:flash) { { 'timedout' => true } }
+
+    it 'does not render info box with the word true in it' do
+      expect(rendered).not_to include('true')
+    end
+  end
 end

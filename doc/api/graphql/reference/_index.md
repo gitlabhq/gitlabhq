@@ -42119,7 +42119,6 @@ Represents a workspaces agent config.
 | <a id="workspacesagentconfigannotations"></a>`annotations` | [`[KubernetesAnnotation!]!`](#kubernetesannotation) | Annotations to apply to Kubernetes objects. |
 | <a id="workspacesagentconfigclusteragent"></a>`clusterAgent` | [`ClusterAgent!`](#clusteragent) | Cluster agent that the workspaces agent config belongs to. |
 | <a id="workspacesagentconfigcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the workspaces agent config was created. |
-| <a id="workspacesagentconfigdefaultmaxhoursbeforetermination"></a>`defaultMaxHoursBeforeTermination` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Deprecated** in GitLab 17.9. Field is not used. |
 | <a id="workspacesagentconfigdefaultresourcesperworkspacecontainer"></a>`defaultResourcesPerWorkspaceContainer` {{< icon name="warning-solid" >}} | [`WorkspaceResources!`](#workspaceresources) | **Introduced** in GitLab 17.9. **Status**: Experiment. Default cpu and memory resources of the workspace container. |
 | <a id="workspacesagentconfigdefaultruntimeclass"></a>`defaultRuntimeClass` | [`String!`](#string) | Default Kubernetes RuntimeClass. |
 | <a id="workspacesagentconfigdnszone"></a>`dnsZone` | [`String!`](#string) | DNS zone where workspaces are available. |
@@ -42128,7 +42127,6 @@ Represents a workspaces agent config.
 | <a id="workspacesagentconfigid"></a>`id` | [`RemoteDevelopmentWorkspacesAgentConfigID!`](#remotedevelopmentworkspacesagentconfigid) | Global ID of the workspaces agent config. |
 | <a id="workspacesagentconfigimagepullsecrets"></a>`imagePullSecrets` {{< icon name="warning-solid" >}} | [`[ImagePullSecrets!]!`](#imagepullsecrets) | **Introduced** in GitLab 17.9. **Status**: Experiment. Kubernetes secrets to pull private images for a workspace. |
 | <a id="workspacesagentconfiglabels"></a>`labels` | [`[KubernetesLabel!]!`](#kuberneteslabel) | Labels to apply to Kubernetes objects. |
-| <a id="workspacesagentconfigmaxhoursbeforeterminationlimit"></a>`maxHoursBeforeTerminationLimit` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Deprecated** in GitLab 17.9. Field is not used. |
 | <a id="workspacesagentconfigmaxresourcesperworkspace"></a>`maxResourcesPerWorkspace` {{< icon name="warning-solid" >}} | [`WorkspaceResources!`](#workspaceresources) | **Introduced** in GitLab 17.9. **Status**: Experiment. Maximum cpu and memory resources of the workspace. |
 | <a id="workspacesagentconfignetworkpolicyegress"></a>`networkPolicyEgress` {{< icon name="warning-solid" >}} | [`[NetworkPolicyEgress!]!`](#networkpolicyegress) | **Introduced** in GitLab 17.9. **Status**: Experiment. IP CIDR range specifications for egress destinations from a workspace. |
 | <a id="workspacesagentconfignetworkpolicyenabled"></a>`networkPolicyEnabled` | [`Boolean!`](#boolean) | Whether the network policy of the workspaces agent config is enabled. |

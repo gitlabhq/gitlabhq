@@ -173,9 +173,9 @@ The following metrics are available:
 | `gitlab_diffs_render_real_duration_seconds` | Histogram | 15.8 | Duration in seconds spent on serializing and rendering diffs on diffs batch request | `controller`, `action`, `endpoint_id` |
 | `gitlab_memwd_violations_total`                      | Counter | 15.9  | Total number of times a Ruby process violated a memory threshold | |
 | `gitlab_memwd_violations_handled_total`              | Counter | 15.9  | Total number of times Ruby process memory violations were handled | |
-| `gitlab_sli_rails_request_apdex_total` | Counter | 14.4 | Total number of request Apdex measurements. For more information, see [Rails request SLIs](../../../development/application_slis/rails_request.md) | `endpoint_id`, `feature_category`, `request_urgency` |
+| `gitlab_sli_rails_request_apdex_total` | Counter | 14.4 | Total number of request Apdex measurements. | `endpoint_id`, `feature_category`, `request_urgency` |
 | `gitlab_sli_rails_request_apdex_success_total` | Counter | 14.4 | Total number of successful requests that met the target duration for their urgency. Divide by `gitlab_sli_rails_requests_apdex_total` to get a success ratio | `endpoint_id`, `feature_category`, `request_urgency` |
-| `gitlab_sli_rails_request_error_total` | Counter | 15.7 | Total number of request error measurements. For more information, see [Rails request SLIs](../../../development/application_slis/rails_request.md) | `endpoint_id`, `feature_category`, `request_urgency`, `error` |
+| `gitlab_sli_rails_request_error_total` | Counter | 15.7 | Total number of request error measurements. | `endpoint_id`, `feature_category`, `request_urgency`, `error` |
 | `job_register_attempts_failed_total` | Counter | 9.5 | Counts the times a runner fails to register a job | |
 | `job_register_attempts_total` | Counter | 9.5 | Counts the times a runner tries to register a job | |
 | `job_queue_duration_seconds` | Histogram | 9.5 | Request handling execution time | |

@@ -226,7 +226,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
           fluxResourceStatus: { conditions: [{ status: 'True', type: 'Ready' }] },
         });
 
-        findSyncBadge().trigger('click');
+        findSyncBadge().vm.$emit('click');
         expect(wrapper.emitted('show-flux-resource-details')).toBeDefined();
       });
 

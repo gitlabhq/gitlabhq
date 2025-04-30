@@ -65,7 +65,7 @@ export default {
     class="gl-align-middle"
     :variant="status"
     data-testid="check-version-badge"
-    @click.native="onClick"
+    @click="onClick"
     >{{ title }}</gl-badge
   >
 </template>

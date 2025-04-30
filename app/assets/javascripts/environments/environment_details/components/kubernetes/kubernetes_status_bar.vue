@@ -256,7 +256,7 @@ export default {
           data-testid="sync-badge"
           tabindex="0"
           :href="fluxBadgeHref"
-          @click.native="toggleFluxResource('')"
+          @click="toggleFluxResource('')"
           >{{ syncStatusBadge.text }}
           <gl-popover :target="fluxBadgeId" :title="syncStatusBadge.popoverTitle">
             <span

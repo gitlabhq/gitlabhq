@@ -8957,7 +8957,7 @@ CREATE TABLE application_settings (
     encrypted_product_analytics_configurator_connection_string bytea,
     encrypted_product_analytics_configurator_connection_string_iv bytea,
     silent_mode_enabled boolean DEFAULT false NOT NULL,
-    package_metadata_purl_types smallint[] DEFAULT '{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15}'::smallint[],
+    package_metadata_purl_types smallint[] DEFAULT '{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17}'::smallint[],
     ci_max_includes integer DEFAULT 150 NOT NULL,
     remember_me_enabled boolean DEFAULT true NOT NULL,
     diagramsnet_enabled boolean DEFAULT true NOT NULL,

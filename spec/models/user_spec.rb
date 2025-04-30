@@ -2685,6 +2685,34 @@ RSpec.describe User, feature_category: :user_profile do
         expect(user.remember_created_at).to be_nil
       end
     end
+
+    context 'when session_expire_from_init is enabled' do
+      before do
+        stub_application_setting(remember_me_enabled: true, session_expire_from_init: true)
+      end
+
+      it 'does not set rememberable attributes' do
+        expect(user.remember_created_at).to be_nil
+
+        user.remember_me!
+
+        expect(user.remember_created_at).to be_nil
+      end
+
+      context 'when session_expire_from_init FF is disabled' do
+        before do
+          stub_feature_flags(session_expire_from_init: false)
+        end
+
+        it 'sets rememberable attributes' do
+          expect(user.remember_created_at).to be_nil
+
+          user.remember_me!
+
+          expect(user.remember_created_at).not_to be_nil
+        end
+      end
+    end
   end
 
   describe '#invalidate_all_remember_tokens!' do

@@ -6,7 +6,6 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 
 jest.mock('~/ide/init_gitlab_web_ide');
-jest.mock('~/ide/init_legacy_web_ide');
 
 const MOCK_MISMATCH_CALLBACK_URL = 'https://example.com/ide/redirect';
 

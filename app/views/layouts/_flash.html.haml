@@ -6,6 +6,8 @@
 - closable = %w[alert notice success]
 .flash-container.flash-container-page.sticky{ data: { testid: 'flash-container' }, class: flash_container_class }
   - flash.each do |key, value|
+    - next if key == 'timedout' # used by Warden for state tracking, not meant to be rendered
+
     - if key == 'toast' && value
       -# Frontend renders toast messages as text and not as HTML.
       -# Since toast messages are escaped on the backend via `safe_format` we

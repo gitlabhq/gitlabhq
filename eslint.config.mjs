@@ -668,16 +668,6 @@ export default [
     },
   },
 
-  // Web IDE config
-  {
-    files: ['app/assets/javascripts/ide/**/*.{js,vue}'],
-
-    rules: {
-      // https://gitlab.com/gitlab-org/gitlab/issues/33024
-      'promise/no-nesting': 'off',
-    },
-  },
-
   // Jest config
   jestConfig,
 

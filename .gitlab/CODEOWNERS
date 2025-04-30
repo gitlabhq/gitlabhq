@@ -1251,6 +1251,7 @@ lib/gitlab/checks/**
 # i18n Docs
 [Localization Team] @gitlab-com/localization/maintainers
 /doc-locale/**
+/doc/development/i18n/proofreader.md
 
 [Authorization] @gitlab-org/software-supply-chain-security/authorization/approvers
 /config/initializers/declarative_policy.rb
