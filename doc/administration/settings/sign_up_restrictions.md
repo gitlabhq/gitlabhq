@@ -2,13 +2,14 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: yes
 title: Sign-up restrictions
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -23,7 +24,8 @@ You can enforce the following restrictions on sign ups:
 
 By default, any user visiting your GitLab domain can sign up for an account. For customers running
 public-facing GitLab instances, we **highly** recommend that you consider disabling new sign ups if
-you do not expect public users to sign up for an account.
+you do not expect public users to sign up for an account. For GitLab Dedicated, new sign ups are
+disabled by default when your instance is provisioned.
 
 To disable sign ups:
 
@@ -140,7 +142,7 @@ you will be charged overages for the five additional users.
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -210,7 +212,7 @@ the minimum number of characters a user must have in their password using the Gi
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 

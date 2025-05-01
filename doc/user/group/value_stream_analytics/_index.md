@@ -58,12 +58,6 @@ Value stream analytics offers different features at the project and group level 
 |Date filter behavior|Filters items [finished within the date range](https://gitlab.com/groups/gitlab-org/-/epics/6046)|Filters items by creation date.|Filters items by creation date.|
 |Authorization|At least reporter|At least reporter|Can be public|
 
-{{< alert type="note" >}}
-
-Feature parity of project-level with group-level value stream analytics is achieved by using the new record `ProjectNamespace`. For details about this consolidation initiative, see the [Organization documentation](../../../development/organization/_index.md).
-
-{{< /alert >}}
-
 ## How value stream analytics works
 
 Value stream analytics calculates the duration of every stage of your software development process.
@@ -116,8 +110,6 @@ The following stage events are available:
 - MR last approved at
 
 These events play a key role in the duration calculation, which is calculated by the formula: duration = end event time - start event time.
-
-To learn what start and end events can be paired, see [Validating start and end events](../../../development/value_stream_analytics.md#validating-start-and-end-events).
 
 You can share your ideas or feedback about stage events in [issue 520962](https://gitlab.com/gitlab-org/gitlab/-/issues/520962).
 
@@ -179,8 +171,6 @@ The following table gives an overview of the pre-defined stages in value stream 
 Value stream analytics works on timestamp data and aggregates only the final start and stop events of the stage. For items that move back and forth between stages multiple times, the stage time is calculated solely from the final events' timestamps.
 
 {{< /alert >}}
-
-For information about how value stream analytics calculates each stage, see the [Value stream analytics development guide](../../../development/value_stream_analytics.md).
 
 #### Example workflow
 

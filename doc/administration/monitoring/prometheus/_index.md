@@ -45,7 +45,7 @@ Prometheus runs as the `gitlab-prometheus` user and listen on
 Each exporter is automatically set up as a
 monitoring target for Prometheus, unless individually disabled.
 
-To disable Prometheus and all of its exporters, as well as any added in the future:
+To disable Prometheus and all of its exporters, and any exporters added in the future:
 
 1. Edit `/etc/gitlab/gitlab.rb`
 1. Add or find and uncomment the following lines, making sure they are set to `false`:
@@ -65,8 +65,8 @@ To disable Prometheus and all of its exporters, as well as any added in the futu
 
 {{< alert type="warning" >}}
 
-Although possible, it's not recommended to change the port Prometheus listens
-on, as this might affect or conflict with other services running on the GitLab
+You can change the port Prometheus listens on, but you should not.
+This change might affect or conflict with other services that run on the GitLab
 server. Proceed at your own risk.
 
 {{< /alert >}}
@@ -369,7 +369,7 @@ You can visit `http://localhost:9090` for the dashboard that Prometheus offers b
 
 If SSL has been enabled on your GitLab instance, you may not be able to access
 Prometheus on the same browser as GitLab if using the same FQDN due to [HSTS](https://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security).
-[A test project exists](https://gitlab.com/gitlab-org/multi-user-prometheus) to provide access via GitLab, but in the interim there are
+[A GitLab test project exists](https://gitlab.com/gitlab-org/multi-user-prometheus) to provide access, but in the interim there are
 some workarounds: using a separate FQDN, using server IP, using a separate browser for Prometheus, resetting HSTS, or
 having [NGINX proxy it](https://docs.gitlab.com/omnibus/settings/nginx.html#inserting-custom-nginx-settings-into-the-gitlab-server-block).
 

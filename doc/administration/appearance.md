@@ -2,14 +2,15 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: yes
 description: Customize your GitLab instance appearance, including logos, favicons, sign-in pages, Progressive Web App settings, system messages, and color themes.
-title: GitLab Appearance
+title: GitLab appearance
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -103,6 +104,12 @@ You can add also add a [customized help message](settings/help_page.md) below th
 
 ### Disable cookie-based language selector
 
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144484) in GitLab 16.10.
@@ -194,6 +201,12 @@ Add guidelines for profile images.
 GitLab supports [Libravatar](https://www.libravatar.org) is for avatar images, but you must manually enable Libravatar support on the GitLab instance. For more information, see [Libravatar](libravatar.md) to use the service.
 
 ## Change the color theme for all new users
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 To [change the default color theme](../user/profile/preferences.md#change-the-color-theme) for all new users:
 

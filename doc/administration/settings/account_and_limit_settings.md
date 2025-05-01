@@ -2,6 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: yes
 description: Configure the maximum number of projects users can create on GitLab Self-Managed. Configure size limits for attachments, pushes, and repository size.
 title: Account and limit settings
 ---
@@ -9,7 +10,7 @@ title: Account and limit settings
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -167,7 +168,7 @@ Using custom token prefixes provides the following benefits:
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -197,7 +198,7 @@ For instance, consider the following workflow:
 1. Before you exceed available storage, you set up a limit of 10 GB
    per repository.
 
-On GitLab Self-Managed, only a GitLab administrator can set those limits. Setting the limit to `0` means
+On GitLab Self-Managed and GitLab Dedicated, only a GitLab administrator can set those limits. Setting the limit to `0` means
 there are no restrictions. For GitLab.com repository size limits, see
 [accounts and limit settings](../../user/gitlab_com/_index.md#account-and-limit-settings).
 
@@ -234,13 +235,17 @@ You can change how long users can remain signed in without activity.
 1. Select **Settings > General**.
 1. Expand **Account and limit**.
 1. Fill in the **Session duration (minutes)** field.
-1. Select **Save changes**.
-1. Restart GitLab to apply the changes.
-
    {{< alert type="warning" >}}
 
    Setting **Session duration (minutes)** to `0` breaks your GitLab instance.
    For more information, see [issue 19469](https://gitlab.com/gitlab-org/gitlab/-/issues/19469).
+
+   {{< /alert >}}
+1. Select **Save changes**.
+1. Restart GitLab to apply the changes.
+   {{< alert type="note" >}}
+
+   For GitLab Dedicated, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) to request a restart of your instance.
 
    {{< /alert >}}
 
@@ -528,7 +533,7 @@ After a lifetime for access tokens is set, GitLab:
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -553,7 +558,7 @@ To turn the **User OAuth applications** setting on or off:
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -583,7 +588,7 @@ To turn this setting on or off:
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -731,7 +736,7 @@ If [**Allow users to make their profiles private**](#prevent-users-from-making-t
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 

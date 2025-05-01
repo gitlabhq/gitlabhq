@@ -2003,7 +2003,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_terraform_reports?
-    diff_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:terraform))
+    if Feature.enabled?(:show_child_reports_in_mr_page, project)
+      diff_head_pipeline&.latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:terraform))&.any?
+    else
+      diff_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:terraform))
+    end
   end
 
   def compare_accessibility_reports

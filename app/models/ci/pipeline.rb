@@ -1216,9 +1216,17 @@ module Ci
     end
 
     def terraform_reports
-      ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
-        latest_report_builds(::Ci::JobArtifact.of_report_type(:terraform)).each do |build|
-          build.collect_terraform_reports!(terraform_reports)
+      if Feature.enabled?(:show_child_reports_in_mr_page, project)
+        ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
+          latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(:terraform)).each do |build|
+            build.collect_terraform_reports!(terraform_reports)
+          end
+        end
+      else
+        ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
+          latest_report_builds(::Ci::JobArtifact.of_report_type(:terraform)).each do |build|
+            build.collect_terraform_reports!(terraform_reports)
+          end
         end
       end
     end

@@ -68,7 +68,3 @@ If you have to disable the new experience to unblock your workflow, disable the 
 
 If you run into any issues while trying out this change, you can use
 [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/494462) to provide more details.
-
-## Related topics
-
-- [Work items development](../../../development/work_items.md)

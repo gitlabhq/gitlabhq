@@ -3098,6 +3098,25 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(merge_request.has_terraform_reports?).to be_truthy
       end
     end
+
+    context 'when child pipeline has terraform reports' do
+      let_it_be(:merge_request_with_pipeline) { create(:merge_request, :with_head_pipeline) }
+      let_it_be(:child_pipeline) { create(:ci_pipeline, :with_terraform_reports, child_of: merge_request_with_pipeline.head_pipeline) }
+
+      it 'returns true even if head pipeline does not have reports' do
+        expect(merge_request_with_pipeline.has_terraform_reports?).to be_truthy
+      end
+
+      context 'when FF show_child_reports_in_mr_page is disabled' do
+        before do
+          stub_feature_flags(show_child_reports_in_mr_page: false)
+        end
+
+        it 'does not take into account child pipeline reports' do
+          expect(merge_request_with_pipeline.has_terraform_reports?).to be_falsey
+        end
+      end
+    end
   end
 
   describe '#has_sast_reports?' do

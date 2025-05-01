@@ -4956,6 +4956,46 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#terraform_reports' do
+    subject(:terraform_reports) { pipeline.terraform_reports }
+
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+
+    context 'when pipeline has multiple builds with terraform reports' do
+      let_it_be(:build_tfplan1) { create(:ci_build, :terraform_reports, name: 'tfplan1', pipeline: pipeline) }
+      let_it_be(:build_tfplan2) { create(:ci_build, :terraform_reports, name: 'tfplan2', pipeline: pipeline) }
+
+      it 'returns terraform plan with collected data' do
+        expect(terraform_reports.plans.count).to eq(2)
+      end
+
+      context 'when child pipelines also have reports' do
+        let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+        let_it_be(:build_child_tf_plan) { create(:ci_build, :terraform_reports, name: 'child-tf', pipeline: child_pipeline) }
+
+        it 'returns a terraform plan with child data' do
+          expect(terraform_reports.plans.count).to eq(3)
+        end
+
+        context 'with FF show_child_reports_in_mr_page disabled' do
+          before do
+            stub_feature_flags(show_child_reports_in_mr_page: false)
+          end
+
+          it 'does not show child pipeline reports' do
+            expect(terraform_reports.plans.count).to eq(2)
+          end
+        end
+      end
+    end
+
+    context 'when pipeline does not have any builds with terraform reports' do
+      it 'returns terraform reports without plans' do
+        expect(terraform_reports.plans).to be_empty
+      end
+    end
+  end
+
   describe '#uses_needs?' do
     let_it_be(:pipeline) { create(:ci_pipeline) }
 

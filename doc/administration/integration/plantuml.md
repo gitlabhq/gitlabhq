@@ -20,7 +20,7 @@ To set up the integration on your GitLab Self-Managed instance, you must [config
 
 After completing the integration, PlantUML converts `plantuml`
 blocks to an HTML image tag, with the source pointing to the PlantUML instance. The PlantUML
-diagram delimiters `@startuml`/`@enduml` aren't required, as these are replaced
+diagram delimiters `@startuml`/`@enduml` aren't required because they are replaced
 by the `plantuml` block:
 
 - Markdown files with the extension `.md`:

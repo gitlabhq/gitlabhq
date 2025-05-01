@@ -27605,6 +27605,15 @@ msgstr ""
 msgid "Get started!"
 msgstr ""
 
+msgid "GetStarted|Follow these steps to get familiar with the GitLab workflow."
+msgstr ""
+
+msgid "GetStarted|Get started"
+msgstr ""
+
+msgid "GetStarted|Quick start"
+msgstr ""
+
 msgid "GiB"
 msgstr ""
 

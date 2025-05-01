@@ -2268,7 +2268,6 @@ GitLab Flavored Markdown doesn't support the Redcarpet superscript syntax ( `x^2
 
 ## References
 
-- The [GitLab Flavored Markdown development guidelines](../development/gitlab_flavored_markdown/_index.md) is a developer-facing document that describes in detail the various goals, tools, implementations, and terms related to the GLFM specification.
 - This document leveraged heavily from the [Markdown-Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
 - The original [Markdown Syntax Guide](https://daringfireball.net/projects/markdown/syntax)
   at Daring Fireball is an excellent resource for a detailed explanation of standard Markdown.
