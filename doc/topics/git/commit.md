@@ -44,6 +44,24 @@ To stage and commit your changes:
 
 The changes are committed to the branch.
 
+### Write a good commit message
+
+The guidelines published by Chris Beams in [How to Write a Git Commit Message](https://cbea.ms/git-commit/)
+help you write a good commit message:
+
+- The commit subject and body must be separated by a blank line.
+- The commit subject must start with a capital letter.
+- The commit subject must not be longer than 72 characters.
+- The commit subject must not end with a period.
+- The commit body must not contain more than 72 characters per line.
+- The commit subject or body must not contain emojis.
+- Commits that change 30 or more lines across at least 3 files should
+  describe these changes in the commit body.
+- Use the full URLs for issues, milestones, and merge requests instead of short references,
+  as they are displayed as plain text outside of GitLab.
+- The merge request should not contain more than 10 commit messages.
+- The commit subject should contain at least 3 words.
+
 ## Commit all changes
 
 You can stage all your changes and commit them with one command:

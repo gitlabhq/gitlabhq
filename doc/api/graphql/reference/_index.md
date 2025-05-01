@@ -23004,7 +23004,7 @@ Represents an allowlist entry for the CI_JOB_TOKEN.
 | <a id="cijobtokenscopeallowlistentryautopopulated"></a>`autopopulated` | [`Boolean`](#boolean) | Indicates whether the entry is created by the autopopulation process. |
 | <a id="cijobtokenscopeallowlistentrycreatedat"></a>`createdAt` | [`Time!`](#time) | When the entry was created. |
 | <a id="cijobtokenscopeallowlistentrydefaultpermissions"></a>`defaultPermissions` | [`Boolean`](#boolean) | Indicates whether default permissions are enabled (true) or fine-grained permissions are enabled (false). |
-| <a id="cijobtokenscopeallowlistentrydirection"></a>`direction` | [`String`](#string) | Direction of access. Defaults to INBOUND. |
+| <a id="cijobtokenscopeallowlistentrydirection"></a>`direction` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 18.0. Outbound job token scope is being removed. This field can only be INBOUND. |
 | <a id="cijobtokenscopeallowlistentryjobtokenpolicies"></a>`jobTokenPolicies` {{< icon name="warning-solid" >}} | [`[CiJobTokenScopePolicies!]`](#cijobtokenscopepolicies) | **Introduced** in GitLab 17.5. **Status**: Experiment. List of policies for the entry. |
 | <a id="cijobtokenscopeallowlistentrysourceproject"></a>`sourceProject` | [`Project!`](#project) | Project that owns the allowlist entry. |
 | <a id="cijobtokenscopeallowlistentrytarget"></a>`target` | [`CiJobTokenScopeTarget`](#cijobtokenscopetarget) | Group or project allowed by the entry. |
@@ -23021,7 +23021,7 @@ Represents an allowlist entry for the CI_JOB_TOKEN.
 | <a id="cijobtokenscopetypeinboundallowlist"></a>`inboundAllowlist` | [`CiJobTokenAccessibleProjectConnection!`](#cijobtokenaccessibleprojectconnection) | Allowlist of projects that can access the current project by authenticating with a CI/CD job token. (see [Connections](#connections)) |
 | <a id="cijobtokenscopetypeinboundallowlistautopopulatedids"></a>`inboundAllowlistAutopopulatedIds` | [`[ProjectID!]!`](#projectid) | List of IDs of projects which have been created by the autopopulation process. |
 | <a id="cijobtokenscopetypeinboundallowlistcount"></a>`inboundAllowlistCount` | [`Int!`](#int) | Count of projects that can access the current project by authenticating with a CI/CD job token. The count does not include nested projects. |
-| <a id="cijobtokenscopetypeoutboundallowlist"></a>`outboundAllowlist` | [`ProjectConnection!`](#projectconnection) | Allow list of projects that are accessible using the current project's CI Job tokens. (see [Connections](#connections)) |
+| <a id="cijobtokenscopetypeoutboundallowlist"></a>`outboundAllowlist` {{< icon name="warning-solid" >}} | [`ProjectConnection!`](#projectconnection) | **Deprecated** in GitLab 18.0. Outbound job token scope is being removed. Only inbound allowlist is supported. |
 | <a id="cijobtokenscopetypeprojects"></a>`projects` {{< icon name="warning-solid" >}} | [`ProjectConnection!`](#projectconnection) | **Deprecated** in GitLab 15.9. The `projects` attribute is being deprecated. Use `outbound_allowlist`. |
 
 ### `CiJobTrace`
@@ -45470,6 +45470,7 @@ Values for sorting timelogs.
 | <a id="todoactionenumassigned"></a>`assigned` | User was assigned. |
 | <a id="todoactionenumbuild_failed"></a>`build_failed` | Build triggered by the user failed. |
 | <a id="todoactionenumdirectly_addressed"></a>`directly_addressed` | User was directly addressed. |
+| <a id="todoactionenumduo_core_access_granted"></a>`duo_core_access_granted` | Access to Duo Core has been granted to the user. |
 | <a id="todoactionenumduo_enterprise_access_granted"></a>`duo_enterprise_access_granted` | Access to Duo Enterprise has been granted to the user. |
 | <a id="todoactionenumduo_pro_access_granted"></a>`duo_pro_access_granted` | Access to Duo Pro has been granted to the user. |
 | <a id="todoactionenummarked"></a>`marked` | User added a to-do item. |

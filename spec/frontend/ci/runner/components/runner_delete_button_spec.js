@@ -75,8 +75,9 @@ describe('RunnerDeleteButton', () => {
   });
 
   it('Passes other attributes to the button', () => {
-    createComponent({ props: { category: 'secondary' } });
+    createComponent({ props: { category: 'secondary', size: 'small' } });
 
+    expect(findBtn().props('size')).toBe('small');
     expect(findBtn().props('category')).toBe('secondary');
   });
 

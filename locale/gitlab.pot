@@ -5855,6 +5855,12 @@ msgstr ""
 msgid "AiPowered|Tanuki AI icon"
 msgstr ""
 
+msgid "AiPowered|This settings applies Namespace/Instance-wide, Subgroup and project access controls are coming soon.%{br}By turning this on, you accept the %{linkStart}GitLab AI functionality terms%{linkEnd}."
+msgstr ""
+
+msgid "AiPowered|Turn on IDE features"
+msgstr ""
+
 msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
 msgstr ""
 
@@ -22993,9 +22999,6 @@ msgstr ""
 msgid "DuoCodeReview|GitLab Duo Code Review"
 msgstr ""
 
-msgid "DuoCodeReview|Hey :wave: I'm reviewing your merge request now. I will let you know when I'm finished."
-msgstr ""
-
 msgid "DuoCodeReview|I encountered some problems while responding to your query. Please try again later."
 msgstr ""
 
@@ -23006,6 +23009,9 @@ msgid "DuoCodeReview|I have encountered some problems while I was reviewing. Ple
 msgstr ""
 
 msgid "DuoCodeReview|I've received your Duo Code Review request, and will review your code shortly."
+msgstr ""
+
+msgid "DuoCodeReview|is reviewing your merge request and will let you know when it's finished"
 msgstr ""
 
 msgid "DuoEnterpriseDiscover|AI Impact Dashboard measures the ROI of AI"
@@ -28232,6 +28238,9 @@ msgstr ""
 msgid "GithubIntegration|This requires mirroring your GitHub repository to this project. %{docs_link}"
 msgstr ""
 
+msgid "Gitlab Duo Core"
+msgstr ""
+
 msgid "Gitpod"
 msgstr ""
 
@@ -30162,7 +30171,10 @@ msgstr ""
 msgid "GroupsNew|e.g. h8d3f016698e…"
 msgstr ""
 
-msgid "GroupsTree|Are you sure you want to leave the \"%{fullName}\" group?"
+msgid "GroupsTree|An error occurred while leaving the group. Please refresh the page to try again."
+msgstr ""
+
+msgid "GroupsTree|Are you sure you want to leave \"%{fullName}\"?"
 msgstr ""
 
 msgid "GroupsTree|Delete"
@@ -30181,6 +30193,18 @@ msgid "GroupsTree|Loading groups"
 msgstr ""
 
 msgid "GroupsTree|Options"
+msgstr ""
+
+msgid "GroupsTree|When you leave this group:"
+msgstr ""
+
+msgid "GroupsTree|You lose access to all projects within this group"
+msgstr ""
+
+msgid "GroupsTree|You need an invitation to rejoin"
+msgstr ""
+
+msgid "GroupsTree|Your assigned issues and merge requests remain, but you cannot view or modify them"
 msgstr ""
 
 msgid "Groups|An error occurred updating this group. Please try again."
@@ -35624,6 +35648,9 @@ msgid "Leave group"
 msgstr ""
 
 msgid "Leave project"
+msgstr ""
+
+msgid "Left the '%{group_name}' group successfully."
 msgstr ""
 
 msgid "Legacy Prometheus integrations cannot currently be removed"

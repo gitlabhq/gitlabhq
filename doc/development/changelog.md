@@ -17,25 +17,16 @@ when they contain the `Changelog` [Git trailer](https://git-scm.com/docs/git-int
 When generating the changelog, author and merge request details are added
 automatically.
 
-The `Changelog` trailer accepts the following values:
-
-- `added`: New feature
-- `fixed`: Bug fix
-- `changed`: Feature change
-- `deprecated`: New deprecation
-- `removed`: Feature removal
-- `security`: Security fix
-- `performance`: Performance improvement
-- `other`: Other
+For a list of trailers, see [Add a trailer to a Git commit](../user/project/changelogs.md#add-a-trailer-to-a-git-commit).
 
 An example of a Git commit to include in the changelog is the following:
 
 ```plaintext
-Update git vendor to gitlab
+Update git vendor to GitLab
 
-Now that we are using gitaly to compile git, the git version isn't known
-from the manifest, instead we are getting the gitaly version. Update our
-vendor field to be `gitlab` to avoid cve matching old versions.
+Now that we are using Gitaly to compile Git, the Git version isn't known
+from the manifest. Instead, we are getting the Gitaly version. Update our
+vendor field to be `gitlab` to avoid CVE matching old versions.
 
 Changelog: changed
 ```

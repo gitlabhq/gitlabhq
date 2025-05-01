@@ -5,7 +5,7 @@ import { __, s__ } from '~/locale';
 import { isMetaClick } from '~/lib/utils/common_utils';
 import { newWorkItemPath } from '~/work_items/utils';
 import {
-  NAME_TO_LOWERCASE_TEXT_MAP,
+  NAME_TO_TEXT_LOWERCASE_MAP,
   sprintfWorkItem,
   ROUTES,
   RELATED_ITEM_ID_URL_QUERY_PARAM,
@@ -136,7 +136,7 @@ export default {
       });
     },
     selectedWorkItemTypeLowercase() {
-      return NAME_TO_LOWERCASE_TEXT_MAP[this.selectedWorkItemTypeName];
+      return NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemTypeName];
     },
     newWorkItemButtonText() {
       return this.alwaysShowWorkItemTypeSelect && this.selectedWorkItemTypeName

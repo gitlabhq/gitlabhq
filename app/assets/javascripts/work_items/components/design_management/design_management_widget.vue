@@ -93,6 +93,16 @@ export default {
       required: false,
       default: false,
     },
+    canAddDesign: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canUpdateDesign: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   apollo: {
     designCollection: {
@@ -411,7 +421,7 @@ export default {
 
       <template #actions>
         <gl-button
-          v-if="isLatestVersion"
+          v-if="isLatestVersion && canUpdateDesign"
           category="tertiary"
           size="small"
           variant="link"
@@ -423,7 +433,7 @@ export default {
           {{ selectAllButtonText }}
         </gl-button>
         <archive-design-button
-          v-if="isLatestVersion"
+          v-if="isLatestVersion && canUpdateDesign"
           data-testid="archive-button"
           button-class="work-item-design-hidden-xs work-item-design-show-sm"
           :has-selected-designs="hasSelectedDesigns"
@@ -433,7 +443,7 @@ export default {
           {{ $options.i18n.archiveDesignText }}
         </archive-design-button>
         <archive-design-button
-          v-if="isLatestVersion"
+          v-if="isLatestVersion && canUpdateDesign"
           v-gl-tooltip.bottom
           data-testid="archive-button"
           button-class="work-item-design-hidden-sm"
@@ -445,6 +455,7 @@ export default {
           @archive-selected-designs="onArchiveDesign"
         />
         <gl-button
+          v-if="canAddDesign"
           size="small"
           data-testid="add-design"
           :disabled="isSaving"
@@ -472,7 +483,8 @@ export default {
         >
           {{ error || uploadError }}
         </gl-alert>
-        <design-dropzone
+        <component
+          :is="canAddDesign ? 'design-dropzone' : 'div'"
           show-upload-design-overlay
           validate-design-upload-on-dragover
           :accept-design-formats="$options.VALID_DESIGN_FILE_MIMETYPE.mimetype"
@@ -514,7 +526,7 @@ export default {
               />
 
               <gl-form-checkbox
-                v-if="isLatestVersion"
+                v-if="isLatestVersion && canUpdateDesign"
                 :id="`design-checkbox-${design.id}`"
                 :name="design.filename"
                 :checked="isDesignSelected(design.filename)"
@@ -526,7 +538,7 @@ export default {
               />
             </li>
           </vue-draggable>
-        </design-dropzone>
+        </component>
       </template>
     </crud-component>
   </div>

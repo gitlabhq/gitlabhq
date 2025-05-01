@@ -6,6 +6,7 @@ import { __, s__, sprintf } from '~/locale';
 import { findDesignsWidget, getParentGroupName, isMilestoneWidget } from '~/work_items/utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
+  NAME_TO_TEXT_LOWERCASE_MAP,
   NAME_TO_TEXT_MAP,
   ALLOWED_CONVERSION_TYPES,
   sprintfWorkItem,
@@ -375,7 +376,7 @@ export default {
           ),
           {
             workItemType: NAME_TO_TEXT_MAP[this.selectedWorkItemType.name],
-            childItemType: this.allowedChildTypes?.[0]?.name?.toLocaleLowerCase(),
+            childItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.allowedChildTypes?.[0]?.name],
           },
         );
 

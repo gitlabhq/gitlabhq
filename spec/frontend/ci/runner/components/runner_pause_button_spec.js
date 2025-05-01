@@ -67,6 +67,7 @@ describe('RunnerPauseButton', () => {
         });
 
         it(`Displays a ${expectedIcon} button`, () => {
+          expect(findBtn().props('size')).toBe('medium');
           expect(findBtn().props('loading')).toBe(false);
           expect(findBtn().props('icon')).toBe(expectedIcon);
         });
@@ -121,6 +122,16 @@ describe('RunnerPauseButton', () => {
         });
       },
     );
+  });
+
+  it('Displays button with size prop', () => {
+    createComponent({
+      props: {
+        size: 'small',
+      },
+    });
+
+    expect(findBtn().props('size')).toBe('small');
   });
 
   it('Shows loading state', () => {

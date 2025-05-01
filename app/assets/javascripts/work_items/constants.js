@@ -313,7 +313,7 @@ export const NAME_TO_TEXT_MAP = {
   [WORK_ITEM_TYPE_NAME_TICKET]: s__('WorkItem|Ticket'),
 };
 
-export const NAME_TO_LOWERCASE_TEXT_MAP = {
+export const NAME_TO_TEXT_LOWERCASE_MAP = {
   [WORK_ITEM_TYPE_NAME_EPIC]: s__('WorkItem|epic'),
   [WORK_ITEM_TYPE_NAME_INCIDENT]: s__('WorkItem|incident'),
   [WORK_ITEM_TYPE_NAME_ISSUE]: s__('WorkItem|issue'),

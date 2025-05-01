@@ -278,6 +278,7 @@ describe('AdminRunnersApp', () => {
     expect(runnerActions.props()).toEqual({
       runner,
       editUrl: runner.editAdminUrl,
+      size: 'medium',
     });
   });
 

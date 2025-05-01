@@ -12,11 +12,13 @@ import {
   getGroupMembers,
   createGroup,
   getSharedGroups,
+  deleteGroupMember,
 } from '~/api/groups_api';
 
 const mockApiVersion = 'v4';
 const mockUrlRoot = '/gitlab';
 const mockGroupId = '99';
+const mockUserId = '47';
 
 describe('GroupsApi', () => {
   let mock;
@@ -111,6 +113,22 @@ describe('GroupsApi', () => {
 
       await expect(getGroupMembers(mockGroupId, true)).resolves.toMatchObject({
         data: response,
+      });
+    });
+  });
+
+  describe('deleteGroupMember', () => {
+    beforeEach(() => {
+      jest.spyOn(axios, 'delete');
+    });
+
+    it('deletes to the correct URL', () => {
+      const expectedUrl = `${mockUrlRoot}/api/${mockApiVersion}/groups/${mockGroupId}/members/${mockUserId}`;
+
+      mock.onDelete(expectedUrl).replyOnce(HTTP_STATUS_OK);
+
+      return deleteGroupMember(mockGroupId, mockUserId).then(() => {
+        expect(axios.delete).toHaveBeenCalledWith(expectedUrl);
       });
     });
   });

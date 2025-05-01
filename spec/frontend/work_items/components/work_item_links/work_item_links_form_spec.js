@@ -2,7 +2,6 @@ import Vue, { nextTick } from 'vue';
 import { GlForm, GlFormGroup, GlFormInput, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_namespace_work_item_types.query.graphql.json';
-import { sprintf } from '~/locale';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -463,19 +462,8 @@ describe('WorkItemLinksForm', () => {
 
       expect(findWorkItemTokenInput().props('areWorkItemsToAddValid')).toBe(false);
       expect(findValidationElement().exists()).toBe(true);
-      expect(findValidationElement().text().trim()).toBe(
-        sprintf(
-          '%{invalidWorkItemsList} cannot be added: Cannot assign a non-confidential %{childWorkItemType} to a confidential parent %{parentWorkItemType}. Make the selected %{childWorkItemType} confidential and try again.',
-          {
-            // Only non-confidential work items are shown in the error message
-            invalidWorkItemsList: availableWorkItemsResponse.data.workspace.workItems.nodes
-              .filter((wi) => !wi.confidential)
-              .map((wi) => wi.title)
-              .join(', '),
-            childWorkItemType: 'Task',
-            parentWorkItemType: 'Issue',
-          },
-        ),
+      expect(findValidationElement().text()).toBe(
+        'Task 1, Task 2, Task 3 cannot be added: Cannot assign a non-confidential task to a confidential parent issue. Make the selected task confidential and try again.',
       );
     });
 

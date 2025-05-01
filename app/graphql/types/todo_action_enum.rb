@@ -19,5 +19,6 @@ module Types
     value 'ssh_key_expiring_soon', value: 15, description: 'SSH key of the user will expire soon.'
     value 'duo_pro_access_granted', value: 16, description: 'Access to Duo Pro has been granted to the user.'
     value 'duo_enterprise_access_granted', value: 17, description: 'Access to Duo Enterprise has been granted to the user.'
+    value 'duo_core_access_granted', value: 18, description: 'Access to Duo Core has been granted to the user.'
   end
 end

@@ -16,6 +16,7 @@ import {
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_ITERATION,
   WORK_ITEM_TYPE_NAME_TASK,
+  NAME_TO_TEXT_LOWERCASE_MAP,
   NAME_TO_TEXT_MAP,
 } from '../../constants';
 import WorkItemProjectsListbox from './work_item_projects_listbox.vue';
@@ -263,8 +264,8 @@ export default {
         ),
         {
           invalidWorkItemsList: this.invalidWorkItemsToAdd.map(({ title }) => title).join(', '),
-          childWorkItemType: this.childrenTypeText,
-          parentWorkItemType: this.parentWorkItemType,
+          childWorkItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.childrenTypeText],
+          parentWorkItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.parentWorkItemType],
         },
       );
     },

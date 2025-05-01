@@ -87,6 +87,8 @@ module Ci
       private
 
       def outbound_accessible?(accessed_project)
+        return true if Feature.enabled?(:remove_limit_ci_job_token_scope, current_project)
+
         # if the setting is disabled any project is considered to be in scope.
         return true unless current_project.ci_outbound_job_token_scope_enabled?
 

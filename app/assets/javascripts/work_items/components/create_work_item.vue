@@ -35,7 +35,7 @@ import {
   I18N_WORK_ITEM_ERROR_CREATING,
   sprintfWorkItem,
   i18n,
-  NAME_TO_LOWERCASE_TEXT_MAP,
+  NAME_TO_TEXT_LOWERCASE_MAP,
   NAME_TO_TEXT_MAP,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_COLOR,
@@ -314,7 +314,7 @@ export default {
       return getDisplayReference(this.selectedProjectFullPath, this.relatedItem.reference);
     },
     relatedItemType() {
-      return NAME_TO_LOWERCASE_TEXT_MAP[this.relatedItem?.type];
+      return NAME_TO_TEXT_LOWERCASE_MAP[this.relatedItem?.type];
     },
     workItemAssignees() {
       return findWidget(WIDGET_TYPE_ASSIGNEES, this.workItem);
@@ -489,7 +489,7 @@ export default {
           ? this.$options.i18n.resolveOneThreadText
           : this.$options.i18n.resolveAllThreadsText;
       return sprintf(warning, {
-        workItemType: this.selectedWorkItemTypeName,
+        workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemTypeName],
       });
     },
     isFormFilled() {

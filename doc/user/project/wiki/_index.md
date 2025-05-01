@@ -26,7 +26,7 @@ Each wiki is a separate Git repository.
 You can create and edit wiki pages through the GitLab web interface or
 [locally using Git](#create-or-edit-wiki-pages-locally).
 Wiki pages written in Markdown support all [Markdown features](../../markdown.md) and provide
-[wiki-specific behavior](../../markdown.md#wiki-specific-markdown) for links.
+[wiki-specific behavior](markdown.md) for links.
 
 Wiki pages display a [sidebar](#sidebar), which you can customize.
 

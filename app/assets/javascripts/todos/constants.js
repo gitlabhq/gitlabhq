@@ -29,6 +29,13 @@ export const TODO_ACTION_TYPE_SSH_KEY_EXPIRED = 'ssh_key_expired';
 export const TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON = 'ssh_key_expiring_soon';
 export const TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED = 'duo_pro_access_granted';
 export const TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED = 'duo_enterprise_access_granted';
+export const TODO_ACTION_TYPE_DUO_CORE_ACCESS_GRANTED = 'duo_core_access_granted';
+
+export const DUO_ACCESS_GRANTED_ACTIONS = [
+  TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED,
+  TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED,
+  TODO_ACTION_TYPE_DUO_CORE_ACCESS_GRANTED,
+];
 
 export const TODO_EMPTY_TITLE_POOL = [
   s__("Todos|Good job! Looks like you don't have anything left on your To-Do List"),

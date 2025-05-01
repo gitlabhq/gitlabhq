@@ -45,8 +45,8 @@ prometheus:
 tracer:
   jaeger:
     enabled: false
-# https://gitlab.com/gitlab-org/gitlab/-/issues/471172
+# https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/12503#note_2479345136
 gitlab_http_router:
-  enabled: true
+  enabled: false
 mise:
   enabled: true

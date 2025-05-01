@@ -1076,6 +1076,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:scheduling_schedule_within
+  :worker_name: Gitlab::Scheduling::ScheduleWithinWorker
+  :feature_category: :scalability
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:service_desk_custom_email_verification_cleanup
   :worker_name: ServiceDesk::CustomEmailVerificationCleanupWorker
   :feature_category: :service_desk

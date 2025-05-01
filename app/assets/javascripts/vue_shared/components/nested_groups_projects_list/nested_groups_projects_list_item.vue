@@ -98,12 +98,15 @@ export default {
         this.$emit('load-children', this.item.id);
       }
     },
+    onRefetch() {
+      this.$emit('refetch');
+    },
   },
 };
 </script>
 
 <template>
-  <component :is="itemComponent" v-bind="itemProps">
+  <component :is="itemComponent" v-bind="itemProps" @refetch="onRefetch">
     <template v-if="item.hasChildren" #children-toggle>
       <gl-button v-bind="expandButtonProps" @click="onNestedItemsToggleClick" />
     </template>
@@ -116,6 +119,7 @@ export default {
         :initial-expanded="initialExpanded"
         :class="nestedItemsContainerClasses"
         @load-children="$emit('load-children', $event)"
+        @refetch="onRefetch"
       />
     </template>
   </component>

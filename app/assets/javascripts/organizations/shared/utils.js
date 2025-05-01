@@ -1,5 +1,9 @@
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
+import {
+  ACTION_EDIT,
+  ACTION_DELETE,
+  ACTION_LEAVE,
+} from '~/vue_shared/components/list_actions/constants';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
@@ -12,6 +16,10 @@ const availableGroupActions = (userPermissions) => {
 
   if (userPermissions.viewEditPage) {
     baseActions.push(ACTION_EDIT);
+  }
+
+  if (userPermissions.canLeave) {
+    baseActions.push(ACTION_LEAVE);
   }
 
   if (userPermissions.removeGroup) {

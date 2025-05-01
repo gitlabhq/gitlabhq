@@ -6338,6 +6338,7 @@ export const mockUserPreferences = (useWorkItemsView = true) => ({
 export const mockProjectPermissionsQueryResponse = ({
   createDesign = true,
   moveDesign = true,
+  updateDesign = true,
 } = {}) => ({
   data: {
     workspace: {
@@ -6345,6 +6346,7 @@ export const mockProjectPermissionsQueryResponse = ({
       userPermissions: {
         createDesign,
         moveDesign,
+        updateDesign,
         __typename: 'ProjectPermissions',
       },
       __typename: 'Project',

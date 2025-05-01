@@ -111,11 +111,15 @@ export default {
       },
       update(data) {
         const { event, image, imageV432x230 } = data.designManagement.designAtVersion;
+        const {
+          userPermissions: { updateDesign },
+        } = data.designManagement.designAtVersion.design.issue;
         return {
           ...data.designManagement.designAtVersion.design,
           event,
           image,
           imageV432x230,
+          canUpdateDesign: updateDesign,
         };
       },
       result({ data }) {
@@ -210,6 +214,9 @@ export default {
     },
     isAnnotating() {
       return Boolean(this.annotationCoordinates);
+    },
+    canUpdateDesign() {
+      return this.design.canUpdateDesign || false;
     },
   },
   watch: {
@@ -366,6 +373,7 @@ export default {
         :is-latest-version="isLatestVersion"
         :all-designs="allDesigns"
         :current-user-design-todos="currentUserDesignTodos"
+        :can-update-design="canUpdateDesign"
         @toggle-sidebar="toggleSidebar"
         @archive-design="onArchiveDesign"
         @todosUpdated="updateWorkItemDesignCurrentTodosWidgetCache"

@@ -9,7 +9,11 @@ import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/visibility_level/
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { __ } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
-import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
+import {
+  ACTION_EDIT,
+  ACTION_DELETE,
+  ACTION_LEAVE,
+} from '~/vue_shared/components/list_actions/constants';
 import {
   TIMESTAMP_TYPES,
   TIMESTAMP_TYPE_CREATED_AT,
@@ -17,6 +21,7 @@ import {
 import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
 import ListItemStat from '~/vue_shared/components/resource_lists/list_item_stat.vue';
 import { renderDeleteSuccessToast, deleteParams } from '~/vue_shared/components/groups_list/utils';
+import GroupListItemLeaveModal from '~/vue_shared/components/groups_list/group_list_item_leave_modal.vue';
 import GroupListItemPreventDeleteModal from './group_list_item_prevent_delete_modal.vue';
 import GroupListItemInactiveBadge from './group_list_item_inactive_badge.vue';
 
@@ -34,6 +39,7 @@ export default {
     ListItemStat,
     GlIcon,
     GlBadge,
+    GroupListItemLeaveModal,
     GroupListItemPreventDeleteModal,
     GroupListItemDeleteModal,
     GroupListItemInactiveBadge,
@@ -68,7 +74,8 @@ export default {
   data() {
     return {
       isDeleteModalVisible: false,
-      isDeleteLoading: false,
+      isDeleteModalLoading: false,
+      isLeaveModalVisible: false,
       modalId: uniqueId('groups-list-item-modal-id-'),
     };
   },
@@ -111,33 +118,48 @@ export default {
         [ACTION_DELETE]: {
           action: this.onActionDelete,
         },
+        [ACTION_LEAVE]: {
+          action: this.onActionLeave,
+        },
       };
     },
     hasActionDelete() {
       return this.group.availableActions?.includes(ACTION_DELETE);
+    },
+    hasActionLeave() {
+      return this.group.availableActions?.includes(ACTION_LEAVE);
+    },
+    hasFooterAction() {
+      return this.hasActionDelete || this.hasActionLeave;
     },
   },
   methods: {
     onActionDelete() {
       this.isDeleteModalVisible = true;
     },
-    onModalChange(isVisible) {
+    onDeleteModalChange(isVisible) {
       this.isDeleteModalVisible = isVisible;
     },
     async onDeleteModalConfirm() {
-      this.isDeleteLoading = true;
+      this.isDeleteModalLoading = true;
 
       try {
         await axios.delete(`/${this.group.fullPath}`, {
           params: deleteParams(this.group),
         });
-        this.$emit('refetch');
+        this.refetch();
         renderDeleteSuccessToast(this.group);
       } catch (error) {
         createAlert({ message: this.$options.i18n.deleteErrorMessage, error, captureError: true });
       } finally {
-        this.isDeleteLoading = false;
+        this.isDeleteModalLoading = false;
       }
+    },
+    onActionLeave() {
+      this.isLeaveModalVisible = true;
+    },
+    refetch() {
+      this.$emit('refetch');
     },
   },
 };
@@ -189,23 +211,34 @@ export default {
       />
     </template>
 
-    <template v-if="hasActionDelete" #footer>
-      <group-list-item-prevent-delete-modal
-        v-if="group.isLinkedToSubscription"
-        :visible="isDeleteModalVisible"
-        :modal-id="modalId"
-        @change="onModalChange"
-      />
-      <group-list-item-delete-modal
-        v-else
-        :visible="isDeleteModalVisible"
-        :modal-id="modalId"
-        :phrase="group.fullName"
-        :confirm-loading="isDeleteLoading"
-        :group="group"
-        @confirm.prevent="onDeleteModalConfirm"
-        @change="onModalChange"
-      />
+    <template v-if="hasFooterAction" #footer>
+      <template v-if="hasActionDelete">
+        <group-list-item-prevent-delete-modal
+          v-if="group.isLinkedToSubscription"
+          :visible="isDeleteModalVisible"
+          :modal-id="modalId"
+          @change="onDeleteModalChange"
+        />
+        <group-list-item-delete-modal
+          v-else
+          :visible="isDeleteModalVisible"
+          :modal-id="modalId"
+          :phrase="group.fullName"
+          :confirm-loading="isDeleteModalLoading"
+          :group="group"
+          @confirm.prevent="onDeleteModalConfirm"
+          @change="onDeleteModalChange"
+        />
+      </template>
+
+      <template v-if="hasActionLeave">
+        <group-list-item-leave-modal
+          v-model="isLeaveModalVisible"
+          :modal-id="modalId"
+          :group="group"
+          @success="refetch"
+        />
+      </template>
     </template>
 
     <template #children>

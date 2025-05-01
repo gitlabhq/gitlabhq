@@ -53,11 +53,12 @@ export default {
         text: __('Cancel'),
       };
     },
-    groupLeaveConfirmationMessage() {
+    groupLeaveConfirmationTitle() {
       if (!this.targetGroup) {
         return '';
       }
-      return sprintf(s__('GroupsTree|Are you sure you want to leave the "%{fullName}" group?'), {
+
+      return sprintf(s__('GroupsTree|Are you sure you want to leave "%{fullName}"?'), {
         fullName: this.targetGroup.fullName,
       });
     },
@@ -240,13 +241,24 @@ export default {
     <gl-modal
       modal-id="leave-group-modal"
       :visible="isModalVisible"
-      :title="__('Are you sure?')"
+      :title="groupLeaveConfirmationTitle"
       :action-primary="primaryProps"
       :action-cancel="cancelProps"
       @primary="leaveGroup"
       @hide="hideModal"
     >
-      {{ groupLeaveConfirmationMessage }}
+      <p>{{ s__('GroupsTree|When you leave this group:') }}</p>
+      <ul>
+        <li>{{ s__('GroupsTree|You lose access to all projects within this group') }}</li>
+        <li>
+          {{
+            s__(
+              'GroupsTree|Your assigned issues and merge requests remain, but you cannot view or modify them',
+            )
+          }}
+        </li>
+        <li>{{ s__('GroupsTree|You need an invitation to rejoin') }}</li>
+      </ul>
     </gl-modal>
   </div>
 </template>

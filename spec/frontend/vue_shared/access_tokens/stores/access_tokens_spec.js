@@ -410,6 +410,14 @@ describe('useAccessTokens store', () => {
           }),
         );
       });
+
+      it('hides the new token component', async () => {
+        store.token = 'new token';
+        mockAxios.onDelete().replyOnce(HTTP_STATUS_NO_CONTENT);
+        await store.revokeToken(1);
+
+        expect(store.token).toBeNull();
+      });
     });
 
     describe('rotateToken', () => {

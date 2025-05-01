@@ -140,6 +140,7 @@ export default {
           class="gl-h-full"
           :title="badgeTitle"
           :aria-label="badgeTitle"
+          tag="a"
         >
           {{ openMRsCountText }}
         </gl-badge>

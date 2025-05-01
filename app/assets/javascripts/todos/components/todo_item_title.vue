@@ -12,8 +12,7 @@ import {
   TODO_TARGET_TYPE_MERGE_REQUEST,
   TODO_TARGET_TYPE_PIPELINE,
   TODO_TARGET_TYPE_SSH_KEY,
-  TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED,
-  TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED,
+  DUO_ACCESS_GRANTED_ACTIONS,
 } from '../constants';
 
 export default {
@@ -44,10 +43,7 @@ export default {
       return this.todo.action === TODO_ACTION_TYPE_MEMBER_ACCESS_REQUESTED;
     },
     isDuoActionType() {
-      return (
-        this.todo.action === TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED ||
-        this.todo.action === TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED
-      );
+      return DUO_ACCESS_GRANTED_ACTIONS.includes(this.todo.action);
     },
     issuableType() {
       if (this.isMergeRequest) {

@@ -38,6 +38,7 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :cell do
     let_it_be(:organization) { organizations.first }
     let_it_be(:groups) { create_list(:group, 3, organization: organization) }
     let_it_be(:group) { groups.first }
+    let_it_be(:group_owner) { create(:group_member, :owner, group: group, user: create(:user)) }
     let_it_be(:projects) do
       groups.map do |group|
         create(:project, :public, namespace: group, organization: organization)

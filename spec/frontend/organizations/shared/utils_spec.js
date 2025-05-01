@@ -3,7 +3,11 @@ import organizationProjectsGraphQlResponse from 'test_fixtures/graphql/organizat
 import { formatGroups, formatProjects, timestampType } from '~/organizations/shared/utils';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
 import { SORT_CREATED_AT, SORT_UPDATED_AT, SORT_NAME } from '~/organizations/shared/constants';
-import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
+import {
+  ACTION_EDIT,
+  ACTION_DELETE,
+  ACTION_LEAVE,
+} from '~/vue_shared/components/list_actions/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
@@ -29,7 +33,7 @@ const {
 } = organizationProjectsGraphQlResponse;
 
 describe('formatGroups', () => {
-  it('correctly formats the groups with edit and delete permissions', () => {
+  it('correctly formats the groups with edit, delete, and leave permissions', () => {
     const [firstMockGroup] = organizationGroups;
     const formattedGroups = formatGroups(organizationGroups);
     const [firstFormattedGroup] = formattedGroups;
@@ -43,7 +47,7 @@ describe('formatGroups', () => {
       accessLevel: {
         integerValue: 50,
       },
-      availableActions: [ACTION_EDIT, ACTION_DELETE],
+      availableActions: [ACTION_EDIT, ACTION_LEAVE, ACTION_DELETE],
       children: [],
       childrenLoading: false,
       hasChildren: false,
@@ -51,7 +55,7 @@ describe('formatGroups', () => {
     expect(formattedGroups.length).toBe(organizationGroups.length);
   });
 
-  it('correctly formats the groups without edit or delete permissions', () => {
+  it('correctly formats the groups without edit, delete, and leave permissions', () => {
     const nonDeletableGroup = organizationGroups[1];
     const formattedGroups = formatGroups(organizationGroups);
     const nonDeletableFormattedGroup = formattedGroups[1];

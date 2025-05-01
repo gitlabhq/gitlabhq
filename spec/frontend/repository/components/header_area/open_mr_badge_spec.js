@@ -107,6 +107,7 @@ describe('OpenMrBadge', () => {
         expect(badge.exists()).toBe(true);
         expect(badge.props('variant')).toBe('success');
         expect(badge.props('icon')).toBe('merge-request');
+        expect(badge.props('tag')).toBe('a');
         expect(badge.attributes('title')).toBe(
           'Open merge requests created in the past 30 days that target this branch and modify this file.',
         );

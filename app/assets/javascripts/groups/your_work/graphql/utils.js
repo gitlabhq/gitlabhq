@@ -14,6 +14,7 @@ export const formatGroup = (group) => ({
   updatedAt: group.updated_at,
   avatarUrl: group.avatar_url,
   userPermissions: {
+    canLeave: group.can_leave,
     removeGroup: group.can_remove,
     viewEditPage: group.can_edit,
   },

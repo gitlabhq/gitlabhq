@@ -1,0 +1,10 @@
+---
+name: remove_limit_ci_job_token_scope
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383084
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18902
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/537186
+milestone: '18.0'
+group: group::pipeline security
+type: gitlab_com_derisk
+default_enabled: false

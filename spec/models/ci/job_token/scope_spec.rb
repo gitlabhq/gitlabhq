@@ -106,38 +106,85 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
     end
 
     context 'with inbound and outbound scopes enabled' do
+      before do
+        stub_feature_flags(remove_limit_ci_job_token_scope: false)
+      end
+
       let_it_be(:different_root_group) { create(:group) }
       let_it_be(:project_with_different_root_ancestor) { build_stubbed(:project, namespace: different_root_group) }
 
       context 'when inbound and outbound access setup' do
         include_context 'with accessible and inaccessible projects'
 
-        where(:accessed_project, :result, :same_root_ancestor) do
-          ref(:current_project)                      | true  | true
-          ref(:inbound_allowlist_project)            | false | true
-          ref(:unscoped_project1)                    | false | true
-          ref(:unscoped_project2)                    | false | true
-          ref(:outbound_allowlist_project)           | false | true
-          ref(:inbound_accessible_project)           | false | true
-          ref(:fully_accessible_project)             | true  | true
-          ref(:unscoped_public_project)              | false | true
-          ref(:project_with_different_root_ancestor) | false | false
-        end
-
-        with_them do
-          it 'allows self and projects allowed from both directions' do
-            is_expected.to eq(result)
+        context 'when remove_limit_ci_job_token_scope feature is disabled' do
+          before do
+            stub_feature_flags(remove_limit_ci_job_token_scope: false)
           end
 
-          it 'increments the job_token_authorization_failures_counter metric ONLY for failed authorizations' do
-            if result
-              expect(Gitlab::Ci::Pipeline::Metrics.job_token_authorization_failures_counter).not_to receive(:increment)
-            else
-              expect(Gitlab::Ci::Pipeline::Metrics.job_token_authorization_failures_counter).to receive(:increment)
-              .with(same_root_ancestor: same_root_ancestor)
+          where(:accessed_project, :result, :same_root_ancestor) do
+            ref(:current_project)                      | true  | true
+            ref(:inbound_allowlist_project)            | false | true
+            ref(:unscoped_project1)                    | false | true
+            ref(:unscoped_project2)                    | false | true
+            ref(:outbound_allowlist_project)           | false | true
+            ref(:inbound_accessible_project)           | false | true
+            ref(:fully_accessible_project)             | true  | true
+            ref(:unscoped_public_project)              | false | true
+            ref(:project_with_different_root_ancestor) | false | false
+          end
+
+          with_them do
+            it 'allows self and projects allowed from both directions' do
+              is_expected.to eq(result)
             end
 
-            subject
+            it 'increments the job_token_authorization_failures_counter metric ONLY for failed authorizations' do
+              if result
+                expect(Gitlab::Ci::Pipeline::Metrics.job_token_authorization_failures_counter)
+                .not_to receive(:increment)
+              else
+                expect(Gitlab::Ci::Pipeline::Metrics.job_token_authorization_failures_counter)
+                .to receive(:increment).with(same_root_ancestor: same_root_ancestor)
+              end
+
+              subject
+            end
+          end
+        end
+
+        context 'when remove_limit_ci_job_token_scope feature is enabled' do
+          before do
+            stub_feature_flags(remove_limit_ci_job_token_scope: true)
+          end
+
+          where(:accessed_project, :result, :same_root_ancestor) do
+            ref(:current_project)                      | true  | true
+            ref(:inbound_allowlist_project)            | false | true
+            ref(:unscoped_project1)                    | false | true
+            ref(:unscoped_project2)                    | false | true
+            ref(:outbound_allowlist_project)           | false | true
+            ref(:inbound_accessible_project)           | true | true
+            ref(:fully_accessible_project)             | true  | true
+            ref(:unscoped_public_project)              | false | true
+            ref(:project_with_different_root_ancestor) | false | false
+          end
+
+          with_them do
+            it 'allows self and projects allowed from both directions' do
+              is_expected.to eq(result)
+            end
+
+            it 'increments the job_token_authorization_failures_counter metric ONLY for failed authorizations' do
+              if result
+                expect(Gitlab::Ci::Pipeline::Metrics.job_token_authorization_failures_counter)
+                .not_to receive(:increment)
+              else
+                expect(Gitlab::Ci::Pipeline::Metrics.job_token_authorization_failures_counter)
+                .to receive(:increment).with(same_root_ancestor: same_root_ancestor)
+              end
+
+              subject
+            end
           end
         end
       end
@@ -175,19 +222,46 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
 
       include_context 'with accessible and inaccessible projects'
 
-      where(:accessed_project, :result) do
-        ref(:current_project)            | true
-        ref(:inbound_allowlist_project)  | false
-        ref(:unscoped_project1)          | false
-        ref(:unscoped_project2)          | false
-        ref(:outbound_allowlist_project) | true
-        ref(:inbound_accessible_project) | false
-        ref(:fully_accessible_project)   | true
-        ref(:unscoped_public_project)    | true
+      context 'when remove_limit_ci_job_token_scope feature flag is disabled' do
+        before do
+          stub_feature_flags(remove_limit_ci_job_token_scope: false)
+        end
+
+        where(:accessed_project, :result) do
+          ref(:current_project)            | true
+          ref(:inbound_allowlist_project)  | false
+          ref(:unscoped_project1)          | false
+          ref(:unscoped_project2)          | false
+          ref(:outbound_allowlist_project) | true
+          ref(:inbound_accessible_project) | false
+          ref(:fully_accessible_project)   | true
+          ref(:unscoped_public_project)    | true
+        end
+
+        with_them do
+          it { is_expected.to eq(result) }
+        end
       end
 
-      with_them do
-        it { is_expected.to eq(result) }
+      context 'when remove_limit_ci_job_token_scope feature flag is enabled' do
+        before do
+          stub_feature_flags(remove_limit_ci_job_token_scope: true)
+        end
+
+        where(:accessed_project, :result) do
+          ref(:current_project)            | true
+          ref(:inbound_allowlist_project)  | true
+          ref(:unscoped_project1)          | true
+          ref(:unscoped_project2)          | true
+          ref(:outbound_allowlist_project) | true
+          ref(:inbound_accessible_project) | true
+          ref(:fully_accessible_project)   | true
+          ref(:unscoped_public_project)    | true
+        end
+
+        with_them do
+          it { is_expected.to eq(result) }
+        end
       end
     end
 

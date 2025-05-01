@@ -67,6 +67,14 @@ describe('NestedGroupsProjectsListItem', () => {
           expect(wrapper.emitted('load-children')).toEqual([[1]]);
         });
       });
+
+      describe('when NestedGroupsProjectsList emits refetch event', () => {
+        it('emits refetch event', () => {
+          findNestedGroupsProjectsList().vm.$emit('refetch');
+
+          expect(wrapper.emitted('refetch')).toEqual([[]]);
+        });
+      });
     });
 
     describe('when item does not have children', () => {

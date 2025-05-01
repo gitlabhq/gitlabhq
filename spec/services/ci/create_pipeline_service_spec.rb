@@ -1865,7 +1865,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
             expect(pipeline).to be_persisted
             expect(pipeline.error_messages[0].content)
-              .to include 'unknown interpolation key: `suite`'
+              .to include 'unknown input name provided: `suite`'
           end
         end
 

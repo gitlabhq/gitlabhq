@@ -443,6 +443,8 @@
   - 1
 - - gitlab_subscriptions_refresh_seats
   - 1
+- - gitlab_subscriptions_self_managed_duo_core_todo_notification
+  - 1
 - - gitlab_subscriptions_trials_apply_trial
   - 1
 - - google_cloud_create_cloudsql_instance

@@ -22,7 +22,9 @@ module Types
         Types::ProjectType.connection_type,
         null: false,
         description: "Allow list of projects that are accessible using the current project's CI Job tokens.",
-        method: :outbound_projects
+        method: :outbound_projects,
+        deprecated: { reason: 'Outbound job token scope is being removed. Only inbound allowlist is supported',
+                      milestone: '18.0' }
 
       field :inbound_allowlist,
         Types::Ci::JobTokenAccessibleProjectType.connection_type,

@@ -1,27 +1,33 @@
-import { deleteParams, renderDeleteSuccessToast } from '~/vue_shared/components/groups_list/utils';
+import {
+  deleteParams,
+  renderDeleteSuccessToast,
+  renderLeaveSuccessToast,
+} from '~/vue_shared/components/groups_list/utils';
 import toast from '~/vue_shared/plugins/global_toast';
 
 jest.mock('~/vue_shared/plugins/global_toast');
 
+const MOCK_GROUP = {
+  fullName: 'Group',
+  fullPath: 'path/to/group',
+};
+
 const MOCK_GROUP_NO_DELAY_DELETION = {
-  fullName: 'No Delay Group',
-  fullPath: 'path/to/group/1',
+  ...MOCK_GROUP,
   isAdjournedDeletionEnabled: false,
   markedForDeletionOn: null,
   permanentDeletionDate: null,
 };
 
 const MOCK_GROUP_WITH_DELAY_DELETION = {
-  fullName: 'With Delay Group',
-  fullPath: 'path/to/group/2',
+  ...MOCK_GROUP,
   isAdjournedDeletionEnabled: true,
   markedForDeletionOn: null,
   permanentDeletionDate: '2024-03-31',
 };
 
 const MOCK_GROUP_PENDING_DELETION = {
-  fullName: 'Pending Deletion Group',
-  fullPath: 'path/to/group/3',
+  ...MOCK_GROUP,
   isAdjournedDeletionEnabled: true,
   markedForDeletionOn: '2024-03-24',
   permanentDeletionDate: '2024-03-31',
@@ -50,6 +56,14 @@ describe('renderDeleteSuccessToast', () => {
     expect(toast).toHaveBeenCalledWith(
       `Group '${MOCK_GROUP_PENDING_DELETION.fullName}' is being deleted.`,
     );
+  });
+});
+
+describe('renderLeaveSuccessToast', () => {
+  it('calls toast correctly', () => {
+    renderLeaveSuccessToast(MOCK_GROUP);
+
+    expect(toast).toHaveBeenCalledWith(`Left the '${MOCK_GROUP.fullName}' group successfully.`);
   });
 });
 

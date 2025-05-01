@@ -50,6 +50,7 @@ export default {
       :timestamp-type="timestampType"
       :initial-expanded="initialExpanded"
       @load-children="$emit('load-children', $event)"
+      @refetch="$emit('refetch')"
     />
   </ul>
 </template>

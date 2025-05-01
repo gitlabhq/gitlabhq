@@ -23,7 +23,9 @@ module Types
         field :direction,
           GraphQL::Types::String,
           null: true,
-          description: 'Direction of access. Defaults to INBOUND.'
+          description: 'Direction of access. Defaults to INBOUND.',
+          deprecated: { reason: 'Outbound job token scope is being removed. This field can only be INBOUND',
+                        milestone: '18.0' }
 
         field :default_permissions,
           GraphQL::Types::Boolean,

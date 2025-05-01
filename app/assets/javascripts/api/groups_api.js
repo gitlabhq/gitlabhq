@@ -5,6 +5,7 @@ import { buildApiUrl } from './api_utils';
 const GROUP_PATH = '/api/:version/groups/:id';
 const GROUPS_PATH = '/api/:version/groups.json';
 const GROUP_MEMBERS_PATH = '/api/:version/groups/:id/members';
+const GROUP_MEMBER_PATH = '/api/:version/groups/:id/members/:user_id';
 const GROUP_ALL_MEMBERS_PATH = '/api/:version/groups/:id/members/all';
 const DESCENDANT_GROUPS_PATH = '/api/:version/groups/:id/descendant_groups';
 const GROUP_TRANSFER_LOCATIONS_PATH = 'api/:version/groups/:id/transfer_locations';
@@ -70,6 +71,12 @@ export const getGroupMembers = (groupId, inherited = false, params = {}) => {
   const url = buildApiUrl(path).replace(':id', groupId);
 
   return axios.get(url, { params });
+};
+
+export const deleteGroupMember = (groupId, userId) => {
+  const url = buildApiUrl(GROUP_MEMBER_PATH).replace(':id', groupId).replace(':user_id', userId);
+
+  return axios.delete(url);
 };
 
 export const createGroup = (params) => {

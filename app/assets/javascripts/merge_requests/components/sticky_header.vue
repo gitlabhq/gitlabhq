@@ -261,7 +261,6 @@ export default {
           </ul>
           <div class="gl-ml-auto gl-hidden gl-items-center lg:gl-flex">
             <discussion-counter :blocks-merge="blocksMerge" hide-options />
-            <submit-review-button v-if="glFeatures.improvedReviewExperience" class="gl-mr-3" />
             <div v-if="isSignedIn" :class="{ 'gl-flex gl-gap-3': isNotificationsTodosButtons }">
               <todo-widget
                 :issuable-id="issuableId"
@@ -276,6 +275,7 @@ export default {
                 issuable-type="merge_request"
               />
             </div>
+            <submit-review-button v-if="glFeatures.improvedReviewExperience" class="gl-ml-3" />
           </div>
         </div>
       </div>

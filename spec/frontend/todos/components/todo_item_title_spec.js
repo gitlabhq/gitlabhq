@@ -12,6 +12,7 @@ import {
   TODO_TARGET_TYPE_SSH_KEY,
   TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED,
   TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED,
+  TODO_ACTION_TYPE_DUO_CORE_ACCESS_GRANTED,
 } from '~/todos/constants';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { DESIGN_TODO, MR_BUILD_FAILED_TODO } from '../mock_data';
@@ -98,6 +99,7 @@ describe('TodoItemTitle', () => {
       action                                            | icon      | showsIcon
       ${TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED}        | ${'book'} | ${true}
       ${TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED} | ${'book'} | ${true}
+      ${TODO_ACTION_TYPE_DUO_CORE_ACCESS_GRANTED}       | ${'book'} | ${true}
     `('renders "$icon" for the "$action" action', ({ action, icon, showsIcon }) => {
       createComponent({ ...mockToDo, action });
 

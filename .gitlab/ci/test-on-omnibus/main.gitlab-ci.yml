@@ -422,6 +422,20 @@ update-patch:
     - !reference [.rules:test:omnibus-base, rules]
     - !reference [.rules:test:update-patch, rules]
 
+# Job tests upgrade from previous internal release to latest if available
+# Requires GITLAB_QA_DEV_ACCESS_TOKEN to pull internal release
+update-patch-from-internal-to-internal:
+  extends:
+    - .omnibus-e2e
+    - .update-script
+  variables:
+    UPDATE_TYPE: internal_patch
+    QA_RSPEC_TAGS: --tag health_check
+  rules:
+    - !reference [.rules:test:update-jobs-never, rules]
+    - !reference [.rules:test:omnibus-base, rules]
+    - !reference [.rules:test:update-patch, rules]
+
 update-from-patch-to-stable:
   extends:
     - .omnibus-e2e

@@ -8,6 +8,7 @@ export const mockDesign = {
   image: 'raw_image_1',
   imageV432x230: 'resized_image_v432x230_1',
   fullPath: 'designs/issue-2/Screenshot_from_2024-03-28_10-24-43.png',
+  canUpdateDesign: true,
   currentUserTodos: {
     nodes: [],
     __typename: 'TodoConnection',
@@ -251,8 +252,12 @@ export const getDesignResponse = {
         event: 'NONE',
         image: 'raw_image_1',
         imageV432x230: 'resized_image_v432x230_1',
-        design: mockDesign,
+        design: {
+          ...mockDesign,
+          canUpdateDesign: mockDesign.issue.userPermissions.updateDesign,
+        },
         version: mockAllVersions[0],
+        __typename: 'DesignAtVersion',
       },
       __typename: 'DesignManagement',
     },

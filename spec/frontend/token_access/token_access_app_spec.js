@@ -13,9 +13,12 @@ describe('TokenAccessApp component', () => {
   const findTokenPermissions = () => wrapper.findComponent(TokenPermissions);
   const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
 
-  const createComponent = ({ allowPushRepositoryForJobToken = true } = {}) => {
+  const createComponent = ({
+    allowPushRepositoryForJobToken = true,
+    removeLimitCiJobTokenScope = true,
+  } = {}) => {
     wrapper = shallowMount(TokenAccessApp, {
-      provide: { glFeatures: { allowPushRepositoryForJobToken } },
+      provide: { glFeatures: { allowPushRepositoryForJobToken, removeLimitCiJobTokenScope } },
     });
   };
 
@@ -38,8 +41,8 @@ describe('TokenAccessApp component', () => {
       expect(findIntersectionObserver().exists()).toBe(true);
     });
 
-    it('renders/does not render the outbound token access component', () => {
-      expect(findOutboundTokenAccess().exists()).toBe(expected);
+    it('does not render the outbound token access component', () => {
+      expect(findOutboundTokenAccess().exists()).toBe(false);
     });
 
     it('renders/does not render the inbound token access component', () => {
@@ -59,6 +62,17 @@ describe('TokenAccessApp component', () => {
 
     it('does not render the token permissions component', () => {
       expect(findTokenPermissions().exists()).toBe(false);
+    });
+  });
+
+  describe('when removeLimitCiJobTokenScope feature flag is disabled', () => {
+    beforeEach(() => {
+      createComponent({ removeLimitCiJobTokenScope: false });
+      findIntersectionObserver().vm.$emit('update', { isIntersecting: true });
+    });
+
+    it('renders the outbound token access component', () => {
+      expect(findOutboundTokenAccess().exists()).toBe(true);
     });
   });
 });

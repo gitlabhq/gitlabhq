@@ -43,24 +43,24 @@ describe('ListActions', () => {
         text: 'Delete',
         variant: 'danger',
         action: expect.any(Function),
-        order: 3,
+        order: 4,
       },
     ]);
   });
 
   it('allows adding custom actions', () => {
-    const ACTION_LEAVE = 'leave';
+    const ACTION_CUSTOM = 'custom';
 
     createComponent({
       propsData: {
         actions: {
           ...defaultPropsData.actions,
-          [ACTION_LEAVE]: {
-            text: 'Leave project',
+          [ACTION_CUSTOM]: {
+            text: 'Custom',
             action: () => {},
           },
         },
-        availableActions: [ACTION_EDIT, ACTION_LEAVE, ACTION_DELETE],
+        availableActions: [ACTION_EDIT, ACTION_CUSTOM, ACTION_DELETE],
       },
     });
 
@@ -71,14 +71,14 @@ describe('ListActions', () => {
         order: 1,
       },
       {
-        text: 'Leave project',
+        text: 'Custom',
         action: expect.any(Function),
       },
       {
         text: 'Delete',
         variant: 'danger',
         action: expect.any(Function),
-        order: 3,
+        order: 4,
       },
     ]);
   });
@@ -111,7 +111,7 @@ describe('ListActions', () => {
         text: 'Delete',
         variant: 'danger',
         action: expect.any(Function),
-        order: 3,
+        order: 4,
       },
       {
         text: 'Edit',

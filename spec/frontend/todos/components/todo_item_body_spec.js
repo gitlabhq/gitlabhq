@@ -19,6 +19,7 @@ import {
   TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON,
   TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED,
   TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED,
+  TODO_ACTION_TYPE_DUO_CORE_ACCESS_GRANTED,
 } from '~/todos/constants';
 import { SAML_HIDDEN_TODO } from '../mock_data';
 
@@ -81,6 +82,7 @@ describe('TodoItemBody', () => {
       ${TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON}         | ${'Your SSH key is expiring soon.'}                                                                         | ${false}
       ${TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED}        | ${'You now have access to AI-powered features. Learn how to set up Code Suggestions and Chat in your IDE.'} | ${false}
       ${TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED} | ${'You now have access to AI-powered features. Learn how to set up Code Suggestions and Chat in your IDE.'} | ${false}
+      ${TODO_ACTION_TYPE_DUO_CORE_ACCESS_GRANTED}       | ${'You now have access to AI-powered features. Learn how to set up Code Suggestions and Chat in your IDE.'} | ${false}
     `('renders "$text" for the "$actionName" action', ({ actionName, text, showsAuthor }) => {
       createComponent({ action: actionName, memberAccessType: 'group' });
       expect(wrapper.text()).toContain(text);
@@ -105,6 +107,7 @@ describe('TodoItemBody', () => {
   it.each([
     TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED,
     TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED,
+    TODO_ACTION_TYPE_DUO_CORE_ACCESS_GRANTED,
   ])('when todo action is `%s`, avatar is not shown', (action) => {
     createComponent({ action });
     expect(wrapper.findComponent(GlAvatarLink).exists()).toBe(false);

@@ -167,6 +167,9 @@ export const useAccessTokens = defineStore('accessTokens', {
           message: s__('AccessTokens|The token was revoked successfully.'),
           variant: 'success',
         });
+        // Reset the token to avoid a situation where a token is created or rotated and then revoked,
+        // but the `Your token` banner still displays the token.
+        this.token = null;
         // Reset pagination to avoid situations like: page 2 contains only one token and after it
         // is revoked the page shows `No tokens access tokens` (but there are 20 tokens on page 1).
         this.page = 1;

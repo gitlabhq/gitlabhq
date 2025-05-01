@@ -23,6 +23,11 @@ export default {
       required: false,
       default: false,
     },
+    size: {
+      type: String,
+      default: 'medium',
+      required: false,
+    },
   },
   emits: ['toggledPaused'],
   computed: {
@@ -60,6 +65,7 @@ export default {
       <gl-button
         v-gl-tooltip="loading ? '' : tooltip"
         :icon="icon"
+        :size="size"
         :aria-label="ariaLabel"
         :loading="loading"
         @click="onClick"

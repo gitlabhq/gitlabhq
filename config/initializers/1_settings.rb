@@ -749,8 +749,13 @@ Settings.cron_jobs['ci_schedule_old_pipelines_removal_cron_worker'] ||= {}
 Settings.cron_jobs['ci_schedule_old_pipelines_removal_cron_worker']['cron'] ||= '*/11 * * * *'
 Settings.cron_jobs['ci_schedule_old_pipelines_removal_cron_worker']['job_class'] = 'Ci::ScheduleOldPipelinesRemovalCronWorker'
 Settings.cron_jobs['version_version_check_cron'] ||= {}
-Settings.cron_jobs['version_version_check_cron']['cron'] ||= "#{rand(60)} #{rand(24)} * * *" # rubocop: disable Scalability/RandomCronSchedule -- https://gitlab.com/gitlab-org/gitlab/-/issues/536393
-Settings.cron_jobs['version_version_check_cron']['job_class'] = 'Gitlab::Version::VersionCheckCronWorker'
+Settings.cron_jobs['version_version_check_cron']['cron'] ||= "0 0 * * * UTC"
+Settings.cron_jobs['version_version_check_cron']['job_class'] = 'Gitlab::Scheduling::ScheduleWithinWorker'
+Settings.cron_jobs['version_version_check_cron']['args'] = {
+  'worker_class' => 'Gitlab::Version::VersionCheckCronWorker',
+  'within_minutes' => 59,
+  'within_hours' => 23
+}
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}

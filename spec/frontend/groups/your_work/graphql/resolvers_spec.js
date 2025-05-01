@@ -73,7 +73,11 @@ describe('your work groups resolver', () => {
       visibility: 'public',
       createdAt: mockGroup.created_at,
       updatedAt: mockGroup.updated_at,
-      userPermissions: { removeGroup: true, viewEditPage: true },
+      userPermissions: {
+        canLeave: false,
+        removeGroup: true,
+        viewEditPage: true,
+      },
       maxAccessLevel: { integerValue: 50 },
       children: [
         {

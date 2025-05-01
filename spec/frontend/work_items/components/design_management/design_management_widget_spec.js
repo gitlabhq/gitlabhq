@@ -99,6 +99,8 @@ describe('DesignWidget', () => {
     uploadError = null,
     uploadErrorVariant = ALERT_VARIANTS.danger,
     canReorderDesign = true,
+    canAddDesign = true,
+    canUpdateDesign = true,
   } = {}) {
     wrapper = shallowMountExtended(DesignWidget, {
       isLoggedIn: isLoggedIn(),
@@ -115,6 +117,8 @@ describe('DesignWidget', () => {
         workItemFullPath: 'gitlab-org/gitlab-shell',
         workItemWebUrl: '/gitlab-org/gitlab-shell/-/work_items/1',
         isGroup: false,
+        canAddDesign,
+        canUpdateDesign,
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -153,6 +157,13 @@ describe('DesignWidget', () => {
         acceptDesignFormats: VALID_DESIGN_FILE_MIMETYPE.mimetype,
         uploadDesignOverlayText: 'Drop your images to start the upload.',
       });
+    });
+
+    it('does not render design-dropzone component if canAddDesign prop is false', async () => {
+      createComponent({ canAddDesign: false });
+      await waitForPromises();
+
+      expect(findDesignDropzoneComponent().exists()).toBe(false);
     });
 
     it('calls design collection query without version by default', () => {
@@ -307,6 +318,36 @@ describe('DesignWidget', () => {
 
     it('does not render VueDraggable component if user is logged out', () => {
       expect(findVueDraggable().exists()).toBe(false);
+    });
+  });
+
+  describe('when user does not have permission to add designs', () => {
+    beforeEach(async () => {
+      createComponent({ canAddDesign: false });
+      await waitForPromises();
+    });
+
+    it('does not render the add button', () => {
+      expect(wrapper.findByTestId('add-design').exists()).toBe(false);
+    });
+  });
+
+  describe('when user does not have permission to update designs', () => {
+    beforeEach(async () => {
+      createComponent({ canUpdateDesign: false });
+      await waitForPromises();
+    });
+
+    it('does not render the archive button', () => {
+      expect(wrapper.findByTestId('archive-button').exists()).toBe(false);
+    });
+
+    it('does not render the select all button', () => {
+      expect(wrapper.findByTestId('select-all-designs-button').exists()).toBe(false);
+    });
+
+    it('does not render the design checkboxes', () => {
+      expect(wrapper.findAllByTestId('design-checkbox').length).toBe(0);
     });
   });
 });

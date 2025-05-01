@@ -92,6 +92,7 @@ import WorkItemCreateBranchMergeRequestSplitButton from './work_item_development
 
 const defaultWorkspacePermissions = {
   createDesign: false,
+  updateDesign: false,
   moveDesign: false,
 };
 
@@ -396,7 +397,7 @@ export default {
       return this.findWidget(WIDGET_TYPE_DESIGNS) && (this.$router || this.isBoard);
     },
     showUploadDesign() {
-      return this.hasDesignWidget && this.workspacePermissions.createDesign;
+      return this.hasDesignWidget && this.canAddDesign;
     },
     canReorderDesign() {
       return this.hasDesignWidget && this.workspacePermissions.moveDesign;
@@ -590,6 +591,12 @@ export default {
       const rootPath = this.workItem?.namespace?.webUrl || '';
       return this.isGroupWorkItem ? `${rootPath}/-/uploads` : `${rootPath}/uploads`;
     },
+    canAddDesign() {
+      return this.workspacePermissions.createDesign;
+    },
+    canUpdateDesign() {
+      return this.workspacePermissions.updateDesign;
+    },
   },
   mounted() {
     addShortcutsExtension(ShortcutsWorkItems);
@@ -733,7 +740,7 @@ export default {
       this.editMode = false;
     },
     isValidDesignUpload(files) {
-      if (!this.workspacePermissions.createDesign) return false;
+      if (!this.canAddDesign) return false;
 
       if (files.length > MAXIMUM_FILE_UPLOAD_LIMIT) {
         this.designUploadError = MAXIMUM_FILE_UPLOAD_LIMIT_REACHED;
@@ -1166,6 +1173,8 @@ export default {
               :is-saving="isSaving"
               :can-reorder-design="canReorderDesign"
               :is-board="isBoard"
+              :can-add-design="canAddDesign"
+              :can-update-design="canUpdateDesign"
               @upload="onUploadDesign"
               @dismissError="designUploadError = null"
             >

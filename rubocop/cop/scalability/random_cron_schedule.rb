@@ -8,6 +8,7 @@ module RuboCop
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/536393
       class RandomCronSchedule < RuboCop::Cop::Base
         MSG = "Avoid randomized cron expressions. This can lead to missed executions. " \
+          "Use Gitlab::Scheduling::ScheduleWithinWorker if you want to add random jitter. " \
           "See https://gitlab.com/gitlab-org/gitlab/-/issues/536393"
 
         RESTRICT_ON_SEND = %i[rand].freeze

@@ -14,7 +14,7 @@ import {
   WIDGET_TYPE_HIERARCHY,
   INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
   DETAIL_VIEW_QUERY_PARAM_NAME,
-  NAME_TO_LOWERCASE_TEXT_MAP,
+  NAME_TO_TEXT_LOWERCASE_MAP,
   NAME_TO_TEXT_MAP,
 } from '../../constants';
 import {
@@ -308,7 +308,7 @@ export default {
   },
   methods: {
     genericActionItems(workItemType) {
-      const workItemName = NAME_TO_LOWERCASE_TEXT_MAP[workItemType];
+      const workItemName = NAME_TO_TEXT_LOWERCASE_MAP[workItemType];
       return [
         {
           title: sprintf(s__('WorkItem|New %{workItemName}'), { workItemName }),

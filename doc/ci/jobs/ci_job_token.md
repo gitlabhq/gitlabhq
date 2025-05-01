@@ -412,11 +412,18 @@ Additionally, there are multiple valid methods for passing the job token in the 
 
 ## Limit your project's job token access (deprecated)
 
-{{< alert type="note" >}}
+{{< history >}}
+
+- Deprecated in GitLab 16.0.
+- Removal process [started](https://gitlab.com/gitlab-org/gitlab/-/issues/537186) in GitLab 18.0 by putting this feature behind [a flag](../../administration/feature_flags.md) named `remove_limit_ci_job_token_scope`, disabled by default.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
 
 The [**Limit access _from_ this project**](#configure-the-job-token-scope-deprecated)
 setting is disabled by default for all new projects and is [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/383084)
-in GitLab 17.0. Project maintainers or owners should configure the [**Limit access _to_ this project**](#add-a-group-or-project-to-the-job-token-allowlist)
+in GitLab 18.0. Project maintainers or owners should configure the [**Limit access _to_ this project**](#add-a-group-or-project-to-the-job-token-allowlist)
 setting instead.
 
 {{< /alert >}}

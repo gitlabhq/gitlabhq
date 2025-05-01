@@ -33,7 +33,7 @@ export default {
       <token-permissions v-if="glFeatures.allowPushRepositoryForJobToken" />
       <inbound-token-access />
       <auth-log />
-      <outbound-token-access />
+      <outbound-token-access v-if="!glFeatures.removeLimitCiJobTokenScope" />
     </template>
   </gl-intersection-observer>
 </template>

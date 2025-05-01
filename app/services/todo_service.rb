@@ -338,12 +338,13 @@ class TodoService
     ).distinct_user_ids
   end
 
-  def bulk_insert_todos(users, attributes)
+  def bulk_insert_todos(users, attributes, &attribute_merger)
     todos_ids = []
+    attribute_merger ||= ->(user, attrs) { attrs.merge(user_id: user.id) }
 
     users.each_slice(BATCH_SIZE) do |users_batch|
       todos_attributes = users_batch.map do |user|
-        Todo.new(attributes.merge(user_id: user.id)).attributes.except('id', 'created_at', 'updated_at')
+        Todo.new(attribute_merger.call(user, attributes)).attributes.except('id', 'created_at', 'updated_at')
       end
 
       todos_ids += Todo.insert_all(todos_attributes, returning: :id).rows.flatten unless todos_attributes.blank?
