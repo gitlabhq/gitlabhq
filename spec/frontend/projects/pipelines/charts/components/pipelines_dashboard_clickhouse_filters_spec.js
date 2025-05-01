@@ -81,10 +81,10 @@ describe('PipelinesDashboardClickhouseFilters', () => {
         'Parent Pipeline',
         'On-Demand DAST Scan',
         'On-Demand DAST Validation',
-        'Security Orchestration Policy',
+        'Scheduled Scan Execution Policy',
         'Container Registry Push',
         'Duo Workflow',
-        'Pipeline Execution Policy Schedule',
+        'Scheduled Pipeline Execution Policy',
         'Unknown',
       ]);
     });

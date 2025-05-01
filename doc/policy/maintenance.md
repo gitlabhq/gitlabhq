@@ -113,9 +113,9 @@ The decision on whether backporting a change is performed is done at the discret
 [current release managers](https://about.gitlab.com/community/release-managers/),
 based on *all* of the following:
 
-1. Estimated [severity](../development/labels/_index.md#severity-labels) of the bug:
+1. Estimated severity of the bug:
    Highest possible impact to users based on the current definition of severity.
-1. Estimated [priority](../development/labels/_index.md#priority-labels) of the bug:
+1. Estimated priority of the bug:
    Immediate impact on all impacted users based on the above estimated severity.
 1. Potentially incurring data loss and/or security breach.
 1. Potentially affecting one or more strategic accounts due to a proven inability by the user to upgrade to the current stable version.
@@ -125,7 +125,7 @@ the current stable release, and two previous monthly releases. In rare cases a r
 For instance, if we release `13.2.1` with a fix for a severe bug introduced in
 `13.0.0`, we could backport the fix to a new `13.0.x`, and `13.1.x` patch release.
 
-Note that [severity](../development/labels/_index.md#severity-labels) 3 and lower
+Note that severity 3 and lower
 requests are automatically turned down.
 
 To request backporting to more than one stable release for consideration, raise an issue in the
@@ -136,5 +136,5 @@ To request backporting to more than one stable release for consideration, raise 
 You may also want to read our:
 
 - [Release documentation](https://gitlab.com/gitlab-org/release/docs) describing release procedures
-- [Deprecation guidelines](../development/deprecation_guidelines/_index.md)
+- Deprecation guidelines in the development documentation.
 - [Responsible Disclosure Policy](https://about.gitlab.com/security/disclosure/)

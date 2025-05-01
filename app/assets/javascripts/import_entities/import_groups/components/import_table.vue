@@ -277,10 +277,13 @@ export default {
     },
 
     unavailableFeaturesAlertTitle() {
-      return sprintf(s__('BulkImport| %{host} is running outdated GitLab version (v%{version})'), {
-        host: this.sourceUrl,
-        version: this.bulkImportSourceGroups.versionValidation.features.sourceInstanceVersion,
-      });
+      return sprintf(
+        s__('BulkImport|%{host} is running an outdated GitLab version (v%{version})'),
+        {
+          host: this.sourceUrl,
+          version: this.bulkImportSourceGroups.versionValidation.features.sourceInstanceVersion,
+        },
+      );
     },
 
     pageInfo() {
@@ -701,7 +704,7 @@ export default {
       <gl-sprintf
         :message="
           s__(
-            'BulkImport|Following data will not be migrated: %{bullets} Contact system administrator of %{host} to upgrade GitLab if you need this data in your migration',
+            'BulkImport|The following items are not migrated: %{bullets} To include these items, ask the administrator of %{host} to upgrade GitLab.',
           )
         "
       >
@@ -764,9 +767,7 @@ export default {
         <help-popover :options="$options.popoverOptions">
           <gl-sprintf
             :message="
-              s__(
-                'BulkImport|Only groups that you have the %{role} role for are listed as groups you can import.',
-              )
+              s__('BulkImport|Only groups you have the %{role} role for are listed for import.')
             "
           >
             <template #role>

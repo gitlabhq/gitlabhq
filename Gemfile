@@ -238,9 +238,9 @@ gem 'seed-fu', '~> 2.3.7', feature_category: :shared
 gem 'elasticsearch-model', '~> 7.2', feature_category: :global_search
 gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation', feature_category: :global_search
 gem 'elasticsearch-api', '7.17.11', feature_category: :global_search
-gem 'aws-sdk-core', '~> 3.215.0', feature_category: :global_search
+gem 'aws-sdk-core', '~> 3.222.0', feature_category: :global_search
 gem 'aws-sdk-cloudformation', '~> 1', feature_category: :global_search
-gem 'aws-sdk-s3', '~> 1.177.0', feature_category: :global_search
+gem 'aws-sdk-s3', '~> 1.183.0', feature_category: :global_search
 gem 'faraday-typhoeus', '~> 1.1', feature_category: :global_search
 gem 'faraday_middleware-aws-sigv4', '~> 1.0.1', feature_category: :global_search
 # Used with Elasticsearch to support http keep-alive connections
@@ -505,7 +505,7 @@ end
 group :development, :test do
   gem 'deprecation_toolkit', '~> 1.5.1', require: false, feature_category: :shared
   gem 'bullet', '~> 7.2.0', feature_category: :shared
-  gem 'parser', '= 3.3.7.1', feature_category: :shared
+  gem 'parser', '= 3.3.7.4', feature_category: :shared
   gem 'pry-byebug', feature_category: :shared
   gem 'pry-rails', '~> 0.3.9', feature_category: :shared
   gem 'pry-shell', '~> 0.6.4', feature_category: :shared
@@ -728,7 +728,7 @@ gem 'cvss-suite', '~> 3.3.0', require: 'cvss_suite', feature_category: :software
 gem 'arr-pm', '~> 0.0.12', feature_category: :package_registry
 
 # Remote Development
-gem 'devfile', '~> 0.4.0', feature_category: :workspaces
+gem 'devfile', '~> 0.4.3', feature_category: :workspaces
 
 # Apple plist parsing
 gem 'CFPropertyList', '~> 3.0.0', feature_category: :mobile_devops

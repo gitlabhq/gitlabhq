@@ -15,7 +15,7 @@ title: 'Tutorial: Update Git commit messages'
 Occasionally, after you've made a few commits to your branch, you realize you need
 to update one or more commit messages. Perhaps you found a typo, or some automation warned you
 that your commit message didn't completely align with a project's
-[commit message guidelines](../../development/contributing/merge_request_workflow.md#commit-messages-guidelines).
+commit message guidelines.
 
 Updating the message can be tricky if you don't have much practice using Git
 from the command-line interface (CLI). But don't worry, even if you have only ever worked in

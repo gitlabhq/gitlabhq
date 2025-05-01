@@ -34,7 +34,7 @@ For more information, see the [GitLab release and maintenance policy](../../poli
 
 ### Zero-downtime upgrades
 
-Deployments follow the process for [zero-downtime upgrades](../../update/zero_downtime.md) to ensure [backward compatibility](../../development/multi_version_compatibility.md) during an upgrade. When no infrastructure changes or maintenance tasks require downtime, using the instance during an upgrade is possible and safe.
+Deployments follow the process for [zero-downtime upgrades](../../update/zero_downtime.md) to ensure backward compatibility during an upgrade. When no infrastructure changes or maintenance tasks require downtime, using the instance during an upgrade is possible and safe.
 
 During a GitLab version update, static assets may change and are only available in one of the two versions. To mitigate this situation, three techniques are adopted:
 

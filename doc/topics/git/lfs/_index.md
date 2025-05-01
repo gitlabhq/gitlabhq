@@ -162,7 +162,6 @@ the total size of your repository, see
 - Use Git LFS to set up [exclusive file locks](../file_management.md#configure-file-locks).
 - Blog post: [Getting started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
 - [Git LFS with Git](../file_management.md#git-lfs)
-- [Git LFS developer information](../../../development/lfs.md)
 - [GitLab Git Large File Storage (LFS) Administration](../../../administration/lfs/_index.md) for GitLab Self-Managed
 - [Troubleshooting Git LFS](troubleshooting.md)
 - [The `.gitattributes` file](../../../user/project/repository/files/git_attributes.md)

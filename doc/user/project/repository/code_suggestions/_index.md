@@ -315,7 +315,7 @@ However, Code Suggestions might generate suggestions that are:
 - Potentially insecure.
 - Offensive or insensitive.
 
-When using Code Suggestions, [code review best practice](../../../../development/code_review.md) still applies.
+When using Code Suggestions, code review best practices still apply.
 
 ## How the prompt is built
 
@@ -336,7 +336,7 @@ Code Suggestions is powered by a generative AI model.
 - For code generation, algorithms or large code blocks might take more than five seconds to generate.
 
 Your personal access token enables a secure API connection to GitLab.com or to your GitLab instance.
-This API connection securely transmits a context window from your IDE/editor to the [GitLab AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), a GitLab hosted service. The [gateway](../../../../development/ai_architecture.md) calls the large language model APIs, and then the generated suggestion is transmitted back to your IDE/editor.
+This API connection securely transmits a context window from your IDE/editor to the [GitLab AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), a GitLab hosted service. The gateway calls the large language model APIs, and then the generated suggestion is transmitted back to your IDE/editor.
 
 ### Streaming
 

@@ -13,7 +13,7 @@ title: Sidekiq queues administration API
 {{< /details >}}
 
 Delete jobs from a Sidekiq queue that match the given
-[metadata](../development/logging.md#logging-context-metadata-through-rails-or-grape-requests).
+metadata.
 
 The response has three fields:
 

@@ -127,7 +127,7 @@ a copy of your repository, and download it.
    ```
 
    For more information about references, see
-   [Git references used by Gitaly](../../development/gitaly.md#git-references-used-by-gitaly).
+   Git references used by Gitaly.
 
    {{< alert type="note" >}}
 

@@ -45,7 +45,7 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
         expect(entity).not_to be_valid
 
         expect(entity.errors[:base])
-          .to include('Import failed: Must have exactly one of organization, group or project.')
+          .to include('Import failed. The bulk import entity must belong to only one organization, group, or project.')
       end
     end
 
@@ -56,7 +56,7 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
         expect(entity).not_to be_valid
 
         expect(entity.errors[:base])
-          .to include('Import failed: Must have exactly one of organization, group or project.')
+          .to include('Import failed. The bulk import entity must belong to only one organization, group, or project.')
       end
     end
 
@@ -67,7 +67,7 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
         expect(entity).not_to be_valid
 
         expect(entity.errors[:base])
-          .to include('Import failed: Must have exactly one of organization, group or project.')
+          .to include('Import failed. The bulk import entity must belong to only one organization, group, or project.')
       end
     end
 
@@ -78,7 +78,7 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
         expect(entity).not_to be_valid
 
         expect(entity.errors[:base])
-          .to include('Import failed: Must have exactly one of organization, group or project.')
+          .to include('Import failed. The bulk import entity must belong to only one organization, group, or project.')
       end
     end
 
@@ -201,7 +201,7 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
           expect(entity).not_to be_valid
           expect(entity.errors).to include(:base)
           expect(entity.errors[:base])
-            .to include('Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again.')
+            .to include('Import failed. The destination cannot be a subgroup of the source group. Change the destination and try again.')
         end
 
         it 'is invalid if destination namespace is a descendant of the source' do
@@ -218,7 +218,7 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
 
           expect(entity).not_to be_valid
           expect(entity.errors[:base])
-            .to include('Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again.')
+            .to include('Import failed. The destination cannot be a subgroup of the source group. Change the destination and try again.')
         end
       end
 

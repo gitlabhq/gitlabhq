@@ -25,6 +25,8 @@ This topic is specifically related to user moderation in groups. For information
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/155) in GitLab 15.8 [with a flag](../../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/365724) in GitLab 15.6.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183101) in GitLab 18.0. Feature flag `limit_unique_project_downloads_per_namespace_user` removed.
 
 {{< /history >}}
 

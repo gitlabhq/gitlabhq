@@ -358,16 +358,18 @@ GEM
     aws-sdk-cloudformation (1.41.0)
       aws-sdk-core (~> 3, >= 3.99.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-core (3.215.0)
+    aws-sdk-core (3.222.2)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
+      base64
       jmespath (~> 1, >= 1.6.1)
+      logger
     aws-sdk-kms (1.76.0)
       aws-sdk-core (~> 3, >= 3.188.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-s3 (1.177.0)
-      aws-sdk-core (~> 3, >= 3.210.0)
+    aws-sdk-s3 (1.183.0)
+      aws-sdk-core (~> 3, >= 3.216.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
     aws-sigv4 (1.9.1)
@@ -533,7 +535,7 @@ GEM
       thor (>= 0.19, < 2)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
-    devfile (0.4.0)
+    devfile (0.4.3)
     device_detector (1.0.0)
     devise (4.9.4)
       bcrypt (~> 3.0)
@@ -1458,7 +1460,7 @@ GEM
       activerecord (>= 6.1)
       request_store (~> 1.4)
     parallel (1.26.3)
-    parser (3.3.7.1)
+    parser (3.3.7.4)
       ast (~> 2.4.1)
       racc
     parslet (1.8.2)
@@ -2078,8 +2080,8 @@ DEPENDENCIES
   attr_encrypted (~> 3.2.4)!
   awesome_print
   aws-sdk-cloudformation (~> 1)
-  aws-sdk-core (~> 3.215.0)
-  aws-sdk-s3 (~> 1.177.0)
+  aws-sdk-core (~> 3.222.0)
+  aws-sdk-s3 (~> 1.183.0)
   axe-core-rspec (~> 4.10.0)
   babosa (~> 2.0)
   base32 (~> 0.3.0)
@@ -2114,7 +2116,7 @@ DEPENDENCIES
   declarative_policy (~> 1.1.0)
   deprecation_toolkit (~> 1.5.1)
   derailed_benchmarks
-  devfile (~> 0.4.0)
+  devfile (~> 0.4.3)
   device_detector
   devise (~> 4.9.3)
   devise-pbkdf2-encryptable (~> 0.0.0)!
@@ -2316,7 +2318,7 @@ DEPENDENCIES
   pact (~> 1.64)
   paper_trail (~> 15.0)
   parallel (~> 1.19)
-  parser (= 3.3.7.1)
+  parser (= 3.3.7.4)
   parslet (~> 1.8)
   peek (~> 1.1)
   pg (~> 1.5.6)

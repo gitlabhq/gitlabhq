@@ -212,6 +212,8 @@ For Gradle projects use either of the following methods to create a dependency g
 
 ##### Dependency Lock Plugin
 
+This method gives information about dependencies which are direct. 
+
 To enable the CI/CD component on a Gradle project:
 
 1. Edit the `build.gradle` or `build.gradle.kts` to use the
@@ -256,10 +258,11 @@ build:
 
 ##### HtmlDependencyReportTask
 
+This method gives information about dependencies which are both transitive and direct.
+
 The [HtmlDependencyReportTask](https://docs.gradle.org/current/dsl/org.gradle.api.reporting.dependencies.HtmlDependencyReportTask.html)
 is an alternative way to get the list of dependencies for a Gradle project (tested with `gradle`
-versions 4 through 8). This method gives information about dependencies which are both transitive
-and direct. To enable use of this method with dependency scanning the artifact from running the
+versions 4 through 8). To enable use of this method with dependency scanning the artifact from running the
 `gradle htmlDependencyReport` task needs to be available.
 
 ```yaml

@@ -59,6 +59,13 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
         expect(build.variables.map(&:key)).not_to include('A_INSTANCE_VARIABLE')
       end
 
+      it 'sets the branch on the workload to the project default_branch' do
+        pipeline = execute.payload
+
+        expect(pipeline.ref).to eq("master")
+        expect(pipeline.ref).to eq(workload.instance_variable_get(:@branch))
+      end
+
       context 'when create_branch: true' do
         let(:create_branch) { true }
 
@@ -71,6 +78,11 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
 
           pipeline = execute.payload
           expect(pipeline.ref).to match(%r{workloads/\w+})
+        end
+
+        it 'sets the branch on the workload to the created branch' do
+          pipeline = execute.payload
+          expect(pipeline.ref).to eq(workload.instance_variable_get(:@branch))
         end
       end
     end

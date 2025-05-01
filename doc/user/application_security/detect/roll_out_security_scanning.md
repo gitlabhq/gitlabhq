@@ -86,7 +86,7 @@ the instructions for
 
 By default, the application security jobs are configured to run for branch pipelines only.
 To use them with [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md),
-you must set the CI/CD variable `AST_ENABLE_MR_PIPELINES` to `"true"` (introduced in 17.11).
+you must set the CI/CD variable `AST_ENABLE_MR_PIPELINES` to `"true"` ([introduced in 18.0](https://gitlab.com/gitlab-org/gitlab/-/issues/410880)).
 
 Alternatively, you can use the [`latest` edition template](#template-editions) which enables merge request pipelines by default.
 

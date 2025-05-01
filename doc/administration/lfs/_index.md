@@ -524,7 +524,6 @@ You can see the total storage used for LFS objects for groups and projects in:
 
 - Blog post: [Getting started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
 - User documentation: [Git Large File Storage (LFS)](../../topics/git/lfs/_index.md)
-- [Git LFS developer information](../../development/lfs.md)
 
 ## Troubleshooting
 

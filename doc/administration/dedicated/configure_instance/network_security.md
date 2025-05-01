@@ -291,7 +291,7 @@ The configuration is applied during the next maintenance window.
 
 ### Enable SCIM provisioning for your IP allowlist
 
-You can use SCIM with external identity providers to automatically provision and manage users. To use SCIM, your identity provider must be able to access the [instance SCIM API](../../../development/internal_api/_index.md#instance-scim-api) endpoints. By default, IP allowlisting blocks communication to these endpoints.
+You can use SCIM with external identity providers to automatically provision and manage users. To use SCIM, your identity provider must be able to access the instance SCIM API endpoints. By default, IP allowlisting blocks communication to these endpoints.
 
 To enable SCIM while maintaining your IP allowlist:
 

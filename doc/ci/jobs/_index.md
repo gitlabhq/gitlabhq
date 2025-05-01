@@ -275,7 +275,7 @@ The source attribute can have the following values:
 - `push`: Job initiated by a code push.
 - `scan_execution_policy`: Job initiated by a scan execution policy.
 - `schedule`: Job initiated by a scheduled pipeline.
-- `security_orchestration_policy`: Job initiated by a security orchestration policy.
+- `security_orchestration_policy`: Job initiated by a scheduled scan execution policy.
 - `trigger`: Job initiated by another job or pipeline.
 - `unknown`: Job initiated by an unknown source.
 - `web`: Job initiated by a user from the GitLab UI.

@@ -676,7 +676,7 @@ persistence classes.
 | `actioncable`      | Pub/Sub queue backend for ActionCable. |
 | `trace_chunks`     | Store [CI trace chunks](../cicd/job_logs.md#incremental-logging) data. |
 | `rate_limiting`    | Store [rate limiting](../settings/user_and_ip_rate_limits.md) state. |
-| `sessions`         | Store [sessions](../../development/session.md#gitlabsession). |
+| `sessions`         | Store sessions. |
 | `repository_cache` | Store cache data specific to repositories. |
 
 To make this work with Sentinel:

@@ -177,7 +177,7 @@ file for the environment, as it isn't generated dynamically.
 ### Additional documentation
 
 Additional technical documentation for `gitlab-sshd` may be found in the
-[GitLab Shell documentation](../../development/gitlab_shell/_index.md).
+GitLab Shell documentation.
 
 ## Troubleshooting
 

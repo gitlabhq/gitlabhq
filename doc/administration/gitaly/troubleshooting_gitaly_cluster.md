@@ -368,7 +368,7 @@ If the [Praefect `dataloss`](recovery.md#check-for-data-loss) shows [repositorie
 
 ### Alternate directory does not exists
 
-GitLab uses the [Git alternates mechanism for deduplication](../../development/git_object_deduplication.md). `alternates` is a text file that points to the `objects` directory on
+GitLab uses the Git alternates mechanism for deduplication. `alternates` is a text file that points to the `objects` directory on
 a `@pool` repository to fetch objects. If this file points to an invalid path, replication can fail with one of the following the errors:
 
 - `"error":"no alternates directory exists", "warning","msg":"alternates file does not point to valid git repository"`
@@ -384,7 +384,7 @@ To investigate the cause of this error:
    project.pool_repository
    ```
 
-1. Check if the pool repository path exists on disk and that it matches [the `alternates` file](../../development/git_object_deduplication.md) content.
-1. Check if the path in the [`alternates` file](../../development/git_object_deduplication.md) is reachable from the `objects` directory in the project.
+1. Check if the pool repository path exists on disk and that it matches the `alternates` file content.
+1. Check if the path in the `alternates` file is reachable from the `objects` directory in the project.
 
 After performing these checks, reach out to GitLab Support with the information collected.

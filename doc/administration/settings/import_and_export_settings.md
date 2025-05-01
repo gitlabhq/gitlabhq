@@ -188,7 +188,7 @@ To modify this setting:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
-1. Increase or decrease by changing the value in **Maximum import remote file size (MiB)**. Set to `0` to set no file size limit.
+1. In **Maximum import remote file size (MiB)**, enter a value. Set to `0` for no file size limit.
 
 ## Maximum download file size for imports by direct transfer
 
@@ -205,7 +205,7 @@ To modify this setting:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
-1. Increase or decrease by changing the value in **Direct transfer maximum download file size (MiB)**. Set to `0` to set no download file size limit.
+1. In **Maximum download file size (MiB)**, enter a value. Set to `0` for no file size limit.
 
 ## Maximum decompressed file size for imported archives
 

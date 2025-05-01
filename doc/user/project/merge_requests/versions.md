@@ -66,5 +66,4 @@ For more information, see how to [show or filter system notes on a merge request
 
 ## Related topics
 
-- [Merge request diffs for developers](../../../development/merge_request_concepts/diffs/_index.md)
 - [Merge request diff storage for administrators](../../../administration/merge_request_diffs.md)

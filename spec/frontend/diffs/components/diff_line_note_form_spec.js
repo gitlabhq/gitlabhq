@@ -114,7 +114,7 @@ describe('DiffLineNoteForm', () => {
         findNoteForm().vm.$emit('cancelForm', true, true);
         await nextTick();
         expect(confirmAction).toHaveBeenCalled();
-        await nextTick();
+        await waitForPromises();
 
         expect(useLegacyDiffs().cancelCommentForm).toHaveBeenCalledWith({
           lineCode: diffLines[1].line_code,
@@ -126,7 +126,7 @@ describe('DiffLineNoteForm', () => {
         findNoteForm().vm.$emit('cancelForm', true, true);
         await nextTick();
         expect(confirmAction).toHaveBeenCalled();
-        await nextTick();
+        await waitForPromises();
 
         expect(clearDraft).toHaveBeenCalledWith(
           `Note/Issue/${noteableDataMock.id}//DiffNote//${diffLines[1].line_code}`,

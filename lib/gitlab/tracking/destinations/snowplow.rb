@@ -9,7 +9,7 @@ module Gitlab
         extend ::Gitlab::Utils::Override
 
         SNOWPLOW_NAMESPACE = 'gl'
-        PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT = 'events.gitlab.net'
+        PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT = 'events-stg.gitlab.net'
 
         def initialize
           @event_eligibility_checker = Gitlab::Tracking::EventEligibilityChecker.new

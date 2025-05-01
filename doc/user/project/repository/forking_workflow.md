@@ -189,7 +189,7 @@ to share objects with another repository:
 
 ## Check a fork's storage usage
 
-Your fork uses a [deduplication strategy](../../../development/git_object_deduplication.md)
+Your fork uses a deduplication strategy
 to reduce the storage space it needs. Your fork can access the object pool connected to the source repository.
 
 For more information and to check the storage use, see [View project fork storage usage](../../storage_usage_quotas.md#view-project-fork-storage-usage).

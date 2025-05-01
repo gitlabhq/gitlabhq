@@ -24,7 +24,7 @@ module Ai
       end
 
       def artifacts_path
-        ['workflow.diff']
+        []
       end
 
       def variables_without_expand
@@ -37,6 +37,7 @@ module Ai
       def variables
         {
           DUO_WORKFLOW_BASE_PATH: './',
+          DUO_WORKFLOW_DEFINITION: @params[:workflow_definition],
           DUO_WORKFLOW_GOAL: @params[:goal],
           DUO_WORKFLOW_WORKFLOW_ID: String(@params[:workflow_id]),
           GITLAB_OAUTH_TOKEN: @params[:workflow_oauth_token],
@@ -56,13 +57,13 @@ module Ai
 
       def commands
         [
+          %(echo $DUO_WORKFLOW_DEFINITION),
+          %(echo $DUO_WORKFLOW_GOAL),
+          %(git checkout #{@branch}),
           %(wget #{Gitlab::DuoWorkflow::Executor.executor_binary_url} -O /tmp/duo-workflow-executor.tar.gz),
           %(tar xf /tmp/duo-workflow-executor.tar.gz --directory /tmp),
           %(chmod +x /tmp/duo-workflow-executor),
-          %(/tmp/duo-workflow-executor),
-          %(git add .),
-          %(git diff --staged),
-          %(git diff --staged > workflow.diff)
+          %(/tmp/duo-workflow-executor)
         ]
       end
     end

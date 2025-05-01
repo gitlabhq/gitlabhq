@@ -29,7 +29,7 @@ The following Rake tasks are available for use with GitLab:
 | [Access token expiration tasks](tokens/_index.md)                                                          | Bulk extend or remove expiration dates for access tokens. |
 | [Back up and restore](../backup_restore/_index.md)                                          | Back up, restore, and migrate GitLab instances between servers. |
 | [Clean up](cleanup.md)                                                                                     | Clean up unneeded items from GitLab instances. |
-| [Development](../../development/rake_tasks.md)                                                                | Tasks for GitLab contributors. |
+| Development                                                                | Tasks for GitLab contributors. For more information, see the development documentation. |
 | [Elasticsearch](../../integration/advanced_search/elasticsearch.md#gitlab-advanced-search-rake-tasks)         | Maintain Elasticsearch in a GitLab instance. |
 | [General maintenance](maintenance.md)                                                                      | General maintenance and self-check tasks. |
 | [GitHub import](github_import.md)                                                                          | Retrieve and import repositories from GitHub. |
@@ -47,7 +47,7 @@ The following Rake tasks are available for use with GitLab:
 | [Reset user passwords](../../security/reset_user_password.md#use-a-rake-task)                                 | Reset user passwords using Rake. |
 | [Uploads migrate](uploads/migrate.md)                                                                      | Migrate uploads between local storage and object storage. |
 | [Uploads sanitize](uploads/sanitize.md)                                                                    | Remove EXIF data from images uploaded to earlier versions of GitLab. |
-| [Service Data](../../development/internal_analytics/service_ping/troubleshooting.md#generate-service-ping)    | Generate and troubleshoot [Service Ping](../../development/internal_analytics/service_ping/_index.md). |
+| Service Data    | Generate and troubleshoot Service Ping. For more information, see Service Ping development documentation. |
 | [User management](user_management.md)                                                                      | Perform user management tasks. |
 | [Webhook administration](web_hooks.md)                                                                     | Maintain project webhooks. |
 | [X.509 signatures](x509_signatures.md)                                                                     | Update X.509 commit signatures, which can be useful if the certificate store changed. |

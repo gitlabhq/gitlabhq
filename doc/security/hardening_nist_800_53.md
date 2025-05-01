@@ -640,9 +640,9 @@ scanners [support CycloneDX formatted reports](../ci/yaml/artifacts_reports.md#a
 Compliance programs based on NIST 800-53, such as FedRAMP, require FIPS
 compliance for all applicable cryptographic modules. GitLab has released
 FIPS versions of its container images and provides guidance on
-[how to configure GitLab to meet FIPS compliance standards](../development/fips_gitlab.md).
+how to configure GitLab to meet FIPS compliance standards.
 It is important to note that
-[certain features are not available or supported in FIPS mode](../development/fips_gitlab.md#unsupported-features-in-fips-mode).
+certain features are not available or supported in FIPS mode.
 
 While GitLab provides FIPS-compliant images, it is the responsibility of
 the customer to configure underlying infrastructure and evaluate the

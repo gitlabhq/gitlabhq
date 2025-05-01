@@ -23,6 +23,8 @@ module Ci
         validate_source!
         ref = @create_branch ? create_repository_branch : default_branch
 
+        @workload.set_branch(ref)
+
         service = ::Ci::CreatePipelineService.new(@project, @current_user, ref: ref)
         service.execute(
           @source,

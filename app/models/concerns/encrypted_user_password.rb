@@ -13,16 +13,6 @@ module EncryptedUserPassword
   BCRYPT_STRATEGY = :bcrypt
   PBKDF2_SHA512_STRATEGY = :pbkdf2_sha512
 
-  class_methods do
-    def stretches
-      prior_stretches = Rails.env.test? ? 1 : 10
-
-      return prior_stretches unless Feature.enabled?(:increase_password_storage_stretches) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- required to enable FFing a Class method, which is required to FF the Stretches config
-
-      Rails.env.test? ? 5 : 13
-    end
-  end
-
   # Use Devise DatabaseAuthenticatable#authenticatable_salt
   # unless encrypted password is PBKDF2+SHA512.
   def authenticatable_salt
@@ -94,7 +84,6 @@ module EncryptedUserPassword
 
     if password_strategy == encryptor
       if BCRYPT_STRATEGY == password_strategy
-        return true if Feature.disabled?(:increase_password_storage_stretches) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- required to enable FFing a Class method, which is required to FF the Stretches config
         return true if bcrypt_password_matches_current_stretches?
       elsif PBKDF2_SHA512_STRATEGY == password_strategy
         return true if pbkdf2_password_matches_salt_length?

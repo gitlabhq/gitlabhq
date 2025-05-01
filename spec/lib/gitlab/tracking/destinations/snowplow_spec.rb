@@ -280,7 +280,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
       end
 
       it 'returns product usage event collection hostname' do
-        expect(subject.hostname).to eq('events.gitlab.net')
+        expect(subject.hostname).to eq('events-stg.gitlab.net')
       end
     end
   end

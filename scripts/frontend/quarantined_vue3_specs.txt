@@ -94,7 +94,6 @@ spec/frontend/design_management/components/design_notes/design_reply_form_spec.j
 spec/frontend/design_management/components/design_overlay_spec.js
 spec/frontend/design_management/pages/design/index_spec.js
 spec/frontend/design_management/pages/index_spec.js
-spec/frontend/diffs/components/diff_line_note_form_spec.js
 spec/frontend/editor/components/source_editor_toolbar_spec.js
 spec/frontend/editor/extensions/source_editor_toolbar_ext_spec.js
 spec/frontend/error_tracking/components/error_details_spec.js

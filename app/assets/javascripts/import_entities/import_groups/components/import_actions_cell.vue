@@ -129,7 +129,7 @@ export default {
       <gl-sprintf
         :message="
           s__(
-            `BulkImport|Because of settings on the source GitLab instance or group, you can't import projects with this group. To permit importing projects with this group, reconfigure the source GitLab instance or group. %{linkStart}Learn more.%{linkEnd}`,
+            `BulkImport|You cannot import projects with this group. To import projects, reconfigure the source GitLab instance or group. %{linkStart}Learn more.%{linkEnd}`,
           )
         "
       >

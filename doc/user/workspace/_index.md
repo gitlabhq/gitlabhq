@@ -148,7 +148,7 @@ components:
 {{< alert type="note" >}}
 
 This container `image` is updated regularly. `[VERSION_TAG]` is a placeholder only. For the latest version, see the
-[default devfile](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/remote_development/settings/default_devfile.yaml) file.
+[default `default_devfile.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/remote_development/settings/default_devfile.yaml).
 
 {{< /alert >}}
 

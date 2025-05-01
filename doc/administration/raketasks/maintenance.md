@@ -360,7 +360,7 @@ database: gitlabhq_production
 ```
 
 Starting with GitLab 17.1, migrations are executed in an
-[order](../../development/database/migration_ordering.md#171-logic) that conforms to the GitLab release cadence.
+order that conforms to the GitLab release cadence.
 
 ## Run incomplete database migrations
 
@@ -383,7 +383,7 @@ status in the output of the `sudo gitlab-rake db:migrate:status` command.
    ```
 
 Starting with GitLab 17.1, migrations are executed in an
-[order](../../development/database/migration_ordering.md#171-logic) that conforms to the GitLab release cadence.
+order that conforms to the GitLab release cadence.
 
 ## Rebuild database indexes
 

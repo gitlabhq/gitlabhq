@@ -387,13 +387,14 @@ see [access token expiration](../../../integration/oauth_provider.md#access-toke
 
 {{< /details >}}
 
-On GitLab Self-Managed, [Workhorse](../../../development/workhorse/_index.md) must be installed
-and running in front of the GitLab Rails server.
-Otherwise, you might encounter issues when you open the Web IDE or
-use certain features like Markdown preview.
+On GitLab Self-Managed, Workhorse must be installed and running in front of the GitLab Rails
+server. If it is not, you might encounter issues when you open the Web IDE or use certain
+features like Markdown preview.
 
-For more information about this dependency,
-see [features that rely on Workhorse](../../../development/workhorse/gitlab_features.md#5-web-ide).
+For security, some parts of the Web IDE must run in a separate origin. To support this
+approach, the Web IDE uses Workhorse to route requests appropriately to and from Web IDE
+assets. The Web IDE assets are static frontend assets, so it’s unnecessary overhead to rely 
+on Rails for this effort.
 
 ### Report a problem
 

@@ -6,6 +6,10 @@ module Ci
       def job
         raise "not implemented"
       end
+
+      def set_branch(branch)
+        @branch = branch
+      end
     end
   end
 end

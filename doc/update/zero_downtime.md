@@ -45,7 +45,7 @@ The zero-downtime upgrade process has the following requirements:
     - Any of these components that are not deployed in a HA fashion need to be upgraded separately with downtime.
     - For databases, the [Linux package only supports HA for the main GitLab database](https://gitlab.com/groups/gitlab-org/-/epics/7814). For any other databases, such as the [Praefect database](#praefect-gitaly-cluster), a third party database solution is required to achieve HA and subsequently to avoid downtime.
 - **You can only upgrade one minor release at a time**. So from `16.1` to `16.2`, not to `16.3`. If you skip releases, database modifications may be run in the wrong sequence [and leave the database schema in a broken state](https://gitlab.com/gitlab-org/gitlab/-/issues/321542).
-- You have to use [post-deployment migrations](../development/database/post_deployment_migrations.md).
+- You have to use post-deployment migrations.
 - [Zero-downtime upgrades are not available with the GitLab Charts](https://docs.gitlab.com/charts/installation/upgrade.html). Support is available with the [GitLab Operator](https://docs.gitlab.com/operator/gitlab_upgrades.html) but there are [known limitations](https://docs.gitlab.com/operator/#known-issues) with this deployment method and as such it's not covered in this guide at this time.
 
 In addition to the above, please be aware of the following considerations:
@@ -229,7 +229,7 @@ nodes to be a deploy node. This target node will be configured to run migrations
 
 ### Rails
 
-Rails as a webserver consists primarily of [Puma](../administration/operations/puma.md), [Workhorse](../development/workhorse/_index.md), and [NGINX](../development/architecture.md#nginx).
+Rails as a webserver consists primarily of [Puma](../administration/operations/puma.md), Workhorse, and NGINX.
 
 Each of these components have different behaviours when it comes to doing a live upgrade. While Puma can allow
 for a graceful reload, Workhorse doesn't. The best approach is to drain the node gracefully through other means,

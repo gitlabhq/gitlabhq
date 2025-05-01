@@ -50,7 +50,7 @@
       = f.number_field :max_import_remote_file_size, class: 'form-control gl-form-input', title: s_('Import|Maximum remote file size for imports from external object storages. For example, AWS S3.'), data: { toggle: 'tooltip', container: 'body' }
       %span.form-text.gl-text-subtle= _('Set to 0 for no size limit.')
     .form-group
-      = f.label :bulk_import_max_download_file_size, s_('BulkImport|Direct transfer maximum download file size (MiB)'), class: 'label-light'
+      = f.label :bulk_import_max_download_file_size, s_('BulkImport|Maximum download file size (MiB)'), class: 'label-light'
       = f.number_field :bulk_import_max_download_file_size, class: 'form-control gl-form-input', title: s_('BulkImport|Maximum download file size when importing from source GitLab instances by direct transfer.'), data: { toggle: 'tooltip', container: 'body' }
     .form-group
       = f.label :max_decompressed_archive_size, s_('Import|Maximum decompressed file size for archives from imports (MiB)'), class: 'label-light'

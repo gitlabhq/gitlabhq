@@ -289,7 +289,7 @@ Benchmark.bm do |x|
 end
 ```
 
-For more information, review [our developer documentation about benchmarks](../../development/performance.md#benchmarks).
+For more information, review our developer documentation about benchmarks.
 
 ## Active Record objects
 

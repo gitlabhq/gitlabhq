@@ -77,7 +77,7 @@ For GitLab.com push size limits, see [accounts and limit settings](../../user/gi
 
 When you [add files to a repository](../../user/project/repository/web_editor.md#create-a-file)
 through the web UI, the maximum **attachment** size is the limiting factor. This happens
-because the [web server](../../development/architecture.md#components)
+because the web server
 must receive the file before GitLab can generate the commit.
 Use [Git LFS](../../topics/git/lfs/_index.md) to add large files to a repository.
 This setting does not apply when pushing Git LFS objects.

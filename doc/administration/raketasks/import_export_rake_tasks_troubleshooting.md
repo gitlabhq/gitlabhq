@@ -96,4 +96,4 @@ If you're attempting to import a large project into a development environment, G
 Error importing repository into qa-perf-testing/gitlabhq - GitalyClient#call called 31 times from single request. Potential n+1?
 ```
 
-This error is due to a [n+1 calls limit for development setups](../../development/gitaly.md#toomanyinvocationserror-errors). To resolve this error, set `GITALY_DISABLE_REQUEST_LIMITS=1` as an environment variable. Then restart your development environment and import again.
+This error is due to a n+1 calls limit for development setups. To resolve this error, set `GITALY_DISABLE_REQUEST_LIMITS=1` as an environment variable. Then restart your development environment and import again.
