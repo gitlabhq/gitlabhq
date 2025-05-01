@@ -186,7 +186,7 @@ describe('generateValueStreamsDashboardLink', () => {
     ${'fake-group'}              | ${false}           | ${'/groups/fake-group/-/analytics/dashboards/value_streams_dashboard'}
     ${'fake-group/fake-project'} | ${true}            | ${'/fake-group/fake-project/-/analytics/dashboards/value_streams_dashboard'}
   `(
-    'generates the dashboard link when namespacePath=namespacePath and isProjectNamespace=$isProjectNamespace',
+    'generates the dashboard link when namespacePath=$namespacePath and isProjectNamespace=$isProjectNamespace',
     ({ namespacePath, isProjectNamespace, result }) => {
       expect(generateValueStreamsDashboardLink(namespacePath, isProjectNamespace)).toBe(result);
     },

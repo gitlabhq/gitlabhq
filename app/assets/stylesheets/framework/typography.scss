@@ -391,7 +391,7 @@
     @apply gl-mb-5;
     line-height: 1.6em;
     overflow-x: auto;
-    border-radius: $gl-border-radius-base;
+    @apply gl-rounded-base;
 
     // Multi-line code blocks should scroll horizontally
     code {
@@ -669,7 +669,7 @@
   .exampleblock > div:nth-of-type(1) {
     @apply gl-border;
     border-width: $gl-border-size-3;
-    border-radius: $gl-border-radius-base;
+    @apply gl-rounded-base;
     padding: $gl-padding-12 $gl-padding-24;
 
     p {

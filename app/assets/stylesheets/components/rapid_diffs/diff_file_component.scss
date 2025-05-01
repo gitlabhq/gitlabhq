@@ -1,13 +1,10 @@
-@import 'framework/variables';
-
 .rd-diff-file-component {
   scroll-margin-top: var(--rd-app-sticky-top-with-padding);
 }
 
 .rd-diff-file {
-  padding-bottom: $gl-padding;
-
   --rd-diff-file-border-radius: #{calc($gl-border-radius-base - 1px)};
+  padding-bottom: $gl-padding;
 }
 
 .rd-diff-file-header {
@@ -18,8 +15,7 @@
   display: flex;
   background-color: var(--gl-background-color-subtle);
   border: 1px solid var(--gl-border-color-default);
-  padding: $gl-padding-8 $gl-padding;
-  min-height: px-to-rem($file-header-height);
+  padding: $gl-spacing-scale-3 $gl-spacing-scale-4;
   border-radius: var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius) 0 0;
   word-break: break-word;
   z-index: 1;
@@ -46,7 +42,7 @@
 }
 
 .rd-diff-file-toggle {
-  margin-right: $gl-spacing-scale-2;
+  margin-right: $gl-spacing-scale-3;
 }
 
 .rd-diff-file[data-collapsed] .rd-diff-file-toggle-button[data-opened],

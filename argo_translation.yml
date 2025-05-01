@@ -1,0 +1,12 @@
+source_language: en-us
+target_languages: [ja-jp]
+argo_request_key: GITTECH
+translation_mr_labels: [gitlab-translation-service]
+components:
+  - name: Technical Documentation
+    create_request: false
+    paths:
+      - source: 'doc/**/*.md'
+        target: 'doc-locale/{{language}}/'
+    ignored_paths:
+      - 'doc/.*/**'

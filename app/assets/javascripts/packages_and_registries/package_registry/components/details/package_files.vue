@@ -513,7 +513,7 @@ export default {
       />
     </template>
 
-    <template #footer>
+    <template v-if="$scopedSlots.upload" #footer>
       <slot name="upload" :refetch="refetchPackageFiles"></slot>
     </template>
 

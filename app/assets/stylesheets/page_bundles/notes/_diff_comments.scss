@@ -68,8 +68,7 @@
 }
 
 .disabled-comment {
-  @apply gl-text-disabled gl-bg-subtle gl-border-b gl-rounded-base;
-  padding: $gl-padding-8 0;
+  @apply gl-text-disabled gl-bg-subtle gl-rounded-base gl-py-3 gl-px-0;
 
   a:not(.learn-more) {
     @apply gl-text-link;

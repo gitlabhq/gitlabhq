@@ -111,7 +111,10 @@
 }
 
 // Do not use nesting here to allow quick jump to code based on the selector
-.rd-line-number:hover:not(:empty) {
+.rd-line-number:hover:not(:empty),
+.rd-hunk-lines-inline:hover .rd-line-number,
+.rd-hunk-lines:has(.rd-line-content[data-position=new]:hover:not(:empty)) .rd-line-number[data-position=new],
+.rd-hunk-lines:has(.rd-line-content[data-position=old]:hover:not(:empty)) .rd-line-number[data-position=old] {
   background-color: var(--code-line-nubmer-hover-background-color, $gl-color-purple-100);
   border-color: var(--code-line-nubmer-hover-border-color, $gl-color-purple-200);
 }

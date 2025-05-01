@@ -252,15 +252,25 @@ To update the linting images:
    ([Example job output](https://gitlab.com/gitlab-org/gitlab-docs/-/jobs/2335033884#L334))
 1. Verify that the new image was added to the container registry.
 1. Open merge requests to update each of these configuration files to point to the new image.
-   In each merge request, include a small doc update to trigger the job that uses the image.
-   - <https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/docs.gitlab-ci.yml> ([Example MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85177))
-   - <https://gitlab.com/gitlab-org/gitlab-runner/-/blob/main/.gitlab/ci/docs.gitlab-ci.yml> ([Example MR](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3408))
-   - <https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/gitlab-ci-config/gitlab-com.yml> ([Example MR](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6037))
-   - <https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/.gitlab-ci.yml> ([Example MR](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/2511))
-   - <https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/.gitlab-ci.yml> ([Example MR](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/merge_requests/462))
-   - <https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/.gitlab/ci/test.gitlab-ci.yml> ([Example MR](https://gitlab.com/gitlab-org/gitlab-development-kit/-/merge_requests/2417))
-1. In each merge request, check the relevant job output to confirm the updated image was
-   used for the test. ([Example job output](https://gitlab.com/gitlab-org/charts/gitlab/-/jobs/2335470260#L24))
+   For jobs that use `markdownlint`, `vale`, or `lychee`:
+   - `gitlab`:
+     - [`.gitlab/ci/docs.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/docs.gitlab-ci.yml),
+       update the `image` in the `.docs-markdown-lint-image:` section.
+     - [`scripts/lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/lint-doc.sh),
+       update the `registry_url` value in the `run_locally_or_in_container()` section.
+   - `gitlab-runner`: [`.gitlab/ci/_common.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/main/.gitlab/ci/_common.gitlab-ci.yml),
+     update the value of the `DOCS_LINT_IMAGE` variable.
+   - `omnibus-gitlab`: [`gitlab-ci-config/variables.yml`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/gitlab-ci-config/variables.yml),
+     update the value of the `DOCS_LINT_IMAGE` variable.
+   - `charts/gitlab`: [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/.gitlab-ci.yml),
+     update the value of the `DOCS_LINT_IMAGE` variable.
+   - `cloud-native/gitlab-operator`: [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/.gitlab-ci.yml)
+     update the value of the `DOCS_LINT_IMAGE` variable.
+   - `gitlab-development-kit`: [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/.gitlab-ci.yml)
+     update the value of the `DOCS_LINT_IMAGE` variable.
+1. In each merge request:
+   1. Include a small doc update to trigger the job that uses the image.
+   1. Check the relevant job output to confirm the updated image was used for the test.
 1. Assign the merge requests to any technical writer to review and merge.
 
 ## Configure pre-push hooks

@@ -450,7 +450,7 @@ $command-palette-spacing: px-to-rem(14px);
 }
 
 .super-sidebar-peek {
-  border-radius: $gl-border-radius-base;
+  @apply gl-rounded-base;
 
   .user-bar {
     border-radius: $gl-border-radius-base $gl-border-radius-base 0 0;
@@ -565,7 +565,7 @@ $command-palette-spacing: px-to-rem(14px);
   }
 
   .gl-search-box-by-type-input-borderless {
-    border-radius: $gl-border-radius-base;
+    @apply gl-rounded-base;
   }
 
   .global-search-results {

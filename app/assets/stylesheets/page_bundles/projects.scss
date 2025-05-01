@@ -8,7 +8,7 @@
   }
 
   .project-path .form-control {
-    border-radius: $gl-border-radius-base;
+    @apply gl-rounded-base;
   }
 
   .input-group {
@@ -237,7 +237,7 @@
 .repository-languages-bar {
   height: 0.5rem;
   background-color: var(--white, $white);
-  border-radius: $gl-border-radius-base;
+  @apply gl-rounded-base;
 
   .progress-bar {
     margin-right: 2px;

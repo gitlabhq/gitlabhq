@@ -492,7 +492,7 @@ $diff-file-header-top: 11px;
   color: var(--gl-text-color-default);
 
   .commit-message-edit {
-    border-radius: $gl-border-radius-base;
+    @apply gl-rounded-base;
   }
 
   .commits-list {
@@ -654,7 +654,7 @@ $diff-file-header-top: 11px;
     }
 
     &.mr-pipeline-suggest {
-      border-radius: $gl-border-radius-base;
+      @apply gl-rounded-base;
       line-height: 20px;
       border: 1px solid var(--gl-border-color-default);
 

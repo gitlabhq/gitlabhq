@@ -1,5 +1,6 @@
 <script>
 import { GlTabs, GlTab } from '@gitlab/ui';
+import MigrationAlert from 'ee_component/analytics/dora/components/migration_alert.vue';
 import { mergeUrlParams, updateHistory, getParameterValues } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
@@ -13,9 +14,14 @@ export default {
   components: {
     GlTabs,
     GlTab,
+    MigrationAlert,
   },
   mixins: [InternalEvents.mixin(), glFeatureFlagsMixin()],
   inject: {
+    projectPath: {
+      type: String,
+      default: '',
+    },
     shouldRenderDoraCharts: {
       type: Boolean,
       default: false,
@@ -43,7 +49,7 @@ export default {
       },
     ];
 
-    if (this.shouldRenderDoraCharts) {
+    if (this.shouldRenderDoraCharts && !this.glFeatures.doraMetricsDashboard) {
       tabs.push(
         {
           key: 'deployment-frequency',
@@ -93,6 +99,11 @@ export default {
       tabs,
     };
   },
+  computed: {
+    showDoraMetricsMigrationAlert() {
+      return this.shouldRenderDoraCharts && this.glFeatures.doraMetricsDashboard;
+    },
+  },
   created() {
     this.syncActiveTab();
     window.addEventListener('popstate', this.syncActiveTab);
@@ -118,6 +129,12 @@ export default {
 </script>
 <template>
   <div>
+    <migration-alert
+      v-if="showDoraMetricsMigrationAlert"
+      :namespace-path="projectPath"
+      is-project
+    />
+
     <gl-tabs v-if="tabs.length > 1" :value="activeTabIndex" @input="onTabInput">
       <gl-tab
         v-for="tab in tabs"

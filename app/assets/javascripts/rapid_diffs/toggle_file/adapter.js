@@ -23,6 +23,13 @@ function expand(root = this.diffElement) {
   root.querySelector('[data-file-body]').hidden = false;
 }
 
+function stopTransition(element) {
+  element.style.transition = 'none';
+  requestAnimationFrame(() => {
+    element.style.transition = '';
+  });
+}
+
 export const ToggleFileAdapter = {
   clicks: {
     toggleFile(event, button) {
@@ -32,7 +39,10 @@ export const ToggleFileAdapter = {
       } else {
         collapse.call(this);
       }
-      getOppositeToggleButton(button).focus();
+      const oppositeButton = getOppositeToggleButton(button);
+      oppositeButton.focus();
+      // a replaced button triggers another transition that we need to stop
+      stopTransition(oppositeButton);
     },
   },
   [EXPAND_FILE]() {

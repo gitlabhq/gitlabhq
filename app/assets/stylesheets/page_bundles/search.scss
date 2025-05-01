@@ -119,7 +119,7 @@ $black-divider: #666;
     line-height: 24px;
     height: 32px;
     border: 0;
-    border-radius: $gl-border-radius-base;
+    @apply gl-rounded-base;
     transition: border-color ease-in-out $default-transition-duration,
       background-color ease-in-out $default-transition-duration;
 

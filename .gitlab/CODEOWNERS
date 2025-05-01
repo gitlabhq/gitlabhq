@@ -1252,6 +1252,7 @@ lib/gitlab/checks/**
 [Localization Team] @gitlab-com/localization/maintainers
 /doc-locale/**
 /doc/development/i18n/proofreader.md
+/argo_translation.yml 
 
 [Authorization] @gitlab-org/software-supply-chain-security/authorization/approvers
 /config/initializers/declarative_policy.rb

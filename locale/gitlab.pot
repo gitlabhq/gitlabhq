@@ -10985,6 +10985,9 @@ msgstr ""
 msgid "BroadcastMessages|Blue"
 msgstr ""
 
+msgid "BroadcastMessages|Broadcast messages must not contain sensitive information. All broadcast messages are publicly accessible through the API, regardless of path or role scoping."
+msgstr ""
+
 msgid "BroadcastMessages|Dark"
 msgstr ""
 
@@ -11007,6 +11010,9 @@ msgid "BroadcastMessages|Git remote responses"
 msgstr ""
 
 msgid "BroadcastMessages|Green"
+msgstr ""
+
+msgid "BroadcastMessages|I understand and confirm"
 msgstr ""
 
 msgid "BroadcastMessages|Indigo"
@@ -11049,6 +11055,9 @@ msgid "BroadcastMessages|Paths can contain wildcards, like */welcome."
 msgstr ""
 
 msgid "BroadcastMessages|Red"
+msgstr ""
+
+msgid "BroadcastMessages|Security Notice"
 msgstr ""
 
 msgid "BroadcastMessages|Select at least one role."
@@ -19290,6 +19299,9 @@ msgstr ""
 msgid "DORA4Metrics|Cycle time"
 msgstr ""
 
+msgid "DORA4Metrics|DORA metrics have moved to %{dashboardsLinkStart}Analytics dashboards%{dashboardsLinkEnd} &gt; %{doraMetricsLinkStart}DORA metrics%{doraMetricsLinkEnd}."
+msgstr ""
+
 msgid "DORA4Metrics|Date"
 msgstr ""
 
@@ -19359,6 +19371,9 @@ msgid "DORA4Metrics|Lead time for changes (Velocity)"
 msgstr ""
 
 msgid "DORA4Metrics|Lead time for changes (median days)"
+msgstr ""
+
+msgid "DORA4Metrics|Looking for DORA metrics?"
 msgstr ""
 
 msgid "DORA4Metrics|Low"

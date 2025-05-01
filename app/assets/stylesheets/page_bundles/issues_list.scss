@@ -3,13 +3,13 @@
 .issues-list {
   &.manual-ordering {
     background-color: var(--gray-10, $gray-10);
-    border-radius: $gl-border-radius-base;
+    @apply gl-rounded-base;
     padding: $gl-padding-8;
 
     .issue {
       background-color: var(--white, $white);
       margin-bottom: $gl-padding-8;
-      border-radius: $gl-border-radius-base;
+      @apply gl-rounded-base;
       border: 1px solid var(--gl-border-color-default);
       box-shadow: 0 1px 2px $issue-boards-card-shadow;
     }

@@ -76,4 +76,21 @@ describe('Diff File Toggle Behavior', () => {
     expect(get('body').hidden).toEqual(false);
     expect(get('file').diffElement.dataset.collapsed).not.toEqual('true');
   });
+
+  it('stops transition', () => {
+    let tick;
+    jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      tick = () => cb();
+    });
+
+    get('hide').click();
+    expect(get('show').style.transition).toBe('none');
+    tick();
+    expect(get('show').style.transition).toBe('');
+
+    get('show').click();
+    expect(get('hide').style.transition).toBe('none');
+    tick();
+    expect(get('hide').style.transition).toBe('');
+  });
 });

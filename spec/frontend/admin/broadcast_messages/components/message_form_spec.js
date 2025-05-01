@@ -1,4 +1,4 @@
-import { GlBroadcastMessage, GlForm, GlFormGroup, GlFormSelect } from '@gitlab/ui';
+import { GlBroadcastMessage, GlForm, GlFormGroup, GlFormSelect, GlModal } from '@gitlab/ui';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -44,6 +44,7 @@ describe('MessageForm', () => {
   const findSubmitButton = () => wrapper.findByTestId('submit-button');
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
   const findForm = () => wrapper.findComponent(GlForm);
+  const findModal = () => wrapper.findComponent(GlModal);
   const findShowInCli = () => wrapper.findByTestId('show-in-cli-checkbox');
   const findTargetSelect = () => wrapper.findByTestId('target-select');
   const findTargetPath = () => wrapper.findByTestId('target-path-input');
@@ -69,6 +70,12 @@ describe('MessageForm', () => {
         GlFormGroup: stubComponent(GlFormGroup, {
           props: ['state', 'invalidFeedback', 'description'],
         }),
+        GlModal: {
+          template: '<div><slot></slot></div>',
+          methods: {
+            show() {},
+          },
+        },
       },
     });
   }
@@ -224,8 +231,23 @@ describe('MessageForm', () => {
         createComponent({ broadcastMessage: { id: undefined } });
       });
 
+      it('asks for confirmation first', async () => {
+        const initialPostCount = axiosMock.history.post.length;
+        const modalShowSpy = jest.spyOn(wrapper.findComponent(GlModal).vm, 'show');
+
+        emitSubmitForm();
+        await waitForPromises();
+
+        expect(modalShowSpy).toHaveBeenCalled();
+
+        findModal().vm.$emit('secondary'); // cancel button
+
+        expect(axiosMock.history.post).toHaveLength(initialPostCount);
+      });
+
       it('sends a create request for a new message form', async () => {
         emitSubmitForm();
+        findModal().vm.$emit('primary');
         await waitForPromises();
 
         expect(axiosMock.history.post).toHaveLength(2);
@@ -238,6 +260,7 @@ describe('MessageForm', () => {
       it('shows an error alert if the create request fails', async () => {
         axiosMock.onPost(messagesPath).replyOnce(HTTP_STATUS_BAD_REQUEST);
         emitSubmitForm();
+        findModal().vm.$emit('primary');
         await waitForPromises();
 
         expect(createAlert).toHaveBeenCalledWith(
@@ -255,8 +278,23 @@ describe('MessageForm', () => {
         createComponent({ broadcastMessage: { id: mockId } });
       });
 
+      it('asks for confirmation first', async () => {
+        const initialPatchCount = axiosMock.history.patch.length;
+        const modalShowSpy = jest.spyOn(wrapper.findComponent(GlModal).vm, 'show');
+
+        emitSubmitForm();
+        await waitForPromises();
+
+        expect(modalShowSpy).toHaveBeenCalled();
+
+        findModal().vm.$emit('secondary'); // cancel button
+
+        expect(axiosMock.history.patch).toHaveLength(initialPatchCount);
+      });
+
       it('sends an update request for a persisted message form', async () => {
         emitSubmitForm();
+        findModal().vm.$emit('primary');
         await waitForPromises();
 
         expect(axiosMock.history.patch).toHaveLength(1);
@@ -269,6 +307,7 @@ describe('MessageForm', () => {
       it('shows an error alert if the update request fails', async () => {
         axiosMock.onPost(`${messagesPath}/${mockId}`).replyOnce(HTTP_STATUS_BAD_REQUEST);
         emitSubmitForm();
+        findModal().vm.$emit('primary');
         await waitForPromises();
 
         expect(createAlert).toHaveBeenCalledWith(
@@ -284,6 +323,7 @@ describe('MessageForm', () => {
         await nextTick();
 
         emitSubmitForm();
+        findModal().vm.$emit('primary');
         await waitForPromises();
 
         const targetRolesGroup = findTargetRoles();
@@ -298,6 +338,7 @@ describe('MessageForm', () => {
         await nextTick();
 
         emitSubmitForm();
+        findModal().vm.$emit('primary');
         await waitForPromises();
 
         expect(axiosMock.history.patch).toHaveLength(1);
