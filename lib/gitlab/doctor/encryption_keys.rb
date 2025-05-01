@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-require 'base64'
-
 module Gitlab
   module Doctor
     class EncryptionKeys
       attr_reader :logger
 
-      PRINT_PROGRESS_EVERY = 1000
       KEY_TYPES = Gitlab::Encryption::KeyProvider::KEY_PROVIDERS.keys.grep(/active_record/)
       Key = Struct.new(:type, :id, :truncated_secret)
 
@@ -67,24 +64,36 @@ module Gitlab
 
         encryption_keys_usage = Hash.new { |hash, key| hash[key] = 0 }
 
-        model.find_each.with_index do |instance, index|
-          encrypted_attributes.each do |attribute_name|
-            encryption_keys_usage[encryption_key(instance, attribute_name)] += 1
+        encrypted_attributes.each do |attribute_name|
+          encryption_keys(model, attribute_name).each do |key_id, count|
+            encryption_keys_usage[key_id] += count
           end
-
-          logger.info "Checked #{index + 1}/#{total_count} #{model.name.pluralize}" if index % PRINT_PROGRESS_EVERY == 0
         end
-        logger.info "Checked #{total_count} #{model.name.pluralize}\n"
+        logger.info "Checked #{total_count} #{model.name}"
 
         encryption_keys_usage
       end
 
-      def encryption_key(instance, attribute_name)
-        Base64.decode64(Gitlab::Json.parse(instance.ciphertext_for(attribute_name))['h']['i'])
+      def encryption_keys(model, attr)
+        Hash[
+          model
+            .connection
+            .execute(
+              <<~SQL
+              SELECT #{attr}->'h'->'i' as key_id, COUNT(*) as usage_count
+              FROM #{model.table_name}
+              WHERE #{attr} IS NOT NULL
+              GROUP BY key_id
+              SQL
+            )
+            .filter_map { |a| a['key_id'] && [a['key_id'] && Base64.decode64(a['key_id']), a['usage_count']] }
+        ]
       end
 
       def models_with_encrypted_attributes
-        ApplicationRecord.descendants.select { |d| d.encrypted_attributes.present? }
+        Gitlab::Database.database_base_models.values.flat_map do |klass|
+          klass.descendants.select { |d| d.encrypted_attributes.present? }
+        end
       end
     end
   end
