@@ -16,7 +16,6 @@ import { clearDraft } from '~/lib/utils/autosave';
 import { isMetaEnterKeyPair } from '~/lib/utils/common_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { fetchPolicies } from '~/lib/graphql';
 import { s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
@@ -193,9 +192,9 @@ export default {
   data() {
     return {
       isTitleValid: true,
-      workItemTitle: this.title || '',
       isConfidential: false,
       isRelatedToItem: true,
+      localTitle: this.title || '',
       error: null,
       workItemTypes: [],
       selectedProjectFullPath: this.initialSelectedProject(),
@@ -225,11 +224,6 @@ export default {
         return this.skipWorkItemQuery;
       },
       update(data) {
-        const title = data?.workspace?.workItem?.title;
-
-        if (this.isTitleFilled(title)) {
-          this.updateTitle(title);
-        }
         return data?.workspace?.workItem ?? {};
       },
       result() {
@@ -242,9 +236,6 @@ export default {
     workItemTypes: {
       query() {
         return namespaceWorkItemTypesQuery;
-      },
-      fetchPolicy() {
-        return this.workItemTypeName ? fetchPolicies.CACHE_ONLY : fetchPolicies.CACHE_FIRST;
       },
       variables() {
         return {
@@ -460,6 +451,9 @@ export default {
       const healthStatusWidget = findWidget(WIDGET_TYPE_HEALTH_STATUS, this.workItem);
       return healthStatusWidget?.healthStatus || null;
     },
+    workItemTitle() {
+      return this.localTitle || this.workItem?.title || this.title;
+    },
     workItemDescription() {
       const descriptionWidget = findWidget(WIDGET_TYPE_DESCRIPTION, this.workItem);
       return descriptionWidget?.description || this.description;
@@ -576,13 +570,6 @@ export default {
         this.createWorkItem();
       }
     },
-    isTitleFilled(newValue) {
-      const title = newValue ?? this.workItemTitle;
-      return Boolean(String(title).trim());
-    },
-    updateTitle(newValue) {
-      this.workItemTitle = newValue;
-    },
     validateAllowedParentTypes(selectedWorkItemType) {
       return (
         this.workItemTypes
@@ -596,8 +583,8 @@ export default {
         this.selectedWorkItemType?.widgetDefinitions?.flatMap((i) => i.type) || [];
       return widgetDefinitions.indexOf(widgetType) !== -1;
     },
-    validate(newValue) {
-      this.isTitleValid = this.isTitleFilled(newValue);
+    validate() {
+      this.isTitleValid = Boolean(String(this.workItemTitle).trim());
     },
     setNumberOfDiscussionsResolved() {
       if (this.discussionToResolve || this.mergeRequestToResolveDiscussionsOf) {
@@ -607,7 +594,7 @@ export default {
     },
     async updateDraftData(type, value) {
       if (type === 'title') {
-        this.workItemTitle = value;
+        this.localTitle = value;
       }
 
       try {

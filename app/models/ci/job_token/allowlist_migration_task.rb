@@ -51,7 +51,9 @@ module Ci
             project_id_chunks = project_ids.each_slice(chunk_size).to_a
 
             Parallel.each(project_id_chunks, in_threads: @concurrency) do |project_id_chunk|
-              migrate_batch(project_id_chunk)
+              ApplicationRecord.connection_pool.with_connection do
+                migrate_batch(project_id_chunk)
+              end
             end
           end
         end
