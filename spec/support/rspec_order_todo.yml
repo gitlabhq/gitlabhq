@@ -3529,7 +3529,6 @@
 - './spec/frontend/fixtures/projects_json.rb'
 - './spec/frontend/fixtures/raw.rb'
 - './spec/frontend/fixtures/releases.rb'
-- './spec/frontend/fixtures/runner.rb'
 - './spec/frontend/fixtures/search.rb'
 - './spec/frontend/fixtures/sessions.rb'
 - './spec/frontend/fixtures/snippet.rb'

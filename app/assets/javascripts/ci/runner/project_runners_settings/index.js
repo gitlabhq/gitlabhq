@@ -22,7 +22,7 @@ export const initProjectRunnersSettings = (selector = '#js-project-runners-setti
     allowRegistrationToken,
     registrationToken,
     newProjectRunnerPath,
-    groupFullPath,
+    projectFullPath,
   } = el.dataset;
 
   return new Vue({
@@ -35,7 +35,7 @@ export const initProjectRunnersSettings = (selector = '#js-project-runners-setti
           allowRegistrationToken: parseBoolean(allowRegistrationToken),
           registrationToken,
           newProjectRunnerPath,
-          groupFullPath,
+          projectFullPath,
         },
       });
     },

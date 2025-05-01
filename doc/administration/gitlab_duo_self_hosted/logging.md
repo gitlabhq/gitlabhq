@@ -109,11 +109,8 @@ You control a subset of these logs by turning AI Logs on and off through the Duo
 
 When AI Logs are enabled, the [`llm.log` file](../logs/_index.md#llmlog) in your GitLab Self-Managed instance, code generation and Chat events that occur through your instance are captured. The log file does not capture anything when it is not enabled. Code completion logs are captured directly in the AI gateway. These logs are not transmitted to GitLab, and are only visible on your GitLab Self-Managed infrastructure.
 
-For more information on:
-
-- Logged events and their properties, see the [logged event documentation](../../development/ai_features/logged_events.md).
-- How to rotate, manage, export, and visualize the logs in `llm.log`, see the [log system documentation](../logs/_index.md).
-- The log file location (for example, so you can delete logs), see [LLM input and output logging](../logs/_index.md#llm-input-and-output-logging).
+- [Rotate, manage, export, and visualize the logs in `llm.log`](../logs/_index.md).
+- [View the log file location (for example, so you can delete logs)](../logs/_index.md#llm-input-and-output-logging).
 
 ### Logs in your AI gateway container
 
@@ -309,7 +306,6 @@ The AI logs control whether additional debugging information, including prompts 
 
 - **GitLab Self-Managed and self-hosted AI gateway**: The feature flag enables detailed logging to `llm.log` on the self-hosted instance, capturing inputs and outputs for AI models.
 - **GitLab Self-Managed and GitLab-managed AI gateway**: The feature flag enables logging on your GitLab Self-Managed instance. However, the flag does **not** activate expanded logging for the GitLab-managed AI gateway side. Logging remains disabled for the cloud-connected AI gateway to protect sensitive data.
-For more information, see the [Feature Flag section under Privacy Considerations](../../development/ai_features/logging.md#privacy-considerations) documentation.
 
 ### Logging in cloud-connected AI gateways
 

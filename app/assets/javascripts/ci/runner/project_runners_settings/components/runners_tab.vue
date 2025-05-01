@@ -1,75 +1,77 @@
 <script>
-import { GlBadge, GlTab } from '@gitlab/ui';
-import { __ } from '~/locale';
-import { I18N_FETCH_ERROR } from '~/ci/runner/constants';
-import { createAlert } from '~/alert';
-import { fetchPolicies } from '~/lib/graphql';
-import groupRunnersQuery from 'ee_else_ce/ci/runner/graphql/list/group_runners.query.graphql';
-
+import { GlLink, GlTab, GlBadge } from '@gitlab/ui';
+import RunnerList from '~/ci/runner/components/runner_list.vue';
 import RunnerName from '~/ci/runner/components/runner_name.vue';
-
-export const QUERY_TYPES = {
-  project: 'PROJECT_TYPE',
-  group: 'GROUP_TYPE',
-};
+import { fetchPolicies } from '~/lib/graphql';
+import projectRunnersQuery from '~/ci/runner/graphql/list/project_runners.query.graphql';
 
 export default {
+  name: 'RunnersTab',
   components: {
-    GlBadge,
+    GlLink,
     GlTab,
+    GlBadge,
+    RunnerList,
     RunnerName,
   },
   props: {
+    projectFullPath: {
+      type: String,
+      required: true,
+    },
     title: {
       type: String,
-      required: false,
-      default: __('Project'),
+      required: true,
     },
-    type: {
-      type: String,
-      required: false,
-      default: 'project',
-    },
-    groupFullPath: {
+    runnerType: {
       type: String,
       required: true,
     },
   },
+  emits: ['error'],
   data() {
     return {
+      loading: 0, // Initialized to 0 as this is used by a "loadingKey". See https://apollo.vuejs.org/api/smart-query.html#options
       runners: {
+        count: null,
         items: [],
-        urlsById: {},
-        pageInfo: {},
       },
     };
   },
   apollo: {
     runners: {
-      query: groupRunnersQuery,
+      query: projectRunnersQuery,
       fetchPolicy: fetchPolicies.NETWORK_ONLY,
+      loadingKey: 'loading',
       variables() {
-        return {
-          type: QUERY_TYPES[this.type],
-          groupFullPath: this.groupFullPath,
-        };
+        return this.variables;
       },
       update(data) {
-        const { edges = [], pageInfo = {} } = data?.group?.runners || {};
-        const items = edges.map(({ node }) => node);
-        return { items, pageInfo };
+        const { edges = [], count } = data?.project?.runners || {};
+        const items = edges.map(({ node, webUrl }) => ({ ...node, webUrl }));
+
+        return {
+          count,
+          items,
+        };
       },
-      error() {
-        createAlert({ message: I18N_FETCH_ERROR });
+      error(error) {
+        this.$emit('error', error);
       },
     },
   },
   computed: {
-    runnersItems() {
-      return this.runners.items;
+    variables() {
+      return {
+        fullPath: this.projectFullPath,
+        type: this.runnerType,
+      };
     },
-    runnersItemsCount() {
-      return this.runnersItems.length;
+    isLoading() {
+      return Boolean(this.loading);
+    },
+    isEmpty() {
+      return !this.runners.items?.length && !this.loading;
     },
   },
 };
@@ -79,14 +81,19 @@ export default {
     <template #title>
       <div class="gl-flex gl-gap-2">
         {{ title }}
-        <gl-badge>{{ runnersItemsCount }}</gl-badge>
+        <gl-badge v-if="runners.count !== null">{{ runners.count }}</gl-badge>
       </div>
     </template>
 
-    <ul>
-      <li v-for="runner in runnersItems" :key="runner.key">
-        <runner-name :key="runner.key" :runner="runner" />
-      </li>
-    </ul>
+    <p v-if="isEmpty" data-testid="empty-message" class="gl-px-5 gl-pt-5 gl-text-subtle">
+      <slot name="empty"></slot>
+    </p>
+    <runner-list v-else :runners="runners.items" :loading="isLoading">
+      <template #runner-name="{ runner }">
+        <gl-link data-testid="runner-link" :href="runner.webUrl">
+          <runner-name :runner="runner" />
+        </gl-link>
+      </template>
+    </runner-list>
   </gl-tab>
 </template>

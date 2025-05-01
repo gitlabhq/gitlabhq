@@ -662,7 +662,6 @@ The `solution/` directory provides two possible solutions.
 GitLab Duo usage focuses on contributing to the GitLab codebase, and how customers can contribute more efficiently.
 
 The GitLab codebase is large, and requires to understand sometimes complex algorithms or application specific implementations.
-Review the [architecture components](../../development/architecture.md) to learn more.
 
 ### Contribute to frontend: Profile Settings
 

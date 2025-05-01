@@ -43,7 +43,11 @@ export default {
       },
     },
   },
-  inject: ['localMutations'],
+  inject: {
+    localMutations: {
+      default: null,
+    },
+  },
   props: {
     checkable: {
       type: Boolean,

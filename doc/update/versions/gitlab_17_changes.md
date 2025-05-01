@@ -262,17 +262,49 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 
   1. Retry running the failed migration. It should now succeed.
 
+- Runner tags missing when upgrading to GitLab 17.8, see [issue 524402](https://gitlab.com/gitlab-org/gitlab/-/issues/524402).
+
+  Upgrading first to GitLab 17.6 sidesteps the issue. The bug is fixed in GitLab 17.11.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 17.8                    |  17.8.0 - 17.8.6        | 17.8.7   |
+  | 17.9                    |  17.9.0 - 17.9.4        | 17.9.5   |
+  | 17.10                   |  17.10.0 - 17.10.4      | 17.10.5  |
+
+  When upgrading from 17.5 through a version older than the patch releases mentioned in the table,
+  there is a chance of the runner tags table becoming empty.
+
+  Run the following PostgreSQL query on the `ci` database to check the runner tags table to determine if you are
+  affected:
+
+  ```sql
+  SELECT 'OK, ci_runner_taggings is populated.' FROM ci_runner_taggings LIMIT 1;
+  ```
+
+  If the query returns an empty result instead of `OK, ci_runner_taggings is populated.`,
+  see the [workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/524402#workaround) in the related issue.
+
 ## Issues to be aware of when upgrading to 17.9
 
 - In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9).
   If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
 
-- Runner tags missing when upgrading to GitLab 17.9
+- Runner tags missing when upgrading to GitLab 17.9, see [issue 524402](https://gitlab.com/gitlab-org/gitlab/-/issues/524402).
+  Upgrading first to GitLab 17.6 sidesteps the issue. The bug is fixed in GitLab 17.11.
 
-  When upgrading from 17.5 through a version older than the 17.8.6 or 17.9.3 patch releases, there is a chance of the
-  runner tags table becoming empty. Upgrading first to GitLab 17.6 sidesteps the issue.
+  **Affected releases**:
 
-  The 17.9.5 patch release addresses the migration problem.
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 17.8                    |  17.8.0 - 17.8.6        | 17.8.7   |
+  | 17.9                    |  17.9.0 - 17.9.4        | 17.9.5   |
+  | 17.10                   |  17.10.0 - 17.10.4      | 17.10.5  |
+
+  When upgrading from 17.5 through a version older than the patch releases mentioned in the table,
+  there is a chance of the runner tags table becoming empty.
 
   Run the following PostgreSQL query on the `ci` database to check the runner tags table to determine if you are
   affected:
@@ -289,12 +321,19 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 - In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9).
   If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
 
-- Runner tags missing when upgrading to GitLab 17.10
+- Runner tags missing when upgrading to GitLab 17.10, see [issue 524402](https://gitlab.com/gitlab-org/gitlab/-/issues/524402).
+  Upgrading first to GitLab 17.6 sidesteps the issue. The bug is fixed in GitLab 17.11.
 
-  When upgrading from 17.5 through a version older than the 17.8.6 or 17.9.5 patch releases, there is a chance of the
-  runner tags table becoming empty. Upgrading first to GitLab 17.6 sidesteps the issue.
+  **Affected releases**:
 
-  The 17.10.5 patch release addresses the migration problem.
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 17.8                    |  17.8.0 - 17.8.6        | 17.8.7   |
+  | 17.9                    |  17.9.0 - 17.9.4        | 17.9.5   |
+  | 17.10                   |  17.10.0 - 17.10.4      | 17.10.5  |
+
+  When upgrading from 17.5 through a version older than the patch releases mentioned in the table,
+  there is a chance of the runner tags table becoming empty.
 
   Run the following PostgreSQL query on the `ci` database to check the runner tags table to determine if you are
   affected:
@@ -815,53 +854,53 @@ If you have a multi-node configuration, you must ensure these secrets are the sa
 
       On GitLab >= 18.0.0, >= 17.11.2, >= 17.10.6, or >= 17.9.8, run:
 
-         ```shell
-         gitlab-rake gitlab:doctor:encryption_keys
-         ```
+      ```shell
+      gitlab-rake gitlab:doctor:encryption_keys
+      ```
 
-      If you're using other versions:
+      If you're using other versions, run:
 
-         ```shell
-         gitlab-rails runner 'require_relative Pathname(Dir.pwd).join("encryption_keys.rb"); Gitlab::Doctor::EncryptionKeys.new(Logger.new($stdout)).run!'
-         ```
+      ```shell
+      gitlab-rails runner 'require_relative Pathname(Dir.pwd).join("encryption_keys.rb"); Gitlab::Doctor::EncryptionKeys.new(Logger.new($stdout)).run!'
+      ```
 
       All reported keys usage are for the same key ID. For example, on node 1:
 
-         ```shell
-         Gathering existing encryption keys:
-         - active_record_encryption_primary_key: ID => `bb32`; truncated secret => `bEt...eBU`
-         - active_record_encryption_deterministic_key: ID => `445f`; truncated secret => `MJo...yg5`
+      ```shell
+      Gathering existing encryption keys:
+      - active_record_encryption_primary_key: ID => `bb32`; truncated secret => `bEt...eBU`
+      - active_record_encryption_deterministic_key: ID => `445f`; truncated secret => `MJo...yg5`
 
-         [... snipped for brevity ...]
+      [... snipped for brevity ...]
 
-         Encryption keys usage for VirtualRegistries::Packages::Maven::Upstream: NONE
-         Encryption keys usage for Ai::ActiveContext::Connection: NONE
-         Encryption keys usage for CloudConnector::Keys:
-         - `bb32` => 1
-         Encryption keys usage for DependencyProxy::GroupSetting:
-         - `bb32` => 8
-         Encryption keys usage for Ci::PipelineScheduleInput:
-         - `bb32` => 1
-         ```
+      Encryption keys usage for VirtualRegistries::Packages::Maven::Upstream: NONE
+      Encryption keys usage for Ai::ActiveContext::Connection: NONE
+      Encryption keys usage for CloudConnector::Keys:
+      - `bb32` => 1
+      Encryption keys usage for DependencyProxy::GroupSetting:
+      - `bb32` => 8
+      Encryption keys usage for Ci::PipelineScheduleInput:
+      - `bb32` => 1
+      ```
 
-         And for example, on node 2 (you should not see any `(UNKNOWN KEY!)` this time):
+      And for example, on node 2 (you should not see any `(UNKNOWN KEY!)` this time):
 
-         ```shell
-         Gathering existing encryption keys:
-         - active_record_encryption_primary_key: ID => `bb32`; truncated secret => `bEt...eBU`
-         - active_record_encryption_deterministic_key: ID => `445f`; truncated secret => `MJo...yg5`
+      ```shell
+      Gathering existing encryption keys:
+      - active_record_encryption_primary_key: ID => `bb32`; truncated secret => `bEt...eBU`
+      - active_record_encryption_deterministic_key: ID => `445f`; truncated secret => `MJo...yg5`
 
-         [... snipped for brevity ...]
+      [... snipped for brevity ...]
 
-         Encryption keys usage for VirtualRegistries::Packages::Maven::Upstream: NONE
-         Encryption keys usage for Ai::ActiveContext::Connection: NONE
-         Encryption keys usage for CloudConnector::Keys:
-         - `bb32` => 1
-         Encryption keys usage for DependencyProxy::GroupSetting:
-         - `bb32` => 8
-         Encryption keys usage for Ci::PipelineScheduleInput:
-         - `bb32` => 1
-         ```
+      Encryption keys usage for VirtualRegistries::Packages::Maven::Upstream: NONE
+      Encryption keys usage for Ai::ActiveContext::Connection: NONE
+      Encryption keys usage for CloudConnector::Keys:
+      - `bb32` => 1
+      Encryption keys usage for DependencyProxy::GroupSetting:
+      - `bb32` => 8
+      Encryption keys usage for Ci::PipelineScheduleInput:
+      - `bb32` => 1
+      ```
 
    1. Remove the `encryption_keys.rb` file if you downloaded it previously:
 
@@ -873,15 +912,15 @@ If you have a multi-node configuration, you must ensure these secrets are the sa
 
    For GitLab >= 17.10:
 
-      ```shell
-      gitlab-rake cloud_connector:keys:create
-      ```
+   ```shell
+   gitlab-rake cloud_connector:keys:create
+   ```
 
    For GitLab 17.9:
 
-      ```shell
-      gitlab-rails runner 'CloudConnector::Keys.create!(secret_key: OpenSSL::PKey::RSA.new(2048).to_pem)'
-      ```
+   ```shell
+   gitlab-rails runner 'CloudConnector::Keys.create!(secret_key: OpenSSL::PKey::RSA.new(2048).to_pem)'
+   ```
 
 1. [Disable maintenance mode](../../administration/maintenance_mode/_index.md#disable-maintenance-mode).
 

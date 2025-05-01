@@ -26,7 +26,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  isLoggedIn: isLoggedIn(),
   props: {
     workItemId: {
       type: String,
@@ -47,6 +46,9 @@ export default {
     },
     notificationIcon() {
       return this.subscribedToNotifications ? ICON_ON : ICON_OFF;
+    },
+    isLoggedIn() {
+      return isLoggedIn();
     },
   },
   methods: {
@@ -82,6 +84,7 @@ export default {
 
 <template>
   <gl-button
+    v-if="isLoggedIn"
     ref="tooltip"
     v-gl-tooltip.hover
     category="secondary"

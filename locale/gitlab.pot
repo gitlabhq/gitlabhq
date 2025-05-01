@@ -51517,6 +51517,9 @@ msgstr ""
 msgid "Runners|Available"
 msgstr ""
 
+msgid "Runners|Available Runners"
+msgstr ""
+
 msgid "Runners|Available to all projects"
 msgstr ""
 
@@ -51876,10 +51879,19 @@ msgstr ""
 msgid "Runners|No description"
 msgstr ""
 
+msgid "Runners|No group runners found."
+msgstr ""
+
+msgid "Runners|No instance runners found."
+msgstr ""
+
 msgid "Runners|No jobs have been run by group runners assigned to this group in the past 3 hours."
 msgstr ""
 
 msgid "Runners|No jobs have been run by instance runners in the past 3 hours."
+msgstr ""
+
+msgid "Runners|No project runners found, you can create one by selecting \"New project runner\"."
 msgstr ""
 
 msgid "Runners|No spot. Default choice for Windows Shell executor."
@@ -55723,7 +55735,7 @@ msgstr ""
 msgid "SecurityReports|Identifier"
 msgstr ""
 
-msgid "SecurityReports|If you were expecting vulnerabilities to be shown here, check that you've completed the %{linkStart}security scanning prerequisites%{linkEnd}, or check the other vulnerability types in the tabs above."
+msgid "SecurityReports|If you were expecting vulnerabilities to be shown here, check that you've completed the %{linkStart}security scanning prerequisites%{linkEnd}."
 msgstr ""
 
 msgid "SecurityReports|Image"
@@ -64178,6 +64190,9 @@ msgid "Unauthorized to create a protection rule for container image tags"
 msgstr ""
 
 msgid "Unauthorized to create an environment"
+msgstr ""
+
+msgid "Unauthorized to create an immutable protection rule for container image tags"
 msgstr ""
 
 msgid "Unauthorized to delete a container registry protection rule"

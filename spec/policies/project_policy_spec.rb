@@ -4092,6 +4092,33 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'creating container registry protection immutable tag rules' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:user_role, :expected_result) do
+      :admin      | :be_allowed
+      :owner      | :be_allowed
+      :maintainer | :be_disallowed
+      :developer  | :be_disallowed
+      :reporter   | :be_disallowed
+      :planner    | :be_disallowed
+      :guest      | :be_disallowed
+      :anonymous  | :be_disallowed
+    end
+
+    with_them do
+      let(:current_user) do
+        public_send(user_role)
+      end
+
+      before do
+        enable_admin_mode!(current_user) if user_role == :admin
+      end
+
+      it { is_expected.to send(expected_result, :create_container_registry_protection_immutable_tag_rule) }
+    end
+  end
+
   private
 
   def project_subject(project_type)

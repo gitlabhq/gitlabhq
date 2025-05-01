@@ -43350,6 +43350,8 @@ Values for sorting dependencies.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="dependencysortlicense_asc"></a>`LICENSE_ASC` | License by ascending order. |
+| <a id="dependencysortlicense_desc"></a>`LICENSE_DESC` | License by descending order. |
 | <a id="dependencysortname_asc"></a>`NAME_ASC` | Name by ascending order. |
 | <a id="dependencysortname_desc"></a>`NAME_DESC` | Name by descending order. |
 | <a id="dependencysortpackager_asc"></a>`PACKAGER_ASC` | Packager by ascending order. |

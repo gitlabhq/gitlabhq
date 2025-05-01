@@ -142,7 +142,7 @@ integrates with external vendor LLM providers, including:
 - [Fireworks AI](https://fireworks.ai/)
 - [Google Vertex](https://cloud.google.com/vertex-ai/)
 
-These LLMs communicate through the [GitLab Cloud Connector](../../development/cloud_connector/_index.md),
+These LLMs communicate through the GitLab Cloud Connector,
 offering a ready-to-use AI solution without the need for on-premise infrastructure.
 
 For licensing, you must have a GitLab Ultimate subscription, and [GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial). To get access to your purchased subscription, request a license through the [Customers Portal](../../subscriptions/customers_portal.md)
