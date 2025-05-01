@@ -19,14 +19,14 @@ the noise (due to constantly failing tests, flaky tests, and so on) so that new 
   - [ ] [Code review guidelines](https://docs.gitlab.com/development/code_review/)
   - [ ] [Style guides](https://docs.gitlab.com/development/contributing/style_guides/)
 - [ ] Quarantine test check-list
-  - [ ] Follow the [Quarantining Tests guide](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/pipeline-triage/#quarantining-tests).
-  - [ ] Confirm the test has a [`quarantine:` tag with the specified quarantine type](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/pipeline-triage/#quarantined-test-types).
+  - [ ] Follow the [Quarantining Tests guide](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/pipeline-triage/#quarantining-tests).
+  - [ ] Confirm the test has a [`quarantine:` tag with the specified quarantine type](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/pipeline-triage/#quarantined-test-types).
   - [ ] Note if the test should be [quarantined for a specific environment](https://docs.gitlab.com/development/testing_guide/end_to_end/execution_context_selection/#quarantine-a-test-for-a-specific-environment).
   - [ ] (Optionally) In case of an emergency (e.g. blocked deployments), consider adding labels to pick into auto-deploy (~"Pick into auto-deploy" ~"priority::1" ~"severity::1").
 - [ ] Dequarantine test check-list
-  - [ ] Follow the [Dequarantining Tests guide](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/pipeline-triage/#dequarantining-tests).
+  - [ ] Follow the [Dequarantining Tests guide](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/developer-experience/pipeline-triage/#dequarantining-tests).
   - [ ] Confirm the test consistently passes on the target GitLab environment(s).
-- [ ] To ensure a faster turnaround, ask in the `#quality_maintainers` Slack channel for someone to review and merge the merge request, rather than assigning it directly.
+- [ ] To ensure a faster turnaround, ask in the `#dx_maintainers` Slack channel for someone to review and merge the merge request, rather than assigning it directly.
 
 <!-- Base labels. -->
 /label ~"Quality" ~"QA" ~"type::maintenance" ~"maintenance::pipelines"

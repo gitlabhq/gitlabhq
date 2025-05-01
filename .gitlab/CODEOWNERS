@@ -1839,7 +1839,8 @@ ee/app/workers/ai/repository_xray/
 /ee/lib/sidebars/
 /ee/lib/ee/sidebars/
 
-^[Foundations::Design System] @gitlab-org/foundations/design-system/engineering
+# Necessary to keep the design system in-sync
+[Foundations::Design System] @gitlab-org/foundations/design-system/engineering
 /app/components/pajamas/
 
 # Necessary for availability, similar to DB migrations

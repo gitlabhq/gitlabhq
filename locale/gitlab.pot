@@ -5705,6 +5705,9 @@ msgstr ""
 msgid "AiImpactAnalytics|Value can't be calculated due to insufficient data."
 msgstr ""
 
+msgid "AiPowered|AI-native features now available in IDEs"
+msgstr ""
+
 msgid "AiPowered|Always off"
 msgstr ""
 
@@ -5727,6 +5730,9 @@ msgid "AiPowered|Capture detailed information about AI-related activities and re
 msgstr ""
 
 msgid "AiPowered|Change configuration"
+msgstr ""
+
+msgid "AiPowered|Code Suggestions and Chat are now available in supported IDEs as part of GitLab Duo Core for all users of your %{plan} plan."
 msgstr ""
 
 msgid "AiPowered|Configuration"
@@ -5757,6 +5763,9 @@ msgid "AiPowered|Early Access Program banner dismissed. You will not see it agai
 msgstr ""
 
 msgid "AiPowered|Enable AI logs"
+msgstr ""
+
+msgid "AiPowered|Enable GitLab Duo Core"
 msgstr ""
 
 msgid "AiPowered|Enabled"
@@ -5792,10 +5801,16 @@ msgstr ""
 msgid "AiPowered|Features are not available. However, any group, subgroup, or project can turn them on."
 msgstr ""
 
+msgid "AiPowered|Get started with GitLab Duo Core"
+msgstr ""
+
 msgid "AiPowered|GitLab Duo Chat conversation expiration"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Core available to all users"
+msgstr ""
+
+msgid "AiPowered|GitLab Duo Core will be available to all users in your %{plan} plan, including Chat and Code Suggestions in supported IDEs. %{eligibilityLinkStart}Eligibility requirements apply%{eligibilityLinkEnd}. By enabling GitLab Duo, you accept the %{aiLinkStart}GitLab AI functionality terms%{aiLinkEnd}."
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Pro or Enterprise"
@@ -5817,6 +5832,9 @@ msgid "AiPowered|Ideal for lowest latency. An IDE must be able to connect to htt
 msgstr ""
 
 msgid "AiPowered|Indirect connections through GitLab self-managed instance"
+msgstr ""
+
+msgid "AiPowered|Learn more"
 msgstr ""
 
 msgid "AiPowered|Local AI Gateway URL"
@@ -27756,6 +27774,9 @@ msgid "GitLab Duo Chat"
 msgstr ""
 
 msgid "GitLab Duo Chat with Amazon Q"
+msgstr ""
+
+msgid "GitLab Duo Core is now enabled."
 msgstr ""
 
 msgid "GitLab Duo Pro seats"

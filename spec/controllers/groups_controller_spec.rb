@@ -855,6 +855,26 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
         expect(response).to have_gitlab_http_status(:ok)
       end
     end
+
+    context 'when request is JSON format' do
+      subject do
+        put :update, params: { id: group.to_param, group: { path: 'new_path' } }, format: :json
+      end
+
+      context 'when update service returns false' do
+        before do
+          allow_next_instance_of(::Groups::UpdateService) do |instance|
+            allow(instance).to receive(:execute).and_return(false)
+          end
+        end
+
+        it 'responds with :unprocess_entity' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        end
+      end
+    end
   end
 
   context "updating :resource_access_token_creation_allowed" do

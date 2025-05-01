@@ -104,6 +104,30 @@ RSpec.shared_examples 'has expected jobs' do |jobs|
   end
 end
 
+RSpec.shared_examples 'has expected image tag' do |tag, jobs|
+  jobs.each do |job|
+    it "uses image tag #{tag} for job #{job}" do
+      build = pipeline.builds.find_by(name: job)
+      image_tag = expand_job_image(build).rpartition(':').last
+      expect(image_tag).to eql(tag)
+    end
+  end
+end
+
+RSpec.shared_examples 'uses SECURE_ANALYZERS_PREFIX' do |jobs|
+  context 'when SECURE_ANALYZERS_PREFIX is set', fips_mode: false do
+    include_context 'with CI variables', { 'SECURE_ANALYZERS_PREFIX' => 'my.custom-registry' }
+
+    jobs.each do |job|
+      it "uses SECURE_ANALYZERS_PREFIX for the image of job #{job}" do
+        build = pipeline.builds.find_by(name: job)
+        image_without_tag = expand_job_image(build).rpartition(':').first
+        expect(image_without_tag).to start_with('my.custom-registry')
+      end
+    end
+  end
+end
+
 RSpec.shared_examples 'has FIPS compatible jobs' do |variable, jobs|
   context 'when CI_GITLAB_FIPS_MODE=false', fips_mode: false do
     jobs.each do |job|
@@ -156,4 +180,9 @@ RSpec.shared_examples 'acts as branch pipeline' do |jobs|
       expect(pipeline.builds.pluck(:name)).to match_array(jobs)
     end
   end
+end
+
+def expand_job_image(build)
+  variables = build.variables.sort_and_expand_all
+  ExpandVariables.expand(build.image.name, variables)
 end

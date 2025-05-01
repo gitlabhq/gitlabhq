@@ -270,7 +270,7 @@ dependency-scanning:
     ADDITIONAL_SUPPORTED_FILES: "pom.xml,build.gradle,build.gradle.kts,build.sbt,requirements.pip,Pipfile,requires.txt,setup.py"
   stage: !reference [.ds-analyzer, stage]
   image:
-    name: "$CI_TEMPLATE_REGISTRY_HOST/security-products/dependency-scanning:v0"
+    name: "$SECURE_ANALYZERS_PREFIX/security-products/dependency-scanning:v0"
   script:
     - /analyzer run
   allow_failure: true
@@ -360,7 +360,7 @@ dependency-scanning-with-reachability:
     ADDITIONAL_SUPPORTED_FILES: "pom.xml,build.gradle,build.gradle.kts,build.sbt,requirements.pip,Pipfile,requires.txt,setup.py"
     SCA_TO_SARIF_MATCHER_VERSION: "v2.0.2"
   image:
-    name: "$CI_TEMPLATE_REGISTRY_HOST/security-products/dependency-scanning:v0"
+    name: "$SECURE_ANALYZERS_PREFIX/dependency-scanning:v0"
   needs:
     - job: gitlab-static-reachability
       optional: true
