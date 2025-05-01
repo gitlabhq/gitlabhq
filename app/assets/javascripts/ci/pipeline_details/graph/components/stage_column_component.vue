@@ -136,6 +136,9 @@ export default {
       return this.highlightedJobs.length > 1 && !this.highlightedJobs.includes(jobName);
     },
     isParallel(group) {
+      return !this.isMatrix(group) && group.size > 1;
+    },
+    isMatrix(group) {
       return group.jobs[0].name !== group.name;
     },
     singleJobExists(group) {
@@ -223,7 +226,10 @@ export default {
             @mouseenter="$emit('jobHover', group.name)"
             @mouseleave="$emit('jobHover', '')"
           >
-            <div v-if="isParallel(group)" :class="{ 'gl-opacity-3': isFadedOut(group.name) }">
+            <div
+              v-if="isParallel(group) || isMatrix(group)"
+              :class="{ 'gl-opacity-3': isFadedOut(group.name) }"
+            >
               <job-group-dropdown
                 :group="group"
                 :stage-name="showStageName ? group.stageName : ''"
@@ -263,7 +269,10 @@ export default {
           @mouseenter="$emit('jobHover', group.name)"
           @mouseleave="$emit('jobHover', '')"
         >
-          <div v-if="isParallel(group)" :class="{ 'gl-opacity-3': isFadedOut(group.name) }">
+          <div
+            v-if="isParallel(group) || isMatrix(group)"
+            :class="{ 'gl-opacity-3': isFadedOut(group.name) }"
+          >
             <job-group-dropdown
               :group="group"
               :stage-name="showStageName ? group.stageName : ''"
