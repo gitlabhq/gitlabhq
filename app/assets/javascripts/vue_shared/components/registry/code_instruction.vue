@@ -1,12 +1,12 @@
 <script>
 import { uniqueId } from 'lodash';
 import Tracking from '~/tracking';
-import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 
 export default {
   name: 'CodeInstruction',
   components: {
-    ClipboardButton,
+    ModalCopyButton,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -70,15 +70,21 @@ export default {
           @copy="trackCopy"
         />
         <span class="input-group-append" data-testid="instruction-button" @click="trackCopy">
-          <clipboard-button :text="instruction" :title="copyText" class="input-group-text" />
+          <modal-copy-button :text="instruction" :title="copyText" class="input-group-text" />
         </span>
       </div>
     </div>
 
-    <div v-else>
+    <div v-else class="gl-relative">
       <pre class="gl-font-monospace" data-testid="multiline-instruction" @copy="trackCopy">{{
         instruction
       }}</pre>
+      <modal-copy-button
+        :text="instruction"
+        :title="copyText"
+        class="gl-absolute gl-right-3 gl-top-3"
+        @click="trackCopy"
+      />
     </div>
   </div>
 </template>

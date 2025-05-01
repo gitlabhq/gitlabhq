@@ -2,8 +2,10 @@
 import {
   GlAlert,
   GlBadge,
+  GlButton,
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
+  GlIcon,
   GlLink,
   GlModal,
   GlModalDirective,
@@ -37,6 +39,7 @@ import {
   DELETE_PACKAGE_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
   CANCEL_DELETE_PACKAGE_TRACKING_ACTION,
+  INSTALL_PACKAGE_TRACKING_ACTION,
   REQUEST_FORWARDING_HELP_PAGE_PATH,
   SHOW_DELETE_SUCCESS_ALERT,
   FETCH_PACKAGE_DETAILS_ERROR_MESSAGE,
@@ -58,10 +61,12 @@ export default {
   components: {
     GlAlert,
     GlBadge,
+    GlButton,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
     GlEmptyState,
     GlModal,
+    GlIcon,
     GlLink,
     GlTab,
     GlTabs,
@@ -89,6 +94,7 @@ export default {
     DELETE_PACKAGE_TRACKING_ACTION,
     REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
     CANCEL_DELETE_PACKAGE_TRACKING_ACTION,
+    INSTALL_PACKAGE_TRACKING_ACTION,
   },
   data() {
     return {
@@ -98,6 +104,7 @@ export default {
       versionsMutationLoading: false,
       packageEntity: {},
       groupSettings: {},
+      showInstructions: false,
       isDropdownVisible: false,
     };
   },
@@ -217,8 +224,22 @@ export default {
         },
       ];
     },
-    moreActionsTooltip() {
-      return !this.isDropdownVisible ? __('Actions') : '';
+    hasInstallationInstructions() {
+      const packageTypesWithInstructions = [
+        PACKAGE_TYPE_CONAN,
+        PACKAGE_TYPE_MAVEN,
+        PACKAGE_TYPE_NPM,
+        PACKAGE_TYPE_NUGET,
+        PACKAGE_TYPE_PYPI,
+      ];
+
+      // Composer packages only have installation instructions on the group level
+      if (this.packageType === PACKAGE_TYPE_COMPOSER) {
+        return Boolean(this.groupListUrl);
+      }
+
+      // Other package types that support installation instructions
+      return packageTypesWithInstructions.includes(this.packageType);
     },
   },
   methods: {
@@ -242,16 +263,24 @@ export default {
     resetDeleteModalContent() {
       this.deletePackageModalContent = DELETE_MODAL_CONTENT;
     },
+    toggleShowInstructions() {
+      this.showInstructions = !this.showInstructions;
+      this.track(this.$options.trackingActions.INSTALL_PACKAGE_TRACKING_ACTION);
+    },
     showDropdown() {
       this.isDropdownVisible = true;
     },
     hideDropdown() {
       this.isDropdownVisible = false;
     },
+    showDropdownTooltip() {
+      return !this.isDropdownVisible ? this.$options.i18n.moreActionsTooltip : '';
+    },
   },
   i18n: {
     DELETE_MODAL_TITLE,
     otherVersionsTabTitle: s__('PackageRegistry|Other versions'),
+    moreActionsTooltip: __('Actions'),
   },
   links: {
     REQUEST_FORWARDING_HELP_PAGE_PATH,
@@ -291,21 +320,46 @@ export default {
   <div v-else-if="projectName" class="packages-app">
     <package-title :package-entity="packageEntity">
       <template #delete-button>
+        <gl-button
+          v-if="hasInstallationInstructions"
+          class="gl-grow"
+          variant="confirm"
+          data-testid="install-button"
+          @click="toggleShowInstructions"
+          >{{ s__('PackageRegistry|Install') }}</gl-button
+        >
         <gl-disclosure-dropdown
           v-if="canDelete"
-          v-gl-tooltip
+          v-gl-tooltip="showDropdownTooltip"
           category="tertiary"
-          icon="ellipsis_v"
           placement="bottom-end"
-          class="!-gl-my-3"
+          class="sm:!-gl-my-3"
           data-testid="package-options-dropdown"
-          :title="moreActionsTooltip"
-          :toggle-text="__('Actions')"
-          text-sr-only
-          no-caret
+          :title="$options.i18n.moreActionsTooltip"
+          block
           @shown="showDropdown"
           @hidden="hideDropdown"
         >
+          <template #toggle>
+            <div class="gl-mb-2 gl-min-h-7 sm:!gl-mb-0">
+              <gl-button
+                class="gl-new-dropdown-toggle gl-w-full sm:!gl-hidden"
+                button-text-classes="gl-flex gl-justify-between gl-w-full"
+                category="secondary"
+                :aria-label="$options.i18n.moreActionsTooltip"
+              >
+                <span>{{ $options.i18n.moreActionsTooltip }}</span>
+                <gl-icon class="dropdown-chevron" name="chevron-down" />
+              </gl-button>
+              <gl-button
+                class="gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret gl-hidden sm:!gl-flex"
+                category="tertiary"
+                icon="ellipsis_v"
+                :aria-label="$options.i18n.moreActionsTooltip"
+                :title="$options.i18n.moreActionsTooltip"
+              />
+            </div>
+          </template>
           <gl-disclosure-dropdown-item
             v-gl-modal="'delete-modal'"
             variant="danger"
@@ -319,6 +373,21 @@ export default {
       </template>
     </package-title>
 
+    <gl-modal
+      v-if="hasInstallationInstructions"
+      v-model="showInstructions"
+      :title="__('Installation')"
+      modal-id="installation-instructions-modal"
+      data-testid="installation-instructions-modal"
+      hide-footer
+      no-focus-on-show
+    >
+      <template #modal-title>
+        <h2 class="gl-heading-2 gl-my-0">{{ __('Installation') }}</h2>
+      </template>
+      <installation-commands :package-entity="packageEntity" data-testid="installation-commands" />
+    </gl-modal>
+
     <gl-tabs>
       <gl-tab :title="__('Detail')">
         <div data-testid="package-information-content">
@@ -327,7 +396,6 @@ export default {
           <gl-alert v-if="showDeprecationAlert" :dismissible="false" variant="warning">
             {{ s__('PackageRegistry|This package version has been deprecated.') }}
           </gl-alert>
-          <installation-commands :package-entity="packageEntity" />
 
           <additional-metadata
             v-if="showMetadata"

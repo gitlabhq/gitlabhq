@@ -66,6 +66,7 @@ describe('Diff File Options Menu', () => {
      * happen once (desireable!), so testing that it's no longer present is good
      */
     expect(get('serverButton')).toBeNull();
+    expect(document.activeElement).toEqual(get('vueButton'));
   });
 
   it('renders the correct menu items in the GlDisclosureDropdown as provided by the back end', () => {

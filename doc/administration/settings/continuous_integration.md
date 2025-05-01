@@ -255,9 +255,21 @@ The maximum downstream pipeline trigger rate limits how many downstream pipeline
 can be triggered per minute for a given combination of project, user, and commit.
 The default value is `0`, which means there is no restriction.
 
-To set the maximum downstream pipeline trigger rate:
+#### Pipeline limit per Git push
 
-1. Enter a value in the **Maximum downstream pipeline trigger rate** field.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186134) in GitLab 18.0 [Behind `git_push_create_all_pipelines` feature flag](../../administration/feature_flags.md).
+
+{{< /history >}}
+
+Set the maximum number of tag or branch pipelines that can be triggered by a single Git push.
+For more information about this limit, see [number of pipelines per Git push](../instance_limits.md#number-of-pipelines-per-git-push).
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > CI/CD**.
+1. Expand **Continuous Integration and Deployment**.
+1. Change the value of **Pipeline limit per Git push**.
 1. Select **Save changes**.
 
 #### Specify a default CI/CD configuration file

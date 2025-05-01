@@ -2,24 +2,25 @@
 
 exports[`NpmInstallation renders all the messages 1`] = `
 <div>
-  <installation-title-stub
+  <installation-method-stub
     options="[object Object],[object Object]"
     packagetype="npm"
   />
   <code-instruction-stub
     copytext="Copy npm command"
     instruction="npm i @gitlab-org/package-15"
-    label=""
+    label="npm install command"
     trackingaction="copy_npm_install_command"
     trackinglabel="code_instruction"
   />
   <h3
-    class="gl-text-lg"
+    class="gl-heading-3 gl-mt-5"
   >
     Registry setup
   </h3>
   <gl-form-radio-group-stub
     checked="instance"
+    class="gl-my-5"
     disabledfield="disabled"
     htmlfield="html"
     options="[object Object],[object Object],[object Object]"
@@ -29,7 +30,7 @@ exports[`NpmInstallation renders all the messages 1`] = `
   <code-instruction-stub
     copytext="Copy npm setup command"
     instruction="echo @gitlab-org:registry=npmInstanceUrl/ >> .npmrc"
-    label=""
+    label="Registry setup command"
     trackingaction="copy_npm_setup_command"
     trackinglabel="code_instruction"
   />

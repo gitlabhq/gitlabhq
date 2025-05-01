@@ -2,7 +2,7 @@
 import { GlLink, GlSprintf, GlFormRadioGroup } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
-import InstallationTitle from '~/packages_and_registries/package_registry/components/details/installation_title.vue';
+import InstallationMethod from '~/packages_and_registries/package_registry/components/details/installation_method.vue';
 import {
   TRACKING_ACTION_COPY_NPM_INSTALL_COMMAND,
   TRACKING_ACTION_COPY_NPM_SETUP_COMMAND,
@@ -21,7 +21,7 @@ import CodeInstruction from '~/vue_shared/components/registry/code_instruction.v
 export default {
   name: 'NpmInstallation',
   components: {
-    InstallationTitle,
+    InstallationMethod,
     CodeInstruction,
     GlLink,
     GlSprintf,
@@ -81,7 +81,7 @@ export default {
         return `echo ${scope}:registry=${npmPathForEndpoint}/ >> .npmrc`;
       }
 
-      return `echo \\"${scope}:registry\\" \\"${npmPathForEndpoint}/\\" >> .yarnrc`;
+      return `echo ${scope}:registry ${npmPathForEndpoint}/ >> .yarnrc`;
     },
   },
   packageManagers: {
@@ -98,11 +98,14 @@ export default {
     helpText: s__(
       'PackageRegistry|You may also need to setup authentication using an auth token. %{linkStart}See the documentation%{linkEnd} to find out more.',
     ),
+    npmInstallCommandLabel: s__('PackageRegistry|npm install command'),
+    yarnInstallCommandLabel: s__('PackageRegistry|Yarn install command'),
+    registrySetupCommand: s__('PackageRegistry|Registry setup command'),
   },
   links: { NPM_HELP_PATH },
   installOptions: [
-    { value: NPM_PACKAGE_MANAGER, label: s__('PackageRegistry|Show NPM commands') },
-    { value: YARN_PACKAGE_MANAGER, label: s__('PackageRegistry|Show Yarn commands') },
+    { value: NPM_PACKAGE_MANAGER, label: s__('PackageRegistry|npm') },
+    { value: YARN_PACKAGE_MANAGER, label: s__('PackageRegistry|Yarn') },
   ],
   packageEndpointTypeOptions: [
     { value: INSTANCE_PACKAGE_ENDPOINT_TYPE, text: s__('PackageRegistry|Instance-level') },
@@ -114,7 +117,7 @@ export default {
 
 <template>
   <div>
-    <installation-title
+    <installation-method
       :package-type="$options.packageManagers.NPM_PACKAGE_MANAGER"
       :options="$options.installOptions"
       @change="instructionType = $event"
@@ -123,6 +126,7 @@ export default {
     <code-instruction
       v-if="showNpm"
       :instruction="npmCommand"
+      :label="$options.i18n.npmInstallCommandLabel"
       :copy-text="s__('PackageRegistry|Copy npm command')"
       :tracking-action="$options.tracking.TRACKING_ACTION_COPY_NPM_INSTALL_COMMAND"
       :tracking-label="$options.tracking.TRACKING_LABEL_CODE_INSTRUCTION"
@@ -131,14 +135,16 @@ export default {
     <code-instruction
       v-else
       :instruction="yarnCommand"
+      :label="$options.i18n.yarnInstallCommandLabel"
       :copy-text="s__('PackageRegistry|Copy yarn command')"
       :tracking-action="$options.tracking.TRACKING_ACTION_COPY_YARN_INSTALL_COMMAND"
       :tracking-label="$options.tracking.TRACKING_LABEL_CODE_INSTRUCTION"
     />
 
-    <h3 class="gl-text-lg">{{ __('Registry setup') }}</h3>
+    <h3 class="gl-heading-3 gl-mt-5">{{ s__('PackageRegistry|Registry setup') }}</h3>
 
     <gl-form-radio-group
+      class="gl-my-5"
       :options="$options.packageEndpointTypeOptions"
       :checked="packageEndpointType"
       @change="packageEndpointType = $event"
@@ -147,6 +153,7 @@ export default {
     <code-instruction
       v-if="showNpm"
       :instruction="npmSetup"
+      :label="$options.i18n.registrySetupCommand"
       :copy-text="s__('PackageRegistry|Copy npm setup command')"
       :tracking-action="$options.tracking.TRACKING_ACTION_COPY_NPM_SETUP_COMMAND"
       :tracking-label="$options.tracking.TRACKING_LABEL_CODE_INSTRUCTION"
@@ -155,6 +162,7 @@ export default {
     <code-instruction
       v-else
       :instruction="yarnSetupCommand"
+      :label="$options.i18n.registrySetupCommand"
       :copy-text="s__('PackageRegistry|Copy yarn setup command')"
       :tracking-action="$options.tracking.TRACKING_ACTION_COPY_YARN_SETUP_COMMAND"
       :tracking-label="$options.tracking.TRACKING_LABEL_CODE_INSTRUCTION"

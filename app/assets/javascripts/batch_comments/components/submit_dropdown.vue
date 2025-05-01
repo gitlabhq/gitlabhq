@@ -219,7 +219,11 @@ export default {
     onBeforeClose({ originalEvent: { target }, preventDefault }) {
       if (
         target &&
-        [document.querySelector('.atwho-container'), document.querySelector('.dz-hidden-input')]
+        [
+          document.querySelector('.atwho-container'),
+          document.querySelector('.dz-hidden-input'),
+          document.querySelector('.comment-templates-modal'),
+        ]
           .filter(Boolean)
           .some((el) => el.contains(target))
       ) {

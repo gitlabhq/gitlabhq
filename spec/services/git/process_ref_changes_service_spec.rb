@@ -147,22 +147,31 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
             expect(Ci::Pipeline.pluck(:ref)).to contain_exactly('create', 'update')
           end
 
-          it "creates exactly #{described_class::PIPELINE_PROCESS_LIMIT} pipelines" do
-            stub_const("#{described_class}::PIPELINE_PROCESS_LIMIT", changes.count - 1)
-
+          it "calls Gitlab::AppJsonLogger when a Git push is made" do
             # We expect some logs from Gitlab::Ci::Pipeline::CommandLogger,
             # but no logs from warn_if_over_process_limit
             expect(Gitlab::AppJsonLogger).to receive(:info).with(
               hash_including("class" => "Gitlab::Ci::Pipeline::CommandLogger")
             ).twice
 
-            expect { subject.execute }.to change { Ci::Pipeline.count }.by(described_class::PIPELINE_PROCESS_LIMIT)
+            expect { subject.execute }.to change { Ci::Pipeline.count }.by(changes.count - 1)
           end
         end
 
         context 'when git_push_create_all_pipelines is enabled' do
           before do
             stub_feature_flags(git_push_create_all_pipelines: true)
+          end
+
+          it 'creates all pipelines' do
+            # We don't run a pipeline for a deletion
+            expect { subject.execute }.to change { Ci::Pipeline.count }.by(changes.count - 1)
+          end
+        end
+
+        context 'when git_push_pipeline_limit is unlimited' do
+          before do
+            allow(Gitlab::CurrentSettings).to receive(:git_push_pipeline_limit).and_return(0)
           end
 
           it 'creates all pipelines' do
@@ -303,9 +312,9 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
         subject.execute
       end
 
-      context 'when git_push_create_all_pipelines is disabled' do
+      context 'when git_push_pipeline_limit is reached' do
         before do
-          stub_feature_flags(git_push_create_all_pipelines: false)
+          stub_feature_flags(git_push_create_all_pipelines: true)
         end
 
         it 'logs a warning' do
@@ -314,7 +323,7 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           expect(Gitlab::AppJsonLogger).to receive(:info).with(
             hash_including(
               message: "Some pipelines may not have been created because ref count exceeded limit",
-              ref_limit: described_class::PIPELINE_PROCESS_LIMIT,
+              ref_limit: Gitlab::CurrentSettings.git_push_pipeline_limit,
               total_ref_count: branch_changes.count + tag_changes.count,
               possible_omitted_refs: ["#{ref_prefix}/changed2", "refs/tags/v10.0.0"],
               possible_omitted_ref_count: 2

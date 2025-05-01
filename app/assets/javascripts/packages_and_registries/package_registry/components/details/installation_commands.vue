@@ -40,7 +40,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="installationComponent">
+  <div class="gl-mb-5">
     <component :is="installationComponent" :package-entity="packageEntity" />
   </div>
 </template>

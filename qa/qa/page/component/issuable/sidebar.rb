@@ -86,24 +86,6 @@ module QA
             end
           end
 
-          def has_reviewer?(username)
-            wait_reviewers_block_finish_loading do
-              has_text?(username)
-            end
-          end
-
-          def has_no_reviewer?(username)
-            wait_reviewers_block_finish_loading do
-              has_no_text?(username)
-            end
-          end
-
-          def has_no_reviewers?
-            wait_reviewers_block_finish_loading do
-              has_text?('None')
-            end
-          end
-
           def has_avatar_image_count?(count)
             wait_assignees_block_finish_loading do
               all_elements('avatar-image', count: count)
@@ -149,53 +131,6 @@ module QA
 
           def toggle_more_assignees_link
             click_element('user-list-more-button')
-          end
-
-          def toggle_reviewers_edit
-            click_element('reviewers-edit-button')
-          end
-
-          def suggested_reviewer_usernames
-            within_element('reviewers-block-container') do
-              wait_for_requests
-
-              click_element('reviewers-edit-button')
-              wait_for_requests
-
-              list = find_element('dropdown-list-content')
-              suggested_reviewers = list.find_all('li[data-user-suggested="true"')
-              raise ElementNotFound, 'No suggested reviewers found' if suggested_reviewers.nil?
-
-              suggested_reviewers.map do |reviewer|
-                info = reviewer.text.split('@')
-                {
-                  name: info[0].chomp,
-                  username: info[1].chomp
-                }
-              end.compact
-            end
-          end
-
-          def unassign_reviewers
-            within_element('reviewers-block-container') do
-              wait_for_requests
-
-              click_element('reviewers-edit-button')
-              wait_for_requests
-            end
-
-            select_reviewer('Unassigned')
-          end
-
-          def select_reviewer(username)
-            within_element('reviewers-block-container') do
-              within_element('dropdown-list-content') do
-                click_on username
-              end
-
-              click_element('reviewers-edit-button')
-              wait_for_requests
-            end
           end
 
           private

@@ -18,6 +18,11 @@ See [Getting started](doc/getting_started.md).
 
 See [Usage](doc/usage.md)
 
+## How to
+
+- [How to set initial embedding model](doc/how_to.md#set-embedding-model)
+- [How to migrate from one embedding model to another](doc/how_to.md#migrate-from-one-embedding-model-to-another)
+
 ## Contributing
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

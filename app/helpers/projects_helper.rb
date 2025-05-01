@@ -757,8 +757,8 @@ module ProjectsHelper
 
     if project.adjourned_deletion?
       message = _("This action will place this project, including all its resources, in a pending deletion state " \
-        "for %{deletion_adjourned_period} days, and delete it permanently on %{strongOpen}%{date}%{strongClose}.")
-      ERB::Util.html_escape(message) % delete_message_data(project).merge(date: date,
+        "for %{deletion_adjourned_period} days, and delete it permanently on %{date}.")
+      ERB::Util.html_escape(message) % delete_message_data(project).merge(date: tag.strong(date),
         deletion_adjourned_period: project.deletion_adjourned_period)
     else
       delete_permanently_message
@@ -771,11 +771,11 @@ module ProjectsHelper
 
     date = permanent_deletion_date_formatted(project.marked_for_deletion_on)
 
-    message = _('This project is scheduled for deletion on %{strongOpen}%{date}%{strongClose}. ' \
+    message = _('This project is scheduled for deletion on %{date}. ' \
       'This action will permanently delete this project, ' \
       'including all its resources, %{strongOpen}immediately%{strongClose}. This action cannot be undone.')
 
-    ERB::Util.html_escape(message) % delete_message_data(project).merge(date: date)
+    ERB::Util.html_escape(message) % delete_message_data(project).merge(date: tag.strong(date))
   end
 
   def delete_permanently_message

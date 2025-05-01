@@ -114,6 +114,7 @@ module PackagesHelper
       full_path: project.full_path,
       page_type: 'projects',
       project_list_url: project_packages_path(project),
+      group_list_url: project.group ? group_packages_path(project.group) : '',
       npm_group_url: package_registry_group_url(project.group&.id, :npm),
 
       settings_path: if show_package_registry_settings(project)

@@ -116,7 +116,7 @@ When documents with a populated content field already exists:
 
 ```ruby
 add_preprocessor :embeddings do |refs|
-  apply_embeddings(refs: refs, target_field: :embedding, content_field: :content)
+  apply_embeddings(refs: refs, content_field: :content)
 end
 ```
 
@@ -124,13 +124,15 @@ When the ref doesn't have existing documents:
 
 ```ruby
 add_preprocessor :embeddings do |refs|
-  apply_embeddings(refs: refs, target_field: :embedding, content_field: :title_and_description)
+  apply_embeddings(refs: refs, content_method: :title_and_description)
 end
 
 def title_and_description
   "Title: #{database_record.title}\n\nDescription: #{database_record.description}"
 end
 ```
+
+See [how to set initial embedding model](how_to.md#set-embedding-model) and [how to migrate from one embedding model to another](how_to.md#migrate-from-one-embedding-model-to-another).
 
 ### Operation types
 

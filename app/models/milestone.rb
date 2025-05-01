@@ -32,12 +32,28 @@ class Milestone < ApplicationRecord
 
   scope :by_iid, ->(iid) { where(iid: iid) }
   scope :active, -> { with_state(:active) }
-  scope :started, -> { active.where('milestones.start_date <= CURRENT_DATE') }
+  scope :started, ->(new_filter_logic: false) do
+    if new_filter_logic
+      active
+        .where('(milestones.start_date <= CURRENT_DATE OR milestones.start_date IS NULL) AND
+              (milestones.due_date IS NULL OR milestones.due_date > CURRENT_DATE) AND
+              NOT (milestones.start_date IS NULL AND milestones.due_date IS NULL)')
+    else
+      active.where('milestones.start_date <= CURRENT_DATE')
+    end
+  end
   scope :not_started, -> { active.where('milestones.start_date > CURRENT_DATE') }
-  scope :not_upcoming, -> do
-    active
+
+  scope :not_upcoming, ->(new_filter_logic: false) do
+    if new_filter_logic
+      active
+        .where('milestones.start_date <= CURRENT_DATE')
+        .order(:project_id, :group_id, :start_date)
+    else
+      active
         .where('milestones.due_date <= CURRENT_DATE')
         .order(:project_id, :group_id, :due_date)
+    end
   end
 
   scope :of_projects, ->(ids) { where(project_id: ids) }
@@ -125,11 +141,18 @@ class Milestone < ApplicationRecord
     @link_reference_pattern ||= compose_link_reference_pattern('milestones', /(?<milestone>\d+)/)
   end
 
-  def self.upcoming_ids(projects, groups)
-    unscoped
-      .for_projects_and_groups(projects, groups)
-      .active.where('milestones.due_date > CURRENT_DATE')
-      .order(:project_id, :group_id, :due_date).select('DISTINCT ON (project_id, group_id) id')
+  def self.upcoming_ids(projects, groups, new_filter_logic: false)
+    if new_filter_logic
+      unscoped
+        .for_projects_and_groups(projects, groups)
+        .active.where('milestones.start_date > CURRENT_DATE')
+        .order(:project_id, :group_id, :start_date).select(:id)
+    else
+      unscoped
+        .for_projects_and_groups(projects, groups)
+        .active.where('milestones.due_date > CURRENT_DATE')
+        .order(:project_id, :group_id, :due_date).select('DISTINCT ON (project_id, group_id) id')
+    end
   end
 
   def self.with_web_entity_associations

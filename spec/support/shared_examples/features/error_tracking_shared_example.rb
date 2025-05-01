@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'time'
+
 RSpec.shared_examples 'error tracking index page' do
   it 'renders the error index page', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
     within('[data-testid="breadcrumb-links"]') do
@@ -7,12 +9,10 @@ RSpec.shared_examples 'error tracking index page' do
       expect(page).to have_content(project.name)
     end
 
-    within('div.error-list') do
-      expect(page).to have_content('Open errors')
-      expect(page).to have_content('Events')
-      expect(page).to have_content('Users')
-      expect(page).to have_content('Last seen')
-    end
+    expect(page).to have_content('Open errors')
+    expect(page).to have_content('Events')
+    expect(page).to have_content('Users')
+    expect(page).to have_content('Last seen')
   end
 
   it 'loads the error show page on click', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
@@ -24,12 +24,9 @@ RSpec.shared_examples 'error tracking index page' do
   end
 
   it 'renders the error index data', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
-    within('div.error-list') do
-      expect(page).to have_content(issues_response[0]['title'])
-      expect(page).to have_content(issues_response[0]['count'].to_s)
-      expect(page).to have_content(issues_response[0]['last_seen'])
-      expect(page).to have_content('1 year ago')
-    end
+    expect(page).to have_content(issues_response[0]['title'])
+    expect(page).to have_content(issues_response[0]['count'].to_s)
+    expect(page).to have_content(issues_response[0]['last_seen'])
   end
 end
 
@@ -54,17 +51,31 @@ RSpec.shared_examples 'error tracking show page' do
     nav = find_by_testid("breadcrumb-links")
     header = page.find(".error-details-header")
 
-    release_short_version = issue_response['firstRelease']['shortVersion']
+    issue_response['firstRelease']['shortVersion']
+    first_seen_time = page.find('div[data-testid="first-release-card"] time')['datetime']
+    expected_time = issue_response["firstSeen"]
+
+    first_year = Time.iso8601(first_seen_time).year
+    expected_year = Time.iso8601(expected_time).year
 
     expect(header).to have_content('1 month ago by raven.scripts.runner in main')
     expect(content).to have_content(issue_response['metadata']['title'])
     expect(content).to have_content('level: error')
     expect(nav).to have_content('Error Details')
-    expect(content).to have_content('GitLab Issue: https://gitlab.com/gitlab-org/gitlab/issues/1')
+    expect(page).to have_link('View issue', href: "https://gitlab.com/gitlab-org/gitlab/issues/1")
     expect(content).to have_content("Sentry event: https://sentrytest.gitlab.com/sentry-org/sentry-project/issues/#{issue_id}")
-    expect(content).to have_content("First seen: 1 year ago (#{formatted_issue_seen}) Release: #{release_short_version}")
-    expect(content).to have_content('Events: 1')
-    expect(content).to have_content('Users: 0')
+    expect(page).to have_css('div[data-testid="first-release-card"] time', text: "1 year ago", wait: 20)
+    expect(first_year).to eq(expected_year)
+
+    within('[data-testid="error-count-card"]') do
+      expect(page).to have_content("Events")
+      expect(page).to have_content("1")
+    end
+
+    within('[data-testid="user-count-card"]') do
+      expect(page).to have_content('Users')
+      expect(page).to have_content('0')
+    end
   end
 
   it 'renders the stack trace heading', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
@@ -74,7 +85,7 @@ RSpec.shared_examples 'error tracking show page' do
   it 'renders the stack trace', quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/217810' } do
     event_response['entries'][0]['data']['values'][0]['stacktrace']['frames'].each do |frame|
       expect(frame['filename']).not_to be_nil
-      expect(page).to have_content(frame['filename'])
+      expect(page).to have_selector("[data-clipboard-text='#{frame['filename']}']", visible: :all)
     end
   end
 

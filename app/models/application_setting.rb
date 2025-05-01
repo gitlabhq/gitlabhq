@@ -528,7 +528,8 @@ class ApplicationSetting < ApplicationRecord
   jsonb_accessor :ci_cd_settings,
     ci_job_live_trace_enabled: [:boolean, { default: false }],
     ci_partitions_size_limit: [::Gitlab::Database::Type::JsonbInteger.new, { default: 100.gigabytes }],
-    ci_delete_pipelines_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 year') }]
+    ci_delete_pipelines_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 year') }],
+    git_push_pipeline_limit: [:integer, { default: 4 }]
 
   chronic_duration_attr :ci_delete_pipelines_in_seconds_limit_human_readable, :ci_delete_pipelines_in_seconds_limit
 
@@ -685,7 +686,8 @@ class ApplicationSetting < ApplicationRecord
       :users_api_limit_ssh_keys,
       :users_api_limit_ssh_key,
       :users_api_limit_gpg_keys,
-      :users_api_limit_gpg_key
+      :users_api_limit_gpg_key,
+      :git_push_pipeline_limit
   end
 
   attribute :resource_usage_limits, ::Gitlab::Database::Type::IndifferentJsonb.new, default: -> { {} }

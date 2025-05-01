@@ -1,10 +1,11 @@
-import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
 import { nextTick } from 'vue';
-import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import component from '~/vue_shared/components/registry/persisted_dropdown_selection.vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
-describe('Persisted dropdown selection', () => {
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import component from '~/vue_shared/components/registry/persisted_radio_group.vue';
+
+describe('Persisted radio group', () => {
   let wrapper;
 
   const defaultProps = {
@@ -13,10 +14,11 @@ describe('Persisted dropdown selection', () => {
       { value: 'maven', label: 'Maven' },
       { value: 'gradle', label: 'Gradle' },
     ],
+    label: 'Installation method',
   };
 
   function createComponent({ props = {}, data = {} } = {}) {
-    wrapper = mount(component, {
+    wrapper = shallowMountExtended(component, {
       propsData: {
         ...defaultProps,
         ...props,
@@ -24,14 +26,15 @@ describe('Persisted dropdown selection', () => {
       data() {
         return data;
       },
+      stubs: {
+        GlFormRadioGroup,
+      },
     });
   }
 
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
-  const findGlCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findGlListboxItems = () => wrapper.findAllComponents(GlListboxItem);
-  const findGlListboxToggleText = () =>
-    findGlCollapsibleListbox().find('.gl-new-dropdown-button-text');
+  const findGlFormRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
+  const findGlFormRadios = () => wrapper.findAllComponents(GlFormRadio);
 
   describe('local storage sync', () => {
     it('uses the local storage sync component with the correct props', () => {
@@ -61,47 +64,31 @@ describe('Persisted dropdown selection', () => {
     });
   });
 
-  describe('dropdown', () => {
-    it('has a dropdown component', () => {
+  describe('radio group', () => {
+    it('has a radio group component', () => {
       createComponent();
 
-      expect(findGlCollapsibleListbox().exists()).toBe(true);
+      expect(findGlFormRadioGroup().exists()).toBe(true);
     });
 
-    describe('dropdown text', () => {
-      it('when no selection shows the first', () => {
-        createComponent();
-
-        expect(findGlListboxToggleText().text()).toBe('Maven');
-      });
-
-      it('when an option is selected, shows that option label', async () => {
-        createComponent();
-        findGlCollapsibleListbox().vm.$emit('select', defaultProps.options[1].value);
-        await nextTick();
-
-        expect(findGlListboxToggleText().text()).toBe('Gradle');
-      });
-    });
-
-    describe('dropdown items', () => {
+    describe('Options', () => {
       it('has one item for each option', () => {
         createComponent();
 
-        expect(findGlListboxItems()).toHaveLength(defaultProps.options.length);
+        expect(findGlFormRadios().length).toEqual(defaultProps.options.length);
       });
 
       it('on click updates the data and emits event', async () => {
         createComponent();
+
+        expect(findGlFormRadioGroup().attributes('checked')).toEqual('maven');
+
         const selectedItem = 'gradle';
-
-        expect(findGlCollapsibleListbox().props('selected')).toBe('maven');
-
-        findGlCollapsibleListbox().vm.$emit('select', selectedItem);
+        findGlFormRadioGroup().vm.$emit('change', selectedItem);
         await nextTick();
 
         expect(wrapper.emitted('change').at(-1)).toStrictEqual([selectedItem]);
-        expect(findGlCollapsibleListbox().props('selected')).toBe(selectedItem);
+        expect(findGlFormRadioGroup().attributes('checked')).toEqual(selectedItem);
       });
     });
   });

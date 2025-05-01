@@ -2,7 +2,6 @@
 import { GlFormGroup, GlLink, GlSprintf } from '@gitlab/ui';
 
 import { s__ } from '~/locale';
-import InstallationTitle from '~/packages_and_registries/package_registry/components/details/installation_title.vue';
 import {
   PERSONAL_ACCESS_TOKEN_HELP_URL,
   TRACKING_ACTION_COPY_PIP_INSTALL_COMMAND,
@@ -15,7 +14,6 @@ import CodeInstruction from '~/vue_shared/components/registry/code_instruction.v
 export default {
   name: 'PyPiInstallation',
   components: {
-    InstallationTitle,
     CodeInstruction,
     GlFormGroup,
     GlLink,
@@ -50,7 +48,7 @@ password = <your personal access token>`;
   i18n: {
     tokenText: s__(`PackageRegistry|You will need a %{linkStart}personal access token%{linkEnd}.`),
     setupText: s__(
-      `PackageRegistry|If you haven't already done so, you will need to add the below to your %{codeStart}.pypirc%{codeEnd} file.`,
+      `PackageRegistry|If you haven't already done so, add the configuration below to your %{codeStart}.pypirc%{codeEnd} file.`,
     ),
     helpText: s__(
       'PackageRegistry|For more information on the PyPi registry, %{linkStart}see the documentation%{linkEnd}.',
@@ -60,14 +58,11 @@ password = <your personal access token>`;
     PERSONAL_ACCESS_TOKEN_HELP_URL,
     PYPI_HELP_PATH,
   },
-  installOptions: [{ value: 'pypi', label: s__('PackageRegistry|Show PyPi commands') }],
 };
 </script>
 
 <template>
   <div>
-    <installation-title package-type="pypi" :options="$options.installOptions" />
-
     <gl-form-group id="installation-pip-command-group">
       <code-instruction
         id="installation-pip-command"
@@ -91,7 +86,7 @@ password = <your personal access token>`;
       </template>
     </gl-form-group>
 
-    <h3 class="gl-text-lg">{{ __('Registry setup') }}</h3>
+    <h3 class="gl-heading-3 gl-mt-5">{{ s__('PackageRegistry|Registry setup') }}</h3>
     <p>
       <gl-sprintf :message="$options.i18n.setupText">
         <template #code="{ content }">

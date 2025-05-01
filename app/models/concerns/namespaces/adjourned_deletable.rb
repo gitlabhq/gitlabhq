@@ -12,7 +12,6 @@ module Namespaces
 
     def adjourned_deletion_configured?
       return false unless Feature.enabled?(:downtier_delayed_deletion, :instance, type: :gitlab_com_derisk)
-      return false if try(:personal?)
 
       deletion_adjourned_period > 0
     end

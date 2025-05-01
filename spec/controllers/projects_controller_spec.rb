@@ -1228,7 +1228,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       context 'for projects in user namespace' do
         let(:project) { create(:project, namespace: user.namespace) }
 
-        it_behaves_like 'deletes project right away'
+        it_behaves_like 'marks project for deletion'
       end
     end
   end

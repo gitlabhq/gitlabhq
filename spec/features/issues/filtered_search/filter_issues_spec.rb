@@ -321,32 +321,76 @@ RSpec.describe 'Filter issues', :js, feature_category: :team_planning do
         expect_empty_search_term
       end
 
-      it 'filters issues by upcoming milestones' do
-        create(:milestone, project: project, due_date: 1.month.from_now) do |future_milestone|
-          create(:issue, project: project, milestone: future_milestone, author: user)
+      context 'when new_milestone_filtering_logic is false' do
+        before do
+          stub_feature_flags(new_milestone_filtering_logic: false)
         end
 
-        select_tokens 'Milestone', '=', 'Upcoming', submit: true
+        it 'filters issues by upcoming milestones' do
+          create(:milestone, project: project, due_date: 1.month.from_now) do |future_milestone|
+            create(:issue, project: project, milestone: future_milestone, author: user)
+          end
 
-        expect_milestone_token 'Upcoming'
-        expect_issues_list_count(1)
-        expect_empty_search_term
+          select_tokens 'Milestone', '=', 'Upcoming', submit: true
+
+          expect_milestone_token 'Upcoming'
+
+          expect_issues_list_count(1)
+          expect_empty_search_term
+        end
+
+        it 'filters issues by negation of upcoming milestones' do
+          create(:milestone, project: project, due_date: 1.month.from_now) do |future_milestone|
+            create(:issue, project: project, milestone: future_milestone, author: user)
+          end
+
+          create(:milestone, project: project, due_date: 3.days.ago) do |past_milestone|
+            create(:issue, project: project, milestone: past_milestone, author: user)
+          end
+
+          select_tokens 'Milestone', '!=', 'Upcoming', submit: true
+
+          expect_negated_milestone_token 'Upcoming'
+          expect_issues_list_count(1)
+          expect_empty_search_term
+        end
       end
 
-      it 'filters issues by negation of upcoming milestones' do
-        create(:milestone, project: project, due_date: 1.month.from_now) do |future_milestone|
-          create(:issue, project: project, milestone: future_milestone, author: user)
+      context 'when new_milestone_filtering_logic is true' do
+        before do
+          stub_feature_flags(new_milestone_filtering_logic: true)
         end
 
-        create(:milestone, project: project, due_date: 3.days.ago) do |past_milestone|
-          create(:issue, project: project, milestone: past_milestone, author: user)
+        it 'filters issues by upcoming milestones' do
+          create(:milestone, project: project, start_date: 1.month.from_now) do |future_milestone|
+            create(:issue, project: project, milestone: future_milestone, author: user)
+          end
+
+          select_tokens 'Milestone', '=', 'Upcoming', submit: true
+
+          expect_milestone_token 'Upcoming'
+
+          expect_issues_list_count(1)
+          expect_empty_search_term
         end
 
-        select_tokens 'Milestone', '!=', 'Upcoming', submit: true
+        it 'filters issues by negation of upcoming milestones' do
+          create(:milestone, project: project, start_date: 1.month.from_now) do |future_milestone|
+            create(:issue, project: project, milestone: future_milestone, author: user)
+          end
 
-        expect_negated_milestone_token 'Upcoming'
-        expect_issues_list_count(1)
-        expect_empty_search_term
+          create(:milestone, project: project, start_date: 3.days.ago) do |past_milestone|
+            create(:issue, project: project, milestone: past_milestone, author: user)
+          end
+
+          select_tokens 'Milestone', '!=', 'Upcoming', submit: true
+
+          expect_negated_milestone_token 'Upcoming'
+
+          # 5 issues created in test setup + 1 issue created in this spec
+          expect_issues_list_count(6)
+          expect_empty_search_term
+        end
       end
 
       it 'filters issues by started milestones' do

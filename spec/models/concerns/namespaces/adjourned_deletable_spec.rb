@@ -27,55 +27,31 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
   end
 
   describe '#adjourned_deletion_configured?' do
-    context 'when deletion_adjourned_period is zero' do
-      before do
-        stub_application_setting(deletion_adjourned_period: 0)
-      end
+    %w[group project].each do |context|
+      context "for #{context}" do
+        subject(:adjourned_deletion_configured) { build(context).adjourned_deletion_configured? }
 
-      it 'returns false' do
-        expect(project.adjourned_deletion_configured?).to be false
-      end
-    end
-
-    context 'when deletion_adjourned_period is positive' do
-      before do
-        stub_application_setting(deletion_adjourned_period: 7)
-      end
-
-      context 'for groups' do
-        let(:group) { build(:group) }
-
-        it 'returns true' do
-          expect(group.adjourned_deletion_configured?).to be true
-        end
-      end
-
-      context 'when it is a personal project' do
-        before do
-          allow(project).to receive(:personal?).and_return(true)
-        end
-
-        it 'returns false' do
-          expect(project.adjourned_deletion_configured?).to be false
-        end
-      end
-
-      context 'when it is not a personal project' do
-        before do
-          allow(project).to receive(:personal?).and_return(false)
-        end
-
-        it 'returns true' do
-          expect(project.adjourned_deletion_configured?).to be true
-        end
-
-        context 'when downtier_delayed_deletion feature flag is disabled' do
+        context 'when deletion_adjourned_period is zero' do
           before do
-            stub_feature_flags(downtier_delayed_deletion: false)
+            stub_application_setting(deletion_adjourned_period: 0)
           end
 
-          it 'returns false' do
-            expect(project.adjourned_deletion_configured?).to be false
+          it { is_expected.to be false }
+        end
+
+        context 'when deletion_adjourned_period is positive' do
+          before do
+            stub_application_setting(deletion_adjourned_period: 7)
+          end
+
+          it { is_expected.to be true }
+
+          context 'when downtier_delayed_deletion feature flag is disabled' do
+            before do
+              stub_feature_flags(downtier_delayed_deletion: false)
+            end
+
+            it { is_expected.to be false }
           end
         end
       end

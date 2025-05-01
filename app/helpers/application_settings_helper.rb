@@ -608,7 +608,8 @@ module ApplicationSettingsHelper
       :vscode_extension_marketplace,
       :vscode_extension_marketplace_enabled,
       :reindexing_minimum_index_size,
-      :reindexing_minimum_relative_bloat_size
+      :reindexing_minimum_relative_bloat_size,
+      :git_push_pipeline_limit
     ].tap do |settings|
       unless Gitlab.com?
         settings << :resource_usage_limits

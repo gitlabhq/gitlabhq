@@ -61,6 +61,11 @@
         .form-text.gl-text-subtle
           = s_('AdminSettings|The maximum number of downstream pipelines that can be triggered per minute (for a given project, user, and commit).')
       .form-group
+        = f.label :git_push_pipeline_limit, s_('AdminSettings|Pipeline limit per Git push'), class: 'label-bold'
+        = f.number_field :git_push_pipeline_limit, min: 0, class: 'form-control gl-form-input'
+        .form-text.gl-text-subtle
+          = s_('AdminSettings|The maximum number of tag or branch pipelines triggered by a single Git push. Setting the limit to 0 will remove the limit.')
+      .form-group
         = f.label :ci_config_path, _('Default CI/CD configuration file'), class: 'label-bold'
         = f.text_field :default_ci_config_path, class: 'form-control gl-form-input', placeholder: '.gitlab-ci.yml'
         %p.form-text.gl-text-subtle

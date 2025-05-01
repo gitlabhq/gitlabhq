@@ -5,11 +5,11 @@
 - date = permanent_deletion_date_formatted(context_pending_deletion.marked_for_deletion_on)
 - context_name = context.is_a?(Group) ? _('group') : _('project')
 
-- group_marked_for_deletion = _("This group and its subgroups and projects are pending deletion, and will be deleted on %{date}.") % { date: date }
-- project_marked_for_deletion = _("This project is pending deletion, and will be deleted on %{date}. Repository and other project resources are read-only.") % { date: date }
+- group_marked_for_deletion = _("This group and its subgroups and projects are pending deletion, and will be deleted on %{date}.").html_safe % { date: tag.strong(date) }
+- project_marked_for_deletion = _("This project is pending deletion, and will be deleted on %{date}. Repository and other project resources are read-only.").html_safe % { date: tag.strong(date) }
 
 - self_marked_for_deletion = context.is_a?(Group) ? group_marked_for_deletion : project_marked_for_deletion
-- ancestor_marked_for_deletion = _("The parent group of this %{context} is pending deletion, so this %{context} will also be deleted on %{date}.") % { date: date, context: context_name }
+- ancestor_marked_for_deletion = _("The parent group of this %{context} is pending deletion, so this %{context} will also be deleted on %{date}.").html_safe % { date: tag.strong(date), context: context_name }
 
 - marked_for_deletion_message = context.marked_for_deletion? ? self_marked_for_deletion : ancestor_marked_for_deletion
 

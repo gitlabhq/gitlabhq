@@ -22,7 +22,12 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
   end
 
   context 'with downtier_delayed_deletion feature flag enabled' do
-    context 'when marking project for deletion' do
+    context 'when adjourned deletion is enabled' do
+      before do
+        allow(project).to receive(:adjourned_deletion?).and_return(true)
+        allow(notification_service).to receive(:project_scheduled_for_deletion).with(project)
+      end
+
       it 'marks project as archived and marked for deletion', :aggregate_failures do
         expect(Namespaces::ScheduleAggregationWorker).to receive(:perform_async)
          .with(project.namespace_id).and_call_original
@@ -55,26 +60,20 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
         result
       end
 
-      context 'when adjourned deletion is enabled' do
-        before do
-          allow(project).to receive(:adjourned_deletion?).and_return(true)
-        end
+      it 'sends notification' do
+        expect(notification_service).to receive(:project_scheduled_for_deletion).with(project)
 
-        it 'sends notification' do
-          expect(notification_service).to receive(:project_scheduled_for_deletion).with(project)
-
-          result
-        end
+        result
       end
+    end
 
-      context 'when adjourned deletion is disabled' do
-        it 'does not send notification' do
-          allow(project).to receive(:adjourned_deletion?).and_return(false)
+    context 'when adjourned deletion is disabled' do
+      it 'does not send notification' do
+        allow(project).to receive(:adjourned_deletion?).and_return(false)
 
-          expect(notification_service).not_to receive(:project_scheduled_for_deletion)
+        expect(notification_service).not_to receive(:project_scheduled_for_deletion)
 
-          result
-        end
+        result
       end
     end
 

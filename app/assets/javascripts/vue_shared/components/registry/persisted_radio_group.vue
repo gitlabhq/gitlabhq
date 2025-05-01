@@ -1,16 +1,21 @@
 <script>
-import { GlCollapsibleListbox } from '@gitlab/ui';
+import { GlFormGroup, GlFormRadioGroup } from '@gitlab/ui';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
 export default {
-  name: 'PersistedDropdownSelection',
+  name: 'PersistedRadioGroup',
   components: {
-    GlCollapsibleListbox,
+    GlFormGroup,
+    GlFormRadioGroup,
     LocalStorageSync,
   },
   props: {
     options: {
       type: Array,
+      required: true,
+    },
+    label: {
+      type: String,
       required: true,
     },
     storageKey: {
@@ -24,7 +29,7 @@ export default {
     };
   },
   computed: {
-    listboxItems() {
+    radioOptions() {
       return this.options.map((option) => ({
         value: option.value,
         text: option.label,
@@ -42,6 +47,8 @@ export default {
 
 <template>
   <local-storage-sync :storage-key="storageKey" :value="selected" as-string @input="setSelected">
-    <gl-collapsible-listbox v-model="selected" :items="listboxItems" @select="setSelected" />
+    <gl-form-group :label="label">
+      <gl-form-radio-group v-model="selected" :options="radioOptions" @change="setSelected" />
+    </gl-form-group>
   </local-storage-sync>
 </template>

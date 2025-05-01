@@ -279,17 +279,24 @@ When the number exceeds the limit the page displays an alert and links to a pagi
 ## Number of pipelines per Git push
 
 When pushing multiple changes with a single Git push, like multiple tags or branches,
-only four tag or branch pipelines can be triggered. This limit prevents the accidental
+only four tag or branch pipelines can be triggered by default. This limit prevents the accidental
 creation of a large number of pipelines when using `git push --all` or `git push --mirror`.
 
-[Merge request pipelines](../ci/pipelines/merge_request_pipelines.md) are not limited.
+[Merge request pipelines](../ci/pipelines/merge_request_pipelines.md) are limited.
 If the Git push updates multiple merge requests at the same time, a merge request pipeline
-can trigger for every updated merge request.
+can trigger for every updated merge request before reaching the limit.
 
-To remove the limit so that any number of pipelines can trigger for a single Git push event,
-administrators can enable the `git_push_create_all_pipelines` [feature flag](feature_flags.md).
-Enabling this feature flag is not recommended because it can cause excessive load on the GitLab
-instance if too many changes are pushed at once and a flood of pipelines are created accidentally.
+The default value is `4` for GitLab Self-Managed and GitLab.com.
+
+To change this limit on your GitLab Self-Managed instance, use the [Admin Area](settings/continuous_integration.md#pipeline-limit-per-git-push).
+
+Changing the limit is currently behind the [`git_push_create_all_pipelines` feature flag](feature_flags.md), without this feature flag turned on the amount of pipelines that can be triggered is limited to 4.
+
+{{< alert type="warning" >}}
+
+Increasing this limit is not recommended. It can cause excessive load on your GitLab instance if many changes are pushed simultaneously, potentially creating a flood of pipelines.
+
+{{< /alert >}}
 
 ## Retention of activity history
 

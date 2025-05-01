@@ -9,6 +9,8 @@
 }
 
 .tanuki-logo {
+  @apply gl-align-middle;
+
   .tanuki {
     @include tanuki-logo-colors($tanuki-red);
   }

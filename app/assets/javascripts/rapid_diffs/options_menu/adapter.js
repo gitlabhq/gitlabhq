@@ -14,6 +14,15 @@ export const OptionsMenuAdapter = {
       new Vue({
         el: Vue.version.startsWith('2') ? button : menuContainer,
         name: 'GlDisclosureDropdown',
+        mounted() {
+          const toggle = this.$el.querySelector('button');
+          toggle.focus();
+          // .focus() initiates additional transition which we don't need
+          toggle.style.transition = 'none';
+          requestAnimationFrame(() => {
+            toggle.style.transition = '';
+          });
+        },
         render(h) {
           return h(GlDisclosureDropdown, {
             props: {

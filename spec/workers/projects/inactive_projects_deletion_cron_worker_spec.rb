@@ -139,7 +139,7 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker, feature_category: :
         worker.perform
       end
 
-      it 'invokes Projects::DestroyService for projects that are inactive even after being notified',
+      it 'invokes Projects::MarkForDeletionService for projects that are inactive even after being notified',
         :enable_admin_mode do
         Gitlab::Redis::SharedState.with do |redis|
           redis.hset(
@@ -150,13 +150,13 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker, feature_category: :
         end
 
         expect(::Projects::InactiveProjectsDeletionNotificationWorker).not_to receive(:perform_async)
-        expect(::Projects::MarkForDeletionService).not_to receive(:new)
-        expect(::Projects::DestroyService).to receive(:new).with(inactive_large_project, admin_bot, {})
+        expect(::Projects::MarkForDeletionService).to receive(:new).with(inactive_large_project, admin_bot, {})
                                                            .at_least(:once).and_call_original
+        expect(::Projects::DestroyService).not_to receive(:new)
 
         worker.perform
 
-        expect(Project.exists?(inactive_large_project.id)).to be(false)
+        expect(inactive_large_project).to be_marked_for_deletion
 
         Gitlab::Redis::SharedState.with do |redis|
           expect(

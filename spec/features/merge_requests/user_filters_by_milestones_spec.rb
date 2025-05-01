@@ -49,14 +49,37 @@ RSpec.describe 'Merge Requests > User filters by milestones', :js, feature_categ
       expect(page).to have_css('.merge-request', count: 0)
     end
 
-    context 'with an upcoming milestone' do
-      let(:milestone) { create(:milestone, project: project, due_date: Date.tomorrow) }
+    context 'when new_milestone_filtering_logic is true' do
+      before do
+        stub_feature_flags(new_milestone_filtering_logic: true)
+      end
 
-      it 'shows merge requests' do
-        select_tokens 'Milestone', '=', 'Upcoming', submit: true
+      context 'with an upcoming milestone' do
+        let(:milestone) { create(:milestone, project: project, start_date: Date.tomorrow) }
 
-        expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
-        expect(page).to have_css('.merge-request', count: 1)
+        it 'shows merge requests' do
+          select_tokens 'Milestone', '=', 'Upcoming', submit: true
+
+          expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
+          expect(page).to have_css('.merge-request', count: 1)
+        end
+      end
+    end
+
+    context 'when new_milestone_filtering_logic is false' do
+      before do
+        stub_feature_flags(new_milestone_filtering_logic: false)
+      end
+
+      context 'with an upcoming milestone' do
+        let(:milestone) { create(:milestone, project: project, due_date: Date.tomorrow) }
+
+        it 'shows merge requests' do
+          select_tokens 'Milestone', '=', 'Upcoming', submit: true
+
+          expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)
+          expect(page).to have_css('.merge-request', count: 1)
+        end
       end
     end
 

@@ -1,7 +1,6 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import InstallationTitle from '~/packages_and_registries/package_registry/components/details/installation_title.vue';
 import {
   TRACKING_ACTION_COPY_CONAN_COMMAND,
   TRACKING_ACTION_COPY_CONAN_SETUP_COMMAND,
@@ -13,7 +12,6 @@ import CodeInstruction from '~/vue_shared/components/registry/code_instruction.v
 export default {
   name: 'ConanInstallation',
   components: {
-    InstallationTitle,
     CodeInstruction,
     GlLink,
     GlSprintf,
@@ -45,14 +43,11 @@ export default {
     TRACKING_LABEL_CODE_INSTRUCTION,
   },
   links: { CONAN_HELP_PATH },
-  installOptions: [{ value: 'conan', label: s__('PackageRegistry|Show Conan commands') }],
 };
 </script>
 
 <template>
   <div>
-    <installation-title package-type="conan" :options="$options.installOptions" />
-
     <code-instruction
       :label="s__('PackageRegistry|Conan Command')"
       :instruction="conanInstallationCommand"
@@ -61,7 +56,7 @@ export default {
       :tracking-label="$options.tracking.TRACKING_LABEL_CODE_INSTRUCTION"
     />
 
-    <h3 class="gl-text-lg">{{ __('Registry setup') }}</h3>
+    <h3 class="gl-heading-3 gl-mt-5">{{ s__('PackageRegistry|Registry setup') }}</h3>
 
     <code-instruction
       :label="s__('PackageRegistry|Add Conan Remote')"

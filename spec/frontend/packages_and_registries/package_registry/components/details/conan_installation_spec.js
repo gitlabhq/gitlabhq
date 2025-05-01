@@ -2,7 +2,7 @@ import { GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { packageData } from 'jest/packages_and_registries/package_registry/mock_data';
 import ConanInstallation from '~/packages_and_registries/package_registry/components/details/conan_installation.vue';
-import InstallationTitle from '~/packages_and_registries/package_registry/components/details/installation_title.vue';
+import InstallationMethod from '~/packages_and_registries/package_registry/components/details/installation_method.vue';
 import {
   PACKAGE_TYPE_CONAN,
   CONAN_HELP_PATH,
@@ -15,7 +15,7 @@ describe('ConanInstallation', () => {
   let wrapper;
 
   const findCodeInstructions = () => wrapper.findAllComponents(CodeInstructions);
-  const findInstallationTitle = () => wrapper.findComponent(InstallationTitle);
+  const findInstallationMethod = () => wrapper.findComponent(InstallationMethod);
   const findSetupDocsLink = () => wrapper.findComponent(GlLink);
 
   function createComponent() {
@@ -38,12 +38,8 @@ describe('ConanInstallation', () => {
   });
 
   describe('install command switch', () => {
-    it('has the installation title component', () => {
-      expect(findInstallationTitle().exists()).toBe(true);
-      expect(findInstallationTitle().props()).toMatchObject({
-        packageType: 'conan',
-        options: [{ value: 'conan', label: 'Show Conan commands' }],
-      });
+    it('does not show the installation method component', () => {
+      expect(findInstallationMethod().exists()).toBe(false);
     });
   });
 

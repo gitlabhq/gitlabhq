@@ -358,6 +358,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           users_api_limit_ssh_key
           users_api_limit_gpg_keys
           users_api_limit_gpg_key
+          git_push_pipeline_limit
         ]
       end
 

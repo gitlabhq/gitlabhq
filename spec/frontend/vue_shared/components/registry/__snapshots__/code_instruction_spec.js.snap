@@ -7,13 +7,28 @@ exports[`Package code instruction multiline to match the snapshot 1`] = `
   >
     foo_label
   </label>
-  <div>
+  <div
+    class="gl-relative"
+  >
     <pre
       class="gl-font-monospace"
       data-testid="multiline-instruction"
     >
       this is somemultiline text
     </pre>
+    <modal-copy-button-stub
+      category="primary"
+      class="gl-absolute gl-right-3 gl-top-3"
+      container=""
+      cssclasses=""
+      id="reference-0"
+      modalid=""
+      target=""
+      text="this is some
+multiline text"
+      title="Copy the command"
+      tooltipplacement="top"
+    />
   </div>
 </div>
 `;
@@ -42,14 +57,17 @@ exports[`Package code instruction single line to match the default snapshot 1`] 
         class="input-group-append"
         data-testid="instruction-button"
       >
-        <clipboard-button-stub
-          category="secondary"
+        <modal-copy-button-stub
+          category="primary"
           class="input-group-text"
-          size="medium"
+          container=""
+          cssclasses=""
+          id="reference-1"
+          modalid=""
+          target=""
           text="npm i @my-package"
           title="Copy npm install command"
           tooltipplacement="top"
-          variant="default"
         />
       </span>
     </div>

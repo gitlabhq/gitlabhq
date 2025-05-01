@@ -78,6 +78,8 @@ itself: # project
     - web_url
     - description_html
     - repository_object_format
+    - marked_for_deletion_at
+    - marked_for_deletion_on
 
 build_auto_devops: # auto_devops
   unexposed_attributes:
