@@ -33,15 +33,6 @@ title: Code Suggestions
 
 Use GitLab Duo Code Suggestions to write code more efficiently by using generative AI to suggest code while you're developing.
 
-Before you start using Code Suggestions, decide which of the following methods
-you want to use to manage Code Suggestions requests:
-
-- On GitLab.com or GitLab Self-Managed, the default GitLab AI vendor models and
-  cloud-based AI gateway that is hosted by GitLab.
-- On GitLab Self-Managed, in GitLab 17.9 and later, [GitLab Duo Self-Hosted with a supported self-hosted model](../../../../administration/gitlab_duo_self_hosted/_index.md).
-  Self-hosted models maximize security and privacy by making sure nothing is
-  sent to an external model.
-
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 [View a click-through demo](https://gitlab.navattic.com/code-suggestions).
 <!-- Video published on 2023-12-09 --> <!-- Demo published on 2024-02-01 -->
@@ -316,6 +307,17 @@ However, Code Suggestions might generate suggestions that are:
 - Offensive or insensitive.
 
 When using Code Suggestions, code review best practices still apply.
+
+## Available language models
+
+Different language models can be the source for Code Suggestions.
+
+- On GitLab.com: GitLab hosts the models and connects to them through the cloud-based AI gateway.
+- On GitLab Self-Managed, two options exist:
+  - GitLab can [host the models and connects to them through the cloud-based AI gateway](set_up.md).
+  - Your organization can [use GitLab Duo Self-Hosted](../../../../administration/gitlab_duo_self_hosted/_index.md),
+    which means you host the AI gateway and language models. You can use GitLab AI vendor models
+    or the other supported language models.
 
 ## How the prompt is built
 

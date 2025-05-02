@@ -2,10 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, feature_category: :scalability do
+RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, :clean_gitlab_redis_shared_state,
+  feature_category: :scalability do
+  include ExclusiveLeaseHelpers
   let(:workers_with_limits) { [Import::ReassignPlaceholderUserRecordsWorker] * 5 }
+  let(:lease_key) { 'gitlab/metrics/samplers/concurrency_limit_sampler' }
+  let(:sampler) { described_class.new }
 
-  subject(:sample) { described_class.new.sample }
+  subject(:sample) { sampler.sample }
 
   it_behaves_like 'metrics sampler', 'CONCURRENCY_LIMIT_SAMPLER'
 
@@ -57,6 +61,45 @@ RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, feature_categ
       expect(Gitlab::Metrics).not_to receive(:counter)
 
       sample
+    end
+
+    context 'when lease can be obtained' do
+      before do
+        stub_exclusive_lease(lease_key, timeout: described_class::DEFAULT_SAMPLING_INTERVAL_SECONDS)
+      end
+
+      it 'calls concurrent_limit_service methods' do
+        expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+          .to receive(:queue_size)
+          .exactly(workers_with_limits.size)
+          .and_call_original
+        expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+          .to receive(:concurrent_worker_count)
+          .exactly(workers_with_limits.size)
+          .and_call_original
+
+        sample
+      end
+
+      it 'does not release the lease' do
+        sample
+
+        expect(sampler.exclusive_lease.exists?).to be_truthy
+      end
+    end
+
+    context 'when exclusive lease cannot be obtained' do
+      before do
+        stub_exclusive_lease_taken(lease_key, timeout: described_class::DEFAULT_SAMPLING_INTERVAL_SECONDS)
+      end
+
+      it 'does not call concurrent_limit_service' do
+        expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).not_to receive(:queue_size)
+        expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+          .not_to receive(:concurrent_worker_count)
+
+        sample
+      end
     end
   end
 end

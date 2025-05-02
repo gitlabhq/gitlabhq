@@ -963,6 +963,9 @@ This command supports the following options:
   - `--staging`: Uses the `staging` environment.
   - `--staging_ref`: Uses the `staging_ref` environment.
   - `--production` : Uses the `production` environment (default).
+- Filter by job class
+  - `--job-class-name JOB_CLASS_NAME`: Only list jobs for the given job class.
+  - This is the `migration_job_name` in the YAML definition of the background migration.
 
 Output example:
 

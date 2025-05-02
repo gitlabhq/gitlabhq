@@ -4,19 +4,35 @@ module Gitlab
   module Metrics
     module Samplers
       class ConcurrencyLimitSampler < BaseSampler
-        DEFAULT_SAMPLING_INTERVAL_SECONDS = 60
+        include ExclusiveLeaseGuard
+
+        DEFAULT_SAMPLING_INTERVAL_SECONDS = 30
 
         def sample
-          worker_maps.workers.each do |w|
-            queue_size = concurrent_limit_service.queue_size(w.name)
-            report_queue_size(w.name, queue_size) if queue_size > 0
+          try_obtain_lease do
+            worker_maps.workers.each do |w|
+              queue_size = concurrent_limit_service.queue_size(w.name)
+              report_queue_size(w.name, queue_size) if queue_size > 0
 
-            concurrent_worker_count = concurrent_limit_service.concurrent_worker_count(w.name)
-            report_concurrent_workers(w.name, concurrent_worker_count) if concurrent_worker_count > 0
+              concurrent_worker_count = concurrent_limit_service.concurrent_worker_count(w.name)
+              report_concurrent_workers(w.name, concurrent_worker_count) if concurrent_worker_count > 0
+            end
           end
         end
 
         private
+
+        # Used by ExclusiveLeaseGuard
+        def lease_timeout
+          # Lease timeout and sampling interval should be the same
+          # so that only 1 process runs the sampler on every sampling interval
+          DEFAULT_SAMPLING_INTERVAL_SECONDS
+        end
+
+        # Overrides ExclusiveLeaseGuard to not release lease after the sample to ensure we do not oversample
+        def lease_release?
+          false
+        end
 
         def worker_maps
           Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap

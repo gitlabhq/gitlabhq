@@ -5,13 +5,23 @@
 - add_page_startup_graphql_call('repository/permissions', { projectPath: @project.full_path })
 - add_page_startup_graphql_call('repository/files', { nextPageCursor: "", pageSize: 100, projectPath: @project.full_path, ref: current_ref, path: current_route_path || "/", refType: ref_type_enum_value})
 - breadcrumb_title _("Repository")
+- repository_file_tree_browser_enabled = Feature.enabled?(:repository_file_tree_browser, @project)
+- @force_fluid_layout = repository_file_tree_browser_enabled
 
 - page_title @path.presence || _("Files"), @ref
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_commits_url(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 
 = render 'projects/last_push'
-= render 'projects/files', commit: @last_commit, project: @project, ref: @ref, content_url: project_tree_path(@project, @id)
+
+- if repository_file_tree_browser_enabled
+  .gl-flex
+    #js-file-browser
+    .gl-w-full
+      = render 'projects/files', commit: @last_commit, project: @project, ref: @ref, content_url: project_tree_path(@project, @id)
+- else
+  = render 'projects/files', commit: @last_commit, project: @project, ref: @ref, content_url: project_tree_path(@project, @id)
+
 = render 'shared/web_ide_path'
 
 -# https://gitlab.com/gitlab-org/gitlab/-/issues/408388#note_1578533983

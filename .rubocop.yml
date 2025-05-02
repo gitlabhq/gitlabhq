@@ -1329,3 +1329,7 @@ Scalability/RandomCronSchedule:
   Enabled: true
   Include:
     - 'config/initializers/1_settings.rb'
+
+Migration/PreventFeatureFlagsUsage:
+  Enabled: true
+  EnforcedSince: 20250505000000

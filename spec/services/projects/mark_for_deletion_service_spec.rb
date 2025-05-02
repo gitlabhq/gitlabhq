@@ -10,11 +10,10 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
 
   let(:original_project_path) { project.path }
   let(:original_project_name) { project.name }
-  let(:licensed) { false }
   let(:service) { described_class.new(project, user) }
   let(:notification_service) { instance_double(NotificationService) }
 
-  subject(:result) { service.execute(licensed: licensed) }
+  subject(:result) { service.execute }
 
   before do
     allow(NotificationService).to receive(:new).and_return(notification_service)
@@ -76,51 +75,24 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
         result
       end
     end
-
-    context 'when project is already marked for deletion' do
-      let(:marked_for_deletion_at) { 2.days.ago }
-
-      before do
-        project.update!(marked_for_deletion_at: marked_for_deletion_at)
-      end
-
-      it 'does not change original date', :freeze_time, :aggregate_failures do
-        expect(result[:status]).to eq(:success)
-        expect(project.marked_for_deletion_at).to eq(marked_for_deletion_at.to_date)
-      end
-
-      it 'does not send notification email' do
-        expect(NotificationService).not_to receive(:new)
-
-        result
-      end
-    end
   end
 
-  context 'with downtier_delayed_deletion feature flag disabled' do
+  context 'when project is already marked for deletion' do
+    let(:marked_for_deletion_at) { 2.days.ago }
+
     before do
-      stub_feature_flags(downtier_delayed_deletion: false)
+      project.update!(marked_for_deletion_at: marked_for_deletion_at)
     end
 
-    it 'returns an error response and does not send notification' do
-      expect(notification_service).not_to receive(:project_scheduled_for_deletion)
-      expect(result).to eq(status: :error, message: 'Cannot mark project for deletion: feature not supported')
+    it 'does not change original date', :freeze_time, :aggregate_failures do
+      expect(result[:status]).to eq(:success)
+      expect(project.marked_for_deletion_at).to eq(marked_for_deletion_at.to_date)
     end
 
-    context 'when the feature is licensed', unless: Gitlab.ee? do
-      let(:licensed) { true }
+    it 'does not send notification email' do
+      expect(NotificationService).not_to receive(:new)
 
-      it 'is successful' do
-        expect(result[:status]).to eq(:success)
-      end
-
-      it 'sends project deletion notification' do
-        allow(project).to receive(:adjourned_deletion?).and_return(true)
-
-        expect(notification_service).to receive(:project_scheduled_for_deletion).with(project)
-
-        result
-      end
+      result
     end
   end
 end

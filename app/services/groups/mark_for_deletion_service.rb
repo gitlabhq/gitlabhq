@@ -2,10 +2,9 @@
 
 module Groups # rubocop:disable Gitlab/BoundedContexts -- existing top-level module
   class MarkForDeletionService < BaseService
-    def execute(licensed: false)
+    def execute
       return error(_('You are not authorized to perform this action')) unless can?(current_user, :remove_group, group)
       return error(_('Group has been already marked for deletion')) if group.marked_for_deletion_on.present?
-      return error(_('Cannot mark group for deletion: feature not supported')) unless licensed || feature_downtiered?
 
       result = create_deletion_schedule
       if result[:status] == :success
@@ -42,10 +41,6 @@ module Groups # rubocop:disable Gitlab/BoundedContexts -- existing top-level mod
 
     def log_event
       log_info("User #{current_user.id} marked group #{group.full_path} for deletion")
-    end
-
-    def feature_downtiered?
-      Feature.enabled?(:downtier_delayed_deletion, :instance, type: :gitlab_com_derisk)
     end
   end
 end

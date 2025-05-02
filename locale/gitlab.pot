@@ -12082,9 +12082,6 @@ msgstr ""
 msgid "Cannot make the epic confidential if it contains non-confidential issues"
 msgstr ""
 
-msgid "Cannot mark group for deletion: feature not supported"
-msgstr ""
-
 msgid "Cannot mark the %{work_item_type} as duplicate of itself."
 msgstr ""
 
@@ -40184,6 +40181,9 @@ msgstr ""
 msgid "No file selected"
 msgstr ""
 
+msgid "No files found"
+msgstr ""
+
 msgid "No files found."
 msgstr ""
 
@@ -50811,6 +50811,9 @@ msgstr ""
 msgid "Repository|New tag"
 msgstr ""
 
+msgid "Repository|Search (e.g. *.vue) (%{modifierKey}P)"
+msgstr ""
+
 msgid "Repository|This directory"
 msgstr ""
 
@@ -55066,6 +55069,12 @@ msgstr ""
 msgid "SecurityOrchestration|Send bot message"
 msgstr ""
 
+msgid "SecurityOrchestration|Settings from outside of the policy can override variables when the policy runs, except the variables defined in the denylist."
+msgstr ""
+
+msgid "SecurityOrchestration|Settings from outside of the policy cannot override variables when the policy runs, except for the variables defined in the allowlist."
+msgstr ""
+
 msgid "SecurityOrchestration|Several merge request approval policy criteria have been deprecated. Policies using these criteria will not work after GitLab 18.0 (May 10, 2025). You must edit these policies to replace or remove the deprecated criteria."
 msgstr ""
 
@@ -55244,6 +55253,9 @@ msgid "SecurityOrchestration|Validating branch names, which might take a while."
 msgstr ""
 
 msgid "SecurityOrchestration|Variable option"
+msgstr ""
+
+msgid "SecurityOrchestration|Variables override configuration"
 msgstr ""
 
 msgid "SecurityOrchestration|Variables override configuration has invalid structure."

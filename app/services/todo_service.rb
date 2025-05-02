@@ -195,6 +195,9 @@ class TodoService
   #
   def new_review(merge_request, current_user)
     resolve_todos_for_target(merge_request, current_user)
+
+    # Create a new todo for assignees and author
+    create_review_submitted_todo(merge_request, current_user)
   end
 
   # When user marks a target as todo
@@ -306,6 +309,14 @@ class TodoService
     end
 
     create_todos(approvers, attributes, namespace, project)
+  end
+
+  def create_review_submitted_todo(target, review_author)
+    users = (target.assignees | [target.author]).reject { |u| u.id == review_author.id }
+    project = target.project
+    attributes = attributes_for_todo(project, target, review_author, Todo::REVIEW_SUBMITTED)
+
+    create_todos(users, attributes, project.namespace, project)
   end
 
   private

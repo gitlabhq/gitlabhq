@@ -2,10 +2,8 @@
 
 module Projects
   class MarkForDeletionService < BaseService
-    def execute(licensed: false)
+    def execute
       return success if project.marked_for_deletion_at?
-
-      return error('Cannot mark project for deletion: feature not supported') unless licensed || feature_downtiered?
 
       result = ::Projects::UpdateService.new(
         project,
@@ -46,10 +44,6 @@ module Projects
         marked_for_deletion_at: Time.current.utc,
         deleting_user: current_user
       }
-    end
-
-    def feature_downtiered?
-      Feature.enabled?(:downtier_delayed_deletion, :instance, type: :gitlab_com_derisk)
     end
   end
 end

@@ -21,7 +21,7 @@ class Todo < ApplicationRecord
   MERGE_TRAIN_REMOVED = 8 # This is an EE-only feature
   REVIEW_REQUESTED    = 9
   MEMBER_ACCESS_REQUESTED = 10
-  REVIEW_SUBMITTED = 11 # This is an EE-only feature
+  REVIEW_SUBMITTED = 11
   OKR_CHECKIN_REQUESTED = 12 # This is an EE-only feature
   ADDED_APPROVER = 13 # This is an EE-only feature,
   SSH_KEY_EXPIRED = 14

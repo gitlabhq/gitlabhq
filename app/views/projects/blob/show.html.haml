@@ -5,13 +5,21 @@
 - content_for :prefetch_asset_tags do
   - webpack_preload_asset_tag('monaco', prefetch: true)
 - add_page_startup_graphql_call('repository/blob_info', { projectPath: @project.full_path, ref: current_ref, refType: @ref_type.to_s.upcase.presence, filePath: @blob.path, shouldFetchRawText: @blob.rendered_as_text? && !@blob.rich_viewer })
+- repository_file_tree_browser_enabled = Feature.enabled?(:repository_file_tree_browser, @project)
+- @force_fluid_layout = repository_file_tree_browser_enabled
 
 .js-signature-container{ data: { 'signatures-path': signatures_path } }
 
 = render 'projects/last_push'
 
-#tree-holder.tree-holder.gl-pt-4
-  = render 'blob', blob: @blob
+- if repository_file_tree_browser_enabled
+  .gl-flex
+    #js-file-browser
+    #tree-holder.tree-holder.gl-pt-4.gl-w-full
+      = render 'blob', blob: @blob
+- else
+  #tree-holder.tree-holder.gl-pt-4
+    = render 'blob', blob: @blob
 
 = render 'shared/web_ide_path'
 

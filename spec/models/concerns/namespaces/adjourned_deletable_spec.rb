@@ -13,17 +13,6 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
       expect(project).to receive(:adjourned_deletion_configured?).and_return(false)
       expect(project.adjourned_deletion?).to be false
     end
-
-    context 'when downtier_delayed_deletion feature flag is disabled' do
-      before do
-        stub_feature_flags(downtier_delayed_deletion: false)
-      end
-
-      it 'returns false', :aggregate_failures do
-        expect(project).not_to receive(:adjourned_deletion_configured?)
-        expect(project.adjourned_deletion?).to be false
-      end
-    end
   end
 
   describe '#adjourned_deletion_configured?' do
@@ -45,14 +34,6 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
           end
 
           it { is_expected.to be true }
-
-          context 'when downtier_delayed_deletion feature flag is disabled' do
-            before do
-              stub_feature_flags(downtier_delayed_deletion: false)
-            end
-
-            it { is_expected.to be false }
-          end
         end
       end
     end
@@ -66,16 +47,6 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
 
       it 'returns true' do
         expect(project.marked_for_deletion?).to be true
-      end
-
-      context 'when downtier_delayed_deletion feature flag is disabled' do
-        before do
-          stub_feature_flags(downtier_delayed_deletion: false)
-        end
-
-        it 'returns false' do
-          expect(project.marked_for_deletion?).to be false
-        end
       end
     end
 
@@ -102,16 +73,6 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
       it 'returns self' do
         expect(project.self_or_ancestor_marked_for_deletion).to eq(project)
       end
-
-      context 'when downtier_delayed_deletion feature flag is disabled' do
-        before do
-          stub_feature_flags(downtier_delayed_deletion: false)
-        end
-
-        it 'returns nil' do
-          expect(project.self_or_ancestor_marked_for_deletion).to be_nil
-        end
-      end
     end
 
     context 'when the project is not marked for deletion' do
@@ -121,16 +82,6 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
 
         it 'returns the first ancestor marked for deletion' do
           expect(project.self_or_ancestor_marked_for_deletion).to eq(group)
-        end
-
-        context 'when downtier_delayed_deletion feature flag is disabled' do
-          before do
-            stub_feature_flags(downtier_delayed_deletion: false)
-          end
-
-          it 'returns nil' do
-            expect(project.self_or_ancestor_marked_for_deletion).to be_nil
-          end
         end
       end
 

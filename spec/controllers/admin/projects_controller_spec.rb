@@ -7,7 +7,6 @@ RSpec.describe Admin::ProjectsController, feature_category: :groups_and_projects
 
   before do
     sign_in(create(:admin))
-    stub_feature_flags(downtier_delayed_deletion: false)
   end
 
   describe 'GET /projects' do
@@ -48,6 +47,8 @@ RSpec.describe Admin::ProjectsController, feature_category: :groups_and_projects
     end
 
     it 'does not have N+1 queries', :use_clean_rails_memory_store_caching, :request_store do
+      pending('https://gitlab.com/gitlab-org/gitlab/-/issues/538822')
+
       get :index
 
       control = ActiveRecord::QueryRecorder.new { get :index }

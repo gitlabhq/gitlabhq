@@ -104,26 +104,19 @@ RSpec.shared_examples 'has expected jobs' do |jobs|
   end
 end
 
-RSpec.shared_examples 'has expected image tag' do |tag, jobs|
-  jobs.each do |job|
-    it "uses image tag #{tag} for job #{job}" do
-      build = pipeline.builds.find_by(name: job)
-      image_tag = expand_job_image(build).rpartition(':').last
-      expect(image_tag).to eql(tag)
-    end
+RSpec.shared_examples 'has expected image' do |job, image|
+  it "uses image #{image} for job #{job}" do
+    build = pipeline.builds.find_by(name: job)
+    expect(expand_job_image(build)).to eql(image)
   end
 end
 
 RSpec.shared_examples 'uses SECURE_ANALYZERS_PREFIX' do |jobs|
-  context 'when SECURE_ANALYZERS_PREFIX is set', fips_mode: false do
-    include_context 'with CI variables', { 'SECURE_ANALYZERS_PREFIX' => 'my.custom-registry' }
-
-    jobs.each do |job|
-      it "uses SECURE_ANALYZERS_PREFIX for the image of job #{job}" do
-        build = pipeline.builds.find_by(name: job)
-        image_without_tag = expand_job_image(build).rpartition(':').first
-        expect(image_without_tag).to start_with('my.custom-registry')
-      end
+  jobs.each do |job|
+    it "uses SECURE_ANALYZERS_PREFIX for the image of job #{job}" do
+      build = pipeline.builds.find_by(name: job)
+      image_without_tag = expand_job_image(build).rpartition(':').first
+      expect(image_without_tag).to start_with('my.custom-registry')
     end
   end
 end

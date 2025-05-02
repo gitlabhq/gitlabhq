@@ -1232,6 +1232,31 @@ RSpec.describe TodoService, feature_category: :notifications do
         expect(second_todo.reload).to be_done
         expect(third_todo.reload).to be_done
       end
+
+      it 'creates a pending todo for reviewed merge request author and assignees' do
+        service.new_review(assigned_mr, member)
+
+        should_create_todo(user: john_doe, author: member, target: assigned_mr, action: Todo::REVIEW_SUBMITTED)
+        should_create_todo(user: assigned_mr.author, author: member, target: assigned_mr, action: Todo::REVIEW_SUBMITTED)
+      end
+
+      context 'when merge request author is the review author' do
+        it 'does not create a pending todo for reviewed merge request author' do
+          service.new_review(assigned_mr, assigned_mr.author)
+
+          should_create_todo(user: john_doe, author: assigned_mr.author, target: assigned_mr, action: Todo::REVIEW_SUBMITTED)
+          should_not_create_todo(user: assigned_mr.author, author: assigned_mr.author, target: assigned_mr, action: Todo::REVIEW_SUBMITTED)
+        end
+      end
+
+      context 'when merge request assignee is the review author' do
+        it 'does not create a pending todo for reviewed merge request author' do
+          service.new_review(assigned_mr, john_doe)
+
+          should_not_create_todo(user: john_doe, author: john_doe, target: assigned_mr, action: Todo::REVIEW_SUBMITTED)
+          should_create_todo(user: assigned_mr.author, author: john_doe, target: assigned_mr, action: Todo::REVIEW_SUBMITTED)
+        end
+      end
     end
   end
 

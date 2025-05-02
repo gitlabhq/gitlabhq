@@ -245,9 +245,7 @@ module Ci
     def present_build!(build)
       # We need to use the presenter here because Gitaly calls in the presenter
       # may fail, and we need to ensure the response has been generated.
-      presented_build = @logger.instrument(:present_build_presenter) do
-        ::Ci::BuildRunnerPresenter.new(build) # rubocop:disable CodeReuse/Presenter -- old code
-      end
+      presented_build = ::Ci::BuildRunnerPresenter.new(build) # rubocop:disable CodeReuse/Presenter -- old code
 
       @logger.instrument(:present_build_logs) do
         log_artifacts_context(build)

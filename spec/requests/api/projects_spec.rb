@@ -3277,8 +3277,8 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
 
       context 'when project belongs to a user namespace' do
-        let(:user) { create(:user) }
-        let(:project) { create(:project, namespace: user.namespace) }
+        let_it_be(:user) { create(:user) }
+        let_it_be(:project) { create(:project, namespace: user.namespace) }
 
         it 'returns user web_url and avatar_url' do
           get api(path, user)
@@ -4098,39 +4098,25 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     let_it_be(:group) { create(:group, owners: user) }
     let_it_be_with_reload(:project) { create(:project, group: group) }
 
-    context 'when the feature is available' do
-      it 'restores project' do
-        project.update!(archived: true, marked_for_deletion_at: 1.day.ago, deleting_user: user)
+    it 'restores project' do
+      project.update!(archived: true, marked_for_deletion_at: 1.day.ago, deleting_user: user)
 
-        post api("/projects/#{project.id}/restore", user)
+      post api("/projects/#{project.id}/restore", user)
 
-        expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['archived']).to be_falsey
-        expect(json_response['marked_for_deletion_at']).to be_falsey
-        expect(json_response['marked_for_deletion_on']).to be_falsey
-      end
-
-      it 'returns error if project is already being deleted' do
-        message = 'Error'
-        expect(::Projects::RestoreService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: message })
-
-        post api("/projects/#{project.id}/restore", user)
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response["message"]).to eq(message)
-      end
+      expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['archived']).to be_falsey
+      expect(json_response['marked_for_deletion_at']).to be_falsey
+      expect(json_response['marked_for_deletion_on']).to be_falsey
     end
 
-    context 'when the feature is not available' do
-      before do
-        stub_feature_flags(downtier_delayed_deletion: false)
-      end
+    it 'returns error if project is already being deleted' do
+      message = 'Error'
+      expect(::Projects::RestoreService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: message })
 
-      it 'returns error' do
-        post api("/projects/#{project.id}/restore", user)
+      post api("/projects/#{project.id}/restore", user)
 
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response["message"]).to eq(message)
     end
   end
 
@@ -5594,8 +5580,12 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
-    shared_examples 'marks project for deletion' do
-      it :aggregate_failures do
+    context 'for delayed deletion' do
+      let_it_be(:group) { create(:group) }
+      let_it_be_with_reload(:project) { create(:project, group: group, owners: user) }
+      let(:params) { {} }
+
+      it 'marks the project for deletion' do
         expect(::Projects::MarkForDeletionService).to receive(:new).with(project, user, {}).and_call_original
 
         delete api(path, user), params: params
@@ -5603,71 +5593,59 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(response).to have_gitlab_http_status(:accepted)
         expect(project.reload.marked_for_deletion?).to be_truthy
       end
-    end
 
-    context 'for delayed deletion' do
-      let_it_be(:group) { create(:group) }
-      let_it_be_with_reload(:project) { create(:project, group: group, owners: user) }
-      let(:params) { {} }
+      it 'returns error if project cannot be marked for deletion' do
+        message = 'Error'
+        expect(::Projects::MarkForDeletionService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: message })
 
-      before do
-        stub_licensed_features(adjourned_deletion_for_projects_and_groups: false)
+        delete api("/projects/#{project.id}", user)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response["message"]).to eq(message)
       end
 
-      context 'when the downtier_delayed_deletion feature flag is enabled' do
-        it_behaves_like 'marks project for deletion'
+      context 'when permanently_remove param is true' do
+        before do
+          params.merge!(permanently_remove: true)
+        end
 
-        context 'when permanently_remove param is true' do
+        context 'when project is already marked for deletion' do
           before do
-            params.merge!(permanently_remove: true)
+            project.update!(archived: true, marked_for_deletion_at: 1.day.ago, deleting_user: user)
           end
 
-          context 'when project is already marked for deletion' do
+          context 'with correct project full path' do
             before do
-              project.update!(archived: true, marked_for_deletion_at: 1.day.ago, deleting_user: user)
+              params.merge!(full_path: project.full_path)
             end
 
-            context 'with correct project full path' do
-              before do
-                params.merge!(full_path: project.full_path)
-              end
-
-              it_behaves_like 'deletes project immediately'
-            end
-
-            context 'with incorrect project full path' do
-              let(:error_message) { '`full_path` is incorrect. You must enter the complete path for the project.' }
-
-              before do
-                params.merge!(full_path: "#{project.full_path}-wrong-path")
-              end
-
-              it_behaves_like 'immediately delete project error'
-            end
+            it_behaves_like 'deletes project immediately'
           end
 
-          context 'when project is not marked for deletion' do
-            let(:error_message) { 'Project must be marked for deletion first.' }
+          context 'with incorrect project full path' do
+            let(:error_message) { '`full_path` is incorrect. You must enter the complete path for the project.' }
+
+            before do
+              params.merge!(full_path: "#{project.full_path}-wrong-path")
+            end
 
             it_behaves_like 'immediately delete project error'
           end
         end
+
+        context 'when project is not marked for deletion' do
+          let(:error_message) { 'Project must be marked for deletion first.' }
+
+          it_behaves_like 'immediately delete project error'
+        end
       end
 
-      context 'when the downtier_delayed_deletion feature flag is disabled' do
+      context 'when deletion adjourned period is 0' do
         before do
-          stub_feature_flags(downtier_delayed_deletion: false)
+          stub_application_setting(deletion_adjourned_period: 0)
         end
 
         it_behaves_like 'deletes project immediately'
-
-        context 'when permanently_remove param is true' do
-          before do
-            params.merge!(permanently_remove: true)
-          end
-
-          it_behaves_like 'deletes project immediately'
-        end
       end
     end
   end

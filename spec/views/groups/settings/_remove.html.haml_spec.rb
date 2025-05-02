@@ -6,7 +6,6 @@ RSpec.describe 'groups/settings/_remove.html.haml', feature_category: :groups_an
   let_it_be(:group) { build_stubbed(:group) }
 
   before do
-    stub_feature_flags(downtier_delayed_deletion: false)
     allow(view).to receive(:current_user).and_return(double.as_null_object)
   end
 

@@ -29,6 +29,7 @@ import { HISTORY_BUTTON_CLICK } from '~/tracking/constants';
 import { initFindFileShortcut } from '~/projects/behaviors';
 import initHeaderApp from '~/repository/init_header_app';
 import createRouter from '~/repository/router';
+import initFileTreeBrowser from '~/repository/file_tree_browser';
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -86,6 +87,7 @@ if (viewBlobEl) {
     ...dataset
   } = viewBlobEl.dataset;
   const router = createRouter(projectPath, originalBranch);
+  initFileTreeBrowser(router);
 
   initHeaderApp({ router, isBlobView: true });
 

@@ -7,10 +7,6 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :markdown do
   include RepoHelpers
   include ActionView::Helpers::JavaScriptHelper
 
-  before do
-    stub_feature_flags(downtier_delayed_deletion: false)
-  end
-
   describe 'Copying rendered GFM' do
     before do
       @feat = MarkdownFeature.new

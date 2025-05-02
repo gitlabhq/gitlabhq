@@ -1,0 +1,10 @@
+---
+name: repository_file_tree_browser
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/19530
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189445
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/537970
+milestone: '18.0'
+group: group::source code
+type: wip
+default_enabled: false

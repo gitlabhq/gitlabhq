@@ -783,59 +783,45 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       end
     end
 
-    context 'delayed deletion feature is available' do
+    it_behaves_like 'delayed deletion message'
+
+    context 'group is already marked for deletion' do
       before do
-        allow(group).to receive(:adjourned_deletion?).and_return(true)
-      end
-
-      it_behaves_like 'delayed deletion message'
-
-      context 'group is already marked for deletion' do
-        before do
-          create(:group_deletion_schedule, group: group, marked_for_deletion_on: Date.current)
-          allow(group).to receive(:marked_for_deletion?).and_return(true)
-        end
-
-        it_behaves_like 'permanent deletion message'
-      end
-
-      context 'when group delay deletion is enabled' do
-        before do
-          stub_application_setting(delayed_group_deletion: true)
-        end
-
-        it_behaves_like 'delayed deletion message'
-      end
-
-      context 'when group delay deletion is disabled' do
-        before do
-          stub_application_setting(delayed_group_deletion: false)
-        end
-
-        it_behaves_like 'delayed deletion message'
-      end
-
-      context "group has not been marked for deletion" do
-        let(:group) { build(:group) }
-
-        context "'permanently_remove' argument is set to 'true'" do
-          it "displays permanent deletion message" do
-            allow(group).to receive(:marked_for_deletion?).and_return(false)
-            allow(group).to receive(:adjourned_deletion?).and_return(true)
-
-            expect(subject).to include(delayed_deletion_message)
-            expect(helper.remove_group_message(group, true)).to include(*permanent_deletion_message)
-          end
-        end
-      end
-    end
-
-    context 'delayed deletion feature is not available' do
-      before do
-        stub_feature_flags(downtier_delayed_deletion: false)
+        create(:group_deletion_schedule, group: group, marked_for_deletion_on: Date.current)
+        allow(group).to receive(:marked_for_deletion?).and_return(true)
       end
 
       it_behaves_like 'permanent deletion message'
+    end
+
+    context 'when group delay deletion is enabled' do
+      before do
+        stub_application_setting(delayed_group_deletion: true)
+      end
+
+      it_behaves_like 'delayed deletion message'
+    end
+
+    context 'when group delay deletion is disabled' do
+      before do
+        stub_application_setting(delayed_group_deletion: false)
+      end
+
+      it_behaves_like 'delayed deletion message'
+    end
+
+    context "group has not been marked for deletion" do
+      let(:group) { build(:group) }
+
+      context "'permanently_remove' argument is set to 'true'" do
+        it "displays permanent deletion message" do
+          allow(group).to receive(:marked_for_deletion?).and_return(false)
+          allow(group).to receive(:adjourned_deletion?).and_return(true)
+
+          expect(subject).to include(delayed_deletion_message)
+          expect(helper.remove_group_message(group, true)).to include(*permanent_deletion_message)
+        end
+      end
     end
   end
 

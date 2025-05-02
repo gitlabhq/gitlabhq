@@ -98,7 +98,6 @@ module Ci
                         process_build_duration_s: { count: 1, max: anything, sum: anything },
                         process_build_runner_matched_duration_s: { count: 1, max: anything, sum: anything },
                         process_build_present_build_duration_s: { count: 1, max: anything, sum: anything },
-                        present_build_presenter_duration_s: { count: 1, max: anything, sum: anything },
                         present_build_logs_duration_s: { count: 1, max: anything, sum: anything },
                         present_build_response_json_duration_s: { count: 1, max: anything, sum: anything },
                         process_build_assign_runner_duration_s: { count: 1, max: anything, sum: anything },
