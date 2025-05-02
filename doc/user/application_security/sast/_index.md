@@ -866,7 +866,7 @@ flags are added to the scanner's CLI options.
         <code>--include-propagator-files</code>
       </td>
       <td>
-        WARNING: This flag may cause significant performance degradation. <br> This option enables the scanning of intermediary files that connect source and sink files without containing either sources or sinks themselves. While useful for comprehensive analysis in smaller repositories, enabling this feature for large repositories will substantially impact performance. 
+        WARNING: This flag may cause significant performance degradation. <br> This option enables the scanning of intermediary files that connect source and sink files without containing either sources or sinks themselves. While useful for comprehensive analysis in smaller repositories, enabling this feature for large repositories will substantially impact performance.
       </td>
     </tr>
     <tr>

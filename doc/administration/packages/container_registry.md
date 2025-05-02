@@ -801,7 +801,7 @@ you can pull from the container registry, but you cannot push.
    ```
 
    The output of these commands should match, except for the content in the
-   `_uploads` directories and sub-directories.
+   `_uploads` directories and subdirectories.
 1. Configure your registry to [use the S3 bucket for storage](#use-object-storage).
 1. For the changes to take effect, set the Registry back to `read-write` mode and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 

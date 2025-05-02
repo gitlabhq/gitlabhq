@@ -50,7 +50,7 @@ The `docs-lint markdown` job fails if any of these `lint-doc.sh` tests fail:
 - [Filenames and directories must](../site_architecture/folder_structure.md#work-with-directories-and-files):
   - Use `_index.md` instead of `README.md`
   - Use underscores instead of dashes.
-  - Be lower case.
+  - Be lowercase.
 - Image filenames must [specify the version they were added in](../styleguide/_index.md#image-requirements).
 - Mermaid charts must render without errors.
 

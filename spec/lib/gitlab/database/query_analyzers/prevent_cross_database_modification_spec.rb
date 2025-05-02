@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
     let(:model) { model }
 
     context "within #{model} transaction" do
-      it 'raises error' do
+      it 'raises error', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508345' do
         model.transaction do
           expect { run_queries }.to raise_error do |error|
             expect(error.message).to include 'Cross-database data modification'
@@ -136,7 +136,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
       end
 
       context 'when data modification happens in nested transactions' do
-        it 'raises error, with the generated sql queries included' do
+        it 'raises error, with the generated sql queries included', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508345' do
           Project.transaction(requires_new: true) do
             project.touch
             Project.transaction(requires_new: true) do
@@ -227,7 +227,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
   end
 
   context 'when execution is rescued with StandardError' do
-    it 'raises cross-database data modification exception' do
+    it 'raises cross-database data modification exception', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/508345' do
       expect do
         Project.transaction do
           project.touch

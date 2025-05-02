@@ -16,7 +16,7 @@ NPM module to determine proxy settings from these environment variables:
 
 - `NO_PROXY`
 - `HTTPS_PROXY`
-- `http_proxy` (in lower case)
+- `http_proxy` (in lowercase)
 
 To configure the Language Server to use a proxy:
 

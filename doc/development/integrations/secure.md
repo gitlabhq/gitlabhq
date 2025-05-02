@@ -26,7 +26,7 @@ in the [CI documentation](../../ci/yaml/_index.md#image).
 
 ### Name
 
-For consistency, scanning jobs should be named after the scanner, in lower case.
+For consistency, scanning jobs should be named after the scanner, in lowercase.
 The job name is suffixed after the type of scanning:
 
 - `_dependency_scanning`

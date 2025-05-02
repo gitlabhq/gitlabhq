@@ -250,7 +250,7 @@ On GitLab Self-Managed, by default this feature is not available. To make it ava
 
 {{< /alert >}}
 
-You can enforce 2FA for [Git over SSH operations](../development/gitlab_shell/features.md#git-operations). However, you should use
+You can enforce 2FA for Git over SSH operations. However, you should use
 [ED25519_SK](../user/ssh.md#ed25519_sk-ssh-keys) or [ECDSA_SK](../user/ssh.md#ecdsa_sk-ssh-keys) SSH keys instead. 2FA is enforced for Git operations only, and internal commands from GitLab Shell such as `personal_access_token` are excluded.
 
 To perform one-time password (OTP) verification, run:
@@ -265,7 +265,7 @@ Then authenticate by either:
 - In GitLab 15.3 and later, responding to a device push notification if
   [FortiAuthenticator is enabled](../user/profile/account/two_factor_authentication.md#enable-a-one-time-password-authenticator-using-fortiauthenticator).
 
-After successful authentication, you can perform [Git over SSH operations](../development/gitlab_shell/features.md#git-operations) for 15 minutes (default) with the associated
+After successful authentication, you can perform Git over SSH operations for 15 minutes (default) with the associated
 SSH key.
 
 ### Security limitation

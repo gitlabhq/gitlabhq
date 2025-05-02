@@ -396,7 +396,7 @@ The **NameID** must:
 - Be unique to each user.
 - Be a persistent value that never changes, such as a randomly generated unique user ID.
 - Match exactly on subsequent sign-in attempts, so it should not rely on user input
-  that could change between upper and lower case.
+  that could change between upper and lowercase.
 
 The **NameID** should not be an email address or username because:
 

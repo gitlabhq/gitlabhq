@@ -264,7 +264,7 @@ If a permission does not exist, you can:
 
 - Discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
 - Create an issue to request the permission with the [permission proposal issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Permission%2520Proposal).
-- Contribute to GitLab and [add the permission](../../development/permissions/custom_roles.md).
+- Contribute to GitLab and add the permission.
 
 ## Known issues
 

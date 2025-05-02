@@ -87,9 +87,9 @@ Consult [JSDoc official website](https://jsdoc.app/) for more syntax details.
 
 ### Tips for using JSDoc
 
-#### Use lower-case names for basic types
+#### Use lowercase names for basic types
 
-Both uppercase and lowercase are acceptable, but in most cases use lower case
+Both uppercase and lowercase are acceptable, but in most cases use lowercase
 for a primitive or an object: `boolean`, `number`, `string`, `symbol`, or `object`.
 
 ```javascript

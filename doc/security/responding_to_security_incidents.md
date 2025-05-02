@@ -190,7 +190,7 @@ Before you ask GitLab for help, search the [GitLab documentation](https://docs.g
 
 ### Security best practices
 
-Review the [GitLab Security documentation](_index.md) for what suggestions will work best for your environment and needs. For GitLab Self-Managed, consider reviewing our [diagram of GitLab components](../development/architecture.md#simplified-component-overview) to familiarize yourself with the various parts of a GitLab installation.
+Review the [GitLab Security documentation](_index.md) for suggestions on managing your environment.
 
 #### Hardening Recommendations
 

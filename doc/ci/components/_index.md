@@ -94,7 +94,7 @@ The repository must contain:
 - A top level `templates/` directory that contains all the component configurations.
   You can define components in this directory:
   - In single files ending in `.yml` for each component, like `templates/secret-detection.yml`.
-  - In sub-directories containing `template.yml` files as entry points, for components
+  - In subdirectories containing `template.yml` files as entry points, for components
     that bundle together multiple related files. For example, `templates/secret-detection/template.yml`.
 
 {{< alert type="note" >}}

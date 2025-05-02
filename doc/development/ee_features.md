@@ -428,7 +428,7 @@ User.prepend_mod_with('UserExtension')
 ```
 
 Since the module would require an `EE` namespace, the file should also be
-put in an `ee/` sub-directory. For example, we want to extend the user model
+put in an `ee/` subdirectory. For example, we want to extend the user model
 in EE, so we have a module called `::EE::User` put inside
 `ee/app/models/ee/user.rb`.
 
@@ -530,7 +530,7 @@ There are a few gotchas with it:
     end
   ```
 
-When prepending, place them in the `ee/` specific sub-directory, and
+When prepending, place them in the `ee/` specific subdirectory, and
 wrap class or module in `module EE` to avoid naming conflicts.
 
 For example to override the CE implementation of
@@ -559,7 +559,7 @@ end
 ApplicationController.prepend_mod_with('ApplicationController')
 ```
 
-And create a new file in the `ee/` sub-directory with the altered
+And create a new file in the `ee/` subdirectory with the altered
 implementation:
 
 ```ruby
@@ -730,7 +730,7 @@ avoids conflicts with big chunks of HAML code that are not fun to
 resolve when you add the indentation to the equation.
 
 EE-specific views should be placed in `ee/app/views/`, using extra
-sub-directories if appropriate.
+subdirectories if appropriate.
 
 #### Using `render_if_exists`
 
