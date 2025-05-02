@@ -66,14 +66,17 @@ module Gitlab
         end
 
         def provider_scope_session_data
-          session.dig('omniauth_step_up_auth', provider.to_s, scope.to_s)
+          omniauth_step_up_auth_session_data[provider.to_s][scope.to_s]
         end
 
         def update_session_state(new_state)
-          session['omniauth_step_up_auth'] ||= {}
-          session['omniauth_step_up_auth'][provider.to_s] ||= {}
-          session['omniauth_step_up_auth'][provider.to_s][scope.to_s] ||= {}
-          session['omniauth_step_up_auth'][provider.to_s][scope.to_s]['state'] = new_state.to_s
+          omniauth_step_up_auth_session_data[provider.to_s] ||= {}
+          omniauth_step_up_auth_session_data[provider.to_s][scope.to_s] ||= {}
+          omniauth_step_up_auth_session_data[provider.to_s][scope.to_s]['state'] = new_state.to_s
+        end
+
+        def omniauth_step_up_auth_session_data
+          ::Gitlab::Auth::Oidc::StepUpAuthentication.omniauth_step_up_auth_session_data(session)
         end
 
         def conditions_fulfilled?(oidc_id_token_claims)

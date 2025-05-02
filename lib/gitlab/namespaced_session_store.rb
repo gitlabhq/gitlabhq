@@ -16,7 +16,7 @@ module Gitlab
     def each(&block)
       return unless session
 
-      session.fetch(@namespace_key, {}).each(&block)
+      (session[@namespace_key] || {}).each(&block)
     end
 
     def [](key)

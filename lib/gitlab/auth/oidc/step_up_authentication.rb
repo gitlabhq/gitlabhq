@@ -8,6 +8,8 @@ module Gitlab
       # This module manages the configuration and validation of step-up authentication
       # requirements for OAuth providers, particularly focusing on admin mode access.
       module StepUpAuthentication
+        SESSION_STORE_KEY = 'omniauth_step_up_auth'
+
         STEP_UP_AUTH_SCOPE_ADMIN_MODE = :admin_mode
 
         class << self
@@ -36,17 +38,13 @@ module Gitlab
           # @return [Boolean] true if step-up authentication is authenticated
           def succeeded?(session, scope: STEP_UP_AUTH_SCOPE_ADMIN_MODE)
             step_up_auth_flows =
-              session&.dig('omniauth_step_up_auth')
-                      .to_h
-                      .flat_map do |provider, step_up_auth_object|
-                        step_up_auth_object.map do |step_up_auth_scope, _|
-                          ::Gitlab::Auth::Oidc::StepUpAuthenticationFlow.new(
-                            session: session,
-                            provider: provider,
-                            scope: step_up_auth_scope
-                          )
+              omniauth_step_up_auth_session_data(session)
+                        &.to_h
+                        &.flat_map do |provider, step_up_auth_object|
+                          step_up_auth_object.map do |step_up_auth_scope, _|
+                            build_flow(provider: provider, session: session, scope: step_up_auth_scope)
+                          end
                         end
-                      end
             step_up_auth_flows
               .select do |step_up_auth_flow|
                 step_up_auth_flow.scope.to_s == scope.to_s
@@ -77,6 +75,10 @@ module Gitlab
           def slice_relevant_id_token_claims(oauth_raw_info:, provider:, scope: STEP_UP_AUTH_SCOPE_ADMIN_MODE)
             relevant_id_token_claims = (get_id_token_claims_required_conditions(provider, scope) || {}).keys
             oauth_raw_info.slice(*relevant_id_token_claims)
+          end
+
+          def omniauth_step_up_auth_session_data(session)
+            Gitlab::NamespacedSessionStore.new(SESSION_STORE_KEY, session)
           end
 
           private

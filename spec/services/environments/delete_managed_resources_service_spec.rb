@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Environments::DeleteManagedResourcesService, feature_category: :deployment_management do
   let_it_be(:project) { create(:project) }
-  let_it_be(:environment) { create(:environment, :stopped, project: project) }
+  let(:user) { create(:user, developer_of: project) }
+  let(:environment) { create(:environment, :stopped, project: project) }
   let_it_be(:agent) { create(:cluster_agent, project: project) }
   let_it_be(:build) { create(:ci_build, project: project) }
 
@@ -20,14 +21,33 @@ RSpec.describe Environments::DeleteManagedResourcesService, feature_category: :d
   end
 
   describe '#execute' do
-    subject(:execute) { described_class.new(environment).execute }
+    subject(:execute) { described_class.new(environment, current_user: user).execute }
 
-    it 'sets the status to :deleting and queues the deletion worker' do
+    it 'sets the status to :deleting, queues the deletion worker' do
       expect(Clusters::Agents::ManagedResources::DeleteWorker).to receive(:perform_async)
         .with(managed_resource.id).once.and_call_original
 
       expect(execute.status).to eq(:success)
       expect(managed_resource.reload.status).to eq('deleting')
+    end
+
+    it 'emits an event and increment metrics' do
+      expect { execute }
+        .to trigger_internal_events('delete_environment_for_managed_resource')
+        .with(
+          user: user,
+          project: project,
+          category: 'InternalEventTracking',
+          additional_properties: {
+            label: project.namespace.actual_plan_name,
+            property: environment.tier,
+            value: environment.id
+          })
+        .and increment_usage_metrics(
+          'redis_hll_counters.count_distinct_user_id_from_delete_environment_for_managed_resource_monthly',
+          'redis_hll_counters.count_distinct_user_id_from_delete_environment_for_managed_resource_weekly',
+          'redis_hll_counters.count_distinct_value_from_delete_environment_for_managed_resource_monthly',
+          'redis_hll_counters.count_distinct_value_from_delete_environment_for_managed_resource_weekly')
     end
 
     shared_examples 'resources can not be deleted' do

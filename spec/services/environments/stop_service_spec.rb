@@ -25,7 +25,7 @@ RSpec.describe Environments::StopService, feature_category: :continuous_delivery
       end
 
       it 'calls the managed resource deletion service' do
-        expect_next_instance_of(Environments::DeleteManagedResourcesService, environment) do |service|
+        expect_next_instance_of(Environments::DeleteManagedResourcesService, environment, current_user: user) do |service|
           expect(service).to receive(:execute).and_call_original
         end
 

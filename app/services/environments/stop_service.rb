@@ -78,7 +78,7 @@ module Environments
     end
 
     def delete_managed_resources(environment)
-      Environments::DeleteManagedResourcesService.new(environment).execute
+      Environments::DeleteManagedResourcesService.new(environment, current_user:).execute
     end
   end
 end

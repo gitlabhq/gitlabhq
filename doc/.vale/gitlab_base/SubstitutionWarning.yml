@@ -45,6 +45,8 @@ swap:
   log-in: "sign in"
   logged in user: "authenticated user"
   logged-in user: "authenticated user"
+  lower case: "lowercase"
+  lower-case: "lowercase"
   machine-learning: "machine learning"
   modal dialog: "dialog"
   modal window: "dialog"
@@ -74,6 +76,10 @@ swap:
   since: "because' or 'after"
   source (?:install|installation): self-compiled installation
   source (?:installs|installations): self-compiled installations
+  sub directories: "subdirectories"
+  sub-directories: "subdirectories"
+  sub directory: "subdirectory"
+  sub-directory: "subdirectory"
   sub group: "subgroup"
   sub-group: "subgroup"
   sub-groups: "subgroups"
