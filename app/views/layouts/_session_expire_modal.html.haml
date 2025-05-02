@@ -1,0 +1,3 @@
+- return unless current_user && Gitlab::CurrentSettings.session_expire_from_init && Feature.enabled?(:session_expire_from_init, :instance)
+
+#js-session-expire-modal{ data: session_expire_modal_data }

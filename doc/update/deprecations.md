@@ -3388,7 +3388,7 @@ In milestone 17.0, we will remove the `pipelines` attribute from the API respons
 
 </div>
 
-GitLab follows an [annual upgrade cadence for PostgreSQL](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/data_stores/database/postgresql-upgrade-cadence/).
+GitLab follows an [annual upgrade cadence for PostgreSQL](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-framework/postgresql-upgrade-cadence/).
 
 Support for PostgreSQL 13 is scheduled for removal in GitLab 17.0.
 In GitLab 17.0, PostgreSQL 14 becomes the minimum required PostgreSQL version.

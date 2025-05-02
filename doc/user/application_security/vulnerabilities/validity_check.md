@@ -10,7 +10,7 @@ title: Validity checks
 Status: Experiment
 
 - Tier: Ultimate
-- Offering: GitLab.com, GitLab Dedicated
+- Offering: GitLab.com
 
 {{< /details >}}
 
@@ -28,10 +28,7 @@ This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
-## What is a validity check?
-
 GitLab validity checks determines whether a secret, like an access token, is active.
-
 A secret is active when:
 
 - It is not expired.
@@ -54,10 +51,10 @@ To enable validity checks for a project:
 - Contact your GitLab representative and ask them to enable validity checks.
 
 If validity checks are enabled, when the `secret_detection` CI/CD job is complete,
-GitLab checks the status of supported detected secrets. The statuses are displayed on the
+GitLab checks the status of detected secrets. The statuses are displayed on the
 **Findings** page of the vulnerability report.
 
-## Coverage
+### Coverage
 
 Validity checks supports the following secret types:
 

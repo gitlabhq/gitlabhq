@@ -6,8 +6,8 @@ class BackfillCiJobLiveTraceApplicationSetting < Gitlab::Database::Migration[2.2
   milestone '17.11'
 
   def up
-    ci_enable_live_trace = Feature.enabled?(:ci_enable_live_trace,
-      :instance) && Gitlab.config.artifacts.object_store.enabled
+    ci_enable_live_trace = feature_flag_enabled?('ci_enable_live_trace') &&
+      Gitlab.config.artifacts.object_store.enabled
 
     sql = <<~SQL
       UPDATE application_settings

@@ -159,11 +159,16 @@ export default {
     <template #header>
       <div
         data-testid="pipeline-stage-dropdown-menu-title"
-        class="gl-flex gl-min-h-8 gl-items-center gl-border-b-1 gl-border-b-dropdown !gl-p-4 gl-text-sm gl-font-bold gl-leading-1 gl-border-b-solid"
+        class="gl-border-b gl-flex gl-min-h-8 gl-items-center !gl-p-4 gl-text-sm gl-font-bold gl-leading-1 gl-border-b-solid"
       >
         <span>{{ dropdownHeaderText }}</span>
       </div>
-      <gl-search-box-by-type v-if="searchVisible" v-model="search" class="gl-m-2" borderless />
+      <gl-search-box-by-type
+        v-if="searchVisible"
+        v-model="search"
+        class="pipeline-mini-graph-search"
+        borderless
+      />
     </template>
 
     <div v-if="isLoading" class="gl-flex gl-gap-3 gl-px-4 gl-py-3">

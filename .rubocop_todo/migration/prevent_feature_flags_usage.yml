@@ -1,6 +1,0 @@
----
-Migration/PreventFeatureFlagsUsage:
-  Details: grace period
-  Exclude:
-    - 'db/migrate/20250228183319_migrate_vscode_extension_marketplace_feature_flag_to_data.rb'
-    - 'db/post_migrate/20250404151331_backfill_ci_job_live_trace_application_setting.rb'

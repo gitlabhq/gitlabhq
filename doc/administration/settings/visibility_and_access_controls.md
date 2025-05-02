@@ -2,14 +2,15 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Control project visibility, creation, retention, and deletion on GitLab Self-Managed.
+gitlab_dedicated: yes
+description: Control project visibility, creation, retention, and deletion.
 title: Control access and visibility
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -59,7 +60,7 @@ is turned on, administrators must enter Admin Mode to create new projects.
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -341,6 +342,12 @@ This happens even if you select **Only SSH**, because GitLab Runner and CI/CD jo
 {{< /alert >}}
 
 ## Customize Git clone URL for HTTP(S)
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can customize project Git clone URLs for HTTP(S), which affects the clone
 panel shown to users on a project's page. For example, if:

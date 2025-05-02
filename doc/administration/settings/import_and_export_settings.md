@@ -2,13 +2,14 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: yes
 title: Import and export settings
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -120,6 +121,12 @@ To allow mapping of imported user contributions to administrators:
 1. Select the **Enabled** checkbox.
 
 ## Skip confirmation when reassigning placeholder users
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 {{< history >}}
 

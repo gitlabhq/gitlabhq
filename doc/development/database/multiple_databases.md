@@ -683,7 +683,7 @@ end
 ```
 
 Don't hesitate to reach out to the
-[Pods group](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/data_stores/tenant-scale/)
+[Tenant Scale group](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/tenant-scale/)
 for advice.
 
 ##### Avoid `dependent: :nullify` and `dependent: :destroy` across databases

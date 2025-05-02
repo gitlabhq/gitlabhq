@@ -43,10 +43,9 @@ module Gitlab
           end
 
           def merge_request_ref_exists?
-            strong_memoize(:merge_request_ref_exists) do
-              MergeRequest.merge_request_ref?(origin_ref) &&
-                project.repository.ref_exists?(origin_ref)
-            end
+            return check_merge_request_ref if Feature.enabled?(:pull_ref_directly_from_gitaly, project)
+
+            strong_memoize(:merge_request_ref_exists) { check_merge_request_ref }
           end
 
           def ref
@@ -165,6 +164,10 @@ module Gitlab
 
           def gitlab_org_project?
             project.full_path == 'gitlab-org/gitlab'
+          end
+
+          def check_merge_request_ref
+            MergeRequest.merge_request_ref?(origin_ref) && project.repository.ref_exists?(origin_ref)
           end
         end
       end

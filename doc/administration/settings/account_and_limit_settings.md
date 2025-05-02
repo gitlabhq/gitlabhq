@@ -756,6 +756,12 @@ users from deleting their own accounts:
 
 ## Troubleshooting
 
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
 ### 413 Request Entity Too Large
 
 When attaching a file to a comment or reply in GitLab, the [max attachment size](#max-attachment-size)

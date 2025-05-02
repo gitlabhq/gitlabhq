@@ -2,13 +2,14 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: yes
 title: Email
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -23,7 +24,7 @@ The logo in the header of some emails can be customized, see the [logo customiza
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -44,7 +45,7 @@ To include the author's email address in the email body:
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -63,7 +64,7 @@ To enable multipart email:
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -91,7 +92,7 @@ recognized by GitLab. This can directly conflict with certain [Push rules](../..
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -120,13 +121,6 @@ To disable these notifications:
 
 ### Custom additional text in deactivation emails
 
-{{< details >}}
-
-- Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355964) in GitLab 15.9 [with a flag](../feature_flags.md) named `deactivation_email_additional_text`. Disabled by default.
@@ -148,13 +142,6 @@ To add additional text to deactivation emails:
 1. Select **Save changes**.
 
 ## Group and project access token expiry emails to inherited members
-
-{{< details >}}
-
-- Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
 
 {{< history >}}
 

@@ -699,7 +699,7 @@ gem 'valid_email', '~> 0.1', feature_category: :shared
 
 # JSON
 gem 'jsonb_accessor', '~> 1.4', feature_category: :shared
-gem 'json', '~> 2.10.0', feature_category: :shared
+gem 'json', '~> 2.11.0', feature_category: :shared
 gem 'json_schemer', '~> 2.3.0', feature_category: :shared
 gem 'oj', '~> 3.16.0', '>=3.16.10', feature_category: :shared
 gem 'oj-introspect', '~> 0.8', feature_category: :shared

@@ -1,0 +1,9 @@
+---
+name: pull_ref_directly_from_gitaly
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/348565
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188492
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/536824
+milestone: '18.0'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

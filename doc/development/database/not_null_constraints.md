@@ -160,7 +160,7 @@ end
 
 #### Check if all records are fixed (next release)
 
-Use postgres.ai to [create a thin clone](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/data_stores/database/doc/gitlab-com-database/#use-postgresai-to-work-with-a-thin-clone-of-the-database-includes-direct-psql-access-to-the-thin-clone)
+Use postgres.ai to [create a thin clone](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-framework/doc/gitlab-com-database/#use-postgresai-to-work-with-a-thin-clone-of-the-database-includes-direct-psql-access-to-the-thin-clone)
 of the production database and check if all records on GitLab.com have the attribute set.
 If not go back to [Prevent new invalid records](#prevent-new-invalid-records-current-release) step and figure out where
 in the code the attribute is explicitly set to `nil`. Fix the code path then reschedule the migration to fix the existing

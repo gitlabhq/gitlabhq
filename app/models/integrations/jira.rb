@@ -184,10 +184,6 @@ module Integrations
     # https://gitlab.com/gitlab-org/gitlab/issues/29404
     # These fields are API only, so no field definition is required.
     data_field :jira_issue_transition_automatic
-    data_field :project_key
-    data_field :vulnerabilities_enabled
-    data_field :vulnerabilities_issuetype
-    data_field :customize_jira_issue_enabled
 
     # When these are false GitLab does not create cross reference
     # comments on Jira except when an issue gets transitioned.

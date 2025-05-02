@@ -34011,6 +34011,12 @@ msgstr ""
 msgid "JiraIntegration|Enable viewing Jira issues in GitLab."
 msgstr ""
 
+msgid "JiraIntegration|Jira issue type to use when creating issues from vulnerabilities."
+msgstr ""
+
+msgid "JiraIntegration|Key of the project to use when creating issues from vulnerabilities.This parameter is required if using the integration to create Jira issues from vulnerabilities."
+msgstr ""
+
 msgid "JiraIntegration|Keys of Jira projects. When `issues_enabled` is `true`, this setting specifies which Jira projects to view issues from in GitLab."
 msgstr ""
 
@@ -34036,6 +34042,12 @@ msgid "JiraIntegration|The base URL to the Jira instance API. Web URL value is u
 msgstr ""
 
 msgid "JiraIntegration|The email or username to use with Jira. Use an email for Jira Cloud, and a username for Jira Data Center and Jira Server. Required when using Basic Authentication (`jira_auth_type` is `0`)."
+msgstr ""
+
+msgid "JiraIntegration|Turn on Jira issue creation for GitLab vulnerabilities."
+msgstr ""
+
+msgid "JiraIntegration|When set to `true`, opens a prefilled form on the Jira instancewhen creating a Jira issue from a vulnerability."
 msgstr ""
 
 msgid "JiraRequest|A connection error occurred while connecting to Jira. Try your request again."
@@ -56850,6 +56862,12 @@ msgstr ""
 msgid "Session ID"
 msgstr ""
 
+msgid "SessionExpire|Your session has expired"
+msgstr ""
+
+msgid "SessionExpire|Your session has expired. Please, sign in again."
+msgstr ""
+
 msgid "Session|There was a error loading the user verification challenge. Refresh to try again."
 msgstr ""
 
@@ -71861,6 +71879,9 @@ msgid "if"
 msgstr ""
 
 msgid "image diff"
+msgstr ""
+
+msgid "image_pull_secrets.namespace and shared_namespace must match if shared_namespace is specified"
 msgstr ""
 
 msgid "impersonation token"

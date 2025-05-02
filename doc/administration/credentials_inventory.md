@@ -2,13 +2,14 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Credentials inventory for GitLab Self-Managed
+gitlab_dedicated: yes
+title: Credentials inventory
 ---
 
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -24,7 +25,7 @@ For GitLab.com, see [Credentials inventory for GitLab.com](../user/group/credent
 
 {{< /alert >}}
 
-Use the credentials inventory to monitor and control access to your GitLab Self-Managed instance.
+Use the credentials inventory to monitor and control access to your instance.
 
 As an administrator, you can:
 

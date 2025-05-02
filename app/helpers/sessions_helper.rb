@@ -12,6 +12,11 @@ module SessionsHelper
     Gitlab::Utils::Email.obfuscated_email(email)
   end
 
+  def session_expire_modal_data
+    { session_timeout: Gitlab::Auth::SessionExpireFromInitEnforcer.session_expires_at(session) * 1000,
+      sign_in_url: new_session_url(:user, redirect_to_referer: 'yes') }
+  end
+
   def remember_me_enabled?
     Gitlab::CurrentSettings.allow_user_remember_me?
   end

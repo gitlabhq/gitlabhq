@@ -90,7 +90,7 @@ new features and services must be written to consider Kubernetes compatibility *
 
 The simplest way to ensure this, is to add support for your feature or service to
 [the official GitLab Helm chart](https://docs.gitlab.com/charts/) or reach out to
-[the Distribution team](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/systems/distribution/#how-to-work-with-distribution).
+[the Distribution team](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/distribution/#how-to-work-with-distribution).
 
 Refer to the [process for adding new service components](adding_service_component.md) for more details.
 

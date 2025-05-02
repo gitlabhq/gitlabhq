@@ -1,0 +1,1 @@
+export const INTERVAL_SESSION_MODAL = 10 * 1000;
