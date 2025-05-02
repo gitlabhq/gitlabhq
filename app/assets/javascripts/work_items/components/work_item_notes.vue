@@ -438,6 +438,11 @@ export default {
       const discussionId = this.getDiscussionIdFromSelection();
       const text = await CopyAsGFM.selectionToGfm();
 
+      // Prevent 'r' being written.
+      if (e && typeof e.preventDefault === 'function') {
+        e.preventDefault();
+      }
+
       // Check if selection is coming from an existing discussion
       if (discussionId) {
         gfmEventHub.$emit('quote-reply', {

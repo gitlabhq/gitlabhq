@@ -128,5 +128,3 @@ Bronze-level subscribers:
   - Fields in the [Merge requests API](../api/merge_requests.md) for [merge request approvals](../user/project/merge_requests/approvals/_index.md)
   - Fields in the [Protected branches API](../api/protected_branches.md) that specify users or groups allowed to merge
   - [Merge request approvals API](../api/merge_request_approvals.md)
-- Development information:
-  - [Run Jenkins in a macOS development environment](../development/integrations/jenkins.md)

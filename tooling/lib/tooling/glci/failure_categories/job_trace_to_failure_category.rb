@@ -17,9 +17,9 @@ module Tooling
         PATTERNS_DIR = File.expand_path('patterns', __dir__)
 
         def initialize
-          @patterns           = load_yaml_file('single_line_patterns.yml')
-          @multiline_patterns = load_yaml_file('multiline_patterns.yml')
-          @catchall_patterns  = load_yaml_file('catchall_patterns.yml')
+          @patterns = load_patterns_from_file('single_line_patterns.yml')
+          @multiline_patterns = load_patterns_from_file('multiline_patterns.yml')
+          @catchall_patterns = load_patterns_from_file('catchall_patterns.yml')
         end
 
         def process(job_trace)
@@ -55,8 +55,19 @@ module Tooling
 
         attr_accessor :patterns, :multiline_patterns, :catchall_patterns
 
-        def load_yaml_file(filename)
-          YAML.safe_load_file(File.join(PATTERNS_DIR, filename), symbolize_names: true)
+        def load_patterns_from_file(filename)
+          yaml_data = YAML.safe_load_file(File.join(PATTERNS_DIR, filename), permitted_classes: [Symbol])
+          result = []
+
+          categories = yaml_data.each_value.first
+
+          categories.each do |category_name, category_data|
+            category_data['patterns'].each do |pattern|
+              result << { pattern: pattern, failure_category: category_name.to_s }
+            end
+          end
+
+          result
         end
       end
     end

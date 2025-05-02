@@ -18,8 +18,6 @@ module Ci
       belongs_to :project
       has_many :components, class_name: 'Ci::Catalog::Resources::Component', foreign_key: :catalog_resource_id,
         inverse_of: :catalog_resource
-      has_many :component_usages, class_name: 'Ci::Catalog::Resources::Components::Usage',
-        foreign_key: :catalog_resource_id, inverse_of: :catalog_resource
       has_many :versions, class_name: 'Ci::Catalog::Resources::Version', foreign_key: :catalog_resource_id,
         inverse_of: :catalog_resource
       has_many :sync_events, class_name: 'Ci::Catalog::Resources::SyncEvent', foreign_key: :catalog_resource_id,

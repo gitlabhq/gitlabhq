@@ -582,7 +582,6 @@ project:
 - catalog_resource_sync_events
 - catalog_resource_versions
 - ci_components
-- ci_component_usages
 - ci_component_last_usages
 - external_status_checks
 - base_tags

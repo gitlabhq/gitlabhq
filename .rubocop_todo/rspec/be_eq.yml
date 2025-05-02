@@ -1026,7 +1026,6 @@ RSpec/BeEq:
     - 'spec/models/ci/build_dependencies_spec.rb'
     - 'spec/models/ci/build_metadata_spec.rb'
     - 'spec/models/ci/build_spec.rb'
-    - 'spec/models/ci/catalog/resources/components/usage_spec.rb'
     - 'spec/models/ci/catalog/resources/sync_event_spec.rb'
     - 'spec/models/ci/commit_with_pipeline_spec.rb'
     - 'spec/models/ci/finished_pipeline_ch_sync_event_spec.rb'

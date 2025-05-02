@@ -46,7 +46,7 @@ module Gitlab
         if fragments.any?
           "(" + fragments.join(")\n#{operator_keyword_fragment}\n(") + ")"
         else
-          'NULL'
+          relations.first&.to_sql.presence || 'NULL'
         end
       end
 
@@ -60,6 +60,8 @@ module Gitlab
       attr_reader :relations, :remove_duplicates, :remove_order
 
       def verify_select_values!(relations)
+        return if relations.empty?
+
         all_select_values = relations.map do |relation|
           if relation.respond_to?(:select_values)
             relation.select_values

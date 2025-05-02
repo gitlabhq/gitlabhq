@@ -3,13 +3,15 @@
 module Ci
   module Catalog
     module Resources
-      # This worker can be called multiple times simultaneously but only one can process data at a time.
-      # This is ensured by an exclusive lease guard in `Gitlab::Ci::Components::Usages::Aggregator`.
-      # The scheduling frequency should be == `Gitlab::Ci::Components::Usages::Aggregator::MAX_RUNTIME`
-      # so there is no time gap between job runs.
       class AggregateLast30DayUsageWorker
         include ApplicationWorker
         include CronjobQueue # rubocop: disable Scalability/CronWorkerContext -- Periodic processing is required
+
+        MAX_RUNTIME = 4.minutes # Should be >= job scheduling frequency so there is no gap between job runs
+
+        # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155001#note_1941066672
+        # Includes extra time (1.minute) to execute `&usage_counts_block`
+        WORKER_DEDUP_TTL = MAX_RUNTIME + 1.minute
 
         feature_category :pipeline_composition
 
@@ -18,7 +20,7 @@ module Ci
         idempotent!
 
         deduplicate :until_executed, if_deduplicated: :reschedule_once,
-          ttl: Gitlab::Ci::Components::Usages::Aggregator::WORKER_DEDUP_TTL
+          ttl: WORKER_DEDUP_TTL
 
         def perform
           response = Ci::Catalog::Resources::AggregateLast30DayUsageService.new.execute

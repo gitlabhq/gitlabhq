@@ -36,9 +36,15 @@ RSpec.shared_examples 'SQL set operator' do |operator_keyword|
       expect(set_operator.to_sql).to include("#{operator_keyword} ALL")
     end
 
-    it 'returns `NULL` if all relations are empty' do
+    it 'returns the first empty relation if all relations are empty' do
       empty_relation = User.none
       set_operator = described_class.new([empty_relation, empty_relation])
+
+      expect(set_operator.to_sql).to eq(empty_relation.to_sql)
+    end
+
+    it 'returns `NULL` if there are no relations' do
+      set_operator = described_class.new([])
 
       expect(set_operator.to_sql).to eq('NULL')
     end

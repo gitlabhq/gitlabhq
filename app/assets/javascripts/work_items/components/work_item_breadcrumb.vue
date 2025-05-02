@@ -25,6 +25,13 @@ export default {
       default: false,
     },
   },
+  props: {
+    staticBreadcrumbs: {
+      type: Object,
+      required: false,
+      default: () => ({ items: [] }),
+    },
+  },
   computed: {
     isWorkItemOnly() {
       return this.glFeatures.workItemPlanningView;
@@ -62,7 +69,9 @@ export default {
         indexCrumb.href = this.listPath;
       }
 
-      const crumbs = [indexCrumb];
+      const staticCrumbs = this.staticBreadcrumbs.items;
+
+      const crumbs = [...staticCrumbs, indexCrumb];
 
       if (this.$route.name === ROUTES.new) {
         crumbs.push({

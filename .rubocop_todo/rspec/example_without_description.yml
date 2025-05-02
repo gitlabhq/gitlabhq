@@ -389,7 +389,6 @@ RSpec/ExampleWithoutDescription:
     - 'spec/models/ci/build_spec.rb'
     - 'spec/models/ci/build_trace_chunk_spec.rb'
     - 'spec/models/ci/catalog/resource_spec.rb'
-    - 'spec/models/ci/catalog/resources/components/usage_spec.rb'
     - 'spec/models/ci/catalog/resources/version_spec.rb'
     - 'spec/models/ci/catalog/verified_namespace_spec.rb'
     - 'spec/models/ci/daily_build_group_report_result_spec.rb'

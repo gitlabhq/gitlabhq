@@ -16,6 +16,7 @@ describe('WorkItemBreadcrumb', () => {
     isGroup = true,
     workItemsViewPreference = false,
     workItemsAlpha = false,
+    props = {},
   } = {}) => {
     wrapper = shallowMount(WorkItemBreadcrumb, {
       provide: {
@@ -31,6 +32,7 @@ describe('WorkItemBreadcrumb', () => {
       mocks: {
         $route,
       },
+      propsData: props,
     });
   };
 
@@ -155,6 +157,21 @@ describe('WorkItemBreadcrumb', () => {
     expect(findBreadcrumb().props('items')).toEqual(
       expect.arrayContaining([{ text: 'New', to: 'new' }]),
     );
+  });
+
+  it('combines static and dynamic breadcrumbs', () => {
+    createComponent({
+      $route: { name: 'workItem', params: { iid: '1' }, path: '/1' },
+      props: {
+        staticBreadcrumbs: { items: [{ text: 'Static', href: '/static' }] },
+      },
+    });
+
+    expect(findBreadcrumb().props('items')).toEqual([
+      { text: 'Static', href: '/static' },
+      { text: 'Work items', to: { name: 'workItemList', query: undefined } },
+      { text: '#1', to: '/1' },
+    ]);
   });
 
   it('renders work item iid breadcrumb on work item detail page', () => {

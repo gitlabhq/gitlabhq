@@ -172,3 +172,24 @@ and replace it internally:
     application_setting.update(ci_jwt_signing_key: key)
   end
 ```
+
+### `401: unauthorized` status code
+
+This error indicates that the authentication request failed. When using OpenID Connect (OIDC) authentication from GitLab pipelines to external services, `401 Unauthorized` errors can occur due to several common reasons:
+
+- You used a deprecated token, such as `$CI_JOB_JWT_V2`, instead of [declaring an ID token](../yaml/_index.md#id_tokens). For more information, see [old versions of JSON Web Tokens are deprecated](../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated).
+- You mismatched `provider_name` values between your `.gitlab-ci.yml` file and the OIDC Identity Provider configuration on the external service.
+- You missed or mismatched the `aud` (audience) claim between the ID token issued by GitLab and what the external service expects.
+- You did not enable or configure the `id_tokens:` block in the GitLab CI/CD job.
+
+To resolve the error, decode the token inside your job:
+
+```shell
+echo $OIDC_TOKEN | cut -d '.' -f2 | base64 -d | jq .
+```
+
+Make sure that:
+
+- `aud` (audience) matches the expected audience (for example, the external service’s URL).
+- `sub` (subject) is mapped in the service’s Identity Provider settings.
+- `preferred_username` is not present by default in GitLab ID tokens.

@@ -58,7 +58,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_one(:slack_integration) }
     it { is_expected.to have_one(:catalog_resource) }
     it { is_expected.to have_many(:ci_components).class_name('Ci::Catalog::Resources::Component') }
-    it { is_expected.to have_many(:ci_component_usages).class_name('Ci::Catalog::Resources::Components::Usage') }
     it { is_expected.to have_many(:ci_component_last_usages).class_name('Ci::Catalog::Resources::Components::LastUsage').inverse_of(:component_project) }
     it { is_expected.to have_many(:catalog_resource_versions).class_name('Ci::Catalog::Resources::Version') }
     it { is_expected.to have_many(:catalog_resource_sync_events).class_name('Ci::Catalog::Resources::SyncEvent') }

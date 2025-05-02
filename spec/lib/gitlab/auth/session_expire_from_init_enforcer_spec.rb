@@ -132,7 +132,7 @@ RSpec.describe Gitlab::Auth::SessionExpireFromInitEnforcer, feature_category: :s
         session_expire_from_init: true,
         session_expire_delay: 5
       )
-      allow(instance).to receive(:proxy).and_return(devise_proxy)
+      allow(Devise::Hooks::Proxy).to receive(:new).and_return(devise_proxy)
     end
 
     it 'does not throw' do

@@ -25,35 +25,6 @@ RSpec.describe Ci::Catalog::Resources::AggregateLast30DayUsageService, :clean_gi
   let(:lease_key) { described_class.name }
   let(:service) { described_class.new }
 
-  before_all do
-    # Set up each resource with 1-4 versions, 1-4 components per version, and the expected usages per component
-    expected_ordered_usage_counts.each_with_index do |usage_count, i|
-      resource = resources[i]
-
-      create_list(:ci_catalog_resource_version, i + 1, catalog_resource: resource).each do |version|
-        (1..i + 1).each do |j|
-          component = create(:ci_catalog_resource_component, version: version, name: "component#{j}")
-
-          (1..usage_count).each do |mock_used_by_project_id|
-            # Inside the usage window
-            create(:ci_catalog_resource_component_usage,
-              component: component, used_date: usage_start_date, used_by_project_id: mock_used_by_project_id)
-            # Outside the usage window
-            create(:ci_catalog_resource_component_usage,
-              component: component, used_date: usage_start_date - mock_used_by_project_id.days,
-              used_by_project_id: mock_used_by_project_id)
-
-            # create new usage records in the window
-            create(:catalog_resource_component_last_usage, component: component, last_used_date: usage_start_date,
-              used_by_project_id: mock_used_by_project_id)
-          end
-        end
-      end
-    end
-
-    Ci::Catalog::Resource.update_all(last_30_day_usage_count_updated_at: initial_usage_count_updated_at)
-  end
-
   context 'when storing usage data in catalog_resource_component_last_usages' do
     describe '#execute' do
       it 'updates component usage counts' do

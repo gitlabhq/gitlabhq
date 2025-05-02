@@ -1,114 +1,202 @@
-# catchall_patterns.yml
-# Ruby
-- pattern: "Control frame information"
-  failure_category: "ruby_crash_core_dump"
-- pattern: "ruby: YJIT has panicked"
-  failure_category: "ruby_yjit_panick"
-- pattern: "OpenSSL::SSL::SSLError"
-  failure_category: "ruby_openssl"
-- pattern: "LoadError:"
-  failure_category: "ruby_could_not_load_file"
-- pattern: "cannot load such file"
-  failure_category: "ruby_could_not_load_file"
-- pattern: "undefined local variable or method `"
-  failure_category: "ruby_undefined_method_or_variable"
-- pattern: "undefined method `"
-  failure_category: "ruby_undefined_method_or_variable"
-- pattern: "FrozenError:"
-  failure_category: "ruby_frozen"
-- pattern: "wrong argument type.+expected.+"
-  failure_category: "ruby_wrong_argument_type"
-- pattern: "uninitialized constant "
-  failure_category: "ruby_uninitialized_constant"
-- pattern: "GitlabSettings::MissingSetting"
-  failure_category: "ruby_gitlab_settings_missing_setting"
-- pattern: "syntax error, unexpected"
-  failure_category: "ruby_syntax"
-- pattern: "SyntaxError"
-  failure_category: "ruby_syntax"
-- pattern: "EOFError"
-  failure_category: "ruby_eof"
-- pattern: "TypeError:"
-  failure_category: "ruby_type"
-- pattern: "RuntimeError"
-  failure_category: "ruby_runtime_exception"
-- pattern: "unknown keyword:"
-  failure_category: "ruby_unknown_keyword"
-- pattern: "wrong number of arguments \\(gven"
-  failure_category: "ruby_wrong_number_of_arguments"
-- pattern: "bundler: failed to load command: "
-  failure_category: "ruby_bundler_command_failed"
-- pattern: "Failure/Error:"
-  failure_category: "ruby_generic_failure"
-- pattern: ":in `"
-  failure_category: "ruby_generic_failure"
+# Important: The order of failure categories matter here. It's going to match from top to bottom.
+failure_categories:
+  ruby_crash_core_dump:
+    description: "Ruby interpreter crashes with a core dump, often showing stack traces with 'Control frame information'. These indicate severe runtime errors like memory corruption or bugs in C extensions that cause the Ruby VM to terminate unexpectedly."
+    patterns:
+      - "Control frame information"
 
-# Timeouts
-- pattern: "execution took longer than 1h30m0s seconds"
-  failure_category: "job_timeouts"
-- pattern: "Rspec suite is exceeding the 80 minute limit and is forced to exit with error"
-  failure_category: "rspec_at_80_min"
+  ruby_yjit_panick:
+    description: "Panic errors in Ruby's YJIT (Yet Another Just-In-Time) compiler, which accelerates Ruby code execution. YJIT panics typically indicate internal compiler bugs or memory-related issues in the JIT implementation."
+    patterns:
+      - "ruby: YJIT has panicked"
 
-# Makefile
-- pattern: "make: .+ Error 1"
-  failure_category: "makefile"
+  ruby_openssl:
+    description: "OpenSSL-related errors in Ruby, typically involving SSL certificate validation failures, connection issues, or encryption/decryption problems. Often seen during HTTPS connections to external services."
+    patterns:
+      - "OpenSSL::SSL::SSLError"
 
-# Shell
-- pattern: "unbound variable"
-  failure_category: "shell_unbound_variable"
-- pattern: ": syntax error"
-  failure_category: "shell_syntax"
-- pattern: ": Permission denied"
-  failure_category: "shell_permission"
-- pattern: ": No such file or directory"
-  failure_category: "shell_file_not_found"
-- pattern: ": command not found"
-  failure_category: "shell_command_not_found"
-- pattern: ": not in a function"
-  failure_category: "shell_not_in_function"
-- pattern: "readonly variable"
-  failure_category: "shell_readonly_variable"
-- pattern: "gzip: stdin: unexpected end of file"
-  failure_category: "shell_could_not_gzip"
+  ruby_could_not_load_file:
+    description: "Ruby cannot load required files or libraries, which may be due to missing gems, incorrect load paths, or dependency issues. These errors prevent code from being properly loaded and executed."
+    patterns:
+      - "LoadError:"
+      - "cannot load such file"
 
-# Infrastructure
-- pattern: "ERROR: .+ IO ERROR"
-  failure_category: "io"
-- pattern: "curl.+The requested URL returned error"
-  failure_category: "could_not_curl"
-- pattern: "Connection reset by peer - SSL_connect"
-  failure_category: "ssl_connect_reset_by_peer"
-- pattern: "Server responded with code"
-  failure_category: "http"
-- pattern: "400 Bad Request"
-  failure_category: "http"
-- pattern: "503 Service Unavailable"
-  failure_category: "http"
-- pattern: "Net::HTTPClientException"
-  failure_category: "http"
-- pattern: "Net::HTTPFatalError"
-  failure_category: "http"
-- pattern: "Error: Failed to open TCP connection to "
-  failure_category: "failed_to_open_tcp_connection"
-- pattern: "fatal: Authentication failed for"
-  failure_category: "authentication_failures"
-- pattern: "HTTP Basic: Access denied"
-  failure_category: "authentication_failures"
+  ruby_undefined_method_or_variable:
+    description: "References to undefined local variables or methods in Ruby code, typically caused by typos, missing method definitions, or scope issues. These errors occur when code tries to access variables or call methods that don't exist."
+    patterns:
+      - "undefined local variable or method `"
+      - "undefined method `"
 
-# Job canceled
-- pattern: "ERROR: Job failed: canceled"
-  failure_category: "unknown_failure_canceled"
+  ruby_frozen:
+    description: "Attempts to modify frozen (immutable) objects in Ruby, such as strings, arrays, or hashes that have been marked as read-only. Occurs when code tries to alter objects that have been frozen with the freeze method."
+    patterns:
+      - "FrozenError:"
 
-# E2E
-- pattern: "failed to load command: bin/qa"
-  failure_category: "e2e_specs"
-- pattern: "failed to load command: gitlab-qa"
-  failure_category: "e2e_specs"
-- pattern: "QA::Tools::ReadinessCheck::ReadinessCheckError"
-  failure_category: "e2e_specs"
-- pattern: "Testcase link violations detected"
-  failure_category: "e2e_lint"
+  ruby_wrong_argument_type:
+    description: "Type mismatch errors where methods receive arguments of the wrong type. These occur when a method expects one type of object (like a Module) but receives another (like a Class)."
+    patterns:
+      - "wrong argument type.+expected.+"
 
-# Other
-- pattern: "An unexpected error occurred"
-  failure_category: "unexpected"
+  ruby_uninitialized_constant:
+    description: "References to Ruby constants (classes or modules) that haven't been defined or properly loaded. Often occurs due to missing requires, autoloading issues, or namespace problems."
+    patterns:
+      - "uninitialized constant "
+
+  ruby_gitlab_settings_missing_setting:
+    description: "Missing configuration settings in GitLab's settings framework, occurring when code tries to access configuration options that haven't been defined. Usually requires updating configuration files or adding missing settings."
+    patterns:
+      - "GitlabSettings::MissingSetting"
+
+  ruby_syntax:
+    description: "Ruby syntax errors, including unexpected tokens, missing keywords, or malformed code structures. These prevent code from being parsed and must be fixed before execution."
+    patterns:
+      - "syntax error, unexpected"
+      - "SyntaxError"
+
+  ruby_eof:
+    description: "Unexpected end-of-file errors in Ruby, typically occurring when reading from streams or files that unexpectedly terminate. Often seen in network operations or file parsing."
+    patterns:
+      - "EOFError"
+
+  ruby_type:
+    description: "Ruby type errors where operations are attempted on incompatible types, such as treating a non-module as a module or attempting operations not supported by a particular object type."
+    patterns:
+      - "TypeError:"
+
+  ruby_runtime_exception:
+    description: "Generic runtime exceptions in Ruby code, representing a wide range of operational errors that occur during program execution rather than at parse time."
+    patterns:
+      - "RuntimeError"
+
+  ruby_unknown_keyword:
+    description: "Method calls with unknown keyword arguments, usually due to API changes, typos in keyword names, or version mismatches between libraries."
+    patterns:
+      - "unknown keyword:"
+
+  ruby_wrong_number_of_arguments:
+    description: "Method calls with an incorrect number of arguments, either too few or too many. Usually caused by API changes or misunderstanding of method signatures."
+    patterns:
+      - "wrong number of arguments \\(gven"
+
+  ruby_bundler_command_failed:
+    description: "Failures when Bundler attempts to load and execute Ruby commands, often due to dependency issues, environment problems, or errors in the executed command itself."
+    patterns:
+      - "bundler: failed to load command: "
+
+  ruby_generic_failure:
+    description: "Generic Ruby errors that don't match more specific categories, typically shown in RSpec test failures or stack traces. Used as a fallback for Ruby errors not captured by other patterns."
+    patterns:
+      - "Failure/Error:"
+      - ":in `"
+
+  job_timeouts:
+    description: "CI/CD job execution timeouts, occurring when jobs run longer than their configured time limits (often 90 minutes for GitLab CI). These may indicate infinite loops, performance issues, or jobs that simply need more time."
+    patterns:
+      - "execution took longer than 1h30m0s seconds"
+
+  rspec_at_80_min:
+    description: "RSpec test suite timeouts at the 80-minute mark, a specific limit set for GitLab's test suite to prevent excessively long-running tests. Test suites exceeding this limit are forcibly terminated."
+    patterns:
+      - "Rspec suite is exceeding the 80 minute limit and is forced to exit with error"
+
+  makefile:
+    description: "Failures in Makefile-based build processes, often occurring during compilation of C/C++ code, GitLab components like Gitaly, or when running make-based commands. The Error 1 indicates a non-zero exit status from a command."
+    patterns:
+      - "make: .+ Error 1"
+
+  shell_unbound_variable:
+    description: "References to undefined shell variables in bash scripts, occurring when scripts attempt to use variables that haven't been set or have gone out of scope."
+    patterns:
+      - "unbound variable"
+
+  shell_syntax:
+    description: "Shell script syntax errors, including malformed commands, missing quotes, incorrect control structures, or other bash syntax issues that prevent script execution."
+    patterns:
+      - ": syntax error"
+
+  shell_permission:
+    description: "Permission denied errors in shell commands, typically due to insufficient file access rights, attempting to write to read-only locations, or execute files without execute permissions."
+    patterns:
+      - ": Permission denied"
+
+  shell_file_not_found:
+    description: "Attempts to access files or directories that don't exist in shell commands, often due to incorrect paths, missing files, or failed file generation steps."
+    patterns:
+      - ": No such file or directory"
+
+  shell_command_not_found:
+    description: "References to commands that don't exist or aren't in the system PATH, typically due to missing dependencies, uninstalled tools, or typos in command names."
+    patterns:
+      - ": command not found"
+
+  shell_not_in_function:
+    description: "Shell script errors related to function context, typically when using function-specific commands like 'return' outside of a function definition."
+    patterns:
+      - ": not in a function"
+
+  shell_readonly_variable:
+    description: "Attempts to modify read-only shell variables, which are protected from changes. Often seen with environment variables or constants that shouldn't be altered during execution."
+    patterns:
+      - "readonly variable"
+
+  shell_could_not_gzip:
+    description: "Failures when attempting to compress files with gzip, particularly when the input stream ends unexpectedly. May indicate truncated files or interrupted streams."
+    patterns:
+      - "gzip: stdin: unexpected end of file"
+
+  io:
+    description: "Input/Output errors during file operations, network transfers, or device interactions. These indicate low-level problems with reading from or writing to resources."
+    patterns:
+      - "ERROR: .+ IO ERROR"
+
+  could_not_curl:
+    description: "Failures when using curl to make HTTP requests, typically due to network issues, invalid URLs, or server errors. Often includes HTTP error codes that provide more specific information."
+    patterns:
+      - "curl.+The requested URL returned error"
+
+  ssl_connect_reset_by_peer:
+    description: "SSL connection reset errors during secure communications, often due to network interruptions, server-side SSL configuration issues, or certificate problems."
+    patterns:
+      - "Connection reset by peer - SSL_connect"
+
+  http:
+    description: "HTTP-related errors when making web requests, including client errors (4xx), server errors (5xx), and exceptions in HTTP client libraries. These indicate problems with API interactions or web service communications."
+    patterns:
+      - "Server responded with code"
+      - "400 Bad Request"
+      - "503 Service Unavailable"
+      - "Net::HTTPClientException"
+      - "Net::HTTPFatalError"
+
+  failed_to_open_tcp_connection:
+    description: "Failures to establish TCP network connections, typically due to network issues, firewalls, incorrect hostnames/IPs, or services not running on the expected ports."
+    patterns:
+      - "Error: Failed to open TCP connection to "
+
+  authentication_failures:
+    description: "Authentication failures when accessing protected resources, including Git repositories, Docker registries, or API endpoints. Usually due to invalid credentials, expired tokens, or insufficient permissions."
+    patterns:
+      - "fatal: Authentication failed for"
+      - "HTTP Basic: Access denied"
+
+  unknown_failure_canceled:
+    description: "Job cancellations with unclear causes, possibly due to manual cancellation, GitLab Runner interruptions, or system-level issues. These jobs are terminated before normal completion."
+    patterns:
+      - "ERROR: Job failed: canceled"
+
+  e2e_specs:
+    description: "End-to-end test failures specific to GitLab's QA framework, including failures to load the QA tools, failed readiness checks, or other issues with the end-to-end testing infrastructure."
+    patterns:
+      - "failed to load command: bin/qa"
+      - "failed to load command: gitlab-qa"
+      - "QA::Tools::ReadinessCheck::ReadinessCheckError"
+
+  e2e_lint:
+    description: "Linting issues in end-to-end tests, particularly related to testcase linking conventions that ensure proper documentation and traceability for tests."
+    patterns:
+      - "Testcase link violations detected"
+
+  unexpected:
+    description: "Generic unexpected errors that don't match other categories, serving as a catch-all for miscellaneous issues. These often require manual investigation to determine the root cause."
+    patterns:
+      - "An unexpected error occurred"

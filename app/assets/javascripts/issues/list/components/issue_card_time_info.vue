@@ -71,7 +71,9 @@ export default {
 
 <template>
   <span>
+    <slot name="weight"></slot>
     <issuable-milestone v-if="milestone" :milestone="milestone" />
+    <slot name="iteration"></slot>
     <work-item-attribute
       v-if="dueDateText"
       anchor-id="issuable-due-date"

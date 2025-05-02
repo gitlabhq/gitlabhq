@@ -111,7 +111,6 @@ RSpec/InstanceVariable:
     - 'spec/services/notes/post_process_service_spec.rb'
     - 'spec/services/notes/update_service_spec.rb'
     - 'spec/services/notification_service_spec.rb'
-    - 'spec/services/projects/create_from_template_service_spec.rb'
     - 'spec/services/projects/download_service_spec.rb'
     - 'spec/services/upload_service_spec.rb'
     - 'spec/support/shared_contexts/controllers/ldap_omniauth_callbacks_controller_shared_context.rb'

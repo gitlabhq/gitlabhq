@@ -291,6 +291,7 @@ module ApplicationSettingsHelper
       :default_snippet_visibility,
       :default_syntax_highlighting_theme,
       :delete_inactive_projects,
+      :deletion_adjourned_period,
       :deny_all_requests_except_allowed,
       :disable_admin_oauth_scopes,
       :disable_feed_token,

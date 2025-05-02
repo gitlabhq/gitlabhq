@@ -38389,6 +38389,8 @@ CREATE INDEX tmp_index_for_null_member_namespace_id ON members USING btree (memb
 
 CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Project'::text));
 
+CREATE INDEX tmp_index_null_project_id_on_notes ON notes USING btree (id) WHERE (project_id IS NULL);
+
 CREATE INDEX tmp_index_pats_on_notification_columns_and_expires_at ON personal_access_tokens USING btree (id) WHERE ((expire_notification_delivered IS TRUE) AND (seven_days_notification_sent_at IS NULL) AND (expires_at IS NOT NULL));
 
 CREATE INDEX tmp_index_project_statistics_cont_registry_size ON project_statistics USING btree (project_id) WHERE (container_registry_size = 0);

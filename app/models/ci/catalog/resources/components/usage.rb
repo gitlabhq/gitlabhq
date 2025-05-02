@@ -21,7 +21,6 @@ module Ci
 
           belongs_to :component, class_name: 'Ci::Catalog::Resources::Component', inverse_of: :usages
           belongs_to :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :component_usages
-          belongs_to :project, inverse_of: :ci_component_usages
 
           validates :component, :catalog_resource, :project, :used_by_project_id, presence: true
           validates :used_date, uniqueness: { scope: [:component_id, :used_by_project_id] }

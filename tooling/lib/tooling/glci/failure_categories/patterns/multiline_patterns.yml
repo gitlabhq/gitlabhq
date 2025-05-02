@@ -1,15 +1,45 @@
-# multiline_patterns.yml
-- pattern: "Failed examples:,expected\\(:| # | \\[\\)"
-  failure_category: "rspec_valid_rspec_errors_or_flaky_tests"
+# Important: These patterns match across multiple lines in the job logs.
+#
+# Each pattern uses a comma to separate the different parts that must appear in the log, but not necessarily on the same line.
+failure_categories:
+  rspec_valid_rspec_errors_or_flaky_tests:
+    description: |
+      Legitimate RSpec test failures that indicate actual code issues or flaky tests, as opposed to infrastructure problems.
 
-- pattern: "Failed examples:,Failure/Error:"
-  failure_category: "rspec_valid_rspec_errors_or_flaky_tests"
+      These include expectation failures (expected vs. got), assertion failures, and other test-specific errors. The patterns
+      match logs that contain both the 'Failed examples:' section and either expectation outputs or general failure messages.
 
-- pattern: "Ran all test suites,Command failed with exit code 1"
-  failure_category: "jest"
+      When you see this failure category, it likely means there's an actual issue with the code or tests that needs to be
+      addressed, rather than a CI infrastructure problem.
+    patterns:
+      - "Failed examples:,expected\\(:| # | \\[\\)"
+      - "Failed examples:,Failure/Error:"
 
-- pattern: "Ran all test suites,exited with status 1"
-  failure_category: "jest"
+  jest:
+    description: |
+      JavaScript test failures in Jest framework, which is used for testing GitLab's frontend components.
 
-- pattern: "DANGER_GITLAB_API_TOKEN,Errors:"
-  failure_category: "danger"
+      These failures indicate issues in the JavaScript/Vue code rather than infrastructure problems. The patterns match
+      logs showing Jest test suite completion followed by a non-zero exit code, typically from assertion failures,
+      timeouts, or errors in the test code itself.
+    patterns:
+      - "Ran all test suites,Command failed with exit code 1"
+      - "Ran all test suites,exited with status 1"
+
+  danger:
+    description: |
+      Failures in the Danger code review tool, which automatically checks merge requests for common issues.
+
+      These failures typically indicate that the MR doesn't meet GitLab's contribution guidelines in some way. The pattern
+      matches logs containing both authentication token references and error outputs from Danger's validation checks.
+
+      Common Danger failures include:
+      - Commit message formatting issues
+      - Missing documentation updates
+      - Missing changelog entries
+      - Large merge requests that should be split
+      - Missing test coverage
+
+      Danger failures should be addressed before merging as they help maintain code quality standards.
+    patterns:
+      - "DANGER_GITLAB_API_TOKEN,Errors:"

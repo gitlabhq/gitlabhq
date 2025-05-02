@@ -105,7 +105,9 @@ module Users
       pipeline_schedules_inputs_adoption_banner: 102,
       product_usage_data_collection_changes: 103,
       dora_dashboard_migration_group: 104,
-      dora_dashboard_migration_project: 105
+      dora_dashboard_migration_project: 105,
+      enable_duo_banner_admin_duo_settings_page: 106, # EE-only
+      enable_duo_banner_admin_dashboard: 107 # EE-only
     }
 
     validates :feature_name,
