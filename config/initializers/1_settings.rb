@@ -830,6 +830,9 @@ Gitlab.ee do
   Settings.cron_jobs['ldap_sync_worker'] ||= {}
   Settings.cron_jobs['ldap_sync_worker']['cron'] ||= '30 1 * * *'
   Settings.cron_jobs['ldap_sync_worker']['job_class'] = 'LdapSyncWorker'
+  Settings.cron_jobs['ldap_admin_sync_worker'] ||= {}
+  Settings.cron_jobs['ldap_admin_sync_worker']['cron'] ||= '30 3 * * *'
+  Settings.cron_jobs['ldap_admin_sync_worker']['job_class'] = 'Authz::LdapAdminRoleWorker'
   Settings.cron_jobs['queue_refresh_of_broken_adherence_groups_worker'] ||= {}
   Settings.cron_jobs['queue_refresh_of_broken_adherence_groups_worker']['cron'] ||= '*/20 * * * *'
   Settings.cron_jobs['queue_refresh_of_broken_adherence_groups_worker']['job_class'] = 'ComplianceManagement::QueueRefreshOfBrokenAdherenceGroupsWorker'

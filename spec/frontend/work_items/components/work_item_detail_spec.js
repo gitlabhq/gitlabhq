@@ -355,7 +355,7 @@ describe('WorkItemDetail component', () => {
       findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
       await nextTick();
 
-      expect(findCreatedUpdated().props('updateInProgress')).toBe(true);
+      expect(findWorkItemActions().props('updateInProgress')).toBe(true);
     });
 
     it('emits workItemUpdated when mutation is successful', async () => {

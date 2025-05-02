@@ -95,8 +95,6 @@
   - 2
 - - authorized_projects
   - 2
-- - authz_ldap_admin_role
-  - 1
 - - auto_devops
   - 2
 - - auto_merge

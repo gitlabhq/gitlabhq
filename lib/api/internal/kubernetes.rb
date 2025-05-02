@@ -169,6 +169,12 @@ module API
                 optional :project_id, type: Integer, desc: 'Project ID'
                 optional :agent_version, type: String, desc: 'Agent version'
                 optional :architecture, type: String, desc: 'CPU architecture of the agent'
+                optional :agent_id, type: Integer, desc: 'Agent ID'
+                optional :kubernetes_version, type: String, desc: 'Kubernetes version of the agent'
+                optional :extra_telemetry_data, type: Hash, desc: 'Extra telemetry data of the agent' do
+                  optional :installation_method, type: String, desc: 'Installation method used to install the agent'
+                  optional :helm_chart_version, type: String, desc: 'Helm Chart version used to install the agent'
+                end
               end
             end
           end

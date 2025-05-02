@@ -11,9 +11,7 @@ RSpec.shared_examples 'confidential notes on issuables' do
       sign_in(user)
       visit(issuable_path)
 
-      page.within('.new-note') do
-        expect(page).not_to have_selector('[data-testid="internal-note-checkbox"]')
-      end
+      expect(page).not_to have_unchecked_field('Make this an internal note')
     end
   end
 
@@ -23,11 +21,13 @@ RSpec.shared_examples 'confidential notes on issuables' do
       sign_in(user)
       visit(issuable_path)
 
-      find('[data-testid="internal-note-checkbox"]').click
-      add_note('Confidential note')
+      fill_in 'Add a reply', with: 'Confidential note'
+      check 'Make this an internal note'
+      click_button 'Comment'
 
-      page.within('.note-header') do
-        expect(page).to have_selector('[data-testid="internal-note-indicator"]')
+      within_testid('note-wrapper') do
+        expect(page).to have_css('.gl-badge', text: 'Internal note')
+        expect(page).to have_text('Confidential note')
       end
     end
   end

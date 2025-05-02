@@ -18,3 +18,5 @@
     gl.snowplowPseudonymizedPageUrl = #{masked_page_url(group: namespace, project: @project).to_json};
     gl.maskedDefaultReferrerUrl = #{masked_referrer_url(request.referer).to_json};
     gl.ga4MeasurementId = 'G-ENFH3X7M5Y';
+    gl.duoEvents = #{Gitlab::Tracking::EventEligibilityChecker.internal_duo_events.to_json};
+    gl.onlySendDuoEvents = #{Gitlab::Tracking::EventEligibilityChecker.only_send_duo_events?};

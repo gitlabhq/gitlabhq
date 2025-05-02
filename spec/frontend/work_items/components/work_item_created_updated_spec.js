@@ -144,12 +144,6 @@ describe('WorkItemCreatedUpdated component', () => {
 
       expect(findConfidentialityBadge().exists()).toBe(false);
     });
-
-    it('shows loading icon badge when the work item is confidential', async () => {
-      await createComponent({ updateInProgress: true });
-
-      expect(findLoadingIcon().exists()).toBe(true);
-    });
   });
 
   describe('locked badge', () => {

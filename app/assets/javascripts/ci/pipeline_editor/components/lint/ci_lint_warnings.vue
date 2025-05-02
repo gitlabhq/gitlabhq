@@ -47,7 +47,7 @@ export default {
 <template>
   <gl-alert class="gl-mb-4" :title="title" variant="warning" @dismiss="$emit('dismiss')">
     <details>
-      <summary>
+      <summary data-testid="warning-summary">
         <gl-sprintf :message="summaryMessage">
           <template #total>
             {{ totalWarnings }}

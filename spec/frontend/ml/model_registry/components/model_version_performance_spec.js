@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlIcon, GlButton, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ModelVersionPerformance from '~/ml/model_registry/components/model_version_performance.vue';
 import CandidateDetail from '~/ml/model_registry/components/candidate_detail.vue';
@@ -33,16 +32,10 @@ const createWrapper = (modelVersion = modelVersionWithCandidate, props = {}, pro
       maxAllowedFileSize: 99999,
       ...provide,
     },
-    stubs: {
-      GlButton,
-      GlIcon,
-    },
   });
 };
 
 const findCandidateDetail = () => wrapper.findComponent(CandidateDetail);
-const findCopyMlflowIdButton = () => wrapper.findComponent(GlButton);
-const findCandidateLink = () => wrapper.findComponent(GlLink);
 
 describe('ml/model_registry/components/model_version_detail.vue', () => {
   describe('base behaviour', () => {
@@ -51,28 +44,6 @@ describe('ml/model_registry/components/model_version_detail.vue', () => {
     it('shows the candidate', () => {
       expect(findCandidateDetail().props('candidate')).toMatchObject(
         convertCandidateFromGraphql(modelVersionWithCandidate.candidate),
-      );
-    });
-
-    it('shows the copy mlflow id button', () => {
-      expect(findCopyMlflowIdButton().exists()).toBe(true);
-      expect(findCopyMlflowIdButton().props('icon')).toBe('copy-to-clipboard');
-      expect(findCopyMlflowIdButton().findComponent(GlIcon).props('name')).toBe(
-        'copy-to-clipboard',
-      );
-    });
-
-    it('shows the mlflow label string', () => {
-      expect(wrapper.text()).toContain('MLflow run ID');
-    });
-
-    it('shows the mlflow id', () => {
-      expect(wrapper.text()).toContain(modelVersionWithCandidate.candidate.eid);
-    });
-
-    it('links to candidate', () => {
-      expect(findCandidateLink().attributes('href')).toBe(
-        modelVersionWithCandidate.candidate._links.showPath,
       );
     });
   });

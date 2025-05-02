@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlIntersectionObserver, GlButton, GlLink } from '@gitlab/ui';
+import { GlIntersectionObserver, GlButton, GlLink } from '@gitlab/ui';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
@@ -13,7 +13,6 @@ export default {
   components: {
     LockedBadge,
     GlIntersectionObserver,
-    GlLoadingIcon,
     TodosToggle,
     ConfidentialityBadge,
     WorkItemStateBadge,
@@ -34,11 +33,6 @@ export default {
     workItemNotificationsSubscribed: {
       type: Boolean,
       required: true,
-    },
-    updateInProgress: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     showWorkItemCurrentUserTodos: {
       type: Boolean,
@@ -93,7 +87,6 @@ export default {
             :duplicated-to-work-item-url="workItem.duplicatedToWorkItemUrl"
             :moved-to-work-item-url="workItem.movedToWorkItemUrl"
           />
-          <gl-loading-icon v-if="updateInProgress" />
           <confidentiality-badge
             v-if="workItem.confidential"
             :issuable-type="workItemType"

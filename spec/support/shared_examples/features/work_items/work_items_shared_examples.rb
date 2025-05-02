@@ -459,12 +459,13 @@ RSpec.shared_examples 'work items confidentiality' do
     click_button _('More actions'), match: :first
     click_button 'Turn on confidentiality'
 
+    expect(page).to have_no_css('[data-testid="confidentiality-toggle-action"]', wait: 5)
     expect(page).to have_css('.gl-badge', text: 'Confidential')
 
     click_button _('More actions'), match: :first
     click_button 'Turn off confidentiality'
 
-    expect(page).not_to have_css('.gl-badge', text: 'Confidential')
+    expect(page).not_to have_css('.gl-badge', text: 'Confidential', wait: 5)
   end
 end
 

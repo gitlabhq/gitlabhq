@@ -79,6 +79,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         vscode_extension_marketplace: { 'enabled' => false },
         vscode_extension_marketplace_enabled?: false,
         global_search_block_anonymous_searches_enabled: false,
+        anonymous_searches_allowed: true,
         package_registry_allow_anyone_to_pull_option: true,
         package_registry_cleanup_policies_worker_capacity: 2,
         packages_cleanup_package_file_worker_capacity: 2,

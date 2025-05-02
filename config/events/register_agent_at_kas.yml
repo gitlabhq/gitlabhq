@@ -10,6 +10,14 @@ additional_properties:
     description: GitLab Agent version
   property:
     description: CPU architecture of the agent, e.g. x86_64
+  value:
+    description: GitLab Agent unique id
+  kubernetes_version:
+    description: Kubernetes version the agent is connected to
+  installation_method:
+    description: Installation method used to install the agent
+  helm_chart_version:
+    description: Helm Chart version used to install the agent
 product_group: environments
 milestone: '17.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154883

@@ -12,6 +12,7 @@ import {
   GlToggle,
 } from '@gitlab/ui';
 
+import { nextTick } from 'vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { __, s__ } from '~/locale';
@@ -231,6 +232,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    updateInProgress: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -239,6 +245,7 @@ export default {
       isCreateWorkItemModalVisible: false,
       isMoveWorkItemModalVisible: false,
       workItemTypes: [],
+      updateInProgressPromise: null,
     };
   },
   apollo: {
@@ -386,6 +393,14 @@ export default {
       return shouldDisableShortcuts() ? null : `${modifierKey}/`;
     },
   },
+  watch: {
+    updateInProgress(newValue, oldValue) {
+      if (oldValue && !newValue && this.updateInProgressPromise) {
+        this.updateInProgressPromise.resolve();
+        this.updateInProgressPromise = null;
+      }
+    },
+  },
   methods: {
     copyToClipboard(text, message) {
       if (this.isModal) {
@@ -394,11 +409,21 @@ export default {
       toast(message);
       this.closeDropdown();
     },
-    handleToggleWorkItemConfidentiality() {
+    async handleToggleWorkItemConfidentiality() {
       this.track('click_toggle_work_item_confidentiality');
+      const message = this.confidentialityToggledText;
       this.$emit('toggleWorkItemConfidentiality', !this.isConfidential);
-      toast(this.confidentialityToggledText);
+
+      await nextTick();
+
+      if (this.updateInProgress) {
+        await new Promise((resolve) => {
+          this.updateInProgressPromise = { resolve };
+        });
+      }
+
       this.closeDropdown();
+      toast(message);
     },
     handleDelete() {
       this.$refs.modal.show();
@@ -646,7 +671,9 @@ export default {
         @action="handleToggleWorkItemConfidentiality"
       >
         <template #list-item>
+          <gl-loading-icon v-if="updateInProgress" class="gl-mr-2" inline />
           <gl-icon
+            v-else
             :name="confidentialItemIcon"
             class="gl-mr-2"
             :variant="confidentialItemIconVariant"

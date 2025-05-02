@@ -45,6 +45,7 @@ describe('WorkItemDueDate component', () => {
         startDate,
         workItemType: 'Task',
         workItem: updateWorkItemMutationResponse.data.workItemUpdate.workItem,
+        fullPath: 'gitlab-org/gitlab',
       },
       stubs: {
         WorkItemSidebarWidget,

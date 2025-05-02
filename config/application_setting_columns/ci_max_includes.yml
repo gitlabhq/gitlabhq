@@ -5,7 +5,7 @@ clusterwide: false
 column: ci_max_includes
 db_type: integer
 default: '150'
-description: The [maximum number of includes](../administration/settings/continuous_integration.md#maximum-includes)
+description: The [maximum number of includes](../administration/settings/continuous_integration.md#set-maximum-includes)
   per pipeline. Default is `150`.
 encrypted: false
 gitlab_com_different_than_default: false

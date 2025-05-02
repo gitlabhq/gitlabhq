@@ -903,7 +903,9 @@ export default {
       v-if="showIntersectionObserver"
       :current-user-todos="currentUserTodos"
       :show-work-item-current-user-todos="showWorkItemCurrentUserTodos"
-      :update-in-progress="updateInProgress"
+      :parent-work-item-confidentiality="parentWorkItemConfidentiality"
+      :full-path="workItemFullPath"
+      :is-modal="isModal"
       :work-item="workItem"
       :is-sticky-header-showing="isStickyHeaderShowing"
       :work-item-notifications-subscribed="workItemNotificationsSubscribed"
@@ -923,6 +925,7 @@ export default {
         <work-item-actions
           v-if="workItemPresent"
           v-bind="workItemActionProps"
+          :update-in-progress="updateInProgress"
           @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
           @toggleWorkItemConfidentiality="toggleConfidentiality"
           @error="updateError = $event"
@@ -1017,6 +1020,7 @@ export default {
               <work-item-actions
                 v-if="workItemPresent"
                 v-bind="workItemActionProps"
+                :update-in-progress="updateInProgress"
                 @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
                 @toggleWorkItemConfidentiality="toggleConfidentiality"
                 @error="updateError = $event"
@@ -1056,7 +1060,6 @@ export default {
                 v-if="!editMode"
                 :full-path="workItemFullPath"
                 :work-item-iid="iid"
-                :update-in-progress="updateInProgress"
                 class="gl-grow"
               />
               <div v-if="!showSidebar" class="work-item-container-xs-hidden gl-hidden md:gl-block">

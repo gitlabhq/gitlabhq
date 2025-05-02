@@ -1,6 +1,6 @@
 <script>
 import IssuableDescription from '~/vue_shared/issuable/show/components/issuable_description.vue';
-import { s__, __ } from '~/locale';
+import { s__ } from '~/locale';
 
 export default {
   name: 'ModelVersionDetail',
@@ -45,34 +45,28 @@ export default {
     EMPTY_VERSION_CARD_DESCRIPTION: s__(
       'MlModelRegistry|No description available. To add a description, click "Edit model version" above.',
     ),
-    DESCRIPTION_LABEL: __('Description'),
-    MLFLOW_ID_LABEL: s__('MlModelRegistry|MLflow run ID'),
   },
 };
 </script>
 
 <template>
-  <div>
-    <h3 class="gl-mt-5 gl-text-lg">{{ $options.i18n.DESCRIPTION_LABEL }}</h3>
-
-    <div class="issue-details issuable-details">
-      <div
-        v-if="modelVersion.descriptionHtml"
-        class="detail-page-description js-detail-page-description"
-      >
-        <issuable-description
-          data-testid="description"
-          :issuable="issuable"
-          :enable-task-list="enableTaskList"
-          :can-edit="canEditRequirement"
-          :data-update-url="dataUpdateUrl"
-          :task-list-update-path="taskListUpdatePath"
-          class="gl-leading-20"
-        />
-      </div>
-      <div v-else class="gl-text-subtle" data-testid="emptyDescriptionState">
-        {{ $options.i18n.EMPTY_VERSION_CARD_DESCRIPTION }}
-      </div>
+  <div class="issue-details issuable-details gl-mt-5">
+    <div
+      v-if="modelVersion.descriptionHtml"
+      class="detail-page-description js-detail-page-description"
+    >
+      <issuable-description
+        data-testid="description"
+        :issuable="issuable"
+        :enable-task-list="enableTaskList"
+        :can-edit="canEditRequirement"
+        :data-update-url="dataUpdateUrl"
+        :task-list-update-path="taskListUpdatePath"
+        class="gl-leading-20"
+      />
+    </div>
+    <div v-else class="gl-text-subtle" data-testid="emptyDescriptionState">
+      {{ $options.i18n.EMPTY_VERSION_CARD_DESCRIPTION }}
     </div>
   </div>
 </template>

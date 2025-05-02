@@ -217,3 +217,18 @@ export function getBaseAdditionalProperties(additionalProperties) {
     Object.keys(BASE_ADDITIONAL_PROPERTIES).includes(key),
   );
 }
+
+/**
+ * Determines if an event should be tracked based on snowplow enabled, product usage data settings and duo event eligibility.
+ *
+ * @param {string} action - The action/event name to check
+ * @returns {boolean} - Whether the event should be tracked
+ */
+export function isEventEligible(action) {
+  if (!action) return false;
+
+  if (!window.gl?.onlySendDuoEvents) {
+    return true;
+  }
+  return window.gl?.duoEvents?.includes(action);
+}

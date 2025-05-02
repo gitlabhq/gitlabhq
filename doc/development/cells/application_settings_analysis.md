@@ -14,12 +14,12 @@ title: Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 488
+- Number of attributes: 487
 - Number of encrypted attributes: 41 (8.0%)
-- Number of attributes documented: 294 (60.0%)
-- Number of attributes on GitLab.com different from the defaults: 221 (45.0%)
-- Number of attributes with `clusterwide` set: 488 (100.0%)
-- Number of attributes with `clusterwide: true` set: 129 (26.0%)
+- Number of attributes documented: 293 (60.0%)
+- Number of attributes on GitLab.com different from the defaults: 222 (46.0%)
+- Number of attributes with `clusterwide` set: 487 (100.0%)
+- Number of attributes with `clusterwide: true` set: 125 (26.0%)
 
 ## Individual columns
 
@@ -33,7 +33,6 @@ title: Application Settings analysis
 | `akismet_api_key` | `true` | `text` | `string` | `false` | `null` | `true` | `false`| `true` |
 | `akismet_enabled` | `false` | `boolean` | `boolean` | `false` | `false` | `false` | `false`| `true` |
 | `allow_account_deletion` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
-| `allow_bypass_placeholder_confirmation` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `true`| `true` |
 | `allow_deploy_tokens_and_keys_with_external_authn` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `allow_group_owners_to_manage_ldap` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `allow_local_requests_from_system_hooks` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
@@ -150,7 +149,6 @@ title: Application Settings analysis
 | `dsa_key_restriction` | `false` | `integer` | `integer` | `true` | `'-1'::integer` | `false` | `false`| `true` |
 | `duo_chat` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `duo_features_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
-| `duo_nano_features_enabled` | `false` | `boolean` | `` | `false` | `null` | `false` | `true`| `false` |
 | `duo_workflow` | `false` | `jsonb` | `` | `false` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `ecdsa_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
 | `ecdsa_sk_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
@@ -218,7 +216,7 @@ title: Application Settings analysis
 | `group_import_limit` | `false` | `integer` | `` | `true` | `6` | `false` | `false`| `false` |
 | `group_owners_can_manage_default_branch_protection` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `group_runner_token_expiration_interval` | `false` | `integer` | `integer` | `false` | `null` | `false` | `false`| `true` |
-| `group_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
+| `group_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `hashed_storage_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `health_check_access_token` | `false` | `character` | `` | `false` | `null` | `true` | `true`| `false` |
 | `help_page_documentation_base_url` | `false` | `text` | `` | `false` | `null` | `true` | `true`| `false` |
@@ -262,11 +260,8 @@ title: Application Settings analysis
 | `local_markdown_version` | `false` | `integer` | `integer` | `true` | `0` | `true` | `false`| `true` |
 | `lock_duo_features_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `lock_math_rendering_limits_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
-| `lock_maven_package_requests_forwarding` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `lock_memberships_to_ldap` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `lock_memberships_to_saml` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
-| `lock_npm_package_requests_forwarding` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
-| `lock_pypi_package_requests_forwarding` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `lock_spp_repository_pipeline_access` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `login_recaptcha_protection_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `mailgun_events_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
@@ -275,7 +270,6 @@ title: Application Settings analysis
 | `maintenance_mode_message` | `false` | `text` | `string` | `false` | `null` | `false` | `false`| `true` |
 | `make_profile_private` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `math_rendering_limits_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
-| `maven_package_requests_forwarding` | `false` | `boolean` | `boolean` | `true` | `true` | `true` | `true`| `true` |
 | `max_artifacts_content_include_size` | `false` | `integer` | `` | `true` | `5242880` | `false` | `false`| `false` |
 | `max_artifacts_size` | `false` | `integer` | `integer` | `true` | `100` | `true` | `false`| `true` |
 | `max_attachment_size` | `false` | `integer` | `integer` | `true` | `100` | `false` | `false`| `true` |
@@ -313,16 +307,12 @@ title: Application Settings analysis
 | `notes_create_limit` | `false` | `integer` | `` | `true` | `300` | `true` | `true`| `false` |
 | `notes_create_limit_allowlist` | `false` | `text[]` | `` | `true` | `'{}'::text[]` | `true` | `true`| `false` |
 | `notify_on_unknown_sign_in` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
-| `npm_package_requests_forwarding` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `oauth_provider` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `observability_backend_ssl_verification_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `observability_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `outbound_local_requests_whitelist` | `false` | `character` | `array of strings` | `true` | `'{}'::character` | `true` | `true`| `true` |
 | `package_metadata_purl_types` | `false` | `smallint[]` | `array of integers` | `false` | `'{1` | `false` | `false`| `true` |
 | `package_registry` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
-| `package_registry_allow_anyone_to_pull_option` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
-| `package_registry_cleanup_policies_worker_capacity` | `false` | `integer` | `integer` | `true` | `2` | `false` | `false`| `true` |
-| `packages_cleanup_package_file_worker_capacity` | `false` | `smallint` | `` | `true` | `2` | `false` | `false`| `false` |
 | `pages` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `pages_domain_verification_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `password_authentication_enabled_for_git` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
@@ -365,7 +355,6 @@ title: Application Settings analysis
 | `push_event_activities_limit` | `false` | `integer` | `integer` | `true` | `3` | `false` | `false`| `true` |
 | `push_event_hooks_limit` | `false` | `integer` | `integer` | `true` | `3` | `false` | `false`| `true` |
 | `push_rule_id` | `false` | `bigint` | `` | `false` | `null` | `true` | `false`| `false` |
-| `pypi_package_requests_forwarding` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `rate_limiting_response_text` | `false` | `text` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `rate_limits` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `rate_limits_unauthenticated_git_http` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `true`| `false` |

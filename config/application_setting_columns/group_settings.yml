@@ -5,7 +5,7 @@ clusterwide: false
 column: group_settings
 db_type: jsonb
 default: "'{}'::jsonb"
-description: "A jsonb column that stores a hash of related group_settings on the application_settings table"
+description:
 encrypted: false
 gitlab_com_different_than_default: true
 jihu: false

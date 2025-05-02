@@ -773,24 +773,13 @@ If you have a multi-node configuration, you must ensure these secrets are the sa
       gitlab-rake gitlab:doctor:encryption_keys
       ```
 
-   If you're using other versions, check the content of [`encryption_keys.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/doctor/encryption_keys.rb) and
-   then download it:
-
-      ```shell
-      wget -O encryption_keys.rb https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/doctor/encryption_keys.rb?inline=false
-      ```
-
-   Then run the file:
-
-   ```shell
-   gitlab-rails runner 'require_relative Pathname(Dir.pwd).join("encryption_keys.rb"); Gitlab::Doctor::EncryptionKeys.new(Logger.new($stdout)).run!'
-   ```
+   If you're using other versions, we assume you don't have any encrypted data yet so you can follow directly the "Case 1" below.
 
    The output of the command indicates which one of three possible processes you must follow.
 
-   - If all "Encryption keys usage for \<model\>" report `NONE`, select any Sidekiq or GitLab application node as a reference
+   - Case 1: If all "Encryption keys usage for \<model\>" report `NONE`, select any Sidekiq or GitLab application node as a reference
      node from which to copy `/etc/gitlab/gitlab-secrets.json` to all other Sidekiq and GitLab application nodes.
-   - If all reported keys usage are for the same key ID, select the node where the key exists as a reference node from which to copy `/etc/gitlab/gitlab-secrets.json` to all
+   - Case 2: If all reported keys usage are for the same key ID, select the node where the key exists as a reference node from which to copy `/etc/gitlab/gitlab-secrets.json` to all
      other Sidekiq and GitLab application nodes. For example, let's say you get the following output on node 1:
 
       ```shell
@@ -828,7 +817,7 @@ If you have a multi-node configuration, you must ensure these secrets are the sa
       ```
 
       With the above examples, you would pick node 1 as the reference node.
-   1. Not all reported keys usage are for the same key ID. For instance, if node 1 shows `` -`bb32` => 1 `` and node 2 shows
+   - Case 3: Not all reported keys usage are for the same key ID. For instance, if node 1 shows `` -`bb32` => 1 `` and node 2 shows
       `` - `83kf` => 1 ``. In that case, the resolution is more complex as it involves re-encrypting all data with a single encryption key.
       Alternatively, if you're ok losing some data, you can delete records so that all remaining records use the same key ID.
       Contact [support](https://about.gitlab.com/support/) for further assistance.

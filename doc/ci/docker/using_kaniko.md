@@ -21,7 +21,7 @@ method:
 
 - Docker-in-Docker requires [privileged mode](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities)
   to function, which is a significant security concern.
-- Docker-in-Docker generally incurs a performance penalty and can be quite slow.
+- Docker-in-Docker generally incurs a performance penalty and can be slow.
 
 ## Prerequisites
 
@@ -39,6 +39,8 @@ Authentication is required when building and pushing images with kaniko:
 - For the GitLab container registry, authentication happens automatically without any manual configuration.
 - For pulling images through the GitLab dependency proxy, additional configuration is required.
 
+For more information on how authentication works, see [access an image from a private container registry](using_docker_images.md#access-an-image-from-a-private-container-registry).
+
 For more information on authentication with other registries,
 see [pushing to different registries](https://github.com/GoogleContainerTools/kaniko?tab=readme-ov-file#pushing-to-different-registries).
 
@@ -46,14 +48,27 @@ see [pushing to different registries](https://github.com/GoogleContainerTools/ka
 
 When pushing to the GitLab container registry, authentication happens automatically without requiring any manual configuration:
 
-- GitLab CI/CD automatically creates a `config.json` file at `/kaniko/.docker/config.json` before kaniko runs.
-- This file contains authentication credentials needed for the container registry.
-- These credentials are derived from the `CI_REGISTRY`, `CI_REGISTRY_USER`, and `CI_REGISTRY_PASSWORD` predefined CI/CD variables.
-- kaniko automatically detects and uses this file for authentication.
+- GitLab CI/CD generates authentication credentials from the `CI_REGISTRY`, `CI_REGISTRY_USER`, and `CI_REGISTRY_PASSWORD` predefined CI/CD variables.
+- These credentials are stored in the `DOCKER_AUTH_CONFIG` environment variable as a JSON object that contains base64-encoded authentication strings:
+
+  ```json
+  {
+    "auths": {
+      "registry.example.com:5000": {
+        "auth": "bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ="
+      }
+    }
+  }
+  ```
+
+- The contents of the `DOCKER_AUTH_CONFIG` variable is automatically copied from the `$HOME/.docker/config.json` file before kaniko runs.
+- kaniko automatically detects and uses this file for authentication with the registry.
+- If the `DOCKER_AUTH_CONFIG` variable is empty or misconfigured, authentication fails.
+  See [debug authentication issues](#debug-authentication-issues) for troubleshooting steps.
 
 {{< alert type="note" >}}
 
-You typically won't see this configuration file when inspecting the container because it's managed internally by GitLab CI/CD.
+The configuration file is hidden when inspecting the container because GitLab CI/CD manages it internally.
 Manually creating or modifying this file might cause authentication issues.
 
 {{< /alert >}}
@@ -196,6 +211,24 @@ The example can be copied to your own group or instance for testing. More detail
 on what other GitLab CI patterns are demonstrated are available at the project page.
 
 ## Troubleshooting
+
+### Debug authentication issues
+
+To debug authentication issues with kaniko:
+
+- [Enable debug logging](../variables/_index.md#enable-debug-logging) by adding `CI_DEBUG_TRACE: "true"` to your job variables.
+
+  {{< alert type="warning" >}}
+
+  Debug logging exposes sensitive information including authentication tokens in your job logs.
+  Enable it temporarily and only when needed for troubleshooting.
+
+  {{< /alert >}}
+
+  In the debug logs, examine the `DOCKER_AUTH_CONFIG` variable.
+
+- To isolate authentication issues, [configure credentials per job](using_docker_images.md#configure-a-job).
+- If you're using Docker-in-Docker, see [authenticate with registry in Docker-in-Docker](authenticate_registry.md).
 
 ### 403 error: "error checking push permissions"
 

@@ -5,7 +5,7 @@ clusterwide: true
 column: database_reindexing
 db_type: jsonb
 default: "'{}'::jsonb"
-description: Configure database reindexing behaviors and settings.
+description:
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

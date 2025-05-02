@@ -80,7 +80,7 @@ gem 'marginalia', '~> 1.11.1', feature_category: :database
 gem 'declarative_policy', '~> 1.1.0', feature_category: :shared
 
 # For source code paths mapping
-gem 'coverband', '6.1.4', require: false, feature_category: :shared
+gem 'coverband', '6.1.5', require: false, feature_category: :shared
 
 # Authentication libraries
 gem 'devise', '~> 4.9.3', feature_category: :system_access

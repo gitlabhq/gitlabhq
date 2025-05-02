@@ -5708,6 +5708,9 @@ msgstr ""
 msgid "AiImpactAnalytics|Value can't be calculated due to insufficient data."
 msgstr ""
 
+msgid "AiPowered|AI logs"
+msgstr ""
+
 msgid "AiPowered|AI-native features now available in IDEs"
 msgstr ""
 
@@ -5843,6 +5846,9 @@ msgstr ""
 msgid "AiPowered|Local AI Gateway URL"
 msgstr ""
 
+msgid "AiPowered|Local AI gateway URL"
+msgstr ""
+
 msgid "AiPowered|Might result in requests having higher latency."
 msgstr ""
 
@@ -5882,7 +5888,10 @@ msgstr ""
 msgid "AiPowered|Tanuki AI icon"
 msgstr ""
 
-msgid "AiPowered|This settings applies Namespace/Instance-wide, Subgroup and project access controls are coming soon.%{br}By turning this on, you accept the %{linkStart}GitLab AI functionality terms%{linkEnd}."
+msgid "AiPowered|This settings applies to the whole instance. Subgroup and project access controls are coming soon.%{br}By turning this on, you accept the %{termsLinkStart}GitLab AI functionality terms%{termsLinkEnd}. Check the %{requirementsLinkStart}eligibility requirements%{requirementsLinkEnd}."
+msgstr ""
+
+msgid "AiPowered|This settings applies to the whole top-level group. Subgroup and project access controls are coming soon.%{br}By turning this on, you accept the %{termsLinkStart}GitLab AI functionality terms%{termsLinkEnd}. Check the %{requirementsLinkStart}eligibility requirements%{requirementsLinkEnd}."
 msgstr ""
 
 msgid "AiPowered|Turn on IDE features"
@@ -5907,6 +5916,9 @@ msgid "AiPowered|View configuration"
 msgstr ""
 
 msgid "AiPowered|When GitLab Duo is not available, experiment and beta features cannot be turned on."
+msgstr ""
+
+msgid "AiPowered|When turned on, all billable users can access GitLab Duo Chat and Code Suggestions in supported IDEs."
 msgstr ""
 
 msgid "AiPowered|When you save, GitLab Duo will be turned for all groups, subgroups, and projects."
@@ -23036,6 +23048,9 @@ msgid "DuoCodeReview|I've received your Duo Code Review request, and will review
 msgstr ""
 
 msgid "DuoCodeReview|is reviewing your merge request and will let you know when it's finished"
+msgstr ""
+
+msgid "DuoCodeReview|is working on a reply"
 msgstr ""
 
 msgid "DuoEnterpriseDiscover|AI Impact Dashboard measures the ROI of AI"
@@ -49574,6 +49589,15 @@ msgid "RapidDiffs|Original line"
 msgstr ""
 
 msgid "RapidDiffs|Original line number"
+msgstr ""
+
+msgid "RapidDiffs|Show hidden lines"
+msgstr ""
+
+msgid "RapidDiffs|Show lines after"
+msgstr ""
+
+msgid "RapidDiffs|Show lines before"
 msgstr ""
 
 msgid "Rate Limits"

@@ -145,7 +145,7 @@ Example response:
 {{< /details >}}
 
 Get a list of all runners in the GitLab instance (project and shared). Access
-is restricted to users with administrator access.
+is restricted to users with either administrator access or auditor access.
 
 Prerequisites:
 

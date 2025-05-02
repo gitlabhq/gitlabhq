@@ -1,5 +1,5 @@
 - @directions.each do |direction|
-  %button.rd-expand-lines-button{ type: "button", data: { click: 'expandLines', expand_direction: direction } }
+  %button.rd-expand-lines-button{ type: "button", data: { click: 'expandLines', expand_direction: direction }, aria: { label: label(direction) } }
     %span{ data: { visible_when: 'idle' } }
       = helpers.sprite_icon(icon_name(direction))
     %span{ data: { visible_when: 'loading' } }

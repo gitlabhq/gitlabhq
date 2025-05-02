@@ -5,7 +5,7 @@ clusterwide: false
 column: throttle_authenticated_packages_api_requests_per_period
 db_type: integer
 default: '1000'
-description: Maximum requests per period per user. View [Package Registry rate limits](../administration/settings/package_registry_rate_limits.md)
+description: Maximum requests per period per user. View [package registry rate limits](../administration/settings/package_registry_rate_limits.md)
   for more details.
 encrypted: false
 gitlab_com_different_than_default: false

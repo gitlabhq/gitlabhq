@@ -59,7 +59,7 @@ export default {
 </script>
 
 <template>
-  <div class="issue-details issuable-details">
+  <div class="issue-details issuable-details gl-mt-5">
     <div v-if="model.descriptionHtml" class="detail-page-description js-detail-page-description">
       <issuable-description
         :issuable="issuable"

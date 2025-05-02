@@ -730,7 +730,8 @@ class ApplicationSetting < ApplicationRecord
     global_search_merge_requests_enabled: [:boolean, { default: true }],
     global_search_snippet_titles_enabled: [:boolean, { default: true }],
     global_search_users_enabled: [:boolean, { default: true }],
-    global_search_block_anonymous_searches_enabled: [:boolean, { default: false }]
+    global_search_block_anonymous_searches_enabled: [:boolean, { default: false }],
+    anonymous_searches_allowed: [:boolean, { default: true }]
 
   validates :search, json_schema: { filename: 'application_setting_search' }
 

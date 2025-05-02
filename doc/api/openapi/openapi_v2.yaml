@@ -37641,7 +37641,8 @@ paths:
     get:
       summary: List all runners
       description: Get a list of all runners in the GitLab instance (shared and project).
-        Access is restricted to users with administrator access.
+        Access is restricted to users with either administrator access or auditor
+        access.
       produces:
       - application/json
       parameters:

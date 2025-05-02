@@ -25,7 +25,10 @@ This file is where you define the CI/CD jobs that make up your pipeline.
 When you are editing your `.gitlab-ci.yml` file, you can validate it with the
 [CI Lint](lint.md) tool.
 
-If you are editing content on this page, follow the [instructions for documenting keywords](../../development/cicd/cicd_reference_documentation_guide.md).
+<!--
+If you are editing content on this page, follow the instructions for documenting keywords:
+https://docs.gitlab.com/development/cicd/cicd_reference_documentation_guide/
+-->
 
 ## Keywords
 

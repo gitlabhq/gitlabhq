@@ -23,6 +23,10 @@
     "global_search_block_anonymous_searches_enabled": {
       "type": "boolean",
       "description": "Enable blocking of anonymous global search requests"
+    },
+    "anonymous_searches_allowed": {
+      "type": "boolean",
+      "description": "Allow anonymous searches"
     }
   }
 }

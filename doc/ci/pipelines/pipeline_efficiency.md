@@ -88,9 +88,6 @@ You can improve runtimes by running jobs that test different things in parallel,
 the same stage, reducing overall runtime. The downside is that you need more runners
 running simultaneously to support the parallel jobs.
 
-The [testing levels for GitLab](../../development/testing_guide/testing_levels.md)
-provide an example of a complex testing strategy with many components involved.
-
 ### `needs` dependency visualization
 
 Viewing the `needs` dependencies in the [full pipeline graph](_index.md#group-jobs-by-stage-or-needs-configuration)

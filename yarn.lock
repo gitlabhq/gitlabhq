@@ -1374,10 +1374,10 @@
     core-js "^3.29.1"
     mitt "^3.0.1"
 
-"@gitlab/duo-ui@^8.14.0":
-  version "8.14.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-8.14.0.tgz#ae7c471a8cbb91cb5d581592142c29f94ec73438"
-  integrity sha512-nO9MK1UrvBjnaGFyvspQ+EIDJ/QEerbQvxx3c6ZYjwOcxPlAUSOi9qCUkERZWN/RfH937lVwuoZXSNg0YkFDnQ==
+"@gitlab/duo-ui@^8.14.1":
+  version "8.14.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-8.14.1.tgz#f4221bc2e504d5fa4e8ac3ea35706a52b95d180c"
+  integrity sha512-+oeV/thdbwGqKPqk8BUce6BifhWe9UMW57d6xhJ5EuFJde3V/y/urV+HlbELSXSfC601tGQLadw+hMJvpNm8UA==
   dependencies:
     "@floating-ui/dom" "1.6.13"
     echarts "^5.3.2"

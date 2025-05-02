@@ -3,7 +3,7 @@ import { GlButton, GlModal, GlDisclosureDropdownItem, GlTooltipDirective } from 
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import { isMetaClick } from '~/lib/utils/common_utils';
-import { newWorkItemPath } from '~/work_items/utils';
+import { newWorkItemPath, canRouterNav } from '~/work_items/utils';
 import {
   NAME_TO_TEXT_LOWERCASE_MAP,
   sprintfWorkItem,
@@ -232,7 +232,13 @@ export default {
             if (
               this.useVueRouter &&
               workItem?.workItemType?.name !== WORK_ITEM_TYPE_NAME_INCIDENT &&
-              this.$router.getRoutes().some((route) => route.name === 'workItem')
+              this.$router.getRoutes().some((route) => route.name === 'workItem') &&
+              canRouterNav({
+                fullPath: this.fullPath,
+                isGroup: this.isGroup,
+                webUrl: workItem.webUrl,
+                issueAsWorkItem: true,
+              })
             ) {
               this.$router.push({ name: 'workItem', params: { iid: workItem.iid } });
             } else {
