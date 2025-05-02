@@ -34,7 +34,7 @@ When using the GitLab PyPI package registry, package requests that cannot be fou
 For maximum security when working with private packages:
 
 - Turn off package forwarding in your group settings:
-  - Instance administrators can disable forwarding in the [**Continuous Integration** section](../../../administration/settings/continuous_integration.md#package-registry-configuration) of the **Admin** area.
+  - Instance administrators can disable forwarding in the [**Continuous Integration** section](../../../administration/settings/continuous_integration.md#control-package-forwarding) of the **Admin** area.
   - Group owners can disable forwarding in the **Packages and Registries** section of the group settings.
 - Use both [`--index-url` and `--no-index`](#security-implications) flags when installing packages.
 
@@ -193,7 +193,7 @@ By default, when a PyPI package is not found in the GitLab package registry, the
 - Can be configured in the group's *Packages and registries* settings
 - Applies even when using the `--index-url` flag
 
-Administrators can disable this behavior globally in the [Continuous Integration settings](../../../administration/settings/continuous_integration.md#package-registry-configuration). Group Owners can disable this behavior for specific groups in the **Packages and registries** section of the group settings.
+Administrators can disable this behavior globally in the [Continuous Integration settings](../../../administration/settings/continuous_integration.md#control-package-forwarding). Group Owners can disable this behavior for specific groups in the **Packages and registries** section of the group settings.
 
 {{< alert type="note" >}}
 

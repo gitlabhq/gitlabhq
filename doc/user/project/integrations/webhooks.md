@@ -124,7 +124,7 @@ To mask sensitive portions of a webhook URL:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Settings > Webhooks**.
 1. In **URL**, enter the full URL of the webhook.
-1. To define masked portions, select **Mask portions of URL**.
+1. To define masked portions, select **Add URL masking**.
 1. In **Sensitive portion of URL**, enter the part of the URL you want to mask.
 1. In **How it looks in the UI**, enter the value to display instead of the masked portion.
    Variable names must contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (`_`).

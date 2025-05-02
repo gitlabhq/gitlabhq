@@ -7,14 +7,6 @@ import {
 import toast from '~/vue_shared/plugins/global_toast';
 import { sprintf, __ } from '~/locale';
 
-const isAdjournedDeletionEnabled = (project) => {
-  // Check if enabled at the project level or globally
-  return (
-    project.isAdjournedDeletionEnabled ||
-    gon?.licensed_features?.adjournedDeletionForProjectsAndGroups
-  );
-};
-
 export const availableGraphQLProjectActions = ({ userPermissions, markedForDeletionOn }) => {
   const availableActions = [];
 
@@ -42,11 +34,7 @@ export const renderRestoreSuccessToast = (project) => {
 };
 
 export const renderDeleteSuccessToast = (project) => {
-  // Delete immediately if
-  // 1. Adjourned deletion is not enabled
-  // 2. The project is in a personal namespace
-  // 3. The project has already been marked for deletion
-  if (!isAdjournedDeletionEnabled(project) || project.isPersonal || project.markedForDeletionOn) {
+  if (!project.isAdjournedDeletionEnabled || project.markedForDeletionOn) {
     toast(
       sprintf(__("Project '%{project_name}' is being deleted."), {
         project_name: project.nameWithNamespace,
@@ -56,23 +44,8 @@ export const renderDeleteSuccessToast = (project) => {
     return;
   }
 
-  // Adjourned deletion is available for the  project
-  if (project.isAdjournedDeletionEnabled) {
-    toast(
-      sprintf(__("Project '%{project_name}' will be deleted on %{date}."), {
-        project_name: project.nameWithNamespace,
-        date: project.permanentDeletionDate,
-      }),
-    );
-
-    return;
-  }
-
-  // Adjourned deletion is available globally but not at the project level.
-  // This means we are deleting a free project. It will be deleted delayed but can only be
-  // restored by an admin.
   toast(
-    sprintf(__("Deleting project '%{project_name}'. All data will be removed on %{date}."), {
+    sprintf(__("Project '%{project_name}' will be deleted on %{date}."), {
       project_name: project.nameWithNamespace,
       date: project.permanentDeletionDate,
     }),

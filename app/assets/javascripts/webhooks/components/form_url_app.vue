@@ -1,27 +1,20 @@
 <script>
 import { cloneDeep, isEmpty } from 'lodash';
-import {
-  GlFormGroup,
-  GlFormInput,
-  GlFormRadio,
-  GlFormRadioGroup,
-  GlLink,
-  GlAlert,
-} from '@gitlab/ui';
+import { GlAlert, GlButton, GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { scrollToElement } from '~/lib/utils/common_utils';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 
 import FormUrlMaskItem from './form_url_mask_item.vue';
 
 export default {
   components: {
     FormUrlMaskItem,
+    GlAlert,
+    GlButton,
     GlFormGroup,
     GlFormInput,
-    GlFormRadio,
-    GlFormRadioGroup,
-    GlLink,
-    GlAlert,
+    HelpPopover,
   },
   props: {
     initialUrl: {
@@ -37,7 +30,6 @@ export default {
   },
   data() {
     return {
-      maskEnabled: !isEmpty(this.initialUrlVariables),
       url: this.initialUrl,
       items: this.getInitialItems(),
       isValidated: false,
@@ -45,6 +37,16 @@ export default {
     };
   },
   computed: {
+    addItemText() {
+      if (this.hasMaskItems) {
+        return s__('Webhooks|+ Mask another portion of URL');
+      }
+
+      return s__('Webhooks|+ Add URL masking');
+    },
+    hasMaskItems() {
+      return this.items.length > 0;
+    },
     urlState() {
       return !this.isValidated || !isEmpty(this.url);
     },
@@ -79,9 +81,9 @@ export default {
   },
   methods: {
     getInitialItems() {
-      return isEmpty(this.initialUrlVariables) ? [{}] : cloneDeep(this.initialUrlVariables);
+      return isEmpty(this.initialUrlVariables) ? [] : cloneDeep(this.initialUrlVariables);
     },
-    isEditingItem(index, key) {
+    isExistingItem(index, key) {
       if (isEmpty(this.initialUrlVariables)) {
         return false;
       }
@@ -91,22 +93,22 @@ export default {
     },
     keyInvalidFeedback(key) {
       if (this.isValidated && isEmpty(key)) {
-        return this.$options.i18n.inputRequired;
+        return __('This field is required.');
       }
 
       return null;
     },
     valueInvalidFeedback(index, key, value) {
-      if (this.isEditingItem(index, key)) {
+      if (this.isExistingItem(index, key)) {
         return null;
       }
 
       if (this.isValidated && isEmpty(value)) {
-        return this.$options.i18n.inputRequired;
+        return __('This field is required.');
       }
 
       if (!isEmpty(value) && !this.url?.includes(value)) {
-        return this.$options.i18n.valuePartOfUrl;
+        return s__('Webhooks|Must match part of URL');
       }
 
       return null;
@@ -119,7 +121,7 @@ export default {
       }
 
       if (
-        this.maskEnabled &&
+        this.hasMaskItems &&
         this.items.some(
           ({ key, value }, index) =>
             this.keyInvalidFeedback(key) || this.valueInvalidFeedback(index, key, value),
@@ -152,21 +154,7 @@ export default {
       this.items.splice(index, 1);
     },
   },
-  i18n: {
-    addItem: s__('Webhooks|+ Mask another portion of URL'),
-    inputRequired: __('This field is required.'),
-    radioFullUrlText: s__('Webhooks|Show full URL'),
-    radioMaskUrlText: s__('Webhooks|Mask portions of URL'),
-    radioMaskUrlHelp: s__('Webhooks|Do not show sensitive data such as tokens in the UI.'),
-    urlDescription: s__(
-      'Webhooks|The URL must be percent-encoded if it contains one or more special characters.',
-    ),
-    urlLabel: __('URL'),
-    urlPlaceholder: 'http://example.com/trigger-ci.json',
-    urlPreview: s__('Webhooks|URL preview'),
-    valuePartOfUrl: s__('Webhooks|Must match part of URL'),
-    tokenWillBeCleared: s__('Webhooks|The secret token is cleared on save unless it is updated.'),
-  },
+  urlPlaceholder: 'http://example.com/trigger-ci.json',
 };
 </script>
 
@@ -174,10 +162,14 @@ export default {
   <div>
     <gl-form-group
       ref="formUrl"
-      :label="$options.i18n.urlLabel"
+      :label="__('URL')"
       label-for="webhook-url"
-      :description="$options.i18n.urlDescription"
-      :invalid-feedback="$options.i18n.inputRequired"
+      :description="
+        s__(
+          'Webhooks|The URL must be percent-encoded if it contains one or more special characters.',
+        )
+      "
+      :invalid-feedback="s__('Webhooks|A URL is required.')"
       :state="urlState"
     >
       <gl-form-input
@@ -186,8 +178,8 @@ export default {
         name="hook[url]"
         class="gl-form-input-xl"
         :state="urlState"
-        :placeholder="$options.i18n.urlPlaceholder"
-        data-testid="form-url"
+        :placeholder="$options.urlPlaceholder"
+        data-testid="webhook-url"
       />
       <gl-alert
         v-if="urlHasChanged"
@@ -195,47 +187,49 @@ export default {
         :dismissible="false"
         class="gl-form-input-xl gl-my-4"
       >
-        {{ $options.i18n.tokenWillBeCleared }}
+        {{ s__('Webhooks|The secret token is cleared on save unless it is updated.') }}
       </gl-alert>
     </gl-form-group>
-    <div class="gl-mt-5">
-      <gl-form-radio-group v-model="maskEnabled">
-        <gl-form-radio :value="false">{{ $options.i18n.radioFullUrlText }}</gl-form-radio>
-        <gl-form-radio :value="true"
-          >{{ $options.i18n.radioMaskUrlText }}
-          <template #help>
-            {{ $options.i18n.radioMaskUrlHelp }}
-          </template>
-        </gl-form-radio>
-      </gl-form-radio-group>
 
-      <div v-if="maskEnabled" class="gl-ml-6" data-testid="url-mask-section">
-        <form-url-mask-item
-          v-for="({ key, value }, index) in items"
-          :key="index"
-          :index="index"
-          :item-key="key"
-          :item-value="value"
-          :is-editing="isEditingItem(index, key)"
-          :key-invalid-feedback="keyInvalidFeedback(key)"
-          :value-invalid-feedback="valueInvalidFeedback(index, key, value)"
-          @input="onItemInput"
-          @remove="removeItem"
+    <div class="gl-my-5">
+      <form-url-mask-item
+        v-for="({ key, value }, index) in items"
+        :key="index"
+        :index="index"
+        :item-key="key"
+        :item-value="value"
+        :is-existing="isExistingItem(index, key)"
+        :key-invalid-feedback="keyInvalidFeedback(key)"
+        :value-invalid-feedback="valueInvalidFeedback(index, key, value)"
+        @input="onItemInput"
+        @remove="removeItem"
+      />
+
+      <gl-button
+        category="tertiary"
+        variant="link"
+        data-testid="add-item-button"
+        @click="addItem"
+        >{{ addItemText }}</gl-button
+      >
+      <help-popover>
+        {{ s__('Webhooks|Hide sensitive data such as tokens in the UI.') }}
+      </help-popover>
+
+      <gl-form-group
+        v-if="hasMaskItems"
+        :label="s__('Webhooks|URL preview')"
+        label-for="webhook-url-preview"
+        class="gl-mt-5"
+      >
+        <gl-form-input
+          id="webhook-url-preview"
+          :value="maskedUrl"
+          readonly
+          name="hook[url]"
+          data-testid="webhook-url-preview"
         />
-        <div class="gl-mb-5">
-          <gl-link @click="addItem">{{ $options.i18n.addItem }}</gl-link>
-        </div>
-
-        <gl-form-group :label="$options.i18n.urlPreview" label-for="webhook-url-preview">
-          <gl-form-input
-            id="webhook-url-preview"
-            :value="maskedUrl"
-            readonly
-            name="hook[url]"
-            data-testid="form-url-preview"
-          />
-        </gl-form-group>
-      </div>
+      </gl-form-group>
     </div>
   </div>
 </template>

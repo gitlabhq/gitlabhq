@@ -16,6 +16,15 @@ and [GitLab Duo Chat](../../user/gitlab_duo_chat/_index.md#use-gitlab-duo-chat-i
 Report any issues, bugs, or feature requests in the
 [`gitlab-visual-studio-extension` issue tracker](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues).
 
+## Update the extension
+
+To update your extension to the latest version:
+
+1. In Visual Studio, go to **Extensions > Manage Extensions...**.
+1. Select the **Updates** tab.
+1. Search for **GitLab** published by **GitLab (`gitlab.com`)**.
+1. Select **Update** on the extension to update to the latest version.
+
 ## Related topics
 
 - [About the Create:Editor Extensions Group](https://handbook.gitlab.com/handbook/engineering/development/dev/create/editor-extensions/)

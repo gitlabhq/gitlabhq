@@ -681,6 +681,10 @@ Instead of:
 - Data are collected.
 - The data show a performance increase.
 
+## deadline
+
+Do not use **deadline**. Use **due date** instead.
+
 ## default role
 
 Use **default role** when referring to the following predefined roles that have

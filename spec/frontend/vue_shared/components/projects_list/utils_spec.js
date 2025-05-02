@@ -13,15 +13,6 @@ import toast from '~/vue_shared/plugins/global_toast';
 
 jest.mock('~/vue_shared/plugins/global_toast');
 
-const MOCK_PERSONAL_PROJECT = {
-  nameWithNamespace: 'No Delay Project',
-  fullPath: 'path/to/project/1',
-  isAdjournedDeletionEnabled: false,
-  markedForDeletionOn: null,
-  permanentDeletionDate: '2024-03-31',
-  group: null,
-};
-
 const MOCK_PROJECT_DELAY_DELETION_DISABLED = {
   nameWithNamespace: 'No Delay Project',
   fullPath: 'path/to/project/1',
@@ -107,35 +98,6 @@ describe('renderDeleteSuccessToast', () => {
     it('renders toast explaining project is being deleted', () => {
       expect(toast).toHaveBeenCalledWith(
         `Project '${MOCK_PROJECT_DELAY_DELETION_DISABLED.nameWithNamespace}' is being deleted.`,
-      );
-    });
-  });
-
-  describe('when adjourned deletion is available at the global level but not the project level', () => {
-    beforeEach(() => {
-      window.gon = {
-        licensed_features: {
-          adjournedDeletionForProjectsAndGroups: true,
-        },
-      };
-      renderDeleteSuccessToast(MOCK_PROJECT_DELAY_DELETION_DISABLED);
-    });
-
-    it('renders toast explaining project is deleted and when data will be removed', () => {
-      expect(toast).toHaveBeenCalledWith(
-        `Deleting project '${MOCK_PROJECT_DELAY_DELETION_DISABLED.nameWithNamespace}'. All data will be removed on ${MOCK_PROJECT_DELAY_DELETION_DISABLED.permanentDeletionDate}.`,
-      );
-    });
-  });
-
-  describe('when project is a personal project', () => {
-    beforeEach(() => {
-      renderDeleteSuccessToast(MOCK_PERSONAL_PROJECT);
-    });
-
-    it('renders toast explaining project is being deleted', () => {
-      expect(toast).toHaveBeenCalledWith(
-        `Project '${MOCK_PERSONAL_PROJECT.nameWithNamespace}' is being deleted.`,
       );
     });
   });

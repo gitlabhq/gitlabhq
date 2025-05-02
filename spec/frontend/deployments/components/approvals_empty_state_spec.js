@@ -39,7 +39,7 @@ describe('~/deployments/components/approvals_empty_state.vue', () => {
 
       it('renders default banner props', () => {
         expect(findBanner().props()).toMatchObject({
-          title: 'Upgrade to get more our of your deployments',
+          title: 'Upgrade to get more out of your deployments',
           buttonText: 'Learn more',
           buttonLink: '/help/ci/environments/deployment_approvals',
         });

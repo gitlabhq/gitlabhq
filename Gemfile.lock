@@ -514,8 +514,8 @@ GEM
       html-pipeline (~> 2.0)
     declarative (0.0.20)
     declarative_policy (1.1.0)
-    deprecation_toolkit (1.5.1)
-      activesupport (>= 4.2)
+    deprecation_toolkit (2.2.3)
+      activesupport (>= 6.1)
     derailed_benchmarks (2.2.1)
       base64
       benchmark-ips (~> 2)
@@ -2115,7 +2115,7 @@ DEPENDENCIES
   database_cleaner-active_record (~> 2.2.0)
   deckar01-task_list (= 2.3.4)
   declarative_policy (~> 1.1.0)
-  deprecation_toolkit (~> 1.5.1)
+  deprecation_toolkit (~> 2.2.3)
   derailed_benchmarks
   devfile (~> 0.4.3)
   device_detector

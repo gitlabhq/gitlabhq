@@ -58,6 +58,12 @@
   pointer-events: all;
 }
 
+.rd-app-diffs-loading {
+  display: flex;
+  justify-content: center;
+  padding: $gl-spacing-scale-10 0;
+}
+
 .rd-app-sidebar {
   top: var(--rd-app-sticky-top-with-padding) !important;
   width: 320px;

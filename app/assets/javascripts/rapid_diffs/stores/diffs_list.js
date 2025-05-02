@@ -82,11 +82,11 @@ export const useDiffsList = defineStore('diffsList', {
         });
       });
     },
-    reloadDiffs(url) {
+    reloadDiffs(url, initial = false) {
       return this.withDebouncedAbortController(async ({ signal }) => {
         const container = document.querySelector('[data-diffs-list]');
         const overlay = document.querySelector('[data-diffs-overlay]');
-        overlay.dataset.loading = 'true';
+        if (!initial) overlay.dataset.loading = 'true';
         this.loadedFiles = {};
         this.status = statuses.fetching;
         const { body } = await fetch(url, { signal });

@@ -132,7 +132,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    gitlab_rails['db_password'] = '<your_db_password_here>'
    ```
 
-1. Define a password for the database [replication user](https://wiki.postgresql.org/wiki/Streaming_Replication).
+1. Define a password for the database [replication user](https://www.postgresql.org/docs/current/warm-standby.html#STREAMING-REPLICATION).
 
    Use the username defined in `/etc/gitlab/gitlab.rb` under the `postgresql['sql_replication_user']`
    setting. The default value is `gitlab_replicator`. If you changed the username to something else, adapt
@@ -598,7 +598,7 @@ see [the relevant documentation](../../postgresql/replication_and_failover.md).
 
 ### Changing the replication password
 
-To change the password for the [replication user](https://wiki.postgresql.org/wiki/Streaming_Replication)
+To change the password for the [replication user](https://www.postgresql.org/docs/current/warm-standby.html#STREAMING-REPLICATION)
 when using PostgreSQL instances managed by a Linux package installation:
 
 On the GitLab Geo **primary** site:

@@ -102,7 +102,7 @@ For more information, see
 
 Prerequisites:
 
-- Runner registration tokens must be [enabled](../settings/continuous_integration.md#allow-runner-registration-tokens) in the **Admin** area.
+- Runner registration tokens must be [enabled](../settings/continuous_integration.md#control-runner-registration) in the **Admin** area.
 
 ```ruby
 Gitlab::CurrentSettings.current_application_settings.runners_registration_token

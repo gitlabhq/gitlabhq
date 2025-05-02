@@ -535,7 +535,7 @@ export default class MergeRequestTabs {
     if (this.createRapidDiffsApp) {
       if (!this.rapidDiffsApp) {
         this.rapidDiffsApp = this.createRapidDiffsApp();
-        this.rapidDiffsApp.reloadDiffs();
+        this.rapidDiffsApp.reloadDiffs(true);
         this.rapidDiffsApp.init();
       }
     } else {

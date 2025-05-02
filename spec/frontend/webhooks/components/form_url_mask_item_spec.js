@@ -51,9 +51,9 @@ describe('FormUrlMaskItem', () => {
       });
     });
 
-    describe('when isEditing is true', () => {
+    describe('when isExisting is true', () => {
       beforeEach(() => {
-        createComponent({ props: { isEditing: true } });
+        createComponent({ props: { isExisting: true } });
       });
 
       it('renders disabled key and value', () => {

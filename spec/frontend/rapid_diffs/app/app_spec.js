@@ -79,7 +79,14 @@ describe('Rapid Diffs App', () => {
     createApp();
     app.init();
     app.reloadDiffs();
-    expect(useDiffsList().reloadDiffs).toHaveBeenCalledWith('/reload');
+    expect(useDiffsList().reloadDiffs).toHaveBeenCalledWith('/reload', undefined);
+  });
+
+  it('loads initial diff files', () => {
+    createApp();
+    app.init();
+    app.reloadDiffs(true);
+    expect(useDiffsList().reloadDiffs).toHaveBeenCalledWith('/reload', true);
   });
 
   it('reacts to files loading', () => {

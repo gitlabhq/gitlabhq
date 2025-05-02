@@ -13,7 +13,7 @@ title: Purchase additional compute minutes
 {{< /details >}}
 
 [Compute minutes](../../ci/pipelines/compute_minutes.md) is the resource consumed
-when running [CI/CD pipelines](../../ci/_index.md) on GitLab instance runners. You can find
+when running [CI/CD pipelines](../../ci/_index.md) on GitLab.com instance runners. You can find
 pricing for additional compute minutes on the [GitLab Pricing page](https://about.gitlab.com/pricing/#compute-minutes).
 
 Additional compute minutes:
@@ -81,7 +81,7 @@ For example, if you have a monthly quota of 10,000 compute minutes:
 - On April 1, you purchase 5,000 additional compute minutes, so you have 15,000 minutes
   available for April.
 - During April, you use 13,000 minutes, so you used 3,000 of the 5,000 additional compute minutes.
-- On May 1, [the monthly quota resets](../../ci/pipelines/compute_minutes.md#monthly-reset-of-compute-usage)
+- On May 1, [the monthly quota resets](../../ci/pipelines/instance_runner_compute_minutes.md#monthly-reset)
   and the unused compute minutes roll over. So you have 2,000 additional compute minutes remaining
   and a total of 12,000 available for May.
 

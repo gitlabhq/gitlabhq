@@ -136,6 +136,11 @@ describe('Diffs list store', () => {
       expect(findDiffsOverlay().dataset.loading).toBe('true');
     });
 
+    it('does not set loading state when loading initial diffs', () => {
+      store.reloadDiffs('/stream', true);
+      expect(findDiffsOverlay().dataset.loading).toBe(undefined);
+    });
+
     it('clears existing state', async () => {
       store.reloadDiffs('/stream');
       await waitForPromises();

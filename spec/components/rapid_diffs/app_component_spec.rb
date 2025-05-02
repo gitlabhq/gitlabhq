@@ -12,6 +12,7 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
   let(:diffs_stats_endpoint) { '/diffs_stats' }
   let(:diff_files_endpoint) { '/diff_files_metadata' }
   let(:should_sort_metadata_files) { false }
+  let(:lazy) { false }
 
   it "renders diffs slice" do
     render_component
@@ -56,6 +57,7 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     render_component
     container = page.find("[data-file-browser]")
     expect(container).not_to be_nil
+    expect(page).to have_css('[data-testid="rd-file-browser-loading"]')
   end
 
   it "sets sidebar width" do
@@ -108,6 +110,15 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     expect(vc_test_controller.view_context.content_for?(:startup_js)).not_to be_nil
   end
 
+  context 'when lazy loading' do
+    let(:lazy) { true }
+
+    it 'shows loading icon' do
+      render_component
+      expect(page).to have_css('[data-testid="rd-diffs-list-loading"]')
+    end
+  end
+
   context "when there are no diffs" do
     let(:diffs_slice) { [] }
 
@@ -116,14 +127,17 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
       expect(page).to have_text("There are no changes")
     end
 
-    it "does not render empty state when lazy is true" do
-      instance = create_instance(lazy: true)
-      render_inline(instance)
-      expect(page).not_to have_text("There are no changes")
+    context 'when lazy loading' do
+      let(:lazy) { true }
+
+      it "does not render empty state" do
+        render_component
+        expect(page).not_to have_text("There are no changes")
+      end
     end
   end
 
-  def create_instance(lazy: false)
+  def create_instance
     described_class.new(
       diffs_slice:,
       stream_url:,

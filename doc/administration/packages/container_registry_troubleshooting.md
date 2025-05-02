@@ -337,6 +337,63 @@ curl "localhost:5001/debug/health"
 curl "localhost:5001/debug/vars"
 ```
 
+## Enable registry debug logs
+
+You can enable debug logs to help troubleshoot issues with the container registry.
+
+{{< alert type="warning" >}}
+
+Debug logs may contain sensitive information such as authentication details, tokens, or repository information.
+Enable debug logs only when necessary, and disable them when troubleshooting is complete.
+
+{{< /alert >}}
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+1. Edit `/var/opt/gitlab/registry/config.yml`:
+
+   ```yaml
+   level: debug
+   ```
+
+1. Save the file and restart the registry:
+
+   ```shell
+   sudo gitlab-ctl restart registry
+   ```
+
+This configuration is temporary and is discarded when you run `gitlab-ctl reconfigure`.
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   registry:
+     log:
+       level: debug
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab --namespace <namespace>
+   ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ### Enable Registry Prometheus Metrics
 
 If the debug server is enabled, you can also enable Prometheus metrics. This endpoint exposes highly detailed telemetry

@@ -16,7 +16,7 @@ export default {
     bannerTitle: {
       type: String,
       required: false,
-      default: s__('Deployment|Upgrade to get more our of your deployments'),
+      default: s__('Deployment|Upgrade to get more out of your deployments'),
     },
     buttonText: {
       type: String,

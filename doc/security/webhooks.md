@@ -171,7 +171,7 @@ Most GitLab instances have their `public_runner_releases_url` set to
 `https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-runner/releases`,
 which can prevent you from [filtering requests](#filter-requests).
 
-To resolve this issue, [configure GitLab to no longer fetch runner release version data from GitLab.com](../administration/settings/continuous_integration.md#disable-runner-version-management).
+To resolve this issue, [configure GitLab to no longer fetch runner release version data from GitLab.com](../administration/settings/continuous_integration.md#control-runner-version-management).
 
 ### GitLab subscription management is blocked
 

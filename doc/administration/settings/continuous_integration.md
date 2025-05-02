@@ -357,9 +357,9 @@ To configure CI/CD limits:
 1. Under **CI/CD limits**, set values for the limits you want to configure.
 1. Select **Save changes**.
 
-## Package registry configuration
+## Access package registry settings
 
-Configure package forwarding, package limits, and package file size limits.
+Configure NuGet package validation, Helm package limits, package file size limits, and package forwarding.
 
 To access these settings:
 
@@ -367,77 +367,73 @@ To access these settings:
 1. Select **Settings > CI/CD**.
 1. Expand **Package registry**.
 
-### Maven forwarding
+### Skip NuGet package metadata URL validation
 
-{{< details >}}
+Skip validation of the `projectUrl`, `iconUrl`, and `licenseUrl` metadata in NuGet packages.
 
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+By default, GitLab validates these URLs. If your GitLab instance doesn't have internet access,
+this validation fails and prevents you from uploading NuGet packages.
 
-{{< /details >}}
+To skip NuGet package metadata URL validation:
 
-GitLab administrators can disable the forwarding of Maven requests to [Maven Central](https://search.maven.org/).
-
-To disable forwarding Maven requests:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand the **Package registry** section.
-1. Clear the checkbox **Forward Maven package requests to the Maven registry if the packages are not found in the GitLab Package registry**.
+1. Select the **Skip metadata URL validation for the NuGet package** checkbox.
 1. Select **Save changes**.
 
-### npm forwarding
+### Set maximum Helm packages per channel
 
-{{< details >}}
+Set the maximum number of Helm packages that can be listed per channel.
 
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+To set the Helm package limit:
 
-{{< /details >}}
-
-GitLab administrators can disable the forwarding of npm requests to [npmjs.com](https://www.npmjs.com/).
-
-To disable it:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand the **Package registry** section.
-1. Clear the checkbox **Forward npm package requests to the npm registry if the packages are not found in the GitLab package registry**.
+1. Under **Package limits**, enter a value in the **Maximum number of Helm packages per channel** field.
 1. Select **Save changes**.
 
-### PyPI forwarding
+### Set package file size limits
 
-{{< details >}}
+Set maximum file size limits for each package type to control storage usage and maintain system performance.
 
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+You can configure the maximum file size limits for the following packages, in bytes:
 
-{{< /details >}}
+- Conan packages
+- Helm charts
+- Maven packages
+- npm packages
+- NuGet packages
+- PyPI packages
+- Terraform Module packages
+- Generic packages
 
-GitLab administrators can disable the forwarding of PyPI requests to [pypi.org](https://pypi.org/).
+To configure package file size limits:
 
-To disable it:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand the **Package registry** section.
-1. Clear the checkbox **Forward PyPI package requests to the PyPI registry if the packages are not found in the GitLab package registry**.
-1. Select **Save changes**.
-
-### Package file size limits
-
-GitLab administrators can adjust the maximum allowed file size for each package type.
-
-To set the maximum file size:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand the **Package registry** section.
-1. Find the package type you would like to adjust.
-1. Enter the maximum file size, in bytes.
+1. Under **Package file size limits**, enter values for the limits you want to configure.
 1. Select **Save size limits**.
 
-## Runners
+### Control package forwarding
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+Control whether package requests are forwarded to public registries when packages aren't found in your GitLab package registry.
+
+By default, GitLab forwards package requests to their respective public registries:
+
+- Maven requests to [Maven Central](https://search.maven.org/)
+- npm requests to [npmjs.com](https://www.npmjs.com/)
+- PyPI requests to [pypi.org](https://pypi.org/)
+
+To stop package forwarding:
+
+1. Clear any of these checkboxes:
+   - **Forward Maven package requests to the Maven registry if the packages are not found in the GitLab Package registry**
+   - **Forward npm package requests to the npm registry if the packages are not found in the GitLab package registry**
+   - **Forward PyPI package requests to the PyPI registry if the packages are not found in the GitLab package registry**
+1. Select **Save changes**.
+
+## Access runner settings
 
 Configure runner version management and registration settings.
 
@@ -447,7 +443,7 @@ To access these settings:
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
 
-### Disable runner version management
+### Control runner version management
 
 {{< history >}}
 
@@ -455,71 +451,24 @@ To access these settings:
 
 {{< /history >}}
 
-By default, GitLab instances periodically fetch official runner version data from GitLab.com to [determine whether the runners need upgrades](../../ci/runners/runners_scope.md#determine-which-runners-need-to-be-upgraded).
+Control whether your instance fetches official runner version data from GitLab.com
+to [determine if runners need upgrades](../../ci/runners/runners_scope.md#determine-which-runners-need-to-be-upgraded).
 
-To disable your instance fetching this data:
+By default, GitLab fetches runner version data. To stop fetching this data:
 
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand **Runners**.
-1. In the **Runner version management** section, clear the **Fetch GitLab Runner release version data from GitLab.com** checkbox.
+1. Under **Runner version management**, clear the **Fetch GitLab Runner release version data from GitLab.com** checkbox.
 1. Select **Save changes**.
 
-### Restrict runner registration by all users in an instance
+### Control runner registration
 
 {{< history >}}
 
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368008) in GitLab 15.5.
+- **Allow runner registration token** setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147559) in GitLab 16.11.
 
 {{< /history >}}
 
-GitLab administrators can adjust who is allowed to register runners, by showing and hiding areas of the UI.
-This setting does not affect the ability to create a runner from the UI or through an authenticated API call.
-
-When the registration sections are hidden in the UI, members of the project or group must contact administrators to enable runner registration in the group or project. If you plan to prevent registration, ensure users have access to the runners they need to run jobs.
-
-By default, all members of a project and group are able to register runners.
-
-To restrict all users in an instance from registering runners:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand **Runners**.
-1. In the **Runner registration** section, clear the **Members of the project can register runners** and
-   **Members of the group can register runners** checkboxes to remove runner registration from the UI.
-1. Select **Save changes**.
-
-{{< alert type="note" >}}
-
-After you disable runner registration by members of a project, the registration
-token automatically rotates. The token is no longer valid and you must
-use the new registration token for the project.
-
-{{< /alert >}}
-
-### Restrict runner registration by all members in a group
-
-Prerequisites:
-
-- Runner registration must be enabled for [all users in the instance](#restrict-runner-registration-by-all-users-in-an-instance).
-
-GitLab administrators can adjust group permissions to restrict runner registration by group members.
-
-To restrict runner registration by members in a specific group:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Groups** and find your group.
-1. Select **Edit**.
-1. Clear the **New group runners can be registered** checkbox if you want to disable runner registration by all members in the group. If the setting is read-only, you must enable runner registration for the [instance](#restrict-runner-registration-by-all-users-in-an-instance).
-1. Select **Save changes**.
-
-### Allow runner registration tokens
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147559) in GitLab 16.11
-
-{{< /history >}}
+Control who can register runners and whether to allow registration tokens.
 
 {{< alert type="warning" >}}
 
@@ -534,14 +483,43 @@ For more information, see
 
 {{< /alert >}}
 
+By default, runner registration tokens and both project and group member registration are allowed.
+To restrict runner registration:
+
+1. Under **Runner registration**, clear any of these checkboxes:
+   - **Allow runner registration token**
+   - **Members of the project can create runners**
+   - **Members of the group can create runners**
+1. Select **Save changes**.
+
+{{< alert type="note" >}}
+
+When you disable runner registration for project members, the registration
+token automatically rotates. The previous token becomes invalid and you must
+use the new registration token for the project.
+
+{{< /alert >}}
+
+### Restrict runner registration for a specific group
+
+Control whether members of a specific group can register runners.
+
+Prerequisites:
+
+- The **Members of the group can create runners** checkbox
+  must be selected in the [runner registration settings](#control-runner-registration).
+
+To restrict runner registration for a specific group:
+
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand **Runners**.
-1. Select the **Allow runner registration token** checkbox.
+1. Select **Overview > Groups** and find your group.
+1. Select **Edit**.
+1. Under **Runner Registration**, clear the **New group runners can be registered** checkbox.
+1. Select **Save changes**.
 
-## Job token permissions
+## Access job token permission settings
 
-Configure CI/CD job token settings for all projects.
+Control how CI/CD job tokens can access your projects.
 
 To access these settings:
 
@@ -557,18 +535,19 @@ To access these settings:
 
 {{< /history >}}
 
-You can configure the [CI/CD job token access setting](../../ci/jobs/ci_job_token.md#control-job-token-access-to-your-project)
-for all projects from the **Admin** area.
+Require all projects to control job token access using an allowlist.
 
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand the **Job token permissions** section.
-1. Enable **Enable and enforce job token allowlist for all projects** setting to
-   require all projects to control job token access with the allowlist.
+When enforced, CI/CD job tokens can only access projects when the token's source project is added to the project's allowlist.
+For more information, see [control job token access to your project](../../ci/jobs/ci_job_token.md#control-job-token-access-to-your-project).
 
-## Job logs
+To enforce job token allowlists:
 
-Configure CI job log settings for all projects.
+1. Under **Authorized groups and projects**, select the **Enable and enforce job token allowlist for all projects** checkbox.
+1. Select **Save changes**.
+
+## Access job log settings
+
+Control how CI/CD job logs are stored and processed.
 
 To access these settings:
 
@@ -576,7 +555,7 @@ To access these settings:
 1. Select **Settings > CI/CD**.
 1. Expand **Job logs**.
 
-### Incremental logging
+### Configure incremental logging
 
 {{< history >}}
 
@@ -584,8 +563,9 @@ To access these settings:
 
 {{< /history >}}
 
-Incremental logging uses Redis instead of disk space for temporary caching of job logs.
-When turned on, archived job logs are incrementally uploaded to object storage.
+Use Redis for temporary caching of job logs and incrementally upload archived logs to object storage.
+This improves performance and reduces disk space usage.
+
 For more information, see [incremental logging](../cicd/job_logs.md#incremental-logging).
 
 Prerequisites:
@@ -595,10 +575,7 @@ Prerequisites:
 
 To turn on incremental logging for all projects:
 
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
-1. Expand **Job logs**.
-1. Select the **Turn on incremental logging** checkbox.
+1. Under **Incremental logging configuration**, select the **Turn on incremental logging** checkbox.
 1. Select **Save changes**.
 
 ## Required pipeline configuration (deprecated)

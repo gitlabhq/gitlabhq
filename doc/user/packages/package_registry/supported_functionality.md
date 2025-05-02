@@ -116,18 +116,18 @@ To reduce the associated security risks:
 
 - Verify the package is not being actively used.
 - Disable request forwarding:
-  - Instance administrators can disable forwarding in the [**Continuous Integration** section](../../../administration/settings/continuous_integration.md#package-registry-configuration) of the **Admin** area.
+  - Instance administrators can disable forwarding in the [**Continuous Integration** section](../../../administration/settings/continuous_integration.md#control-package-forwarding) of the **Admin** area.
   - Group owners can disable forwarding in the **Packages and Registries** section of the group settings.
 - Implement a version control tool, like Git, to track changes to packages.
 
 | Package type                                           | Supports request forwarding | Security considerations |
 |--------------------------------------------------------|-----------------------------|------------------------|
-| [Maven (with `mvn`)](../maven_repository/_index.md)    | [Yes (disabled by default)](../../../administration/settings/continuous_integration.md#maven-forwarding) | Requires explicit opt-in for security. |
-| [Maven (with `gradle`)](../maven_repository/_index.md) | [Yes (disabled by default)](../../../administration/settings/continuous_integration.md#maven-forwarding) | Requires explicit opt-in for security. |
-| [Maven (with `sbt`)](../maven_repository/_index.md)    | [Yes (disabled by default)](../../../administration/settings/continuous_integration.md#maven-forwarding) | Requires explicit opt-in for security. |
-| [npm](../npm_registry/_index.md)                       | [Yes](../../../administration/settings/continuous_integration.md#npm-forwarding) | Consider disabling for private packages. |
+| [Maven (with `mvn`)](../maven_repository/_index.md)    | [Yes (disabled by default)](../../../administration/settings/continuous_integration.md#control-package-forwarding) | Requires explicit opt-in for security. |
+| [Maven (with `gradle`)](../maven_repository/_index.md) | [Yes (disabled by default)](../../../administration/settings/continuous_integration.md#control-package-forwarding) | Requires explicit opt-in for security. |
+| [Maven (with `sbt`)](../maven_repository/_index.md)    | [Yes (disabled by default)](../../../administration/settings/continuous_integration.md#control-package-forwarding) | Requires explicit opt-in for security. |
+| [npm](../npm_registry/_index.md)                       | [Yes](../../../administration/settings/continuous_integration.md#control-package-forwarding) | Consider disabling for private packages. |
 | [NuGet](../nuget_repository/_index.md)                 | N                           | N |
-| [PyPI](../pypi_repository/_index.md)                   | [Yes](../../../administration/settings/continuous_integration.md#pypi-forwarding) | Consider disabling for private packages. |
+| [PyPI](../pypi_repository/_index.md)                   | [Yes](../../../administration/settings/continuous_integration.md#control-package-forwarding) | Consider disabling for private packages. |
 | [Generic packages](../generic_packages/_index.md)      | N                           | N |
 | [Terraform](../terraform_module_registry/_index.md)    | N                           | N |
 | [Composer](../composer_repository/_index.md)           | N                           | N |
@@ -151,7 +151,7 @@ To reduce the associated security risks, before deleting a package you can:
 
 - Verify the package is not being actively used.
 - Disable request forwarding:
-  - Instance administrators can disable forwarding in the [**Continuous Integration** section](../../../administration/settings/continuous_integration.md#package-registry-configuration) of the **Admin** area.
+  - Instance administrators can disable forwarding in the [**Continuous Integration** section](../../../administration/settings/continuous_integration.md#control-package-forwarding) of the **Admin** area.
   - Group owners can disable forwarding in the **Packages and Registries** section of the group settings.
 
 ## Importing packages from other repositories

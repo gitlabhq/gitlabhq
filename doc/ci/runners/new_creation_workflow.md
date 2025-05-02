@@ -64,7 +64,7 @@ To avoid a broken workflow, you must:
 
 In GitLab 17.0 and later, runner registration tokens are disabled.
 To use stored runner registration tokens to register new runners,
-you must [enable the tokens](../../administration/settings/continuous_integration.md#allow-runner-registration-tokens).
+you must [enable the tokens](../../administration/settings/continuous_integration.md#control-runner-registration).
 
 {{< /alert >}}
 
@@ -74,7 +74,7 @@ To continue using registration tokens after GitLab 17.0:
 
 - On GitLab.com, you can manually [enable the legacy runner registration process](runners_scope.md#enable-use-of-runner-registration-tokens-in-projects-and-groups)
   in the top-level group settings.
-- On GitLab Self-Managed, you can manually [enable the legacy runner registration process](../../administration/settings/continuous_integration.md#allow-runner-registration-tokens)
+- On GitLab Self-Managed, you can manually [enable the legacy runner registration process](../../administration/settings/continuous_integration.md#control-runner-registration)
   in the **Admin** area settings.
 
 ## Impact on existing runners

@@ -19,32 +19,34 @@
       %div{ data: { view_settings: true, show_whitespace: @show_whitespace.to_json, diff_view_type: @diff_view, update_user_endpoint: @update_user_endpoint } }
   .rd-app-body
     .rd-app-sidebar{ data: { file_browser: true }, style: sidebar_style }
-      .rd-app-sidebar-loading
+      .rd-app-sidebar-loading{ data: { testid: 'rd-file-browser-loading' } }
         = helpers.gl_loading_icon(size: 'sm')
     .rd-app-content
       .rd-app-content-header{ data: { hidden_files_warning: true } }
-
       - if empty_diff? && !@lazy
         = render RapidDiffs::EmptyStateComponent.new
-
       .rd-app-code-theme.code{ class: helpers.user_color_scheme }
         .rd-app-diffs-list
           -# performance optimization: using a sibling element to cover diffs list is faster than changing opacity on the parent
           .rd-app-diffs-list-loading-overlay{ data: { diffs_overlay: true } }
           %div{ data: { diffs_list: true } }
-            = javascript_tag nonce: content_security_policy_nonce do
-              :plain
-                requestAnimationFrame(() => { window.performance.mark('rapid-diffs-first-diff-file-shown') })
-            - if diffs_list?
-              = diffs_list
-            - elsif !empty_diff?
-              = render RapidDiffs::DiffFileComponent.with_collection(@diffs_slice, parallel_view: @diff_view == :parallel)
-            - if @stream_url
-              #js-stream-container{ data: { diffs_stream_url: @stream_url } }
+            - if @lazy
+              .rd-app-diffs-loading{ data: { testid: 'rd-diffs-list-loading' } }
+                = helpers.gl_loading_icon(size: 'lg')
             - else
               = javascript_tag nonce: content_security_policy_nonce do
                 :plain
-                  requestAnimationFrame(() => {
-                    window.performance.mark('rapid-diffs-list-loaded');
-                    window.performance.measure('rapid-diffs-list-loading', 'rapid-diffs-first-diff-file-shown', 'rapid-diffs-list-loaded');
-                  })
+                  requestAnimationFrame(() => { window.performance.mark('rapid-diffs-first-diff-file-shown') })
+              - if diffs_list?
+                = diffs_list
+              - elsif !empty_diff?
+                = render RapidDiffs::DiffFileComponent.with_collection(@diffs_slice, parallel_view: @diff_view == :parallel)
+              - if @stream_url
+                #js-stream-container{ data: { diffs_stream_url: @stream_url } }
+              - else
+                = javascript_tag nonce: content_security_policy_nonce do
+                  :plain
+                    requestAnimationFrame(() => {
+                      window.performance.mark('rapid-diffs-list-loaded');
+                      window.performance.measure('rapid-diffs-list-loading', 'rapid-diffs-first-diff-file-shown', 'rapid-diffs-list-loaded');
+                    })

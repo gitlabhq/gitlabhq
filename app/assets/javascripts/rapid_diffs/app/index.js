@@ -57,10 +57,10 @@ class RapidDiffsFacade {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  reloadDiffs() {
+  reloadDiffs(initial) {
     const { reloadStreamUrl } = document.querySelector('[data-rapid-diffs]').dataset;
 
-    return useDiffsList(pinia).reloadDiffs(reloadStreamUrl);
+    return useDiffsList(pinia).reloadDiffs(reloadStreamUrl, initial);
   }
 
   #registerCustomElements() {
