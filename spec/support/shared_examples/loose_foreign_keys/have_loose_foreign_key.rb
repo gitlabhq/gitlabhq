@@ -79,34 +79,13 @@ RSpec.shared_examples 'cleanup by a loose foreign key' do
       puts("## Inspect causes an NoMethodError for this class. Find Model: #{find_model.class} #{find_model.id} ##")
     end
 
-    # + Debug code to be removed.
-    Gitlab::Database::SharedModel.using_connection(parent.connection) do
-      lfk_deleted_records = []
-      Gitlab::Database::LooseForeignKeys.definitions_by_table.each_key do |table|
-        fully_qualified_table_name = "#{parent.connection.current_schema}.#{table}"
-        lfk_deleted_records << LooseForeignKeys::DeletedRecord.load_batch_for_table(fully_qualified_table_name, 1000)
-      end
-      lfk_deleted_records.flatten!
-      puts("## #{lfk_deleted_records.count} LFK Deleted records found for parent ##")
-      puts("## #{lfk_deleted_records.inspect} ##")
-    end
-    # - Debug code to be removed.
+    debug_print_outstanding_lfk_records
 
+    start_process_loose_foreign_key_deletions = Time.now
     process_loose_foreign_key_deletions(record: parent)
-    puts("## LFK's processed for parent ##")
+    puts("## LFK's processed for parent in #{Time.now - start_process_loose_foreign_key_deletions} seconds##")
 
-    # + Debug code to be removed.
-    Gitlab::Database::SharedModel.using_connection(parent.connection) do
-      lfk_deleted_records = []
-      Gitlab::Database::LooseForeignKeys.definitions_by_table.each_key do |table|
-        fully_qualified_table_name = "#{parent.connection.current_schema}.#{table}"
-        lfk_deleted_records << LooseForeignKeys::DeletedRecord.load_batch_for_table(fully_qualified_table_name, 1000)
-      end
-      lfk_deleted_records.flatten!
-      puts("## #{lfk_deleted_records.count} LFK Deleted records found for parent ##")
-      puts("## #{lfk_deleted_records.inspect} ##")
-    end
-    # - Debug code to be removed.
+    debug_print_outstanding_lfk_records
 
     if foreign_key_definition.on_delete.eql?(:async_delete)
       expect(find_model).not_to be_present
@@ -116,6 +95,34 @@ RSpec.shared_examples 'cleanup by a loose foreign key' do
 
     puts("##- Additional Debug Logs for LFK flakiness end -##")
   end
+
+  # + Debug code to be removed.
+  def debug_print_outstanding_lfk_records
+    Gitlab::Database::SharedModel.using_connection(parent.connection) do
+      lfk_deleted_records = []
+      Gitlab::Database::LooseForeignKeys.definitions_by_table.each_key do |table|
+        fully_qualified_table_name = "#{parent.connection.current_schema}.#{table}"
+        lfk_deleted_records << LooseForeignKeys::DeletedRecord.load_batch_for_table(fully_qualified_table_name, 1000)
+      end
+      lfk_deleted_records.flatten!
+      puts("## #{lfk_deleted_records.count} LFK Deleted records found for parent ##")
+      puts("## #{lfk_deleted_records.inspect} ##")
+    end
+  end
+  # - Debug code to be removed.
+
+  # rubocop:disable Cop/AvoidReturnFromBlocks -- Intentional Short Circuit
+  def any_outstanding_lfk_records?(parent)
+    Gitlab::Database::SharedModel.using_connection(parent.connection) do
+      Gitlab::Database::LooseForeignKeys.definitions_by_table.each_key do |table|
+        fully_qualified_table_name = "#{parent.connection.current_schema}.#{table}"
+        return true if LooseForeignKeys::DeletedRecord.load_batch_for_table(fully_qualified_table_name, 1000).any?
+      end
+    end
+
+    false
+  end
+  # rubocop:enable Cop/AvoidReturnFromBlocks
 end
 
 RSpec.shared_examples 'update by a loose foreign key' do
