@@ -257,7 +257,7 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
       let_it_be(:locked_user) { create(:user, locked_at: DateTime.parse('2020-02-25 10:30:00 -0700')) }
 
       it "displays `Locked` badge next to user" do
-        expect(page).to have_content("#{locked_user.name} Locked")
+        expect(page).to have_content("#{locked_user.name} #{locked_user.email} Locked")
       end
 
       it 'allows a user to be unlocked from the `User administration dropdown', :js do

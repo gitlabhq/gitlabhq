@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { visitUrl, getBaseURL } from '~/lib/utils/url_utility';
 import AdminUsersFilterApp from '~/admin/users/components/admin_users_filter_app.vue';
-import { TOKENS } from 'ee_else_ce/admin/users/constants';
+import { expectedTokens, expectedAccessLevelToken } from '../mock_data';
 
 const mockToken = [
   {
@@ -11,8 +11,6 @@ const mockToken = [
     value: { data: 'admins', operator: '=' },
   },
 ];
-
-const accessLevelToken = TOKENS.filter(({ type }) => type === 'access_level');
 
 jest.mock('~/lib/utils/url_utility', () => {
   return {
@@ -33,14 +31,8 @@ describe('AdminUsersFilterApp', () => {
 
   it('includes all the tokens', () => {
     createComponent();
-    const actualOptions = findAvailableTokens()
-      .flatMap(({ options }) => options.map(({ value }) => value))
-      .sort();
-    const expectedOptions = TOKENS.flatMap(({ options }) =>
-      options.map(({ value }) => value),
-    ).sort();
 
-    expect(actualOptions).toMatchObject(expectedOptions);
+    expect(findAvailableTokens()).toMatchObject(expectedTokens);
   });
 
   describe('when a token is selected', () => {
@@ -53,7 +45,7 @@ describe('AdminUsersFilterApp', () => {
       findFilteredSearch().vm.$emit('input', mockToken);
       await nextTick();
 
-      expect(findAvailableTokens()).toEqual(accessLevelToken);
+      expect(findAvailableTokens()).toEqual([expectedAccessLevelToken]);
     });
   });
 
@@ -68,7 +60,7 @@ describe('AdminUsersFilterApp', () => {
       ]);
       await nextTick();
 
-      expect(findAvailableTokens()).toEqual(TOKENS);
+      expect(findAvailableTokens()).toEqual(expectedTokens);
     });
   });
 
@@ -81,7 +73,7 @@ describe('AdminUsersFilterApp', () => {
       window.history.replaceState({}, '', '/?filter=admins');
       createComponent();
 
-      expect(findAvailableTokens()).toEqual(accessLevelToken);
+      expect(findAvailableTokens()).toEqual([expectedAccessLevelToken]);
     });
 
     it('replace the initial token when another token is selected', async () => {
@@ -90,7 +82,7 @@ describe('AdminUsersFilterApp', () => {
       findFilteredSearch().vm.$emit('input', mockToken);
       await nextTick();
 
-      expect(findAvailableTokens()).toEqual(accessLevelToken);
+      expect(findAvailableTokens()).toEqual([expectedAccessLevelToken]);
     });
   });
 

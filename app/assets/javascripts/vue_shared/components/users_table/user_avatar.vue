@@ -71,15 +71,13 @@ export default {
         <div v-if="user.note" class="gl-p-1 gl-text-subtle">
           <gl-icon v-gl-tooltip="userNoteShort" name="document" />
         </div>
-        <div
-          v-for="(badge, idx) in user.badges"
-          :key="idx"
-          class="gl-p-1"
-          :class="{ 'gl-pb-0': glFeatures.simplifiedBadges }"
-        >
-          <gl-badge class="!gl-flex" :variant="badge.variant">{{ badge.text }}</gl-badge>
-        </div>
       </template>
+
+      <div class="gl-flex gl-flex-wrap gl-pt-2">
+        <div v-for="badge in user.badges" :key="badge.text" class="gl-pr-2">
+          <gl-badge :variant="badge.variant">{{ badge.text }}</gl-badge>
+        </div>
+      </div>
     </gl-avatar-labeled>
   </div>
 </template>

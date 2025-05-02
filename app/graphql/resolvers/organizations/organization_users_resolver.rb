@@ -28,7 +28,7 @@ module Resolvers
 
       def preloads
         {
-          user: [:user]
+          user: [{ user: [:identities] }]
         }
       end
     end

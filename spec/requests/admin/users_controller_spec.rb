@@ -10,6 +10,16 @@ RSpec.describe Admin::UsersController, :enable_admin_mode, feature_category: :us
     sign_in(admin)
   end
 
+  describe 'GET #index' do
+    it 'avoids N+1 query', :use_sql_query_cache do
+      base_query_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { get admin_users_path }
+
+      create_list(:user, 3)
+
+      expect { get admin_users_path }.not_to exceed_query_limit(base_query_count)
+    end
+  end
+
   describe 'PATCH #update' do
     let(:user) { create(:user) }
 

@@ -2644,9 +2644,6 @@ msgstr ""
 msgid "About this feature"
 msgstr ""
 
-msgid "About your company"
-msgstr ""
-
 msgid "Abuse reports"
 msgstr ""
 
@@ -5171,7 +5168,13 @@ msgstr ""
 msgid "AdminUsers|It's you!"
 msgstr ""
 
+msgid "AdminUsers|LDAP"
+msgstr ""
+
 msgid "AdminUsers|LDAP Blocked"
+msgstr ""
+
+msgid "AdminUsers|LDAP sync"
 msgstr ""
 
 msgid "AdminUsers|Learn more about %{link_start}banned users.%{link_end}"
@@ -31788,16 +31791,22 @@ msgstr ""
 msgid "InProductMarketing|%{upper_start}Free 60-day trial%{upper_end} %{lower_start}GitLab Ultimate & GitLab Duo Enterprise%{lower_end} %{last_start}Sign up for a free trial of the most comprehensive AI-powered DevSecOps Platform%{last_end}"
 msgstr ""
 
+msgid "InProductMarketing|60-day trial period"
+msgstr ""
+
 msgid "InProductMarketing|Boost efficiency and collaboration"
 msgstr ""
 
-msgid "InProductMarketing|Built-in security"
+msgid "InProductMarketing|Build in security"
 msgstr ""
 
 msgid "InProductMarketing|End-to-end security and compliance"
 msgstr ""
 
 msgid "InProductMarketing|Ensure compliance"
+msgstr ""
+
+msgid "InProductMarketing|Experience the power of Ultimate + GitLab Duo Enterprise"
 msgstr ""
 
 msgid "InProductMarketing|Free guest users"
@@ -31822,9 +31831,6 @@ msgid "InProductMarketing|Ship secure software faster"
 msgstr ""
 
 msgid "InProductMarketing|Start a Self-Managed trial"
-msgstr ""
-
-msgid "InProductMarketing|Start your 60-day free trial"
 msgstr ""
 
 msgid "InProductMarketing|Team members collaborating"
@@ -59976,6 +59982,9 @@ msgstr ""
 msgid "Telephone number"
 msgstr ""
 
+msgid "Tell us about your company"
+msgstr ""
+
 msgid "Tell us what you think"
 msgstr ""
 
@@ -63685,9 +63694,6 @@ msgstr ""
 msgid "TrialDiscover|Why Ultimate & GitLab Duo Enterprise?"
 msgstr ""
 
-msgid "TrialRegistration|To complete registration, we need additional details from you."
-msgstr ""
-
 msgid "TrialWidget|%{daysLeft} days left in trial"
 msgstr ""
 
@@ -63763,6 +63769,9 @@ msgstr ""
 msgid "Trial|Continue"
 msgstr ""
 
+msgid "Trial|Continue with trial"
+msgstr ""
+
 msgid "Trial|Cookie Policy."
 msgstr ""
 
@@ -63781,9 +63790,6 @@ msgstr ""
 msgid "Trial|Select state or province"
 msgstr ""
 
-msgid "Trial|Start free Ultimate + GitLab Duo Enterprise trial"
-msgstr ""
-
 msgid "Trial|Start your free Ultimate and GitLab Duo Enterprise trial"
 msgstr ""
 
@@ -63793,7 +63799,7 @@ msgstr ""
 msgid "Trial|State or province"
 msgstr ""
 
-msgid "Trial|To activate your trial, we need additional details from you."
+msgid "Trial|We need a few more details from you to activate your trial."
 msgstr ""
 
 msgid "Trial|Your free Ultimate & GitLab Duo Enterprise Trial lasts for 60 days. After this period, you can maintain a GitLab Free account forever, or upgrade to a paid plan."
@@ -67713,9 +67719,6 @@ msgid "Webhooks|Wildcards such as %{WILDCARD_CODE_STABLE} or %{WILDCARD_CODE_PRO
 msgstr ""
 
 msgid "Webhooks|You've reached the maximum number of custom headers."
-msgstr ""
-
-msgid "Website"
 msgstr ""
 
 msgid "Website:"

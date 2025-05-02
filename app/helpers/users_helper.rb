@@ -141,6 +141,7 @@ module UsersHelper
       badges << { text: s_("AdminUsers|It's you!"), variant: 'muted' } if current_user == user
       badges << { text: s_("AdminUsers|Locked"), variant: 'warning' } if user.access_locked?
       badges << { text: s_("UserMapping|Placeholder"), variant: 'muted' } if user.placeholder?
+      badges << { text: s_('AdminUsers|LDAP'), variant: 'info' } if user.ldap_user?
     end
   end
 

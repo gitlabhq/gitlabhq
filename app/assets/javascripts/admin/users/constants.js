@@ -76,6 +76,14 @@ export const TOKENS = [
     unique: true,
     options: [{ value: 'placeholder', title: s__('UserMapping|Placeholder') }],
   },
+  {
+    title: s__('AdminUsers|LDAP sync'),
+    type: 'ldap_sync',
+    token: GlFilteredSearchToken,
+    operators: OPERATORS_IS,
+    unique: true,
+    options: [{ value: 'ldap_sync', title: __('True') }],
+  },
 ];
 
 export const SOLO_OWNED_ORGANIZATIONS_REQUESTED_COUNT = 10;

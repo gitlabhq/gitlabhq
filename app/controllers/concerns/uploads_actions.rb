@@ -10,6 +10,13 @@ module UploadsActions
 
   UPLOAD_MOUNTS = %w[avatar attachment file logo pwa_icon header_logo favicon screenshot].freeze
 
+  # We need to avoid setting certain formats. For example, using the :js format
+  # would trigger Rails' cross-origin JavaScript protection. To avoid this, we use
+  # the :text format for JS files instead.
+  CUSTOM_REQUEST_FORMAT_MAPPING = {
+    js: :text
+  }.freeze
+
   included do
     prepend_before_action :set_request_format_from_path_extension
     rescue_from FileUploader::InvalidSecret, with: :render_404
@@ -85,7 +92,9 @@ module UploadsActions
 
     format = Mime[match.captures.first]
 
-    request.format = format.symbol if format
+    return if format.blank?
+
+    request.format = CUSTOM_REQUEST_FORMAT_MAPPING[format.symbol] || format.symbol
   end
 
   def content_disposition

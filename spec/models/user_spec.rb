@@ -3292,6 +3292,7 @@ RSpec.describe User, feature_category: :user_profile do
       :without_projects         | 'wop'
       :trusted                  | 'trusted'
       :external                 | 'external'
+      :ldap                     | 'ldap_sync'
     end
 
     with_them do
@@ -8800,6 +8801,19 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(Identity).to receive(:with_extern_uid).and_call_original
       expect(described_class.by_provider_and_extern_uid(:github, 'my_github_id')).to match_array([expected_user])
+    end
+  end
+
+  describe '.ldap' do
+    subject(:ldap) { described_class.ldap }
+
+    let_it_be(:ldap_user) { create(:omniauth_user, provider: "ldapmain") }
+    let_it_be(:gitlab_user) { create(:omniauth_user, provider: "gitlab") }
+    let_it_be(:regular_user) { create(:user) }
+
+    it 'returns LDAP users' do
+      expect(ldap).to include(ldap_user)
+      expect(ldap).not_to include(gitlab_user, regular_user)
     end
   end
 

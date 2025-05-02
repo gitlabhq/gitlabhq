@@ -158,11 +158,6 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         execute_service
       end
 
-      it 'creates pipeline_config' do
-        expect { execute_service }
-          .to change { Ci::PipelineConfig.count }.by(1)
-      end
-
       context 'when merge requests already exist for this source branch' do
         let!(:merge_request_1) do
           create(:merge_request, source_branch: 'feature', target_branch: "master", source_project: project)
