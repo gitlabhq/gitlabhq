@@ -132,6 +132,16 @@ For more information, see the:
 - [Deprecations and removals documentation](../deprecations.md#non-expiring-access-tokens).
 - [Deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369122).
 
+## Issues to be aware of when upgrading from 17.0 and earlier
+
+For Linux package installations, before upgrading to GitLab 17.1 or later, you must remove references to the [now deprecated bundled Grafana](../deprecations.md#bundled-grafana-deprecated-and-disabled) key (`grafana[]`) from `/etc/gitlab/gitlab.rb`.
+After upgrading, any references to that key in `/etc/gitlab/gitlab.rb` might break features, [such as the merge request widget](https://support.gitlab.com/hc/en-us/articles/19677647414812-Error-after-upgrade-Unable-to-load-the-merge-request-widget).
+
+For more information, see the following issues:
+
+- [Remove Grafana attribute and deprecation messages](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8200).
+- [Deprecate Grafana and disable it as a breaking change](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7772).
+
 ## Issues to be aware of when upgrading from 17.1 and earlier
 
 - If the customer is using GitLab Duo and upgrading to GitLab 17.2.3 or earlier, they must do both of the following:
