@@ -33,7 +33,7 @@ glab auth login --stdin < token.txt
 # View a list of issues
 glab issue list
 
-# Create merge request for issue 123 
+# Create merge request for issue 123
 glab mr create 123
 
 # Check out the branch for merge request 243
@@ -112,6 +112,56 @@ To authenticate with your GitLab account, run `glab auth login`.
 
 `glab` also integrates with the [1Password shell plugin](https://developer.1password.com/docs/cli/shell-plugins/gitlab/)
 for secure authentication.
+
+## Examples
+
+### Run a CI/CD pipeline with variables from a file
+
+The `glab ci run` command, when run with the `-f` (`--variables-from-string`) flag, uses values stored
+in an external file. For example, add this code to your `.gitlab-ci.yml` file
+to reference two variables:
+
+```yaml
+stages:
+  - build
+
+# $EXAMPLE_VARIABLE_1 and $EXAMPLE_VARIABLE_2 are stored in another file
+build-job:
+  stage: build
+  script:
+    - echo $EXAMPLE_VARIABLE_1
+    - echo $EXAMPLE_VARIABLE_2
+    - echo $CI_JOB_ID
+```
+
+Then, create a file named `variables.json` to contain those variables:
+
+```json
+[
+  {
+    "key": "EXAMPLE_VARIABLE_1",
+    "value": "example value 1"
+  },
+  {
+    "key": "EXAMPLE_VARIABLE_2",
+    "value": "example value 2"
+  }
+]
+```
+
+To start a CI/CD pipeline that includes the contents of `variables.json`, run this command, editing
+the path to the file as needed:
+
+```shell
+$ glab ci run --variables-file /tmp/variables.json`
+
+$ echo $EXAMPLE_VARIABLE_1
+example value 1
+$ echo $EXAMPLE_VARIABLE_2
+example value 2
+$ echo $CI_JOB_ID
+9811701914
+```
 
 ## Report issues
 
