@@ -95,7 +95,8 @@ module Routing
     end
 
     def masked_page_url(group:, project:)
-      return unless Feature.enabled?(:mask_page_urls, type: :ops)
+      # Disabling of page url masking is only available when Snowplow is configured.
+      return if Gitlab::CurrentSettings.snowplow_enabled? && Feature.disabled?(:mask_page_urls, type: :ops)
 
       mask_helper = MaskHelper.new(request, group, project)
       mask_helper.mask_params
