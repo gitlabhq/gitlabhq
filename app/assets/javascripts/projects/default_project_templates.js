@@ -137,4 +137,8 @@ export default {
     text: s__('ProjectTemplates|NIST 800-53r5'),
     icon: '.template-option .icon-gitlab_logo',
   },
+  gitlab_components: {
+    text: s__('ProjectTemplates|GitLab CI/CD components'),
+    icon: '.template-option .icon-gitlab_logo',
+  },
 };

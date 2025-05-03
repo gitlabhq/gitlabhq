@@ -85,7 +85,8 @@ module Gitlab
           ProjectTemplate.new('kotlin_native_linux', 'Kotlin Native Linux', _('A basic template for developing Linux programs using Kotlin Native'), 'https://gitlab.com/gitlab-org/project-templates/kotlin-native-linux'),
           ProjectTemplate.new('typo3_distribution', 'TYPO3 Distribution', _('A template for starting a new TYPO3 project'), 'https://gitlab.com/gitlab-org/project-templates/typo3-distribution', 'illustrations/logos/typo3.svg'),
           ProjectTemplate.new('laravel', 'Laravel Framework', _('A basic folder structure of a Laravel application, to help you get started.'), 'https://gitlab.com/gitlab-org/project-templates/laravel', 'illustrations/logos/laravel.svg'),
-          ProjectTemplate.new('nist_80053r5', 'NIST 800-53r5', _('A project containing issues for security and privacy controls published by the U.S. National Institute of Standards and Technology'), 'https://gitlab.com/gitlab-org/project-templates/nist_80053r5')
+          ProjectTemplate.new('nist_80053r5', 'NIST 800-53r5', _('A project containing issues for security and privacy controls published by the U.S. National Institute of Standards and Technology'), 'https://gitlab.com/gitlab-org/project-templates/nist_80053r5'),
+          ProjectTemplate.new('gitlab_components', 'GitLab CI/CD components', _('A basic folder structure and sample files for a CI/CD components project.'), 'https://gitlab.com/gitlab-org/project-templates/gitlab-component-template')
         ]
       end
       # rubocop:enable Metrics/AbcSize

@@ -375,39 +375,6 @@ RSpec.describe TodoService, feature_category: :notifications do
       end
     end
 
-    describe '#resolve_todos_with_attributes_for_target' do
-      it 'marks related pending todos to the target for all the users as done' do
-        first_todo = create(:todo, :assigned, user: member, project: project, target: issue, author: author)
-        second_todo = create(:todo, :review_requested, user: john_doe, project: project, target: issue, author: author)
-        another_todo = create(:todo, :assigned, user: john_doe, project: project, target: project, author: author)
-
-        service.resolve_todos_with_attributes_for_target(issue, {})
-
-        expect(first_todo.reload).to be_done
-        expect(second_todo.reload).to be_done
-        expect(another_todo.reload).to be_pending
-      end
-
-      it 'marks related only filtered pending todos to the target for all the users as done' do
-        first_todo = create(:todo, :assigned, user: member, project: project, target: issue, author: author)
-        second_todo = create(:todo, :review_requested, user: john_doe, project: project, target: issue, author: author)
-        another_todo = create(:todo, :assigned, user: john_doe, project: project, target: project, author: author)
-
-        service.resolve_todos_with_attributes_for_target(issue, { action: Todo::ASSIGNED })
-
-        expect(first_todo.reload).to be_done
-        expect(second_todo.reload).to be_pending
-        expect(another_todo.reload).to be_pending
-      end
-
-      it 'fetches the pending todos with users preloaded' do
-        expect(PendingTodosFinder).to receive(:new)
-          .with(a_hash_including(preload_user_association: true)).and_call_original
-
-        service.resolve_todos_with_attributes_for_target(issue, { action: Todo::ASSIGNED })
-      end
-    end
-
     describe '#new_note' do
       let!(:first_todo) { create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author) }
       let!(:second_todo) { create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author) }
@@ -1511,6 +1478,13 @@ RSpec.describe TodoService, feature_category: :notifications do
       expect(access_request_todo.reload).to be_done
       expect(another_pending_todo.reload).to be_pending
       expect(another_project_todo.reload).to be_pending
+    end
+
+    it 'fetches the pending todos with users preloaded' do
+      expect(PendingTodosFinder).to receive(:new)
+                                      .with(a_hash_including(preload_user_association: true)).and_call_original
+
+      service.resolve_access_request_todos(project_requester)
     end
   end
 

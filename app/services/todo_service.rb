@@ -224,19 +224,6 @@ class TodoService
     GraphqlTriggers.issuable_todo_updated(target)
   end
 
-  # Resolves all todos related to target for all users
-  def resolve_todos_with_attributes_for_target(target, attributes, resolution: :done, resolved_by_action: :system_done)
-    target_attributes = { target_id: target.id, target_type: target.class.polymorphic_name }
-    attributes.merge!(target_attributes)
-    attributes[:preload_user_association] = true
-
-    todos = PendingTodosFinder.new(attributes).execute
-    users = todos.map(&:user)
-    todos_ids = todos.batch_update(state: resolution, resolved_by_action: resolved_by_action)
-    users.each(&:update_todos_count_cache)
-    todos_ids
-  end
-
   def resolve_todos(todos, current_user, resolution: :done, resolved_by_action: :system_done)
     todos_ids = todos.batch_update(state: resolution, resolved_by_action: resolved_by_action, snoozed_until: nil)
 
@@ -320,6 +307,19 @@ class TodoService
   end
 
   private
+
+  # Resolves all todos related to target for all users
+  def resolve_todos_with_attributes_for_target(target, attributes, resolution: :done, resolved_by_action: :system_done)
+    target_attributes = { target_id: target.id, target_type: target.class.polymorphic_name }
+    attributes.merge!(target_attributes)
+    attributes[:preload_user_association] = true
+
+    todos = PendingTodosFinder.new(attributes).execute
+    users = todos.map(&:user)
+    todos_ids = todos.batch_update(state: resolution, resolved_by_action: resolved_by_action)
+    users.each(&:update_todos_count_cache)
+    todos_ids
+  end
 
   def create_todos(users, attributes, namespace, project)
     users = Array(users)

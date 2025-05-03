@@ -10,7 +10,7 @@ module ProjectTemplateTestHelper
       serverless_framework tencent_serverless_framework
       jsonnet cluster_management kotlin_native_linux
       pelican bridgetown typo3_distribution laravel
-      nist_80053r5
+      nist_80053r5 gitlab_components
     ]
   end
 end

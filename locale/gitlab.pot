@@ -2134,6 +2134,9 @@ msgstr ""
 msgid "A Let's Encrypt SSL certificate can not be obtained until your domain is verified."
 msgstr ""
 
+msgid "A basic folder structure and sample files for a CI/CD components project."
+msgstr ""
+
 msgid "A basic folder structure of a Laravel application, to help you get started."
 msgstr ""
 
@@ -48140,6 +48143,9 @@ msgid "ProjectTemplates|.NET Core"
 msgstr ""
 
 msgid "ProjectTemplates|Android"
+msgstr ""
+
+msgid "ProjectTemplates|GitLab CI/CD components"
 msgstr ""
 
 msgid "ProjectTemplates|GitLab Cluster Management"

@@ -1329,7 +1329,7 @@ This migration tool will be removed in GitLab 18.3.
 
 - Announced in GitLab <span class="milestone">15.9</span>
 - Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383084).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/395708).
 
 </div>
 
