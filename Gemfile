@@ -505,7 +505,7 @@ end
 group :development, :test do
   gem 'deprecation_toolkit', '~> 2.2.3', require: false, feature_category: :shared
   gem 'bullet', '~> 7.2.0', feature_category: :shared
-  gem 'parser', '= 3.3.7.4', feature_category: :shared
+  gem 'parser', '= 3.3.8.0', feature_category: :shared
   gem 'pry-byebug', feature_category: :shared
   gem 'pry-rails', '~> 0.3.9', feature_category: :shared
   gem 'pry-shell', '~> 0.6.4', feature_category: :shared
@@ -669,7 +669,7 @@ gem 'lograge', '~> 0.5', feature_category: :shared
 gem 'grape_logging', '~> 1.8', '>= 1.8.4', feature_category: :api
 
 # DNS Lookup
-gem 'gitlab-net-dns', '~> 0.10.0', feature_category: :shared
+gem 'gitlab-net-dns', '~> 0.12.0', feature_category: :shared
 
 # Countries list
 gem 'countries', '~> 4.0.0', feature_category: :shared
