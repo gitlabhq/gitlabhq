@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'adjourned deletion service' do
-  before do
-    stub_licensed_features(adjourned_deletion_for_projects_and_groups: true)
-  end
-
   shared_examples 'user can remove resource' do
     it 'enqueues the resource destroy worker' do
       expect(destroy_worker).to receive(perform_method).with(*destroy_worker_params)

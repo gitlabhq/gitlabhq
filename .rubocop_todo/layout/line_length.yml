@@ -1577,7 +1577,6 @@ Layout/LineLength:
     - 'ee/spec/serializers/ee/user_serializer_spec.rb'
     - 'ee/spec/serializers/environment_entity_spec.rb'
     - 'ee/spec/serializers/epic_entity_spec.rb'
-    - 'ee/spec/serializers/fork_namespace_entity_spec.rb'
     - 'ee/spec/serializers/member_entity_spec.rb'
     - 'ee/spec/serializers/project_mirror_entity_spec.rb'
     - 'ee/spec/serializers/security/license_policy_entity_spec.rb'

@@ -4,7 +4,6 @@
 # Support for delayed deletion is provided.
 #
 # The #self_deletion_in_progress? method needs to be defined.
-# The #delayed_deletion_available? method can be overriden.
 # The #delayed_deletion_configured? method can be overriden.
 # The #all_scheduled_for_deletion_in_hierarchy_chain method can be overriden.
 module DeletableNamespace
@@ -28,13 +27,6 @@ module DeletableNamespace
   end
   # TODO: Replace calls to #marked_for_deletion? with #self_deletion_scheduled?
   alias_method :marked_for_deletion?, :self_deletion_scheduled?
-
-  # Returns true if the delayed deletion feature is available for the current record.
-  # Can be overidden.
-  def delayed_deletion_available?
-    respond_to?(:licensed_feature_available?) &&
-      licensed_feature_available?(:adjourned_deletion_for_projects_and_groups)
-  end
 
   # Returns true if the delayed deletion feature is configured.
   # Can be overidden.
@@ -69,7 +61,7 @@ module DeletableNamespace
   end
 
   def delayed_deletion_ready?
-    delayed_deletion_available? && delayed_deletion_configured?
+    delayed_deletion_configured?
   end
   # TODO: Replace calls to #adjourned_deletion? with #delayed_deletion_ready?
   alias_method :adjourned_deletion?, :delayed_deletion_ready?

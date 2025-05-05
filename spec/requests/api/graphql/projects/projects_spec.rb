@@ -230,4 +230,29 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
       )
     end
   end
+
+  context 'when providing marked_for_deletion_on filter', :freeze_time do
+    let_it_be(:path) { %i[projects nodes] }
+    let_it_be(:marked_for_deletion_on) { Date.yesterday }
+    let_it_be(:project_marked_for_deletion) do
+      create(:project, marked_for_deletion_at: marked_for_deletion_on, developers: current_user)
+    end
+
+    let_it_be(:second_project_marked_for_deletion) do
+      create(:project, marked_for_deletion_at: marked_for_deletion_on - 1.day, developers: current_user)
+    end
+
+    let(:filters) { { marked_for_deletion_on: marked_for_deletion_on } }
+
+    it 'returns the expected projects' do
+      post_graphql(query, current_user: current_user)
+      returned_projects = graphql_data_at(*path)
+
+      returned_ids = returned_projects.pluck('id')
+      returned_marked_for_deletion_on = returned_projects.pluck('markedForDeletionOn')
+
+      expect(returned_ids).to contain_exactly(project_marked_for_deletion.to_global_id.to_s)
+      expect(returned_marked_for_deletion_on).to contain_exactly(marked_for_deletion_on.iso8601)
+    end
+  end
 end

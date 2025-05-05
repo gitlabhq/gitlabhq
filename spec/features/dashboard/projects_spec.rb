@@ -251,4 +251,18 @@ RSpec.describe 'Dashboard Projects', :js, feature_category: :groups_and_projects
       wait_for_requests
     end.not_to exceed_query_limit(control).with_threshold(4)
   end
+
+  context 'for delayed deletion' do
+    let_it_be(:project) { create(:project, :archived, namespace: user.namespace, marked_for_deletion_at: Date.current) }
+
+    it 'renders Restore button', :js do
+      visit inactive_dashboard_projects_path
+      wait_for_requests
+
+      within_testid("projects-list-item-#{project.id}") do
+        click_button 'Actions'
+        expect(page).to have_button('Restore')
+      end
+    end
+  end
 end

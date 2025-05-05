@@ -347,7 +347,7 @@ Here is an example scenario:
 - In 17.4 the migration may be finalized, provided that it's completed in GitLab.com.
 - In 17.6 the code related to the migration may be deleted.
 
-Batched background migration code is routinely deleted when migrations are squashed.
+Batched background migration code is routinely deleted when [migrations are squashed](migration_squashing.md).
 
 ### Re-queue batched background migrations
 

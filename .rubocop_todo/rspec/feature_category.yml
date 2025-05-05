@@ -875,7 +875,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/serializers/epic_note_entity_spec.rb'
     - 'ee/spec/serializers/evidences/build_artifact_entity_spec.rb'
     - 'ee/spec/serializers/evidences/evidence_entity_spec.rb'
-    - 'ee/spec/serializers/fork_namespace_entity_spec.rb'
     - 'ee/spec/serializers/group_vulnerability_autocomplete_entity_spec.rb'
     - 'ee/spec/serializers/incident_management/escalation_policy_entity_spec.rb'
     - 'ee/spec/serializers/incident_management/oncall_schedule_entity_spec.rb'

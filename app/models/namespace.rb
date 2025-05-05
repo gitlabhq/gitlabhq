@@ -785,6 +785,11 @@ class Namespace < ApplicationRecord
     !!deleted_at
   end
 
+  # Only groups can be marked for deletion
+  def marked_for_deletion?
+    false
+  end
+
   def uploads_sharding_key
     { namespace_id: id }
   end

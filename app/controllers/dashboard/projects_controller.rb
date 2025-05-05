@@ -58,5 +58,3 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @sort = params[:sort]
   end
 end
-
-Dashboard::ProjectsController.prepend_mod_with('Dashboard::ProjectsController')

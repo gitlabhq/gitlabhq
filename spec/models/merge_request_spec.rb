@@ -7022,14 +7022,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let(:base_diff) do
       instance_double(
         MergeRequestDiff,
-        diffs: ['base diff']
+        diffs_for_streaming: ['base diff']
       )
     end
 
     let(:head_diff) do
       instance_double(
         MergeRequestDiff,
-        diffs: ['HEAD diff']
+        diffs_for_streaming: ['HEAD diff']
       )
     end
 

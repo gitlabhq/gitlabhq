@@ -958,7 +958,7 @@ class MergeRequest < ApplicationRecord
     if block_given?
       source_project.repository.diffs_by_changed_paths(diff.diff_refs, offset, &)
     else
-      diff.diffs(diff_options)
+      diff.diffs_for_streaming(diff_options)
     end
   end
 
@@ -2536,7 +2536,7 @@ class MergeRequest < ApplicationRecord
 
   def first_diffs_slice(limit, diff_options = {})
     diff = diffable_merge_ref? ? merge_head_diff : merge_request_diff
-    diff.paginated_diffs(1, limit, diff_options).diff_files
+    diff.paginated_diffs(1, limit, diff_options).diff_files(sorted: true)
   end
 
   def squash_option

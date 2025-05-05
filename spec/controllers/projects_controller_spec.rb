@@ -8,7 +8,8 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project, reload: true) { create(:project, :with_export, service_desk_enabled: false) }
-  let_it_be(:public_project) { create(:project, :public) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:public_project) { create(:project, :public, namespace: group) }
   let_it_be(:user) { create(:user) }
 
   let(:jpg) { fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg') }
@@ -493,6 +494,54 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
         expect { get(:show, params: { namespace_id: public_project.namespace, id: public_project }) }
           .not_to exceed_query_limit(2).for_query(expected_query)
+      end
+    end
+
+    context 'when marked for deletion' do
+      render_views
+
+      subject { get :show, params: { namespace_id: public_project.namespace.path, id: public_project.path } }
+
+      let(:ancestor_notice_regex) do
+        /The parent group of this project is pending deletion, so this project will also be deleted on .*./
+      end
+
+      context 'when the parent group has not been scheduled for deletion' do
+        it 'does not show the notice' do
+          subject
+
+          expect(response.body).not_to match(ancestor_notice_regex)
+        end
+      end
+
+      context 'when the parent group has been scheduled for deletion' do
+        before do
+          create(:group_deletion_schedule,
+            group: public_project.group,
+            marked_for_deletion_on: Date.current,
+            deleting_user: user
+          )
+        end
+
+        it 'shows the notice that the parent group has been scheduled for deletion' do
+          subject
+
+          expect(response.body).to match(ancestor_notice_regex)
+        end
+
+        context 'when the project itself has also been scheduled for deletion' do
+          it 'does not show the notice that the parent group has been scheduled for deletion' do
+            public_project.update!(marked_for_deletion_at: Date.current)
+
+            subject
+
+            expect(response.body).not_to match(ancestor_notice_regex)
+            # However, shows the notice that the project has been marked for deletion.
+            expect(response.body).to match(
+              /This project is pending deletion, and will be deleted on .*. Repository and other project resources are read-only./
+            )
+          end
+        end
       end
     end
   end

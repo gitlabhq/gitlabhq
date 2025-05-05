@@ -139,7 +139,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/serializers/epic_entity_spec.rb'
     - 'ee/spec/serializers/epic_note_entity_spec.rb'
     - 'ee/spec/serializers/epics/related_epic_entity_spec.rb'
-    - 'ee/spec/serializers/fork_namespace_entity_spec.rb'
     - 'ee/spec/serializers/incident_management/escalation_policy_entity_spec.rb'
     - 'ee/spec/serializers/incident_management/oncall_schedule_entity_spec.rb'
     - 'ee/spec/serializers/integrations/field_entity_spec.rb'

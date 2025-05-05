@@ -22,7 +22,6 @@ RSpec.describe AdjournedGroupDeletionWorker, feature_category: :groups_and_proje
 
     before do
       stub_application_setting(deletion_adjourned_period: 14)
-      stub_licensed_features(adjourned_deletion_for_projects_and_groups: true)
     end
 
     context 'when deleting user has access to delete the group' do

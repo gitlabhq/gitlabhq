@@ -114,7 +114,6 @@ RSpec.describe GroupChildEntity do
       let_it_be(:deletion_adjourned_period) { 14 }
 
       before do
-        stub_licensed_features(adjourned_deletion_for_projects_and_groups: true)
         stub_application_setting(deletion_adjourned_period: deletion_adjourned_period)
       end
 

@@ -16,6 +16,10 @@ module Projects
           .with_collection(diff_files, merge_request: @merge_request, parallel_view: view == :parallel)
           .render_in(view_context)
       end
+
+      def sorted?
+        true
+      end
     end
   end
 end

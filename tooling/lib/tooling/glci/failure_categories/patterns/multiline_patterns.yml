@@ -14,6 +14,19 @@ failure_categories:
     patterns:
       - "Failed examples:,expected\\(:| # | \\[\\)"
       - "Failed examples:,Failure/Error:"
+    causes:
+      - "Actual test failures due to code not meeting expectations"
+      - "Flaky tests that pass locally but fail intermittently in CI"
+      - "Race conditions in tests"
+      - "Time-dependent tests that are sensitive to execution speed"
+      - "Tests affected by state from other tests"
+    solutions:
+      - "Review the failure message to understand the specific expectation that's failing"
+      - "Run the specific failing test locally: `bin/rspec <file_path>:<line_number>`"
+      - "Check if the test is flaky by running it multiple times: `bin/rspec <file_path>:<line_number> --repeat 10`"
+      - "If the test is flaky, consider adding it to quarantine with the :quarantine tag"
+      - "For race conditions, ensure proper test isolation and avoid relying on execution order"
+      - "For consistent failures, fix the underlying code to match expectations or update the test if expectations have changed"
 
   jest:
     description: |
@@ -25,6 +38,20 @@ failure_categories:
     patterns:
       - "Ran all test suites,Command failed with exit code 1"
       - "Ran all test suites,exited with status 1"
+    causes:
+      - "JavaScript component doesn't match test expectations"
+      - "Snapshot tests are outdated after UI changes"
+      - "JavaScript syntax errors or runtime errors"
+      - "Mocked services or components not properly set up"
+      - "Tests timeout due to asynchronous operations not resolving"
+      - "Vue component lifecycle issues (especially with Vue 3 compatibility)"
+    solutions:
+      - "Run the specific failing test locally: `yarn jest <test_file> -t '<test_name>'`"
+      - "Update snapshots if UI has intentionally changed: `yarn jest -u <test_file>`"
+      - "Check for JavaScript syntax errors or missing dependencies"
+      - "Ensure mocks are properly set up and cleaned up between tests"
+      - "Add proper async/await handling for asynchronous operations"
+      - "For Vue 3 compatibility issues, check the Vue migration guide for breaking changes"
 
   danger:
     description: |
@@ -43,3 +70,18 @@ failure_categories:
       Danger failures should be addressed before merging as they help maintain code quality standards.
     patterns:
       - "DANGER_GITLAB_API_TOKEN,Errors:"
+    causes:
+      - "Commit message format doesn't follow guidelines (too long, missing reference, etc.)"
+      - "Missing changelog entry when one is required"
+      - "Documentation updates required but missing"
+      - "Database migration rules not followed"
+      - "Merge request is too large (exceeds recommended changes)"
+      - "Missing labels required for certain types of changes"
+    solutions:
+      - "Review specific errors in the Danger output to identify what needs to be fixed"
+      - "Fix commit messages to follow guidelines: https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#commit-messages-guidelines"
+      - "Add a changelog entry in the correct format and location"
+      - "Update documentation to reflect code changes"
+      - "Consider splitting large merge requests into smaller, focused changes"
+      - "Add required labels based on the type of change being made"
+      - "Run the danger-review job again after making changes"

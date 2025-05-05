@@ -454,6 +454,30 @@ class MergeRequestDiff < ApplicationRecord
     base_commit_sha? && head_commit_sha? && start_commit_sha?
   end
 
+  def diffs_for_streaming(diff_options = {})
+    fetching_repository_diffs(diff_options) do |comparison|
+      reorder_diff_files!
+
+      collection = Gitlab::Diff::FileCollection::MergeRequestDiffStream.new(
+        self,
+        diff_options: diff_options
+      )
+
+      if comparison
+        # Delete the offset_index from options since we don't want to offset
+        # the diffs we will request given that we are already requesting specific
+        # paths
+        diff_options.delete(:offset_index)
+        diff_options[:generated_files] = comparison.generated_files
+        diff_options[:paths] = collection.diff_paths
+
+        comparison.diffs(diff_options)
+      else
+        collection
+      end
+    end
+  end
+
   def diffs_in_batch(batch_page, batch_size, diff_options:)
     fetching_repository_diffs(diff_options) do |comparison|
       Gitlab::Metrics.measure(:diffs_reorder) do

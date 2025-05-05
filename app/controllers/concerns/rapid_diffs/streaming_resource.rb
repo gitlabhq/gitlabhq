@@ -73,7 +73,7 @@ module RapidDiffs
       if !!ActiveModel::Type::Boolean.new.cast(params.permit(:diff_blobs)[:diff_blobs])
         stream_diff_blobs(options, view_context)
       else
-        stream_diff_collection(diffs.diff_files, view_context)
+        stream_diff_collection(diffs.diff_files(sorted: sorted?), view_context)
       end
     end
 
@@ -86,13 +86,12 @@ module RapidDiffs
     def each_growing_slice(collection, initial_size, growth_factor = 2)
       position = 0
       size = initial_size
-      total = collection.count
+      total = collection.size
 
       while position < total
-        end_pos = [position + size, total].min
-        yield collection.to_a[position...end_pos] if block_given?
+        yield collection.drop(position).first(size)
 
-        position = end_pos
+        position = [position + size, total].min
         size = (size * growth_factor).to_i
       end
     end
@@ -106,6 +105,10 @@ module RapidDiffs
       resource.diffs_for_streaming(options) do |diff_files_batch|
         response.stream.write(render_diff_files_collection(diff_files_batch, view_context))
       end
+    end
+
+    def sorted?
+      false
     end
 
     class Request < SimpleDelegator

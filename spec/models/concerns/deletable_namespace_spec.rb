@@ -53,35 +53,6 @@ RSpec.describe DeletableNamespace, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#delayed_deletion_available?' do
-    context 'when record doesn not respond to licensed_feature_available?' do
-      it 'returns nil' do
-        expect(record.delayed_deletion_available?).to be_falsy
-      end
-    end
-
-    shared_examples 'delayed deletion available with #licensed_feature_available? defined' do |feature_available|
-      context "when #licensed_feature_available? is #{feature_available}" do
-        before do
-          model.send(:define_method, :licensed_feature_available?) do |_feature_name|
-            feature_available
-          end
-        end
-
-        it "returns #{feature_available}" do
-          expect(record).to receive(:licensed_feature_available?)
-            .with(:adjourned_deletion_for_projects_and_groups)
-            .and_call_original
-
-          expect(record.delayed_deletion_available?).to be(feature_available)
-        end
-      end
-    end
-
-    it_behaves_like 'delayed deletion available with #licensed_feature_available? defined', true
-    it_behaves_like 'delayed deletion available with #licensed_feature_available? defined', false
-  end
-
   describe '#delayed_deletion_configured?' do
     context 'when Gitlab::CurrentSettings.deletion_adjourned_period > 0' do
       before do
@@ -199,9 +170,9 @@ RSpec.describe DeletableNamespace, feature_category: :groups_and_projects do
   end
 
   describe '#delayed_deletion_ready? & #adjourned_deletion?' do
-    context 'when #delayed_deletion_available? is false' do
+    context 'when #delayed_deletion_configured? is false' do
       before do
-        allow(record).to receive(:delayed_deletion_available?).and_return(false)
+        allow(record).to receive(:delayed_deletion_configured?).and_return(false)
       end
 
       it 'returns false' do
@@ -210,31 +181,14 @@ RSpec.describe DeletableNamespace, feature_category: :groups_and_projects do
       end
     end
 
-    context 'when #delayed_deletion_available? is true' do
+    context 'when #delayed_deletion_configured? is true' do
       before do
-        allow(record).to receive(:delayed_deletion_available?).and_return(true)
+        allow(record).to receive(:delayed_deletion_configured?).and_return(true)
       end
 
-      context 'when #delayed_deletion_configured? is false' do
-        before do
-          allow(record).to receive(:delayed_deletion_configured?).and_return(false)
-        end
-
-        it 'returns false' do
-          expect(record.delayed_deletion_ready?).to be_falsy
-          expect(record.adjourned_deletion?).to be_falsy
-        end
-      end
-
-      context 'when #delayed_deletion_configured? is true' do
-        before do
-          allow(record).to receive(:delayed_deletion_configured?).and_return(true)
-        end
-
-        it 'returns true' do
-          expect(record.delayed_deletion_ready?).to be_truthy
-          expect(record.adjourned_deletion?).to be_truthy
-        end
+      it 'returns true' do
+        expect(record.delayed_deletion_ready?).to be_truthy
+        expect(record.adjourned_deletion?).to be_truthy
       end
     end
   end
