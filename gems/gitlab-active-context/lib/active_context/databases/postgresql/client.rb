@@ -22,7 +22,7 @@ module ActiveContext
         end
 
         def search(user:, collection:, query:)
-          sql = Processor.transform(collection.collection_name, query)
+          sql = Processor.transform(collection: collection, node: query, user: user)
 
           result = with_connection do |conn|
             conn.execute(sql)

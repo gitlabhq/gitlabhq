@@ -145,11 +145,24 @@ RSpec.describe ActiveContext::Query do
         expect(knn_query.children).to contain_exactly(base_query)
       end
 
-      it 'raises an error for nil target' do
+      it 'passes content when specified' do
+        content = 'something'
+        base_query = described_class.filter(project_id: 1)
+        knn_query = base_query.knn(content: content, limit: 5)
+
+        expect(knn_query.type).to eq(:knn)
+        expect(knn_query.value).to eq(
+          content: content,
+          limit: 5
+        )
+        expect(knn_query.children).to contain_exactly(base_query)
+      end
+
+      it 'raises an error for nil target and content' do
         base_query = described_class.filter(project_id: 1)
         vector = [0.1, 0.2, 0.3]
         expect { base_query.knn(target: nil, vector: vector, limit: 5) }
-          .to raise_error(ArgumentError, "Target cannot be nil")
+          .to raise_error(ArgumentError, /:content must be provided OR both :target AND :vector must be provided/)
       end
 
       it 'raises an error for nil limit' do
@@ -221,6 +234,14 @@ RSpec.describe ActiveContext::Query do
 
         ast = knn_query.inspect_ast
         expect(ast).to eq("knn(target: similarity, vector: [0.1, 0.2, 0.3], limit: 5)\n  filter(project_id: 1)")
+      end
+
+      it 'generates a readable AST representation for a KNN query with content' do
+        base_query = described_class.filter(project_id: 1)
+        knn_query = base_query.knn(content: 'something', limit: 5)
+
+        ast = knn_query.inspect_ast
+        expect(ast).to eq("knn(content: something, limit: 5)\n  filter(project_id: 1)")
       end
 
       it 'generates a readable AST representation for a KNN query without a base query' do

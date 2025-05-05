@@ -300,6 +300,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '.with_live_trace' do
     subject { described_class.with_live_trace }
 
+    before do
+      stub_application_setting(ci_job_live_trace_enabled: true)
+    end
+
     context 'when build has live trace' do
       let!(:build) { create(:ci_build, :success, :trace_live, pipeline: pipeline) }
 
@@ -319,6 +323,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   describe '.with_stale_live_trace' do
     subject { described_class.with_stale_live_trace }
+
+    before do
+      stub_application_setting(ci_job_live_trace_enabled: true)
+    end
 
     context 'when build has a stale live trace' do
       let!(:build) { create(:ci_build, :success, :trace_live, finished_at: 1.day.ago, pipeline: pipeline) }

@@ -135,6 +135,7 @@ Custom token prefixes apply only to the following tokens:
 
 - [Feed tokens](../../security/tokens/_index.md#feed-token)
 - [Deploy tokens](../../user/project/deploy_tokens/_index.md)
+- [Feature flags client tokens](../../operations/feature_flags.md#get-access-credentials)
 
 Prerequisites:
 

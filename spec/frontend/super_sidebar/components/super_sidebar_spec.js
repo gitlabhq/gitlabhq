@@ -356,7 +356,7 @@ describe('SuperSidebar component', () => {
         createWrapper({
           sidebarData: {
             ...mockSidebarData,
-            is_admin: true,
+            admin_mode: { user_is_admin: true },
           },
         });
         expect(findAdminLink().attributes('href')).toBe(mockSidebarData.admin_url);

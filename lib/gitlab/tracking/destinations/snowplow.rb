@@ -10,6 +10,8 @@ module Gitlab
 
         SNOWPLOW_NAMESPACE = 'gl'
         PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT = 'events-stg.gitlab.net'
+        DEDICATED_APP_ID = 'gitlab_dedicated'
+        SELF_MANAGED_APP_ID = 'gitlab_sm'
 
         def initialize
           @event_eligibility_checker = Gitlab::Tracking::EventEligibilityChecker.new
@@ -62,6 +64,14 @@ module Gitlab
           end
         end
 
+        def app_id
+          if Gitlab::CurrentSettings.snowplow_enabled?
+            Gitlab::CurrentSettings.snowplow_app_id
+          else
+            product_usage_event_app_id
+          end
+        end
+
         private
 
         def snowplow_options(group)
@@ -89,8 +99,12 @@ module Gitlab
           }
         end
 
-        def app_id
-          Gitlab::CurrentSettings.snowplow_app_id
+        def product_usage_event_app_id
+          if ::Gitlab::CurrentSettings.gitlab_dedicated_instance?
+            DEDICATED_APP_ID
+          else
+            SELF_MANAGED_APP_ID
+          end
         end
 
         def protocol

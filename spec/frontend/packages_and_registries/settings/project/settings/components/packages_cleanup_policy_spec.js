@@ -4,6 +4,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import SettingsSubSection from '~/vue_shared/components/settings/settings_sub_section.vue';
 import PackagesCleanupPolicy from '~/packages_and_registries/settings/project/components/packages_cleanup_policy.vue';
 import PackagesCleanupPolicyForm from '~/packages_and_registries/settings/project/components/packages_cleanup_policy_form.vue';
 import { FETCH_SETTINGS_ERROR_MESSAGE } from '~/packages_and_registries/settings/project/constants';
@@ -22,8 +23,8 @@ describe('Packages cleanup policy project settings', () => {
   };
 
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findSection = () => wrapper.findComponent(SettingsSubSection);
   const findFormComponent = () => wrapper.findComponent(PackagesCleanupPolicyForm);
-  const findHeader = () => wrapper.find('h2');
 
   const mountComponent = (provide = defaultProvidedValues, config) => {
     wrapper = shallowMount(PackagesCleanupPolicy, {
@@ -51,7 +52,7 @@ describe('Packages cleanup policy project settings', () => {
     });
     await waitForPromises();
 
-    expect(findHeader().text()).toBe('Manage storage used by package assets');
+    expect(findSection().props('heading')).toBe('Manage storage used by package assets');
     expect(findFormComponent().exists()).toBe(true);
     expect(findFormComponent().props('value')).toEqual(packagesCleanupPolicyData);
   });

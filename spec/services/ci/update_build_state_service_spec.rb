@@ -12,7 +12,7 @@ RSpec.describe Ci::UpdateBuildStateService, feature_category: :continuous_integr
   subject { described_class.new(build, params) }
 
   before do
-    stub_feature_flags(ci_enable_live_trace: true)
+    stub_application_setting(ci_job_live_trace_enabled: true)
   end
 
   context 'when build has unknown failure reason' do
@@ -462,7 +462,7 @@ RSpec.describe Ci::UpdateBuildStateService, feature_category: :continuous_integr
 
       context 'when live traces are disabled' do
         before do
-          stub_feature_flags(ci_enable_live_trace: false)
+          stub_application_setting(ci_job_live_trace_enabled: false)
         end
 
         it 'responds with 200 OK' do

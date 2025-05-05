@@ -1,11 +1,11 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
+import SettingsSubSection from '~/vue_shared/components/settings/settings_sub_section.vue';
 
-describe('Settings section', () => {
+describe('Settings Sub Section', () => {
   let wrapper;
 
   const mountComponent = (propsData) => {
-    wrapper = mountExtended(SettingsSection, {
+    wrapper = mountExtended(SettingsSubSection, {
       propsData,
       slots: {
         heading: '<div data-testid="heading-slot">Heading</div>',
@@ -15,12 +15,11 @@ describe('Settings section', () => {
     });
   };
 
-  const findSection = () => wrapper.findByTestId('settings-section');
   const findDefaultSlot = () => wrapper.findByTestId('default-slot');
   const findHeadingSlot = () => wrapper.findByTestId('heading-slot');
-  const findHeading = () => wrapper.findByTestId('settings-section-heading');
+  const findHeading = () => wrapper.findByTestId('settings-sub-section-heading');
   const findDescriptionSlot = () => wrapper.findByTestId('description-slot');
-  const findDescription = () => wrapper.findByTestId('settings-section-description');
+  const findDescription = () => wrapper.findByTestId('settings-sub-section-description');
 
   it('has a default slot', () => {
     mountComponent();
@@ -38,7 +37,7 @@ describe('Settings section', () => {
     mountComponent();
 
     expect(findHeading().text()).toBe('Heading');
-    expect(findHeading().classes()).toEqual(['gl-heading-2', '!gl-mb-3']);
+    expect(findHeading().classes()).toEqual(['gl-heading-3', '!gl-mb-3']);
   });
 
   it('has a description slot', () => {
@@ -51,14 +50,6 @@ describe('Settings section', () => {
     mountComponent();
 
     expect(findDescription().text()).toBe('Description');
-    expect(findDescription().classes()).toEqual(
-      expect.arrayContaining(['gl-text-subtle', 'gl-mb-3']),
-    );
-  });
-
-  it('option "noBottomBorder" has been set', () => {
-    mountComponent({ noBottomBorder: true });
-
-    expect(findSection().classes()).toContain('settings-section-no-bottom');
+    expect(findDescription().classes()).toEqual(expect.arrayContaining(['gl-text-subtle']));
   });
 });

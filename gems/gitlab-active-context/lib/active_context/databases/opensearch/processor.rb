@@ -12,8 +12,8 @@ module ActiveContext
         # @return [Hash] The Opensearch query DSL
         # @example
         #   Processor.transform(ActiveContext::Query.filter(status: 'active'))
-        def self.transform(_collection, node)
-          new.process(node)
+        def self.transform(collection:, node:, user:)
+          new(collection: collection, user: user).process(node)
         end
 
         # Processes KNN query, combining with optional filter conditions
@@ -85,13 +85,12 @@ module ActiveContext
         #   #      }
         #   #    }
         def extract_knn_params(node)
-          knn_params = node.value
-          k = knn_params[:limit]
+          values = knn_node_values(node)
 
           {
-            knn_params[:target] => {
-              k: k,
-              vector: knn_params[:vector]
+            values[:field] => {
+              k: values[:k],
+              vector: values[:vector]
             }
           }
         end

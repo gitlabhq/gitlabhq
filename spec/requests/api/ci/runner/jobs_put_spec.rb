@@ -8,7 +8,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
   include WorkhorseHelpers
 
   before do
-    stub_feature_flags(ci_enable_live_trace: true)
+    stub_application_setting(ci_job_live_trace_enabled: true)
     stub_gitlab_calls
     allow_any_instance_of(::Ci::Runner).to receive(:cache_attributes)
   end
@@ -159,6 +159,11 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end
 
         context 'when unmigrated live trace chunks exist' do
+          let(:job) do
+            create(:ci_build, :pending, :trace_live, pipeline: pipeline, project: project, user: user,
+              runner_id: runner.id, runner_manager: runner_manager)
+          end
+
           context 'when checksum is present' do
             context 'when live trace chunk is still live' do
               it 'responds with 202' do

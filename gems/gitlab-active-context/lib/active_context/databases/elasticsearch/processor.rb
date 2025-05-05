@@ -12,8 +12,8 @@ module ActiveContext
         # @return [Hash] The Elasticsearch query DSL
         # @example
         #   Processor.transform(ActiveContext::Query.filter(status: 'active'))
-        def self.transform(_collection, node)
-          new.process(node)
+        def self.transform(collection:, node:, user:)
+          new(collection: collection, user: user).process(node)
         end
 
         # Processes KNN query, combining with optional filter conditions
@@ -69,13 +69,13 @@ module ActiveContext
         #   #      num_candidates: 50
         #   #    }
         def extract_knn_params(node)
-          knn_params = node.value
-          k = knn_params[:limit]
+          values = knn_node_values(node)
+
           {
-            field: knn_params[:target],
-            query_vector: knn_params[:vector],
-            k: k,
-            num_candidates: k * 10
+            field: values[:field],
+            query_vector: values[:vector],
+            k: values[:k],
+            num_candidates: values[:k] * 10
           }
         end
       end

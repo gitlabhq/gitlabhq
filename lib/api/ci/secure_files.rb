@@ -41,7 +41,7 @@ module API
           failure [{ code: 404, message: '404 Not found' }]
         end
         params do
-          requires :id, type: Integer, desc: 'The ID of a secure file'
+          requires :secure_file_id, type: Integer, desc: 'The ID of a secure file'
         end
 
         route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true
@@ -55,6 +55,10 @@ module API
           failure [{ code: 404, message: '404 Not found' }]
           tags %w[secure_files]
         end
+        params do
+          requires :secure_file_id, type: Integer, desc: 'The ID of a secure file'
+        end
+
         route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_secure_files
         get ':id/secure_files/:secure_file_id/download' do

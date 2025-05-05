@@ -1605,7 +1605,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryvulnerabilitiesclusteragentid"></a>`clusterAgentId` | [`[ClustersAgentID!]`](#clustersagentid) | Filter vulnerabilities by `cluster_agent_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="queryvulnerabilitiesclusterid"></a>`clusterId` | [`[ClustersClusterID!]`](#clustersclusterid) | Filter vulnerabilities by `cluster_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="queryvulnerabilitiesdismissalreason"></a>`dismissalReason` | [`[VulnerabilityDismissalReason!]`](#vulnerabilitydismissalreason) | Filter by dismissal reason. Only dismissed Vulnerabilities will be included with the filter. |
-| <a id="queryvulnerabilitieshasairesolution"></a>`hasAiResolution` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Returns only the vulnerabilities which can likely be resolved by GitLab Duo Vulnerability Resolution. Requires the `vulnerability_report_vr_filter` feature flag to be enabled, otherwise the argument is ignored. |
+| <a id="queryvulnerabilitieshasairesolution"></a>`hasAiResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which can likely be resolved by GitLab Duo Vulnerability Resolution. |
 | <a id="queryvulnerabilitieshasissues"></a>`hasIssues` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked issues. |
 | <a id="queryvulnerabilitieshasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked merge requests. |
 | <a id="queryvulnerabilitieshasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have remediations. |
@@ -22362,6 +22362,7 @@ Represents a list for an issue board.
 | <a id="boardlistmaxissueweight"></a>`maxIssueWeight` | [`Int`](#int) | Maximum weight of issues in the list. |
 | <a id="boardlistmilestone"></a>`milestone` | [`Milestone`](#milestone) | Milestone of the list. |
 | <a id="boardlistposition"></a>`position` | [`Int`](#int) | Position of list within the board. |
+| <a id="boardliststatus"></a>`status` {{< icon name="warning-solid" >}} | [`WorkItemStatus`](#workitemstatus) | **Introduced** in GitLab 18.0. **Status**: Experiment. Status of the list. |
 | <a id="boardlisttitle"></a>`title` | [`String!`](#string) | Title of the list. |
 | <a id="boardlisttotalissueweight"></a>`totalIssueWeight` | [`BigInt`](#bigint) | Total weight of all issues in the list, encoded as a string. |
 
@@ -29026,7 +29027,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupvulnerabilitiesclusteragentid"></a>`clusterAgentId` | [`[ClustersAgentID!]`](#clustersagentid) | Filter vulnerabilities by `cluster_agent_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="groupvulnerabilitiesclusterid"></a>`clusterId` | [`[ClustersClusterID!]`](#clustersclusterid) | Filter vulnerabilities by `cluster_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="groupvulnerabilitiesdismissalreason"></a>`dismissalReason` | [`[VulnerabilityDismissalReason!]`](#vulnerabilitydismissalreason) | Filter by dismissal reason. Only dismissed Vulnerabilities will be included with the filter. |
-| <a id="groupvulnerabilitieshasairesolution"></a>`hasAiResolution` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Returns only the vulnerabilities which can likely be resolved by GitLab Duo Vulnerability Resolution. Requires the `vulnerability_report_vr_filter` feature flag to be enabled, otherwise the argument is ignored. |
+| <a id="groupvulnerabilitieshasairesolution"></a>`hasAiResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which can likely be resolved by GitLab Duo Vulnerability Resolution. |
 | <a id="groupvulnerabilitieshasissues"></a>`hasIssues` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked issues. |
 | <a id="groupvulnerabilitieshasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked merge requests. |
 | <a id="groupvulnerabilitieshasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have remediations. |
@@ -29119,7 +29120,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="groupvulnerabilityseveritiescountcapped"></a>`capped` | [`Boolean`](#boolean) | Default value is false. When set to true, the count returned for each severity is capped at a maximum of 1001. |
 | <a id="groupvulnerabilityseveritiescountclusteragentid"></a>`clusterAgentId` | [`[ClustersAgentID!]`](#clustersagentid) | Filter vulnerabilities by `cluster_agent_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="groupvulnerabilityseveritiescountdismissalreason"></a>`dismissalReason` | [`[VulnerabilityDismissalReason!]`](#vulnerabilitydismissalreason) | Filter by dismissal reason. |
-| <a id="groupvulnerabilityseveritiescounthasairesolution"></a>`hasAiResolution` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Filters vulnerabilities which can or can not be resolved by GitLab Duo Vulnerability Resolution. Requires the `vulnerability_report_vr_filter` feature flag to be enabled, otherwise the argument is ignored. |
+| <a id="groupvulnerabilityseveritiescounthasairesolution"></a>`hasAiResolution` | [`Boolean`](#boolean) | Filters vulnerabilities which can or can not be resolved by GitLab Duo Vulnerability Resolution. |
 | <a id="groupvulnerabilityseveritiescounthasissues"></a>`hasIssues` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have issues. |
 | <a id="groupvulnerabilityseveritiescounthasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have a merge request. |
 | <a id="groupvulnerabilityseveritiescounthasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have remediations. |
@@ -29981,7 +29982,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountcapped"></a>`capped` | [`Boolean`](#boolean) | Default value is false. When set to true, the count returned for each severity is capped at a maximum of 1001. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountclusteragentid"></a>`clusterAgentId` | [`[ClustersAgentID!]`](#clustersagentid) | Filter vulnerabilities by `cluster_agent_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountdismissalreason"></a>`dismissalReason` | [`[VulnerabilityDismissalReason!]`](#vulnerabilitydismissalreason) | Filter by dismissal reason. |
-| <a id="instancesecuritydashboardvulnerabilityseveritiescounthasairesolution"></a>`hasAiResolution` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Filters vulnerabilities which can or can not be resolved by GitLab Duo Vulnerability Resolution. Requires the `vulnerability_report_vr_filter` feature flag to be enabled, otherwise the argument is ignored. |
+| <a id="instancesecuritydashboardvulnerabilityseveritiescounthasairesolution"></a>`hasAiResolution` | [`Boolean`](#boolean) | Filters vulnerabilities which can or can not be resolved by GitLab Duo Vulnerability Resolution. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescounthasissues"></a>`hasIssues` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have issues. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescounthasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have a merge request. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescounthasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have remediations. |
@@ -37047,7 +37048,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectvulnerabilitiesclusteragentid"></a>`clusterAgentId` | [`[ClustersAgentID!]`](#clustersagentid) | Filter vulnerabilities by `cluster_agent_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="projectvulnerabilitiesclusterid"></a>`clusterId` | [`[ClustersClusterID!]`](#clustersclusterid) | Filter vulnerabilities by `cluster_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="projectvulnerabilitiesdismissalreason"></a>`dismissalReason` | [`[VulnerabilityDismissalReason!]`](#vulnerabilitydismissalreason) | Filter by dismissal reason. Only dismissed Vulnerabilities will be included with the filter. |
-| <a id="projectvulnerabilitieshasairesolution"></a>`hasAiResolution` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Returns only the vulnerabilities which can likely be resolved by GitLab Duo Vulnerability Resolution. Requires the `vulnerability_report_vr_filter` feature flag to be enabled, otherwise the argument is ignored. |
+| <a id="projectvulnerabilitieshasairesolution"></a>`hasAiResolution` | [`Boolean`](#boolean) | Returns only the vulnerabilities which can likely be resolved by GitLab Duo Vulnerability Resolution. |
 | <a id="projectvulnerabilitieshasissues"></a>`hasIssues` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked issues. |
 | <a id="projectvulnerabilitieshasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have linked merge requests. |
 | <a id="projectvulnerabilitieshasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Returns only the vulnerabilities which have remediations. |
@@ -37127,7 +37128,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="projectvulnerabilityseveritiescountcapped"></a>`capped` | [`Boolean`](#boolean) | Default value is false. When set to true, the count returned for each severity is capped at a maximum of 1001. |
 | <a id="projectvulnerabilityseveritiescountclusteragentid"></a>`clusterAgentId` | [`[ClustersAgentID!]`](#clustersagentid) | Filter vulnerabilities by `cluster_agent_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="projectvulnerabilityseveritiescountdismissalreason"></a>`dismissalReason` | [`[VulnerabilityDismissalReason!]`](#vulnerabilitydismissalreason) | Filter by dismissal reason. |
-| <a id="projectvulnerabilityseveritiescounthasairesolution"></a>`hasAiResolution` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Filters vulnerabilities which can or can not be resolved by GitLab Duo Vulnerability Resolution. Requires the `vulnerability_report_vr_filter` feature flag to be enabled, otherwise the argument is ignored. |
+| <a id="projectvulnerabilityseveritiescounthasairesolution"></a>`hasAiResolution` | [`Boolean`](#boolean) | Filters vulnerabilities which can or can not be resolved by GitLab Duo Vulnerability Resolution. |
 | <a id="projectvulnerabilityseveritiescounthasissues"></a>`hasIssues` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have issues. |
 | <a id="projectvulnerabilityseveritiescounthasmergerequest"></a>`hasMergeRequest` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have a merge request. |
 | <a id="projectvulnerabilityseveritiescounthasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have remediations. |
@@ -45259,54 +45260,56 @@ State of a Sentry error.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="servicetypeapple_app_store_service"></a>`APPLE_APP_STORE_SERVICE` | AppleAppStoreService type. |
-| <a id="servicetypeasana_service"></a>`ASANA_SERVICE` | AsanaService type. |
-| <a id="servicetypeassembla_service"></a>`ASSEMBLA_SERVICE` | AssemblaService type. |
-| <a id="servicetypebamboo_service"></a>`BAMBOO_SERVICE` | BambooService type. |
-| <a id="servicetypebugzilla_service"></a>`BUGZILLA_SERVICE` | BugzillaService type. |
-| <a id="servicetypebuildkite_service"></a>`BUILDKITE_SERVICE` | BuildkiteService type. |
-| <a id="servicetypecampfire_service"></a>`CAMPFIRE_SERVICE` | CampfireService type. |
-| <a id="servicetypeclickup_service"></a>`CLICKUP_SERVICE` | ClickupService type. |
-| <a id="servicetypeconfluence_service"></a>`CONFLUENCE_SERVICE` | ConfluenceService type. |
-| <a id="servicetypecustom_issue_tracker_service"></a>`CUSTOM_ISSUE_TRACKER_SERVICE` | CustomIssueTrackerService type. |
-| <a id="servicetypedatadog_service"></a>`DATADOG_SERVICE` | DatadogService type. |
-| <a id="servicetypediffblue_cover_service"></a>`DIFFBLUE_COVER_SERVICE` | DiffblueCoverService type. |
-| <a id="servicetypediscord_service"></a>`DISCORD_SERVICE` | DiscordService type. |
-| <a id="servicetypedrone_ci_service"></a>`DRONE_CI_SERVICE` | DroneCiService type. |
-| <a id="servicetypeemails_on_push_service"></a>`EMAILS_ON_PUSH_SERVICE` | EmailsOnPushService type. |
-| <a id="servicetypeewm_service"></a>`EWM_SERVICE` | EwmService type. |
-| <a id="servicetypeexternal_wiki_service"></a>`EXTERNAL_WIKI_SERVICE` | ExternalWikiService type. |
-| <a id="servicetypegithub_service"></a>`GITHUB_SERVICE` | GithubService type. |
-| <a id="servicetypegitlab_slack_application_service"></a>`GITLAB_SLACK_APPLICATION_SERVICE` | GitlabSlackApplicationService type. |
-| <a id="servicetypegit_guardian_service"></a>`GIT_GUARDIAN_SERVICE` | GitGuardianService type. |
-| <a id="servicetypegoogle_play_service"></a>`GOOGLE_PLAY_SERVICE` | GooglePlayService type. |
-| <a id="servicetypehangouts_chat_service"></a>`HANGOUTS_CHAT_SERVICE` | HangoutsChatService type. |
-| <a id="servicetypeharbor_service"></a>`HARBOR_SERVICE` | HarborService type. |
-| <a id="servicetypeirker_service"></a>`IRKER_SERVICE` | IrkerService type. |
-| <a id="servicetypejenkins_service"></a>`JENKINS_SERVICE` | JenkinsService type. |
-| <a id="servicetypejira_cloud_app_service"></a>`JIRA_CLOUD_APP_SERVICE` | JiraCloudAppService type. |
-| <a id="servicetypejira_service"></a>`JIRA_SERVICE` | JiraService type. |
-| <a id="servicetypematrix_service"></a>`MATRIX_SERVICE` | MatrixService type. |
-| <a id="servicetypemattermost_service"></a>`MATTERMOST_SERVICE` | MattermostService type. |
-| <a id="servicetypemattermost_slash_commands_service"></a>`MATTERMOST_SLASH_COMMANDS_SERVICE` | MattermostSlashCommandsService type. |
-| <a id="servicetypemicrosoft_teams_service"></a>`MICROSOFT_TEAMS_SERVICE` | MicrosoftTeamsService type. |
-| <a id="servicetypepackagist_service"></a>`PACKAGIST_SERVICE` | PackagistService type. |
-| <a id="servicetypephorge_service"></a>`PHORGE_SERVICE` | PhorgeService type. |
-| <a id="servicetypepipelines_email_service"></a>`PIPELINES_EMAIL_SERVICE` | PipelinesEmailService type. |
-| <a id="servicetypepivotaltracker_service"></a>`PIVOTALTRACKER_SERVICE` | PivotaltrackerService type. |
-| <a id="servicetypeprometheus_service"></a>`PROMETHEUS_SERVICE` | PrometheusService type. |
-| <a id="servicetypepumble_service"></a>`PUMBLE_SERVICE` | PumbleService type. |
-| <a id="servicetypepushover_service"></a>`PUSHOVER_SERVICE` | PushoverService type. |
-| <a id="servicetyperedmine_service"></a>`REDMINE_SERVICE` | RedmineService type. |
-| <a id="servicetypeslack_service"></a>`SLACK_SERVICE` | SlackService type. |
-| <a id="servicetypeslack_slash_commands_service"></a>`SLACK_SLASH_COMMANDS_SERVICE` | SlackSlashCommandsService type. |
-| <a id="servicetypesquash_tm_service"></a>`SQUASH_TM_SERVICE` | SquashTmService type. |
-| <a id="servicetypeteamcity_service"></a>`TEAMCITY_SERVICE` | TeamcityService type. |
-| <a id="servicetypetelegram_service"></a>`TELEGRAM_SERVICE` | TelegramService type. |
-| <a id="servicetypeunify_circuit_service"></a>`UNIFY_CIRCUIT_SERVICE` | UnifyCircuitService type. |
-| <a id="servicetypewebex_teams_service"></a>`WEBEX_TEAMS_SERVICE` | WebexTeamsService type. |
-| <a id="servicetypeyoutrack_service"></a>`YOUTRACK_SERVICE` | YoutrackService type. |
-| <a id="servicetypezentao_service"></a>`ZENTAO_SERVICE` | ZentaoService type. |
+| <a id="servicetypeapple_app_store_service"></a>`APPLE_APP_STORE_SERVICE` | Apple App Store Connect integration. |
+| <a id="servicetypeasana_service"></a>`ASANA_SERVICE` | Asana integration. |
+| <a id="servicetypeassembla_service"></a>`ASSEMBLA_SERVICE` | Assembla integration. |
+| <a id="servicetypebamboo_service"></a>`BAMBOO_SERVICE` | Atlassian Bamboo integration. |
+| <a id="servicetypebugzilla_service"></a>`BUGZILLA_SERVICE` | Bugzilla integration. |
+| <a id="servicetypebuildkite_service"></a>`BUILDKITE_SERVICE` | Buildkite integration. |
+| <a id="servicetypecampfire_service"></a>`CAMPFIRE_SERVICE` | Campfire integration. |
+| <a id="servicetypeclickup_service"></a>`CLICKUP_SERVICE` | ClickUp integration. |
+| <a id="servicetypeconfluence_service"></a>`CONFLUENCE_SERVICE` | Confluence Workspace integration. |
+| <a id="servicetypecustom_issue_tracker_service"></a>`CUSTOM_ISSUE_TRACKER_SERVICE` | Custom issue tracker integration. |
+| <a id="servicetypedatadog_service"></a>`DATADOG_SERVICE` | Datadog integration. |
+| <a id="servicetypediffblue_cover_service"></a>`DIFFBLUE_COVER_SERVICE` | Diffblue Cover integration. |
+| <a id="servicetypediscord_service"></a>`DISCORD_SERVICE` | Discord Notifications integration. |
+| <a id="servicetypedrone_ci_service"></a>`DRONE_CI_SERVICE` | Drone integration. |
+| <a id="servicetypeemails_on_push_service"></a>`EMAILS_ON_PUSH_SERVICE` | Emails on push integration. |
+| <a id="servicetypeewm_service"></a>`EWM_SERVICE` | EWM integration. |
+| <a id="servicetypeexternal_wiki_service"></a>`EXTERNAL_WIKI_SERVICE` | External wiki integration. |
+| <a id="servicetypegithub_service"></a>`GITHUB_SERVICE` | GitHub integration. |
+| <a id="servicetypegitlab_slack_application_service"></a>`GITLAB_SLACK_APPLICATION_SERVICE` | GitLab for Slack app integration. |
+| <a id="servicetypegit_guardian_service"></a>`GIT_GUARDIAN_SERVICE` | GitGuardian integration. |
+| <a id="servicetypegoogle_cloud_platform_artifact_registry_service"></a>`GOOGLE_CLOUD_PLATFORM_ARTIFACT_REGISTRY_SERVICE` | Google Artifact Management integration (SaaS only). |
+| <a id="servicetypegoogle_cloud_platform_workload_identity_federation_service"></a>`GOOGLE_CLOUD_PLATFORM_WORKLOAD_IDENTITY_FEDERATION_SERVICE` | Google Cloud IAM integration (SaaS only). |
+| <a id="servicetypegoogle_play_service"></a>`GOOGLE_PLAY_SERVICE` | Google Play integration. |
+| <a id="servicetypehangouts_chat_service"></a>`HANGOUTS_CHAT_SERVICE` | Google Chat integration. |
+| <a id="servicetypeharbor_service"></a>`HARBOR_SERVICE` | Harbor integration. |
+| <a id="servicetypeirker_service"></a>`IRKER_SERVICE` | irker (IRC gateway) integration. |
+| <a id="servicetypejenkins_service"></a>`JENKINS_SERVICE` | Jenkins integration. |
+| <a id="servicetypejira_cloud_app_service"></a>`JIRA_CLOUD_APP_SERVICE` | GitLab for Jira Cloud app integration. |
+| <a id="servicetypejira_service"></a>`JIRA_SERVICE` | Jira issues integration. |
+| <a id="servicetypematrix_service"></a>`MATRIX_SERVICE` | Matrix notifications integration. |
+| <a id="servicetypemattermost_service"></a>`MATTERMOST_SERVICE` | Mattermost notifications integration. |
+| <a id="servicetypemattermost_slash_commands_service"></a>`MATTERMOST_SLASH_COMMANDS_SERVICE` | Mattermost slash commands integration. |
+| <a id="servicetypemicrosoft_teams_service"></a>`MICROSOFT_TEAMS_SERVICE` | Microsoft Teams notifications integration. |
+| <a id="servicetypepackagist_service"></a>`PACKAGIST_SERVICE` | Packagist integration. |
+| <a id="servicetypephorge_service"></a>`PHORGE_SERVICE` | Phorge integration. |
+| <a id="servicetypepipelines_email_service"></a>`PIPELINES_EMAIL_SERVICE` | Pipeline status emails integration. |
+| <a id="servicetypepivotaltracker_service"></a>`PIVOTALTRACKER_SERVICE` | Pivotal Tracker integration. |
+| <a id="servicetypeprometheus_service"></a>`PROMETHEUS_SERVICE` | Prometheus integration. |
+| <a id="servicetypepumble_service"></a>`PUMBLE_SERVICE` | Pumble integration. |
+| <a id="servicetypepushover_service"></a>`PUSHOVER_SERVICE` | Pushover integration. |
+| <a id="servicetyperedmine_service"></a>`REDMINE_SERVICE` | Redmine integration. |
+| <a id="servicetypeslack_service"></a>`SLACK_SERVICE` | Slack notifications integration. |
+| <a id="servicetypeslack_slash_commands_service"></a>`SLACK_SLASH_COMMANDS_SERVICE` | Slack slash commands integration. |
+| <a id="servicetypesquash_tm_service"></a>`SQUASH_TM_SERVICE` | Squash TM integration. |
+| <a id="servicetypeteamcity_service"></a>`TEAMCITY_SERVICE` | JetBrains TeamCity integration. |
+| <a id="servicetypetelegram_service"></a>`TELEGRAM_SERVICE` | Telegram integration. |
+| <a id="servicetypeunify_circuit_service"></a>`UNIFY_CIRCUIT_SERVICE` | Unify Circuit integration. |
+| <a id="servicetypewebex_teams_service"></a>`WEBEX_TEAMS_SERVICE` | Webex Teams integration. |
+| <a id="servicetypeyoutrack_service"></a>`YOUTRACK_SERVICE` | JetBrains YouTrack integration. |
+| <a id="servicetypezentao_service"></a>`ZENTAO_SERVICE` | ZenTao integration. |
 
 ### `ShaFormat`
 

@@ -221,7 +221,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
           hostname: 'gitlab.example.com',
           postPath: '/events',
           forceSecureTracker: true,
-          appId: nil
+          appId: 'gitlab_sm'
         }
 
         expect(subject.frontend_client_options(group)).to eq(expected)
@@ -281,6 +281,37 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
 
       it 'returns product usage event collection hostname' do
         expect(subject.hostname).to eq('events-stg.gitlab.net')
+      end
+    end
+
+    describe '#app_id' do
+      subject { described_class.new.app_id }
+
+      context 'when snowplow is enabled' do
+        before do
+          stub_application_setting(snowplow_enabled?: true)
+        end
+
+        it { is_expected.to eq('_abc123_') }
+      end
+
+      context 'when snowplow is disabled' do
+        before do
+          stub_application_setting(snowplow_enabled?: false)
+          stub_application_setting(gitlab_dedicated_instance?: dedicated_instance)
+        end
+
+        context 'when dedicated instance' do
+          let(:dedicated_instance) { true }
+
+          it { is_expected.to eq('gitlab_dedicated') }
+        end
+
+        context 'when self-hosted instance' do
+          let(:dedicated_instance) { false }
+
+          it { is_expected.to eq('gitlab_sm') }
+        end
       end
     end
   end

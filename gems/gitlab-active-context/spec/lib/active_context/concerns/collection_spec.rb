@@ -87,8 +87,8 @@ RSpec.describe ActiveContext::Concerns::Collection do
       allow(collection_record).to receive(:search_embedding_version).and_return(search_embedding_version)
     end
 
-    it 'is nil' do
-      expect(collection_class.current_search_embedding_version).to be_nil
+    it 'is empty hash' do
+      expect(collection_class.current_search_embedding_version).to eq({})
     end
 
     context 'when a MODELS constant is defined on the class' do
@@ -106,8 +106,8 @@ RSpec.describe ActiveContext::Concerns::Collection do
       context 'when MODELS does not have an entry for collection_record.search_embedding_version' do
         let(:search_embedding_version) { 2 }
 
-        it 'is nil' do
-          expect(collection_class.current_search_embedding_version).to be_nil
+        it 'is empty hash' do
+          expect(collection_class.current_search_embedding_version).to eq({})
         end
       end
     end

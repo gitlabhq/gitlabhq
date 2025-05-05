@@ -16,7 +16,7 @@ module ActiveContext
         end
 
         def search(user:, collection:, query:)
-          es_query = Processor.transform(collection, query)
+          es_query = Processor.transform(collection: collection, node: query, user: user)
           result = client.search(index: collection.collection_name, body: es_query)
 
           QueryResult.new(result: result, collection: collection, user: user).authorized_results

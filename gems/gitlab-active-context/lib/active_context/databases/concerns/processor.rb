@@ -9,7 +9,7 @@ module ActiveContext
       #   class MyProcessor
       #     include ActiveContext::Databases::Concerns::Processor
       #
-      #     def self.transform(node)
+      #     def self.transform(collection:, node:, user:)
       #       new.process(node)
       #     end
       #
@@ -29,9 +29,13 @@ module ActiveContext
 
         class_methods do
           # @abstract Implement .transform in subclass to handle query transformation
-          def transform(_collection, _node)
+          def transform(collection:, node:, user:)
             raise NotImplementedError, "#{name} must implement .transform"
           end
+        end
+
+        def get_embeddings(content, model)
+          ActiveContext::Embeddings.generate_embeddings(content, model: model, user: user)&.first
         end
       end
     end

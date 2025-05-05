@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, :clean_gitlab
         .with(:sidekiq_concurrency_limit_queue_jobs_total, anything)
         .and_return(queue_size_gauge_double)
       expect(queue_size_gauge_double).to receive(:increment)
-        .with({ worker: anything }, anything)
+        .with({ worker: anything, feature_category: anything }, anything)
         .exactly(workers_with_limits.size).times
 
       concurrency_gauge_double = instance_double(Prometheus::Client::Counter)
@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, :clean_gitlab
         .with(:sidekiq_concurrency_limit_current_concurrent_jobs_total, anything)
         .and_return(concurrency_gauge_double)
       expect(concurrency_gauge_double).to receive(:increment)
-        .with({ worker: anything }, anything)
+        .with({ worker: anything, feature_category: anything }, anything)
         .exactly(workers_with_limits.size).times
 
       sample

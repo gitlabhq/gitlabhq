@@ -215,6 +215,7 @@ export default {
         v-model.trim="packageProtectionRuleFormData.packageNamePattern"
         type="text"
         required
+        autofocus
         :disabled="isFieldDisabled"
       />
       <template #description>

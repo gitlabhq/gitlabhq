@@ -52,6 +52,11 @@ module ActiveContext
       module ElasticProcessor
         include ActiveContext::Databases::Concerns::Processor
 
+        def initialize(collection:, user:)
+          @collection = collection
+          @user = user
+        end
+
         # Processes a query node and returns the corresponding Elasticsearch query
         #
         # @param node [ActiveContext::Query] The query node to process
@@ -72,6 +77,8 @@ module ActiveContext
         end
 
         private
+
+        attr_reader :collection, :user
 
         def process_all
           { query: { match_all: {} } }
@@ -235,6 +242,21 @@ module ActiveContext
         # @return [Hash] The query part
         def extract_query(processed)
           processed[:query]
+        end
+
+        def knn_node_values(node)
+          node_values = node.value
+          preset_values = collection.current_search_embedding_version
+
+          k = node_values[:limit]
+          field = node_values[:target] || preset_values[:field]
+          vector = node_values[:vector] || get_embeddings(node_values[:content], preset_values[:model])
+
+          {
+            k: k,
+            field: field,
+            vector: vector
+          }
         end
       end
     end

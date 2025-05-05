@@ -11193,12 +11193,14 @@ paths:
       parameters:
       - in: path
         name: id
-        description: The ID of a secure file
-        type: integer
-        format: int32
+        description: |-
+          The ID or URL-encoded path of the project owned by the
+                  authenticated user
+        type: string
         required: true
       - in: path
         name: secure_file_id
+        description: The ID of a secure file
         type: integer
         format: int32
         required: true
@@ -11252,6 +11254,7 @@ paths:
         required: true
       - in: path
         name: secure_file_id
+        description: The ID of a secure file
         type: integer
         format: int32
         required: true

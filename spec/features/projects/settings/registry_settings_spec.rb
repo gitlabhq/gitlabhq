@@ -272,11 +272,13 @@ RSpec.describe 'Project > Settings > Packages and registries', :aggregate_failur
             click_button 'Edit'
           end
 
-          expect(page).to have_selector 'h2', text: 'Edit protection rule'
-          fill_in 'Protect container tags matching', with: 'v1.*'
-          select 'Maintainer', from: 'Minimum role allowed to push'
-          select 'Maintainer', from: 'Minimum role allowed to delete'
-          click_button 'Save changes'
+          within_testid settings_block_id do
+            expect(page).to have_selector 'h2', text: 'Edit protection rule'
+            fill_in 'Protect container tags matching', with: 'v1.*'
+            select 'Maintainer', from: 'Minimum role allowed to push'
+            select 'Maintainer', from: 'Minimum role allowed to delete'
+            click_button 'Save changes'
+          end
 
           settings_block = find_by_testid(settings_block_id)
           expect(page).not_to have_selector 'h2', text: 'Edit protection rule'
