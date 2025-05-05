@@ -1503,8 +1503,6 @@ RSpec/ContextWording:
     - 'spec/lib/gitlab/ci/templates/Jobs/test_gitlab_ci_yaml_spec.rb'
     - 'spec/lib/gitlab/ci/templates/auto_devops_gitlab_ci_yaml_spec.rb'
     - 'spec/lib/gitlab/ci/templates/templates_spec.rb'
-    - 'spec/lib/gitlab/ci/templates/terraform_gitlab_ci_yaml_spec.rb'
-    - 'spec/lib/gitlab/ci/templates/terraform_latest_gitlab_ci_yaml_spec.rb'
     - 'spec/lib/gitlab/ci/templates/themekit_gitlab_ci_yaml_spec.rb'
     - 'spec/lib/gitlab/ci/trace/archive_spec.rb'
     - 'spec/lib/gitlab/ci/trace/section_parser_spec.rb'

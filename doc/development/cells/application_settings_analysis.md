@@ -259,6 +259,7 @@ title: Application Settings analysis
 | `license_usage_data_exported` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `local_markdown_version` | `false` | `integer` | `integer` | `true` | `0` | `true` | `false`| `true` |
 | `lock_duo_features_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
+| `lock_model_prompt_cache_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `lock_math_rendering_limits_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `lock_memberships_to_ldap` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `lock_memberships_to_saml` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
@@ -301,6 +302,7 @@ title: Application Settings analysis
 | `mirror_capacity_threshold` | `false` | `integer` | `integer` | `true` | `50` | `true` | `false`| `true` |
 | `mirror_max_capacity` | `false` | `integer` | `integer` | `true` | `100` | `true` | `false`| `true` |
 | `mirror_max_delay` | `false` | `integer` | `integer` | `true` | `300` | `true` | `false`| `true` |
+| `model_prompt_cache_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `namespace_aggregation_schedule_lease_duration_in_seconds` | `false` | `integer` | `` | `true` | `300` | `false` | `false`| `false` |
 | `namespace_storage_forks_cost_factor` | `false` | `double` | `` | `true` | `1.0` | `true` | `false`| `false` |
 | `new_user_signups_cap` | `false` | `integer` | `` | `false` | `null` | `false` | `false`| `false` |

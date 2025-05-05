@@ -599,6 +599,7 @@ class Project < ApplicationRecord
       delegate :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=
       delegate :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=
       delegate :duo_features_enabled, :duo_features_enabled=
+      delegate :model_prompt_cache_enabled, :model_prompt_cache_enabled=
       delegate :merge_request_title_regex, :merge_request_title_regex=
     end
   end

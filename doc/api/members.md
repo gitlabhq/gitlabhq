@@ -255,8 +255,23 @@ GET /projects/:id/members/:user_id
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/:id/members/:user_id"
+
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/members/:user_id"
+```
+
+To update or remove a custom role from a group member, pass an empty `member_role_id` value:
+
+```shell
+# Updates a project membership
+curl --request PUT --header "Content-Type: application/json" \
+  --header "Authorization: Bearer <your_access_token>" \
+  --data '{"member_role_id": null, "access_level": 10}' "https://gitlab.example.com/api/v4/projects/<project_id>/members/<user_id>"
+
+# Updates a group membership
+curl --request PUT --header "Content-Type: application/json" \
+  --header "Authorization: Bearer <your_access_token>" \
+  --data '{"member_role_id": null, "access_level": 10}' "https://gitlab.example.com/api/v4/groups/<group_id>/members/<user_id>"
 ```
 
 Example response:

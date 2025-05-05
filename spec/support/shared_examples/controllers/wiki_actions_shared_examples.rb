@@ -15,6 +15,16 @@ RSpec.shared_examples 'wiki controller actions' do
     sign_in(user)
   end
 
+  shared_examples 'renders 404 with CTA to create page' do
+    it 'shows the 404 page with CTA button' do
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(response).to render_template('shared/wikis/404')
+      expect(response.body).to include('Create this page…')
+      create_page_link = "#{controller.wiki_page_path(wiki, id)}?view=create"
+      expect(response.body).to include(create_page_link)
+    end
+  end
+
   shared_examples 'recovers from git errors' do
     let(:method_name) { :page }
 
@@ -54,7 +64,7 @@ RSpec.shared_examples 'wiki controller actions' do
       expect(response.redirect_url).to match(%r{
         #{Regexp.quote(wiki.wiki_base_path)} # wiki base path
         /[-\h]{36}                           # page slug
-        \?random_title=true\Z                # random_title param
+        \?random_title=true(&view=create)\Z                # random_title param
       }x)
     end
 
@@ -232,14 +242,9 @@ RSpec.shared_examples 'wiki controller actions' do
       context 'when the user can create pages' do
         before do
           request
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template('shared/wikis/edit')
         end
 
-        it 'builds a new wiki page with the id as the title' do
-          expect(assigns(:page).title).to eq(id)
-        end
+        it_behaves_like 'renders 404 with CTA to create page'
       end
 
       context 'when the user cannot create pages' do
@@ -353,18 +358,10 @@ RSpec.shared_examples 'wiki controller actions' do
 
         before do
           routing_params[:redirected_from] = redirected_from
-        end
-
-        it 'renders the edit page for redirect with a notice and a link to edit the original page' do
           request
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template('shared/wikis/edit')
-
-          expect(response.body).to include("The page at <code>PageA</code> tried to redirect to <code>PageB</code>, but it does not exist. You are now editing the page at <code>PageB</code>. <a href=\"#{controller.wiki_page_path(wiki, 'PageA')}?no_redirect=true\">Edit page at <code>PageA</code> instead.</a>")
-
-          expect(flash[:notice]).to be_nil
         end
+
+        it_behaves_like 'renders 404 with CTA to create page'
       end
     end
   end

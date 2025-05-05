@@ -1,7 +1,8 @@
 import { nextTick } from 'vue';
 import { GlCollapsibleListbox, GlFormInput, GlFormTextarea } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import DynamicValueRenderer from '~/ci/common/pipeline_inputs/pipeline_inputs_table/dynamic_value_renderer.vue';
+import DynamicValueRenderer from '~/ci/common/pipeline_inputs/pipeline_inputs_table/value_column/dynamic_value_renderer.vue';
+import BooleanCell from '~/ci/common/pipeline_inputs/pipeline_inputs_table/value_column/boolean_cell.vue';
 
 describe('DynamicValueRenderer', () => {
   let wrapper;
@@ -23,13 +24,14 @@ describe('DynamicValueRenderer', () => {
     });
   };
 
+  const findBooleanCellComponent = () => wrapper.findComponent(BooleanCell);
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findInput = () => wrapper.findComponent(GlFormInput);
   const findTextarea = () => wrapper.findComponent(GlFormTextarea);
   const findValidationFeedback = () => wrapper.findByTestId('validation-feedback');
 
   const getInputType = (type, hasOptions) => {
-    if (hasOptions || type === 'BOOLEAN') return 'dropdown';
+    if (hasOptions) return 'dropdown';
     if (type === 'ARRAY') return 'textarea';
     return 'input';
   };
@@ -54,9 +56,9 @@ describe('DynamicValueRenderer', () => {
         expect(findInput().attributes('type')).toBe('text');
       });
 
-      it('renders dropdown for boolean type', () => {
+      it('renders boolean cell component for boolean type', () => {
         createComponent({ props: { item: { ...defaultProps.item, type: 'BOOLEAN' } } });
-        expect(findDropdown().exists()).toBe(true);
+        expect(findBooleanCellComponent().exists()).toBe(true);
         expect(findInput().exists()).toBe(false);
       });
 
@@ -127,14 +129,41 @@ describe('DynamicValueRenderer', () => {
       });
 
       it('emits update event when dropdown value changes', async () => {
+        const item = {
+          ...defaultProps.item,
+          options: ['option1', 'option2', 'hi'],
+        };
+
         createComponent({
-          props: { item: { ...defaultProps.item, type: 'BOOLEAN' } },
+          props: { item },
         });
-        await findDropdown().vm.$emit('select', 'true');
+        await findDropdown().vm.$emit('select', 'option2');
 
         expect(wrapper.emitted().update).toHaveLength(1);
         expect(wrapper.emitted('update')[0][0]).toEqual({
-          item: { ...defaultProps.item, type: 'BOOLEAN' },
+          item,
+          value: 'option2',
+        });
+      });
+
+      it('emits update event when boolean value changes', async () => {
+        const item = {
+          ...defaultProps.item,
+          type: 'BOOLEAN',
+        };
+
+        createComponent({
+          props: { item },
+        });
+
+        await findBooleanCellComponent().vm.$emit('update', {
+          input: item,
+          value: true,
+        });
+
+        expect(wrapper.emitted().update).toHaveLength(1);
+        expect(wrapper.emitted('update')[0][0]).toEqual({
+          item,
           value: true,
         });
       });
@@ -144,12 +173,10 @@ describe('DynamicValueRenderer', () => {
   describe('type conversion', () => {
     describe('convertToDisplayValue', () => {
       it.each`
-        type         | value              | expectedDisplayValue | usesDropdown
-        ${'STRING'}  | ${'test'}          | ${'test'}            | ${false}
-        ${'NUMBER'}  | ${42}              | ${42}                | ${false}
-        ${'BOOLEAN'} | ${true}            | ${'true'}            | ${true}
-        ${'BOOLEAN'} | ${false}           | ${'false'}           | ${true}
-        ${'ARRAY'}   | ${['a', 'b', 'c']} | ${'["a","b","c"]'}   | ${false}
+        type        | value              | expectedDisplayValue | usesDropdown
+        ${'STRING'} | ${'test'}          | ${'test'}            | ${false}
+        ${'NUMBER'} | ${42}              | ${42}                | ${false}
+        ${'ARRAY'}  | ${['a', 'b', 'c']} | ${'["a","b","c"]'}   | ${false}
       `(
         'converts $type value "$value" to display value "$expectedDisplayValue"',
         ({ type, value, expectedDisplayValue, usesDropdown }) => {
@@ -175,12 +202,10 @@ describe('DynamicValueRenderer', () => {
 
     describe('convertToType', () => {
       it.each`
-        type         | inputValue | expectedTypedValue | usesDropdown
-        ${'STRING'}  | ${'test'}  | ${'test'}          | ${false}
-        ${'NUMBER'}  | ${'42'}    | ${42}              | ${false}
-        ${'BOOLEAN'} | ${'true'}  | ${true}            | ${true}
-        ${'BOOLEAN'} | ${'false'} | ${false}           | ${true}
-        ${'ARRAY'}   | ${'a,b,c'} | ${'a,b,c'}         | ${false}
+        type        | inputValue | expectedTypedValue | usesDropdown
+        ${'STRING'} | ${'test'}  | ${'test'}          | ${false}
+        ${'NUMBER'} | ${'42'}    | ${42}              | ${false}
+        ${'ARRAY'}  | ${'a,b,c'} | ${'a,b,c'}         | ${false}
       `(
         'handles input value "$inputValue" for $type type appropriately',
         async ({ type, inputValue, expectedTypedValue, usesDropdown }) => {

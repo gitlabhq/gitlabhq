@@ -2116,19 +2116,7 @@ msgstr ""
 msgid "A CI/CD pipeline must run and be successful before merge."
 msgstr ""
 
-msgid "A GitBook site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features"
-msgstr ""
-
 msgid "A Gitpod configured Webapplication in Spring and Java"
-msgstr ""
-
-msgid "A Hexo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features"
-msgstr ""
-
-msgid "A Hugo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features"
-msgstr ""
-
-msgid "A Jekyll site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features"
 msgstr ""
 
 msgid "A Let's Encrypt SSL certificate can not be obtained until your domain is verified."
@@ -2219,9 +2207,6 @@ msgid "A personal access token, named %{code_start}%{token_name}%{code_end}, has
 msgstr ""
 
 msgid "A personal access token, named %{token_name}, has been revoked."
-msgstr ""
-
-msgid "A plain HTML site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features"
 msgstr ""
 
 msgid "A project boilerplate for Salesforce App development with Salesforce Developer tools"
@@ -25211,31 +25196,16 @@ msgstr ""
 msgid "Everything you need to create a GitLab Pages site using Astro"
 msgstr ""
 
-msgid "Everything you need to create a GitLab Pages site using Bridgetown"
-msgstr ""
-
-msgid "Everything you need to create a GitLab Pages site using Gatsby"
-msgstr ""
-
-msgid "Everything you need to create a GitLab Pages site using Hexo"
-msgstr ""
-
 msgid "Everything you need to create a GitLab Pages site using Hugo"
 msgstr ""
 
 msgid "Everything you need to create a GitLab Pages site using Jekyll"
 msgstr ""
 
-msgid "Everything you need to create a GitLab Pages site using Middleman"
-msgstr ""
-
 msgid "Everything you need to create a GitLab Pages site using Next.js"
 msgstr ""
 
 msgid "Everything you need to create a GitLab Pages site using Nuxt"
-msgstr ""
-
-msgid "Everything you need to create a GitLab Pages site using Pelican"
 msgstr ""
 
 msgid "Everything you need to create a GitLab Pages site using plain HTML"
@@ -48172,34 +48142,10 @@ msgstr ""
 msgid "ProjectTemplates|NIST 800-53r5"
 msgstr ""
 
-msgid "ProjectTemplates|Netlify/GitBook"
-msgstr ""
-
-msgid "ProjectTemplates|Netlify/Hexo"
-msgstr ""
-
-msgid "ProjectTemplates|Netlify/Hugo"
-msgstr ""
-
-msgid "ProjectTemplates|Netlify/Jekyll"
-msgstr ""
-
-msgid "ProjectTemplates|Netlify/Plain HTML"
-msgstr ""
-
 msgid "ProjectTemplates|NodeJS Express"
 msgstr ""
 
 msgid "ProjectTemplates|Pages/Astro"
-msgstr ""
-
-msgid "ProjectTemplates|Pages/Bridgetown"
-msgstr ""
-
-msgid "ProjectTemplates|Pages/Gatsby"
-msgstr ""
-
-msgid "ProjectTemplates|Pages/Hexo"
 msgstr ""
 
 msgid "ProjectTemplates|Pages/Hugo"
@@ -48208,16 +48154,10 @@ msgstr ""
 msgid "ProjectTemplates|Pages/Jekyll"
 msgstr ""
 
-msgid "ProjectTemplates|Pages/Middleman"
-msgstr ""
-
 msgid "ProjectTemplates|Pages/Next.js"
 msgstr ""
 
 msgid "ProjectTemplates|Pages/Nuxt"
-msgstr ""
-
-msgid "ProjectTemplates|Pages/Pelican"
 msgstr ""
 
 msgid "ProjectTemplates|Pages/Plain HTML"
@@ -58174,9 +58114,6 @@ msgstr ""
 msgid "Sorry, no projects matched your search"
 msgstr ""
 
-msgid "Sorry, this page doesn't exist"
-msgstr ""
-
 msgid "Sorry, you have exceeded the maximum browsable page number. Please use the API to explore further."
 msgstr ""
 
@@ -66403,6 +66340,11 @@ msgstr ""
 msgid "Versions"
 msgstr ""
 
+msgid "View %d registry"
+msgid_plural "View %d registries"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "View %{project} project"
 msgstr ""
 
@@ -66617,6 +66559,18 @@ msgstr ""
 msgid "VirtualRegistries|Virtual Registries"
 msgstr ""
 
+msgid "VirtualRegistry|Create Maven registry"
+msgstr ""
+
+msgid "VirtualRegistry|Create registry"
+msgstr ""
+
+msgid "VirtualRegistry|Get started with virtual registries"
+msgstr ""
+
+msgid "VirtualRegistry|Manage packages across multiple sources and streamline development workflows. %{learn_more_link}"
+msgstr ""
+
 msgid "VirtualRegistry|Maven"
 msgstr ""
 
@@ -66629,10 +66583,16 @@ msgstr ""
 msgid "VirtualRegistry|No upstreams yet"
 msgstr ""
 
+msgid "VirtualRegistry|Registry types"
+msgstr ""
+
 msgid "VirtualRegistry|Upstreams"
 msgstr ""
 
 msgid "VirtualRegistry|Virtual registries"
+msgstr ""
+
+msgid "VirtualRegistry|Virtual registry"
 msgstr ""
 
 msgid "Visibility"
@@ -68004,6 +67964,15 @@ msgstr ""
 msgid "Wiki page was successfully deleted."
 msgstr ""
 
+msgid "Wiki404|This page doesn't exist"
+msgstr ""
+
+msgid "Wiki404|Use the sidebar to find a different page."
+msgstr ""
+
+msgid "Wiki404|Would you like to create it?"
+msgstr ""
+
 msgid "WikiClone|Clone Wiki repository"
 msgstr ""
 
@@ -68017,6 +67986,9 @@ msgid "WikiEmpty| Have a Confluence wiki already? Use that instead."
 msgstr ""
 
 msgid "WikiEmpty|Confluence is enabled"
+msgstr ""
+
+msgid "WikiEmpty|Create this page…"
 msgstr ""
 
 msgid "WikiEmpty|Create your first page"
@@ -68223,9 +68195,6 @@ msgstr ""
 msgid "Wiki|There are no pages in this wiki yet."
 msgstr ""
 
-msgid "Wiki|Use the sidebar to find a different page."
-msgstr ""
-
 msgid "Wiki|View all pages"
 msgstr ""
 
@@ -68359,6 +68328,9 @@ msgid "WorkItem| %{workItemType}s closed"
 msgstr ""
 
 msgid "WorkItem|%{count} more assignees"
+msgstr ""
+
+msgid "WorkItem|%{count}+"
 msgstr ""
 
 msgid "WorkItem|%{invalidWorkItemsList} cannot be added: Cannot assign a non-confidential %{childWorkItemType} to a confidential parent %{parentWorkItemType}. Make the selected %{childWorkItemType} confidential and try again."

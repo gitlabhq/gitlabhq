@@ -36,6 +36,8 @@ Prerequisites:
 
 ### Turn on Kubernetes resource management
 
+#### In your agent configuration file
+
 To turn on resource management, modify the agent configuration file to include the required permissions:
 
 ```yaml
@@ -53,6 +55,24 @@ ci_access:
       resource_management:
         enabled: true
 ```
+
+#### In your CI/CD jobs
+
+To have the agent manage resources for an environment, specify the agent in your deployment job. For example:
+
+```yaml
+deploy_review:
+  stage: deploy
+  script:
+    - echo "Deploy a review app"
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    kubernetes:
+      agent: path/to/agent/project:agent-name
+```
+
+CI/CD variables can be used in the agent path. For more information, see
+[Where variables can be used](../../../ci/variables/where_variables_can_be_used.md).
 
 ### Create environment templates
 

@@ -50,7 +50,6 @@ module Gitlab
 
     class << self
       # TODO: Review child inheritance of this table (see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41699#note_430928221)
-      # rubocop:disable Metrics/AbcSize
       def localized_templates_table
         [
           ProjectTemplate.new('rails', 'Ruby on Rails', _('Includes an MVC structure, Gemfile, Rakefile, along with many others, to help you get started'), 'https://gitlab.com/gitlab-org/project-templates/rails', 'illustrations/logos/rails.svg'),
@@ -61,22 +60,12 @@ module Gitlab
           ProjectTemplate.new('android', 'Android', _('A ready-to-go template for use with Android apps'), 'https://gitlab.com/gitlab-org/project-templates/android', 'illustrations/logos/android.svg'),
           ProjectTemplate.new('gomicro', 'Go Micro', _('Go Micro is a framework for micro service development'), 'https://gitlab.com/gitlab-org/project-templates/go-micro', 'illustrations/logos/gomicro.svg'),
           ProjectTemplate.new('astro', 'Pages/Astro', _('Everything you need to create a GitLab Pages site using Astro'), 'https://gitlab.com/pages/astro', 'illustrations/third-party-logos/astro.svg'),
-          ProjectTemplate.new('bridgetown', 'Pages/Bridgetown', _('Everything you need to create a GitLab Pages site using Bridgetown'), 'https://gitlab.com/pages/bridgetown'),
-          ProjectTemplate.new('gatsby', 'Pages/Gatsby', _('Everything you need to create a GitLab Pages site using Gatsby'), 'https://gitlab.com/pages/gatsby', 'illustrations/third-party-logos/gatsby.svg'),
           ProjectTemplate.new('hugo', 'Pages/Hugo', _('Everything you need to create a GitLab Pages site using Hugo'), 'https://gitlab.com/pages/hugo', 'illustrations/logos/hugo.svg'),
-          ProjectTemplate.new('pelican', 'Pages/Pelican', _('Everything you need to create a GitLab Pages site using Pelican'), 'https://gitlab.com/pages/pelican', 'illustrations/third-party-logos/pelican.svg'),
           ProjectTemplate.new('jekyll', 'Pages/Jekyll', _('Everything you need to create a GitLab Pages site using Jekyll'), 'https://gitlab.com/pages/jekyll', 'illustrations/logos/jekyll.svg'),
           ProjectTemplate.new('nextjs', 'Pages/Next.js', _('Everything you need to create a GitLab Pages site using Next.js'), 'https://gitlab.com/pages/nextjs'),
           ProjectTemplate.new('nuxt', 'Pages/Nuxt', _('Everything you need to create a GitLab Pages site using Nuxt'), 'https://gitlab.com/pages/nuxt', 'illustrations/third-party-logos/nuxt.svg'),
           ProjectTemplate.new('plainhtml', 'Pages/Plain HTML', _('Everything you need to create a GitLab Pages site using plain HTML'), 'https://gitlab.com/pages/plain-html'),
-          ProjectTemplate.new('hexo', 'Pages/Hexo', _('Everything you need to create a GitLab Pages site using Hexo'), 'https://gitlab.com/pages/hexo', 'illustrations/logos/hexo.svg'),
-          ProjectTemplate.new('middleman', 'Pages/Middleman', _('Everything you need to create a GitLab Pages site using Middleman'), 'https://gitlab.com/pages/middleman', 'illustrations/logos/middleman.svg'),
           ProjectTemplate.new('gitpod_spring_petclinic', 'Gitpod/Spring Petclinic', _('A Gitpod configured Webapplication in Spring and Java'), 'https://gitlab.com/gitlab-org/project-templates/gitpod-spring-petclinic', 'illustrations/logos/gitpod.svg'),
-          ProjectTemplate.new('nfhugo', 'Netlify/Hugo', _('A Hugo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features'), 'https://gitlab.com/pages/nfhugo', 'illustrations/logos/netlify.svg'),
-          ProjectTemplate.new('nfjekyll', 'Netlify/Jekyll', _('A Jekyll site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features'), 'https://gitlab.com/pages/nfjekyll', 'illustrations/logos/netlify.svg'),
-          ProjectTemplate.new('nfplainhtml', 'Netlify/Plain HTML', _('A plain HTML site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features'), 'https://gitlab.com/pages/nfplain-html', 'illustrations/logos/netlify.svg'),
-          ProjectTemplate.new('nfgitbook', 'Netlify/GitBook', _('A GitBook site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features'), 'https://gitlab.com/pages/nfgitbook', 'illustrations/logos/netlify.svg'),
-          ProjectTemplate.new('nfhexo', 'Netlify/Hexo', _('A Hexo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features'), 'https://gitlab.com/pages/nfhexo', 'illustrations/logos/netlify.svg'),
           ProjectTemplate.new('salesforcedx', 'SalesforceDX', _('A project boilerplate for Salesforce App development with Salesforce Developer tools'), 'https://gitlab.com/gitlab-org/project-templates/salesforcedx'),
           ProjectTemplate.new('serverless_framework', 'Serverless Framework/JS', _('A basic page and serverless function that uses AWS Lambda, AWS API Gateway, and GitLab Pages'), 'https://gitlab.com/gitlab-org/project-templates/serverless-framework', 'illustrations/logos/serverless_framework.svg'),
           ProjectTemplate.new('tencent_serverless_framework', 'Tencent Serverless Framework/NextjsSSR', _('A project boilerplate for Tencent Serverless Framework that uses Next.js SSR'), 'https://gitlab.com/gitlab-org/project-templates/nextjsssr_demo', 'illustrations/logos/tencent_serverless_framework.svg'),
@@ -89,7 +78,6 @@ module Gitlab
           ProjectTemplate.new('gitlab_components', 'GitLab CI/CD components', _('A basic folder structure and sample files for a CI/CD components project.'), 'https://gitlab.com/gitlab-org/project-templates/gitlab-component-template')
         ]
       end
-      # rubocop:enable Metrics/AbcSize
 
       def all
         localized_templates_table

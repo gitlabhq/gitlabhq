@@ -13,7 +13,7 @@ RSpec.describe 'Subscriptions Content Security Policy', feature_category: :integ
 
   context 'when there is no global config' do
     before do
-      setup_csp_for_controller(JiraConnect::SubscriptionsController)
+      stub_csp_for_controller(JiraConnect::SubscriptionsController)
     end
 
     it 'does not add CSP directives' do
@@ -30,7 +30,7 @@ RSpec.describe 'Subscriptions Content Security Policy', feature_category: :integ
         p.style_src :self, 'https://some-cdn.test'
       end
 
-      setup_csp_for_controller(JiraConnect::SubscriptionsController, csp)
+      stub_csp_for_controller(JiraConnect::SubscriptionsController, csp)
     end
 
     it 'appends to CSP directives' do

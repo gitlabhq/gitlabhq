@@ -37,17 +37,9 @@ export default {
     text: s__('ProjectTemplates|Pages/Astro'),
     icon: '.template-option .icon-astro',
   },
-  gatsby: {
-    text: s__('ProjectTemplates|Pages/Gatsby'),
-    icon: '.template-option .icon-gatsby',
-  },
   hugo: {
     text: s__('ProjectTemplates|Pages/Hugo'),
     icon: '.template-option .icon-hugo',
-  },
-  pelican: {
-    text: s__('ProjectTemplates|Pages/Pelican'),
-    icon: '.template-option .icon-pelican',
   },
   jekyll: {
     text: s__('ProjectTemplates|Pages/Jekyll'),
@@ -65,37 +57,9 @@ export default {
     text: s__('ProjectTemplates|Pages/Plain HTML'),
     icon: '.template-option .icon-plainhtml',
   },
-  hexo: {
-    text: s__('ProjectTemplates|Pages/Hexo'),
-    icon: '.template-option .icon-hexo',
-  },
-  middleman: {
-    text: s__('ProjectTemplates|Pages/Middleman'),
-    icon: '.template-option .icon-middleman',
-  },
   gitpod_spring_petclinic: {
     text: s__('ProjectTemplates|Gitpod/Spring Petclinic'),
     icon: '.template-option .icon-gitpod_spring_petclinic',
-  },
-  nfhugo: {
-    text: s__('ProjectTemplates|Netlify/Hugo'),
-    icon: '.template-option .icon-nfhugo',
-  },
-  nfjekyll: {
-    text: s__('ProjectTemplates|Netlify/Jekyll'),
-    icon: '.template-option .icon-nfjekyll',
-  },
-  nfplainhtml: {
-    text: s__('ProjectTemplates|Netlify/Plain HTML'),
-    icon: '.template-option .icon-nfplainhtml',
-  },
-  nfgitbook: {
-    text: s__('ProjectTemplates|Netlify/GitBook'),
-    icon: '.template-option .icon-nfgitbook',
-  },
-  nfhexo: {
-    text: s__('ProjectTemplates|Netlify/Hexo'),
-    icon: '.template-option .icon-nfhexo',
   },
   salesforcedx: {
     text: s__('ProjectTemplates|SalesforceDX'),
@@ -119,10 +83,6 @@ export default {
   },
   jsonnet: {
     text: s__('ProjectTemplates|Jsonnet for Dynamic Child Pipelines'),
-    icon: '.template-option .icon-gitlab_logo',
-  },
-  bridgetown: {
-    text: s__('ProjectTemplates|Pages/Bridgetown'),
     icon: '.template-option .icon-gitlab_logo',
   },
   typo3_distribution: {

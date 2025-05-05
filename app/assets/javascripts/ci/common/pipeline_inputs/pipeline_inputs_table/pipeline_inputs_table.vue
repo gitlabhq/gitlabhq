@@ -3,7 +3,7 @@ import { GlIcon, GlTableLite, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
-import DynamicValueRenderer from './dynamic_value_renderer.vue';
+import DynamicValueRenderer from './value_column/dynamic_value_renderer.vue';
 
 export default {
   name: 'PipelineInputsTable',

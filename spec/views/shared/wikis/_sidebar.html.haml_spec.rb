@@ -35,14 +35,30 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml', feature_category: :wiki do
         create(:wiki_page, wiki: wiki, title: 'home', content: 'Home page')
         assign(:wiki_pages_count, 3)
         allow(view).to receive(:can?).with(anything, :create_wiki, anything).and_return(can_edit)
-
-        render
       end
 
       let(:can_edit) { true }
 
-      it 'renders the link' do
-        expect(rendered).to have_link('Add custom sidebar', href: wiki_page_path(wiki, Wiki::SIDEBAR, action: :edit))
+      context 'when the sidebar page does not exist' do
+        before do
+          assign(:sidebar_page, nil)
+          render
+        end
+
+        it 'renders the link to create the sidebar' do
+          expect(rendered).to have_link('Add custom sidebar', href: wiki_page_path(wiki, Wiki::SIDEBAR, view: 'create'))
+        end
+      end
+
+      context 'when the sidebar page exists' do
+        before do
+          assign(:sidebar_page, double('WikiPage', path: 'sidebar.md', slug: 'sidebar', content: 'Some sidebar content', wiki: wiki))
+          render
+        end
+
+        it 'renders the link to edit the sidebar' do
+          expect(rendered).to have_link('Edit custom sidebar', href: wiki_page_path(wiki, Wiki::SIDEBAR, action: :edit))
+        end
       end
     end
 

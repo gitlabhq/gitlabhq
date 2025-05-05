@@ -2,6 +2,7 @@
 import { GlCollapsibleListbox, GlFormInput, GlFormTextarea } from '@gitlab/ui';
 import { __ } from '~/locale';
 import validation, { initForm } from '~/vue_shared/directives/validation';
+import BooleanCell from './boolean_cell.vue';
 
 /**
  * DynamicValueRenderer
@@ -78,6 +79,7 @@ const feedbackMap = {
 export default {
   name: 'DynamicValueRenderer',
   components: {
+    BooleanCell,
     GlCollapsibleListbox,
     GlFormInput,
     GlFormTextarea,
@@ -113,20 +115,12 @@ export default {
       set(newValue) {
         if (newValue === this.convertToDisplayValue(this.item.default)) return;
 
-        const value = this.convertToType(newValue);
-        this.$emit('update', {
-          item: this.item,
-          value,
-        });
+        // convert to number if number type
+        const value = this.item.type === INPUT_TYPES.NUMBER ? Number(newValue) : newValue;
+        this.emitUpdate({ value });
       },
     },
     dropdownOptions() {
-      if (this.item.type === INPUT_TYPES.BOOLEAN) {
-        return [
-          { value: 'true', text: 'true' },
-          { value: 'false', text: 'false' },
-        ];
-      }
       return this.item.options?.map((option) => ({ value: option, text: option })) || [];
     },
     hasArrayFormatError() {
@@ -143,14 +137,14 @@ export default {
     hasValidationFeedback() {
       return Boolean(this.validationFeedback);
     },
-    headerText() {
-      return this.item.type === INPUT_TYPES.BOOLEAN ? __('Value') : __('Options');
-    },
     isArrayType() {
       return this.item.type === INPUT_TYPES.ARRAY && Boolean(!this.item.options?.length);
     },
+    isBooleanType() {
+      return this.item.type === INPUT_TYPES.BOOLEAN && !this.item.options?.length;
+    },
     isDropdown() {
-      return this.item.type === INPUT_TYPES.BOOLEAN || Boolean(this.item.options?.length);
+      return Boolean(this.item.options?.length);
     },
     validationFeedback() {
       const field = this.form.fields[this.item.name];
@@ -174,27 +168,18 @@ export default {
   methods: {
     convertToDisplayValue(value) {
       if (!value) {
-        return this.item.type === INPUT_TYPES.BOOLEAN ? 'false' : '';
+        return '';
       }
 
-      switch (this.item.type) {
-        case INPUT_TYPES.BOOLEAN:
-          return value.toString();
-        case INPUT_TYPES.ARRAY:
-          return Array.isArray(value) ? JSON.stringify(value) : value;
-        default:
-          return value;
-      }
+      return this.item.type === INPUT_TYPES.ARRAY && Array.isArray(value)
+        ? JSON.stringify(value)
+        : value;
     },
-    convertToType(value) {
-      switch (this.item.type) {
-        case INPUT_TYPES.BOOLEAN:
-          return value === 'true';
-        case INPUT_TYPES.NUMBER:
-          return Number(value);
-        default:
-          return value;
-      }
+    emitUpdate({ value }) {
+      this.$emit('update', {
+        item: this.item,
+        value,
+      });
     },
   },
 };
@@ -202,15 +187,18 @@ export default {
 
 <template>
   <div>
-    <!-- Dropdown for booleans or any type with options -->
+    <!-- Dropdown for any type with options -->
     <gl-collapsible-listbox
       v-if="isDropdown"
       v-model="inputValue"
       block
       :aria-label="item.name"
-      :header-text="headerText"
+      :header-text="__('Options')"
       :items="dropdownOptions"
     />
+
+    <!-- Button cell for boolean types -->
+    <boolean-cell v-else-if="isBooleanType" :input="item" @update="emitUpdate" />
 
     <!-- Textarea for arrays without options -->
     <gl-form-textarea
