@@ -4740,16 +4740,6 @@ CREATE TABLE p_batched_git_ref_updates_deletions (
 )
 PARTITION BY LIST (partition_id);
 
-CREATE TABLE p_catalog_resource_component_usages (
-    id bigint NOT NULL,
-    component_id bigint NOT NULL,
-    catalog_resource_id bigint NOT NULL,
-    project_id bigint NOT NULL,
-    used_by_project_id bigint NOT NULL,
-    used_date date NOT NULL
-)
-PARTITION BY RANGE (used_date);
-
 CREATE TABLE p_catalog_resource_sync_events (
     id bigint NOT NULL,
     catalog_resource_id bigint NOT NULL,
@@ -18664,6 +18654,16 @@ CREATE SEQUENCE p_batched_git_ref_updates_deletions_id_seq
     CACHE 1;
 
 ALTER SEQUENCE p_batched_git_ref_updates_deletions_id_seq OWNED BY p_batched_git_ref_updates_deletions.id;
+
+CREATE TABLE p_catalog_resource_component_usages (
+    id bigint NOT NULL,
+    component_id bigint NOT NULL,
+    catalog_resource_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    used_by_project_id bigint NOT NULL,
+    used_date date NOT NULL
+)
+PARTITION BY RANGE (used_date);
 
 CREATE SEQUENCE p_catalog_resource_component_usages_id_seq
     START WITH 1
