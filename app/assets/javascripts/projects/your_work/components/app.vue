@@ -50,6 +50,7 @@ export default {
     hoverVisibility: 'hover_visibility_icon_on_your_work_projects',
     initialLoad: 'initial_load_on_your_work_projects',
     clickItemAfterFilter: 'click_project_after_filter_on_your_work_projects',
+    clickTopic: 'click_topic_on_your_work_projects',
   },
   tabCountsQuery: projectCountsQuery,
   PAGINATION_TYPE_KEYSET,

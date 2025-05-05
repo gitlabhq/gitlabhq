@@ -70,6 +70,7 @@ describe('TabView', () => {
       hoverStat: 'hover_stat_on_your_work_projects',
       hoverVisibility: 'hover_visibility_icon_on_your_work_projects',
       clickItemAfterFilter: 'click_project_after_filter_on_your_work_projects',
+      clickTopic: 'click_topic_on_your_work_projects',
     },
     paginationType: PAGINATION_TYPE_KEYSET,
   };
@@ -585,6 +586,20 @@ describe('TabView', () => {
         expect(trackEventSpy).toHaveBeenCalledWith(
           defaultPropsData.eventTracking.clickStat,
           { label: 'stars-count' },
+          undefined,
+        );
+      });
+    });
+
+    describe('when topic is clicked', () => {
+      beforeEach(() => {
+        findProjectsList().vm.$emit('click-topic');
+      });
+
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          defaultPropsData.eventTracking.clickTopic,
+          {},
           undefined,
         );
       });

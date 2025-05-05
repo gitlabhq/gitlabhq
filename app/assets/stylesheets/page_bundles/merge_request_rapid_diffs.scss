@@ -1,11 +1,11 @@
-@use 'components/rapid_diffs/constants';
 @import 'mixins_and_variables_and_functions';
 @import 'components/rapid_diffs';
 
 .rd-app {
   --rd-app-sticky-top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height});
 
-  @include media-breakpoint-down(constants.$app-vertical-breakpoint) {
+  // merge request sticky header appears after sm breakpoint
+  @include media-breakpoint-down(sm) {
     --rd-app-sticky-top: calc(#{$calc-application-header-height});
   }
 }

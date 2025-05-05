@@ -1462,6 +1462,21 @@ Elasticsearch and OpenSearch DSL for `knn` queries is different. To support both
 
 {{< /alert >}}
 
+##### `by_noteable_type`
+
+Requires `noteable_type` field. Query with `noteable_type` in options. Sets `_source` to only return `noteable_id` field.
+
+```json
+{
+  "term": {
+    "noteable_type": {
+      "_name": "filters:related:issue",
+      "value": "Issue"
+    }
+  }
+}
+```
+
 ### Creating a filter
 
 Filters are essential components in building effective Elasticsearch queries. They help narrow down search results

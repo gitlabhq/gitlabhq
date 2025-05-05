@@ -140,12 +140,6 @@ module EventsHelper
     end
   end
 
-  def event_target_path(event)
-    return Gitlab::UrlBuilder.build(event.target, only_path: true) if event.work_item?
-
-    event.target_link_options
-  end
-
   def event_feed_title(event)
     words = []
     words << event.author_name
@@ -186,18 +180,18 @@ module EventsHelper
   end
 
   def event_feed_url(event)
-    if event.issue?
-      project_issue_url(event.project, event.issue)
-    elsif event.merge_request?
-      project_merge_request_url(event.project, event.merge_request)
-    elsif event.commit_note?
-      project_commit_url(event.project, event.note_target)
+    if event.work_item?
+      Gitlab::UrlBuilder.build(event.target)
     elsif event.note?
       event_note_target_url(event) if event.note_target
     elsif event.push_action?
       push_event_feed_url(event)
-    elsif event.created_project_action?
-      project_url(event.project)
+    elsif event.wiki_page?
+      event_wiki_page_target_url(event)
+    elsif event.design?
+      design_url(event.design)
+    else
+      polymorphic_url(event.target_link_options)
     end
   end
 

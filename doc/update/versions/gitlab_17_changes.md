@@ -783,54 +783,58 @@ If you have a multi-node configuration, you must ensure these secrets are the sa
       gitlab-rake gitlab:doctor:encryption_keys
       ```
 
-   If you're using other versions, we assume you don't have any encrypted data yet so you can follow directly the "Case 1" below.
+   For other versions, you can proceed directly to selecting a reference node ("Case 1" below), as we assume you don't have encrypted data yet.
 
-   The output of the command indicates which one of three possible processes you must follow.
+   Based on the command output, determine which process to follow:
 
-   - Case 1: If all "Encryption keys usage for \<model\>" report `NONE`, select any Sidekiq or GitLab application node as a reference
-     node from which to copy `/etc/gitlab/gitlab-secrets.json` to all other Sidekiq and GitLab application nodes.
-   - Case 2: If all reported keys usage are for the same key ID, select the node where the key exists as a reference node from which to copy `/etc/gitlab/gitlab-secrets.json` to all
-     other Sidekiq and GitLab application nodes. For example, let's say you get the following output on node 1:
+   - Case 1: If all `Encryption keys usage for <model>` reports show `NONE`:
+       - Select any Sidekiq or GitLab application node as the reference node.
+       - Copy `/etc/gitlab/gitlab-secrets.json` from this node to all other nodes.
+   - Case 2: If all reported keys use the same key ID:
+     - Select the node where the key exists as the reference node.
+     - Copy `/etc/gitlab/gitlab-secrets.json` from this node to all other nodes.
 
-      ```shell
-      Gathering existing encryption keys:
-      - active_record_encryption_primary_key: ID => `bb32`; truncated secret => `bEt...eBU`
-      - active_record_encryption_deterministic_key: ID => `445f`; truncated secret => `MJo...yg5`
+       For example, if node 1 provides the following output:
 
-      [... snipped for brevity ...]
+        ```shell
+        Gathering existing encryption keys:
+        - active_record_encryption_primary_key: ID => `bb32`; truncated secret => `bEt...eBU`
+        - active_record_encryption_deterministic_key: ID => `445f`; truncated secret => `MJo...yg5`
 
-      Encryption keys usage for VirtualRegistries::Packages::Maven::Upstream: NONE
-      Encryption keys usage for Ai::ActiveContext::Connection: NONE
-      Encryption keys usage for CloudConnector::Keys: NONE
-      Encryption keys usage for DependencyProxy::GroupSetting:
-      - `bb32` => 8
-      Encryption keys usage for Ci::PipelineScheduleInput:
-      - `bb32` => 1
-      ```
+        [... snipped for brevity ...]
 
-      And let's say you get the following output on node 2 (the `(UNKNOWN KEY!)` is fine as long as a single key ID is used. For example, `bb32` here):
+        Encryption keys usage for VirtualRegistries::Packages::Maven::Upstream: NONE
+        Encryption keys usage for Ai::ActiveContext::Connection: NONE
+        Encryption keys usage for CloudConnector::Keys: NONE
+        Encryption keys usage for DependencyProxy::GroupSetting:
+        - `bb32` => 8
+        Encryption keys usage for Ci::PipelineScheduleInput:
+        - `bb32` => 1
+        ```
 
-      ```shell
-      Gathering existing encryption keys:
-      - active_record_encryption_primary_key: ID => `83kf`; truncated secret => `pKq...ikC`
-      - active_record_encryption_deterministic_key: ID => `b722`; truncated secret => `Lma...iJ7`
+        And node 2 provides the following output (the `(UNKNOWN KEY!)` is fine as long as a single key ID is used. For example, `bb32` here):
 
-      [... snipped for brevity ...]
+        ```shell
+        Gathering existing encryption keys:
+        - active_record_encryption_primary_key: ID => `83kf`; truncated secret => `pKq...ikC`
+        - active_record_encryption_deterministic_key: ID => `b722`; truncated secret => `Lma...iJ7`
 
-      Encryption keys usage for VirtualRegistries::Packages::Maven::Upstream: NONE
-      Encryption keys usage for Ai::ActiveContext::Connection: NONE
-      Encryption keys usage for CloudConnector::Keys: NONE
-      Encryption keys usage for DependencyProxy::GroupSetting:
-      - `bb32` (UNKNOWN KEY!) => 8
-      Encryption keys usage for Ci::PipelineScheduleInput:
-      - `bb32` (UNKNOWN KEY!) => 1
-      ```
+        [... snipped for brevity ...]
 
-      With the above examples, you would pick node 1 as the reference node.
-   - Case 3: Not all reported keys usage are for the same key ID. For instance, if node 1 shows `` -`bb32` => 1 `` and node 2 shows
-      `` - `83kf` => 1 ``. In that case, the resolution is more complex as it involves re-encrypting all data with a single encryption key.
-      Alternatively, if you're ok losing some data, you can delete records so that all remaining records use the same key ID.
-      Contact [support](https://about.gitlab.com/support/) for further assistance.
+        Encryption keys usage for VirtualRegistries::Packages::Maven::Upstream: NONE
+        Encryption keys usage for Ai::ActiveContext::Connection: NONE
+        Encryption keys usage for CloudConnector::Keys: NONE
+        Encryption keys usage for DependencyProxy::GroupSetting:
+        - `bb32` (UNKNOWN KEY!) => 8
+        Encryption keys usage for Ci::PipelineScheduleInput:
+        - `bb32` (UNKNOWN KEY!) => 1
+        ```
+
+        In this example, select node 1 as the reference node because it contains the `bb32` key that's used by both nodes.
+   - Case 3: If different key IDs are used for the same data across nodes (for example, if node 1 shows `-bb32 => 1` and node 2 shows `-83kf => 1`):
+     - This requires re-encrypting all data with a single encryption key.
+     - Alternatively, if you're willing to lose some data, you can delete records so all remaining records use the same key ID.
+     - Contact [GitLab Support](https://about.gitlab.com/support/) for assistance.
 
 1. After deciding which node is the reference node, decide which of the reference node's secrets must be copied to the other nodes.
 1. On all Sidekiq and Rails nodes except the reference node:
@@ -857,11 +861,7 @@ If you have a multi-node configuration, you must ensure these secrets are the sa
       gitlab-rake gitlab:doctor:encryption_keys
       ```
 
-      If you're using other versions, run:
-
-      ```shell
-      gitlab-rails runner 'require_relative Pathname(Dir.pwd).join("encryption_keys.rb"); Gitlab::Doctor::EncryptionKeys.new(Logger.new($stdout)).run!'
-      ```
+      For other versions, you can skip this check, as we assume you don't have encrypted data yet.
 
       All reported keys usage are for the same key ID. For example, on node 1:
 

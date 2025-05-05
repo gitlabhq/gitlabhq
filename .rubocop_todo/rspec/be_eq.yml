@@ -178,7 +178,6 @@ RSpec/BeEq:
     - 'ee/spec/lib/identity_verification/user_risk_profile_spec.rb'
     - 'ee/spec/lib/langsmith/run_helpers_spec.rb'
     - 'ee/spec/lib/search/elastic/bool_expr_spec.rb'
-    - 'ee/spec/lib/search/elastic/queries_spec.rb'
     - 'ee/spec/lib/search/elastic/response_mapper_spec.rb'
     - 'ee/spec/lib/search/elastic/task_status_spec.rb'
     - 'ee/spec/lib/security/scan_result_policies/policy_violation_details_spec.rb'

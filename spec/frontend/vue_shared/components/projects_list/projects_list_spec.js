@@ -44,6 +44,7 @@ describe('ProjectsList', () => {
     ${'hover-stat'}       | ${'Stars'}
     ${'click-stat'}       | ${'Stars'}
     ${'click-avatar'}     | ${undefined}
+    ${'click-topic'}      | ${undefined}
   `('when `ProjectListItem` emits $eventName event', ({ eventName, payload }) => {
     beforeEach(() => {
       createComponent();

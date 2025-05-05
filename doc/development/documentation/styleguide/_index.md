@@ -1395,7 +1395,7 @@ if you were helping someone read and interact with the page and they couldn't se
 
 Do:
 
-`![A runner sending a request to the Docker API](img/document_image_title_vX_Y.png)`
+`![A runner sending a request to the Docker API.](img/document_image_title_vX_Y.png)`
 
 Do not:
 
@@ -1407,9 +1407,7 @@ When writing alt text:
   Screen readers typically stop reading after this many characters.
 - If the image has complex information like a workflow diagram, use short alt text
   to identify the image and include detailed information in the text.
-- Use punctuation.
-- Do not use a period if the text is not a full sentence.
-- Use a period after every full sentence.
+- Use a period at the end of the string, whether it's a sentence or not.
 - Use sentence case and avoid using all caps.
   Some screen readers read capitals as individual letters.
 - Do not use phrases like **Image of** or **Graphic of**.

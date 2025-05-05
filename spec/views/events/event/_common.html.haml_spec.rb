@@ -20,7 +20,7 @@ RSpec.describe 'events/event/_common.html.haml' do
 
     it 'renders the correct url with iid' do
       expect(rendered).to have_link(
-        work_item.reference_link_text, href: "/#{project.full_path}/-/work_items/#{work_item.iid}"
+        work_item.reference_link_text, href: %r{/#{project.full_path}/-/work_items/#{work_item.iid}}
       )
     end
 
@@ -37,7 +37,7 @@ RSpec.describe 'events/event/_common.html.haml' do
     end
 
     it 'renders the correct url' do
-      expect(rendered).to have_link(issue.reference_link_text, href: "/#{project.full_path}/-/issues/#{issue.iid}")
+      expect(rendered).to have_link(issue.reference_link_text, href: %r{/#{project.full_path}/-/issues/#{issue.iid}})
     end
 
     it 'uses issue_type for the target_name' do

@@ -142,7 +142,7 @@ Prerequisites:
 - You must be a member of the project.
 - The vulnerability must be a SAST finding from a supported analyzer:
   - Any [GitLab-supported analyzer](../sast/analyzers.md).
-  - A properly integrated [third-party SAST scanner](../../../development/integrations/secure.md) that reports the [vulnerability location](../../../development/integrations/secure.md#sast) and a [CWE Identifier](../../../development/integrations/secure.md#identifiers) for each vulnerability.
+  - A properly integrated third-party SAST scanner that reports the vulnerability location and a CWE Identifier for each vulnerability.
 - The vulnerability must be of a [supported type](#supported-vulnerabilities-for-vulnerability-resolution).
 
 Learn more about [how to enable all GitLab Duo features](../../ai_features_enable.md).
@@ -506,7 +506,8 @@ The following scanners are supported by this feature:
 
 - [Dependency Scanning](../dependency_scanning/_index.md).
   Automatic patch creation is only available for Node.js projects managed with
-  `yarn`. Also, Automatic patch creation is only supported when [FIPS mode](../../../development/fips_gitlab.md#enable-fips-mode) is disabled.
+  `yarn`. Automatic patch creation is only supported when [FIPS mode](../../../development/fips_gitlab.md#enable-fips-mode) is disabled.
+
 - [Container Scanning](../container_scanning/_index.md).
 
 To resolve a vulnerability, you can either:
@@ -567,7 +568,7 @@ Each integration submits the Vulnerability identifier, for example CWE or OWASP,
 
 The vulnerability page may include a training link relevant to the detected vulnerability if security training is enabled.
 The availability of training depends on whether the enabled training vendor has content matching the particular vulnerability.
-Training content is requested based on the [vulnerability identifiers](../../../development/integrations/secure.md#identifiers).
+Training content is requested based on the vulnerability identifiers.
 The identifier given to a vulnerability varies from one vulnerability to the next and the available training
 content varies between vendors. Some vulnerabilities do not display training content.
 Vulnerabilities with a CWE are most likely to return a training result.

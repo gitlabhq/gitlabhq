@@ -68,6 +68,26 @@ describe('Topic Badges', () => {
         topics.map((topic) => `/explore/projects/topics/${encodeURIComponent(topic)}`),
       );
     });
+
+    describe('when topic is clicked', () => {
+      beforeEach(() => {
+        findFirstBadge().vm.$emit('click');
+      });
+
+      it('emits click event', () => {
+        expect(wrapper.emitted('click')).toEqual([[defaultProps.topics[0]]]);
+      });
+    });
+
+    describe('when topic in popover is clicked', () => {
+      beforeEach(() => {
+        findPopover().findComponent(GlBadge).vm.$emit('click');
+      });
+
+      it('emits click event', () => {
+        expect(wrapper.emitted('click')).toEqual([[defaultProps.topics[3]]]);
+      });
+    });
   });
 
   describe.each`

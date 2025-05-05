@@ -263,6 +263,9 @@ export default {
     onVisibilityTooltipShown() {
       this.$emit('hover-visibility', this.visibility);
     },
+    onTopicClick() {
+      this.$emit('click-topic');
+    },
   },
 };
 </script>
@@ -305,6 +308,7 @@ export default {
         :topics="project.topics"
         class="gl-mt-3"
         data-testid="project-topics"
+        @click="onTopicClick"
       />
     </template>
 

@@ -104,31 +104,6 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
     end
   end
 
-  describe '#event_target_path' do
-    subject { helper.event_target_path(event.present) }
-
-    context 'when target is a work item' do
-      let(:work_item) { create(:work_item) }
-      let(:event) { create(:event, target: work_item, target_type: 'WorkItem') }
-
-      it { is_expected.to eq(Gitlab::UrlBuilder.build(work_item, only_path: true)) }
-    end
-
-    context 'when target is a group level work item' do
-      let(:work_item) { create(:work_item, namespace: create(:group)) }
-      let(:event) { create(:event, target: work_item, target_type: 'WorkItem') }
-
-      it { is_expected.to eq(Gitlab::UrlBuilder.build(work_item, only_path: true)) }
-    end
-
-    context 'when target is not a work item' do
-      let(:issue) { create(:issue) }
-      let(:event) { create(:event, target: issue) }
-
-      it { is_expected.to eq([project, issue]) }
-    end
-  end
-
   describe '#localized_action_name' do
     it 'handles all valid design events' do
       created, updated, destroyed = %i[created updated destroyed].map do |trait|
@@ -213,6 +188,17 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
       end
     end
 
+    context 'for work items' do
+      let(:work_item) { create(:work_item) }
+
+      it 'returns the url to the work item' do
+        event.target_type = work_item.class.name
+        event.target_id = work_item.id
+
+        expect(helper.event_feed_url(event)).to eq(Gitlab::UrlBuilder.build(work_item))
+      end
+    end
+
     context 'for merge request' do
       before do
         event.target = create(:merge_request, source_project: project_with_repo)
@@ -230,7 +216,9 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
     it 'returns project commit url' do
       event.target = create(:note_on_commit, project: project_with_repo)
 
-      expect(helper.event_feed_url(event)).to eq(project_commit_url(event.project, event.note_target))
+      expect(helper.event_feed_url(event)).to eq(
+        project_commit_url(event.project, event.note_target, anchor: dom_id(event.target))
+      )
     end
 
     it 'returns event note target url' do
@@ -258,6 +246,18 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
         action: :pushed)
 
       expect(helper.event_feed_url(event)).to eq(nil)
+    end
+
+    it 'returns wiki page url' do
+      event = create(:wiki_page_event)
+
+      expect(helper.event_feed_url(event)).to eq(event_wiki_page_target_url(event))
+    end
+
+    it 'returns design url' do
+      event = create(:design_event)
+
+      expect(helper.event_feed_url(event)).to eq(design_url(event.design))
     end
   end
 

@@ -55,9 +55,14 @@
     }
   }
 
-  .event-title .event-title-block::first-letter {
-    text-transform: capitalize;
+  .event-title {
+    @apply gl-wrap-anywhere;
+
+    .event-title-block::first-letter {
+      text-transform: capitalize;
+    }
   }
+
 
   .event-body {
     margin-top: $gl-padding-4;

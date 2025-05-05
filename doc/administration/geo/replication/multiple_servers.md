@@ -16,6 +16,10 @@ This document describes a minimal reference architecture for running Geo
 in a multi-node configuration. If your multi-node setup differs from the one
 described, it is possible to adapt these instructions to your needs.
 
+This guide applies to installations with multiple application nodes (Sidekiq or GitLab Rails). 
+For single-node installations with external PostgreSQL, follow [Set up Geo for two single-node sites (with external PostgreSQL services)](../setup/two_single_node_external_services.md),
+and adapt your configuration if you use other external services.
+
 ## Architecture overview
 
 ![Architecture for running Geo in a multi-node configuration with primary and secondary backend services](img/geo-ha-diagram_v11_11.png)

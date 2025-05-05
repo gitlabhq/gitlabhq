@@ -295,6 +295,13 @@ export default {
 
       this.trackEvent(this.eventTracking.clickStat, { label: stat });
     },
+    onClickTopic() {
+      if (!this.eventTracking?.clickTopic) {
+        return;
+      }
+
+      this.trackEvent(this.eventTracking.clickTopic);
+    },
     onOffsetInput(page) {
       this.$emit('offset-page-change', page);
     },
@@ -343,6 +350,7 @@ export default {
       @hover-stat="onHoverStat"
       @click-stat="onClickStat"
       @click-avatar="onClickAvatar"
+      @click-topic="onClickTopic"
     />
     <template v-if="paginationType === $options.PAGINATION_TYPE_OFFSET">
       <div v-if="pageInfo.nextPage || pageInfo.previousPage" class="gl-mt-5">

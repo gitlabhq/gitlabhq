@@ -82,7 +82,11 @@ export default {
   >
     <span v-if="showLabel">{{ $options.i18n.topics }}:</span>
     <div v-for="topic in visibleTopics" :key="topic">
-      <gl-badge v-gl-tooltip="topicTooltipTitle(topic)" :href="topicPath(topic)">
+      <gl-badge
+        v-gl-tooltip="topicTooltipTitle(topic)"
+        :href="topicPath(topic)"
+        @click="$emit('click', topic)"
+      >
         {{ topicTitle(topic) }}
       </gl-badge>
     </div>
@@ -97,6 +101,7 @@ export default {
             :key="topic"
             v-gl-tooltip="topicTooltipTitle(topic)"
             :href="topicPath(topic)"
+            @click="$emit('click', topic)"
           >
             {{ topicTitle(topic) }}
           </gl-badge>

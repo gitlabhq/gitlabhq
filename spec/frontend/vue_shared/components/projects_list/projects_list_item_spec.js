@@ -421,6 +421,17 @@ describe('ProjectsListItem', () => {
 
       expect(findTopicBadges().exists()).toBe(true);
     });
+
+    describe('when topic badges component emits click event', () => {
+      beforeEach(() => {
+        createComponent();
+        findTopicBadges().vm.$emit('click');
+      });
+
+      it('emits click-topic event', () => {
+        expect(wrapper.emitted('click-topic')).toEqual([[]]);
+      });
+    });
   });
 
   describe('project without topics', () => {

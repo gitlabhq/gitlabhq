@@ -280,7 +280,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/elastic/latest/epic_class_proxy_spec.rb'
     - 'ee/spec/lib/elastic/latest/epic_instance_proxy_spec.rb'
     - 'ee/spec/lib/elastic/latest/git_instance_proxy_spec.rb'
-    - 'ee/spec/lib/elastic/latest/note_class_proxy_spec.rb'
     - 'ee/spec/lib/elastic/latest/routing_spec.rb'
     - 'ee/spec/lib/elastic/latest/snippet_instance_proxy_spec.rb'
     - 'ee/spec/lib/elastic/latest/user_class_proxy_spec.rb'

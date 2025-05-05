@@ -72,6 +72,7 @@ export default {
       @hover-stat="$emit('hover-stat', $event)"
       @click-stat="$emit('click-stat', $event)"
       @click-avatar="$emit('click-avatar')"
+      @click-topic="$emit('click-topic')"
     />
   </ul>
 </template>

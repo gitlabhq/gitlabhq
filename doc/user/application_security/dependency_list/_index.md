@@ -42,7 +42,7 @@ You can use the [CycloneDX Web Tool](https://cyclonedx.github.io/cyclonedx-web-t
 {{< alert type="note" >}}
 
 Although this is not mandatory for populating the dependency list, the SBOM document must include and comply with the
-[GitLab CycloneDX property taxonomy](../../../development/sec/cyclonedx_property_taxonomy.md) to provide some properties and to enable some security features.
+GitLab CycloneDX property taxonomy to provide some properties and to enable some security features.
 
 {{< /alert >}}
 
@@ -89,6 +89,7 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 - Dependency filtering for group [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) in GitLab 16.10. Feature flag `group_level_dependencies_filtering` removed.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513320) dependency filtering for projects in GitLab 17.9 with a flag named [`project_component_filter`](../../../administration/feature_flags.md). Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/513321) in GitLab 17.10. Feature flag `project_component_filter` removed.
+- Introduced dependency version filtering for [projects](https://gitlab.com/gitlab-org/gitlab/-/issues/520771) and [groups](https://gitlab.com/gitlab-org/gitlab/-/issues/523061) in GitLab 18.0 with [flags](../../../administration/feature_flags.md) named `version_filtering_on_project_level_dependency_list` and `version_filtering_on_group_level_dependency_list`. Disabled by default.
 
 {{< /history >}}
 
@@ -100,10 +101,14 @@ For groups, you can filter by:
 - Project
 - License
 - Components
+- Component version
 
 For projects, you can filter by:
 
 - Components
+- Component version
+
+To filter by component version, you must filter by exactly one component first.
 
 To filter the dependency list:
 

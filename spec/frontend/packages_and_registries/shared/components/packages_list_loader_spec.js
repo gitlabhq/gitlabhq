@@ -15,17 +15,22 @@ describe('PackagesListLoader', () => {
 
   describe('desktop loader', () => {
     it('produces the right loader', () => {
-      expect(findDesktopShapes().findAll('rect[width="1000"]')).toHaveLength(20);
+      expect(findDesktopShapes().findAll('rect[width="1000"]')).toHaveLength(10);
     });
 
     it('has the correct classes', () => {
-      expect(findDesktopShapes().classes()).toEqual(['gl-hidden', 'gl-flex-col', 'sm:gl-flex']);
+      expect(findDesktopShapes().classes()).toEqual([
+        'gl-mb-5',
+        'gl-hidden',
+        'gl-flex-col',
+        'sm:gl-flex',
+      ]);
     });
   });
 
   describe('mobile loader', () => {
     it('produces the right loader', () => {
-      expect(findMobileShapes().findAll('rect[height="170"]')).toHaveLength(5);
+      expect(findMobileShapes().findAll('rect[height="95"]')).toHaveLength(5);
     });
 
     it('has the correct classes', () => {
