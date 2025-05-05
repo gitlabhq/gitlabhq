@@ -14763,7 +14763,9 @@ CREATE TABLE gpg_signatures (
     gpg_key_user_name text,
     gpg_key_user_email text,
     verification_status smallint DEFAULT 0 NOT NULL,
-    gpg_key_subkey_id bigint
+    gpg_key_subkey_id bigint,
+    author_email text,
+    CONSTRAINT check_d113461ed1 CHECK ((char_length(author_email) <= 255))
 );
 
 CREATE SEQUENCE gpg_signatures_id_seq
