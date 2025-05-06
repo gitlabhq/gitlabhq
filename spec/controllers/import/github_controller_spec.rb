@@ -336,6 +336,8 @@ RSpec.describe Import::GithubController, feature_category: :importers do
       allow_next_instance_of(Gitlab::GithubImport::ProjectRelationType) do |instance|
         allow(instance).to receive(:for).with("#{provider_username}/vim").and_return('owned')
       end
+
+      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
     end
 
     it_behaves_like 'a GitHub-ish import controller: POST create' do
@@ -348,6 +350,19 @@ RSpec.describe Import::GithubController, feature_category: :importers do
           post :create, params: { target_namespace: user.namespace }, format: :json
 
           expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when request exceeds :github_import rate limits' do
+        before do
+          allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:github_import, anything).and_return(true)
+        end
+
+        it 'throttles the endpoint' do
+          post :create, params: { target_namespace: user.namespace }, format: :json
+
+          expect(response).to have_gitlab_http_status(:too_many_requests)
+          expect(json_response['errors']).to eq('This endpoint has been requested too many times. Try again later.')
         end
       end
     end

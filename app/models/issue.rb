@@ -628,16 +628,6 @@ class Issue < ApplicationRecord
     !self.closed? && !self.project.forked?
   end
 
-  # Returns `true` if the current issue can be viewed by either a logged in User
-  # or an anonymous user.
-  def visible_to_user?(user = nil)
-    return publicly_visible? unless user
-    return true if user.can_read_all_resources?
-    return readable_by?(user) unless project
-
-    readable_by?(user) && access_allowed_for_project_with_external_authorization?(user, project)
-  end
-
   # Always enforce spam check for support bot but allow for other users when issue is not publicly visible
   def allow_possible_spam?(user)
     return true if Gitlab::CurrentSettings.allow_possible_spam
@@ -746,23 +736,6 @@ class Issue < ApplicationRecord
     self.update_column(:upvotes_count, self.upvotes)
   end
 
-  # Returns `true` if the given User can read the current Issue.
-  #
-  # This method duplicates the same check of issue_policy.rb
-  # for performance reasons, check commit: 002ad215818450d2cbbc5fa065850a953dc7ada8
-  # Make sure to sync this method with issue_policy.rb
-  def readable_by?(user)
-    if user.can_read_all_resources?
-      true
-    elsif hidden?
-      false
-    elsif project
-      project_level_readable_by?(user)
-    else
-      group_level_readable_by?(user)
-    end
-  end
-
   def hidden?
     author&.banned?
   end
@@ -835,40 +808,6 @@ class Issue < ApplicationRecord
   end
 
   private
-
-  def project_level_readable_by?(user)
-    if !project.issues_enabled?
-      false
-    elsif project.personal? && project.team.owner?(user)
-      true
-    elsif confidential? && !assignee_or_author?(user)
-      project.member?(user, Gitlab::Access::PLANNER)
-    elsif project.public? || (project.internal? && !user.external?)
-      project.feature_available?(:issues, user)
-    else
-      project.member?(user)
-    end
-  end
-
-  def group_level_readable_by?(user)
-    # This should never happen as we don't support personal namespace level issues. Just additional safety.
-    return false unless namespace.is_a?(::Group)
-
-    if confidential? && !assignee_or_author?(user)
-      namespace.member?(user, Gitlab::Access::PLANNER)
-    else
-      namespace.member?(user)
-    end
-  end
-
-  def access_allowed_for_project_with_external_authorization?(user, project)
-    return false if project.blank?
-
-    ::Gitlab::ExternalAuthorization.access_allowed?(
-      user,
-      project.external_authorization_classification_label
-    )
-  end
 
   def due_date_after_start_date
     return unless start_date.present? && due_date.present?
