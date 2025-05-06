@@ -13,6 +13,5 @@ RSpec.describe ResourceEvents::IssueAssignmentEvent, feature_category: :value_st
   describe 'validations' do
     it { is_expected.to be_valid }
     it { is_expected.to validate_presence_of(:issue) }
-    it { is_expected.to validate_presence_of(:namespace_id) }
   end
 end

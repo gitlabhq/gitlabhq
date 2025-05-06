@@ -38,7 +38,6 @@ import {
   WIDGET_TYPE_DESIGNS,
   WORK_ITEM_REFERENCE_CHAR,
   WORK_ITEM_TYPE_NAME_EPIC,
-  WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_DEVELOPMENT,
   STATE_OPEN,
   WIDGET_TYPE_ERROR_TRACKING,
@@ -189,8 +188,6 @@ export default {
       updateError: undefined,
       workItem: {},
       updateInProgress: false,
-      modalWorkItemIid: getParameterByName('work_item_iid'),
-      modalWorkItemNamespaceFullPath: '',
       isReportModalOpen: false,
       reportedUrl: '',
       reportedUserId: 0,
@@ -384,12 +381,6 @@ export default {
     parentWorkItemConfidentiality() {
       return this.parentWorkItem?.confidential;
     },
-    parentWorkItemType() {
-      return this.parentWorkItem?.workItemType?.name;
-    },
-    workItemIconName() {
-      return this.workItem.workItemType?.iconName;
-    },
     hasDescriptionWidget() {
       return this.findWidget(WIDGET_TYPE_DESCRIPTION);
     },
@@ -428,9 +419,6 @@ export default {
     },
     workItemNotes() {
       return this.findWidget(WIDGET_TYPE_NOTES);
-    },
-    workItemWeight() {
-      return this.findWidget(WIDGET_TYPE_WEIGHT);
     },
     workItemDevelopment() {
       return this.findWidget(WIDGET_TYPE_DEVELOPMENT);
@@ -843,17 +831,6 @@ export default {
       this.isValidDragDataType(event);
       if (this.isDesignUploadButtonInViewport) this.isEmptyStateVisible = true;
     },
-    onDragLeave(event) {
-      const emptyStateDesignDropzone =
-        this.$refs.emptyStateDesignDropzone?.$el || this.$refs.emptyStateDesignDropzone;
-      if (!emptyStateDesignDropzone.contains(event.relatedTarget)) {
-        this.dragCounter -= 1;
-      }
-
-      if (this.dragCounter === 0) {
-        this.isEmptyStateVisible = false; // Hide dropzone
-      }
-    },
     onDragLeaveMain(event) {
       // Check if the drag is leaving the main container entirely
       const mainContainerRef = this.$refs.workItemDetail;
@@ -1127,7 +1104,6 @@ export default {
                   </gl-intersection-observer>
                   <work-item-create-branch-merge-request-split-button
                     v-if="showCreateBranchMergeRequestSplitButton"
-                    :work-item-id="workItem.id"
                     :work-item-iid="iid"
                     :work-item-full-path="workItemFullPath"
                     :work-item-type="workItem.workItemType.name"
@@ -1184,7 +1160,6 @@ export default {
               <template #empty-state>
                 <design-dropzone
                   v-if="isEmptyStateVisible && !isSaving && isDragDataValid && !isAddingNotes"
-                  ref="emptyStateDesignDropzone"
                   class="gl-relative gl-mt-5"
                   show-upload-design-overlay
                   validate-design-upload-on-dragover

@@ -56,7 +56,6 @@ export default {
       workItemDevelopment: {},
       showCreateBranchAndMrModal: false,
       showBranchFlow: true,
-      showMergeRequestFlow: false,
       showCreateOptions: true,
     };
   },
@@ -227,10 +226,9 @@ export default {
     },
   },
   methods: {
-    openModal(createBranch = true, createMergeRequest = false) {
+    openModal(createBranch = true) {
       this.toggleCreateModal(true);
       this.showBranchFlow = createBranch;
-      this.showMergeRequestFlow = createMergeRequest;
     },
     toggleCreateModal(showOrhide) {
       this.showCreateBranchAndMrModal = showOrhide;
@@ -301,9 +299,7 @@ export default {
       v-if="!isLoading"
       :show-modal="showCreateBranchAndMrModal"
       :show-branch-flow="showBranchFlow"
-      :show-merge-request-flow="showMergeRequestFlow"
       :work-item-iid="workItemIid"
-      :work-item-id="workItemId"
       :work-item-type="workItemType"
       :work-item-full-path="workItemFullPath"
       :is-confidential-work-item="isConfidentialWorkItem"

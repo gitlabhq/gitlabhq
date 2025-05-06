@@ -33,7 +33,7 @@ Our preferred approach to this problem is eventual consistency. With the loose f
 feature, we can configure delayed association cleanup without negatively affecting the
 application performance.
 
-### How it works
+### How eventual consistency is implemented
 
 In the previous example, a record in the `projects` table can have multiple `ci_pipeline`
 records. To keep the cleanup process separate from the actual parent record deletion,

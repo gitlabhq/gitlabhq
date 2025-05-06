@@ -1483,7 +1483,7 @@ On the primary site:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Geo > Sites**.
-1. Look at the **primary site** and check the verification information. Take note that all *uploads* were verified:
+1. Look at the **primary site** and check the verification information. All *uploads* were verified:
    ![The Geo Sites dashboard displaying successful verification of the primary.](img/geo_primary_uploads_verification_v17_11.png)
 1. Look at the **secondary site** and check the verification information. Notice that two *uploads* are still being synced, even though the secondary should use the same object storage. Meaning it should not have to synchronize any uploads:
    ![The Geo Sites dashboard displaying inconsistencies of the secondary.](img/geo_secondary_uploads_inconsistencies_v17_11.png)

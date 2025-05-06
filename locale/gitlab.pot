@@ -3690,6 +3690,9 @@ msgstr ""
 msgid "Add new webhook"
 msgstr ""
 
+msgid "Add optional summary content…"
+msgstr ""
+
 msgid "Add or remove a user."
 msgstr ""
 
@@ -17509,6 +17512,9 @@ msgid "Continue creating"
 msgstr ""
 
 msgid "Continue editing"
+msgstr ""
+
+msgid "Continue review"
 msgstr ""
 
 msgid "Continue to the next step"
@@ -51238,6 +51244,9 @@ msgid "Review App|View app"
 msgstr ""
 
 msgid "Review App|View latest app"
+msgstr ""
+
+msgid "Review approval"
 msgstr ""
 
 msgid "Review changes"

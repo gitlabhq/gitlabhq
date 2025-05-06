@@ -45,6 +45,11 @@ The project's [path also changes](../repository/_index.md#repository-path-change
 
 New project-level labels are created for issues and merge requests if matching group labels don't already exist in the target namespace.
 
+If a project contains issues assigned to an epic, and that epic is not available in the target
+group, GitLab creates a copy of the epic in the target group. When you transfer multiple projects
+with issues assigned to the same epic, GitLab creates a separate copy of that epic in the target
+group for each project.
+
 {{< alert type="warning" >}}
 
 Errors during the transfer process may lead to data loss of the project's components or dependencies of end users.

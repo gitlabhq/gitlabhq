@@ -3,7 +3,7 @@ stage: Verify
 group: Hosted Runners
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Compute minutes, usage tracking, quota management for GitLab-hosted runners on GitLab Dedicated.
-title: Compute minutes for GitLab-hosted runners on GitLab Dedicated
+title: Compute usage for GitLab-hosted runners on GitLab Dedicated
 ---
 
 {{< details >}}
@@ -15,10 +15,10 @@ title: Compute minutes for GitLab-hosted runners on GitLab Dedicated
 
 A GitLab Dedicated instance can have both self-managed instance runners and GitLab-hosted instance runners.
 
-As an administrator of a GitLab Dedicated instance, you can track and monitor compute minutes used by 
+As an administrator of a GitLab Dedicated instance, you can track and monitor compute minutes used by
 namespaces running jobs on either type of instance runners.
 
-For GitLab-hosted Runners:
+For GitLab-hosted runners:
 
 - You can view your estimated usage in the [GitLab-hosted runner usage dashboard](#view-compute-usage).
 - Usage billing is based on build duration logs collected from GitLab-hosted runners.

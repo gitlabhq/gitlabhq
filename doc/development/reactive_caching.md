@@ -38,7 +38,7 @@ In this example, the first time `#result` is called, it returns `nil`. However,
 it enqueues a background worker to call `#calculate_reactive_cache` and set an
 initial cache lifetime of 10 minutes.
 
-## How it works
+## How ReactiveCaching works
 
 The first time `#with_reactive_cache` is called, a background job is enqueued and
 `with_reactive_cache` returns `nil`. The background job calls `#calculate_reactive_cache`
@@ -307,7 +307,7 @@ self.reactive_cache_hard_limit = 5.megabytes
 
 ## Changing the cache keys
 
-Due to [how reactive caching works](#how-it-works), changing parameters for the `calculate_reactive_cache` method is like
+Due to [how reactive caching works](#how-reactivecaching-works), changing parameters for the `calculate_reactive_cache` method is like
 changing parameters for a Sidekiq worker.
 So [the same rules](sidekiq/compatibility_across_updates.md#changing-the-arguments-for-a-worker)
 need to be followed.

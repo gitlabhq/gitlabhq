@@ -23,7 +23,7 @@
 
 .merge-request{ data: { mr_action: mr_action, url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version, diffs_batch_cache_key: @diffs_batch_cache_key } }
   = render "projects/merge_requests/mr_title"
-  #js-review-drawer
+  #js-review-drawer{ data: review_bar_data(@merge_request, current_user) }
   #js-merge-sticky-header{ data: { data: sticky_header_data(@project, @merge_request).to_json } }
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
     = render "projects/merge_requests/mr_box"

@@ -19,7 +19,7 @@ title: Compute minutes
 
 {{< /history >}}
 
-The usage of instance runners by projects running CI/CD jobs is measured in Compute Minutes.
+The usage of instance runners by projects running CI/CD jobs is measured in compute minutes.
 
 For some installation types, your [namespace](../../user/namespace/_index.md) has an [compute quota](instance_runner_compute_minutes.md#compute-quota-enforcement),
 which limits the available compute minutes you can use.
@@ -29,16 +29,16 @@ A compute quota can be applied to all [admin-managed instance runners](instance_
 - All instance runners on GitLab.com or GitLab Self-Managed
 - All self-hosted instance runners on GitLab Dedicated
 
-The compute quota is disabled by default but can be enabled for top-level groups and user namespaces. On GitLab.com the quota is enabled 
-by default to limit usage on Free namespaces. The limit is increased if a paid subscription is purchased.
+The compute quota is disabled by default but can be enabled for top-level groups and user namespaces.
+On GitLab.com, the quota is enabled by default to limit usage on Free namespaces. The limit is increased if a paid subscription is purchased.
 
 GitLab-hosted instance runners on GitLab Dedicated cannot have the instance runner compute quota applied.
 
-### Instance Runners
+### Instance runners
 
 For instance runners on GitLab.com, GitLab Self-Managed, and self-hosted instance runners on GitLab Dedicated:
 
-- You can view your usage in the [instance runner usage dashboard](instance_runner_compute_minutes.md#view-usage)
+- You can view your usage in the [instance runner usage dashboard](instance_runner_compute_minutes.md#view-usage).
 - When a quota is enabled:
   - You receive notifications when approaching your quota limits.
   - Enforcement measures are applied when you exceed your quota.
@@ -50,13 +50,13 @@ For GitLab.com:
 
 ### GitLab-hosted runners on GitLab Dedicated
 
-GitLab-hosted Runners on GitLab Dedicated [are tracked separately](dedicated_hosted_runner_compute_minutes.md):
+GitLab-hosted runners on GitLab Dedicated [are tracked separately](dedicated_hosted_runner_compute_minutes.md):
 
-- You can view your estimated usage in the [instance-level GitLab-hosted runner usage dashboard](dedicated_hosted_runner_compute_minutes.md#view-compute-usage).
+- You can view the estimated usage for your instance in the [GitLab-hosted runner usage dashboard](dedicated_hosted_runner_compute_minutes.md#view-compute-usage).
 - Usage billing is based on build duration logs collected from GitLab-hosted runners.
 - Quota enforcement and notifications are not available.
 
-## Compute Minute Usage
+## Compute minute usage
 
 ### Compute usage calculation
 
@@ -120,9 +120,9 @@ These cost factors apply to GitLab-hosted runners on GitLab.com and GitLab Dedic
 
 Certain [discounts apply to GitLab.com](#cost-factors-for-gitlabcom) based on project type.
 
-#### Cost Factors for GitLab.com
+#### Cost factors for GitLab.com
 
-| Project Type | Cost Factor | Compute Minutes Used |
+| Project type | Cost factor | Compute minutes used |
 |--------------|-------------|---------------------|
 | Standard projects | [Based on runner type](#cost-factors-for-gitlab-hosted-runners) | 1 minute per (job duration / 60 × factor) |
 | Public projects in [GitLab for Open Source program](../../subscriptions/community_programs.md#gitlab-for-open-source) | `0.5` | 1 minute per 2 minutes of job time |

@@ -8966,6 +8966,8 @@ CREATE TABLE application_settings (
     group_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     model_prompt_cache_enabled boolean DEFAULT true NOT NULL,
     lock_model_prompt_cache_enabled boolean DEFAULT false NOT NULL,
+    web_based_commit_signing_enabled boolean DEFAULT false NOT NULL,
+    lock_web_based_commit_signing_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -17925,6 +17927,8 @@ CREATE TABLE namespace_settings (
     model_prompt_cache_enabled boolean,
     lock_model_prompt_cache_enabled boolean DEFAULT false NOT NULL,
     disable_invite_members boolean DEFAULT false NOT NULL,
+    web_based_commit_signing_enabled boolean,
+    lock_web_based_commit_signing_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_namespace_settings_security_policies_is_hash CHECK ((jsonb_typeof(security_policies) = 'object'::text)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
@@ -18617,6 +18621,25 @@ CREATE TABLE organization_settings (
     updated_at timestamp with time zone NOT NULL,
     settings jsonb DEFAULT '{}'::jsonb NOT NULL
 );
+
+CREATE TABLE organization_user_aliases (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    username character varying NOT NULL,
+    display_name character varying,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE organization_user_aliases_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE organization_user_aliases_id_seq OWNED BY organization_user_aliases.id;
 
 CREATE TABLE organization_users (
     id bigint NOT NULL,
@@ -27439,6 +27462,8 @@ ALTER TABLE ONLY organization_cluster_agent_mappings ALTER COLUMN id SET DEFAULT
 
 ALTER TABLE ONLY organization_push_rules ALTER COLUMN id SET DEFAULT nextval('organization_push_rules_id_seq'::regclass);
 
+ALTER TABLE ONLY organization_user_aliases ALTER COLUMN id SET DEFAULT nextval('organization_user_aliases_id_seq'::regclass);
+
 ALTER TABLE ONLY organization_users ALTER COLUMN id SET DEFAULT nextval('organization_users_id_seq'::regclass);
 
 ALTER TABLE ONLY organizations ALTER COLUMN id SET DEFAULT nextval('organizations_id_seq'::regclass);
@@ -30164,6 +30189,9 @@ ALTER TABLE ONLY organization_push_rules
 
 ALTER TABLE ONLY organization_settings
     ADD CONSTRAINT organization_settings_pkey PRIMARY KEY (organization_id);
+
+ALTER TABLE ONLY organization_user_aliases
+    ADD CONSTRAINT organization_user_aliases_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY organization_users
     ADD CONSTRAINT organization_users_pkey PRIMARY KEY (id);
@@ -36214,6 +36242,8 @@ CREATE UNIQUE INDEX index_ops_strategies_user_lists_on_strategy_id_and_user_list
 
 CREATE UNIQUE INDEX index_organization_push_rules_on_organization_id ON organization_push_rules USING btree (organization_id);
 
+CREATE INDEX index_organization_user_aliases_on_user_id ON organization_user_aliases USING btree (user_id);
+
 CREATE INDEX index_organization_users_on_org_id_access_level_user_id ON organization_users USING btree (organization_id, access_level, user_id);
 
 CREATE INDEX index_organization_users_on_organization_id_and_id ON organization_users USING btree (organization_id, id);
@@ -38549,6 +38579,10 @@ CREATE UNIQUE INDEX unique_merge_request_metrics_by_merge_request_id ON merge_re
 CREATE INDEX unique_ml_model_versions_on_model_id_and_id ON ml_model_versions USING btree (model_id, id DESC);
 
 CREATE UNIQUE INDEX unique_namespace_cluster_agent_mappings_for_agent_association ON namespace_cluster_agent_mappings USING btree (namespace_id, cluster_agent_id);
+
+CREATE UNIQUE INDEX unique_organization_user_alias_organization_id_user_id ON organization_user_aliases USING btree (organization_id, user_id);
+
+CREATE UNIQUE INDEX unique_organization_user_alias_organization_id_username ON organization_user_aliases USING btree (organization_id, username);
 
 CREATE UNIQUE INDEX unique_organizations_on_path_case_insensitive ON organizations USING btree (lower(path));
 
@@ -42095,6 +42129,9 @@ ALTER TABLE ONLY packages_debian_file_metadata
 ALTER TABLE ONLY namespaces
     ADD CONSTRAINT fk_319256d87a FOREIGN KEY (file_template_project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY organization_user_aliases
+    ADD CONSTRAINT fk_31b4eb5ec5 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY snippet_repository_storage_moves
     ADD CONSTRAINT fk_321e6c6235 FOREIGN KEY (snippet_organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
@@ -43744,6 +43781,9 @@ ALTER TABLE ONLY user_project_callouts
 
 ALTER TABLE ONLY ml_model_metadata
     ADD CONSTRAINT fk_f68c7e109c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY organization_user_aliases
+    ADD CONSTRAINT fk_f709137eb7 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY workspaces
     ADD CONSTRAINT fk_f78aeddc77 FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;

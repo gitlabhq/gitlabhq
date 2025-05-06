@@ -22,7 +22,7 @@ Runway, is currently not available to external customers. GitLab is working on e
 
 [View the available regions](https://gitlab-com.gitlab.io/gl-infra/platform/runway/runwayctl/manifest.schema.html#spec_regions).
 
-For GitLab.com customers, it's important to note that the current routing mechanism is based on the location of the GitLab instance, not the user's location. As GitLab.com is currently single-homed in `us-east1`, requests to the AI gateway are routed to us-east4 in almost all cases. This means that the routing may not always result in the absolute nearest deployment for every user.
+For GitLab.com customers, the current routing mechanism is based on the location of the GitLab instance, not the user's location. As GitLab.com is currently single-homed in `us-east1`, requests to the AI gateway are routed to us-east4 in almost all cases. This means that the routing may not always result in the absolute nearest deployment for every user.
 
 The IDE communicates directly with the AI gateway by default, bypassing the GitLab monolith. This direct connection improves routing efficiency. To change this, you can [configure direct and indirect connections](../project/repository/code_suggestions/_index.md#direct-and-indirect-connections).
 
@@ -56,7 +56,7 @@ The following factors influence where data is routed.
 
 ### AI gateway deployment regions
 
-For the most up-to-date information on AI gateway deployment regions, please refer to the [AI-assist runway configuration file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/.runway/runway.yml?ref_type=heads#L12).
+For the most up-to-date information on AI gateway deployment regions, refer to the [AI-assist runway configuration file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/.runway/runway.yml?ref_type=heads#L12).
 
 As of the last update (2023-11-21), GitLab deploys the AI gateway in the following regions:
 
@@ -64,7 +64,7 @@ As of the last update (2023-11-21), GitLab deploys the AI gateway in the followi
 - Europe (`europe-west2`, `europe-west3`, `europe-west9`)
 - Asia Pacific (`asia-northeast1`, `asia-northeast3`)
 
-Please note that deployment regions may change frequently. For the most current information, always check the configuration file linked above.
+Deployment regions may change frequently. For the most current information, always check the configuration file linked above.
 
 The exact location of the LLM models used by the AI gateway is determined by the third-party model providers. Currently, there is no guarantee that the models reside in the same geographical regions as the AI gateway deployments. This implies that data may flow back to the US or other regions where the model provider operates, even if the AI gateway processes the initial request in a different region.
 

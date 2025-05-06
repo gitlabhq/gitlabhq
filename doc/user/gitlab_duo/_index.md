@@ -132,4 +132,4 @@ To improve your security, try these features:
 | [Root Cause Analysis](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | Ultimate | GitLab Duo Enterprise, GitLab Duo with Amazon Q | Generally available | Generally available | Generally available | Beta |
 | [Vulnerability Explanation](../application_security/vulnerabilities/_index.md#explaining-a-vulnerability) | Ultimate | GitLab Duo Enterprise, GitLab Duo with Amazon Q | Generally available | Generally available | Generally available | Beta |
 | [Vulnerability Resolution](../application_security/vulnerabilities/_index.md#vulnerability-resolution) | Ultimate | GitLab Duo Enterprise, GitLab Duo with Amazon Q | Generally available | Generally available | Generally available | Beta |
-| [AI Impact Dashboard](../analytics/ai_impact_analytics.md) | Ultimate | GitLab Duo Enterprise | Generally available | Generally available | N/A | Beta |
+| [AI Impact Dashboard](../analytics/ai_impact_analytics.md) | Ultimate | GitLab Duo Enterprise | Generally available | Generally available | N/A | Generally available |

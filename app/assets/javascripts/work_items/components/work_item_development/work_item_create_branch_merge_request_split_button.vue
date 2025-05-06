@@ -32,10 +32,6 @@ export default {
       type: String,
       required: true,
     },
-    workItemId: {
-      type: String,
-      required: true,
-    },
     projectId: {
       type: String,
       required: true,
@@ -54,7 +50,6 @@ export default {
   data() {
     return {
       showBranchFlow: true,
-      showMergeRequestFlow: false,
       showCreateBranchAndMrModal: false,
       checkingBranchAvailibility: true,
       showCreateOptions: true,
@@ -89,10 +84,9 @@ export default {
     },
   },
   methods: {
-    openModal(createBranch = true, createMergeRequest = false) {
+    openModal(createBranch = true) {
       this.toggleCreateModal(true);
       this.showBranchFlow = createBranch;
-      this.showMergeRequestFlow = createMergeRequest;
     },
     toggleCreateModal(showOrhide) {
       this.showCreateBranchAndMrModal = showOrhide;
@@ -132,9 +126,7 @@ export default {
     <work-item-create-branch-merge-request-modal
       :show-modal="showCreateBranchAndMrModal"
       :show-branch-flow="showBranchFlow"
-      :show-merge-request-flow="showMergeRequestFlow"
       :work-item-iid="workItemIid"
-      :work-item-id="workItemId"
       :work-item-type="workItemType"
       :work-item-full-path="workItemFullPath"
       :is-confidential-work-item="isConfidentialWorkItem"

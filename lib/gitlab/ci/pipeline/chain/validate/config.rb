@@ -8,13 +8,11 @@ module Gitlab
           class Config < Chain::Base
             include Chain::Helpers
 
-            INPUTS_LIMIT = 20
-
             def perform!
               return unless @command.inputs
-              return unless @command.inputs.size > INPUTS_LIMIT
+              return unless @command.inputs.size > ::Ci::Pipeline::INPUTS_LIMIT
 
-              error("There cannot be more than #{INPUTS_LIMIT} inputs")
+              error("There cannot be more than #{::Ci::Pipeline::INPUTS_LIMIT} inputs")
             end
 
             def break?

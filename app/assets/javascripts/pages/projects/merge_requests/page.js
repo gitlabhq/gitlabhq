@@ -90,6 +90,11 @@ const initReviewDrawer = () => {
     el,
     pinia,
     store,
+    apolloProvider,
+    provide: {
+      newCommentTemplatePaths: JSON.parse(el.dataset.newCommentTemplatePaths),
+      canSummarize: parseBoolean(el.dataset.canSummarize),
+    },
     render(h) {
       return h(ReviewDrawer);
     },

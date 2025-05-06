@@ -16,7 +16,6 @@ describe('Delete milestone modal', () => {
   const mockProps = {
     issueCount: 1,
     mergeRequestCount: 2,
-    milestoneId: 3,
     milestoneTitle: 'my milestone title',
     milestoneUrl: `${TEST_HOST}/delete_milestone_modal.vue/milestone`,
   };

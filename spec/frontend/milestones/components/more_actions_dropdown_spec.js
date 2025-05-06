@@ -220,7 +220,6 @@ describe('moreActionsDropdown', () => {
     const provideData = {
       issueCount: 1,
       mergeRequestCount: 2,
-      milestoneId: 1,
       milestoneTitle: 'Milestone 1',
       milestoneUrl: '/milestone-url',
     };
@@ -233,7 +232,6 @@ describe('moreActionsDropdown', () => {
         visible: false,
         issueCount: provideData.issueCount,
         mergeRequestCount: provideData.mergeRequestCount,
-        milestoneId: provideData.milestoneId,
         milestoneTitle: provideData.milestoneTitle,
         milestoneUrl: provideData.milestoneUrl,
       });
@@ -251,7 +249,6 @@ describe('moreActionsDropdown', () => {
         visible: true,
         issueCount: provideData.issueCount,
         mergeRequestCount: provideData.mergeRequestCount,
-        milestoneId: provideData.milestoneId,
         milestoneTitle: provideData.milestoneTitle,
         milestoneUrl: provideData.milestoneUrl,
       });

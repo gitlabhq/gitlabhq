@@ -126,22 +126,6 @@ describe('NamespaceStorageApp', () => {
   });
 
   describe('Namespace project list', () => {
-    describe('when customSortKey is set', () => {
-      it('disables sorting', () => {
-        createComponent({ provide: { customSortKey: 'custom' } });
-
-        expect(findProjectList().props('enableSortableFields')).toBe(false);
-      });
-    });
-
-    describe('when customSortKey is not set', () => {
-      it('enables sorting', () => {
-        createComponent({ provide: { customSortKey: undefined } });
-
-        expect(findProjectList().props('enableSortableFields')).toBe(true);
-      });
-    });
-
     it('renders the 2 projects', async () => {
       createComponent();
       await waitForPromises();

@@ -211,7 +211,7 @@ To remove a snooze before its expiration time, remove the `snooze` section from 
 
 To use scheduled pipeline execution policies:
 
-1. Store your CI/CD configuration in your security policy project or in a project accessible by the security policy bot.
+1. Store your CI/CD configuration in your security policy project.
 1. In your security policy project's **Settings** > **General** > **Visibility, project features, permissions** section, enable the **Grant security policy project access to CI/CD configuration** setting.
 1. Ensure your CI/CD configuration includes appropriate workflow rules for scheduled pipelines.
 

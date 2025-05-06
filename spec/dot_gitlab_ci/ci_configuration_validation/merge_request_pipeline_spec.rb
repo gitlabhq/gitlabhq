@@ -63,6 +63,10 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
     it_behaves_like 'merge request pipeline'
 
     it_behaves_like 'merge train pipeline'
+
+    it 'does not include a tier' do
+      expect(jobs).not_to include('pipeline-tier-1')
+    end
   end
 
   context 'when MR is created from "release-tools/update-gitaly" source branch' do

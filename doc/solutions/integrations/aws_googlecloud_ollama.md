@@ -46,7 +46,7 @@ This guide is a comprehensive, end-to-end set of instructions for getting the de
 
 #### Resources & Operating System
 
-We will install GitLab, GitLab AI Gateway and Ollama each in their own separate virtual machine. While we used Ubuntu 24.0x in this guide, you have flexibility in choosing any Unix-based operating system that meets your organization's requirements and preferences. However, please note that using a Unix-based operating system is mandatory for this setup. This ensures system stability, security, and compatibility with the required software stack. This setup provides a good balance between cost and performance for testing and evaluation phases, though you may need to upgrade the GPU instance type when moving to production, depending on your usage requirements and team size.
+We will install GitLab, GitLab AI Gateway and Ollama each in their own separate virtual machine. While we used Ubuntu 24.0x in this guide, you have flexibility in choosing any Unix-based operating system that meets your organization's requirements and preferences. However, using a Unix-based operating system is mandatory for this setup. This ensures system stability, security, and compatibility with the required software stack. This setup provides a good balance between cost and performance for testing and evaluation phases, though you may need to upgrade the GPU instance type when moving to production, depending on your usage requirements and team size.
 
 |                | **GCP**       | **AWS**     | **OS**    | **Disk** |
 |----------------|---------------|-------------|-----------|----------|
@@ -162,7 +162,7 @@ Designed for simplicity and performance, Ollama empowers users to harness the po
 
 ### AI Gateway
 
-While the official installation guide is available [here](../../install/install_ai_gateway.md), here's a streamlined approach for setting up the AI Gateway. Note that, as of January 2025, the image `gitlab/model-gateway:self-hosted-v17.6.0-ee` has been verified to work with GitLab 17.7.
+While the official installation guide is available [here](../../install/install_ai_gateway.md), here's a streamlined approach for setting up the AI Gateway. As of January 2025, the image `gitlab/model-gateway:self-hosted-v17.6.0-ee` has been verified to work with GitLab 17.7.
 
 1. Please ensure that ...
 

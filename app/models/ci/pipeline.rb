@@ -39,6 +39,7 @@ module Ci
     UNLOCKABLE_STATUSES = (Ci::Pipeline.completed_statuses + [:manual]).freeze
     # UI only shows 100+. TODO: pass constant to UI for SSoT
     COUNT_FAILED_JOBS_LIMIT = 101
+    INPUTS_LIMIT = 20
 
     paginates_per 15
 

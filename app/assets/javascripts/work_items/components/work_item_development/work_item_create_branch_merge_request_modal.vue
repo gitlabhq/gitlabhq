@@ -62,16 +62,7 @@ export default {
       required: false,
       default: true,
     },
-    showMergeRequestFlow: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     workItemIid: {
-      type: String,
-      required: true,
-    },
-    workItemId: {
       type: String,
       required: true,
     },

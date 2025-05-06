@@ -19,7 +19,7 @@ module Ci
 
     def self.pluck_identifiers(pipeline_schedule_id, inputs_names)
       where(pipeline_schedule_id: pipeline_schedule_id, name: inputs_names)
-        .limit(PipelineSchedule::MAX_INPUTS)
+        .limit(Ci::Pipeline::INPUTS_LIMIT)
         .pluck(:id, :name)
     end
 

@@ -41,9 +41,39 @@ See [Version Requirements](../integration/advanced_search/elasticsearch.md#versi
 
 Developers making significant changes to Elasticsearch queries should test their features against all our supported versions.
 
-## Setting up development environment
+## Setting up your development environment
 
-See the [Elasticsearch GDK setup instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/elasticsearch.md)
+- See the [Elasticsearch GDK setup instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/elasticsearch.md)
+
+- Ensure [Elasticsearch is running](#setting-up-your-development-environment):
+
+  ```shell
+  curl "http://localhost:9200"
+  ```
+
+<!-- vale gitlab_base.Spelling = NO -->
+
+- [Run Kibana](https://www.elastic.co/guide/en/kibana/current/install.html#_install_kibana_yourself) to interact
+  with your local Elasticsearch cluster. Alternatively, you can use [Cerebro](https://github.com/lmenezes/cerebro) or a
+  similar tool.
+
+<!-- vale gitlab_base.Spelling = YES -->
+
+- To tail the logs for Elasticsearch, run this command:
+
+  ```shell
+  tail -f log/elasticsearch.log
+  ```
+
+## Development tips
+
+- [Creating indices from scratch](advanced_search/tips.md#creating-all-indices-from-scratch-and-populating-with-local-data)
+- [Index data](advanced_search/tips.md#index-data)
+- [Updating dependent associations in the index](advanced_search/tips.md#dependent-association-index-updates)
+- [Kibana](advanced_search/tips.md#kibana)
+- [Running tests with Elasticsearch](advanced_search/tips.md#testing)
+- [Testing migrations](advanced_search/tips.md#advanced-search-migrations)
+- [Viewing index status](advanced_search/tips.md#viewing-index-status)
 
 ## Helpful Rake tasks
 
@@ -118,28 +148,33 @@ during indexing and searching operations. Some of the benefits and tradeoffs to 
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-## Existing analyzers and tokenizers
+## Search DSL
+
+This section covers the Search DSL (Domain Specific Language) supported by GitLab, which is compatible with both
+Elasticsearch and OpenSearch implementations.
+
+### Existing analyzers and tokenizers
 
 The following analyzers and tokenizers are defined in
 [`ee/lib/elastic/latest/config.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/elastic/latest/config.rb).
 
 <!-- vale gitlab_base.Spelling = YES -->
 
-### Analyzers
+#### Analyzers
 
-#### `path_analyzer`
+##### `path_analyzer`
 
 Used when indexing blobs' paths. Uses the `path_tokenizer` and the `lowercase` and `asciifolding` filters.
 
 See the `path_tokenizer` explanation below for an example.
 
-#### `sha_analyzer`
+##### `sha_analyzer`
 
 Used in blobs and commits. Uses the `sha_tokenizer` and the `lowercase` and `asciifolding` filters.
 
 See the `sha_tokenizer` explanation later below for an example.
 
-#### `code_analyzer`
+##### `code_analyzer`
 
 Used when indexing a blob's filename and content. Uses the `whitespace` tokenizer
 and the [`word_delimiter_graph`](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-word-delimiter-graph-tokenfilter.html),
@@ -149,9 +184,9 @@ The `whitespace` tokenizer was selected to have more control over how tokens are
 
 See the `code` filter for an explanation on how tokens are split.
 
-### Tokenizers
+#### Tokenizers
 
-#### `sha_tokenizer`
+##### `sha_tokenizer`
 
 This is a custom tokenizer that uses the
 [`edgeNGram` tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/analysis-edgengram-tokenizer.html)
@@ -168,7 +203,7 @@ Example:
 - `240c29dc7`
 - `240c29dc7e`
 
-#### `path_tokenizer`
+##### `path_tokenizer`
 
 This is a custom tokenizer that uses the
 [`path_hierarchy` tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/analysis-pathhierarchy-tokenizer.html)
@@ -183,7 +218,7 @@ Example:
 - `'path/application.js'`
 - `'application.js'`
 
-## Gotchas
+### Gotchas
 
 - Searches can have their own analyzers. Remember to check when editing analyzers.
 - `Character` filters (as opposed to token filters) always replace the original character. These filters can hinder exact searches.
@@ -192,24 +227,17 @@ Example:
 
 If data cannot be added to one of the [existing indices in Elasticsearch](../integration/advanced_search/elasticsearch.md#advanced-search-index-scopes), follow these instructions to set up a new index and populate it.
 
-### Recommendations
+### Recommended process for adding a new document type
 
-- Ensure [Elasticsearch is running](#setting-up-development-environment):
+Create the following MRs and have them reviewed by a member of the Global Search team:
 
-  ```shell
-  curl "http://localhost:9200"
-  ```
-<!-- vale gitlab_base.Spelling = NO -->
-- [Run Kibana](https://www.elastic.co/guide/en/kibana/current/install.html#_install_kibana_yourself) to interact
-  with your local Elasticsearch cluster. Alternatively, you can use [Cerebro](https://github.com/lmenezes/cerebro) or a similar tool.
-<!-- vale gitlab_base.Spelling = YES -->
-- To tail the logs for Elasticsearch, run this command:
+1. [Setup your development environment](#setting-up-your-development-environment)
+1. [Create the index](#create-the-index).
+1. [Create a new Elasticsearch reference](#create-a-new-elastic-reference).
+1. Perform [continuous updates](#continuous-updates) behind a feature flag. Enable the flag fully before the backfill.
+1. [Backfill the data](#backfilling-data).
 
-  ```shell
-  tail -f log/elasticsearch.log`
-  ```
-
-See [Recommended process for adding a new document type](#recommended-process-for-adding-a-new-document-type) for how to structure the rollout.
+After indexing is done, the index is ready for search.
 
 ### Create the index
 
@@ -338,7 +366,7 @@ The continuous update is done by calling `Elastic::ProcessBookkeepingService.tra
 
 Add a new [Advanced Search migration](search/advanced_search_migration_styleguide.md) to backfill data by executing `scripts/elastic-migration` and following the instructions.
 
-The backfill should execute `Elastic::ProcessInitialBookkeepingService.track!()` with an instance of the `Search::Elastic::Reference` created before for every document that should be indexed. The `BackfillEpics` migration can be used as an example.
+Use the [`MigrationDatabaseBackfillHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationdatabasebackfillhelper). The [`BackfillWorkItems` migration](https://gitlab.com/gitlab-org/search-team/migration-graveyard/-/blob/09354f497698037fc21f5a65e5c2d0a70edd81eb/lib/migrate/20240816132114_backfill_work_items.rb) can be used as an example.
 
 To test the backfill, run `Elastic::MigrationWorker.new.perform` in a console a couple of times and see that the index was populated.
 
@@ -365,24 +393,26 @@ Indexes that contain a `project_id` field must use the [`Search::Elastic::Delete
 1. Add the indexed class to `excluded_classes` in [`ElasticDeleteProjectWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic_delete_project_worker.rb)
 1. Update the worker to remove documents from the index
 
-### Recommended process for adding a new document type
-
-Create the following MRs and have them reviewed by a member of the Global Search team:
-
-1. [Create the index](#create-the-index).
-1. [Create a new Elasticsearch reference](#create-a-new-elastic-reference).
-1. Perform [continuous updates](#continuous-updates) behind a feature flag. Enable the flag fully before the backfill.
-1. [Backfill the data](#backfilling-data).
-
-After indexing is done, the index is ready for search.
-
-### Adding a new scope to search service
+## Implementing search for a new document type
 
 Search data is available in [`SearchController`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/controllers/search_controller.rb) and
 [Search API](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/search.rb). Both use the [`SearchService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/search_service.rb) to return results.
-The `SearchService` can be used to return results outside of the `SearchController` and `Search API`.
+The `SearchService` can be used to return results outside the `SearchController` and `Search API`.
 
-#### Search scopes
+### Recommended process for implementing search for a new document type
+
+Create the following MRs and have them reviewed by a member of the Global Search team:
+
+1. [Enable the new scope](#search-scopes).
+1. Create a [query builder](#building-a-query).
+1. Implement all [model requirements](#model-requirements).
+1. [Add the new scope to `Gitlab::Elastic::SearchResults`](#results-classes) behind a feature flag.
+1. Add specs which must include [permissions tests](#permissions-tests)
+1. [Test the new scope](#testing-scopes)
+1. Update documentation for [Advanced search](../user/search/advanced_search.md), [Search API](../api/search.md) and,
+   [Roles and permissions](../user/permissions.md) (if applicable)
+
+### Search scopes
 
 The `SearchService` exposes searching at [global](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/search/global_service.rb),
 [group](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/search/group_service.rb), and [project](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/search/project_service.rb) levels.
@@ -404,7 +434,7 @@ Global search can be disabled for a scope. You can do the following changes for 
 1. Add the setting checkbox in the Admin UI by creating an entry in `global_search_settings_checkboxes` method in [`ApplicationSettingsHelper`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/helpers/application_settings_helper.rb`).
 1. Add it to the `global_search_enabled_for_scope?` method in [`SearchService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/search_service.rb).
 
-#### Results classes
+### Results classes
 
 The search results class available are:
 
@@ -438,9 +468,18 @@ New scopes must add support to these methods within `Gitlab::Elastic::SearchResu
 - `failed?`
 - `error`
 
-### Building a query
+## Query framework
 
-The query builder framework is used to build Elasticsearch queries.
+The query builder framework is used to build Elasticsearch queries. We also support a legacy query framework implemented
+in the `Elastic::Latest::ApplicationClassProxy` class and classes that inherit it.
+
+{{< alert type="note" >}}
+
+New document types must use the query builder framework.
+
+{{< /alert >}}
+
+### Building a query
 
 A query is built using:
 
@@ -1531,6 +1570,114 @@ it does not exist.
 
 The model must define a `preload_search_data` scope to avoid N+1s.
 
+## Updating an existing scope
+
+Updates may include adding and removing document fields or changes to authorization. To update an existing
+scope, find the code used to generate queries and JSON for indexing.
+
+- Queries are generated in `QueryBuilder` classes
+- Indexed documents are built in `Reference` classes
+
+We also support a legacy `Proxy` framework:
+
+- Queries are generated in `ClassProxy` classes
+- Indexed documents are built in `InstanceProxy` classes
+
+Always aim to create new search filters in the `QueryBuilder` framework, even if they are used in the legacy framework.
+
+### Adding a field
+
+#### Add the field to the index
+
+1. Add the field to the index mapping to add it newly created indices
+1. Create a migration to add the field to existing indices. Use the [`MigrationUpdateMappingsHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationupdatemappingshelper)
+1. Populate the new field in the document JSON. The code must check the migration is complete using `::Elastic::DataMigrationService.migration_has_finished?`
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYYYWW`
+1. Create a migration to backfill the field in the index. Use the [`MigrationBackfillHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationbackfillhelper)
+
+#### If the new field is an associated record
+
+1. Update specs for [`Elastic::ProcessBookkeepingService`](https://gitlab.com/gitlab-org/gitlab/blob/8ce9add3bc412a32e655322bfcd9dcc996670f82/ee/spec/services/elastic/process_bookkeeping_service_spec.rb) create associated records
+1. Update N+1 specs for `preload_search_data` to create associated data records
+1. Review [Updating dependent associations in the index](advanced_search/tips.md#dependent-association-index-updates) 
+
+#### Expose the field to the search service
+
+1. Add the filter to the [`Search::Filter` concern](https://gitlab.com/gitlab-org/gitlab/-/blob/21bc3a986d27194c2387f4856ec1c5d5ef6fb4ff/app/services/concerns/search/filter.rb). The concern is used in the `Search::GlobalService`, `Search::GroupService` and `Search::ProjectService`.
+1. Pass the field for the scope by updating the `scope_options` method. The method is defined in `Gitlab::Elastic::SearchResults` with overrides in `Gitlab::Elastic::GroupSearchResults` and `Gitlab::Elastic::ProjectSearchResults`.
+1. Use the field in the [query builder](#building-a-query) by adding [an existing filter](#available-filters)
+   or [creating a new one](#creating-a-filter).
+1. Track the filter usage in searches in the [`SearchController`](https://gitlab.com/gitlab-org/gitlab/-/blob/21bc3a986d27194c2387f4856ec1c5d5ef6fb4ff/app/controllers/search_controller.rb#L277)
+
+### Changing mapping of an existing field
+
+1. Update the field type in the index mapping to change it for newly created indices
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYYYWW`
+1. Create a migration to reindex all documents using [Zero downtime reindexing](search/advanced_search_migration_styleguide.md#zero-downtime-reindex-migration).
+   Use the [`Search::Elastic::MigrationReindexTaskHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationreindextaskhelper)
+
+### Changing field content
+
+1. Update the field content in the document JSON
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYYYWW`
+1. Create a migration to update documents. Use the [`MigrationReindexBasedOnSchemaVersion`](search/advanced_search_migration_styleguide.md#searchelasticmigrationreindexbasedonschemaversion) 
+
+### Cleaning up documents from an index
+
+This may be used if documents are split from one index into separate indices or to remove data left in the index due to bugs.
+
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYYYWW`
+1. Create a migration to index all records. Use the [`MigrationDatabaseBackfillHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationdatabasebackfillhelper)
+1. Create a migration to remove all documents with the previous `SCHEMA_VERSION`. Use the [`MigrationDeleteBasedOnSchemaVersion`](search/advanced_search_migration_styleguide.md#searchelasticmigrationdeletebasedonschemaversion)
+
+### Removing a field
+
+The removal must be split across multiple milestones to support [multi-version compatibility](search/advanced_search_migration_styleguide.md#multi-version-compatibility).
+To avoid dynamic mapping errors, the field must be removed from all documents before a [Zero downtime reindexing](search/advanced_search_migration_styleguide.md#zero-downtime-reindex-migration).
+
+Milestone `M`:
+
+1. Remove the field from the index mapping to remove it from newly created indices
+1. Stop populating the field in the document JSON
+1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYYYWW`
+1. Remove any [filters which use the field](#available-filters) from the [query builder](#building-a-query)
+1. Update the `scope_options` method to remove the field for the scope you are updating. The method is defined in
+   `Gitlab::Elastic::SearchResults` with overrides in `Gitlab::Elastic::GroupSearchResults` and
+   `Gitlab::Elastic::ProjectSearchResults`.
+
+If the field is not used by other scopes:
+
+1. Remove the field from the [`Search::Filter` concern](https://gitlab.com/gitlab-org/gitlab/-/blob/21bc3a986d27194c2387f4856ec1c5d5ef6fb4ff/app/services/concerns/search/filter.rb). 
+   The concern is used in the `Search::GlobalService`, `Search::GroupService`, and `Search::ProjectService`.
+1. Remove filter tracking in searches in the [`SearchController`](https://gitlab.com/gitlab-org/gitlab/-/blob/21bc3a986d27194c2387f4856ec1c5d5ef6fb4ff/app/controllers/search_controller.rb#L277)
+
+Milestone `M+1`:
+
+1. Create a migration to remove the field from all documents in the index. Use the [`MigrationRemoveFieldsHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationremovefieldshelper)
+1. Create a migration to reindex all documents with the field removed using [Zero downtime reindexing](search/advanced_search_migration_styleguide.md#zero-downtime-reindex-migration).
+   Use the [`Search::Elastic::MigrationReindexTaskHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationreindextaskhelper)
+
+### Updating authorization
+
+In the `QueryBuilder` framework, authorization is handled at the project level with the
+[`by_search_level_and_membership` filter](#by_search_level_and_membership) and at the group level
+with the [`by_search_level_and_group_membership` filter](#by_search_level_and_group_membership). 
+
+In the legacy `Proxy` framework, the authorization is handled inside the class.
+
+Both frameworks use `Search::GroupsFinder` and `Search::ProjectsFinder` to query the groups and projects a user
+has direct access to search. Search relies upon group and project visibility level and feature access level settings
+for each scope. See [roles and permissions documentation](../user/permissions.md) for more information.
+
+## Testing scopes
+
+Test any scope in the Rails console
+
+```ruby
+search_service = ::SearchService.new(User.first, { search: 'foo', scope: 'SCOPE_NAME' })
+search_service.search_objects
+```
+
 ### Permissions tests
 
 Search code has a final security check in `SearchService#redact_unauthorized_results`. This prevents
@@ -1544,27 +1691,6 @@ in the EE specs:
 - `ee/spec/services/search/global_service_spec.rb`
 - `ee/spec/services/search/group_service_spec.rb`
 - `ee/spec/services/search/project_service_spec.rb`
-
-### Testing the new scope
-
-Test your new scope in the Rails console
-
-```ruby
-search_service = ::SearchService.new(User.first, { search: 'foo', scope: 'SCOPE_NAME' })
-search_service.search_objects
-```
-
-### Recommended process for implementing search for a new document type
-
-Create the following MRs and have them reviewed by a member of the Global Search team:
-
-1. [Enable the new scope](#search-scopes).
-1. Create a [query builder](#building-a-query).
-1. Implement all [model requirements](#model-requirements).
-1. [Add the new scope to `Gitlab::Elastic::SearchResults`](#results-classes) behind a feature flag.
-1. Add specs which must include [permissions tests](#permissions-tests)
-1. [Test the new scope](#testing-the-new-scope)
-1. Update documentation for [Advanced search](../user/search/advanced_search.md) and [Search API](../api/search.md) (if applicable)
 
 ## Zero-downtime reindexing with multiple indices
 
@@ -1641,16 +1767,6 @@ is forwarded by all requests from Rails to Elasticsearch as the
 header which allows us to track any
 [tasks](https://www.elastic.co/guide/en/elasticsearch/reference/current/tasks.html)
 in the cluster back the request in GitLab.
-
-## Development tips
-
-- [Creating indices from scratch](advanced_search/tips.md#creating-all-indices-from-scratch-and-populating-with-local-data)
-- [Index data](advanced_search/tips.md#index-data)
-- [Updating dependent associations in the index](advanced_search/tips.md#dependent-association-index-updates)
-- [Kibana](advanced_search/tips.md#kibana)
-- [Running tests with Elasticsearch](advanced_search/tips.md#testing)
-- [Testing migrations](advanced_search/tips.md#advanced-search-migrations)
-- [Viewing index status](advanced_search/tips.md#viewing-index-status)
 
 ## Troubleshooting
 

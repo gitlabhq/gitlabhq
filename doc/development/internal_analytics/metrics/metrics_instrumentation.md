@@ -22,7 +22,7 @@ For a video tutorial, see the [Adding Service Ping metric via instrumentation cl
 - **Hardening**:
   Hardening a method is the process that ensures the method fails safe, returning a fallback value like -1.
 
-## How it works
+## How metrics instrumentation works
 
 A metric definition has the [`instrumentation_class`](metrics_dictionary.md) field, which can be set to a class.
 

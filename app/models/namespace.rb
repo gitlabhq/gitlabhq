@@ -165,43 +165,38 @@ class Namespace < ApplicationRecord
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :avatar_url, to: :owner, allow_nil: true
-  delegate :prevent_sharing_groups_outside_hierarchy, :prevent_sharing_groups_outside_hierarchy=,
-    to: :namespace_settings, allow_nil: true
-  delegate :show_diff_preview_in_email, :show_diff_preview_in_email?, :show_diff_preview_in_email=,
-    to: :namespace_settings
-  delegate :runner_registration_enabled, :runner_registration_enabled?, :runner_registration_enabled=,
-    to: :namespace_settings
-  delegate :emails_enabled, :emails_enabled=,
-    to: :namespace_settings, allow_nil: true
-  delegate :allow_runner_registration_token,
-    :allow_runner_registration_token=,
-    to: :namespace_settings
+
   delegate :maven_package_requests_forwarding,
     :pypi_package_requests_forwarding,
     :npm_package_requests_forwarding,
     to: :package_settings
-  delegate :default_branch_protection_defaults, to: :namespace_settings, allow_nil: true
-  delegate :archived, :archived=, to: :namespace_settings, allow_nil: true
-  delegate :math_rendering_limits_enabled,
-    :lock_math_rendering_limits_enabled,
-    to: :namespace_settings, allow_nil: true
-  delegate :math_rendering_limits_enabled?,
-    :lock_math_rendering_limits_enabled?,
-    to: :namespace_settings
+
   delegate :add_creator, :deleted_at, :deleted_at=,
     to: :namespace_details
-  delegate :resource_access_token_notify_inherited,
-    :resource_access_token_notify_inherited=,
-    :lock_resource_access_token_notify_inherited,
-    :lock_resource_access_token_notify_inherited=,
-    :resource_access_token_notify_inherited?,
-    :resource_access_token_notify_inherited_locked?,
-    :resource_access_token_notify_inherited_locked_by_ancestor?,
-    :resource_access_token_notify_inherited_locked_by_application_setting?,
-    to: :namespace_settings
-  delegate :jwt_ci_cd_job_token_enabled?,
-    :job_token_policies_enabled?,
-    to: :namespace_settings
+
+  with_options to: :namespace_settings do
+    delegate :show_diff_preview_in_email, :show_diff_preview_in_email?, :show_diff_preview_in_email=
+    delegate :runner_registration_enabled, :runner_registration_enabled?, :runner_registration_enabled=
+    delegate :allow_runner_registration_token, :allow_runner_registration_token=
+    delegate :math_rendering_limits_enabled?, :lock_math_rendering_limits_enabled?
+    delegate :resource_access_token_notify_inherited,
+      :resource_access_token_notify_inherited=,
+      :lock_resource_access_token_notify_inherited,
+      :lock_resource_access_token_notify_inherited=,
+      :resource_access_token_notify_inherited?,
+      :resource_access_token_notify_inherited_locked?,
+      :resource_access_token_notify_inherited_locked_by_ancestor?,
+      :resource_access_token_notify_inherited_locked_by_application_setting?
+    delegate :jwt_ci_cd_job_token_enabled?, :job_token_policies_enabled?
+
+    with_options allow_nil: true do
+      delegate :prevent_sharing_groups_outside_hierarchy, :prevent_sharing_groups_outside_hierarchy=
+      delegate :default_branch_protection_defaults
+      delegate :archived, :archived=
+      delegate :math_rendering_limits_enabled, :lock_math_rendering_limits_enabled
+      delegate :emails_enabled, :emails_enabled=
+    end
+  end
 
   before_create :sync_share_with_group_lock_with_parent
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?

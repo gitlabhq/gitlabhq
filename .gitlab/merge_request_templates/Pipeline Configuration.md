@@ -1,5 +1,5 @@
 <!-- See Pipelines for the GitLab project: https://docs.gitlab.com/ee/development/pipelines -->
-<!-- When in doubt about a Pipeline configuration change, feel free to ping @gl-dx/eng-prod. -->
+<!-- When in doubt about a Pipeline configuration change, feel free to ping @gl-dx/pipeline-maintainers. -->
 
 ## What does this MR do?
 

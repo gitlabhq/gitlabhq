@@ -3,7 +3,7 @@ stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Compute minutes, purchasing, usage tracking, quota management for instance runners on GitLab.com and GitLab Self-Managed.
-title: Compute minutes for instance runners
+title: Compute usage for instance runners
 ---
 
 {{< details >}}
@@ -14,13 +14,13 @@ title: Compute minutes for instance runners
 {{< /details >}}
 
 The amount of compute minute usage that projects can consume to run jobs on admin-managed [instance runners](../runners/runners_scope.md#instance-runners)
-is limited. This limit is tracked with an instance runner compute quota on the GitLab server. Once a namespace exceeds quota, the [quota will be enforced](#enforcement).
+is limited. This limit is tracked with an instance runner compute quota on the GitLab server. When a namespace exceeds quota, the [quota is enforced](#enforcement).
 
 Admin-managed instance runners are those [managed by the GitLab instance administrator](../../administration/cicd/compute_minutes.md).
 
 {{< alert type="note" >}}
 
-On GitLab.com instance runners are both admin-managed and GitLab-hosted since the instance is managed by GitLab.
+On GitLab.com instance runners are both admin-managed and GitLab-hosted because the instance is managed by GitLab.
 
 {{< /alert >}}
 
@@ -28,7 +28,7 @@ On GitLab.com instance runners are both admin-managed and GitLab-hosted since th
 
 ### Monthly reset
 
-Compute minutes usage is reset to `0` monthly. 
+Compute minutes usage is reset to `0` monthly.
 The compute quota is [reset to the monthly allocation](https://about.gitlab.com/pricing/).
 
 For example, if you have a monthly quota of 10,000 compute minutes:

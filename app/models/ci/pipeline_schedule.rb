@@ -11,7 +11,6 @@ module Ci
     include BatchNullifyDependentAssociations
     include Gitlab::Utils::StrongMemoize
 
-    MAX_INPUTS = 20
     VALID_REF_FORMAT_REGEX = %r{\A(#{Gitlab::Git::TAG_REF_PREFIX}|#{Gitlab::Git::BRANCH_REF_PREFIX})[\S]+}
 
     SORT_ORDERS = {
@@ -46,7 +45,7 @@ module Ci
     validates :inputs, nested_attributes_duplicates: { child_attributes: %i[name] }
 
     validates :inputs, length: {
-      maximum: MAX_INPUTS,
+      maximum: Ci::Pipeline::INPUTS_LIMIT,
       message: ->(*) { _('exceeds the limit of %{count}.') }
     }
 

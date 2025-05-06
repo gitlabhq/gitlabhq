@@ -3158,9 +3158,15 @@
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - !reference [".prevent-tier-2-and-above", rules]
+    - <<: *if-merge-request
+      changes: *code-patterns
+    - <<: *if-merge-request # no code changes, but has doc changes
+      changes:
+        - "doc/**/*"
+      when: never
     - <<: *if-merge-request-tier-1
       allow_failure: true
-    - !reference [".prevent-tier-2-and-above", rules]
     # If we cannot find a tier label, run this job
     #
     # This could be the very first pipeline of a merge request if no

@@ -989,7 +989,6 @@ failure_categories:
       - "Could not find shared context"
       - "Could not find shared examples"
       - "is not available on an example group"
-      - "WebMock::NetConnectNotAllowedError"
     causes:
       - "Using test doubles outside proper lifecycle"
       - "Missing or incorrectly referenced shared contexts/examples"

@@ -224,7 +224,7 @@ requirements:
 are provided in the documentation. Customers pursuing FedRAMP must consider
 two-factor providers that are FedRAMP authorized and support FIPS
 requirements. FedRAMP authorized providers can be found on the [FedRAMP Marketplace](https://marketplace.fedramp.gov/products).
-When selecting a second factor, it is important to note that NIST and
+When selecting a second factor, NIST and
 FedRAMP are now indicating that phishing resistant authentication, such
 as WebAuthn, must be used (IA-2).
 
@@ -641,8 +641,7 @@ Compliance programs based on NIST 800-53, such as FedRAMP, require FIPS
 compliance for all applicable cryptographic modules. GitLab has released
 FIPS versions of its container images and provides guidance on
 how to configure GitLab to meet FIPS compliance standards.
-It is important to note that
-certain features are not available or supported in FIPS mode.
+Certain features are not available or supported in FIPS mode.
 
 While GitLab provides FIPS-compliant images, it is the responsibility of
 the customer to configure underlying infrastructure and evaluate the

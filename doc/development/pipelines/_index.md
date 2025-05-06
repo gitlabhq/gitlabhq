@@ -124,7 +124,7 @@ In addition, there are a few circumstances where we would always run the full RS
 
 #### Have you encountered a problem with backend predictive tests?
 
-If so, have a look at [the Engineering Productivity RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/predictive-test-selection.md) for instructions on how to act upon predictive tests issues. Additionally, if you identified any test selection gaps, let `@gl-dx/eng-prod` know so that we can take the necessary steps to optimize test selections.
+If so, have a look at [the Development Analytics RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/analytics/team/-/blob/main/runbooks/predictive-test-selection.md) for instructions on how to act upon predictive tests issues. Additionally, if you identified any test selection gaps, let `@gl-dx/development-analytics` know so that we can take the necessary steps to optimize test selections.
 
 ### Jest predictive jobs
 
@@ -149,7 +149,7 @@ The `rules` definitions for full Jest tests are defined at `.frontend:rules:jest
 
 #### Have you encountered a problem with frontend predictive tests?
 
-If so, have a look at [the Engineering Productivity RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/predictive-test-selection.md) for instructions on how to act upon predictive tests issues.
+If so, have a look at [the Development analytics RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/analytics/team/-/blob/main/runbooks/predictive-test-selection.md) for instructions on how to act upon predictive tests issues.
 
 ### Fork pipelines
 

@@ -70,6 +70,9 @@ You can [also use the API](../../api/group_protected_environments.md#protect-a-s
 All jobs deploying to the environment are blocked and wait for approvals before running.
 Make sure the number of required approvals is less than the number of users allowed to deploy.
 
+A user can give only one approval per deployment, 
+even if the user is a member of multiple approver groups. [Issue 457541](https://gitlab.com/gitlab-org/gitlab/-/issues/457541) proposes to change this behavior so that the same user can give multiple approvals per deployment from different approver groups.
+
 After a deployment job is approved, you must [run the job manually](../jobs/job_control.md#run-a-manual-job).
 
 ### Allow self-approval
@@ -113,6 +116,11 @@ To approve or reject a deployment:
 1. Select **Approve** or **Reject**.
 
 You can also [use the API](../../api/deployments.md#approve-or-reject-a-blocked-deployment).
+
+You can give only one approval per deployment, even if you are a member of multiple 
+approver groups. [Issue 457541](https://gitlab.com/gitlab-org/gitlab/-/issues/457541) 
+proposes to change this behavior so that the same user can give multiple 
+approvals per deployment from different approver groups.
 
 The corresponding deployment job does not run automatically after a deployment is approved.
 

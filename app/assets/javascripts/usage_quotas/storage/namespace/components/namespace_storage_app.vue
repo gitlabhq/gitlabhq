@@ -72,7 +72,6 @@ export default {
       projectsLoadingError: false,
       sortKey: this.customSortKey ?? 'STORAGE_SIZE_DESC',
       initialSortBy: this.customSortKey ? null : 'storage',
-      enableSortableFields: !this.customSortKey,
     };
   },
   computed: {
@@ -191,7 +190,6 @@ export default {
         :is-loading="$apollo.queries.projects.loading"
         :help-links="helpLinks"
         :sort-by="initialSortBy"
-        :enable-sortable-fields="enableSortableFields"
         @sortChanged="onSortChanged"
       />
       <div class="gl-mt-5 gl-flex gl-justify-center">

@@ -23,7 +23,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Config, feature_category: 
       end
 
       before do
-        stub_const("#{described_class}::INPUTS_LIMIT", 1)
+        stub_const('Ci::Pipeline::INPUTS_LIMIT', 1)
       end
 
       it 'raises an error' do

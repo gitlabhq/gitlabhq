@@ -5,6 +5,5 @@ FactoryBot.define do
     action { :add }
     issue
     user
-    namespace_id { create(:namespace).id }
   end
 end

@@ -80,7 +80,7 @@ The following process outlines the steps to get embeddings generated and stored 
 
 ### Prerequisites
 
-1. [Make sure Elasticsearch is running](../advanced_search.md#setting-up-development-environment).
+1. [Make sure Elasticsearch is running](../advanced_search.md#setting-up-your-development-environment).
 1. If you have an existing Elasticsearch setup, make sure the `AddEmbeddingToWorkItems` migration has been completed by executing the following until it returns:
 
    ```ruby

@@ -39,8 +39,8 @@ Please follow the steps below on how to use this React Native Mobile App sample 
 - Please use the Change Control Workflow with ServiceNow solution pack to configure the DevOps Change Velocity integration with GitLab to automate change request creation in ServiceNow for deployments require change controls. [Here](../../solutions/components/integrated_servicenow.md) is the documentation link to the change control workflow with ServiceNow solution component, and please work with your account team to get an access code to download the Change Control Workflow with ServiceNow solution package.
 - Copy the CI YAML files into your project: 
   - `.gitlab-ci.yml`
-  - `build-android.yml` in the pipelines directory. Please note that you will need to update the file path in `.gitlab-ci.yml` if the `build-android.yml` file is put in a different location other than /pipeline because the main `.gitlab-ci.yml` file references the `build-android.yml` file for the build job.
-  - `build-ios.yml` in the pipelines directory. Please note that you will need to update the file path in `.gitlab-ci.yml` if the `build-ios.yml` file is put in a different location other than /pipeline because the main `.gitlab-ci.yml` file references the `build-ios.yml` file for the build job.
+  - `build-android.yml` in the pipelines directory. You will need to update the file path in `.gitlab-ci.yml` if the `build-android.yml` file is put in a different location other than /pipeline because the main `.gitlab-ci.yml` file references the `build-android.yml` file for the build job.
+  - `build-ios.yml` in the pipelines directory. You will need to update the file path in `.gitlab-ci.yml` if the `build-ios.yml` file is put in a different location other than /pipeline because the main `.gitlab-ci.yml` file references the `build-ios.yml` file for the build job.
    
    ```yaml
    include:
@@ -59,7 +59,7 @@ Please follow the steps below on how to use this React Native Mobile App sample 
 
 This pipeline is designed for a React Native project, handling both iOS and Android builds, test and deploy the Mobile App.
 
-This project includes a simple reactCounter demo app for React Native build for both iOS and Android. Please note that shis version does not sign the artifacts yet, so we cannot upload to TestFlight or the Play Store.
+This project includes a simple reactCounter demo app for React Native build for both iOS and Android. This version does not sign the artifacts yet, so we cannot upload to TestFlight or the Play Store.
 
 Each change uses a component for semantic versioning bumps, which has that version stored as an ephemeral variable used to commit
 generic packages to the package registry.
