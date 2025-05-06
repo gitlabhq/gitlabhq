@@ -40,6 +40,8 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
     before do
       allow(client).to receive_message_chain(:octokit, :rate_limit)
       allow(client).to receive_message_chain(:octokit, :repository).and_return({ status: 200 })
+
+      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
     end
 
     it 'rejects requests when Github Importer is disabled' do
@@ -239,6 +241,21 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
                                                 "Please use a classic GitHub personal access token with the `read:org` scope. " \
                                                 "Fine-grained tokens are not supported.")
         end
+      end
+    end
+
+    context 'when request exceeds rate limits' do
+      it 'throttles the endpoint' do
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+
+        post api("/import/github", user), params: {
+          target_namespace: user.namespace_path,
+          personal_access_token: token,
+          repo_id: non_existing_record_id
+        }
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(json_response['errors']).to eq('This endpoint has been requested too many times. Try again later.')
       end
     end
   end

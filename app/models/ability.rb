@@ -43,7 +43,7 @@ class Ability
       issues = apply_filters_if_needed(issues, user, filters)
 
       DeclarativePolicy.user_scope do
-        issues.select { |issue| issue.visible_to_user?(user) }
+        issues.select { |issue| allowed?(user, :read_issue, issue) }
       end
     end
     alias_method :work_items_readable_by_user, :issues_readable_by_user

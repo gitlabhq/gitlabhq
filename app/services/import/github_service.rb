@@ -9,6 +9,10 @@ module Import
     attr_reader :params, :current_user
 
     def execute(access_params, provider)
+      if rate_limited?
+        return error(_('This endpoint has been requested too many times. Try again later.'), :too_many_requests)
+      end
+
       context_error = validate_context
       return context_error if context_error
 
@@ -30,6 +34,10 @@ module Import
       end
     rescue Octokit::Error => e
       log_error(e)
+    end
+
+    def rate_limited?
+      Gitlab::ApplicationRateLimiter.throttled?(:github_import, scope: current_user)
     end
 
     def create_project(access_params, provider)

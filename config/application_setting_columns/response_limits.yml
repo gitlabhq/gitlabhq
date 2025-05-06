@@ -1,0 +1,12 @@
+---
+api_type:
+attr: response_limits
+clusterwide: true
+column: response_limits
+db_type: jsonb
+default: "'{}'::jsonb"
+description: Application response limits
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: true
