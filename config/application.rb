@@ -87,6 +87,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/patch/database_config')
     require_dependency Rails.root.join('lib/gitlab/patch/redis_cache_store')
     require_dependency Rails.root.join('lib/gitlab/patch/old_redis_cache_store')
+    require_dependency Rails.root.join('lib/gitlab/pdf')
     require_dependency Rails.root.join('lib/gitlab/exceptions_app')
 
     unless ::Gitlab.next_rails?

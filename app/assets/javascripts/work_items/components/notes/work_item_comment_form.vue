@@ -4,7 +4,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-import { STATE_OPEN, WORK_ITEM_TYPE_NAME_TASK, i18n } from '~/work_items/constants';
+import { STATE_OPEN, i18n } from '~/work_items/constants';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -16,19 +16,6 @@ import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import workItemEmailParticipantsByIidQuery from '../../graphql/notes/work_item_email_participants_by_iid.query.graphql';
 import { findEmailParticipantsWidget } from '../../utils';
-
-const DOCS_WORK_ITEM_LOCKED_TASKS_PATH = helpPagePath('user/tasks.html', {
-  anchor: 'lock-discussion',
-});
-const DOCS_WORK_ITEM_CONFIDENTIAL_TASKS_PATH = helpPagePath('user/tasks.html', {
-  anchor: 'confidential-tasks',
-});
-const DOCS_WORK_ITEM_LOCKED_OKRS_PATH = helpPagePath('user/okrs.html', {
-  anchor: 'lock-discussion',
-});
-const DOCS_WORK_ITEM_CONFIDENTIAL_OKRS_PATH = helpPagePath('user/okrs.html', {
-  anchor: 'confidential-okrs',
-});
 
 export default {
   i18n: {
@@ -201,23 +188,11 @@ export default {
     commentButtonTextComputed() {
       return this.isNoteInternal ? this.$options.i18n.addInternalNote : this.commentButtonText;
     },
-    docsLinks() {
-      return this.workItemType === WORK_ITEM_TYPE_NAME_TASK
-        ? {
-            confidential_issues_docs_path: DOCS_WORK_ITEM_CONFIDENTIAL_TASKS_PATH,
-            locked_discussion_docs_path: DOCS_WORK_ITEM_LOCKED_TASKS_PATH,
-          }
-        : {
-            confidential_issues_docs_path: DOCS_WORK_ITEM_CONFIDENTIAL_OKRS_PATH,
-            locked_discussion_docs_path: DOCS_WORK_ITEM_LOCKED_OKRS_PATH,
-          };
-    },
     getWorkItemData() {
       return {
         confidential: this.isWorkItemConfidential,
         discussion_locked: this.isDiscussionLocked,
         issue_email_participants: this.emailParticipants,
-        ...this.docsLinks,
       };
     },
     workItemTypeKey() {
@@ -369,7 +344,6 @@ export default {
           :is-internal-note="isDiscussionInternal || isNoteInternal"
           :note="commentText"
           :noteable-data="getWorkItemData"
-          :noteable-type="workItemTypeKey"
         >
           <markdown-editor
             ref="markdownEditor"

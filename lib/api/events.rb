@@ -4,6 +4,7 @@ module API
   class Events < ::API::Base
     include PaginationParams
     include APIGuard
+
     helpers ::API::Helpers::EventsHelpers
 
     allow_access_with_scope :read_user, if: ->(request) { request.get? || request.head? }

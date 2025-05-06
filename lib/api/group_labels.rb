@@ -3,6 +3,7 @@
 module API
   class GroupLabels < ::API::Base
     include PaginationParams
+
     helpers ::API::Helpers::LabelHelpers
 
     before { authenticate! }

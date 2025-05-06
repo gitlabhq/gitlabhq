@@ -112,7 +112,7 @@ class User < ApplicationRecord
 
   devise :two_factor_backupable, otp_number_of_backup_codes: 10
   devise :two_factor_backupable_pbkdf2
-  serialize :otp_backup_codes, JSON # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :otp_backup_codes, coder: JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   devise :lockable, :recoverable, :rememberable, :trackable,
     :validatable, :omniauthable, :confirmable, :registerable
@@ -228,8 +228,9 @@ class User < ApplicationRecord
   has_many :groups_projects,          through: :groups, source: :projects
   has_many :personal_projects,        through: :namespace, source: :projects
   has_many :project_members, -> { where(requested_at: nil) }
-  has_many :projects,                 through: :project_members
-  has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
+  has_many :projects, through: :project_members
+  has_many :project_deletion_schedules, class_name: '::Projects::DeletionSchedule', inverse_of: :deleting_user
+  has_many :created_projects, foreign_key: :creator_id, class_name: 'Project', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :created_namespace_details, foreign_key: :creator_id, class_name: 'Namespace::Detail'
   has_many :projects_with_active_memberships, -> { where(members: { state: ::Member::STATE_ACTIVE }) }, through: :project_members, source: :project
   has_many :users_star_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent

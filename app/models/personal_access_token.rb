@@ -35,7 +35,7 @@ class PersonalAccessToken < ApplicationRecord
   MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS_BUFFERED = 400
   MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS = 365
 
-  serialize :scopes, Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :scopes, type: Array # rubocop:disable Cop/ActiveRecordSerialize
 
   belongs_to :user
   belongs_to :organization, class_name: 'Organizations::Organization'

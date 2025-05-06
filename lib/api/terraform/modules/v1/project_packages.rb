@@ -6,6 +6,7 @@ module API
       module V1
         class ProjectPackages < ::API::Base
           include ::API::Helpers::Authentication
+
           helpers ::API::Helpers::PackagesHelpers
           helpers ::API::Helpers::Packages::BasicAuthHelpers
 

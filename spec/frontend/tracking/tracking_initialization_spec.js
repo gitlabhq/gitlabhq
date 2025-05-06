@@ -89,6 +89,7 @@ describe('Tracking', () => {
 
   describe('initDefaultTrackers', () => {
     beforeEach(() => {
+      window.gl.onlySendDuoEvents = false;
       bindDocumentSpy = jest.spyOn(Tracking, 'bindDocument').mockImplementation(() => null);
       trackLoadEventsSpy = jest.spyOn(Tracking, 'trackLoadEvents').mockImplementation(() => null);
       enableFormTracking = jest
@@ -234,6 +235,24 @@ describe('Tracking', () => {
         snowplowSpy.mock.invocationCallOrder[0],
       );
     });
+
+    it('does not initialize snowplow default trackers if `onlySendDuoEvents` is true', () => {
+      window.gl.onlySendDuoEvents = true;
+
+      initDefaultTrackers();
+
+      expect(snowplowSpy).not.toHaveBeenCalledWith('enableActivityTracking', expect.anything());
+      expect(snowplowSpy).not.toHaveBeenCalledWith('trackPageView', expect.anything());
+      expect(snowplowSpy).not.toHaveBeenCalledWith('setDocumentTitle', expect.anything());
+      expect(enableFormTracking).not.toHaveBeenCalled();
+      expect(snowplowSpy).not.toHaveBeenCalledWith('enableLinkClickTracking', expect.anything());
+
+      expect(bindDocumentSpy).toHaveBeenCalled();
+      expect(trackLoadEventsSpy).toHaveBeenCalled();
+      expect(bindInternalEventDocumentSpy).toHaveBeenCalled();
+      expect(trackInternalLoadEventsSpy).toHaveBeenCalled();
+      expect(initBrowserSDKSpy).toHaveBeenCalled();
+    });
   });
 
   describe('when there are experiment contexts', () => {
@@ -249,6 +268,7 @@ describe('Tracking', () => {
     ];
 
     beforeEach(() => {
+      window.gl.onlySendDuoEvents = false;
       getAllExperimentContexts.mockReturnValue(experimentContexts);
       window.snowplowOptions = {
         ...window.snowplowOptions,

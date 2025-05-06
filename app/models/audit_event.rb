@@ -19,7 +19,7 @@ class AuditEvent < ApplicationRecord
 
   partitioned_by :created_at, strategy: :monthly
 
-  serialize :details, Hash # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :details, type: Hash # rubocop:disable Cop/ActiveRecordSerialize
 
   belongs_to :user, foreign_key: :author_id, inverse_of: :audit_events
 

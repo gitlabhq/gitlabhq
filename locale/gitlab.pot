@@ -22595,6 +22595,9 @@ msgstr ""
 msgid "Discuss a specific suggestion or question."
 msgstr ""
 
+msgid "Discussion is %{lockedLinkStart}locked%{lockedLinkEnd}. Only members can comment."
+msgstr ""
+
 msgid "Discussion locked."
 msgstr ""
 
@@ -27101,6 +27104,12 @@ msgstr ""
 msgid "Geo|Choose specific groups or storage shards"
 msgstr ""
 
+msgid "Geo|Ci Secure File"
+msgstr ""
+
+msgid "Geo|Ci Secure Files"
+msgstr ""
+
 msgid "Geo|Comma-separated, e.g. '1.1.1.1, 2.2.2.0/24'"
 msgstr ""
 
@@ -27122,6 +27131,12 @@ msgstr ""
 msgid "Geo|Consult Geo troubleshooting information"
 msgstr ""
 
+msgid "Geo|Container Repositories"
+msgstr ""
+
+msgid "Geo|Container Repository"
+msgstr ""
+
 msgid "Geo|Container repositories synchronization concurrency limit"
 msgstr ""
 
@@ -27138,6 +27153,24 @@ msgid "Geo|Database Connection Type"
 msgstr ""
 
 msgid "Geo|Database Replication status"
+msgstr ""
+
+msgid "Geo|Dependency Proxy Blob"
+msgstr ""
+
+msgid "Geo|Dependency Proxy Blobs"
+msgstr ""
+
+msgid "Geo|Dependency Proxy Manifest"
+msgstr ""
+
+msgid "Geo|Dependency Proxy Manifests"
+msgstr ""
+
+msgid "Geo|Design Management Repositories"
+msgstr ""
+
+msgid "Geo|Design Management Repository"
 msgstr ""
 
 msgid "Geo|Disabled"
@@ -27206,6 +27239,12 @@ msgstr ""
 msgid "Geo|GraphQL ID: %{id}"
 msgstr ""
 
+msgid "Geo|Group Wiki Repositories"
+msgstr ""
+
+msgid "Geo|Group Wiki Repository"
+msgstr ""
+
 msgid "Geo|Groups to synchronize"
 msgstr ""
 
@@ -27228,6 +27267,12 @@ msgid "Geo|Internal URL"
 msgstr ""
 
 msgid "Geo|Internal URL (optional)"
+msgstr ""
+
+msgid "Geo|Job Artifact"
+msgstr ""
+
+msgid "Geo|Job Artifacts"
 msgstr ""
 
 msgid "Geo|Last event ID"
@@ -27254,10 +27299,22 @@ msgstr ""
 msgid "Geo|Learn more about Geo site statuses"
 msgstr ""
 
+msgid "Geo|Lfs Object"
+msgstr ""
+
+msgid "Geo|Lfs Objects"
+msgstr ""
+
 msgid "Geo|Limit the number of concurrent operations this secondary site can run in the background."
 msgstr ""
 
 msgid "Geo|Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
+msgstr ""
+
+msgid "Geo|Merge Request Diff"
+msgstr ""
+
+msgid "Geo|Merge Request Diffs"
 msgstr ""
 
 msgid "Geo|Minimum interval in days"
@@ -27305,13 +27362,43 @@ msgstr ""
 msgid "Geo|Offline"
 msgstr ""
 
+msgid "Geo|Package File"
+msgstr ""
+
+msgid "Geo|Package Files"
+msgstr ""
+
+msgid "Geo|Pages Deployment"
+msgstr ""
+
+msgid "Geo|Pages Deployments"
+msgstr ""
+
 msgid "Geo|Pending"
+msgstr ""
+
+msgid "Geo|Pipeline Artifact"
+msgstr ""
+
+msgid "Geo|Pipeline Artifacts"
 msgstr ""
 
 msgid "Geo|Primary"
 msgstr ""
 
 msgid "Geo|Primary site"
+msgstr ""
+
+msgid "Geo|Project Repositories"
+msgstr ""
+
+msgid "Geo|Project Repository"
+msgstr ""
+
+msgid "Geo|Project Wiki Repositories"
+msgstr ""
+
+msgid "Geo|Project Wiki Repository"
 msgstr ""
 
 msgid "Geo|Projects in certain groups"
@@ -27440,6 +27527,12 @@ msgstr ""
 msgid "Geo|Site's status was updated %{timeAgo}."
 msgstr ""
 
+msgid "Geo|Snippet Repositories"
+msgstr ""
+
+msgid "Geo|Snippet Repository"
+msgstr ""
+
 msgid "Geo|Started"
 msgstr ""
 
@@ -27465,6 +27558,12 @@ msgid "Geo|Synchronization settings"
 msgstr ""
 
 msgid "Geo|Synchronization status"
+msgstr ""
+
+msgid "Geo|Terraform State Version"
+msgstr ""
+
+msgid "Geo|Terraform State Versions"
 msgstr ""
 
 msgid "Geo|The URL of the primary site that is used internally by the secondary sites."
@@ -27537,6 +27636,12 @@ msgid "Geo|Unknown"
 msgstr ""
 
 msgid "Geo|Updated %{timeAgo}"
+msgstr ""
+
+msgid "Geo|Upload"
+msgstr ""
+
+msgid "Geo|Uploads"
 msgstr ""
 
 msgid "Geo|Verification"
@@ -36489,6 +36594,12 @@ msgstr ""
 msgid "Marked For Deletion At - %{deletion_time}"
 msgstr ""
 
+msgid "Marked as %{confidentialLinkStart}confidential%{confidentialLinkEnd} and discussion is %{lockedLinkStart}locked%{lockedLinkEnd}. People without permission will never get a notification and won't be able to comment."
+msgstr ""
+
+msgid "Marked as %{confidentialLinkStart}confidential%{confidentialLinkEnd}. People without permission will never get a notification."
+msgstr ""
+
 msgid "Marked as draft. Can only be merged when marked as ready."
 msgstr ""
 
@@ -40241,9 +40352,6 @@ msgstr ""
 msgid "No more than %{max_frameworks} compliance frameworks can be updated at the same time."
 msgstr ""
 
-msgid "No more than %{max_issues} issues can be updated at the same time"
-msgstr ""
-
 msgid "No more than %{max_work_items} work items can be modified at the same time."
 msgstr ""
 
@@ -43765,12 +43873,6 @@ msgid "Pending sync…"
 msgstr ""
 
 msgid "PendingMembers|There are no pending members left to approve. High five!"
-msgstr ""
-
-msgid "People without permission will never get a notification and won't be able to comment."
-msgstr ""
-
-msgid "People without permission will never get a notification."
 msgstr ""
 
 msgid "Percent rollout must be an integer number between 0 and 100"
@@ -61457,9 +61559,6 @@ msgstr ""
 msgid "This %{issuable} would exceed the maximum number of linked %{issuables} (%{limit})."
 msgstr ""
 
-msgid "This %{noteableTypeText} is %{confidentialLinkStart}confidential%{confidentialLinkEnd} and its %{lockedLinkStart}discussion is locked%{lockedLinkEnd}."
-msgstr ""
-
 msgid "This Cron pattern is invalid"
 msgstr ""
 
@@ -61743,9 +61842,6 @@ msgid "This is a Jira user."
 msgstr ""
 
 msgid "This is a child pipeline within the parent pipeline"
-msgstr ""
-
-msgid "This is a confidential %{noteableTypeText}."
 msgstr ""
 
 msgid "This is a delayed job to run in %{remainingTime}"

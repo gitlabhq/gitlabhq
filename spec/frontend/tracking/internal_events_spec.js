@@ -20,6 +20,7 @@ jest.mock('~/api', () => ({
 jest.mock('~/tracking/utils', () => ({
   ...jest.requireActual('~/tracking/utils'),
   getInternalEventHandlers: jest.fn(),
+  isEventEligible: jest.fn(),
 }));
 
 Tracker.enabled = jest.fn();
@@ -42,6 +43,23 @@ describe('InternalEvents', () => {
 
   describe('trackEvent', () => {
     const category = 'TestCategory';
+
+    beforeEach(() => {
+      jest.spyOn(utils, 'isEventEligible').mockReturnValue(true);
+    });
+
+    it('does not track anything if event is not eligible', () => {
+      jest.spyOn(utils, 'isEventEligible').mockReturnValue(false);
+      jest.spyOn(InternalEvents, 'trackBrowserSDK').mockImplementation(() => {});
+      jest.spyOn(Tracking, 'event').mockImplementation(() => {});
+
+      InternalEvents.trackEvent(event, allowedAdditionalProps, category);
+
+      expect(utils.isEventEligible).toHaveBeenCalledWith(event);
+      expect(Tracking.event).not.toHaveBeenCalled();
+      expect(API.trackInternalEvent).not.toHaveBeenCalled();
+      expect(InternalEvents.trackBrowserSDK).not.toHaveBeenCalled();
+    });
 
     it('trackEvent calls API.trackInternalEvent with correct arguments', () => {
       InternalEvents.trackEvent(event, {}, category);

@@ -9,7 +9,6 @@ import {
   NAME_TO_TEXT_LOWERCASE_MAP,
   NAME_TO_TEXT_MAP,
   ALLOWED_CONVERSION_TYPES,
-  sprintfWorkItem,
   WIDGET_TYPE_DESIGNS,
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_MILESTONE,
@@ -357,12 +356,14 @@ export default {
       const isEpicWithSubepicsFeature =
         this.parentWorkItemType === WORK_ITEM_TYPE_NAME_EPIC && this.hasSubepicsFeature;
       if (this.hasParent && !isEpicWithSubepicsFeature) {
-        this.warningMessage = sprintfWorkItem(
+        this.warningMessage = sprintf(
           s__(
             'WorkItem|Parent item type %{parentWorkItemType} is not supported on %{workItemType}. Remove the parent item to change type.',
           ),
-          this.selectedWorkItemType.name,
-          this.parentWorkItemType,
+          {
+            workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemType.name],
+            parentWorkItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.parentWorkItemType],
+          },
         );
 
         this.changeTypeDisabled = true;
@@ -395,11 +396,11 @@ export default {
 
       // Compare the widget definitions of both types
       if (this.hasWidgetDifference) {
-        this.warningMessage = sprintfWorkItem(
+        this.warningMessage = sprintf(
           s__(
             'WorkItem|Some fields are not present in %{workItemType}. If you change type now, this information will be lost.',
           ),
-          this.selectedWorkItemType.name,
+          { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemType.name] },
         );
       }
     },

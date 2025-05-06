@@ -3,6 +3,7 @@
 module API
   class RemoteMirrors < ::API::Base
     include PaginationParams
+
     helpers Helpers::RemoteMirrorsHelpers
 
     feature_category :source_code_management

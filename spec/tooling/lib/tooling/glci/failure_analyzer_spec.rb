@@ -7,9 +7,9 @@ require_relative '../../../../../tooling/lib/tooling/glci/failure_categories/job
 require_relative '../../../../../tooling/lib/tooling/glci/failure_categories/report_job_failure'
 
 RSpec.describe Tooling::Glci::FailureAnalyzer, feature_category: :tooling do
-  let(:job_id)           { '12345' }
-  let(:trace_path)       { 'path/to/trace.log' }
-  let(:failure_category) { 'test_failures' }
+  let(:job_id)                { '12345' }
+  let(:trace_path)            { 'path/to/trace.log' }
+  let(:failure_category_hash) { { failure_category: 'test_failures', pattern: ".+a test pattern.+" } }
 
   let(:download_instance)    { instance_double(Tooling::Glci::FailureCategories::DownloadJobTrace) }
   let(:categorizer_instance) { instance_double(Tooling::Glci::FailureCategories::JobTraceToFailureCategory) }
@@ -23,7 +23,7 @@ RSpec.describe Tooling::Glci::FailureAnalyzer, feature_category: :tooling do
     allow(Tooling::Glci::FailureCategories::ReportJobFailure).to receive(:new).and_return(reporter_instance)
 
     allow(download_instance).to receive(:download).and_return(trace_path)
-    allow(categorizer_instance).to receive(:process).with(trace_path).and_return(failure_category)
+    allow(categorizer_instance).to receive(:process).with(trace_path).and_return(failure_category_hash)
     allow(reporter_instance).to receive(:report)
   end
 
@@ -41,12 +41,12 @@ RSpec.describe Tooling::Glci::FailureAnalyzer, feature_category: :tooling do
         expect(Tooling::Glci::FailureCategories::JobTraceToFailureCategory).not_to have_received(:new)
         expect(Tooling::Glci::FailureCategories::ReportJobFailure).not_to have_received(:new)
 
-        expect(result).to be_nil
+        expect(result).to eq({})
       end
     end
 
     context 'when no failure category could be found' do
-      let(:failure_category) { nil }
+      let(:failure_category_hash) { {} }
 
       it 'displays an error message' do
         result = ""
@@ -56,7 +56,7 @@ RSpec.describe Tooling::Glci::FailureAnalyzer, feature_category: :tooling do
         end.to output("[GCLI Failure Analyzer] Missing failure category. Exiting.\n").to_stderr
 
         expect(Tooling::Glci::FailureCategories::ReportJobFailure).not_to have_received(:new)
-        expect(result).to be_nil
+        expect(result).to eq({})
       end
     end
 
@@ -89,7 +89,7 @@ RSpec.describe Tooling::Glci::FailureAnalyzer, feature_category: :tooling do
 
       expect(Tooling::Glci::FailureCategories::ReportJobFailure).to have_received(:new).with(
         job_id: job_id,
-        failure_category: failure_category
+        failure_category: failure_category_hash[:failure_category]
       )
     end
 
@@ -107,8 +107,8 @@ RSpec.describe Tooling::Glci::FailureAnalyzer, feature_category: :tooling do
       expect(reporter_instance).to have_received(:report).ordered
     end
 
-    it 'returns the failure category' do
-      expect(analyzer.analyze_job(job_id)).to eq(failure_category)
+    it 'returns the failure category hash' do
+      expect(analyzer.analyze_job(job_id)).to eq(failure_category_hash)
     end
 
     context 'when an error occurs in any component' do

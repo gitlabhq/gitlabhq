@@ -3,6 +3,7 @@
 module API
   class Labels < ::API::Base
     include PaginationParams
+
     helpers ::API::Helpers::LabelHelpers
 
     before { authenticate! }

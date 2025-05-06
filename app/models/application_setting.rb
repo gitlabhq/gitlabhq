@@ -97,13 +97,13 @@ class ApplicationSetting < ApplicationRecord
 
   serialize :restricted_visibility_levels # rubocop:disable Cop/ActiveRecordSerialize
   serialize :import_sources # rubocop:disable Cop/ActiveRecordSerialize
-  serialize :disabled_oauth_sign_in_sources, Array # rubocop:disable Cop/ActiveRecordSerialize
-  serialize :domain_allowlist, Array # rubocop:disable Cop/ActiveRecordSerialize
-  serialize :domain_denylist, Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :disabled_oauth_sign_in_sources, type: Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :domain_allowlist, type: Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :domain_denylist, type: Array # rubocop:disable Cop/ActiveRecordSerialize
 
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/300916
-  serialize :asset_proxy_allowlist, Array # rubocop:disable Cop/ActiveRecordSerialize
-  serialize :asset_proxy_whitelist, Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :asset_proxy_allowlist, type: Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :asset_proxy_whitelist, type: Array # rubocop:disable Cop/ActiveRecordSerialize
 
   cache_markdown_field :help_page_text
   cache_markdown_field :shared_runners_text, pipeline: :plain_markdown

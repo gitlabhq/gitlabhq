@@ -2255,7 +2255,6 @@ Style/InlineDisableAnnotation:
     - 'spec/requests/api/ci/runner/jobs_artifacts_spec.rb'
     - 'spec/requests/api/graphql/groups_query_spec.rb'
     - 'spec/requests/api/graphql/issues_spec.rb'
-    - 'spec/requests/api/graphql/mutations/issues/bulk_update_spec.rb'
     - 'spec/requests/api/group_import_spec.rb'
     - 'spec/requests/api/internal/base_spec.rb'
     - 'spec/requests/api/ml_model_packages_spec.rb'

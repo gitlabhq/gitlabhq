@@ -5,6 +5,7 @@
 module API
   class RubygemPackages < ::API::Base
     include ::API::Helpers::Authentication
+
     helpers ::API::Helpers::PackagesHelpers
 
     feature_category :package_registry

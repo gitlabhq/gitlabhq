@@ -143,7 +143,7 @@ module Ci
     delegate :enable_debug_trace!, to: :metadata
 
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
-    serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
+    serialize :yaml_variables, coder: Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
 
     delegate :name, to: :project, prefix: true
 

@@ -2,7 +2,7 @@
 import { GlIcon, GlLink, GlPopover } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import updateParentMutation from '~/work_items/graphql/update_parent.mutation.graphql';
 import { isValidURL } from '~/lib/utils/url_utility';
@@ -22,8 +22,8 @@ import workItemAllowedParentTypesQuery from '../graphql/work_item_allowed_parent
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   NAME_TO_ENUM_MAP,
+  NAME_TO_TEXT_LOWERCASE_MAP,
   NO_WORK_ITEM_IID,
-  sprintfWorkItem,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
@@ -249,7 +249,9 @@ export default {
             .catch((error) => {
               this.$emit(
                 'error',
-                sprintfWorkItem(I18N_WORK_ITEM_ERROR_UPDATING, this.workItemType),
+                sprintf(I18N_WORK_ITEM_ERROR_UPDATING, {
+                  workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+                }),
               );
               Sentry.captureException(error);
             })
@@ -289,7 +291,12 @@ export default {
           this.localSelectedItem = this.parent?.id || NO_WORK_ITEM_IID;
         }
       } catch (error) {
-        this.$emit('error', sprintfWorkItem(I18N_WORK_ITEM_ERROR_UPDATING, this.workItemType));
+        this.$emit(
+          'error',
+          sprintf(I18N_WORK_ITEM_ERROR_UPDATING, {
+            workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+          }),
+        );
         Sentry.captureException(error);
       } finally {
         this.searchStarted = false;

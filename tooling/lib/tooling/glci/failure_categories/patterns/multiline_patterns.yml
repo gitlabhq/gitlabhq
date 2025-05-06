@@ -12,7 +12,7 @@ failure_categories:
       When you see this failure category, it likely means there's an actual issue with the code or tests that needs to be
       addressed, rather than a CI infrastructure problem.
     patterns:
-      - "Failed examples:,expected\\(:| # | \\[\\)"
+      - "Failed examples:,expected( :| #| \\[ | \\`)"
       - "Failed examples:,Failure/Error:"
     causes:
       - "Actual test failures due to code not meeting expectations"

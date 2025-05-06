@@ -399,7 +399,6 @@ export default {
               :is-internal-note="noteIsInternal"
               :note="note"
               :noteable-data="getNoteableData"
-              :noteable-type="noteableType"
             >
               <markdown-editor
                 ref="markdownEditor"

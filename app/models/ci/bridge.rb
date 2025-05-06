@@ -26,7 +26,7 @@ module Ci
 
     # rubocop:disable Cop/ActiveRecordSerialize
     serialize :options
-    serialize :yaml_variables, ::Gitlab::Serializer::Ci::Variables
+    serialize :yaml_variables, coder: ::Gitlab::Serializer::Ci::Variables
     # rubocop:enable Cop/ActiveRecordSerialize
 
     state_machine :status do

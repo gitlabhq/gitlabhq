@@ -4,7 +4,7 @@ import { debounce } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
 import {
-  sprintfWorkItem,
+  NAME_TO_TEXT_LOWERCASE_MAP,
   WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_SOURCE,
   WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_BRANCH,
 } from '~/work_items/constants';
@@ -19,7 +19,7 @@ import {
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 
 import getProjectRootRef from '~/work_items/graphql/get_project_root_ref.query.graphql';
-import { s__, __ } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import confidentialMergeRequestState from '~/confidential_merge_request/state';
 import ProjectFormGroup from '~/confidential_merge_request/components/project_form_group.vue';
 
@@ -250,9 +250,9 @@ export default {
         this.$emit('hideModal');
       } catch {
         createAlert({
-          message: sprintfWorkItem(
+          message: sprintf(
             s__('WorkItem|Failed to create a branch for this %{workItemType}. Please try again.'),
-            this.workItemType?.toLowerCase(),
+            { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
           ),
         });
       } finally {

@@ -4,6 +4,7 @@ module API
   class Issues < ::API::Base
     include PaginationParams
     include APIGuard
+
     helpers Helpers::IssuesHelpers
     helpers SpammableActions::CaptchaCheck::RestApiActionsSupport
 

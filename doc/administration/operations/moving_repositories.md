@@ -19,7 +19,7 @@ You can move all repositories managed by GitLab to another file system or anothe
 The GitLab API is the recommended way to move Git repositories:
 
 - Between servers.
-- Between different storage.
+- Between different storages.
 - From single-node Gitaly to Gitaly Cluster.
 
 For more information, see:

@@ -4,7 +4,6 @@ import NoteableWarning from '~/vue_shared/components/notes/noteable_warning.vue'
 import EmailParticipantsWarning from './email_participants_warning.vue';
 
 const ATTACHMENT_REGEXP = /!?\[.*?\]\(\/uploads\/[0-9a-f]{32}\/.*?\)/;
-const DEFAULT_NOTEABLE_TYPE = 'Issue';
 
 export default {
   i18n: {
@@ -33,11 +32,6 @@ export default {
     noteableData: {
       type: Object,
       required: true,
-    },
-    noteableType: {
-      type: String,
-      required: false,
-      default: DEFAULT_NOTEABLE_TYPE,
     },
     withAlertContainer: {
       type: Boolean,
@@ -92,9 +86,6 @@ export default {
       class="-gl-mb-3 gl-rounded-lg gl-rounded-b-none gl-pb-5 gl-pt-4"
       :is-locked="isLocked"
       :is-confidential="isConfidential"
-      :noteable-type="noteableType"
-      :locked-noteable-docs-path="noteableData.locked_discussion_docs_path"
-      :confidential-noteable-docs-path="noteableData.confidential_issues_docs_path"
     />
     <slot></slot>
     <div

@@ -41,7 +41,6 @@ class Project < ApplicationRecord
   include RunnerTokenExpirationInterval
   include BlocksUnsafeSerialization
   include Subquery
-  include IssueParent
   include WorkItems::Parent
   include UpdatedAtFilterable
   include CrossDatabaseIgnoredTables

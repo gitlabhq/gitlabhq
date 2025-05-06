@@ -26,7 +26,7 @@ class ProjectImportData < ApplicationRecord
   # because the credentials are necessary for a successful import.
   # This is safe because the serialization is only going between rails
   # and the database, never to any end users.
-  serialize :data, Serializers::UnsafeJson # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :data, coder: Serializers::UnsafeJson # rubocop:disable Cop/ActiveRecordSerialize
 
   validates :project, presence: true
 

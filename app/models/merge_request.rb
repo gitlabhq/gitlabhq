@@ -155,7 +155,7 @@ class MergeRequest < ApplicationRecord
     :sha,
     :skip_ci
   ].freeze
-  serialize :merge_params, Hash # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :merge_params, type: Hash # rubocop:disable Cop/ActiveRecordSerialize
 
   before_validation :set_draft_status
 

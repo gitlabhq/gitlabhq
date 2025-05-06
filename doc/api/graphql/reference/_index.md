@@ -7409,42 +7409,6 @@ Input type: `IssueUnlinkAlertInput`
 | <a id="mutationissueunlinkalerterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationissueunlinkalertissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
-### `Mutation.issuesBulkUpdate`
-
-Allows updating several properties for a set of issues. Does nothing if the `bulk_update_issues_mutation` feature flag is disabled.
-
-{{< details >}}
-**Introduced** in GitLab 15.9.
-**Status**: Experiment.
-{{< /details >}}
-
-Input type: `IssuesBulkUpdateInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationissuesbulkupdateaddlabelids"></a>`addLabelIds` | [`[LabelID!]`](#labelid) | Global ID array of the labels that will be added to the issues. |
-| <a id="mutationissuesbulkupdateassigneeids"></a>`assigneeIds` | [`[UserID!]`](#userid) | Global ID array of the users that will be assigned to the given issues. Existing assignees will be replaced with the ones on this list. |
-| <a id="mutationissuesbulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesbulkupdateepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **Deprecated:** This will be replaced by WorkItem hierarchyWidget. Deprecated in GitLab 17.5. |
-| <a id="mutationissuesbulkupdatehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | Health status that will be assigned to the issues. |
-| <a id="mutationissuesbulkupdateids"></a>`ids` | [`[IssueID!]!`](#issueid) | Global ID array of the issues that will be updated. IDs that the user can't update will be ignored. A max of 100 can be provided. |
-| <a id="mutationissuesbulkupdateiterationid"></a>`iterationId` | [`IterationID`](#iterationid) | Global ID of the iteration that will be assigned to the issues. |
-| <a id="mutationissuesbulkupdatemilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | Global ID of the milestone that will be assigned to the issues. |
-| <a id="mutationissuesbulkupdateparentid"></a>`parentId` | [`IssueParentID!`](#issueparentid) | Global ID of the parent to which the bulk update will be scoped. The parent can be a project. The parent can also be a group (Premium and Ultimate only). Example `IssueParentID` are `"gid://gitlab/Project/1"` and `"gid://gitlab/Group/1"`. |
-| <a id="mutationissuesbulkupdateremovelabelids"></a>`removeLabelIds` | [`[LabelID!]`](#labelid) | Global ID array of the labels that will be removed from the issues. |
-| <a id="mutationissuesbulkupdatestateevent"></a>`stateEvent` | [`IssueStateEvent`](#issuestateevent) | Close or reopen an issue. |
-| <a id="mutationissuesbulkupdatesubscriptionevent"></a>`subscriptionEvent` | [`IssuableSubscriptionEvent`](#issuablesubscriptionevent) | Subscribe to or unsubscribe from issue notifications. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationissuesbulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesbulkupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationissuesbulkupdateupdatedissuecount"></a>`updatedIssueCount` | [`Int`](#int) | Number of issues that were successfully updated. |
-
 ### `Mutation.iterationCadenceCreate`
 
 Input type: `IterationCadenceCreateInput`
@@ -12584,7 +12548,7 @@ Input type: `WorkItemAddLinkedItemsInput`
 
 ### `Mutation.workItemBulkUpdate`
 
-Allows updating several properties for a set of issues. Does nothing if the `bulk_update_issues_mutation` feature flag is disabled.
+Allows updating several properties for a set of work items.
 
 {{< details >}}
 **Introduced** in GitLab 17.4.
@@ -43922,15 +43886,6 @@ State of a GitLab issue or merge request.
 | <a id="issuablestatelocked"></a>`locked` | Discussion has been locked. |
 | <a id="issuablestateopened"></a>`opened` | In open state. |
 
-### `IssuableSubscriptionEvent`
-
-Values for subscribing and unsubscribing from issuables.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="issuablesubscriptioneventsubscribe"></a>`SUBSCRIBE` | Subscribe to an issuable. |
-| <a id="issuablesubscriptioneventunsubscribe"></a>`UNSUBSCRIBE` | Unsubscribe from an issuable. |
-
 ### `IssueCreationIterationWildcardId`
 
 Iteration ID wildcard values for issue creation.
@@ -46790,12 +46745,6 @@ An example `IssuablesCustomFieldSelectOptionID` is: `"gid://gitlab/Issuables::Cu
 A `IssueID` is a global ID. It is encoded as a string.
 
 An example `IssueID` is: `"gid://gitlab/Issue/1"`.
-
-### `IssueParentID`
-
-A `IssueParentID` is a global ID. It is encoded as a string.
-
-An example `IssueParentID` is: `"gid://gitlab/IssueParent/1"`.
 
 ### `IterationID`
 

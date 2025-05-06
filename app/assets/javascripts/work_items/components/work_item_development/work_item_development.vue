@@ -2,11 +2,15 @@
 import { GlIcon, GlAlert, GlTooltipDirective } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { ERROR_POLICY_ALL } from '~/lib/graphql';
-import { s__, __ } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import workItemDevelopmentQuery from '~/work_items/graphql/work_item_development.query.graphql';
 import workItemDevelopmentUpdatedSubscription from '~/work_items/graphql/work_item_development.subscription.graphql';
-import { sprintfWorkItem, STATE_OPEN, DEVELOPMENT_ITEMS_ANCHOR } from '~/work_items/constants';
+import {
+  DEVELOPMENT_ITEMS_ANCHOR,
+  NAME_TO_TEXT_LOWERCASE_MAP,
+  STATE_OPEN,
+} from '~/work_items/constants';
 import { findDevelopmentWidget } from '~/work_items/utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import WorkItemActionsSplitButton from '~/work_items/components/work_item_links/work_item_actions_split_button.vue';
@@ -109,21 +113,21 @@ export default {
     },
     openStateText() {
       return this.closingMergeRequests.length > 1
-        ? sprintfWorkItem(
+        ? sprintf(
             s__(
               'WorkItem|This %{workItemType} will be closed when any of the following is merged.',
             ),
-            this.workItemType,
+            { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
           )
-        : sprintfWorkItem(
+        : sprintf(
             s__('WorkItem|This %{workItemType} will be closed when the following is merged.'),
-            this.workItemType,
+            { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
           );
     },
     closedStateText() {
-      return sprintfWorkItem(
+      return sprintf(
         s__('WorkItem|The %{workItemType} was closed automatically when a branch was merged.'),
-        this.workItemType,
+        { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
       );
     },
     tooltipText() {

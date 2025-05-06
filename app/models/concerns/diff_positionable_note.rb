@@ -7,9 +7,9 @@ module DiffPositionableNote
     before_validation :set_original_position, on: :create
     before_validation :update_position, on: :create, if: :should_update_position?, unless: :importing?
 
-    serialize :original_position, Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
-    serialize :position, Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
-    serialize :change_position, Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
+    serialize :original_position, type: Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
+    serialize :position, type: Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
+    serialize :change_position, type: Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
 
     validate :diff_refs_match_commit, if: :for_commit?
     validates :position, json_schema: { filename: "position", hash_conversion: true }

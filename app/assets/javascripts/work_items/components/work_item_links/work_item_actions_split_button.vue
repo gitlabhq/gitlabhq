@@ -1,12 +1,12 @@
 <script>
 import { GlDisclosureDropdown, GlPopover, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import {
+  NAME_TO_TEXT_LOWERCASE_MAP,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
-  sprintfWorkItem,
 } from '../../constants';
 
 export default {
@@ -42,11 +42,11 @@ export default {
   },
   methods: {
     getPopoverText(workItemType) {
-      return sprintfWorkItem(
+      return sprintf(
         s__(
           'WorkItem|You cannot add another child %{workItemType}. You’ve reached the maximum number of nested levels.',
         ),
-        workItemType,
+        { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[workItemType] },
       );
     },
     getPopoverLink(workItemType) {

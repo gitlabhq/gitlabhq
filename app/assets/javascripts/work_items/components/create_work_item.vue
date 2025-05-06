@@ -33,7 +33,6 @@ import {
 import { TYPENAME_MERGE_REQUEST, TYPENAME_VULNERABILITY } from '~/graphql_shared/constants';
 import {
   I18N_WORK_ITEM_ERROR_CREATING,
-  sprintfWorkItem,
   i18n,
   NAME_TO_TEXT_LOWERCASE_MAP,
   NAME_TO_TEXT_MAP,
@@ -396,21 +395,27 @@ export default {
       return options;
     },
     createErrorText() {
-      return sprintfWorkItem(I18N_WORK_ITEM_ERROR_CREATING, this.selectedWorkItemTypeName);
+      return sprintf(I18N_WORK_ITEM_ERROR_CREATING, {
+        workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemTypeName],
+      });
     },
     createWorkItemText() {
-      return sprintfWorkItem(s__('WorkItem|Create %{workItemType}'), this.selectedWorkItemTypeName);
+      return sprintf(s__('WorkItem|Create %{workItemType}'), {
+        workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemTypeName],
+      });
     },
     makeConfidentialText() {
-      return sprintfWorkItem(
+      return sprintf(
         s__(
           'WorkItem|This %{workItemType} is confidential and should only be visible to users having at least the Planner role',
         ),
-        this.selectedWorkItemTypeName,
+        { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemTypeName] },
       );
     },
     titleText() {
-      return sprintfWorkItem(s__('WorkItem|New %{workItemType}'), this.selectedWorkItemTypeName);
+      return sprintf(s__('WorkItem|New %{workItemType}'), {
+        workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemTypeName],
+      });
     },
     canUpdate() {
       return this.workItem?.userPermissions?.updateWorkItem;

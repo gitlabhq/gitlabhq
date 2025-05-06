@@ -93,8 +93,6 @@ export default {
         discussion_locked: false,
         confidential: false,
         issue_email_participants: [],
-        locked_discussion_docs_path: '',
-        confidential_issues_docs_path: '',
       },
     };
   },
@@ -266,7 +264,6 @@ export default {
               :is-internal-note="noteIsInternal"
               :note="note"
               :noteable-data="noteableData"
-              :noteable-type="noteableType"
             >
               <markdown-editor
                 ref="markdownEditor"

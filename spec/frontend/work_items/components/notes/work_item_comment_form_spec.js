@@ -166,12 +166,9 @@ describe('Work item comment form component', () => {
       withAlertContainer: false,
       noteableData: {
         confidential: false,
-        confidential_issues_docs_path: '/help/user/tasks.html#confidential-tasks',
         discussion_locked: false,
-        locked_discussion_docs_path: '/help/user/tasks.html#lock-discussion',
         issue_email_participants: [],
       },
-      noteableType: 'Task',
     });
   });
 

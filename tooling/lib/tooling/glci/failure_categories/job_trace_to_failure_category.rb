@@ -22,31 +22,40 @@ module Tooling
           @catchall_patterns = load_patterns_from_file('catchall_patterns.yml')
         end
 
+        # Analyzes a job trace file to determine the failure category based on pattern matching.
+        #
+        # This method examines the content of a job trace file against three sets of patterns
+        # (regular patterns, multiline patterns, and catchall patterns) to categorize the type
+        # of failure that occurred.
+        #
+        # @param job_trace [String] Path to the job trace file to analyze
+        #
+        # @return [Hash] A pattern info hash containing category information if a match is found,
+        #                or an empty hash if no match is found or if the trace file is invalid
         def process(job_trace)
           if !job_trace || !File.exist?(job_trace) || File.empty?(job_trace)
             warn "[JobTraceToFailureCategory] Error: Missing job trace file, or empty"
-            return
+            return {}
           end
 
           trace = File.read(job_trace)
 
           patterns.each do |pattern_info|
-            return pattern_info[:failure_category] if trace.match?(/#{pattern_info[:pattern]}/i)
+            return pattern_info if trace.match?(/#{pattern_info[:pattern]}/i)
           end
 
           multiline_patterns.each do |pattern_info|
             first_pattern, second_pattern = pattern_info[:pattern].split(',')
-            if trace.match?(/#{first_pattern}/i) && trace.match?(/#{second_pattern}/i)
-              return pattern_info[:failure_category]
-            end
+            return pattern_info if trace.match?(/#{first_pattern}/i) && trace.match?(/#{second_pattern}/i)
           end
 
           catchall_patterns.each do |pattern_info|
-            return pattern_info[:failure_category] if trace.match?(/#{pattern_info[:pattern]}/i)
+            return pattern_info if trace.match?(/#{pattern_info[:pattern]}/i)
           end
 
           warn "[JobTraceToFailureCategory] Error: Could not find any failure category"
-          nil
+
+          {}
         end
 
         private
@@ -80,8 +89,8 @@ if __FILE__ == $PROGRAM_NAME
     exit 1
   end
 
-  failure_category = Tooling::Glci::FailureCategories::JobTraceToFailureCategory.new.process(ARGV[0])
-  exit 1 unless failure_category
+  failure_category_hash = Tooling::Glci::FailureCategories::JobTraceToFailureCategory.new.process(ARGV[0])
+  exit 1 if failure_category_hash.empty?
 
-  puts failure_category
+  puts failure_category_hash[:failure_category]
 end

@@ -4,6 +4,7 @@ module API
   class Notes < ::API::Base
     include PaginationParams
     include APIGuard
+
     helpers ::API::Helpers::NotesHelpers
 
     before { authenticate! }

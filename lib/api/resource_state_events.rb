@@ -3,6 +3,7 @@
 module API
   class ResourceStateEvents < ::API::Base
     include PaginationParams
+
     helpers ::API::Helpers::NotesHelpers
 
     before { authenticate! }
