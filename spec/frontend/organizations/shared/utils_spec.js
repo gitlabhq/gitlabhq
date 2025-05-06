@@ -7,6 +7,7 @@ import {
   ACTION_EDIT,
   ACTION_DELETE,
   ACTION_LEAVE,
+  ACTION_RESTORE,
 } from '~/vue_shared/components/list_actions/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
@@ -47,7 +48,7 @@ describe('formatGroups', () => {
       accessLevel: {
         integerValue: 50,
       },
-      availableActions: [ACTION_EDIT, ACTION_LEAVE, ACTION_DELETE],
+      availableActions: [ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE],
       children: [],
       childrenLoading: false,
       hasChildren: false,

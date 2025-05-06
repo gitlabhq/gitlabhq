@@ -12,6 +12,8 @@ import { s__ } from '~/locale';
 import {
   CLUSTER_HEALTH_SUCCESS,
   CLUSTER_HEALTH_ERROR,
+  CLUSTER_HEALTH_NEEDS_ATTENTION,
+  CLUSTER_HEALTH_UNKNOWN,
   HEALTH_BADGES,
   SYNC_STATUS_BADGES,
   HELM_RELEASES_RESOURCE_TYPE,
@@ -46,7 +48,13 @@ export default {
       type: String,
       default: '',
       validator(val) {
-        return [CLUSTER_HEALTH_ERROR, CLUSTER_HEALTH_SUCCESS, ''].includes(val);
+        return [
+          CLUSTER_HEALTH_ERROR,
+          CLUSTER_HEALTH_SUCCESS,
+          CLUSTER_HEALTH_UNKNOWN,
+          CLUSTER_HEALTH_NEEDS_ATTENTION,
+          '',
+        ].includes(val);
       },
     },
     configuration: {

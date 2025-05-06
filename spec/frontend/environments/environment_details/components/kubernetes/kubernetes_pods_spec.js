@@ -69,14 +69,6 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_po
       expect(findLoadingIcon().exists()).toBe(true);
     });
 
-    it('emits loading state', async () => {
-      createWrapper();
-      expect(wrapper.emitted('loading')[0]).toEqual([true]);
-
-      await waitForPromises();
-      expect(wrapper.emitted('loading')[1]).toEqual([false]);
-    });
-
     it('hides the loading icon when the list of pods loaded', async () => {
       createWrapper();
       await waitForPromises();
@@ -121,17 +113,11 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_po
       });
     });
 
-    it('emits a update-failed-state event for each pod', async () => {
+    it('emits a update-cluster-state event', async () => {
       createWrapper();
       await waitForPromises();
 
-      expect(wrapper.emitted('update-failed-state')).toHaveLength(4);
-      expect(wrapper.emitted('update-failed-state')).toEqual([
-        [{ pods: false }],
-        [{ pods: false }],
-        [{ pods: false }],
-        [{ pods: true }],
-      ]);
+      expect(wrapper.emitted('update-cluster-state')).toEqual([['error']]);
     });
 
     it('emits select-item event on item select', async () => {

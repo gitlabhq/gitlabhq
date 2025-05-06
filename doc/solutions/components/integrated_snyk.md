@@ -23,7 +23,7 @@ title: GitLab Application Security Workflow Integrated with Snyk
 
 This is an integration between Snyk and GitLab CI via a GitLab CI/CD Component.
 
-## How it works
+## Snyk workflow
 
 This project has a component that runs the Snyk CLI and outputs the scan report in the SARIF format. It calls a separate component that converts SARIF to the GitLab vulnerability record format using a job based on the semgrep base image.
 

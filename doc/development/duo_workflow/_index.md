@@ -5,14 +5,14 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Development of GitLab Duo Workflow
 ---
 
-This guide describes how to set up the local development environment for the various projects that make up [GitLab Duo Workflow](../../user/duo_workflow/_index.md).
+How to set up the local development environment to run [GitLab Duo Workflow](../../user/duo_workflow/_index.md).
 
 ## Prerequisites
 
-- Vertex API access
-  - You need access to the `ai-enablement-dev-69497ba7` project in GCP. This should by available to all engineers at GitLab.
-- Docker
-  - See which Docker tooling is approved for GitLab team members in the [handbook](https://handbook.gitlab.com/handbook/tools-and-tips/mac/#docker-desktop).
+- [GitLab Ultimate license](https://handbook.gitlab.com/handbook/engineering/developer-onboarding/#working-on-gitlab-ee-developer-licenses)
+- [Vertex access](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#use-the-existing-project): You need access to the `ai-enablement-dev-69497ba7` project in GCP because GDK by default uses Anthropic hosted on Vertex. Access to this project should be available to all engineers at GitLab.
+  - If you do not have Vertex access for any reason, you should unset `DUO_WORKFLOW__VERTEX_PROJECT_ID` in the Duo Workflow Service and set `ANTHROPIC_API_KEY` to a regular Anthropic API key
+- Various settings and feature flags, which are enabled for you by the [GDK setup script](#gdk-setup)
 
 ## Set up local development for Workflow
 
@@ -25,19 +25,21 @@ Workflow consists of four separate services:
 
 ### GDK Setup
 
-We recommend [setting up GitLab Duo Workflow directly with the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_workflow.md?ref_type=heads)
-for setting up local versions of GitLab, the GitLab Duo Workflow Service and Executor.
+You should [set up GitLab Duo Workflow with the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_workflow.md)
+to run local versions of GitLab, Duo Workflow Service, and Executor.
 
 This setup can be used with the [publicly available version of the VS Code Extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
-Follow [these instructions](#gitlab-duo-workflow-ui-in-visual-studio-code-vs-code) to see the GitLab Duo Workflow UI local build in VS Code if you want to actively need to develop it or use an unreleased version.
+Follow [these instructions](#gitlab-duo-workflow-ui-in-visual-studio-code-vs-code) to see the GitLab Duo Workflow UI local build in VS Code. A local build is required if you are making VS Code changes or need use an unreleased version.
 
 ### Manual Setup
 
 #### GitLab Duo Workflow UI in Visual Studio Code (VS Code)
 
 There is no need for the GDK, Workflow service or Workflow executor local build to test the GitLab Duo Workflow UI.
-Only set these up if you are making changes to one of these packages and need to test their integration with the GitLab Duo Workflow UI in VS Code.
-Please refer to the [GitLab Duo Workflow README.md](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/webview_duo_workflow/README.md) file in the Language Server project to get started with local development of GitLab Duo Workflow UI.
+
+Only set these up if you are making changes to one of them and need to test their integration with the GitLab Duo Workflow UI.
+
+Refer to the [GitLab Duo Workflow README](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/webview_duo_workflow/README.md) file in the Language Server project to get started with local development of GitLab Duo Workflow UI.
 
 #### Set up your local GitLab instance
 
@@ -80,7 +82,7 @@ Please refer to the [GitLab Duo Workflow README.md](https://gitlab.com/gitlab-or
 
 #### Set up the GitLab Duo Workflow Service and Executor
 
-Refer to the readme of [GitLab Duo Workflow Service](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-service) and [GitLab Duo Workflow Executor](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-executor/) to set them up individually.
+Refer to the [GitLab Duo Workflow Service README](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-service) and [GitLab Duo Workflow Executor](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-executor/) to set them up individually.
 
 ## Troubleshooting
 

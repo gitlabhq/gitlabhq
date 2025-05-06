@@ -2646,7 +2646,7 @@ Supported attributes:
 If you have at least the Developer role, the following requests could also return the `secret_push_protection_enabled` value.
 Note that some of these requests have stricter requirements about roles. Refer to the endpoints above for clarification.
 Use this information to determine whether secret push protection is enabled for a project.
-To modify the `secret_push_protection_enabled` value, please use the [Project Security Settings API](project_security_settings.md).
+To modify the `secret_push_protection_enabled` value, use the [Project Security Settings API](project_security_settings.md).
 
 - `GET /projects`
 - `GET /projects/:id`

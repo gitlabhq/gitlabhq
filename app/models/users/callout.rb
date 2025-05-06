@@ -107,7 +107,8 @@ module Users
       dora_dashboard_migration_group: 104,
       dora_dashboard_migration_project: 105,
       enable_duo_banner_admin_duo_settings_page: 106, # EE-only
-      enable_duo_banner_admin_dashboard: 107 # EE-only
+      enable_duo_banner_admin_dashboard: 107, # EE-only
+      explore_duo_core_banner: 108 # EE-only
     }
 
     validates :feature_name,

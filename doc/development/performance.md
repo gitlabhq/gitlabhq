@@ -149,7 +149,7 @@ you to see where time is spent in a process. The
 [Stackprof](https://github.com/tmm1/stackprof) gem is included in GitLab,
 allowing you to profile which code is running on CPU in detail.
 
-It's important to note that profiling an application *alters its performance*.
+Profiling an application *alters its performance*.
 Different profiling strategies have different overheads. Stackprof is a sampling
 profiler. It samples stack traces from running threads at a configurable
 frequency (for example, 100 hz, that is 100 stacks per second). This type of profiling

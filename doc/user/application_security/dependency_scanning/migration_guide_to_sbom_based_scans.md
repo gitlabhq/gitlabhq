@@ -68,7 +68,7 @@ The Dependency Scanning using SBOM approach separates these tasks into two disti
 - Second, the detected components are sent to the GitLab platform to perform a thorough security analysis using the built-in GitLab SBOM Vulnerability Scanner. You're already benefiting from this scanner with the [Continuous Vulnerability Scanning](../continuous_vulnerability_scanning/_index.md) feature.
 
 This separation of concerns brings several advantages for future enhancements, but it also means some changes are necessary since the security analysis happens outside the CI/CD pipeline.
-This impacts the availability of some functionalities that depend on the security analysis to run in the CI/CD pipeline. Please review [the deprecation announcement](../../../update/deprecations.md#dependency-scanning-upgrades-to-the-gitlab-sbom-vulnerability-scanner) for a complete description.
+This impacts the availability of some functionalities that depend on the security analysis to run in the CI/CD pipeline. Review [the deprecation announcement](../../../update/deprecations.md#dependency-scanning-upgrades-to-the-gitlab-sbom-vulnerability-scanner) for a complete description.
 
 ### CI/CD configuration
 
@@ -142,7 +142,7 @@ For multi-language projects, complete all relevant language-specific migration s
 
 {{< alert type="note" >}}
 
-If you decide to migrate from the CI/CD template to the CI/CD component, please review the [current limitations](../../../ci/components/_index.md#use-a-gitlabcom-component-on-gitlab-self-managed) for GitLab Self-Managed.
+If you decide to migrate from the CI/CD template to the CI/CD component, review the [current limitations](../../../ci/components/_index.md#use-a-gitlabcom-component-on-gitlab-self-managed) for GitLab Self-Managed.
 
 {{< /alert >}}
 
@@ -156,7 +156,7 @@ In the following sections, you'll find detailed instructions for each supported 
 - What specific files you need to provide
 - How to generate these files if they're not already part of your workflow
 
-Please share any feedback on the new Dependency Scanning analyzer in this [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523458).
+Share any feedback on the new Dependency Scanning analyzer in this [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523458).
 
 ### Bundler
 
@@ -498,7 +498,7 @@ Prerequisites:
 
 - Complete [the generic migration steps](#migrate-to-dependency-scanning-using-sbom) required for all projects.
 
-There are no additional steps to migrate a Yarn project to use the Dependency Scanning analyzer. If you use the Resolve a vulnerability via merge request feature please check [the deprecation announcement](../../../update/deprecations.md#resolve-a-vulnerability-for-dependency-scanning-on-yarn-projects) for available actions. If you use the JavaScript vendored files scan feature, please check the [deprecation announcement](../../../update/deprecations.md#dependency-scanning-for-javascript-vendored-libraries) for available actions.
+There are no additional steps to migrate a Yarn project to use the Dependency Scanning analyzer. If you use the Resolve a vulnerability via merge request feature check [the deprecation announcement](../../../update/deprecations.md#resolve-a-vulnerability-for-dependency-scanning-on-yarn-projects) for available actions. If you use the JavaScript vendored files scan feature, check the [deprecation announcement](../../../update/deprecations.md#dependency-scanning-for-javascript-vendored-libraries) for available actions.
 
 ## Changes to CI/CD variables
 

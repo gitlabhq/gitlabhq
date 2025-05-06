@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# For information on how to update TW codeowners, see: https://docs.gitlab.com/development/documentation/metadata/#update-the-codeowners-file
+
 namespace :tw do
   desc 'Generates a list of codeowners for documentation pages.'
   task :codeowners do
@@ -85,7 +87,7 @@ namespace :tw do
       # CodeOwnerRule.new('Subscription Management', ''),
       CodeOwnerRule.new('Switchboard', '@emily.sahlani'),
       CodeOwnerRule.new('Testing', '@eread'),
-      CodeOwnerRule.new('Tutorials', '@kpaizee'),
+      CodeOwnerRule.new('Tutorials', '@gl-docsteam'),
       CodeOwnerRule.new('US Public Sector Services', '@emily.sahlani'),
       CodeOwnerRule.new('Utilization', '@lciutacu')
       # CodeOwnerRule.new('Vulnerability Research', '')

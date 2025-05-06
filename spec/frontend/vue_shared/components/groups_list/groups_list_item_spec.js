@@ -10,19 +10,15 @@ import GroupListItemDeleteModal from '~/vue_shared/components/groups_list/group_
 import GroupListItemInactiveBadge from '~/vue_shared/components/groups_list/group_list_item_inactive_badge.vue';
 import GroupListItemPreventDeleteModal from '~/vue_shared/components/groups_list/group_list_item_prevent_delete_modal.vue';
 import GroupListItemLeaveModal from '~/vue_shared/components/groups_list/group_list_item_leave_modal.vue';
+import GroupListItemActions from '~/vue_shared/components/groups_list/group_list_item_actions.vue';
 import {
   VISIBILITY_TYPE_ICON,
   VISIBILITY_LEVEL_INTERNAL_STRING,
   GROUP_VISIBILITY_TYPE,
 } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
-import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import {
-  ACTION_EDIT,
-  ACTION_DELETE,
-  ACTION_LEAVE,
-} from '~/vue_shared/components/list_actions/constants';
+import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
@@ -66,15 +62,13 @@ describe('GroupsListItem', () => {
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
   const findGroupDescription = () => wrapper.findByTestId('description');
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
-  const findListActions = () => wrapper.findComponent(ListActions);
+  const findGroupListItemActions = () => wrapper.findComponent(GroupListItemActions);
   const findDeleteConfirmationModal = () => wrapper.findComponent(GroupListItemDeleteModal);
   const findPreventDeleteModal = () => wrapper.findComponent(GroupListItemPreventDeleteModal);
   const findLeaveModal = () => wrapper.findComponent(GroupListItemLeaveModal);
   const findAccessLevelBadge = () => wrapper.findByTestId('user-access-role');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
 
-  const fireLeaveAction = () => findListActions().props('actions')[ACTION_LEAVE].action();
-  const fireDeleteAction = () => findListActions().props('actions')[ACTION_DELETE].action();
   const findInactiveBadge = () => wrapper.findComponent(GroupListItemInactiveBadge);
 
   const deleteModalFireConfirmEvent = async () => {
@@ -267,84 +261,68 @@ describe('GroupsListItem', () => {
   });
 
   describe('when group has actions', () => {
-    const groupWithDeleteAction = {
-      ...group,
-      actionLoadingStates: { [ACTION_DELETE]: false },
-    };
+    beforeEach(createComponent);
 
-    it('displays actions dropdown', () => {
-      createComponent({
-        propsData: {
-          group: groupWithDeleteAction,
-        },
-      });
+    it('renders list item actions with correct props', () => {
+      expect(findGroupListItemActions().props()).toMatchObject({ group });
+    });
 
-      expect(findListActions().props()).toMatchObject({
-        actions: {
-          [ACTION_EDIT]: {
-            href: group.editPath,
-          },
-          [ACTION_DELETE]: {
-            action: expect.any(Function),
-          },
-          [ACTION_LEAVE]: {
-            action: expect.any(Function),
-          },
-        },
-        availableActions: [ACTION_EDIT, ACTION_DELETE, ACTION_LEAVE],
+    describe('when list item actions emits refetch', () => {
+      it('emits refetch', () => {
+        findGroupListItemActions().vm.$emit('refetch');
+
+        expect(wrapper.emitted('refetch')).toEqual([[]]);
       });
     });
 
-    describe('when group has leave action', () => {
-      beforeEach(createComponent);
+    describe('when list item actions emits leave', () => {
+      it('shows leave modal', async () => {
+        findGroupListItemActions().vm.$emit('leave');
+        await nextTick();
 
-      it('renders hidden leave modal', () => {
-        expect(findLeaveModal().props('visible')).toBe(false);
+        expect(findLeaveModal().props('visible')).toBe(true);
       });
 
-      describe('when leave action is fired', () => {
-        beforeEach(async () => {
-          await fireLeaveAction();
+      describe('when leave modal emits visibility change', () => {
+        it("updates the modal's visibility prop", async () => {
+          findLeaveModal().vm.$emit('change', false);
+
+          await nextTick();
+
+          expect(findLeaveModal().props('visible')).toBe(false);
         });
+      });
 
-        it('shows leave modal', () => {
-          expect(findLeaveModal().props('visible')).toBe(true);
-        });
+      describe('when leave modal emits success event', () => {
+        it('emits refetch event', () => {
+          findLeaveModal().vm.$emit('success');
 
-        describe('when leave modal emits visibility change', () => {
-          it("updates the modal's visibility prop", async () => {
-            findLeaveModal().vm.$emit('change', false);
-
-            await nextTick();
-
-            expect(findLeaveModal().props('visible')).toBe(false);
-          });
-        });
-
-        describe('when leave modal emits success event', () => {
-          it('emits refetch event', () => {
-            findLeaveModal().vm.$emit('success');
-
-            expect(wrapper.emitted('refetch')).toEqual([[]]);
-          });
+          expect(wrapper.emitted('refetch')).toEqual([[]]);
         });
       });
     });
 
-    describe('when delete action is fired', () => {
+    describe('when list item actions emits delete', () => {
+      const groupWithDeleteAction = {
+        ...group,
+        actionLoadingStates: { [ACTION_DELETE]: false },
+      };
+
       describe('when group is linked to a subscription', () => {
         const groupLinkedToSubscription = {
           ...groupWithDeleteAction,
           isLinkedToSubscription: true,
         };
 
-        beforeEach(() => {
+        beforeEach(async () => {
           createComponent({
             propsData: {
               group: groupLinkedToSubscription,
             },
           });
-          fireDeleteAction();
+
+          findGroupListItemActions().vm.$emit('delete');
+          await nextTick();
         });
 
         it('displays prevent delete modal', () => {
@@ -365,13 +343,15 @@ describe('GroupsListItem', () => {
       });
 
       describe('when group can be deleted', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           createComponent({
             propsData: {
               group: groupWithDeleteAction,
             },
           });
-          fireDeleteAction();
+
+          findGroupListItemActions().vm.$emit('delete');
+          await nextTick();
         });
 
         it('displays confirmation modal with correct props', () => {
@@ -384,7 +364,7 @@ describe('GroupsListItem', () => {
 
         describe('when deletion is confirmed', () => {
           describe('when API call is successful', () => {
-            it('calls deleteProject, properly sets loading state, and emits refetch event', async () => {
+            it('calls DELETE on group path, properly sets loading state, and emits refetch event', async () => {
               axiosMock.onDelete(`/${groupWithDeleteAction.fullPath}`).reply(200);
 
               await deleteModalFireConfirmEvent();
@@ -401,7 +381,7 @@ describe('GroupsListItem', () => {
           });
 
           describe('when API call is not successful', () => {
-            it('calls deleteProject, properly sets loading state, and shows error alert', async () => {
+            it('calls DELETE on group path, properly sets loading state, and shows error alert', async () => {
               axiosMock.onDelete(`/${groupWithDeleteAction.fullPath}`).networkError();
 
               await deleteModalFireConfirmEvent();
@@ -448,8 +428,8 @@ describe('GroupsListItem', () => {
       });
     });
 
-    it('does not display actions dropdown', () => {
-      expect(findListActions().exists()).toBe(false);
+    it('does not render list item actions', () => {
+      expect(findGroupListItemActions().exists()).toBe(false);
     });
 
     it('does not display confirmation modal', () => {

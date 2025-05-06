@@ -694,7 +694,8 @@ class ApplicationSetting < ApplicationRecord
   validates :resource_usage_limits, json_schema: { filename: 'resource_usage_limits' }
 
   jsonb_accessor :group_settings,
-    top_level_group_creation_enabled: [:boolean, { default: true }]
+    top_level_group_creation_enabled: [:boolean, { default: true }],
+    disable_invite_members: [:boolean, { default: false }]
 
   validates :group_settings,
     json_schema: { filename: "application_setting_group_settings" }

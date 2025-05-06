@@ -18,7 +18,7 @@ title: Project-level Secure Files API
 
 {{< /history >}}
 
-This feature is part of [Mobile DevOps](../ci/mobile_devops/_index.md) developed by GitLab Incubation Engineering.
+This feature is part of [Mobile DevOps](../ci/mobile_devops/_index.md).
 The feature is still in development, but you can:
 
 - [Request a feature](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=feature_request).

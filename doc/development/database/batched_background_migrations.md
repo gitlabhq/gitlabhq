@@ -297,8 +297,13 @@ This ensures a smooth upgrade process for GitLab Self-Managed instances.
 It is important to finalize all batched background migrations when it is safe
 to do so. Leaving around old batched background migration is a form of
 technical debt that needs to be maintained in tests and in application
-behavior. It is important to note that you cannot depend on any batched
-background migration being completed until after it is finalized.
+behavior.
+
+{{< alert type="note" >}}
+
+You cannot depend on any batched background migration being completed until after it is finalized.
+
+{{< /alert >}}
 
 We recommend that batched background migrations are finalized after all of the
 following conditions are met:

@@ -15,6 +15,7 @@ RSpec.describe Sidebars::Projects::SuperSidebarPanel, feature_category: :navigat
       # Turn features on that impact the list of items rendered
       can_view_pipeline_editor: true,
       learn_gitlab_enabled: true,
+      show_get_started_menu: false,
       show_discover_project_security: true,
       # Turn features off that do not add/remove items
       show_cluster_hint: false,

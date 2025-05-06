@@ -515,7 +515,7 @@ To manually renew your subscription:
    a copy of the renewal term activation code.
 1. [Add the activation code](../../administration/license.md) to your instance.
 
-To add products to your subscription, please [contact the sales team](https://customers.gitlab.com/contact_us).
+To add products to your subscription, [contact the sales team](https://customers.gitlab.com/contact_us).
 
 ### Automatic subscription renewal
 

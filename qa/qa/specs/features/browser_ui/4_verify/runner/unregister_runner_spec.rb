@@ -20,7 +20,7 @@ module QA
         Page::Project::Settings::CiCd.perform do |settings|
           settings.expand_runners_settings do |page|
             expect(page).to have_content(executor)
-            expect(page).to have_online_runner
+            expect(page).to have_online_runner(runner.id)
           end
         end
 

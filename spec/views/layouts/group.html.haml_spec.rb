@@ -8,7 +8,7 @@ RSpec.describe 'layouts/group', feature_category: :groups_and_projects do
   let(:user) { build_stubbed(:user) }
 
   before do
-    allow(view).to receive(:can_admin_group_member?).and_return(invite_member)
+    allow(view).to receive(:can_invite_group_member?).and_return(invite_member)
     assign(:group, group)
     allow(view).to receive(:current_user_mode).and_return(Gitlab::Auth::CurrentUserMode.new(user))
     allow(view).to receive(:current_user).and_return(user)

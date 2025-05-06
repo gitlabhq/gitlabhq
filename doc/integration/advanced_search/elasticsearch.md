@@ -89,9 +89,11 @@ before we remove them.
 
 | GitLab version          | OpenSearch version             |
 |-------------------------|--------------------------------|
-| GitLab 17.6.3 and later | OpenSearch 1.x and later       |
+| GitLab 17.6.3 and later | OpenSearch 1.x and 2.x         |
 | GitLab 15.5.3 to 17.6.2 | OpenSearch 1.x, 2.0 to 2.17    |
 | GitLab 15.0 to 15.5.2   | OpenSearch 1.x                 |
+
+OpenSearch 3.0 is not supported, see [issue 540086](https://gitlab.com/gitlab-org/gitlab/-/issues/540086).
 
 If your version of Elasticsearch or OpenSearch is incompatible, to prevent data loss, indexing pauses and
 a message is logged in the

@@ -7,6 +7,10 @@
     "top_level_group_creation_enabled": {
       "type": "boolean",
       "description": "Allows a user to create top-level-groups"
+    },
+    "disable_invite_members": {
+      "type": "boolean",
+      "description": "When enabled, prevents group owners and members from inviting new users to the group"
     }
   }
 }

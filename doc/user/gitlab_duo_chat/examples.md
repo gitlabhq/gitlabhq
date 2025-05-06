@@ -316,7 +316,7 @@ A follow-up to the question `Write a Ruby function that prints 'Hello, World!' w
 
 A follow-up to the question `How to start a C# project?` could be:
 
-- `Can you also please explain how to add a .gitignore and .gitlab-ci.yml file for C#?`
+- `Can you also explain how to add a .gitignore and .gitlab-ci.yml file for C#?`
 
 ## Ask about errors
 
@@ -326,7 +326,7 @@ A follow-up to the question `How to start a C# project?` could be:
 
 {{< /history >}}
 
-Programming languages that require compiling the source code may throw cryptic error messages. Similarly, a script or a web application could throw a stack trace. You can ask GitLab Duo Chat by prefixing the copied error message with, for example, `Please explain this error message:`. Add the specific context, like the programming language.
+Programming languages that require compiling the source code may throw cryptic error messages. Similarly, a script or a web application could throw a stack trace. You can ask GitLab Duo Chat by prefixing the copied error message with, for example, `Explain this error message:`. Add the specific context, like the programming language.
 
 - `Explain this error message in Java: Int and system cannot be resolved to a type`
 - `Explain when this C function would cause a segmentation fault: sqlite3_prepare_v2()`
@@ -372,7 +372,7 @@ To do this:
 
 For example, if you are developing an e-commerce app, you can add the `cart_service.py` and `checkout_flow.js` files to Chat's context and ask:
 
-- `How does checkout_flow.js interact with cart_service.py? Please generate a sequence diagram using Mermaid.`
+- `How does checkout_flow.js interact with cart_service.py? Generate a sequence diagram using Mermaid.`
 - `Can you extend the checkout process by showing products related to the ones in the user's cart? I want to move the checkout logic to the backend before proceeding. Generate the Python backend code and change the frontend code to work with the new backend.`
 
 {{< alert type="note" >}}
@@ -523,9 +523,9 @@ You can ask GitLab Duo Chat to create a CI/CD configuration:
 - `Create a CI/CD configuration for VueJS. Use npm, and add SAST security scanning.`
 - `Generate a security scanning pipeline configuration, optimized for Java.`
 
-You can also ask to explain specific job errors by copy-pasting the error message, prefixed with `Please explain this CI/CD job error message, in the context of <language>:`:
+You can also ask to explain specific job errors by copy-pasting the error message, prefixed with `Explain this CI/CD job error message, in the context of <language>:`:
 
-- `Please explain this CI/CD job error message in the context of a Go project: build.sh: line 14: go command not found`
+- `Explain this CI/CD job error message in the context of a Go project: build.sh: line 14: go command not found`
 
 Alternatively, you can use GitLab Duo Root Cause Analysis to [troubleshoot failed CI/CD jobs](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
 

@@ -2132,13 +2132,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   describe '#project_delete_delayed_button_data', time_travel_to: '2025-02-02' do
     let(:base_button_data) do
       {
+        button_text: 'Delete project',
         restore_help_path: help_page_path('user/project/working_with_projects.md', anchor: 'restore-a-project'),
         delayed_deletion_date: '2025-02-09',
         form_path: project_path(project),
         confirm_phrase: project.path_with_namespace,
         name_with_namespace: project.name_with_namespace,
         is_fork: 'false',
-        is_security_policy_project: "false",
         issues_count: '0',
         merge_requests_count: '0',
         forks_count: '0',
@@ -2154,7 +2154,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       subject(:data) { helper.project_delete_delayed_button_data(project) }
 
       it 'returns expected hash' do
-        expect(data).to match(base_button_data.merge(button_text: 'Delete project'))
+        expect(data).to match(base_button_data)
       end
     end
 
@@ -2165,32 +2165,12 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         expect(data).to match(base_button_data.merge(button_text: 'Delete project immediately'))
       end
     end
-
-    describe 'when it is a security policy project' do
-      subject(:data) { helper.project_delete_delayed_button_data(project, is_security_policy_project: true) }
-
-      it 'returns expected hash' do
-        expect(data).to match({
-          button_text: 'Delete project',
-          restore_help_path: help_page_path('user/project/working_with_projects.md', anchor: 'restore-a-project'),
-          delayed_deletion_date: '2025-02-09',
-          form_path: project_path(project),
-          confirm_phrase: project.path_with_namespace,
-          name_with_namespace: project.name_with_namespace,
-          is_fork: 'false',
-          is_security_policy_project: "true",
-          issues_count: '0',
-          merge_requests_count: '0',
-          forks_count: '0',
-          stars_count: '0'
-        })
-      end
-    end
   end
 
   describe '#project_delete_immediately_button_data' do
     let(:base_button_data) do
       {
+        button_text: 'Delete project',
         form_path: project_path(project, permanently_delete: true),
         confirm_phrase: project.path_with_namespace,
         name_with_namespace: project.name_with_namespace,
@@ -2203,18 +2183,18 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     describe 'with default button text' do
-      subject { helper.project_delete_immediately_button_data(project) }
+      subject(:data) { helper.project_delete_immediately_button_data(project) }
 
       it 'returns expected hash' do
-        expect(subject).to match(base_button_data.merge(button_text: 'Delete project'))
+        expect(data).to match(base_button_data)
       end
     end
 
     describe 'with custom button text' do
-      subject { helper.project_delete_immediately_button_data(project, 'Delete project immediately') }
+      subject(:data) { helper.project_delete_immediately_button_data(project, 'Delete project immediately') }
 
       it 'returns expected hash' do
-        expect(subject).to match(base_button_data.merge(button_text: 'Delete project immediately'))
+        expect(data).to match(base_button_data.merge(button_text: 'Delete project immediately'))
       end
     end
   end

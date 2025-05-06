@@ -6,8 +6,8 @@ import KubernetesConnectionStatus from '~/environments/environment_details/compo
 import {
   CLUSTER_HEALTH_SUCCESS,
   CLUSTER_HEALTH_ERROR,
-  CLUSTER_STATUS_HEALTHY_TEXT,
-  CLUSTER_STATUS_UNHEALTHY_TEXT,
+  CLUSTER_HEALTH_NEEDS_ATTENTION,
+  CLUSTER_HEALTH_UNKNOWN,
   SYNC_STATUS_BADGES,
 } from '~/environments/constants';
 import {
@@ -151,8 +151,10 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
     });
 
     it.each([
-      [CLUSTER_HEALTH_SUCCESS, 'success', 'status-success', CLUSTER_STATUS_HEALTHY_TEXT],
-      [CLUSTER_HEALTH_ERROR, 'danger', 'status-alert', CLUSTER_STATUS_UNHEALTHY_TEXT],
+      [CLUSTER_HEALTH_SUCCESS, 'success', 'status-success', 'Healthy'],
+      [CLUSTER_HEALTH_ERROR, 'danger', 'status-alert', 'Unhealthy'],
+      [CLUSTER_HEALTH_NEEDS_ATTENTION, 'warning', 'status-alert', 'Needs attention'],
+      [CLUSTER_HEALTH_UNKNOWN, 'muted', 'status-waiting', 'Unknown'],
     ])(
       'when clusterHealthStatus is %s shows health badge with variant %s, icon %s and text %s',
       // eslint-disable-next-line max-params

@@ -166,7 +166,8 @@ Example response:
   "concurrent_bitbucket_import_jobs_limit": 100,
   "concurrent_bitbucket_server_import_jobs_limit": 100,
   "silent_admin_exports_enabled": false,
-  "top_level_group_creation_enabled": true
+  "top_level_group_creation_enabled": true,
+  "disable_invite_members": false
 }
 ```
 
@@ -788,6 +789,7 @@ to configure other related settings. These requirements are
 | `helm_max_packages_count` | integer     | no                                   | Maximum number of Helm packages that can be listed per channel. Must be at least 1. Default is 1000. |
 | `require_admin_two_factor_authentication` | boolean         | no | Allow administrators to require 2FA for all administrators on the instance. |
 | `secret_push_protection_available` | boolean         | no | Allow projects to enable secret push protection. This does not enable secret push protection. Ultimate only. |
+| `disable_invite_members` | boolean         | no | Disable invite members functionality for group. |
 
 ### Inactive project settings
 

@@ -55,7 +55,7 @@ you need to configure CI/CD.
 - Chat can help with best practices for a `.gitignore` file for C#:
 
   ```markdown
-  Please show a .gitignore and .gitlab-ci.yml configuration for a C# project.
+  Show a .gitignore and .gitlab-ci.yml configuration for a C# project.
   ```
 
 - If your CI/CD job fails, use Root Cause Analysis to [troubleshoot failed CI/CD jobs](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
@@ -63,7 +63,7 @@ you need to configure CI/CD.
   GitLab Duo Chat, and ask for help:
 
   ```markdown
-  Please explain the CI/CD error: The current .NET SDK does not support targeting
+  Explain the CI/CD error: The current .NET SDK does not support targeting
   .NET 8.0
   ```
 
@@ -90,7 +90,7 @@ solutions level to avoid import problems.
   ```markdown
   In C# and VS Code, how can I add a reference to a project from a test project?
 
-  Please provide the XML configuration which I can add to a C# .csproj file to add a
+  Provide the XML configuration which I can add to a C# .csproj file to add a
   reference to another project in the existing solution?
   ```
 
@@ -691,7 +691,7 @@ The refactoring examples involve the following:
 GitLab Duo Chat helped with error debugging, prefixing the error message:
 
 ```markdown
-please explain this error: undefined method `icon` for
+Explain this error: undefined method `icon` for
 ```
 
 ## Code generation prompts

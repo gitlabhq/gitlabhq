@@ -19,11 +19,6 @@ export default {
       type: String,
       required: true,
     },
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     formPath: {
       type: String,
       required: true,
@@ -100,7 +95,6 @@ export default {
       category="primary"
       variant="danger"
       data-testid="delete-button"
-      :disabled="disabled"
       @click="onButtonClick"
       >{{ buttonText }}</gl-button
     >

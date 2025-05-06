@@ -5792,6 +5792,9 @@ msgstr ""
 msgid "AiPowered|Expire conversation based on time conversation was last updated."
 msgstr ""
 
+msgid "AiPowered|Explore GitLab Duo Core"
+msgstr ""
+
 msgid "AiPowered|Features are available. However, any group, subgroup, or project can turn them off."
 msgstr ""
 
@@ -5799,6 +5802,9 @@ msgid "AiPowered|Features are not available and cannot be turned on for any grou
 msgstr ""
 
 msgid "AiPowered|Features are not available. However, any group, subgroup, or project can turn them on."
+msgstr ""
+
+msgid "AiPowered|Get started with GitLab Duo"
 msgstr ""
 
 msgid "AiPowered|Get started with GitLab Duo Core"
@@ -5919,6 +5925,9 @@ msgid "AiPowered|When you save, GitLab Duo will be turned for all groups, subgro
 msgstr ""
 
 msgid "AiPowered|When you save, GitLab Duo will be turned off for all groups, subgroups, and projects."
+msgstr ""
+
+msgid "AiPowered|You now have access to GitLab Duo Chat and Code Suggestions in supported IDEs. To start using these features, %{link1Start}install the GitLab extension in your IDE%{link1End}. If you already have this extension installed, %{link2Start}explore what you can do with GitLab Duo Core%{link2End}."
 msgstr ""
 
 msgid "Akismet"
@@ -6465,6 +6474,9 @@ msgstr ""
 msgid "Allow top-level group owners to create Service accounts."
 msgstr ""
 
+msgid "Allow unauthenticated users to use search"
+msgstr ""
+
 msgid "Allow use of licensed EE features"
 msgstr ""
 
@@ -6862,6 +6874,9 @@ msgid "An error occurred loading the tab counts."
 msgstr ""
 
 msgid "An error occurred previewing the blob"
+msgstr ""
+
+msgid "An error occurred restoring this group. Please refresh the page to try again."
 msgstr ""
 
 msgid "An error occurred when trying to display this GLQL view:"
@@ -16695,13 +16710,13 @@ msgstr ""
 msgid "Configure runner version management and registration settings."
 msgstr ""
 
+msgid "Configure search access and visibility settings for search scopes."
+msgstr ""
+
 msgid "Configure settings for Advanced Search with Elasticsearch."
 msgstr ""
 
 msgid "Configure settings for exact code search."
-msgstr ""
-
-msgid "Configure settings for global search."
 msgstr ""
 
 msgid "Configure specific limits for Files API requests that supersede the general user and IP rate limits."
@@ -22529,6 +22544,9 @@ msgstr ""
 msgid "Disable group runners"
 msgstr ""
 
+msgid "Disable inviting new members to group or project by group/project owners or project maintainers"
+msgstr ""
+
 msgid "Disable password authentication for users with an SSO identity"
 msgstr ""
 
@@ -24478,6 +24496,9 @@ msgid "Environment|Get started"
 msgstr ""
 
 msgid "Environment|Healthy"
+msgstr ""
+
+msgid "Environment|Needs attention"
 msgstr ""
 
 msgid "Environment|No Kubernetes clusters configured"
@@ -28422,9 +28443,6 @@ msgid "Given inputs not defined in the `spec` section of the included configurat
 msgstr ""
 
 msgid "Global SAML group membership lock"
-msgstr ""
-
-msgid "Global Search"
 msgstr ""
 
 msgid "Global Search is disabled for this scope"
@@ -46018,6 +46036,9 @@ msgstr ""
 msgid "Prevent environment from auto-stopping"
 msgstr ""
 
+msgid "Prevent group/project member invitations"
+msgstr ""
+
 msgid "Prevent outdated deployment jobs"
 msgstr ""
 
@@ -51201,7 +51222,7 @@ msgstr ""
 msgid "Restrict access by IP address"
 msgstr ""
 
-msgid "Restrict global search to authenticated users"
+msgid "Restrict global search to authenticated users only"
 msgstr ""
 
 msgid "Restrict membership by email domain"
@@ -56556,6 +56577,9 @@ msgstr ""
 msgid "Service accounts"
 msgstr ""
 
+msgid "ServiceAccounts|Access Tokens"
+msgstr ""
+
 msgid "ServiceAccounts|Add Service Account"
 msgstr ""
 
@@ -57414,7 +57438,7 @@ msgstr ""
 msgid "Show whitespace changes"
 msgstr ""
 
-msgid "Show wiki in global search results"
+msgid "Show wikis in global search results"
 msgstr ""
 
 msgid "Showing %d project."

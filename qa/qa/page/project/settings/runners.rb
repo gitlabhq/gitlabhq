@@ -9,12 +9,11 @@ module QA
             element 'runner-status-icon'
           end
 
-          def has_online_runner?
-            has_element?('runner-status-icon', status: 'online')
-          end
-
-          def has_offline_runner?
-            has_element?('runner-status-icon', status: 'offline')
+          def has_online_runner?(runner_id)
+            runner_element = find_element("#runner_#{runner_id}")
+            within(runner_element) do
+              has_element?('runner-status-icon', status: 'online')
+            end
           end
         end
       end

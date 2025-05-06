@@ -2,6 +2,7 @@ import {
   ACTION_EDIT,
   ACTION_DELETE,
   ACTION_LEAVE,
+  ACTION_RESTORE,
 } from '~/vue_shared/components/list_actions/constants';
 
 export const groups = [
@@ -23,7 +24,7 @@ export const groups = [
       integerValue: 10,
     },
     editPath: 'http://127.0.0.1:3000/groups/gitlab-org/-/edit',
-    availableActions: [ACTION_EDIT, ACTION_DELETE, ACTION_LEAVE],
+    availableActions: [ACTION_EDIT, ACTION_DELETE, ACTION_RESTORE, ACTION_LEAVE],
     createdAt: '2023-09-19T14:42:38Z',
     updatedAt: '2024-04-24T03:47:38Z',
     lastActivityAt: '2024-05-24T03:47:38Z',
@@ -48,7 +49,7 @@ export const groups = [
       integerValue: 20,
     },
     editPath: 'http://127.0.0.1:3000/groups/gitlab-org/test-subgroup/-/edit',
-    availableActions: [ACTION_EDIT, ACTION_DELETE, ACTION_LEAVE],
+    availableActions: [ACTION_EDIT, ACTION_DELETE, ACTION_RESTORE, ACTION_LEAVE],
     createdAt: '2023-09-19T14:42:38Z',
     updatedAt: '2024-04-24T03:47:38Z',
     lastActivityAt: '2024-05-24T03:47:38Z',

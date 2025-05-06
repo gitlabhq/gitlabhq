@@ -460,6 +460,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   # https://gitlab.com/gitlab-org/gitlab/-/issues/512210
   rule { guest & allow_guest_plus_roles_to_pull_packages_enabled }.enable :read_package
 
+  rule { can?(:admin_group_member) }.policy do
+    enable :invite_group_members
+  end
+
   def access_level(for_any_session: false)
     return GroupMember::NO_ACCESS if @user.nil?
     return GroupMember::NO_ACCESS unless user_is_user?

@@ -393,7 +393,7 @@ query {
 
 Pagination is a way of only asking for a subset of the records, such as the
 first ten. If we want more of them, we can make another request for the next
-ten from the server in the form of something like `please give me the next ten records`.
+ten from the server in the form of something like `give me the next ten records`.
 
 By default, the GitLab GraphQL API returns 100 records per page. To change this
 behavior, use `first` or `last` arguments. Both arguments take a value, so

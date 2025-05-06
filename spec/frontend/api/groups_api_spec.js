@@ -13,6 +13,7 @@ import {
   createGroup,
   getSharedGroups,
   deleteGroupMember,
+  restoreGroup,
 } from '~/api/groups_api';
 
 const mockApiVersion = 'v4';
@@ -64,6 +65,18 @@ describe('GroupsApi', () => {
 
       return deleteGroup(mockGroupId).then(() => {
         expect(axios.delete).toHaveBeenCalledWith(expectedUrl);
+      });
+    });
+  });
+
+  describe('restoreGroup', () => {
+    it('posts to the correct URL and returns the data', async () => {
+      const expectedUrl = `${mockUrlRoot}/api/${mockApiVersion}/groups/${mockGroupId}/restore`;
+
+      mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK, group);
+
+      await expect(restoreGroup(mockGroupId)).resolves.toMatchObject({
+        data: group,
       });
     });
   });

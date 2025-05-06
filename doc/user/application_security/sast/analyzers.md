@@ -118,7 +118,7 @@ These rules replace language-specific analyzers that were used in previous relea
 
 ### Vulnerability translation
 
-The Vulnerability Management system automatically moves vulnerabilities from the old analyzer to a new Semgrep-based finding when possible. For translation to the GitLab Advanced SAST analyzer, please refer to the [GitLab Advanced SAST documentation](gitlab_advanced_sast.md).
+The Vulnerability Management system automatically moves vulnerabilities from the old analyzer to a new Semgrep-based finding when possible. For translation to the GitLab Advanced SAST analyzer, refer to the [GitLab Advanced SAST documentation](gitlab_advanced_sast.md).
 
 When this happens, the system combines the vulnerabilities from each analyzer into a single record.
 

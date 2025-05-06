@@ -331,4 +331,4 @@ If you need to have a custom layout for your ViewComponent preview consider usin
 - `app/assets/javascripts/entrypoints/lookbook` for your custom JavaScript code
 - `app/assets/stylesheets/lookbook` for your custom SASS code
 
-Please note that JavaScript and SASS code has to be manually included in the layout.
+JavaScript and SASS code have to be manually included in the layout.

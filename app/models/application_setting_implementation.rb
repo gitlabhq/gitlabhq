@@ -334,7 +334,8 @@ module ApplicationSettingImplementation
         vscode_extension_marketplace_enabled: false,
         reindexing_minimum_index_size: 1.gigabyte,
         reindexing_minimum_relative_bloat_size: 0.2,
-        git_push_pipeline_limit: 4
+        git_push_pipeline_limit: 4,
+        disable_invite_members: false
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

@@ -3,6 +3,7 @@ import axios from '../lib/utils/axios_utils';
 import { buildApiUrl } from './api_utils';
 
 const GROUP_PATH = '/api/:version/groups/:id';
+const GROUP_RESTORE_PATH = '/api/:version/groups/:id/restore';
 const GROUPS_PATH = '/api/:version/groups.json';
 const GROUP_MEMBERS_PATH = '/api/:version/groups/:id/members';
 const GROUP_MEMBER_PATH = '/api/:version/groups/:id/members/:user_id';
@@ -57,6 +58,12 @@ export function deleteGroup(groupId) {
   const url = buildApiUrl(GROUP_PATH).replace(':id', groupId);
 
   return axios.delete(url);
+}
+
+export function restoreGroup(groupId) {
+  const url = buildApiUrl(GROUP_RESTORE_PATH).replace(':id', groupId);
+
+  return axios.post(url);
 }
 
 export const getGroupTransferLocations = (groupId, params = {}) => {

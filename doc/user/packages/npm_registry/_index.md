@@ -632,7 +632,7 @@ In this case, the request body contains information about all packages in your p
 
 To ensure your private package information stays within GitLab, always make sure to specify the GitLab registry when running `npm audit` commands.
 
-#### Limitations
+#### Known issues
 
 - Audit results depend on [package forwarding](#package-forwarding-to-npmjscom) being enabled. If forwarding is disabled by an administrator or group Owner, `npm audit` does not return vulnerability information.
 - The audit request includes information about all packages in your project, including private packages.

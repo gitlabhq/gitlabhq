@@ -634,8 +634,15 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     let(:organization) { build(:organization) }
 
     before do
-      allow(helper).to receive(:project_sidebar_context_data).and_return(
-        { current_user: nil, container: project, can_view_pipeline_editor: false, learn_gitlab_enabled: false })
+      project_context_data = {
+        current_user: nil,
+        container: project,
+        can_view_pipeline_editor: false,
+        learn_gitlab_enabled: false,
+        show_get_started_menu: false
+      }
+
+      allow(helper).to receive(:project_sidebar_context_data).and_return(project_context_data)
       allow(helper).to receive(:group_sidebar_context_data).and_return(
         { current_user: nil, container: group, show_discover_group_security: false })
 
@@ -754,6 +761,44 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     it 'returns empty object when project has repo but it is empty' do
       project = build(:project, :empty_repo)
       expect(helper.command_palette_data(project: project)).to eq({})
+    end
+  end
+
+  describe '#project_sidebar_context_data' do
+    # Testing this private method because:
+    # 1. This helper is just so complex that it isn't feasible to test everything through the few public methods.
+    # 2. private really isn't a thing in Rails helpers so the current private segregation is merely communicating use.
+    # 3. EE override of this method is making it public anyway due to how it is overriden in the public space.
+
+    let(:project) { build(:project) }
+
+    before do
+      allow(helper).to receive(:project_jira_issues_integration?).and_return(false)
+      allow(helper).to receive(:can_view_pipeline_editor?).with(project).and_return(true)
+      allow(helper).to receive(:show_gke_cluster_integration_callout?).with(project).and_return(false)
+    end
+
+    it 'returns the correct context data hash' do
+      user = build(:user)
+      current_ref = 'main'
+      ref_type = 'branch'
+
+      expected_hash = {
+        current_user: user,
+        container: project,
+        current_ref: current_ref,
+        ref_type: ref_type,
+        jira_issues_integration: false,
+        can_view_pipeline_editor: true,
+        show_cluster_hint: false
+      }
+
+      expect(helper.send(:project_sidebar_context_data, project, user, current_ref, ref_type: ref_type))
+        .to include(expected_hash)
+    end
+
+    it 'sets ref_type to nil when not provided' do
+      expect(helper.send(:project_sidebar_context_data, project, nil, nil)[:ref_type]).to be_nil
     end
   end
 end

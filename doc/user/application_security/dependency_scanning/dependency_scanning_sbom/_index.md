@@ -122,14 +122,14 @@ Enable the Dependency Scanning using SBOM feature with one of the following opti
 - Provide your own CycloneDX SBOM document as [a CI/CD artifact report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) from a successful pipeline.
 
 The preferred method is to use the new Dependency Scanning analyzer and this is what is documented in the next section.
-To enable the (deprecated) Gemnasium analyzer please refer to the enablement instructions for the [legacy Dependency Scanning feature](../_index.md#enabling-the-analyzer).
+To enable the (deprecated) Gemnasium analyzer, refer to the enablement instructions for the [legacy Dependency Scanning feature](../_index.md#enabling-the-analyzer).
 
 ## Enabling the analyzer
 
 The Dependency Scanning analyzer produces a CycloneDX SBOM report compatible with GitLab. If your
 application can't generate such a report, you can use the GitLab analyzer to produce one.
 
-Please share any feedback on the new Dependency Scanning analyzer in this [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523458).
+Share any feedback on the new Dependency Scanning analyzer in this [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523458).
 
 Prerequisites:
 
@@ -468,7 +468,7 @@ positives.
 
 ### Customizing behavior with the CI/CD template
 
-When using the `latest` Dependency Scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml` or [Scan Execution Policies](../../policies/scan_execution_policies.md) please use [CI/CD variables](#available-cicd-variables).
+When using the `latest` Dependency Scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml` or [Scan Execution Policies](../../policies/scan_execution_policies.md) use [CI/CD variables](#available-cicd-variables).
 
 #### Available CI/CD variables
 

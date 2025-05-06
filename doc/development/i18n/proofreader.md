@@ -82,6 +82,8 @@ are very appreciative of the work done by translators and proofreaders!
 - Korean
   - Sunjung Park - [GitLab](https://gitlab.com/sunjungp), [Crowdin](https://crowdin.com/profile/sunjungp)
   - Hwanyong Lee - [GitLab](https://gitlab.com/hwan_ajou), [Crowdin](https://crowdin.com/profile/grbear)
+- Latvian
+  - ℂ𝕠𝕠𝕠𝕝 - [GitLab](https://gitlab.com/Coool), [Crowdin](https://crowdin.com/profile/Coool)
 - Mongolian
   - Proofreaders needed.
 - Norwegian Bokmal

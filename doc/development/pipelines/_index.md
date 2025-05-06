@@ -210,7 +210,7 @@ and `rspec rspec-ee-pg16-rerun-previous-failed-tests` jobs run the failed tests 
 
 This was introduced on August 25th 2021, with <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69053>.
 
-### How it works?
+### How the failed test is re-run
 
 1. The `detect-previous-failed-tests` job (`prepare` stage) detects the test files associated with failed RSpec
    jobs from the previous MR pipeline.
@@ -574,7 +574,7 @@ before we resolve [Developer-level users no longer able to run pipelines on prot
 It's used to run `sync-as-if-jh-branch` to synchronize the dependencies
 when the merge requests changed the dependencies. See
 [How we generate the as-if-JH branch](#how-we-generate-the-as-if-jh-branch)
-for how it works.
+for its implementation.
 
 ###### Temporary GitLab JH validation project variables
 

@@ -529,6 +529,10 @@ module MergeRequestsHelper
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
                   reviewStates: %w[APPROVED UNAPPROVED UNREVIEWED REVIEW_STARTED],
+                  not: {
+                    reviewStates: %w[REQUESTED_CHANGES REVIEWED]
+                  },
+                  ignoredReviewerUsername: ::Users::Internal.duo_code_review_bot.username,
                   perPage: 10
                 }
               }

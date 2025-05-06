@@ -64,8 +64,9 @@ For more information, see [issue 477333](https://gitlab.com/gitlab-org/gitlab/-/
 {{< history >}}
 
 - Restricting global search to authenticated users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41041) in GitLab 13.4 [with a flag](../../administration/feature_flags.md) named `block_anonymous_global_searches`. Disabled by default.
-- Enabling or disabling anonymous searches [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138975) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `allow_anonymous_searches`. Enabled by default.
-- Enabling or disabling anonymous searches [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186727) in GitLab 17.11 as a UI option, instead of the `block_anonymous_global_searches` flag.
+- Allowing search for unauthenticated users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138975) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `allow_anonymous_searches`. Enabled by default.
+- Restricting global search to authenticated users [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186727) in GitLab 17.11. Feature flag `block_anonymous_global_searches` removed.
+- Allowing search for unauthenticated users [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190090) in GitLab 18.0. Feature flag `allow_anonymous_searches` removed.
 
 {{< /history >}}
 
@@ -77,16 +78,22 @@ By default, requests to `/search` and global search are available for unauthenti
 
 To restrict `/search` to authenticated users only, do one of the following:
 
-- [Restrict public visibility](../../administration/settings/visibility_and_access_controls.md#restrict-visibility-levels)
-  of the project or group.
-- Disable the [feature flag](../../administration/feature_flags.md) `allow_anonymous_searches`.
+- [Restrict visibility levels](../../administration/settings/visibility_and_access_controls.md#restrict-visibility-levels)
+  for the project or group.
+- Restrict access in the **Admin** area:
+
+  1. On the left sidebar, at the bottom, select **Admin**.
+  1. Select **Settings > Search**.
+  1. Expand **Advanced search**.
+  1. Clear the **Allow unauthenticated users to use search** checkbox.
+  1. Select **Save changes**.
 
 To restrict global search to authenticated users only:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Global search**
-1. Select **Restrict global search to authenticated users**.
+1. Expand **Visibility and access controls**
+1. Select the **Restrict global search to authenticated users only** checkbox.
 1. Select **Save changes**.
 
 ## Disable global search scopes
@@ -116,7 +123,7 @@ To disable one or more global search scopes:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Global search**.
+1. Expand **Visibility and access controls**.
 1. Clear the checkboxes for the scopes you want to disable.
 1. Select **Save changes**.
 

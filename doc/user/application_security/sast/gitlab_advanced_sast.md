@@ -251,7 +251,7 @@ For details, see [Customize rulesets](customize_rulesets.md#disable-predefined-g
 
 ## Request source code of LGPL-licensed components in GitLab Advanced SAST
 
-To request information about the source code of LGPL-licensed components in GitLab Advanced SAST, please
+To request information about the source code of LGPL-licensed components in GitLab Advanced SAST,
 [contact GitLab Support](https://about.gitlab.com/support/).
 
 To ensure a quick response, include the GitLab Advanced SAST analyzer version in your request.

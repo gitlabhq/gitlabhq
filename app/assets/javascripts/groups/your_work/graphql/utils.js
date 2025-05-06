@@ -13,6 +13,7 @@ export const formatGroup = (group) => ({
   createdAt: group.created_at,
   updatedAt: group.updated_at,
   avatarUrl: group.avatar_url,
+  markedForDeletionOn: group.marked_for_deletion_on,
   userPermissions: {
     canLeave: group.can_leave,
     removeGroup: group.can_remove,
@@ -36,7 +37,6 @@ export const formatGroup = (group) => ({
   organizationEditPath: '',
   groupMembersCount: 0,
   isLinkedToSubscription: false,
-  markedForDeletionOn: null,
   isAdjournedDeletionEnabled: false,
   permanentDeletionDate: null,
 });

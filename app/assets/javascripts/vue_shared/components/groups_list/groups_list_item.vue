@@ -9,11 +9,7 @@ import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/visibility_level/
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { __ } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
-import {
-  ACTION_EDIT,
-  ACTION_DELETE,
-  ACTION_LEAVE,
-} from '~/vue_shared/components/list_actions/constants';
+import { ACTION_DELETE, ACTION_LEAVE } from '~/vue_shared/components/list_actions/constants';
 import {
   TIMESTAMP_TYPES,
   TIMESTAMP_TYPE_CREATED_AT,
@@ -22,7 +18,8 @@ import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
 import ListItemStat from '~/vue_shared/components/resource_lists/list_item_stat.vue';
 import { renderDeleteSuccessToast, deleteParams } from '~/vue_shared/components/groups_list/utils';
 import GroupListItemLeaveModal from '~/vue_shared/components/groups_list/group_list_item_leave_modal.vue';
-import GroupListItemPreventDeleteModal from './group_list_item_prevent_delete_modal.vue';
+import GroupListItemPreventDeleteModal from '~/vue_shared/components/groups_list/group_list_item_prevent_delete_modal.vue';
+import GroupListItemActions from '~/vue_shared/components/groups_list/group_list_item_actions.vue';
 import GroupListItemInactiveBadge from './group_list_item_inactive_badge.vue';
 
 export default {
@@ -39,6 +36,7 @@ export default {
     ListItemStat,
     GlIcon,
     GlBadge,
+    GroupListItemActions,
     GroupListItemLeaveModal,
     GroupListItemPreventDeleteModal,
     GroupListItemDeleteModal,
@@ -110,24 +108,14 @@ export default {
     groupMembersCount() {
       return numberToMetricPrefix(this.group.groupMembersCount);
     },
-    actions() {
-      return {
-        [ACTION_EDIT]: {
-          href: this.group.editPath,
-        },
-        [ACTION_DELETE]: {
-          action: this.onActionDelete,
-        },
-        [ACTION_LEAVE]: {
-          action: this.onActionLeave,
-        },
-      };
-    },
     hasActionDelete() {
       return this.group.availableActions?.includes(ACTION_DELETE);
     },
     hasActionLeave() {
       return this.group.availableActions?.includes(ACTION_LEAVE);
+    },
+    hasActions() {
+      return this.group.availableActions?.length;
     },
     hasFooterAction() {
       return this.hasActionDelete || this.hasActionLeave;
@@ -170,7 +158,6 @@ export default {
     :resource="group"
     :show-icon="showGroupIcon"
     :icon-name="groupIconName"
-    :actions="actions"
     :list-item-class="listItemClass"
     :timestamp-type="timestampType"
   >
@@ -208,6 +195,15 @@ export default {
         icon-name="users"
         :stat="groupMembersCount"
         data-testid="members-count"
+      />
+    </template>
+
+    <template v-if="hasActions" #actions>
+      <group-list-item-actions
+        :group="group"
+        @refetch="refetch"
+        @delete="onActionDelete"
+        @leave="onActionLeave"
       />
     </template>
 

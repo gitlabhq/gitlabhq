@@ -37,10 +37,10 @@ ORDER BY
 LIMIT 20 OFFSET 0
 ```
 
-In particular, note that:
+Specifically:
 
-1. We `GROUP BY issues.id` so that we can ...
-1. Use the `HAVING (COUNT(DISTINCT labels.title) = 2)` condition to ensure that
+1. `GROUP BY issues.id` groups the results by issues.
+1. `HAVING (COUNT(DISTINCT labels.title) = 2)` ensures that
    all matched issues have both labels.
 
 This is more complicated than is ideal. It makes the query construction more

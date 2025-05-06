@@ -2,6 +2,7 @@ import {
   deleteParams,
   renderDeleteSuccessToast,
   renderLeaveSuccessToast,
+  renderRestoreSuccessToast,
 } from '~/vue_shared/components/groups_list/utils';
 import toast from '~/vue_shared/plugins/global_toast';
 
@@ -64,6 +65,16 @@ describe('renderLeaveSuccessToast', () => {
     renderLeaveSuccessToast(MOCK_GROUP);
 
     expect(toast).toHaveBeenCalledWith(`Left the '${MOCK_GROUP.fullName}' group successfully.`);
+  });
+});
+
+describe('renderRestoreSuccessToast', () => {
+  it('calls toast correctly', () => {
+    renderRestoreSuccessToast(MOCK_GROUP);
+
+    expect(toast).toHaveBeenCalledWith(
+      `Group '${MOCK_GROUP.fullName}' has been successfully restored.`,
+    );
   });
 });
 

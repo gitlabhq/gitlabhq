@@ -56,7 +56,7 @@ fixed-width font:
 
 Admonition paragraphs grab the reader's attention:
 
-- `NOTE: This is a brief reference, please read the full documentation at https://asciidoctor.org/docs/.`
+- `NOTE: This is a brief reference, read the full documentation at https://asciidoctor.org/docs/.`
 - `TIP: Lists can be indented. Leading whitespace is not significant.`
 
 ## Text formatting

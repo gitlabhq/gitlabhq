@@ -259,7 +259,7 @@ func Test(t *testing.T) {
         want := TestData{}
         got := FuncUnderTest()
 
-        require.Equal(t, want, got) // note that expected value comes first, then comes the actual one ("diff" semantics)
+        require.Equal(t, want, got) // expected value comes first, then comes the actual one ("diff" semantics)
     })
 }
 ```

@@ -614,7 +614,7 @@ application code include:
 #### Patch Management
 
 GitLab documents its [Release and Maintenance Policy](../policy/maintenance.md)
-in the documentation. Prior to upgrading a GitLab instance, please review the
+in the documentation. Prior to upgrading a GitLab instance, review the
 available guidance, which can assist with [planning an upgrade](../update/plan_your_upgrade.md),
 [upgrading without downtime](../update/zero_downtime.md),
 and other [upgrade paths](../update/upgrade_paths.md).

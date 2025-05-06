@@ -322,8 +322,11 @@ class ProjectPolicy < BasePolicy
   # not.
   rule { guest | admin | organization_owner }.enable :read_project_for_iids
 
-  rule { admin }.enable :update_max_artifacts_size
-  rule { admin }.enable :read_storage_disk_path
+  rule { admin }.policy do
+    enable :update_max_artifacts_size
+    enable :read_storage_disk_path
+  end
+
   rule { can?(:read_all_resources) }.enable :read_confidential_issues
 
   rule { guest }.enable :guest_access
@@ -1115,6 +1118,10 @@ class ProjectPolicy < BasePolicy
   # with the rollout of the FF allow_guest_plus_roles_to_pull_packages
   # https://gitlab.com/gitlab-org/gitlab/-/issues/512210
   rule { can?(:guest_access) & allow_guest_plus_roles_to_pull_packages_enabled }.enable :read_package
+
+  rule { can?(:admin_project_member) }.policy do
+    enable :invite_project_members
+  end
 
   private
 

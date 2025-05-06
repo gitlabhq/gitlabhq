@@ -46,7 +46,7 @@ offer a way for customers to enable or disable features for themselves on
 GitLab.com or self-managed and can remain in the codebase as long as needed. In
 contrast users have no way to enable or disable feature flags for themselves on
 GitLab.com and only self-managed admins can change the feature flags.
-Also note that
+Also,
 [feature flags are not supported in GitLab Dedicated](../enabling_features_on_dedicated.md#feature-flags)
 which is another reason you should not use them as a replacement for settings.
 

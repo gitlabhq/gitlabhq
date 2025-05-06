@@ -1536,6 +1536,26 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'invite_group_members ability' do
+    context 'admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:invite_group_members) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.to be_disallowed(:invite_group_members) }
+      end
+    end
+
+    context 'group owner' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:invite_group_members) }
+    end
+  end
+
   describe 'register_group_runners' do
     let(:allow_runner_registration_token) { true }
 

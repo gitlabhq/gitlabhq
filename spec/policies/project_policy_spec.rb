@@ -135,6 +135,38 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  context 'invite_project_members policy' do
+    context 'admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:invite_project_members) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.to be_disallowed(:invite_project_members) }
+      end
+    end
+
+    context 'project owner' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:invite_project_members) }
+    end
+
+    context 'project maintainer' do
+      let(:current_user) { maintainer }
+
+      it { is_expected.to be_allowed(:invite_project_members) }
+    end
+
+    context 'project developer' do
+      let(:current_user) { developer }
+
+      it { is_expected.to be_disallowed(:invite_project_members) }
+    end
+  end
+
   context 'when both issues and merge requests are disabled' do
     let(:current_user) { owner }
 

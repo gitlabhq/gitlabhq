@@ -29,6 +29,14 @@ export const renderLeaveSuccessToast = (group) => {
   );
 };
 
+export const renderRestoreSuccessToast = (group) => {
+  toast(
+    sprintf(__("Group '%{group_name}' has been successfully restored."), {
+      group_name: group.fullName,
+    }),
+  );
+};
+
 export const deleteParams = (item) => {
   // If delayed deletion is disabled or the project/group is not yet marked for deletion
   if (!item.isAdjournedDeletionEnabled || !item.markedForDeletionOn) {

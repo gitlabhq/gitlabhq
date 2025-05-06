@@ -31,6 +31,10 @@ module GroupsHelper
     Ability.allowed?(current_user, :admin_group_member, group)
   end
 
+  def can_invite_group_member?(group)
+    Ability.allowed?(current_user, :invite_group_members, group)
+  end
+
   def show_prevent_inviting_groups_outside_hierarchy_setting?(group)
     group.root?
   end

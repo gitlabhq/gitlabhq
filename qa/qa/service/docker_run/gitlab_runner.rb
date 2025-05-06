@@ -65,7 +65,7 @@ module QA
         def restart
           super
 
-          wait_until_shell_command_matches("docker logs #{@name}", /Configuration loaded/)
+          wait_until_running_and_configured
         end
 
         private
@@ -157,7 +157,8 @@ module QA
         end
 
         def wait_until_running_and_configured
-          wait_until_shell_command_matches("docker logs #{@name}", /Configuration loaded/)
+          output = shell("docker logs #{@name}")
+          raise "Runner failed. Output: #{output}" unless output&.include?("Configuration loaded")
         end
       end
     end

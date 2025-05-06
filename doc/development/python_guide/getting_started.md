@@ -17,7 +17,7 @@ This guide helps non-Python developers get started with Python quickly and effic
        mise use python@3.14
        ```
 
-   - Please note that while macOS comes with Python pre-installed, it's strongly advised to install and use a separate version of Python
+   - While macOS comes with Python pre-installed, it's strongly advised to install and use a separate version of Python
 
 1. **Install Poetry** for package management:
    - Poetry is a modern, Python-specific dependency manager that simplifies packaging and dependency handling. To install it, run:
