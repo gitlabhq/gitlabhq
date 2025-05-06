@@ -1175,4 +1175,18 @@ RSpec.describe ApplicationController, feature_category: :shared do
       end
     end
   end
+
+  describe '#set_current_ip_address' do
+    controller(described_class) do
+      def index; end
+    end
+
+    it 'tracks current client IP address' do
+      ip = '192.168.1.2'
+      expect(::Gitlab::IpAddressState).to receive(:with).with(ip).once.and_call_original
+
+      controller.request.env['REMOTE_ADDR'] = ip
+      get :index
+    end
+  end
 end

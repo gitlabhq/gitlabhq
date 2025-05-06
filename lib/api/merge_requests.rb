@@ -14,7 +14,8 @@ module API
 
     allow_access_with_scope :ai_workflows, if: ->(request) do
       request.get? || request.head? ||
-        (request.put? && request.path.match?(%r{/api/v\d+/projects/\d+/merge_requests/\d+$})) # Only allow basic MR updates
+        (request.put? && request.path.match?(%r{/api/v\d+/projects/\d+/merge_requests/\d+$})) || # Only allow basic MR updates
+        (request.post? && request.path.match?(%r{/api/v\d+/projects/\d+/merge_requests$})) # Allow MR Creation
     end
 
     rescue_from ActiveRecord::QueryCanceled do |_e|

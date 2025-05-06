@@ -1323,19 +1323,27 @@
   resolved "https://registry.yarnpkg.com/@fastify/busboy/-/busboy-2.1.0.tgz#0709e9f4cb252351c609c6e6d8d6779a8d25edff"
   integrity sha512-+KpH+QxZU7O4675t3mnkQKcZZg56u+K/Ct2K+N2AZYNVK8kyeo/bI18tI8aPm3tvNNRyTWfj6s5tnGNlcbQRsA==
 
-"@floating-ui/core@^1.6.0":
-  version "1.6.9"
-  resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-1.6.9.tgz#64d1da251433019dafa091de9b2886ff35ec14e6"
-  integrity sha512-uMXCuQ3BItDUbAMhIXw7UPXRfAlOAvZzdK9BWpE60MCn+Svt3aLn9jsPTi/WNGlRUu2uI0v5S7JiIUsbsvh3fw==
+"@floating-ui/core@^1.6.0", "@floating-ui/core@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-1.7.0.tgz#1aff27a993ea1b254a586318c29c3b16ea0f4d0a"
+  integrity sha512-FRdBLykrPPA6P76GGGqlex/e7fbe0F1ykgxHYNXQsH/iTEtjMj/f9bpY5oQqbjt5VgZvgz/uKXbGuROijh3VLA==
   dependencies:
     "@floating-ui/utils" "^0.2.9"
 
-"@floating-ui/dom@1.6.13", "@floating-ui/dom@^1.0.0", "@floating-ui/dom@^1.6.13":
+"@floating-ui/dom@1.6.13":
   version "1.6.13"
   resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.6.13.tgz#a8a938532aea27a95121ec16e667a7cbe8c59e34"
   integrity sha512-umqzocjDgNRGTuO7Q8CU32dkHkECqI8ZdMZ5Swb6QAM0t5rnlrN3lGo1hdpscRd3WS8T6DKYK4ephgIH9iRh3w==
   dependencies:
     "@floating-ui/core" "^1.6.0"
+    "@floating-ui/utils" "^0.2.9"
+
+"@floating-ui/dom@1.7.0", "@floating-ui/dom@^1.0.0", "@floating-ui/dom@^1.6.13":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.7.0.tgz#f9f83ee4fee78ac23ad9e65b128fc11a27857532"
+  integrity sha512-lGTor4VlXcesUMh1cupTUTDoCxMb0V6bm3CnxHzQcw8Eaf1jQbgQX4i02fYgT0vJ82tb5MZ4CZk1LRGkktJCzg==
+  dependencies:
+    "@floating-ui/core" "^1.7.0"
     "@floating-ui/utils" "^0.2.9"
 
 "@floating-ui/react-dom@^2.0.0":
@@ -1374,12 +1382,12 @@
     core-js "^3.29.1"
     mitt "^3.0.1"
 
-"@gitlab/duo-ui@^8.14.1":
-  version "8.14.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-8.14.1.tgz#f4221bc2e504d5fa4e8ac3ea35706a52b95d180c"
-  integrity sha512-+oeV/thdbwGqKPqk8BUce6BifhWe9UMW57d6xhJ5EuFJde3V/y/urV+HlbELSXSfC601tGQLadw+hMJvpNm8UA==
+"@gitlab/duo-ui@^8.14.2":
+  version "8.14.2"
+  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-8.14.2.tgz#d6f4957924723372211e60977b8116124cdcc0ba"
+  integrity sha512-d3HrS9QdWRC9Q8aQKR3llL/eh9Gkaw/ruWKkaJ3PAIQOj74HqDGD93AwtSdIolZ6uqaEg7rHtPXBXY2r0hnCuA==
   dependencies:
-    "@floating-ui/dom" "1.6.13"
+    "@floating-ui/dom" "1.7.0"
     echarts "^5.3.2"
     iframe-resizer "^4.3.2"
     lodash "^4.17.20"

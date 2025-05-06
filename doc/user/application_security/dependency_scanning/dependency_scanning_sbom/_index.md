@@ -72,7 +72,7 @@ However, the modular aspect of this functionality allows you to select how this 
 In order to activate dependency scanning using SBOM, the provided CycloneDX SBOM document must:
 
 - Comply with [the CycloneDX specification](https://github.com/CycloneDX/specification) version `1.4`, `1.5`, or `1.6`. Online validator available on [CycloneDX Web Tool](https://cyclonedx.github.io/cyclonedx-web-tool/validate).
-- Comply with the [GitLab CycloneDX property taxonomy](../../../../development/sec/cyclonedx_property_taxonomy.md).
+- Comply with the GitLab CycloneDX property taxonomy.
 - Be uploaded as [a CI/CD artifact report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) from a successful pipeline.
 
 When using GitLab provided analyzers, these requirements are met.

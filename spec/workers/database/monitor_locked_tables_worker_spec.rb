@@ -7,6 +7,11 @@ RSpec.describe Database::MonitorLockedTablesWorker, feature_category: :cell do
   let(:tables_locker) { instance_double(Gitlab::Database::TablesLocker, lock_writes: nil) }
 
   describe '#perform' do
+    before do
+      # Needs to be disabled for this worker to lock things
+      stub_feature_flags(disallow_database_ddl_feature_flags: false)
+    end
+
     context 'when running with single database' do
       before do
         skip_if_database_exists(:ci)
@@ -162,6 +167,18 @@ RSpec.describe Database::MonitorLockedTablesWorker, feature_category: :cell do
             context 'when feature flag lock_tables_in_monitoring is disabled' do
               before do
                 stub_feature_flags(lock_tables_in_monitoring: false)
+              end
+
+              it 'does not lock the tables that need to be locked' do
+                expect(Database::LockTablesWorker).not_to receive(:perform_async)
+
+                worker.perform
+              end
+            end
+
+            context 'when feature flag disallow_database_ddl_feature_flags is enabled' do
+              before do
+                stub_feature_flags(disallow_database_ddl_feature_flags: true)
               end
 
               it 'does not lock the tables that need to be locked' do

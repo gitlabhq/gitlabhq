@@ -711,6 +711,13 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                   it_behaves_like 'pulls are allowed'
                   it_behaves_like 'pushes are allowed'
 
+                  it 'updates the token last used time and client IP on pull' do
+                    clone_get(path, **env)
+
+                    expect(access_token.reload.last_used_at).to be_present
+                    expect(access_token.reload.last_used_ips.count).to eq(1)
+                  end
+
                   it 'rejects the push attempt for read_repository scope' do
                     read_access_token = create(:personal_access_token, user: user, scopes: [:read_repository])
 

@@ -70,7 +70,7 @@ A pipeline may consist of multiple jobs, including SAST and DAST scanning. If an
 fails to finish for any reason, the security dashboard doesn't show DAST scanner output. For
 example, if the DAST job finishes but the SAST job fails, the security dashboard doesn't show DAST
 results. On failure, the analyzer outputs an
-[exit code](../../../development/integrations/secure.md#exit-code).
+exit code.
 
 {{< /alert >}}
 

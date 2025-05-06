@@ -21,7 +21,7 @@ a report containing findings. Reports adhere to the [Secure report format](#secu
 
 Analyzers integrate into GitLab using a CI job. The report produced by the analyzer is published as
 an artifact after the job is complete. GitLab ingests this report, allowing users to visualize and
-manage found vulnerabilities. For more information, see [Security Scanner Integration](../../../development/integrations/secure.md).
+manage found vulnerabilities. For more information, see Security Scanner Integration.
 
 Many GitLab analyzers follow a standard approach using Docker to run a wrapped scanner. For example,
 the image `semgrep` is an analyzer that wraps the scanner `Semgrep`.

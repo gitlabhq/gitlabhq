@@ -251,7 +251,7 @@ In Ultimate, the [SAST report file](#download-a-sast-report) is processed by Git
 A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish
 for any reason, the security dashboard does not show SAST scanner output. For example, if the SAST
 job finishes but the DAST job fails, the security dashboard does not show SAST results. On failure,
-the analyzer outputs an [exit code](../../../development/integrations/secure.md#exit-code).
+the analyzer outputs an exit code.
 
 ### Merge request widget
 
@@ -282,7 +282,7 @@ issues are marked by a symbol beside the gutter. Select the symbol to see the li
 
 ## Contribute your scanner
 
-The [Security Scanner Integration](../../../development/integrations/secure.md) documentation explains how to integrate other security scanners into GitLab.
+The Security Scanner Integration documentation explains how to integrate other security scanners into GitLab.
 
 ## Configuration
 

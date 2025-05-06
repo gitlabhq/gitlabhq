@@ -17,6 +17,12 @@ module Repositories
 
     prepend_before_action :authenticate_user, :parse_repo_path
 
+    # Make sure IP address is set before #authenticate_user evaluates policies
+    # (evaluated policies are cached, and IP enforcement in EE would never be
+    # correctly evaluated otherwise). PAT last_used_ips is also updated during
+    # authentication, which is another reason to track the client IP beforehand.
+    prepend_around_action :set_current_ip_address
+
     skip_around_action :sessionless_bypass_admin_mode!
     around_action :bypass_admin_mode!, if: :authenticated_user
 

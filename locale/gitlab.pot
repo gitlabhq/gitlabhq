@@ -5720,9 +5720,6 @@ msgstr ""
 msgid "AiPowered|Automatic Code Reviews"
 msgstr ""
 
-msgid "AiPowered|Availability"
-msgstr ""
-
 msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr ""
 
@@ -5811,12 +5808,6 @@ msgid "AiPowered|GitLab Duo Core available to all users"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Core will be available to all users in your %{plan} plan, including Chat and Code Suggestions in supported IDEs. %{eligibilityLinkStart}Eligibility requirements apply%{eligibilityLinkEnd}. By enabling GitLab Duo, you accept the %{aiLinkStart}GitLab AI functionality terms%{aiLinkEnd}."
-msgstr ""
-
-msgid "AiPowered|GitLab Duo Enterprise availability"
-msgstr ""
-
-msgid "AiPowered|GitLab Duo Pro availability"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Pro or Enterprise"

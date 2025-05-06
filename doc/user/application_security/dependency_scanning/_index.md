@@ -367,10 +367,10 @@ Dependency Scanning supports the following official
 
 The analyzers are published as Docker images, which Dependency Scanning uses to launch dedicated
 containers for each analysis. You can also integrate a custom
-[security scanner](../../../development/integrations/secure.md).
+security scanner.
 
 Each analyzer is updated as new versions of Gemnasium are released. For more information, see the
-analyzer [Release Process documentation](../../../development/sec/analyzer_development_guide.md#versioning-and-release-process).
+analyzer Release Process documentation.
 
 ### How analyzers obtain dependency information
 
@@ -945,7 +945,7 @@ dependency_scanning:
 As we have not tested all variables you may find some do work and others do not.
 If one does not work and you need it we suggest
 [submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
-or [contributing to the code](../../../development/_index.md) to enable it to be used.
+or contributing to the code to enable it to be used.
 
 ### Custom TLS certificate authority
 
@@ -1050,7 +1050,7 @@ of the dependency scanning job, named `gl-dependency-scanning-report.json`.
 
 For more details of the dependency scanning report, see:
 
-- [Security scanner integration](../../../development/integrations/secure.md).
+- Security scanner integration.
 - [Dependency scanning report schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json).
 
 ### CycloneDX Software Bill of Materials

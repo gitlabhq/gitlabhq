@@ -48,7 +48,7 @@ To create the CI/CD job:
    {{< /alert >}}
 
    For more information about template versioning, see the
-   [CI/CD documentation](../../../../../development/cicd/templates.md#latest-version).
+   CI/CD documentation.
 
 1. Add a `dast` stage to your GitLab CI/CD stages configuration.
 

@@ -331,7 +331,7 @@ To scan private images, the scanner relies on the image pull secrets (direct ref
 In GitLab agent 16.9 and later, operational container scanning:
 
 - Handles Trivy reports of up to 100 MB. For previous releases, this limit is 10 MB.
-- Is [disabled](../../../development/fips_gitlab.md#unsupported-features-in-fips-mode) when the GitLab agent runs in `fips` mode.
+- Is disabled when the GitLab agent runs in `fips` mode.
 
 ## Troubleshooting
 

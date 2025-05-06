@@ -415,7 +415,7 @@ GEM
     bullet (7.2.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
-    byebug (11.1.3)
+    byebug (12.0.0)
     capybara (3.40.0)
       addressable
       matrix
@@ -1512,9 +1512,9 @@ GEM
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    pry-byebug (3.10.1)
-      byebug (~> 11.0)
-      pry (>= 0.13, < 0.15)
+    pry-byebug (3.11.0)
+      byebug (~> 12.0)
+      pry (>= 0.13, < 0.16)
     pry-rails (0.3.11)
       pry (>= 0.13.0)
     pry-shell (0.6.4)

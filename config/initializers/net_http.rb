@@ -7,7 +7,8 @@ module Net
       def finish
         if Gitlab.config.gitlab.log_decompressed_response_bytesize > 0 &&
             @inflate.total_out > Gitlab.config.gitlab.log_decompressed_response_bytesize
-          Gitlab::AppJsonLogger.debug(message: 'net/http: response decompressed', size: @inflate.total_out)
+          Gitlab::AppJsonLogger.debug(message: 'net/http: response decompressed', size: @inflate.total_out,
+            caller: Gitlab::BacktraceCleaner.clean_backtrace(caller))
         end
 
         super

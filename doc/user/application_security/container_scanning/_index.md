@@ -221,7 +221,7 @@ variables:
     AWS_DEFAULT_REGION: <region>
 ```
 
-Authenticating to a remote registry is not supported when [FIPS mode](../../../development/fips_gitlab.md#enable-fips-mode) is enabled.
+Authenticating to a remote registry is not supported when FIPS mode is enabled.
 
 #### Report language-specific findings
 
@@ -281,8 +281,8 @@ positives.
 | `CS_IMAGE_SUFFIX`              | `""`          | Suffix added to `CS_ANALYZER_IMAGE`. If set to `-fips`, `FIPS-enabled` image is used for scan. See [FIPS-enabled images](#fips-enabled-images) for more details. |
 | `CS_QUIET`                     | `""`          | If set, this variable disables output of the [vulnerabilities table](#container-scanning-job-log-format) in the job log. [Introduced](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/merge_requests/50) in GitLab 15.1. |
 | `CS_REGISTRY_INSECURE`         | `"false"`     | Allow access to insecure registries (HTTP only). Should only be set to `true` when testing the image locally. Works with all scanners, but the registry must listen on port `80/tcp` for Trivy to work. |
-| `CS_REGISTRY_PASSWORD`         | `$CI_REGISTRY_PASSWORD` | Password for accessing a Docker registry requiring authentication. The default is only set if `$CS_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_gitlab.md#enable-fips-mode) is enabled. |
-| `CS_REGISTRY_USER`                  | `$CI_REGISTRY_USER` | Username for accessing a Docker registry requiring authentication. The default is only set if `$CS_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_gitlab.md#enable-fips-mode) is enabled. |
+| `CS_REGISTRY_PASSWORD`         | `$CI_REGISTRY_PASSWORD` | Password for accessing a Docker registry requiring authentication. The default is only set if `$CS_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when FIPS mode is enabled. |
+| `CS_REGISTRY_USER`                  | `$CI_REGISTRY_USER` | Username for accessing a Docker registry requiring authentication. The default is only set if `$CS_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when FIPS mode is enabled. |
 | `CS_SEVERITY_THRESHOLD`        | `UNKNOWN`     | Severity level threshold. The scanner outputs vulnerabilities with severity level higher than or equal to this threshold. Supported levels are `UNKNOWN`, `LOW`, `MEDIUM`, `HIGH`, and `CRITICAL`. {{< icon name="warning" >}} **[Default value changed to `MEDIUM`](https://gitlab.com/gitlab-org/gitlab/-/issues/439782)** in GitLab 17.8. |
 | `CS_TRIVY_JAVA_DB`             | `"registry.gitlab.com/gitlab-org/security-products/dependencies/trivy-java-db"` | Specify an alternate location for the [trivy-java-db](https://github.com/aquasecurity/trivy-java-db) vulnerability database. |
 | `CS_TRIVY_DETECTION_PRIORITY` | `"precise"` | Scan using the defined Trivy [detection priority](https://trivy.dev/latest/docs/scanner/vulnerability/#detection-priority). The following values are allowed: `precise` or `comprehensive`. |
@@ -328,7 +328,7 @@ The `-fips` flag is automatically added to `CS_ANALYZER_IMAGE` when FIPS mode is
 
 {{< /alert >}}
 
-Container scanning of images in authenticated registries is not supported when [FIPS mode](../../../development/fips_gitlab.md#enable-fips-mode)
+Container scanning of images in authenticated registries is not supported when FIPS mode
 is enabled. When `CI_GITLAB_FIPS_MODE` is `"true"`, and `CS_REGISTRY_USER` or `CS_REGISTRY_PASSWORD` is set,
 the analyzer exits with an error and does not perform the scan.
 
@@ -641,7 +641,7 @@ Also:
 - Consider creating credentials with read-only permissions and rotating them regularly if the
   options aren't selected.
 
-Scanning images in external private registries is not supported when [FIPS mode](../../../development/fips_gitlab.md#enable-fips-mode) is enabled.
+Scanning images in external private registries is not supported when FIPS mode is enabled.
 
 #### Create and use a Trivy Java database mirror
 
@@ -712,7 +712,7 @@ These reports must follow a format defined in the
 - [Latest schema for the container scanning report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json).
 - [Example container scanning report](https://gitlab.com/gitlab-examples/security/security-reports/-/blob/master/samples/container-scanning.json)
 
-For more information, see [Security scanner integration](../../../development/integrations/secure.md).
+For more information, see Security scanner integration.
 
 ### CycloneDX Software Bill of Materials
 
