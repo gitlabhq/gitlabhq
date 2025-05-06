@@ -14,7 +14,7 @@ import axios from '~/lib/utils/axios_utils';
 import TabView from '~/groups_projects/components/tab_view.vue';
 import { formatProjects } from '~/projects/your_work/utils';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
-import ProjectsListEmptyState from '~/vue_shared/components/projects_list/projects_list_empty_state.vue';
+import ResourceListsEmptyState from '~/vue_shared/components/resource_lists/empty_state.vue';
 import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { createAlert } from '~/alert';
@@ -90,7 +90,7 @@ describe('TabView', () => {
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
   const findKeysetPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findOffsetPagination = () => wrapper.findComponent(GlPagination);
-  const findEmptyState = () => wrapper.findComponent(ProjectsListEmptyState);
+  const findEmptyState = () => wrapper.findComponent(ResourceListsEmptyState);
 
   beforeEach(() => {
     mockAxios = new MockAdapter(axios);

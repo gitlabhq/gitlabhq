@@ -95,6 +95,14 @@ input LocalCustomFieldInput {
   selectedOptions: [LocalCustomFieldSelectOptionInput]
 }
 
+input LocalStatusInput {
+  id: ID!
+  name: String!
+  iconName: String
+  color: String
+  position: Int
+}
+
 input LocalUpdateNewWorkItemInput {
   fullPath: String!
   workItemType: String!
@@ -111,6 +119,7 @@ input LocalUpdateNewWorkItemInput {
   crmContacts: [LocalCrmContactsInput]
   weight: Int
   customField: LocalCustomFieldInput
+  status: LocalStatusInput
 }
 
 extend type Mutation {

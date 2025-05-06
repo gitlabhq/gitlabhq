@@ -14,23 +14,55 @@ describe('Empty result', () => {
 
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
-  it('renders empty search state', () => {
-    createComponent({ type: 'search' });
+  describe('when searchMinimumLength prop is not passed', () => {
+    it('renders empty search state', () => {
+      createComponent({ type: 'search' });
 
-    expect(findEmptyState().props()).toMatchObject({
-      svgPath: emptyStateSvgPath,
-      title: 'No results found',
-      description: 'Edit your search and try again.',
+      expect(findEmptyState().props()).toMatchObject({
+        svgPath: emptyStateSvgPath,
+        title: 'No results found',
+        description: 'Edit your search and try again.',
+      });
+    });
+
+    it('renders empty filter state', () => {
+      createComponent({ type: 'filter' });
+
+      expect(findEmptyState().props()).toMatchObject({
+        svgPath: emptyStateSvgPath,
+        title: 'No results found',
+        description: 'To widen your search, change or remove filters above.',
+      });
     });
   });
 
-  it('renders empty filter state', () => {
-    createComponent({ type: 'filter' });
+  describe('when searchMinimumLength prop is passed', () => {
+    describe('with search >= minimum search length', () => {
+      beforeEach(() => {
+        createComponent({ search: 'tes', searchMinimumLength: 3 });
+      });
 
-    expect(findEmptyState().props()).toMatchObject({
-      svgPath: emptyStateSvgPath,
-      title: 'No results found',
-      description: 'To widen your search, change or remove filters above.',
+      it('renders empty state correctly', () => {
+        expect(findEmptyState().props()).toMatchObject({
+          title: 'No results found',
+          description: 'Edit your search and try again.',
+          svgPath: emptyStateSvgPath,
+        });
+      });
+    });
+
+    describe('with search < minimum search length', () => {
+      beforeEach(() => {
+        createComponent({ search: 'te', searchMinimumLength: 3 });
+      });
+
+      it('renders empty state correctly', () => {
+        expect(findEmptyState().props()).toMatchObject({
+          title: 'No results found',
+          description: 'Search must be at least 3 characters.',
+          svgPath: emptyStateSvgPath,
+        });
+      });
     });
   });
 });

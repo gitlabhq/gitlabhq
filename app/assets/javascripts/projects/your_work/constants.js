@@ -1,6 +1,9 @@
+import emptyStateProjectsSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-projects-md.svg?url';
 import { __, s__ } from '~/locale';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
-import ProjectsListEmptyState from '~/vue_shared/components/projects_list/projects_list_empty_state.vue';
+import ResourceListsEmptyState, {
+  TYPES,
+} from '~/vue_shared/components/resource_lists/empty_state.vue';
 import { formatProjects } from '~/projects/your_work/utils';
 import projectsQuery from './graphql/queries/projects.query.graphql';
 import userProjectsQuery from './graphql/queries/user_projects.query.graphql';
@@ -16,7 +19,12 @@ const baseTab = {
     listItemClass: 'gl-px-5',
     showProjectIcon: true,
   },
-  emptyStateComponent: ProjectsListEmptyState,
+  emptyStateComponent: ResourceListsEmptyState,
+  emptyStateComponentProps: {
+    svgPath: emptyStateProjectsSvgPath,
+    searchMinimumLength: 3,
+    type: TYPES.filter,
+  },
   formatter: formatProjects,
 };
 
@@ -29,6 +37,7 @@ export const CONTRIBUTED_TAB = {
   queryPath: 'currentUser.contributedProjects',
   countsQueryPath: 'currentUser.contributed',
   emptyStateComponentProps: {
+    ...baseTab.emptyStateComponentProps,
     title: s__("Projects|You haven't contributed to any projects yet."),
     description: s__(
       'Projects|Projects where you contribute code, create issues or epics, or participate in discussions will appear here.',
@@ -46,6 +55,7 @@ export const STARRED_TAB = {
   queryPath: 'currentUser.starredProjects',
   countsQueryPath: 'currentUser.starred',
   emptyStateComponentProps: {
+    ...baseTab.emptyStateComponentProps,
     title: s__("Projects|You haven't starred any projects yet."),
     description: s__(
       'Projects|Visit a project and select the star icon to save projects you want to find later.',
@@ -63,6 +73,7 @@ export const PERSONAL_TAB = {
   queryPath: 'projects',
   countsQueryPath: 'personal',
   emptyStateComponentProps: {
+    ...baseTab.emptyStateComponentProps,
     title: s__("Projects|You don't have any personal projects yet."),
   },
 };
@@ -76,6 +87,7 @@ export const MEMBER_TAB = {
   queryPath: 'projects',
   countsQueryPath: 'member',
   emptyStateComponentProps: {
+    ...baseTab.emptyStateComponentProps,
     title: s__("Projects|You aren't a member of any projects yet."),
   },
 };
@@ -89,6 +101,7 @@ export const INACTIVE_TAB = {
   queryPath: 'projects',
   countsQueryPath: 'inactive',
   emptyStateComponentProps: {
+    ...baseTab.emptyStateComponentProps,
     title: s__("Projects|You don't have any inactive projects."),
     description: s__('Projects|Projects that are archived or pending deletion will appear here.'),
   },

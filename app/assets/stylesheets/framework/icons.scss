@@ -49,60 +49,6 @@ a.ci-icon:focus {
   @apply gl-focus;
 }
 
-:root {
-  --ci-icon-success-background-color: var(--gl-color-green-100);
-  --ci-icon-success-text-color: var(--gl-color-green-700);
-  --ci-icon-success-icon-color: var(--gl-color-neutral-0);
-  --ci-icon-success-icon-background-color: var(--gl-color-green-500);
-
-  --ci-icon-warning-background-color: var(--gl-color-orange-100);
-  --ci-icon-warning-text-color: var(--gl-color-orange-700);
-  --ci-icon-warning-icon-color: var(--gl-color-neutral-0);
-  --ci-icon-warning-icon-background-color: var(--gl-color-orange-500);
-
-  --ci-icon-danger-background-color: var(--gl-color-red-100);
-  --ci-icon-danger-text-color: var(--gl-color-red-700);
-  --ci-icon-danger-icon-color: var(--gl-color-neutral-0);
-  --ci-icon-danger-icon-background-color: var(--gl-color-red-500);
-
-  --ci-icon-info-background-color: var(--gl-color-blue-100);
-  --ci-icon-info-text-color: var(--gl-color-blue-700);
-  --ci-icon-info-icon-color: var(--gl-color-blue-500);
-  --ci-icon-info-icon-background-color: var(--gl-color-neutral-0);
-
-  --ci-icon-neutral-background-color: var(--gl-color-neutral-100);
-  --ci-icon-neutral-text-color: var(--gl-color-neutral-700);
-  --ci-icon-neutral-icon-color: var(--gl-color-neutral-500);
-  --ci-icon-neutral-icon-background-color: var(--gl-color-neutral-0);
-}
-
-:root.gl-dark {
-  --ci-icon-success-background-color: var(--gl-color-green-300);
-  --ci-icon-success-text-color: var(--gl-color-green-900);
-  --ci-icon-success-icon-color: var(--gl-color-green-300);
-  --ci-icon-success-icon-background-color: var(--gl-color-green-900);
-
-  --ci-icon-warning-background-color: var(--gl-color-orange-300);
-  --ci-icon-warning-text-color: var(--gl-color-orange-900);
-  --ci-icon-warning-icon-color: var(--gl-color-orange-300);
-  --ci-icon-warning-icon-background-color: var(--gl-color-orange-900);
-
-  --ci-icon-danger-background-color: var(--gl-color-red-300);
-  --ci-icon-danger-text-color: var(--gl-color-red-900);
-  --ci-icon-danger-icon-color: var(--gl-color-red-300);
-  --ci-icon-danger-icon-background-color: var(--gl-color-red-900);
-
-  --ci-icon-info-background-color: var(--gl-color-blue-300);
-  --ci-icon-info-text-color: var(--gl-color-blue-900);
-  --ci-icon-info-icon-color: var(--gl-color-blue-300);
-  --ci-icon-info-icon-background-color: var(--gl-color-blue-900);
-
-  --ci-icon-neutral-background-color: var(--gl-color-neutral-300);
-  --ci-icon-neutral-text-color: var(--gl-color-neutral-900);
-  --ci-icon-neutral-icon-color: var(--gl-color-neutral-300);
-  --ci-icon-neutral-icon-background-color: var(--gl-color-neutral-900);
-}
-
 .ci-icon {
   border-radius: 20px;
 

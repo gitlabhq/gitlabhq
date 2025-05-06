@@ -27,6 +27,7 @@ import {
   CUSTOM_FIELDS_TYPE_SINGLE_SELECT,
   CUSTOM_FIELDS_TYPE_MULTI_SELECT,
   CUSTOM_FIELDS_TYPE_TEXT,
+  WIDGET_TYPE_STATUS,
 } from '../constants';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 
@@ -109,6 +110,7 @@ export const updateNewWorkItemCache = (input, cache) => {
     milestone,
     parent,
     customField,
+    status,
   } = input;
 
   try {
@@ -170,6 +172,11 @@ export const updateNewWorkItemCache = (input, cache) => {
             widgetType: WIDGET_TYPE_HIERARCHY,
             newData: parent,
             nodePath: 'parent',
+          },
+          {
+            widgetType: WIDGET_TYPE_STATUS,
+            newData: status,
+            nodePath: 'status',
           },
         ];
 

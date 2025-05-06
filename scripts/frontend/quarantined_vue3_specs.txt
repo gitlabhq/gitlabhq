@@ -47,7 +47,6 @@ ee/spec/frontend/projects/settings/branch_rules/components/view/index_spec.js
 ee/spec/frontend/projects/settings/components/shared_runners_toggle_spec.js
 ee/spec/frontend/related_items_tree/components/related_items_tree_body_spec.js
 ee/spec/frontend/related_items_tree/components/tree_root_spec.js
-ee/spec/frontend/requirements/components/requirement_item_spec.js
 ee/spec/frontend/roadmap/components/roadmap_shell_spec.js
 ee/spec/frontend/roles_and_permissions/components/role_selector_spec.js
 ee/spec/frontend/sidebar/components/sidebar_dropdown_widget_spec.js

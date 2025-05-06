@@ -4280,7 +4280,10 @@ msgstr ""
 msgid "AdminSelfHostedModels|Apply to all %{mainFeature} sub-features"
 msgstr ""
 
-msgid "AdminSelfHostedModels|Assign a setting to the %{subFeatureTitle} sub-feature before applying to all"
+msgid "AdminSelfHostedModels|Assign a model to enable this feature"
+msgstr ""
+
+msgid "AdminSelfHostedModels|Assign a model to the %{subFeatureTitle} sub-feature before applying to all"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Create self-hosted model"
@@ -26426,6 +26429,9 @@ msgstr ""
 msgid "Filter list for %{title}"
 msgstr ""
 
+msgid "Filter or search (3 character minimum)"
+msgstr ""
+
 msgid "Filter parameters are not valid. Make sure that the end date is after the start date."
 msgstr ""
 
@@ -48534,9 +48540,6 @@ msgstr ""
 msgid "Projects|Delete %{nameWithNamespace}"
 msgstr ""
 
-msgid "Projects|Projects are where you can store your code, access issues, wiki, and other features of GitLab."
-msgstr ""
-
 msgid "Projects|Projects that are archived or pending deletion will appear here."
 msgstr ""
 
@@ -48556,9 +48559,6 @@ msgid "Projects|You don't have any inactive projects."
 msgstr ""
 
 msgid "Projects|You don't have any personal projects yet."
-msgstr ""
-
-msgid "Projects|You don't have any projects yet."
 msgstr ""
 
 msgid "Projects|You haven't contributed to any projects yet."
@@ -53425,7 +53425,7 @@ msgstr ""
 msgid "Search milestones"
 msgstr ""
 
-msgid "Search must be at least 3 characters."
+msgid "Search must be at least %{searchMinimumLength} characters."
 msgstr ""
 
 msgid "Search or filter commits"

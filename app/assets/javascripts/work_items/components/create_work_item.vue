@@ -59,6 +59,7 @@ import {
   CUSTOM_FIELDS_TYPE_NUMBER,
   CUSTOM_FIELDS_TYPE_TEXT,
   WORK_ITEM_TYPE_NAME_ISSUE,
+  WIDGET_TYPE_STATUS,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
@@ -103,6 +104,7 @@ export default {
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
     WorkItemCustomFields: () =>
       import('ee_component/work_items/components/work_item_custom_fields.vue'),
+    WorkItemStatus: () => import('ee_component/work_items/components/work_item_status.vue'),
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath', 'groupPath'],
@@ -467,8 +469,14 @@ export default {
     workItemId() {
       return this.workItem?.id;
     },
+    workItemStatus() {
+      return findWidget(WIDGET_TYPE_STATUS, this.workItem);
+    },
     workItemIid() {
       return this.workItem?.iid;
+    },
+    workItemStatusId() {
+      return this.workItemStatus?.status?.id;
     },
     shouldIncludeRelatedItem() {
       return (
@@ -515,6 +523,7 @@ export default {
         Boolean(this.workItemDueDateIsFixed) ||
         Boolean(this.workItemStartDateIsFixed) ||
         Boolean(this.workItemIterationId) ||
+        Boolean(this.workItemStatusId) ||
         isCustomFieldsFilled
       );
     },
@@ -523,6 +532,9 @@ export default {
     },
     workItemCustomFields() {
       return findWidget(WIDGET_TYPE_CUSTOM_FIELDS, this.workItem)?.customFieldValues ?? null;
+    },
+    showWorkItemStatus() {
+      return this.workItemStatus && this.glFeatures.workItemStatusFeatureFlag;
     },
   },
   watch: {
@@ -704,6 +716,12 @@ export default {
       if (this.isWidgetSupported(WIDGET_TYPE_CRM_CONTACTS)) {
         workItemCreateInput.crmContactsWidget = {
           contactIds: this.workItemCrmContactIds,
+        };
+      }
+
+      if (this.isWidgetSupported(WIDGET_TYPE_STATUS)) {
+        workItemCreateInput.statusWidget = {
+          status: this.workItemStatusId,
         };
       }
 
@@ -946,6 +964,17 @@ export default {
             class="work-item-overview-right-sidebar gl-px-3"
             :class="{ 'is-modal': true }"
           >
+            <work-item-status
+              v-if="showWorkItemStatus"
+              class="work-item-attributes-item"
+              :can-update="canUpdate"
+              :full-path="selectedProjectFullPath"
+              :is-group="isGroup"
+              :work-item-id="workItemId"
+              :work-item-iid="workItemIid"
+              :work-item-type="selectedWorkItemTypeName"
+              @error="$emit('error', $event)"
+            />
             <work-item-assignees
               v-if="workItemAssignees"
               class="js-assignee work-item-attributes-item"

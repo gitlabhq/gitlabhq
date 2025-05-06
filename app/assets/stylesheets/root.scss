@@ -1,0 +1,122 @@
+/* stylelint-disable gitlab/no-gl-class */
+/* stylelint-disable length-zero-no-unit */
+:root {
+  --performance-bar-height: 0px;
+  --system-header-height: 0px;
+  --header-height: 0px;
+  --top-bar-height: 0px;
+  --broadcast-message-height: 0px;
+  --system-footer-height: 0px;
+  --mr-review-bar-height: 0px;
+  --application-header-height: calc(
+    var(--header-height) +
+    var(--system-header-height) +
+    var(--performance-bar-height) +
+    var(--top-bar-height)
+  );
+  --application-bar-left: 0px;
+  --application-bar-right: 0px;
+
+  /**
+   * CI icon styles
+   * Discussion: #issue
+   * Owner: Verify: Pipeline execution
+   */
+  --ci-icon-success-background-color: var(--gl-color-green-100);
+  --ci-icon-success-text-color: var(--gl-color-green-700);
+  --ci-icon-success-icon-color: var(--gl-color-neutral-0);
+  --ci-icon-success-icon-background-color: var(--gl-color-green-500);
+
+  --ci-icon-warning-background-color: var(--gl-color-orange-100);
+  --ci-icon-warning-text-color: var(--gl-color-orange-700);
+  --ci-icon-warning-icon-color: var(--gl-color-neutral-0);
+  --ci-icon-warning-icon-background-color: var(--gl-color-orange-500);
+
+  --ci-icon-danger-background-color: var(--gl-color-red-100);
+  --ci-icon-danger-text-color: var(--gl-color-red-700);
+  --ci-icon-danger-icon-color: var(--gl-color-neutral-0);
+  --ci-icon-danger-icon-background-color: var(--gl-color-red-500);
+
+  --ci-icon-info-background-color: var(--gl-color-blue-100);
+  --ci-icon-info-text-color: var(--gl-color-blue-700);
+  --ci-icon-info-icon-color: var(--gl-color-blue-500);
+  --ci-icon-info-icon-background-color: var(--gl-color-neutral-0);
+
+  --ci-icon-neutral-background-color: var(--gl-color-neutral-100);
+  --ci-icon-neutral-text-color: var(--gl-color-neutral-700);
+  --ci-icon-neutral-icon-color: var(--gl-color-neutral-500);
+  --ci-icon-neutral-icon-background-color: var(--gl-color-neutral-0);
+
+  &.gl-dark {
+    --ci-icon-success-background-color: var(--gl-color-green-300);
+    --ci-icon-success-text-color: var(--gl-color-green-900);
+    --ci-icon-success-icon-color: var(--gl-color-green-300);
+    --ci-icon-success-icon-background-color: var(--gl-color-green-900);
+
+    --ci-icon-warning-background-color: var(--gl-color-orange-300);
+    --ci-icon-warning-text-color: var(--gl-color-orange-900);
+    --ci-icon-warning-icon-color: var(--gl-color-orange-300);
+    --ci-icon-warning-icon-background-color: var(--gl-color-orange-900);
+
+    --ci-icon-danger-background-color: var(--gl-color-red-300);
+    --ci-icon-danger-text-color: var(--gl-color-red-900);
+    --ci-icon-danger-icon-color: var(--gl-color-red-300);
+    --ci-icon-danger-icon-background-color: var(--gl-color-red-900);
+
+    --ci-icon-info-background-color: var(--gl-color-blue-300);
+    --ci-icon-info-text-color: var(--gl-color-blue-900);
+    --ci-icon-info-icon-color: var(--gl-color-blue-300);
+    --ci-icon-info-icon-background-color: var(--gl-color-blue-900);
+
+    --ci-icon-neutral-background-color: var(--gl-color-neutral-300);
+    --ci-icon-neutral-text-color: var(--gl-color-neutral-900);
+    --ci-icon-neutral-icon-color: var(--gl-color-neutral-300);
+    --ci-icon-neutral-icon-background-color: var(--gl-color-neutral-900);
+  }
+
+  /**
+   * Diff styles
+   * Discussion: #issue
+   * Owner: TBD
+   */
+  --diff-warning-text-color: var(--gl-feedback-warning-text-color);
+  --diff-warning-background-color: var(--gl-feedback-warning-background-color);
+
+  &.gl-dark {
+    --diff-warning-background-color: #453522;
+  }
+
+  /**
+   * Timeline entry note styles
+   * Discussion: #issue
+   * Owner: TBD
+   */
+  --timeline-entry-draft-note-background-color: var(--gl-color-orange-50);
+  --timeline-entry-internal-note-background-color: var(--gl-color-orange-50);
+  --timeline-entry-target-background-color : var(--gl-color-blue-50);
+
+  &.gl-dark {
+    --timeline-entry-draft-note-background-color: #453522;
+    --timeline-entry-internal-note-background-color: #453522;
+    --timeline-entry-target-background-color : #2A394E;
+  }
+
+  /**
+   * Contribution graph styles on user profile
+   * Discussion: #issue
+   * Owner: Organizations
+   */
+  --user-contribution-graph-cell-level-0: var(--gl-color-neutral-50);
+  --user-contribution-graph-cell-level-1: var(--gl-color-data-blue-100);
+  --user-contribution-graph-cell-level-2: var(--gl-color-data-blue-400);
+  --user-contribution-graph-cell-level-3: var(--gl-color-data-blue-600);
+  --user-contribution-graph-cell-level-4: var(--gl-color-data-blue-900);
+
+  &.gl-dark {
+    --user-contribution-graph-cell-level-0: var(--gl-color-neutral-900);
+    --user-contribution-graph-cell-level-1: var(--gl-color-data-blue-900);
+    --user-contribution-graph-cell-level-2: var(--gl-color-data-blue-600);
+    --user-contribution-graph-cell-level-3: var(--gl-color-data-blue-400);
+    --user-contribution-graph-cell-level-4: var(--gl-color-data-blue-100);
+  }
+}

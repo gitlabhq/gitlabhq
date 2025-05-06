@@ -1,14 +1,3 @@
-:root {
-  --timeline-entry-internal-note-background-color: var(--gl-color-orange-50);
-  --timeline-entry-target-background-color : var(--gl-color-blue-50);
-}
-
-// stylelint-disable-next-line gitlab/no-gl-class
-:root.gl-dark {
-  --timeline-entry-internal-note-background-color: #453522;
-  --timeline-entry-target-background-color : #2A394E;
-}
-
 .timeline {
   margin: 0;
   padding: 0;

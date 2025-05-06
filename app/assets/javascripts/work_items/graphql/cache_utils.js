@@ -28,6 +28,7 @@ import {
   WIDGET_TYPE_LINKED_ITEMS,
   STATE_CLOSED,
   WIDGET_TYPE_CUSTOM_FIELDS,
+  WIDGET_TYPE_STATUS,
 } from 'ee_else_ce/work_items/constants';
 import {
   findCurrentUserTodosWidget,
@@ -315,6 +316,7 @@ export const setNewWorkItemCache = async (
   // eslint-disable-next-line max-params
 ) => {
   const workItemAttributesWrapperOrder = [
+    WIDGET_TYPE_STATUS,
     WIDGET_TYPE_ASSIGNEES,
     WIDGET_TYPE_LABELS,
     WIDGET_TYPE_WEIGHT,
@@ -487,6 +489,14 @@ export const setNewWorkItemCache = async (
           color: '#1068bf',
           textColor: '#FFFFFF',
           __typename: 'WorkItemWidgetColor',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_STATUS) {
+        widgets.push({
+          type: 'STATUS',
+          status: null,
+          __typename: 'WorkItemWidgetStatus',
         });
       }
 

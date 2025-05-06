@@ -77,7 +77,7 @@ export default {
     searchInputPlaceholder: {
       type: String,
       required: false,
-      default: __('Search or filter results…'),
+      default: __('Filter or search (3 character minimum)'),
     },
   },
   computed: {

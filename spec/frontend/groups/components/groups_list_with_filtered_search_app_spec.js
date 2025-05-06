@@ -59,6 +59,7 @@ describe('GroupsListWithFilteredSearch', () => {
         text: SORTING_ITEM_UPDATED.label,
       },
       isAscending: true,
+      searchInputPlaceholder: 'Search',
     });
   });
 

@@ -142,6 +142,7 @@ export default {
       :is-ascending="isAscending"
       :sort-options="sortOptions"
       :active-sort-option="activeSortOption"
+      :search-input-placeholder="__('Search')"
       @filter="onFilter"
       @sort-direction-change="onSortDirectionChange"
       @sort-by-change="onSortByChange"
