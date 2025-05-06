@@ -852,8 +852,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
 
     context 'when a user cannot read cross project' do
       it 'only returns work items within the same project' do
-        allow(Ability).to receive(:allowed?).with(user, :read_all_resources, :global).and_call_original
-        expect(Ability).to receive(:allowed?).with(user, :read_cross_project).and_return(false)
+        allow(Gitlab::ExternalAuthorization).to receive_messages(perform_check?: true, access_allowed?: true)
 
         expect(authorized_item_a.linked_work_items(user)).to contain_exactly(authorized_item_b)
       end

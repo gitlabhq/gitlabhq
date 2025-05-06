@@ -355,6 +355,8 @@ module ApplicationSettingsHelper
       :max_attachment_size,
       :max_decompressed_archive_size,
       :max_export_size,
+      :max_github_response_size_limit,
+      :max_github_response_json_value_count,
       :max_import_size,
       :max_import_remote_file_size,
       :max_login_attempts,

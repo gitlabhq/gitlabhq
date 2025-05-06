@@ -642,6 +642,8 @@ class ApplicationSetting < ApplicationRecord
       :jobs_per_stage_page_size,
       :max_decompressed_archive_size,
       :max_export_size,
+      :max_github_response_size_limit,
+      :max_github_response_json_value_count,
       :max_import_remote_file_size,
       :max_import_size,
       :max_pages_custom_domains_per_project,
@@ -708,6 +710,10 @@ class ApplicationSetting < ApplicationRecord
     users_api_limit_gpg_keys: [:integer, { default: 120 }],
     users_api_limit_gpg_key: [:integer, { default: 120 }]
 
+  jsonb_accessor :response_limits,
+    max_github_response_size_limit: [:integer, { default: 8 }],
+    max_github_response_json_value_count: [:integer, { default: 250_000 }]
+
   jsonb_accessor :service_ping_settings,
     gitlab_environment_toolkit_instance: [:boolean, { default: false }]
 
@@ -741,6 +747,8 @@ class ApplicationSetting < ApplicationRecord
   validates :transactional_emails, json_schema: { filename: "application_setting_transactional_emails" }
 
   validates :rate_limits, json_schema: { filename: "application_setting_rate_limits" }
+
+  validates :response_limits, json_schema: { filename: "application_setting_response_limits" }
 
   validates :importers, json_schema: { filename: "application_setting_importers" }
 

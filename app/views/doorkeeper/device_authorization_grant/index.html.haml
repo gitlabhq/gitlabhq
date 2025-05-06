@@ -7,7 +7,7 @@
         .form-group.row
           .col-lg-8.col-sm-10
             = f.label :user_code
-            = text_field_tag :user_code, params[:user_code]
+            = text_field_tag :user_code, params[:user_code], id: nil
         .div
           = render Pajamas::ButtonComponent.new(type: :submit,
             variant: :confirm,

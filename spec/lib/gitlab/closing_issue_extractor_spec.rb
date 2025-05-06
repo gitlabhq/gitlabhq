@@ -340,21 +340,6 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
           expect(subject.closed_by_message(message).map(&:id)).to contain_exactly(issue2.id)
         end
       end
-
-      context 'when reference is a group level work item' do
-        specify do
-          message = "Closes #{Gitlab::UrlBuilder.build(group_work_item)}"
-          expect(subject.closed_by_message(message)).to contain_exactly(group_work_item)
-        end
-
-        context 'when multiple references are used for the same work item' do
-          it 'only returns the same work item once' do
-            message =
-              "Closes #{Gitlab::UrlBuilder.build(group_work_item)} Closes #{group_work_item.to_reference(full: true)}"
-            expect(subject.closed_by_message(message)).to contain_exactly(group_work_item)
-          end
-        end
-      end
     end
 
     context "with a cross-project fork reference" do

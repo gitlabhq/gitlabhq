@@ -29,8 +29,8 @@ RSpec.shared_examples 'Secure Device OAuth Authorizations' do
       end
     end
 
-    it 'does not render authorize button with id' do
-      expect(find_by_testid('authorization-button')[:id].nil?).to be_truthy
+    it 'renders a form with input elements and authorize button without id' do
+      expect(page).not_to have_css('form [id]')
     end
   end
 
@@ -39,7 +39,7 @@ RSpec.shared_examples 'Secure Device OAuth Authorizations' do
       find_by_testid('authorization-button').click
     end
 
-    it 'renders confirmatoin button without id' do
+    it 'renders confirmation button without id' do
       within_testid('authorization-button') do
         expect(page).to have_content(format(_('Confirm')))
       end
