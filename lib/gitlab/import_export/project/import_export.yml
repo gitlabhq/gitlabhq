@@ -1117,6 +1117,13 @@ excluded_attributes:
     - :icon_name
     - :namespace_id
     - :updated_at
+  current_status:
+    - :id
+    - :namespace_id
+    - :work_item_id
+    - :system_defined_status_id
+    - :custom_status_id
+    - :updated_at
   note_diff_file:
     - :id
     - :diff_note_id

@@ -29,3 +29,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Graphql::Pagination::Connections.prepend_mod
