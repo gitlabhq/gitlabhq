@@ -1075,6 +1075,41 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           end
         end
 
+        context 'when image has kubernetes options' do
+          let(:job) { create(:ci_build, :pending, :queued, pipeline: pipeline, options: options) }
+
+          let(:options) do
+            {
+              image: {
+                name: 'ruby',
+                executor_opts: {
+                  kubernetes: {
+                    user: '1001'
+                  }
+                }
+              }
+            }
+          end
+
+          it 'returns the image with docker options' do
+            request_job
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response).to include(
+              'id' => job.id,
+              'image' => { 'name' => 'ruby',
+                           'executor_opts' => {
+                             'kubernetes' => {
+                               'user' => '1001'
+                             }
+                           },
+                           'pull_policy' => nil,
+                           'entrypoint' => nil,
+                           'ports' => [] }
+            )
+          end
+        end
+
         context 'when image has pull_policy' do
           let(:job) { create(:ci_build, :pending, :queued, pipeline: pipeline, options: options) }
 

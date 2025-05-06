@@ -201,6 +201,84 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
       end
     end
 
+    context 'when configuration specifies kubernetes' do
+      let(:config) { { name: 'image:1.0', kubernetes: {} } }
+
+      it 'is valid' do
+        expect(entry).to be_valid
+      end
+
+      describe '#value' do
+        it "returns kubernetes hash in value" do
+          expect(entry.value).to eq(
+            name: 'image:1.0',
+            executor_opts: {
+              kubernetes: {}
+            }
+          )
+        end
+      end
+
+      context "when kubernetes hash specifies user" do
+        let(:config) { { name: 'image:1.0', kubernetes: { user: 'dave' } } }
+
+        it 'is valid' do
+          expect(entry).to be_valid
+        end
+
+        describe '#value' do
+          it "returns value" do
+            expect(entry.value).to eq(
+              name: 'image:1.0',
+              executor_opts: {
+                kubernetes: { user: 'dave' }
+              }
+            )
+          end
+        end
+
+        context "when user is a UID" do
+          let(:config) { { name: 'image:1.0', kubernetes: { user: '1001' } } }
+
+          it 'is valid' do
+            expect(entry).to be_valid
+          end
+
+          describe '#value' do
+            it "returns value" do
+              expect(entry.value).to eq(
+                name: 'image:1.0',
+                executor_opts: {
+                  kubernetes: { user: '1001' }
+                }
+              )
+            end
+          end
+        end
+
+        context "when invalid data type is specified for user option" do
+          let(:config) { { name: 'image:1.0', kubernetes: { user: 1 } } }
+
+          it 'raises an error' do
+            expect(entry).not_to be_valid
+            expect(entry.errors.first)
+              .to match %r{image executor opts value at `/kubernetes/user` is not a string}
+          end
+        end
+      end
+
+      context "when kubernetes specifies an invalid option" do
+        let(:config) { { name: 'image:1.0', kubernetes: { unknown_key: 'foo' } } }
+
+        it 'is not valid' do
+          expect(entry).not_to be_valid
+          expect(entry.errors.first).to match(
+            %r{image executor opts object property at `/kubernetes/unknown_key` is a disallowed additional property}
+          )
+        end
+      end
+    end
+
     context 'when configuration has ports' do
       let(:ports) { [{ number: 80, protocol: 'http', name: 'foobar' }] }
       let(:config) { { name: 'image:1.0', entrypoint: %w[/bin/sh run], ports: ports } }

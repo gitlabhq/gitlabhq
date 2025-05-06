@@ -4,7 +4,7 @@ import { uniqueId } from 'lodash';
 import { logError } from '~/lib/logger';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import BlobContent from '~/blob/components/blob_content.vue';
-import BlobHeader from '~/blob/components/blob_header.vue';
+import BlobHeader from 'ee_else_ce/blob/components/blob_header.vue';
 import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';

@@ -746,6 +746,19 @@
                 }
               }
             },
+            "kubernetes": {
+              "type": "object",
+              "markdownDescription": "Options to pass to Runners Kubernetes Executor. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#imagekubernetes)",
+              "additionalProperties": false,
+              "properties": {
+                "user": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 255,
+                  "description": "Username or UID to use for the container. It also supports the UID:GID format."
+                }
+              }
+            },
             "pull_policy": {
               "markdownDescription": "Specifies how to pull the image in Runner. It can be one of `always`, `never` or `if-not-present`. The default value is `always`. [Learn more](https://docs.gitlab.com/ee/ci/yaml/#imagepull_policy).",
               "default": "always",
@@ -824,6 +837,19 @@
                     "minLength": 1,
                     "maxLength": 255,
                     "description": "Username or UID to use for the container."
+                  }
+                }
+              },
+              "kubernetes": {
+                "type": "object",
+                "markdownDescription": "Options to pass to Runners Kubernetes Executor. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#imagekubernetes)",
+                "additionalProperties": false,
+                "properties": {
+                  "user": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "description": "Username or UID to use for the container. It also supports the UID:GID format."
                   }
                 }
               },

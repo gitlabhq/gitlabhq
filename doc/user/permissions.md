@@ -100,7 +100,7 @@ Project permissions for [application security](application_security/secure_your_
 | View licenses in [dependency list](application_security/dependency_list/_index.md)                                                  |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | View [security dashboard](application_security/security_dashboard/_index.md)                                                        |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | View [vulnerability report](application_security/vulnerability_report/_index.md)                                                    |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| Create [vulnerability manually](application_security/vulnerability_report/_index.md#manually-add-a-vulnerability)                   |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| Create [vulnerability manually](application_security/vulnerability_report/_index.md#manually-add-a-vulnerability)                   |       |         |          |          |     ✓      |   ✓   |       |
 | Create [issue](application_security/vulnerabilities/_index.md#create-a-gitlab-issue-for-a-vulnerability) from vulnerability finding |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | Create [on-demand DAST scans](application_security/dast/on-demand_scan.md)                                                         |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | Run [on-demand DAST scans](application_security/dast/on-demand_scan.md)                                                            |       |         |          |     ✓     |     ✓      |   ✓   |       |

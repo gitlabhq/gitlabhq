@@ -15948,6 +15948,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Configure your project to require all discussions be resolved before merging."
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Configure your project to require at least one approval on merge requests to improve code quality and security."
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Configure your project to require at least two approvals on merge requests to improve code quality and security."
 msgstr ""
 
@@ -16159,6 +16162,9 @@ msgid "ComplianceStandardsAdherence|Ensures status checks must pass before mergi
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Ensures strict permissions are set for repository access."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Ensures that merge requests require at least one approval before merging."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Ensures that merge requests require at least two approvals before merging."
@@ -17859,6 +17865,12 @@ msgstr ""
 msgid "Control which projects can use CI/CD job tokens to authenticate with this project."
 msgstr ""
 
+msgid "Convert Jenkins to GitLab CI/CD using Duo"
+msgstr ""
+
+msgid "Convert to GitLab CI/CD"
+msgstr ""
+
 msgid "Converts item to %{type}. Widgets not supported in new type are removed."
 msgstr ""
 
@@ -19162,6 +19174,9 @@ msgid "CycleAnalyticsStage|Total"
 msgstr ""
 
 msgid "CycleAnalyticsStage|is not available for the selected group"
+msgstr ""
+
+msgid "CycleAnalytics|%{issuableType} time in stage"
 msgstr ""
 
 msgid "CycleAnalytics|%{selectedLabelsCount} label selected (%{maxLabels} max)"
@@ -24718,6 +24733,9 @@ msgid "Error occurred when fetching sidebar data"
 msgstr ""
 
 msgid "Error occurred when saving reviewers"
+msgstr ""
+
+msgid "Error occurred when starting the workflow"
 msgstr ""
 
 msgid "Error occurred while updating the issue status"
@@ -49633,6 +49651,9 @@ msgstr ""
 msgid "RapidDiffs|Diff line number"
 msgstr ""
 
+msgid "RapidDiffs|Failed to expand lines, please try again."
+msgstr ""
+
 msgid "RapidDiffs|Original line"
 msgstr ""
 
@@ -53805,7 +53826,7 @@ msgstr ""
 msgid "Secrets|New secret"
 msgstr ""
 
-msgid "Secrets|Please wait while the Secrets manager is provisioned. It is safe to refresh this page."
+msgid "Secrets|Please wait while we provision the Secrets Manager for you. Refresh at will."
 msgstr ""
 
 msgid "Secrets|Provisioning in progress"
@@ -68327,6 +68348,9 @@ msgstr ""
 msgid "Work in progress limit: %{wipLimit} items"
 msgstr ""
 
+msgid "Work item"
+msgstr ""
+
 msgid "Work item not supported"
 msgstr ""
 
@@ -69316,6 +69340,9 @@ msgid "WorkItem|ticket"
 msgstr ""
 
 msgid "Workflow"
+msgstr ""
+
+msgid "Workflow started successfully, pipeline: %{pipelineHref}"
 msgstr ""
 
 msgid "Workspaces"

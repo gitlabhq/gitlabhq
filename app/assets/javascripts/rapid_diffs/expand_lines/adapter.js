@@ -1,5 +1,7 @@
 import { getLines } from '~/rapid_diffs/expand_lines/get_lines';
 import { DiffLineRow } from '~/rapid_diffs/expand_lines/diff_line_row';
+import { createAlert } from '~/alert';
+import { s__ } from '~/locale';
 
 const getSurroundingLines = (hunkHeaderRow) => {
   const wrapperElements = Array.from(hunkHeaderRow.parentElement.children);
@@ -22,15 +24,33 @@ export const ExpandLinesAdapter = {
       button.setAttribute('disabled', 'disabled');
 
       const { diffLinesPath } = this.data;
-      const lines = await getLines({
-        expandDirection,
-        surroundingLines: getSurroundingLines(hunkHeaderRow),
-        diffLinesPath,
-        view: this.viewer === 'text_parallel' ? 'parallel' : undefined,
-      });
+      let lines;
+      try {
+        lines = await getLines({
+          expandDirection,
+          surroundingLines: getSurroundingLines(hunkHeaderRow),
+          diffLinesPath,
+          view: this.viewer === 'text_parallel' ? 'parallel' : undefined,
+        });
+      } catch (error) {
+        createAlert({
+          message: s__('RapidDiffs|Failed to expand lines, please try again.'),
+          error,
+        });
+        delete hunkHeaderRow.dataset.loading;
+        button.removeAttribute('disabled');
+        return;
+      }
 
-      // eslint-disable-next-line no-unsanitized/method
-      hunkHeaderRow.insertAdjacentHTML('afterend', lines);
+      if (expandDirection === 'up') {
+        // eslint-disable-next-line no-unsanitized/method
+        hunkHeaderRow.insertAdjacentHTML('beforebegin', lines);
+        hunkHeaderRow.previousElementSibling.querySelector('[data-line-number]').focus();
+      } else {
+        // eslint-disable-next-line no-unsanitized/method
+        hunkHeaderRow.insertAdjacentHTML('afterend', lines);
+        hunkHeaderRow.nextElementSibling.querySelector('[data-line-number]').focus();
+      }
       hunkHeaderRow.remove();
     },
   },

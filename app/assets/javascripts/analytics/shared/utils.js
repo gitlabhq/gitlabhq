@@ -99,7 +99,7 @@ export const formatAsPercentageWithoutSymbol = (decimalValue = 0, precision = 1)
  * @param {Number} seconds Time in seconds
  * @param {Number} precision Specifies the number of digits after the decimal
  *
- * @returns {Float} The number of days
+ * @returns {String} The number of days
  */
 export const secondsToDays = (seconds, precision = 1) =>
   (seconds / SECONDS_IN_DAY).toFixed(precision);

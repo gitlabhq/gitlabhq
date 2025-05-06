@@ -1,9 +1,0 @@
----
-name: routable_runner_token
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/489847
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170634
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/505790
-milestone: '17.10'
-group: group::cells infrastructure
-type: gitlab_com_derisk
-default_enabled: false

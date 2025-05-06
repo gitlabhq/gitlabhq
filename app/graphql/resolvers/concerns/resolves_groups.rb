@@ -16,7 +16,8 @@ module ResolvesGroups
     dependency_proxy_blobs: [:dependency_proxy_blobs],
     dependency_proxy_image_count: [:dependency_proxy_manifests],
     dependency_proxy_image_ttl_policy: [:dependency_proxy_image_ttl_policy],
-    dependency_proxy_setting: [:dependency_proxy_setting]
+    dependency_proxy_setting: [:dependency_proxy_setting],
+    analyzer_statuses: [:analyzer_group_statuses]
   }.freeze
 
   def resolve_with_lookahead(...)

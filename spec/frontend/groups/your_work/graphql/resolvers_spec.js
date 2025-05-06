@@ -93,6 +93,7 @@ describe('your work groups resolver', () => {
           ],
         },
       ],
+      childrenCount: 1,
       isLinkedToSubscription: false,
     });
 

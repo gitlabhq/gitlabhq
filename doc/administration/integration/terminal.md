@@ -46,7 +46,7 @@ Only users with at least the [Maintainer role](../../user/permissions.md) for th
 
 {{< /alert >}}
 
-## How it works
+## How web terminals work
 
 A detailed overview of the architecture of web terminals and how they work
 can be found in [this document](https://gitlab.com/gitlab-org/gitlab-workhorse/blob/master/doc/channel.md).

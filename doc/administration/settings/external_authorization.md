@@ -93,7 +93,7 @@ If you enable external authorization, deploy tokens cannot access container or p
 
 {{< /alert >}}
 
-## How it works
+## How GitLab connects to an external authorization service
 
 When GitLab requests access, it sends a JSON POST request to the external
 service with this body:

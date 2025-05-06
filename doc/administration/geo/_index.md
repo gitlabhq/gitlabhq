@@ -122,7 +122,7 @@ Geo is designed to be a active-passive, high-availability solution. It operates 
 Geo should not be confused with [Gitaly Cluster](../gitaly/praefect.md). For more information about
 the difference between Geo and Gitaly Cluster, see [Comparison to Geo](../gitaly/_index.md#comparison-to-geo).
 
-## How it works
+## How Geo works
 
 This is a brief summary of how Geo works in your GitLab environment. For more details, see the Geo development documentation.
 

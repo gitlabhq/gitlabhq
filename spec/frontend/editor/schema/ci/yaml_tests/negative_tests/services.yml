@@ -64,3 +64,24 @@ empty_service_user:
     - name: alpine:latest
       docker:
         user: ""
+
+invalid_service_executor_opts_kubernetes:
+  script: echo "Specifying user."
+  services:
+    - name: mysql:5.7
+      kubernetes:
+        unknown_key: test
+
+invalid_service_user_kubernetes:
+  script: echo "Specifying user."
+  services:
+    - name: mysql:5.7
+      kubernetes:
+        user: ["dave"] # The expected value is a string, not an array
+
+empty_service_user_kubernetes:
+  script: echo "Specifying user"
+  services:
+    - name: alpine:latest
+      kubernetes:
+        user: ""

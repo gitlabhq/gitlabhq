@@ -5,6 +5,7 @@ query getMemberYourWorkGroups($search: String, $sort: String, $parentId: Int, $p
     nodes {
       ...Group
       children
+      childrenCount
     }
     pageInfo {
       total

@@ -362,4 +362,22 @@ RSpec.describe Note, ResolvableNote, feature_category: :code_review_workflow do
       expect(subject.potentially_resolvable?).to be_falsey
     end
   end
+
+  describe 'validations' do
+    subject(:mr_note) do
+      build(:discussion_note_on_merge_request, noteable: merge_request, project: project, resolved_at: Time.current)
+    end
+
+    it 'validates the presence of resolved_by when resolved?' do
+      expect(mr_note).to validate_presence_of(:resolved_by)
+    end
+
+    context 'when importing' do
+      it 'does not validate the presence of resolved_by' do
+        mr_note.importing = true
+
+        expect(mr_note).not_to validate_presence_of(:resolved_by)
+      end
+    end
+  end
 end

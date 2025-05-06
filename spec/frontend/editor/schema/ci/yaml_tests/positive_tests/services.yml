@@ -38,16 +38,30 @@ services_platform_string:
         platform: arm64
 
 services_with_docker_user:
-  script: echo "Specifying platform."
+  script: echo "Specifying user."
   services:
     - name: mysql:5.7
       docker:
         user: ubuntu
 
 services_with_docker_multiple_options:
-  script: echo "Specifying platform."
+  script: echo "Specifying platform and user."
   services:
     - name: mysql:5.7
       docker:
         platform: linux/arm64
         user: ubuntu
+
+services_with_kubernetes_user:
+  script: echo "Specifying user."
+  services:
+    - name: mysql:5.7
+      kubernetes:
+        user: "1001"
+
+services_with_kubernetes_user_and_group:
+  script: echo "Specifying user and group."
+  services:
+    - name: mysql:5.7
+      kubernetes:
+        user: 1001:1001

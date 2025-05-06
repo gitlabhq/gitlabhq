@@ -9,7 +9,12 @@ module ResolvableNote
   included do
     belongs_to :resolved_by, class_name: "User"
 
-    validates :resolved_by, presence: true, if: :resolved?
+    validates :resolved_by, presence: true, if: -> do
+      resolved? &&
+        # We can't guarantee that every ResolvableNote also includes the
+        # Importing module, but if they do, we want to skip this validation.
+        (respond_to?(:importing?) ? !importing? : true)
+    end
 
     # Keep this scope in sync with `#potentially_resolvable?`
     scope :potentially_resolvable, -> { where(type: resolvable_types).where(noteable_type: Noteable.resolvable_types) }

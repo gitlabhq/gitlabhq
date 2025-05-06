@@ -31,7 +31,7 @@ To learn more, see [GitLab Dedicated Architecture](architecture.md).
 
 ## Configure infrastructure
 
-| Feature | How it works | Set up with |
+| Feature | Description | Set up with |
 |------------|-------------|---------------------|
 | [Instance sizing](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#availability-and-scalability) | You select an instance size based on your user count. GitLab provisions and maintains the infrastructure. | Onboarding |
 | [AWS data regions](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#available-aws-regions) | You choose regions for primary operations, disaster recovery, and backup. GitLab replicates your data across these regions. | Onboarding |
@@ -42,7 +42,7 @@ To learn more, see [GitLab Dedicated Architecture](architecture.md).
 
 ## Secure your instance
 
-| Feature | How it works | Set up with |
+| Feature | Description | Set up with |
 |------------|-------------|-----------------|
 | [Encryption (BYOK)](create_instance/_index.md#encrypted-data-at-rest-byok) | You provide AWS KMS keys for data encryption. GitLab integrates these keys with your instance. | Onboarding |
 | [SAML SSO](configure_instance/saml.md) | You configure the connection to your SAML identity providers. GitLab handles the authentication flow. | Switchboard |
@@ -53,7 +53,7 @@ To learn more, see [GitLab Dedicated Architecture](architecture.md).
 
 ## Set up networking
 
-| Feature | How it works | Set up with |
+| Feature | Description | Set up with |
 |------------|-------------|-----------------|
 | [Custom hostname (BYOD)](configure_instance/network_security.md#bring-your-own-domain-byod) | You provide a domain name and configure DNS records. GitLab manages SSL certificates through Let's Encrypt. | Support ticket |
 | [Inbound Private Link](configure_instance/network_security.md#inbound-private-link) | You request secure AWS VPC connections. GitLab configures PrivateLink endpoints in your VPC. | Support ticket |
@@ -62,7 +62,7 @@ To learn more, see [GitLab Dedicated Architecture](architecture.md).
 
 ## Use platform tools
 
-| Feature | How it works | Set up with |
+| Feature | Description | Set up with |
 |------------|-------------|-----------------|
 | [GitLab Pages](../../subscriptions/gitlab_dedicated/_index.md#gitlab-pages) | GitLab hosts your static websites on a dedicated domain. You can publish sites from your repositories. | Available by <br>default |
 | [Advanced search](../../integration/advanced_search/elasticsearch.md) | GitLab maintains the search infrastructure. You can search across your code, issues, and merge requests. | Available by <br>default |
@@ -70,7 +70,7 @@ To learn more, see [GitLab Dedicated Architecture](architecture.md).
 
 ## Manage daily operations
 
-| Feature | How it works | Set up with |
+| Feature | Description | Set up with |
 |------------|-------------|-----------------|
 | [Application logs](monitor.md) | GitLab delivers logs to your AWS S3 bucket. You can request access to monitor instance activity through these logs. | Support ticket |
 | [Email service](configure_instance/users_notifications.md#smtp-email-service) | GitLab provides AWS SES by default to send emails from your GitLab Dedicated instance. You can also configure your own SMTP email service. | Support ticket for <br/>custom service  |

@@ -221,14 +221,71 @@ RSpec.describe Gitlab::Ci::Config::Entry::Service do
       end
     end
 
+    context 'when configuration has kubernetes options' do
+      let(:config) { { name: 'postgresql:9.5', kubernetes: kubernetes_opts } }
+
+      context "with user option" do
+        let(:kubernetes_opts) { { user: '1001' } }
+
+        it { is_expected.to be_valid }
+
+        describe '#value' do
+          it "returns kubernetes hash in value" do
+            expect(entry.value).to eq(
+              name: 'postgresql:9.5',
+              executor_opts: {
+                kubernetes: kubernetes_opts
+              }
+            )
+          end
+        end
+      end
+
+      context "with uid:gid set" do
+        let(:kubernetes_opts) { { user: '1001:1001' } }
+
+        describe '#valid?' do
+          it 'is valid' do
+            expect(entry).to be_valid
+          end
+        end
+
+        describe '#value' do
+          it "returns value" do
+            expect(entry.value).to eq(
+              name: 'postgresql:9.5',
+              executor_opts: {
+                kubernetes: kubernetes_opts
+              }
+            )
+          end
+        end
+      end
+
+      context 'when kubernetes options have an invalid property' do
+        let(:kubernetes_opts) { { opt: 'invalid' } }
+
+        it 'is not valid' do
+          expect(entry).not_to be_valid
+          expect(entry.errors.first)
+            .to match %r{service executor opts object property at `/kubernetes/opt` is a disallowed additional property}
+        end
+      end
+
+      context 'when kubernetes options user is not string' do
+        let(:kubernetes_opts) { { user: 123 } }
+
+        it 'is not valid' do
+          expect(entry).not_to be_valid
+          expect(entry.errors.first).to match %r{service executor opts value at `/kubernetes/user` is not a string}
+        end
+      end
+    end
+
     context 'when configuration has pull_policy' do
       let(:config) { { name: 'postgresql:9.5', pull_policy: 'if-not-present' } }
 
-      describe '#valid?' do
-        it 'is valid' do
-          expect(entry).to be_valid
-        end
-      end
+      it { is_expected.to be_valid }
 
       describe '#value' do
         it "returns value" do

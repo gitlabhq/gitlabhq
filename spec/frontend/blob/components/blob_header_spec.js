@@ -31,6 +31,7 @@ describe('Blob Header Default Actions', () => {
   const findRichTextEditorBtn = () => wrapper.findByTestId('rich-blob-viewer-button');
   const findSimpleTextEditorBtn = () => wrapper.findByTestId('simple-blob-viewer-button');
   const findWebIdeLink = () => wrapper.findComponent(WebIdeLink);
+  const findDuoWorkflowActionSlot = () => wrapper.findByTestId('ee-duo-workflow-action');
 
   async function createComponent({
     blobProps = {},
@@ -221,6 +222,10 @@ describe('Blob Header Default Actions', () => {
       const showBlobSize = false;
       createComponent({ propsData: { showBlobSize } });
       expect(findBlobFilePath().props('showBlobSize')).toBe(showBlobSize);
+    });
+
+    it('does not render the Duo Workflow action slot', () => {
+      expect(findDuoWorkflowActionSlot().exists()).toBe(false);
     });
   });
 

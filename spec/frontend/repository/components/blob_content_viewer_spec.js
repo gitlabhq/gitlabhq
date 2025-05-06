@@ -10,7 +10,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import BlobContent from '~/blob/components/blob_content.vue';
-import BlobHeader from '~/blob/components/blob_header.vue';
+import BlobHeader from 'ee_else_ce/blob/components/blob_header.vue';
 import BlobButtonGroup from '~/repository/components/blob_button_group.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import ForkSuggestion from '~/repository/components/fork_suggestion.vue';

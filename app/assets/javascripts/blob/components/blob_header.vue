@@ -171,7 +171,7 @@ export default {
       />
 
       <table-of-contents v-if="glFeatures.blobOverflowMenu" class="gl-pr-2" />
-
+      <slot name="ee-duo-workflow-action" data-test-id="ee-duo-workflow-action"></slot>
       <web-ide-link
         v-if="!glFeatures.blobOverflowMenu && showWebIdeLink"
         :show-edit-button="!isBinary"

@@ -1,17 +1,18 @@
 <script>
-import { GlButton } from '@gitlab/ui';
-import { sprintf, s__ } from '~/locale';
+import { GlButton, GlLink } from '@gitlab/ui';
+import { sprintf, s__, n__ } from '~/locale';
 import {
   TIMESTAMP_TYPES,
   TIMESTAMP_TYPE_CREATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
 import ProjectsListItem from '../projects_list/projects_list_item.vue';
 import GroupsListItem from '../groups_list/groups_list_item.vue';
-import { LIST_ITEM_TYPE_PROJECT } from './constants';
+import { LIST_ITEM_TYPE_PROJECT, MAX_CHILDREN_COUNT } from './constants';
 
 export default {
   components: {
     GlButton,
+    GlLink,
   },
   props: {
     item: {
@@ -74,6 +75,16 @@ export default {
     showChildren() {
       return this.isExpanded && this.item.children?.length;
     },
+    hasMoreChildren() {
+      return this.item.childrenCount > MAX_CHILDREN_COUNT;
+    },
+    moreChildrenLinkText() {
+      return n__(
+        'One more item',
+        '%d more items',
+        this.item.childrenCount - this.item.children.length,
+      );
+    },
     expandButtonProps() {
       return {
         'aria-label': sprintf(s__('Groups|Show children of %{avatarLabel}'), {
@@ -120,7 +131,15 @@ export default {
         :class="nestedItemsContainerClasses"
         @load-children="$emit('load-children', $event)"
         @refetch="onRefetch"
-      />
+      >
+        <li v-if="hasMoreChildren" class="gl-border-b gl-py-4 gl-pl-3">
+          <div class="gl-flex gl-h-7 gl-items-center">
+            <gl-link :href="item.webUrl" data-testid="more-children-link">
+              {{ moreChildrenLinkText }}
+            </gl-link>
+          </div>
+        </li>
+      </nested-groups-projects-list>
     </template>
   </component>
 </template>

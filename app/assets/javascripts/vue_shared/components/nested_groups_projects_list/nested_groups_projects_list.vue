@@ -52,5 +52,6 @@ export default {
       @load-children="$emit('load-children', $event)"
       @refetch="$emit('refetch')"
     />
+    <slot></slot>
   </ul>
 </template>

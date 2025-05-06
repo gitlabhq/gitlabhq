@@ -74,7 +74,7 @@ For more information on:
    ```ruby
    gitlab_rails['omniauth_providers'] = [
      {
-       name: "saml",
+       name: "saml", # This must be lowercase.
        label: "Provider name", # optional label for login button, defaults to "Saml"
        args: {
          assertion_consumer_service_url: "https://gitlab.example.com/users/auth/saml/callback",
