@@ -13232,15 +13232,6 @@ msgstr ""
 msgid "Clone with SSH"
 msgstr ""
 
-msgid "CloneIssue|Cannot clone issue due to insufficient permissions."
-msgstr ""
-
-msgid "CloneIssue|Cannot clone issue to target project as it is pending deletion."
-msgstr ""
-
-msgid "CloneIssue|Cannot clone issues of '%{issue_type}' type."
-msgstr ""
-
 msgid "CloneWorkItem|Unable to clone. Cloning '%{work_item_type}' is not supported."
 msgstr ""
 
@@ -21024,9 +21015,6 @@ msgstr ""
 msgid "Dependencies|Export as JSON"
 msgstr ""
 
-msgid "Dependencies|Filtering unavailable"
-msgstr ""
-
 msgid "Dependencies|Follow the link below to download the export."
 msgstr ""
 
@@ -21049,9 +21037,6 @@ msgid "Dependencies|No components found."
 msgstr ""
 
 msgid "Dependencies|Packager"
-msgstr ""
-
-msgid "Dependencies|Project list unavailable"
 msgstr ""
 
 msgid "Dependencies|Projects"
@@ -21088,12 +21073,6 @@ msgid "Dependencies|There was an error fetching the projects for this group. Ple
 msgstr ""
 
 msgid "Dependencies|There was an error fetching the versions for the selected component. Please try again later."
-msgstr ""
-
-msgid "Dependencies|This group exceeds the maximum number of 600 sub-groups. We cannot accurately filter or search the dependency list above this maximum. To view or filter a subset of this information, go to a subgroup's dependency list."
-msgstr ""
-
-msgid "Dependencies|This group exceeds the maximum number of sub-groups of 600. We cannot accurately display a project list at this time. Please access a sub-group dependency list to view this information or see the %{linkStart}dependency list help %{linkEnd} page to learn more."
 msgstr ""
 
 msgid "Dependencies|This link will expire in %{number} days."
@@ -23039,6 +23018,9 @@ msgid "DuoCodeReview|I have encountered some problems while I was reviewing. Ple
 msgstr ""
 
 msgid "DuoCodeReview|I've received your Duo Code Review request, and will review your code shortly."
+msgstr ""
+
+msgid "DuoCodeReview|Your account doesn't have GitLab Duo access. Please contact your system administrator for access."
 msgstr ""
 
 msgid "DuoCodeReview|is reviewing your merge request and will let you know when it's finished"
@@ -39128,15 +39110,6 @@ msgstr ""
 msgid "Move up"
 msgstr ""
 
-msgid "MoveIssue|Cannot move issue due to insufficient permissions."
-msgstr ""
-
-msgid "MoveIssue|Cannot move issue to project it originates from."
-msgstr ""
-
-msgid "MoveIssue|Cannot move issues of '%{issue_type}' type."
-msgstr ""
-
 msgid "MoveWorkItem|Unable to move. Moving '%{work_item_type}' is not supported."
 msgstr ""
 
@@ -40457,6 +40430,9 @@ msgid "Nodes"
 msgstr ""
 
 msgid "Non-admin users are restricted to read-only access, in both GitLab UI and API."
+msgstr ""
+
+msgid "Non-archived"
 msgstr ""
 
 msgid "None"
@@ -46949,6 +46925,9 @@ msgid "Project Files"
 msgstr ""
 
 msgid "Project ID"
+msgstr ""
+
+msgid "Project Status"
 msgstr ""
 
 msgid "Project Templates"

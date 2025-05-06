@@ -200,9 +200,9 @@ gitlab:
           memory: 32Mi
 ```
 
-#### Configure concurrency rate limiting
+#### Configure concurrency limiting
 
-As well as using cgroups, you can use concurrency limits to further help protect the service from abnormal traffic patterns. For more information, see
+You can use concurrency limits to help protect the service from abnormal traffic patterns. For more information, see
 [concurrency configuration documentation](concurrency_limiting.md) and [how to monitor limits](monitoring.md#monitor-gitaly-concurrency-limiting).
 
 #### Isolate Gitaly pods

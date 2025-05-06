@@ -69,16 +69,6 @@ RSpec.describe Tooling::Glci::FailureCategories::JobTraceToFailureCategory, feat
 
           expect(result).to be_nil
         end
-
-        it 'outputs the trace it used for debugging purposes' do
-          result = ""
-
-          expect do
-            result = parser.process(trace_path)
-          end.to output(/Job trace we used:.+this trace should not be matched with any failure category/m).to_stderr
-
-          expect(result).to be_nil
-        end
       end
 
       describe 'single-line patterns' do

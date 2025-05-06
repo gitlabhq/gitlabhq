@@ -123,17 +123,17 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 /.gitlab/ci/test-on-gdk/ @gl-dx/pipeline-maintainers @gl-dx/maintainers
 /gems/gem.gitlab-ci.yml
 
-[Tooling] @gl-dx/eng-prod
+[Tooling] @gl-dx/tooling-maintainers
 Dangerfile
 /danger/
 /tooling/
 /spec/tooling/
 /scripts/
-/scripts/**/*.rb @gl-dx/eng-prod @gitlab-org/maintainers/rails-backend
-/scripts/**/*.js @gl-dx/eng-prod @gitlab-org/maintainers/frontend
-/scripts/frontend/ @gl-dx/eng-prod @gitlab-org/maintainers/frontend
-/scripts/remote_development/ @gl-dx/eng-prod @gitlab-org/maintainers/workspaces/backend @gitlab-org/maintainers/workspaces/frontend
-/scripts/review_apps/seed-dast-test-data.sh @gl-dx/eng-prod @dappelt @ngeorge1
+/scripts/**/*.rb @gl-dx/tooling-maintainers @gitlab-org/maintainers/rails-backend
+/scripts/**/*.js @gl-dx/tooling-maintainers @gitlab-org/maintainers/frontend
+/scripts/frontend/ @gl-dx/tooling-maintainers @gitlab-org/maintainers/frontend
+/scripts/remote_development/ @gl-dx/tooling-maintainers @gitlab-org/maintainers/workspaces/backend @gitlab-org/maintainers/workspaces/frontend
+/scripts/review_apps/seed-dast-test-data.sh @gl-dx/tooling-maintainers @dappelt @ngeorge1
 /.dockerignore
 /.editorconfig
 /.gitpod.yml
@@ -145,7 +145,7 @@ Dangerfile
 /lefthook.yml
 /tests.yml
 
-^[Backend Static Code Analysis] @gl-dx/eng-prod @dstull
+^[Backend Static Code Analysis] @gl-dx/tooling-maintainers @dstull
 .rubocop*.yml
 /gems/config/rubocop.yml
 /rubocop/
@@ -990,7 +990,7 @@ lib/gitlab/checks/**
 /doc/development/fe_guide/keyboard_shortcuts.md @gitlab-org/foundations/personal-productivity/engineering
 /doc/development/git_object_deduplication.md @proglottis @toon
 /doc/development/gitaly.md @proglottis @toon
-/doc/development/gitpod_internals.md @gl-dx/eng-prod
+/doc/development/gitpod_internals.md @gl-dx/tooling-maintainers
 /doc/development/identity_verification.md @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/image_scaling.md @abdwdd @alexpooley
 /doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
@@ -1004,12 +1004,12 @@ lib/gitlab/checks/**
 /doc/development/organization/ @abdwdd @alexpooley
 /doc/development/permissions.md @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/permissions/ @gitlab-org/software-supply-chain-security/authorization/approvers
-/doc/development/pipelines/ @gl-dx/eng-prod
+/doc/development/pipelines/ @gl-dx/pipeline-maintainers
 /doc/development/policies.md @gitlab-org/software-supply-chain-security/authentication/approvers
 /doc/development/prometheus_metrics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/search/ @gitlab-org/search-team/migration-maintainers
 /doc/development/sec/ @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/static-analysis
-/doc/development/software_design.md @gl-dx/eng-prod
+/doc/development/software_design.md @gl-dx/pipeline-maintainers
 /doc/development/spam_protection_and_captcha/ @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/stage_group_observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
@@ -1252,7 +1252,7 @@ lib/gitlab/checks/**
 [Localization Team] @gitlab-com/localization/maintainers
 /doc-locale/**
 /doc/development/i18n/proofreader.md
-/argo_translation.yml 
+/argo_translation.yml
 
 [Authorization] @gitlab-org/software-supply-chain-security/authorization/approvers
 /config/initializers/declarative_policy.rb

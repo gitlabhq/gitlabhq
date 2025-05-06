@@ -40,12 +40,8 @@
 #     - tooling/lib/tooling/glci/failure_analyzer.rb
 .failure_category_after_script:
   after_script:
-    # We need this at the very top, because the section_start/section_end logic is defined there.
     - source scripts/utils.sh
-    - |
-      section_start "failure-analyzer" "Report failure category"
-      tooling/lib/tooling/glci/failure_analyzer.rb $CI_JOB_ID || true
-      section_end "failure-analyzer"
+    - execute_failure_analyzer
 
 .repo-from-artifacts:
   variables:

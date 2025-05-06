@@ -1048,10 +1048,6 @@ class Group < Namespace
     ].compact.min
   end
 
-  def work_item_move_and_clone_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_item_move_and_clone, type: :beta)
-  end
-
   def work_items_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:work_items)
   end

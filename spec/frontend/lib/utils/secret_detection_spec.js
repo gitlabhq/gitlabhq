@@ -115,15 +115,15 @@ describe('detectAndConfirmSensitiveTokens', () => {
       modalHtmlMessage: expect.any(String),
     };
 
-    describe('with single findings', () => {
-      const [{ message, type, redactedString }] = findings;
+    describe('with single finding', () => {
+      const [{ message, type, secret }] = findings;
       it('should call confirmAction with correct parameters', async () => {
         await detectAndConfirmSensitiveTokens({ content: message });
 
         const confirmActionArgs = confirmAction.mock.calls[0][1];
         expect(confirmActionArgs).toMatchObject(baseConfirmActionParams);
         expect(confirmActionArgs.title).toBe('Warning: Potential secret detected');
-        expect(confirmActionArgs.modalHtmlMessage).toContain(`${type}: ${redactedString}`);
+        expect(confirmActionArgs.modalHtmlMessage).toContain(`${type}: ${secret}`);
       });
     });
 
@@ -137,9 +137,25 @@ describe('detectAndConfirmSensitiveTokens', () => {
         expect(confirmActionArgs).toMatchObject(baseConfirmActionParams);
         expect(confirmActionArgs.title).toBe('Warning: Potential secrets detected');
 
-        findings.forEach(({ type, redactedString }) => {
-          expect(confirmActionArgs.modalHtmlMessage).toContain(`${type}: ${redactedString}`);
+        findings.forEach(({ type, secret }) => {
+          expect(confirmActionArgs.modalHtmlMessage).toContain(`${type}: ${secret}`);
         });
+      });
+    });
+
+    describe('with repeated finding', () => {
+      const { message, type, secret } = findings.at(-1);
+      it('should call confirmAction with correct parameters', async () => {
+        await detectAndConfirmSensitiveTokens({ content: message });
+
+        const confirmActionArgs = confirmAction.mock.calls[0][1];
+        const stringToMatch = `${type}: ${secret}`;
+        expect(confirmActionArgs).toMatchObject(baseConfirmActionParams);
+        expect(confirmActionArgs.title).toBe('Warning: Potential secret detected');
+        const tokenRegex = new RegExp(stringToMatch, 'g');
+        const matches = confirmActionArgs.modalHtmlMessage.match(tokenRegex);
+
+        expect(matches).toHaveLength(1);
       });
     });
 

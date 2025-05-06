@@ -167,7 +167,7 @@ module QA
             end
           end
 
-          # Used for stability, due to feature_caching of vscode_web_ide
+          # Used for stability
           # @param file_name [string] wait for file to be loaded (optional)
           def wait_for_ide_to_load(file_name = nil)
             page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)

@@ -7,13 +7,10 @@ module Types
 
       value 'IDLE',
         description: "Runner is idle.",
-        value: :idle,
-        experiment: { milestone: '15.7' }
-
+        value: :idle
       value 'ACTIVE',
         description: 'Runner is busy.',
-        value: :active,
-        experiment: { milestone: '17.2' }
+        value: :active
     end
   end
 end

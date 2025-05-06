@@ -1,8 +1,9 @@
 ---
 name: optional_personal_namespace
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/427730
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137713
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/431978
 milestone: '16.8'
-type: development
+type: wip
 group: group::organizations
 default_enabled: false

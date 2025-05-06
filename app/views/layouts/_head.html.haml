@@ -65,6 +65,9 @@
 
   = webpack_bundle_tag 'super_sidebar'
 
+  - if ENV['BABEL_ENV'] == 'istanbul'
+    = webpack_bundle_tag 'coverage_persistence'
+
   - if vite_enabled?
     = render 'layouts/vite_main'
   - else

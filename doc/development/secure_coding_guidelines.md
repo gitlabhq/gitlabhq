@@ -941,6 +941,44 @@ path.Clean("../../etc/passwd")
 // renders the path to "../../etc/passwd"; the file path will look back up to two parent directories!
 ```
 
+#### Safe File Operations in Go
+
+The Go standard library provides basic file operations like `os.Open`, `os.ReadFile`, `os.WriteFile`, and `os.Readlink`. However, these functions do not prevent path traversal attacks, where user-supplied paths can escape the intended directory and access sensitive system files.
+
+Example of unsafe usage:
+
+```go
+// Vulnerable: user input is directly used in the path
+os.Open(filepath.Join("/app/data", userInput))
+os.ReadFile(filepath.Join("/app/data", userInput))
+os.WriteFile(filepath.Join("/app/data", userInput), []byte("data"), 0644)
+os.Readlink(filepath.Join("/app/data", userInput))
+```
+
+To mitigate these risks, use the  [`safeopen`](https://pkg.go.dev/github.com/google/safeopen) library functions. These functions enforce a secure root directory and sanitize file paths:
+
+Example of safe usage:
+
+```go
+safeopen.OpenBeneath("/app/data", userInput)
+safeopen.ReadFileBeneath("/app/data", userInput)
+safeopen.WriteFileBeneath("/app/data", []byte("data"), 0644)
+safeopen.ReadlinkBeneath("/app/data", userInput)
+```
+
+Benefits:
+
+- Prevents path traversal attacks (`../` sequences).
+- Restricts file operations to trusted root directories.
+- Secures against unauthorized file reads, writes, and symlink resolutions.
+- Provides simple, developer-friendly replacements.
+
+References:
+
+- [Go Standard Library os Package](https://pkg.go.dev/os)
+- [Safe Go Libraries Announcement](https://bughunters.google.com/blog/4925068200771584/the-family-of-safe-golang-libraries-is-growing)
+- [OWASP Path Traversal Cheat Sheet](https://owasp.org/www-community/attacks/Path_Traversal)
+
 ## OS command injection guidelines
 
 Command injection is an issue in which an attacker is able to execute arbitrary commands on the host

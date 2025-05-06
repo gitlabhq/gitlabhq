@@ -718,3 +718,13 @@ JSON
     -H 'Content-type: application/json' \
     -d "${json_payload}"
 }
+
+function execute_failure_analyzer() {
+  # IMPORTANT - If you want to change the "failure-analyzer" string,
+  # please also change the logic for the failure categories, as we rely on this marker.
+  #
+  # Class relying on the marker: tooling/lib/tooling/glci/failure_categories/download_job_trace.rb
+  section_start "failure-analyzer" "Report failure category"
+  $CI_PROJECT_DIR/tooling/lib/tooling/glci/failure_analyzer.rb $CI_JOB_ID || true
+  section_end "failure-analyzer"
+}

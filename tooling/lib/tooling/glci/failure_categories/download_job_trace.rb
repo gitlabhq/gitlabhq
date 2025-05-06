@@ -20,17 +20,27 @@ module Tooling
   module Glci
     module FailureCategories
       class DownloadJobTrace
+        DEFAULT_TRACE_MARKER = 'failure-analyzer'
+        DEFAULT_MAX_ATTEMPTS = 5
+        DEFAULT_RETRY_DELAY_SECONDS = 10
+
         def initialize(
           api_url: ENV['CI_API_V4_URL'],
           project_id: ENV['CI_PROJECT_ID'],
           job_id: ENV['CI_JOB_ID'],
           access_token: ENV['PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE'],
-          job_status: ENV['CI_JOB_STATUS'])
-          @api_url    = api_url
+          job_status: ENV['CI_JOB_STATUS'],
+          trace_marker: DEFAULT_TRACE_MARKER,
+          max_attempts: DEFAULT_MAX_ATTEMPTS,
+          retry_delay: DEFAULT_RETRY_DELAY_SECONDS)
+          @api_url = api_url
           @project_id = project_id
-          @job_id     = job_id
+          @job_id = job_id
           @access_token = access_token
           @job_status = job_status
+          @trace_marker = trace_marker
+          @max_attempts = max_attempts
+          @retry_delay = retry_delay
 
           validate_required_parameters!
         end
@@ -41,6 +51,44 @@ module Tooling
             return
           end
 
+          trace_content = download_trace_with_retry
+          return unless trace_content
+
+          File.write(output_file, trace_content)
+          puts "[DownloadJobTrace] Job trace saved to #{output_file}"
+
+          output_file
+        end
+
+        private
+
+        def download_trace_with_retry
+          attempt = 0
+
+          while attempt < @max_attempts
+            attempt += 1
+            puts "[DownloadJobTrace] Downloading job trace (attempt #{attempt}/#{@max_attempts})"
+
+            trace_content = fetch_trace
+            return trace_content if has_marker?(trace_content)
+
+            sleep @retry_delay if attempt < @max_attempts
+          end
+
+          warn "[DownloadJobTrace] Could not verify we have the trace we need after #{@max_attempts} attempts"
+          trace_content
+        end
+
+        def has_marker?(trace_content)
+          return false if trace_content.nil? || trace_content.empty?
+
+          has_marker = trace_content.match?(/#{@trace_marker}/)
+          puts "[DownloadJobTrace] Trace marker #{has_marker ? 'found' : 'not found'}"
+
+          has_marker
+        end
+
+        def fetch_trace
           uri = URI.parse("#{@api_url}/projects/#{@project_id}/jobs/#{@job_id}/trace")
           request = Net::HTTP::Get.new(uri)
           request['PRIVATE-TOKEN'] = @access_token
@@ -53,12 +101,8 @@ module Tooling
             raise "[DownloadJobTrace] Failed to download job trace: #{response.code} #{response.message}"
           end
 
-          File.write(output_file, response.body)
-
-          output_file
+          response.body
         end
-
-        private
 
         def validate_required_parameters!
           missing_params = []

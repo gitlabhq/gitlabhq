@@ -46,8 +46,6 @@ module Tooling
           end
 
           warn "[JobTraceToFailureCategory] Error: Could not find any failure category"
-          warn "Job trace we used:"
-          warn trace
           nil
         end
 

@@ -1,8 +1,9 @@
 ---
 name: profile_tabs_vue
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/9056
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109422
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388708
 milestone: '15.9'
-type: development
+type: wip
 group: group::organizations
 default_enabled: false

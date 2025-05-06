@@ -199,13 +199,9 @@ class Projects::IssuesController < Projects::ApplicationController
       new_project = Project.find(params[:move_to_project_id])
       return render_404 unless issue.can_move?(current_user, new_project)
 
-      @issue = if project.work_item_move_and_clone_flag_enabled?
-                 ::WorkItems::DataSync::MoveService.new(
-                   work_item: issue, current_user: current_user, target_namespace: new_project.project_namespace
-                 ).execute[:work_item]
-               else
-                 ::Issues::MoveService.new(container: project, current_user: current_user).execute(issue, new_project)
-               end
+      @issue = ::WorkItems::DataSync::MoveService.new(
+        work_item: issue, current_user: current_user, target_namespace: new_project.project_namespace
+      ).execute[:work_item]
     end
 
     respond_to do |format|

@@ -109,8 +109,7 @@ module Gitlab
         types Issue, WorkItem
         condition do
           quick_action_target.persisted? &&
-            current_user.can?(:"clone_#{quick_action_target.to_ability_name}", quick_action_target) &&
-            can_be_moved_or_cloned?
+            current_user.can?(:"clone_#{quick_action_target.to_ability_name}", quick_action_target)
         end
         command :clone do |params = ''|
           params = params.split(' ')
@@ -147,8 +146,7 @@ module Gitlab
         types Issue, WorkItem
         condition do
           quick_action_target.persisted? &&
-            current_user.can?(:"move_#{quick_action_target.to_ability_name}", quick_action_target) &&
-            can_be_moved_or_cloned?
+            current_user.can?(:"move_#{quick_action_target.to_ability_name}", quick_action_target)
         end
         command :move do |target_container_path|
           target_container = fetch_target_container(target_container_path)
@@ -448,12 +446,6 @@ module Gitlab
         else
           Group.find_by_full_path(target_container_path)
         end
-      end
-
-      def can_be_moved_or_cloned?
-        return true unless quick_action_target.is_a?(WorkItem) && quick_action_target.work_item_type.epic?
-
-        container.work_item_move_and_clone_flag_enabled?
       end
     end
   end

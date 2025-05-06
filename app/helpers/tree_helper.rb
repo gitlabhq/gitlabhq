@@ -41,10 +41,6 @@ module TreeHelper
   # `username-branchname-patch-epoch`
   # where `epoch` is the last 5 digits of the time since epoch (in
   # milliseconds)
-  #
-  # Note: this correlates with how the WebIDE formats the branch name
-  # and if this implementation changes, so should the `placeholderBranchName`
-  # definition in app/assets/javascripts/ide/stores/modules/commit/getters.js
   def patch_branch_name(ref)
     return unless current_user
 

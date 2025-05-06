@@ -202,7 +202,6 @@ Rails/Date:
     - 'spec/services/import/reassign_placeholder_user_records_service_spec.rb'
     - 'spec/services/issuable/callbacks/time_tracking_spec.rb'
     - 'spec/services/issuable/common_system_notes_service_spec.rb'
-    - 'spec/services/issues/move_service_spec.rb'
     - 'spec/services/members/invitation_reminder_email_service_spec.rb'
     - 'spec/services/members/update_service_spec.rb'
     - 'spec/services/milestones/find_or_create_service_spec.rb'

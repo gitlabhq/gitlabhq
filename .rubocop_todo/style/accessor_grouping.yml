@@ -19,7 +19,6 @@ Style/AccessorGrouping:
     - 'app/models/integrations/chat_message/wiki_page_message.rb'
     - 'app/models/project.rb'
     - 'app/services/deployments/update_environment_service.rb'
-    - 'app/services/issues/clone_service.rb'
     - 'app/services/note_summary.rb'
     - 'app/services/notification_recipients/builder/default.rb'
     - 'app/services/task_list_toggle_service.rb'

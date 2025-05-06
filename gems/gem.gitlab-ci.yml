@@ -53,12 +53,8 @@ include:
     - bundle config                             # Show bundler configuration
     - bundle install --jobs=$(nproc) --retry=3
   after_script:
-    # We need this at the very top, because the section_start/section_end logic is defined there.
     - source $CI_PROJECT_DIR/scripts/utils.sh
-    - |
-      section_start "failure-analyzer" "Report failure category"
-      $CI_PROJECT_DIR/tooling/lib/tooling/glci/failure_analyzer.rb $CI_JOB_ID || true
-      section_end "failure-analyzer"
+    - execute_failure_analyzer
 
 default:
   <<: *default

@@ -76,12 +76,8 @@ module QA
           click_element 'new-file-menu-item'
         end
 
-        # Click by JS is needed to bypass the VSCode Web IDE popover
-        # Change back to regular click_element when vscode_web_ide FF is removed
-        # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/371084
         def fork_project
-          fork_button = find_element('fork-button')
-          click_by_javascript(fork_button)
+          click_element 'fork-button'
         end
 
         def forked_from?(parent_project_name)

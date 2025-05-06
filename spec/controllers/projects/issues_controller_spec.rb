@@ -545,21 +545,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       end
     end
 
-    context 'with work_item_move_and_clone disabled' do
-      it_behaves_like 'move issue request' do
-        before do
-          stub_feature_flags(work_item_move_and_clone: false)
-        end
-      end
-    end
-
-    context 'with work_item_move_and_clone enabled' do
-      it_behaves_like 'move issue request' do
-        before do
-          stub_feature_flags(work_item_move_and_clone: true)
-        end
-      end
-    end
+    it_behaves_like 'move issue request'
   end
 
   describe 'PUT #reorder' do

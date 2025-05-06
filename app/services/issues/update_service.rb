@@ -103,16 +103,11 @@ module Issues
 
       update(issue)
 
-      if container.work_item_move_and_clone_flag_enabled?
-        move_service_container = target_container.is_a?(Project) ? target_container.project_namespace : target_container
-        ::WorkItems::DataSync::MoveService.new(
-          work_item: issue, current_user: current_user, target_namespace: move_service_container
-        ).execute[:work_item]
-      elsif target_container.is_a?(Project) || target_container.is_a?(Namespaces::ProjectNamespace)
-        ::Issues::MoveService.new(
-          container: project, current_user: current_user
-        ).execute(issue, target_container)
-      end
+      move_service_container = target_container.is_a?(Project) ? target_container.project_namespace : target_container
+
+      ::WorkItems::DataSync::MoveService.new(
+        work_item: issue, current_user: current_user, target_namespace: move_service_container
+      ).execute[:work_item]
     end
 
     private
@@ -157,17 +152,12 @@ module Issues
       # we've pre-empted this from running in #execute, so let's go ahead and update the Issue now.
       update(issue)
 
-      if container.work_item_move_and_clone_flag_enabled?
-        clone_service_container = target_container.is_a?(Project) ? target_container.project_namespace : target_container
-        ::WorkItems::DataSync::CloneService.new(
-          work_item: issue, current_user: current_user, target_namespace: clone_service_container,
-          params: { clone_with_notes: with_notes }
-        ).execute[:work_item]
-      elsif target_container.is_a?(Project) || target_container.is_a?(Namespaces::ProjectNamespace)
-        Issues::CloneService.new(container: project, current_user: current_user).execute(
-          issue, target_container, with_notes: with_notes
-        )
-      end
+      clone_service_container = target_container.is_a?(Project) ? target_container.project_namespace : target_container
+
+      ::WorkItems::DataSync::CloneService.new(
+        work_item: issue, current_user: current_user, target_namespace: clone_service_container,
+        params: { clone_with_notes: with_notes }
+      ).execute[:work_item]
     end
 
     def create_merge_request_from_quick_action

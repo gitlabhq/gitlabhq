@@ -81,18 +81,24 @@ export const secretDetectionFindings = [
   {
     message: 'Hello world! glpat-mGYFaXBmNLvLmrEb7xdf',
     type: 'GitLab personal access token',
-    redactedString: 'glpat*****************7xdf',
+    secret: 'glpat-mGYFaXBmNLvLmrEb7xdf',
   },
 
   {
     message: 'Second token: gldt-cgyKc1k_AsnEpmP-5fRL',
     type: 'GitLab Deploy Token',
-    redactedString: 'gldt-****************5fRL',
+    secret: 'gldt-cgyKc1k_AsnEpmP-5fRL',
   },
 
   {
-    message: 'third token: feed_token=ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    message: 'Third token: feed_token=ABCDEFGHIJKLMNOPQRSTUVWXYZ',
     type: 'Feed Token',
-    redactedString: 'feed_**********************QRST',
+    secret: 'feed_token=ABCDEFGHIJKLMNOPQRST',
+  },
+
+  {
+    message: 'Repeated token: glpat-mGYFaXBmNLvLmrEb7xdf glpat-mGYFaXBmNLvLmrEb7xdf',
+    type: 'GitLab personal access token',
+    secret: 'glpat-mGYFaXBmNLvLmrEb7xdf',
   },
 ];

@@ -136,7 +136,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/services/compliance_management/frameworks/update_project_service_spec.rb'
     - 'ee/spec/services/ee/ci/job_token_scope/remove_group_service_spec.rb'
     - 'ee/spec/services/ee/ci/job_token_scope/remove_project_service_spec.rb'
-    - 'ee/spec/services/ee/issues/move_service_spec.rb'
     - 'ee/spec/services/ee/post_receive_service_spec.rb'
     - 'ee/spec/services/ee/spam/spam_verdict_service_spec.rb'
     - 'ee/spec/services/ee/work_items/related_work_item_links/create_service_spec.rb'

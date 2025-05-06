@@ -1438,7 +1438,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
           end
 
           it 'calls the move service with the proper issue and project' do
-            expect_next_instance_of(move_service_class) do |service|
+            expect_next_instance_of(::WorkItems::DataSync::MoveService) do |service|
               expect(service).to receive(:execute).and_call_original
             end
 
@@ -1450,40 +1450,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
         end
       end
 
-      context 'with work_item_move_and_clone disabled' do
-        let(:move_service_class) { Issues::MoveService }
-        let_it_be(:target_project) { create(:project) }
-
-        before do
-          stub_feature_flags(work_item_move_and_clone: false)
-          target_project.add_maintainer(user)
-        end
-
-        it_behaves_like 'move issue to another project'
-
-        context 'when target_clone_container is a ProjectNamespace' do
-          it 'calls the legacy move service with the proper issue and project' do
-            expect_next_instance_of(move_service_class) do |service|
-              expect(service).to receive(:execute).and_call_original
-            end
-
-            new_issue = update_issue(target_container: target_project.project_namespace)
-
-            expect(new_issue.project).to eq(target_project)
-            expect(new_issue.title).to eq(issue.title)
-          end
-        end
-      end
-
-      context 'with work_item_move_and_clone enabled' do
-        it_behaves_like 'move issue to another project' do
-          let(:move_service_class) { ::WorkItems::DataSync::MoveService }
-
-          before do
-            stub_feature_flags(work_item_move_and_clone: true)
-          end
-        end
-      end
+      it_behaves_like 'move issue to another project'
 
       context 'when target container is a group' do
         context 'without access to the group' do
@@ -1491,7 +1458,6 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
 
           it 'does not call any clone service' do
             expect(WorkItems::DataSync::MoveService).not_to receive(:new)
-            expect(Issues::MoveService).not_to receive(:new)
 
             update_issue(target_container: target_container)
           end
@@ -1509,7 +1475,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
           end
 
           it 'calls the move service with the proper issue and project' do
-            expect_next_instance_of(clone_service_class) do |service|
+            expect_next_instance_of(::WorkItems::DataSync::CloneService) do |service|
               expect(service).to receive(:execute).and_call_original
             end
 
@@ -1521,7 +1487,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
 
           context 'clone an issue with notes' do
             it 'calls the move service with the proper issue and project' do
-              expect_next_instance_of(clone_service_class) do |service|
+              expect_next_instance_of(::WorkItems::DataSync::CloneService) do |service|
                 expect(service).to receive(:execute).and_call_original
               end
 
@@ -1535,38 +1501,7 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
         end
       end
 
-      context 'with work_item_move_and_clone disabled' do
-        let(:clone_service_class) { Issues::CloneService }
-
-        before do
-          stub_feature_flags(work_item_move_and_clone: false)
-        end
-
-        it_behaves_like 'clone an issue'
-
-        context 'when target_clone_container is a ProjectNamespace' do
-          it 'calls the legacy clone service with the proper issue and project' do
-            expect_next_instance_of(clone_service_class) do |service|
-              expect(service).to receive(:execute).and_call_original
-            end
-
-            new_issue = update_issue(target_clone_container: project.project_namespace)
-
-            expect(new_issue.project).to eq(project)
-            expect(new_issue.title).to eq(issue.title)
-          end
-        end
-      end
-
-      context 'with work_item_move_and_clone enabled' do
-        before do
-          stub_feature_flags(work_item_move_and_clone: true)
-        end
-
-        it_behaves_like 'clone an issue' do
-          let(:clone_service_class) { ::WorkItems::DataSync::CloneService }
-        end
-      end
+      it_behaves_like 'clone an issue'
 
       context 'when target container is a group' do
         context 'without access to the group' do
@@ -1574,26 +1509,8 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
 
           it 'does not call any clone service' do
             expect(WorkItems::DataSync::CloneService).not_to receive(:new)
-            expect(Issues::CloneService).not_to receive(:new)
 
             update_issue(target_clone_container: target_container, clone_with_notes: true)
-          end
-        end
-
-        context 'when user has access to the group' do
-          let_it_be(:target_container) { group }
-
-          context 'with work_item_move_and_clone disabled' do
-            before do
-              stub_feature_flags(work_item_move_and_clone: false)
-            end
-
-            it 'does not call any clone service' do
-              expect(WorkItems::DataSync::CloneService).not_to receive(:new)
-              expect(Issues::CloneService).not_to receive(:new)
-
-              update_issue(target_clone_container: target_container, clone_with_notes: true)
-            end
           end
         end
       end

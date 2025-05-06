@@ -44,14 +44,9 @@ RSpec.describe Gitlab::SlashCommands::IssueMove, :service, feature_category: :te
           it 'returns the error message' do
             message = "issue move #{issue.iid} #{project.full_path}"
 
-            if issue.project.work_item_move_and_clone_flag_enabled?
-              process_message(message)
-              # move does not happen, as moving issue to same project results in same issue, but we do not show an error
-              expect(issue.reload.moved_to).to be_nil
-            else
-              expect(process_message(message)).to include(response_type: :ephemeral,
-                text: a_string_matching(same_project_error_message))
-            end
+            process_message(message)
+            # move does not happen, as moving issue to same project results in same issue, but we do not show an error
+            expect(issue.reload.moved_to).to be_nil
           end
         end
 
@@ -119,30 +114,11 @@ RSpec.describe Gitlab::SlashCommands::IssueMove, :service, feature_category: :te
           other_project.team.add_guest(user)
 
           expect(process_message(message)).to include(response_type: :ephemeral,
-            text: a_string_matching(permissions_error_message))
+            text: a_string_matching("Unable to move. You have insufficient permissions."))
         end
       end
     end
 
-    context 'with work_item_move_and_clone disabled' do
-      before do
-        stub_feature_flags(work_item_move_and_clone: false)
-      end
-
-      it_behaves_like 'move issue slash command' do
-        let(:same_project_error_message) { "Cannot move issue to project it originates from." }
-        let(:permissions_error_message) { "Cannot move issue due to insufficient permissions." }
-      end
-    end
-
-    context 'with work_item_move_and_clone enabled' do
-      before do
-        stub_feature_flags(work_item_move_and_clone: true)
-      end
-
-      it_behaves_like 'move issue slash command' do
-        let(:permissions_error_message) { "Unable to move. You have insufficient permissions." }
-      end
-    end
+    it_behaves_like 'move issue slash command'
   end
 end

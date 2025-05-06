@@ -16,21 +16,18 @@ Metric definitions are available:
 
 <!--- start_remove The following content will be removed on remove_date: '2025-08-01' -->
 
-## Monitor Gitaly rate limiting (deprecated)
+## Monitor Gitaly rate limiting (removed)
 
 {{< alert type="warning" >}}
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitaly/-/issues/5011) in GitLab 17.7
-and is planned for removal in 18.0. Use [concurrency limiting](concurrency_limiting.md) instead.
+and was removed in 18.0. Use [concurrency limiting](concurrency_limiting.md) instead.
 
 {{< /alert >}}
 
-Gitaly can be configured to limit requests based on:
-
-- Concurrency of requests.
-- A rate limit.
-
 <!--- end_remove -->
+
+Gitaly can be configured to limit requests based on concurrency of requests (adaptive or non-adaptive).
 
 ## Monitor Gitaly concurrency limiting
 

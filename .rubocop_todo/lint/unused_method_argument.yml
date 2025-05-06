@@ -140,7 +140,6 @@ Lint/UnusedMethodArgument:
     - 'app/services/groups/update_service.rb'
     - 'app/services/import/gitlab_projects/file_acquisition_strategies/file_upload.rb'
     - 'app/services/issues/export_csv_service.rb'
-    - 'app/services/issues/move_service.rb'
     - 'app/services/jira/requests/base.rb'
     - 'app/services/keys/destroy_service.rb'
     - 'app/services/merge_requests/close_service.rb'

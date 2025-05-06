@@ -3367,10 +3367,6 @@ class Project < ApplicationRecord
     pending_delete? || hidden?
   end
 
-  def work_item_move_and_clone_flag_enabled?
-    Feature.enabled?(:work_item_move_and_clone, self, type: :beta) || group&.work_item_move_and_clone_flag_enabled?
-  end
-
   def work_items_feature_flag_enabled?
     group&.work_items_feature_flag_enabled? || Feature.enabled?(:work_items, self)
   end
