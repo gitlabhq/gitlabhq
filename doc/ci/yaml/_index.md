@@ -1096,7 +1096,7 @@ in a header section.
 spec:
   inputs:
     version:
-      regex: ^v\d\.\d+(\.\d+)$
+      regex: ^v\d\.\d+(\.\d+)?$
 title: The pipeline configuration would follow...
 ---
 ```

@@ -220,7 +220,7 @@ To create an issue from your **Issue triage (by severity)** board:
 1. Repeat these steps to create a few more issues.
 
    For example, if you're building an app, imagine that `test-project-1` and `test-project-2` refer to
-   the application's backend and frontend respectively.
+   the application's backend and frontend.
    Create the following issues, assigning to projects as you see fit:
 
    - `User registration`

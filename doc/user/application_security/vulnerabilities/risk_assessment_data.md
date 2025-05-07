@@ -23,7 +23,7 @@ high severity and a low EPSS score.
 {{< history >}}
 
 - Introduced in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `epss_querying` (in issue [470835](https://gitlab.com/gitlab-org/gitlab/-/issues/470835)) and `epss_ingestion` (in issue [467672](https://gitlab.com/gitlab-org/gitlab/-/issues/467672)). Disabled by default.
-- Renamed to `cve_enrichment_querying` and `cve_enrichment_ingestion` respectively and [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/481431) in GitLab 17.6.
+- Renamed to `cve_enrichment_querying` and `cve_enrichment_ingestion`, and [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/481431) in GitLab 17.6.
 - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/11544) in GitLab 17.7. Feature flags `cve_enrichment_querying` and `cve_enrichment_ingestion` removed.
 
 {{< /history >}}

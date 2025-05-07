@@ -5,6 +5,7 @@ import VueDraggable from 'vuedraggable';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { validateImageName } from '~/lib/utils/file_upload';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { TYPENAME_DESIGN_VERSION } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -72,6 +73,11 @@ export default {
       default: ALERT_VARIANTS.danger,
     },
     canReorderDesign: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canPasteDesign: {
       type: Boolean,
       required: false,
       default: false,
@@ -237,6 +243,24 @@ export default {
       );
     },
   },
+  watch: {
+    canPasteDesign: {
+      immediate: true,
+      handler(newVal) {
+        if (newVal) {
+          this.toggleOnPasteListener();
+        } else {
+          this.toggleOffPasteListener();
+        }
+      },
+    },
+  },
+  unmounted() {
+    this.toggleOffPasteListener();
+  },
+  destroyed() {
+    this.toggleOffPasteListener();
+  },
   methods: {
     dismissError() {
       this.error = undefined;
@@ -344,8 +368,8 @@ export default {
     },
     onPointerUp(event) {
       const { clientX, clientY } = event;
-      const deltaX = Math.abs(clientX - this.dragStartPosition.x);
-      const deltaY = Math.abs(clientY - this.dragStartPosition.y);
+      const deltaX = this.dragStartPosition ? Math.abs(clientX - this.dragStartPosition.x) : 0;
+      const deltaY = this.dragStartPosition ? Math.abs(clientY - this.dragStartPosition.y) : 0;
 
       // Checking if the mouse movement was below the drag threshold of 5px
       // to treat the event as a click, not a drag
@@ -380,6 +404,51 @@ export default {
         this.isDraggingDesign = false;
       }, 100);
     },
+    isValidDragDataType(files) {
+      return files.some((item) =>
+        this.$options.VALID_DESIGN_FILE_MIMETYPE.mimetype.includes(item.type),
+      );
+    },
+    onDesignPaste(event) {
+      if (!this.canPasteDesign) return;
+
+      const { clipboardData } = event;
+      if (!clipboardData || !clipboardData.files.length) return;
+
+      const files = Array.from(clipboardData.files);
+      if (!this.isValidDragDataType(files)) return;
+
+      event.preventDefault();
+
+      // Use a counter for multiple files in the same paste operation of name image.png
+      let duplicateCounter = 0;
+
+      files.forEach((file) => {
+        let filename = validateImageName(file);
+
+        // Generate a unique filename for invalid or default names
+        if (!filename || filename === 'image.png') {
+          const timestamp = new Date().toISOString().replace(/[T:Z]/g, '_').replace(/\..+/, '');
+
+          filename =
+            duplicateCounter === 0
+              ? `image_${timestamp}.png`
+              : `image_${timestamp}_${duplicateCounter}.png`;
+
+          duplicateCounter += 1;
+        }
+
+        // Create and upload the new file
+        const newFile = new File([file], filename);
+        this.$emit('upload', [newFile]);
+      });
+    },
+    toggleOnPasteListener() {
+      document.addEventListener('paste', this.onDesignPaste);
+    },
+    toggleOffPasteListener() {
+      document.removeEventListener('paste', this.onDesignPaste);
+    },
   },
   dragOptions: {
     animation: 200,
@@ -402,7 +471,12 @@ export default {
 </script>
 
 <template>
-  <div class="work-item-design-widget-container">
+  <div
+    class="work-item-design-widget-container gl-mt-5 gl-rounded-base focus:gl-focus"
+    :tabindex="0"
+    @focusin="toggleOnPasteListener"
+    @focusout="toggleOffPasteListener"
+  >
     <slot v-if="!hasDesignsAndVersions" name="empty-state"></slot>
     <crud-component
       v-if="hasDesignsAndVersions"
@@ -410,7 +484,7 @@ export default {
       anchor-id="designs"
       :title="s__('DesignManagement|Designs')"
       data-testid="designs-root"
-      class="gl-relative gl-mt-5"
+      class="gl-relative !gl-mt-0"
       :body-class="crudBodyClass"
       is-collapsible
       persist-collapsed-state

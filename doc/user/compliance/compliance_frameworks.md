@@ -303,10 +303,10 @@ External controls can have one of three statuses.
 | Status    | Description |
 |:----------|:------------|
 | `pending` | Default status. No response received from the external service. |
-| `passed`  | Response received from the external service and the external control was approved by the external service. |
-| `failed`  | Response received from the external service and the external control was denied by the external service. |
+| `pass`  | Response received from the external service and the external control was approved by the external service. |
+| `fail`  | Response received from the external service and the external control was denied by the external service. |
 
-If something changes outside of GitLab, you can set the status of an external control by using the API. You don't need to wait for a payload to be sent first.
+If something changes outside of GitLab, you can set the [status of an external control by using the API](../../api/external_controls.md). You don't need to wait for a payload to be sent first.
 
 ### Add requirements
 

@@ -213,6 +213,7 @@ export default {
           v-model="tagRuleType"
           name="protection-type"
           :value="$options.PROTECTED_RULE_TYPE"
+          autofocus
         >
           {{ s__('ContainerRegistry|Protected') }}
           <template #help>
@@ -246,6 +247,7 @@ export default {
         id="input-tag-name-pattern"
         v-model.trim="protectionRuleFormData.tagNamePattern"
         type="text"
+        :autofocus="!showProtectionType"
         required
         trim
         :state="isTagNamePatternValid"

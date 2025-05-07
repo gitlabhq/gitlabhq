@@ -384,7 +384,7 @@ Now, it's time to create the database:
 1. For the DB instance size, select **Standard classes** and select an instance size that meets your requirements from the dropdown list. We use a `db.m5.large` instance.
 1. Under **Storage**, configure the following:
    1. Select **Provisioned IOPS (SSD)** from the storage type dropdown list. Provisioned IOPS (SSD) storage is best suited for this use (though you can choose General Purpose (SSD) to reduce the costs). Read more about it at [Storage for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html).
-   1. Allocate storage and set provisioned IOPS. We use the minimum values, `100` and `1000`, respectively.
+   1. Allocate storage and set provisioned IOPS. We use the minimum values, `100` and `1000`.
    1. Enable storage autoscaling (optional) and set a maximum storage threshold.
 1. Under **Connectivity**, configure the following:
    1. Under the **Virtual Private Cloud (VPC)** dropdown list select the VPC we created earlier (`gitlab-vpc`).

@@ -23,8 +23,7 @@ names as the keys, and the variants you want each to resolve to, as the values:
 
 ```ruby
 # Ensures the experiments named `:example` & `:example2` are both "enabled" and
-# that each will resolve to the given variant (`:my_variant` and `:control`
-# respectively).
+# that each will resolve to the given variant (`:my_variant` and `:control`).
 stub_experiments(example: :my_variant, example2: :control)
 
 experiment(:example) do |e|

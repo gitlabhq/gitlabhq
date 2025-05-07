@@ -340,7 +340,7 @@ For more information on the passthrough syntax to use, see [Schema](custom_rules
 
 #### With a remote ruleset
 
-You can replace the default ruleset with configuration defined in a remote Git repository or a file stored somewhere online using the `git` and `url` passthroughs, respectively.
+You can replace the default ruleset with configuration defined in a remote Git repository or a file stored somewhere online using the `git` and `url` passthroughs.
 
 A remote ruleset can be used across multiple projects. For example, you may want to apply the same
 ruleset to a number of projects in one of your namespaces, in such case, you may use either type of

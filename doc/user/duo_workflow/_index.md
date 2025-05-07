@@ -64,7 +64,7 @@ Before you can use Workflow, you must:
   - You have at least the Developer role.
   - The project belongs to a [group namespace](../namespace/_index.md) with an Ultimate subscription.
   - [Beta and experimental features must be turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
-  - [GitLab Duo must be turned on](../gitlab_duo/_index.md).
+  - [GitLab Duo must be turned on](../gitlab_duo/turn_on_off.md).
   - The repository you want to work with should be small or medium-sized.
     Workflow can be slow or fail for large repositories.
 - [Successfully connect to your repository](#connect-to-your-repository).

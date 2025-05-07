@@ -231,7 +231,7 @@ Create a new logger class, inheriting from `MultiDestinationLogger` and add an
 array of loggers to a `LOGGERS` constant. The loggers should be classes that
 descend from `Gitlab::Logger`. For example, the user-defined loggers in the
 following examples could be inheriting from `Gitlab::Logger` and
-`Gitlab::JsonLogger`, respectively.
+`Gitlab::JsonLogger`.
 
 You must specify one of the loggers as the `primary_logger`. The
 `primary_logger` is used when information about this multi-destination logger is
