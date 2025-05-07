@@ -64,7 +64,7 @@ Learn about [data usage when using GitLab Duo Chat](../gitlab_duo/data_usage.md)
 
 ### Manually synchronize your subscription
 
-You can [manually synchronize your subscription](../../subscriptions/self_managed/_index.md#manually-synchronize-subscription-data) if either:
+You can [manually synchronize your subscription](../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data) if either:
 
 - You have just purchased a subscription for the Premium or Ultimate tier, or have recently assigned seats for GitLab Duo Pro, and you have upgraded to GitLab 16.8.
 - You already have a subscription for the Premium or Ultimate tier, or you have recently assigned seats for GitLab Duo Pro, and you have upgraded to GitLab 16.8.

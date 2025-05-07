@@ -88,7 +88,7 @@ You are excluded from quarterly reconciliation if you:
 - Purchased your subscription from a reseller or another channel partner.
 - Purchased a subscription that is not a 12-month term (includes multi-year and non-standard length subscriptions).
 - Purchased your subscription with a purchasing order.
-- Purchased an [Enterprise Agile Planning](gitlab_com/_index.md#enterprise-agile-planning) product.
+- Purchased an [Enterprise Agile Planning](manage_subscription.md#enterprise-agile-planning) product.
 - Are a public sector customer.
 - Have an offline environment and used a license file to activate your subscription.
 - Are enrolled in a program that provides a Free tier such as the GitLab for Education,

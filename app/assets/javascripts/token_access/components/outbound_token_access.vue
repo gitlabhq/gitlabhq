@@ -21,7 +21,7 @@ import getCIJobTokenScopeQuery from '../graphql/queries/get_ci_job_token_scope.q
 import getProjectsWithCIJobTokenScopeQuery from '../graphql/queries/get_projects_with_ci_job_token_scope.query.graphql';
 import TokenAccessTable from './token_access_table.vue';
 
-// Note: This component will be removed in 18.0, as the outbound access token is getting deprecated
+// Note: This component needs to be removed in the post cleanup after disabling of the feature
 export default {
   i18n: {
     toggleLabelTitle: s__(
@@ -40,7 +40,7 @@ export default {
     projectsFetchError: __('There was a problem fetching the projects'),
     scopeFetchError: __('There was a problem fetching the job token scope value'),
     outboundTokenAlertDeprecationMessage: s__(
-      `CICD|The %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}from%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting is deprecated and scheduled for removal in the 18.0 milestone. Use the %{boldStart}Authorized groups and projects%{boldEnd} setting and allowlist instead. %{linkStart}How do I do this?%{linkEnd}`,
+      `CICD|The %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}from%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting is removed. Use the %{boldStart}Authorized groups and projects%{boldEnd} setting and allowlist instead. %{linkStart}How do I do this?%{linkEnd}`,
     ),
     disableToggleWarning: s__('CICD|Disabling this feature is a permanent change.'),
     removeNamespaceModalTitle: __('Remove %{namespace}'),
@@ -50,7 +50,7 @@ export default {
     removeNamespaceModalActionText: s__('CICD|Remove group or project'),
   },
   deprecationDocumentationLink: helpPagePath('ci/jobs/ci_job_token', {
-    anchor: 'limit-your-projects-job-token-access-deprecated',
+    anchor: 'limit-your-projects-job-token-access-removed',
   }),
   components: {
     GlAlert,
@@ -112,7 +112,7 @@ export default {
   },
   computed: {
     ciJobTokenHelpPage() {
-      return helpPagePath('ci/jobs/ci_job_token#limit-your-projects-job-token-access-deprecated');
+      return helpPagePath('ci/jobs/ci_job_token#limit-your-projects-job-token-access-removed');
     },
     disableTokenToggle() {
       return !this.jobTokenScopeEnabled;

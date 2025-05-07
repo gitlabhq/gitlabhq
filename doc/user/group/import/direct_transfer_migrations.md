@@ -226,7 +226,7 @@ To view group import history:
 1. Sign in to GitLab.
 1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and **New group**.
 1. Select **Import group**.
-1. In the upper-right corner, select **History**.
+1. In the upper-right corner, select **View import history**.
 1. If there are any errors for a particular import, select **Show errors** to see their details.
 
 ## Cancel a running migration

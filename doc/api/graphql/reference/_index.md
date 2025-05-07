@@ -15106,6 +15106,30 @@ The edge type for [`ContributionAnalyticsContribution`](#contributionanalyticsco
 | <a id="contributionanalyticscontributionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="contributionanalyticscontributionedgenode"></a>`node` | [`ContributionAnalyticsContribution`](#contributionanalyticscontribution) | The item at the end of the edge. |
 
+#### `CountableVulnerabilityConnection`
+
+The connection type for [`CountableVulnerability`](#countablevulnerability).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="countablevulnerabilityconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="countablevulnerabilityconnectionedges"></a>`edges` | [`[CountableVulnerabilityEdge]`](#countablevulnerabilityedge) | A list of edges. |
+| <a id="countablevulnerabilityconnectionnodes"></a>`nodes` | [`[CountableVulnerability]`](#countablevulnerability) | A list of nodes. |
+| <a id="countablevulnerabilityconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CountableVulnerabilityEdge`
+
+The edge type for [`CountableVulnerability`](#countablevulnerability).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="countablevulnerabilityedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="countablevulnerabilityedgenode"></a>`node` | [`CountableVulnerability`](#countablevulnerability) | The item at the end of the edge. |
+
 #### `CoverageFuzzingCorpusConnection`
 
 The connection type for [`CoverageFuzzingCorpus`](#coveragefuzzingcorpus).
@@ -22025,6 +22049,7 @@ Full JSON structure of multi-match results in a single file.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="blobsearchdurations"></a>`durationS` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Introduced** in GitLab 18.0. **Status**: Experiment. Duration of the request in seconds. |
 | <a id="blobsearchfilecount"></a>`fileCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Total number of files with matches. |
 | <a id="blobsearchfiles"></a>`files` {{< icon name="warning-solid" >}} | [`[SearchBlobFileType!]`](#searchblobfiletype) | **Introduced** in GitLab 17.2. **Status**: Experiment. List of files with matches. |
 | <a id="blobsearchmatchcount"></a>`matchCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Total number of matches. |
@@ -24350,6 +24375,97 @@ Represents a control expression.
 | <a id="controlexpressionexpression"></a>`expression` | [`ExpressionValue!`](#expressionvalue) | Expression details for the control. |
 | <a id="controlexpressionid"></a>`id` | [`ID!`](#id) | ID for the control. |
 | <a id="controlexpressionname"></a>`name` | [`String!`](#string) | Name of the control. |
+
+### `CountableVulnerability`
+
+Represents a vulnerability. The connection type is countable.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="countablevulnerabilityairesolutionavailable"></a>`aiResolutionAvailable` | [`Boolean`](#boolean) | Indicates whether the type of vulnerability can be resolved with AI. |
+| <a id="countablevulnerabilityairesolutionenabled"></a>`aiResolutionEnabled` | [`Boolean`](#boolean) | Indicates whether the specific vulnerability can be resolved with AI. |
+| <a id="countablevulnerabilityarchivalinformation"></a>`archivalInformation` {{< icon name="warning-solid" >}} | [`VulnerabilityArchivalInformation!`](#vulnerabilityarchivalinformation) | **Introduced** in GitLab 17.11. **Status**: Experiment. Indicates whether the vulnerability is about to be archived in the next month. |
+| <a id="countablevulnerabilitycommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on the noteable. (see [Connections](#connections)) |
+| <a id="countablevulnerabilityconfirmedat"></a>`confirmedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to confirmed. |
+| <a id="countablevulnerabilityconfirmedby"></a>`confirmedBy` | [`UserCore`](#usercore) | User that confirmed the vulnerability. |
+| <a id="countablevulnerabilitycveenrichment"></a>`cveEnrichment` | [`CveEnrichmentType`](#cveenrichmenttype) | Enrichment (EPSS score and KEV) for CVE vulnerabilities. |
+| <a id="countablevulnerabilitycvss"></a>`cvss` | [`[CvssType!]!`](#cvsstype) | CVSS information for the vulnerability. |
+| <a id="countablevulnerabilitydescription"></a>`description` | [`String`](#string) | Description of the vulnerability. |
+| <a id="countablevulnerabilitydescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
+| <a id="countablevulnerabilitydetails"></a>`details` | [`[VulnerabilityDetail!]!`](#vulnerabilitydetail) | Details of the vulnerability. |
+| <a id="countablevulnerabilitydetectedat"></a>`detectedAt` | [`Time!`](#time) | Timestamp of when the vulnerability was first detected. |
+| <a id="countablevulnerabilitydiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on the noteable. (see [Connections](#connections)) |
+| <a id="countablevulnerabilitydismissalreason"></a>`dismissalReason` | [`VulnerabilityDismissalReason`](#vulnerabilitydismissalreason) | Reason for dismissal. Returns `null` for states other than `dismissed`. |
+| <a id="countablevulnerabilitydismissedat"></a>`dismissedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to dismissed. |
+| <a id="countablevulnerabilitydismissedby"></a>`dismissedBy` | [`UserCore`](#usercore) | User that dismissed the vulnerability. |
+| <a id="countablevulnerabilityexternalissuelinks"></a>`externalIssueLinks` | [`VulnerabilityExternalIssueLinkConnection!`](#vulnerabilityexternalissuelinkconnection) | List of external issue links related to the vulnerability. (see [Connections](#connections)) |
+| <a id="countablevulnerabilityfalsepositive"></a>`falsePositive` | [`Boolean`](#boolean) | Indicates whether the vulnerability is a false positive. |
+| <a id="countablevulnerabilityhasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Indicates whether there is a remediation available for the vulnerability. |
+| <a id="countablevulnerabilityid"></a>`id` | [`ID!`](#id) | GraphQL ID of the vulnerability. |
+| <a id="countablevulnerabilityidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifier!]!`](#vulnerabilityidentifier) | Identifiers of the vulnerability. |
+| <a id="countablevulnerabilitylinks"></a>`links` | [`[VulnerabilityLink!]!`](#vulnerabilitylink) | List of links associated with the vulnerability. |
+| <a id="countablevulnerabilitylocation"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
+| <a id="countablevulnerabilitymergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request that fixes the vulnerability. |
+| <a id="countablevulnerabilityname"></a>`name` | [`String`](#string) | Name or title of the object. |
+| <a id="countablevulnerabilitypresentondefaultbranch"></a>`presentOnDefaultBranch` | [`Boolean!`](#boolean) | Indicates whether the vulnerability is present on the default branch or not. |
+| <a id="countablevulnerabilityprimaryidentifier"></a>`primaryIdentifier` | [`VulnerabilityIdentifier`](#vulnerabilityidentifier) | Primary identifier of the vulnerability. |
+| <a id="countablevulnerabilityproject"></a>`project` | [`Project`](#project) | Project on which the vulnerability was found. |
+| <a id="countablevulnerabilityreachability"></a>`reachability` {{< icon name="warning-solid" >}} | [`ReachabilityType`](#reachabilitytype) | **Introduced** in GitLab 17.11. **Status**: Experiment. Reachability status of the vulnerability. |
+| <a id="countablevulnerabilityreporttype"></a>`reportType` | [`VulnerabilityReportType`](#vulnerabilityreporttype) | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING, API_FUZZING, CLUSTER_IMAGE_SCANNING, CONTAINER_SCANNING_FOR_REGISTRY, GENERIC). `Scan Type` in the UI. |
+| <a id="countablevulnerabilityrepresentationinformation"></a>`representationInformation` {{< icon name="warning-solid" >}} | [`VulnerabilityRepresentationInformation`](#vulnerabilityrepresentationinformation) | **Introduced** in GitLab 17.7. **Status**: Experiment. Information about the representation of the vulnerability, such as resolved commit SHA. |
+| <a id="countablevulnerabilityresolvedat"></a>`resolvedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to resolved. |
+| <a id="countablevulnerabilityresolvedby"></a>`resolvedBy` | [`UserCore`](#usercore) | User that resolved the vulnerability. |
+| <a id="countablevulnerabilityresolvedondefaultbranch"></a>`resolvedOnDefaultBranch` | [`Boolean!`](#boolean) | Indicates whether the vulnerability is fixed on the default branch or not. |
+| <a id="countablevulnerabilityscanner"></a>`scanner` | [`VulnerabilityScanner`](#vulnerabilityscanner) | Scanner metadata for the vulnerability. |
+| <a id="countablevulnerabilityseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability (INFO, UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL). |
+| <a id="countablevulnerabilityseverityoverrides"></a>`severityOverrides` | [`SeverityOverrideConnection`](#severityoverrideconnection) | List of severity changes for the vulnerability. (see [Connections](#connections)) |
+| <a id="countablevulnerabilitysolution"></a>`solution` | [`String`](#string) | Recommended solution for the vulnerability. |
+| <a id="countablevulnerabilitystate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | State of the vulnerability (DETECTED, CONFIRMED, RESOLVED, DISMISSED). |
+| <a id="countablevulnerabilitystatecomment"></a>`stateComment` | [`String`](#string) | Comment given for the vulnerability state change. |
+| <a id="countablevulnerabilitystatetransitions"></a>`stateTransitions` | [`VulnerabilityStateTransitionTypeConnection`](#vulnerabilitystatetransitiontypeconnection) | List of state transitions related to the vulnerability. (see [Connections](#connections)) |
+| <a id="countablevulnerabilitytitle"></a>`title` | [`String`](#string) | Title of the vulnerability. |
+| <a id="countablevulnerabilityupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the vulnerability was last updated. |
+| <a id="countablevulnerabilityusernotescount"></a>`userNotesCount` | [`Int!`](#int) | Number of user notes attached to the vulnerability. |
+| <a id="countablevulnerabilityuserpermissions"></a>`userPermissions` | [`VulnerabilityPermissions!`](#vulnerabilitypermissions) | Permissions for the current user on the resource. |
+| <a id="countablevulnerabilityuuid"></a>`uuid` | [`String!`](#string) | UUID of the vulnerability finding. Can be used to look up the associated security report finding. |
+| <a id="countablevulnerabilityvulnerabilitypath"></a>`vulnerabilityPath` | [`String`](#string) | Path to the vulnerability's details page. |
+| <a id="countablevulnerabilityweburl"></a>`webUrl` | [`String`](#string) | URL to the vulnerability's details page. |
+
+#### Fields with arguments
+
+##### `CountableVulnerability.issueLinks`
+
+List of issue links related to the vulnerability.
+
+Returns [`VulnerabilityIssueLinkConnection!`](#vulnerabilityissuelinkconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="countablevulnerabilityissuelinkslinktype"></a>`linkType` | [`VulnerabilityIssueLinkType`](#vulnerabilityissuelinktype) | Filter issue links by link type. |
+
+##### `CountableVulnerability.notes`
+
+All notes on this noteable.
+
+Returns [`NoteConnection!`](#noteconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="countablevulnerabilitynotesfilter"></a>`filter` | [`NotesFilterType`](#notesfiltertype) | Type of notes collection: ALL_NOTES, ONLY_COMMENTS, ONLY_ACTIVITY. |
 
 ### `CoverageFuzzingCorpus`
 
@@ -42000,7 +42116,7 @@ Represents a vulnerabilities widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetvulnerabilitiesrelatedvulnerabilities"></a>`relatedVulnerabilities` {{< icon name="warning-solid" >}} | [`VulnerabilityConnection`](#vulnerabilityconnection) | **Introduced** in GitLab 17.10. **Status**: Experiment. Related vulnerabilities of the work item. |
+| <a id="workitemwidgetvulnerabilitiesrelatedvulnerabilities"></a>`relatedVulnerabilities` {{< icon name="warning-solid" >}} | [`CountableVulnerabilityConnection`](#countablevulnerabilityconnection) | **Introduced** in GitLab 17.10. **Status**: Experiment. Related vulnerabilities of the work item. |
 | <a id="workitemwidgetvulnerabilitiestype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetWeight`
@@ -47946,6 +48062,7 @@ Implementations:
 
 - [`AlertManagementAlert`](#alertmanagementalert)
 - [`BoardEpic`](#boardepic)
+- [`CountableVulnerability`](#countablevulnerability)
 - [`Design`](#design)
 - [`Epic`](#epic)
 - [`EpicIssue`](#epicissue)
@@ -48194,6 +48311,7 @@ Implementations:
 - [`AutocompletedUser`](#autocompleteduser)
 - [`BoardEpic`](#boardepic)
 - [`Commit`](#commit)
+- [`CountableVulnerability`](#countablevulnerability)
 - [`CurrentUser`](#currentuser)
 - [`Design`](#design)
 - [`Epic`](#epic)

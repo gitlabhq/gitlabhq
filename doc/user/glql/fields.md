@@ -95,12 +95,15 @@ format `field operator value`.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
+- Aliases `approvedBy` and `approvers` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
 
 {{< /history >}}
 
 **Description**: Query merge requests by one or more users who approved the merge request.
 
 **Field name**: `approver`
+
+**Aliases**: `approvedBy`, `approvers`
 
 **Allowed operators**: `=`, `!=`
 
@@ -123,9 +126,17 @@ format `field operator value`.
 
 ### Assignees
 
+{{< history >}}
+
+- Alias `assignees` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
+
+{{< /history >}}
+
 **Description**: Query issues or merge requests by one or more users who are assigned to the issue or merge request.
 
 **Field name**: `assignee`
+
+**Aliases**: `assignees`
 
 **Allowed operators**: `=`, `in`, `!=`
 
@@ -256,11 +267,20 @@ format `field operator value`.
 
 ### Closed at
 
+{{< history >}}
+
+- Alias `closedAt` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
+- Operators `>=` and `<=` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/work_items/58) in GitLab 18.0.
+
+{{< /history >}}
+
 **Description**: Query issues or merge requests by the date when they were closed.
 
 **Field name**: `closed`
 
-**Allowed operators**: `=`, `>`, `<`
+**Aliases**: `closedAt`
+
+**Allowed operators**: `=`, `>`, `<`, `>=`, `<=`
 
 **Allowed value types**:
 
@@ -276,6 +296,7 @@ format `field operator value`.
 **Additional details**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
+- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
 
 **Examples**:
 
@@ -334,11 +355,20 @@ format `field operator value`.
 
 ### Created at
 
+{{< history >}}
+
+- Aliases `createdAt`, `opened`, and `openedAt` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
+- Operators `>=` and `<=` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/work_items/58) in GitLab 18.0.
+
+{{< /history >}}
+
 **Description**: Query issues or merge requests by the date when they were created.
 
 **Field name**: `created`
 
-**Allowed operators**: `=`, `>`, `<`
+**Aliases**: `createdAt`, `opened`, `openedAt`
+
+**Allowed operators**: `=`, `>`, `<`, `>=`, `<=`
 
 **Allowed value types**:
 
@@ -355,6 +385,7 @@ format `field operator value`.
 **Additional details**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
+- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
 
 **Examples**:
 
@@ -381,6 +412,8 @@ format `field operator value`.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
+- Alias `deployedAt` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
+- Operators `>=` and `<=` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/work_items/58) in GitLab 18.0.
 
 {{< /history >}}
 
@@ -388,7 +421,9 @@ format `field operator value`.
 
 **Field name**: `deployed`
 
-**Allowed operators**: `=`, `>`, `<`
+**Aliases**: `deployedAt`
+
+**Allowed operators**: `=`, `>`, `<`, `>=`, `<=`
 
 **Allowed value types**:
 
@@ -401,6 +436,7 @@ format `field operator value`.
 **Additional details**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
+- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
 
 **Examples**:
 
@@ -452,11 +488,20 @@ format `field operator value`.
 
 ### Due date
 
+{{< history >}}
+
+- Alias `dueDate` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
+- Operators `>=` and `<=` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/work_items/58) in GitLab 18.0.
+
+{{< /history >}}
+
 **Description**: Query issues by the date when they are due.
 
 **Field name**: `due`
 
-**Allowed operators**: `=`, `>`, `<`
+**Aliases**: `dueDate`
+
+**Allowed operators**: `=`, `>`, `<`, `>=`, `<=`
 
 **Allowed value types**:
 
@@ -472,6 +517,7 @@ format `field operator value`.
 **Additional details**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
+- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
 
 **Examples**:
 
@@ -527,12 +573,6 @@ format `field operator value`.
 
 ### Group
 
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/106) in GitLab 17.10: Group queries no longer search the entire hierarchy by default.
-
-{{< /history >}}
-
 **Description**: Query issues or merge requests within all projects in a given group.
 
 **Field name**: `group`
@@ -573,9 +613,17 @@ format `field operator value`.
 
 ### Health status
 
+{{< history >}}
+
+- Alias `healthStatus` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
+
+{{< /history >}}
+
 **Description**: Query issues by their health status.
 
 **Field name**: `health`
+
+**Aliases**: `healthStatus`
 
 **Allowed operators**: `=`
 
@@ -761,12 +809,15 @@ format `field operator value`.
 {{< history >}}
 
 - Support for label value types [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/79) in GitLab 17.8.
+- Alias `labels` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
 
 {{< /history >}}
 
 **Description**: Query issues or merge requests by their associated labels.
 
 **Field name**: `label`
+
+**Aliases**: `labels`
 
 **Allowed operators**: `=`, `in`, `!=`
 
@@ -837,6 +888,8 @@ format `field operator value`.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
+- Alias `mergedAt` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
+- Operators `>=` and `<=` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/work_items/58) in GitLab 18.0.
 
 {{< /history >}}
 
@@ -844,7 +897,9 @@ format `field operator value`.
 
 **Field name**: `merged`
 
-**Allowed operators**: `=`, `>`, `<`
+**Aliases**: `mergedAt`
+
+**Allowed operators**: `=`, `>`, `<`, `>=`, `<=`
 
 **Allowed value types**:
 
@@ -857,6 +912,7 @@ format `field operator value`.
 **Additional details**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
+- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
 
 **Examples**:
 
@@ -877,12 +933,15 @@ format `field operator value`.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
+- Alias `mergedBy` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
 
 {{< /history >}}
 
 **Description**: Query merge requests by the user that merged the merge request.
 
 **Field name**: `merger`
+
+**Aliases**: `mergedBy`
 
 **Allowed operators**: `=`
 
@@ -1000,9 +1059,17 @@ format `field operator value`.
 
 ### Reviewers
 
+{{< history >}}
+
+- Aliases `reviewers` and `reviewedBy` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
+
+{{< /history >}}
+
 **Description**: Query merge requests that were reviewed by one or more users.
 
 **Field name**: `reviewer`
+
+**Aliases**: `reviewers`, `reviewedBy`
 
 **Allowed operators**: `=`, `!=`
 
@@ -1081,11 +1148,20 @@ format `field operator value`.
 
 ### Updated at
 
+{{< history >}}
+
+- Alias `updatedAt` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
+- Operators `>=` and `<=` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/work_items/58) in GitLab 18.0.
+
+{{< /history >}}
+
 **Description**: Query issues or merge requests by when they were last updated.
 
 **Field name**: `updated`
 
-**Allowed operators**: `=`, `>`, `<`
+**Aliases**: `updatedAt`
+
+**Allowed operators**: `=`, `>`, `<`, `>=`, `<=`
 
 **Allowed value types**:
 
@@ -1102,6 +1178,7 @@ format `field operator value`.
 **Additional details**:
 
 - For the `=` operator, the time range is considered from 00:00 to 23:59 in the user's time zone.
+- `>=` and `<=` operators are inclusive of the dates being queried, whereas `>` and `<` are not.
 
 **Examples**:
 
@@ -1187,7 +1264,7 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 **Aliases**: `assignees`
 
-**Supported for**: Merge requests, Issues
+**Supported for**: Issues, merge requests
 
 ### Author
 
@@ -1195,7 +1272,7 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 **Field name**: `author`
 
-**Supported for**: Merge requests, Issues
+**Supported for**: Issues, merge requests
 
 ### Closed at
 
@@ -1205,7 +1282,7 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 **Aliases**: `closedAt`
 
-**Supported for**: Merge requests, Issues
+**Supported for**: Issues, merge requests
 
 ### Confidential
 
@@ -1223,7 +1300,7 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 **Aliases**: `createdAt`
 
-**Supported for**: Merge requests, Issues
+**Supported for**: Issues, merge requests
 
 ### Deployed at
 
@@ -1255,6 +1332,14 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 **Supported for**: Merge requests
 
+### Description
+
+**Description**: Displays the description of an issue or a merge request listed in the view.
+
+**Field name**: `description`
+
+**Supported for**: Issues, merge requests
+
 ### Due date
 
 **Description**: Display relative time since today when an issue listed in the view is due.
@@ -1281,7 +1366,7 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 **Field name**: `id`
 
-**Supported for**: Merge requests, Issues
+**Supported for**: Issues, merge requests
 
 ### Iteration
 
@@ -1305,7 +1390,7 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 **Aliases**: `labels`
 
-**Supported for**: Merge requests, Issues
+**Supported for**: Issues, merge requests
 
 ### Last comment
 
@@ -1319,7 +1404,7 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 **Field name**: `lastComment`
 
-**Supported for**: Merge requests, Issues
+**Supported for**: Issues, merge requests
 
 ### Merged at
 
@@ -1343,7 +1428,7 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 **Field name**: `milestone`
 
-**Supported for**: Merge requests, Issues
+**Supported for**: Issues, merge requests
 
 ### Reviewers
 
@@ -1368,7 +1453,15 @@ the state values can include `Open` or `Closed`. For merge requests, these inclu
 
 **Field name**: `state`
 
-**Supported for**: Merge requests, Issues
+**Supported for**: Issues, merge requests
+
+### Title
+
+**Description**: Displays the title of an issue or a merge request listed in the view.
+
+**Field name**: `title`
+
+**Supported for**: Issues, merge requests
 
 ### Updated at
 
@@ -1378,7 +1471,7 @@ the state values can include `Open` or `Closed`. For merge requests, these inclu
 
 **Aliases**: `updatedAt`
 
-**Supported for**: Merge requests, Issues
+**Supported for**: Issues, merge requests
 
 ### Weight
 

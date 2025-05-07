@@ -1,6 +1,11 @@
 @use 'constants';
 
 .rd-text-view-root {
+  --rd-code-border-adjust: var(--code-border-lightness-adjust, -0.075);
+  --rd-line-added-background-color: var(--custom-diff-addition-color, var(--code-new-diff-background-color, $line-number-new));
+  --rd-line-removed-background-color: var(--custom-diff-deletion-color, var(--code-old-diff-background-color, $line-number-old));
+  --rd-line-link-color: var(--code-line-nubmer-color, #{$gl-color-neutral-400});
+  --rd-line-theme-border-color: oklch(from var(--code-background) calc(l + var(--rd-code-border-adjust)) c h);
   background-color: var(--code-background, $gl-color-neutral-0);
   font-family: $monospace-font;
   line-height: constants.$code-line-height;
@@ -101,13 +106,6 @@
   padding: 0 10px 0 5px;
   text-align: right;
   background-color: var(--code-line-nubmer-background-color, $white);
-
-  // override content border
-  &:first-child {
-    margin-left: -1px;
-    border-left: 1px solid rgba(0, 0, 0, 0.125);
-    border-left: 1px solid light-dark(rgba(0, 0, 0, 0.125), var(--gl-border-color-default));
-  }
 }
 
 // Do not use nesting here to allow quick jump to code based on the selector
@@ -115,8 +113,10 @@
 .rd-hunk-lines-inline:hover .rd-line-number,
 .rd-hunk-lines:has(.rd-line-content[data-position=new]:hover:not(:empty)) .rd-line-number[data-position=new],
 .rd-hunk-lines:has(.rd-line-content[data-position=old]:hover:not(:empty)) .rd-line-number[data-position=old] {
-  background-color: var(--code-line-nubmer-hover-background-color, $gl-color-purple-100);
-  border-color: var(--code-line-nubmer-hover-border-color, $gl-color-purple-200);
+  --rd-line-border-color: var(--code-line-nubmer-hover-border-color, #{$gl-color-purple-200});
+  --rd-adjacent-line-border-color: var(--rd-line-border-color);
+  --rd-line-background-color: var(--code-line-nubmer-hover-background-color, #{$gl-color-purple-100});
+  background-color: var(--rd-line-background-color);
 }
 
 .rd-line-number:hover:not(:empty) .rd-line-link {
@@ -124,27 +124,64 @@
 }
 
 .rd-line-number[data-change=removed] {
-  background-color: var(--diff-deletion-color, var(--code-old-diff-line-number-background-color, $line-number-old));
+  --rd-line-link-color: var(--code-old-diff-line-nubmer-color, #{scale-color($gl-color-neutral-300, $red: -30%, $green: -30%, $blue: -30%)});
+  --rd-line-background-color: var(--custom-diff-deletion-color, var(--code-old-diff-line-number-background-color));
+  background-color: var(--rd-line-background-color);
 }
 
 .rd-line-number[data-change=added] {
-  background-color: var(--diff-addition-color, var(--code-new-diff-line-number-background-color, $line-number-new));
+  --rd-line-link-color: var(--code-new-diff-line-nubmer-color, #{scale-color($gl-color-neutral-200, $red: -30%, $green: -30%, $blue: -30%)});
+  --rd-line-background-color: var(--custom-diff-addition-color, var(--code-new-diff-line-number-background-color));
+  background-color: var(--rd-line-background-color);
 }
 
 .rd-line-number-border-right,
 .rd-line-number-border-both {
-  border-right: 1px solid rgba(0, 0, 0, 0.125);
+  border-right: 1px solid var(--rd-line-border-color, var(--rd-line-theme-border-color));
 }
 
 .rd-line-number-border-both {
-  border-left: 1px solid rgba(0, 0, 0, 0.125);
+  border-left: 1px solid var(--rd-line-border-color, var(--rd-line-theme-border-color));
+}
+
+// consistent border colors for changed lines
+.rd-line-number,
+.rd-line-content {
+  --rd-line-border-color: oklch(from var(--rd-line-background-color) calc(l + var(--rd-code-border-adjust)) c h);
+}
+
+.rd-line-content[data-change=removed] + .rd-line-number[data-change=added] {
+  border-left-color: var(--rd-adjacent-line-border-color,
+    oklch(
+      from color-mix(in lch, var(--rd-line-removed-background-color), var(--rd-line-added-background-color))
+      calc(l + var(--rd-code-border-adjust)) c h
+    )
+  );
+}
+
+.rd-line-content[data-change=removed]:has(+ :not(.rd-line-number[data-change=added])) {
+  box-shadow: 1px 0 var(--rd-line-border-color);
+}
+
+// table cells can't overflow to the right, we have to reserve space on the neighbouring cell
+.rd-line-content[data-change=removed] + :not(.rd-line-number[data-change=added]) {
+  border-left: 0;
+  margin-left: 1px;
+}
+
+.rd-line-number:first-child {
+  box-shadow: -1px 0 var(--rd-line-border-color);
+}
+
+.rd-line-content:last-child {
+  box-shadow: 1px 0 var(--rd-line-border-color);
 }
 
 .rd-line-link {
   display: block;
 
   &, &:hover {
-    color: var(--code-line-nubmer-color, $gray-400);
+    color: var(--rd-line-link-color);
   }
 
   &::before {
@@ -178,7 +215,8 @@
 }
 
 .rd-line-content[data-change=removed] {
-  background-color: var(--diff-deletion-color, var(--code-old-diff-background-color, $line-removed));
+  --rd-line-background-color: var(--rd-line-removed-background-color);
+  background-color: var(--rd-line-background-color);
 
   &::before {
     content: "-";
@@ -187,7 +225,8 @@
 }
 
 .rd-line-content[data-change=added] {
-  background-color: var(--diff-addition-color, var(--code-new-diff-background-color, $line-added));
+  --rd-line-background-color: var(--rd-line-added-background-color);
+  background-color: var(--rd-line-background-color);
 
   &::before {
     content: "+";

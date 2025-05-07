@@ -769,7 +769,7 @@ GEM
       mime-types
       net-http-persistent (~> 4.0)
       nokogiri (~> 1, >= 1.10.8)
-    gitlab-glfm-markdown (0.0.29)
+    gitlab-glfm-markdown (0.0.30)
       rb_sys (~> 0.9.109)
     gitlab-kas-grpc (17.10.4)
       grpc (~> 1.0)
@@ -1117,7 +1117,7 @@ GEM
     language_server-protocol (3.17.0.3)
     launchy (2.5.2)
       addressable (~> 2.8)
-    lefthook (1.11.2)
+    lefthook (1.11.5)
     letter_opener (1.10.0)
       launchy (>= 2.2, < 4)
     letter_opener_web (3.0.0)
@@ -2167,7 +2167,7 @@ DEPENDENCIES
   gitlab-duo-workflow-service-client (~> 0.1)!
   gitlab-experiment (~> 0.9.1)
   gitlab-fog-azure-rm (~> 2.2.0)
-  gitlab-glfm-markdown (~> 0.0.29)
+  gitlab-glfm-markdown (~> 0.0.30)
   gitlab-housekeeper!
   gitlab-http!
   gitlab-kas-grpc (~> 17.10.4)

@@ -171,6 +171,8 @@ RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
       'lib/gitlab/usage_data_counters/aggregated_metrics/common.yml' | [:analytics_instrumentation]
       'lib/gitlab/usage_data_counters/hll_redis_counter.rb' | [:backend, :analytics_instrumentation]
       'lib/gitlab/tracking.rb' | [:backend, :analytics_instrumentation]
+      'lib/gitlab/tracking/destinations/snowplow_micro.rb' | [:backend, :analytics_instrumentation]
+      'ee/lib/ee/gitlab/tracking/event_eligibility_checker.rb' | [:backend, :analytics_instrumentation]
       'lib/gitlab/usage/service_ping_report.rb' | [:backend, :analytics_instrumentation]
       'lib/gitlab/usage/metrics/key_path_processor.rb' | [:backend, :analytics_instrumentation]
       'spec/lib/gitlab/tracking_spec.rb' | [:backend, :analytics_instrumentation]

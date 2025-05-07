@@ -21,10 +21,10 @@ $monokai-expanded-bg: #3e3e3e;
 $monokai-coverage: #a6e22e;
 $monokai-no-coverage: #fd971f;
 
-$monokai-new-bg: rgba(166, 226, 46, 0.1);
+$monokai-new-bg: #343b25;
 $monokai-new-idiff: rgba(166, 226, 46, 0.15);
 
-$monokai-old-bg: rgba(254, 147, 140, 0.15);
+$monokai-old-bg: #473832;
 $monokai-old-idiff: rgba(254, 147, 140, 0.2);
 
 $monokai-hll: #49483e;
@@ -99,6 +99,7 @@ $monokai-gh: #75715e;
 }
 
 .code.monokai {
+  --code-border-lightness-adjust: 0.1;
   --diff-expansion-background-color: #{$gl-color-neutral-600};
 
   --code-background: #{$monokai-bg};
@@ -110,6 +111,7 @@ $monokai-gh: #75715e;
   --code-line-nubmer-hover-color: #{$gl-color-purple-50};
 
   --code-old-diff-line-number-background-color: #{$monokai-old-bg};
+  --code-old-diff-line-nubmer-color: #{$monokai-line-num-color-old};
   --code-old-diff-sign-color: #{$monokai-line-num-color-old};
   --code-old-diff-background-color: #{$monokai-old-bg};
   --code-old-diff-border-color: #{$monokai-diff-border};
@@ -117,6 +119,7 @@ $monokai-gh: #75715e;
   --code-old-inline-diff-background-color: #{$monokai-old-idiff};
 
   --code-new-diff-line-number-background-color: #{$monokai-new-bg};
+  --code-new-diff-line-nubmer-color: #{$monokai-line-num-color-new};
   --code-new-diff-sign-color: #{$monokai-line-num-color-new};
   --code-new-diff-background-color: #{$monokai-new-bg};
   --code-new-diff-border-color: #{$monokai-diff-border};

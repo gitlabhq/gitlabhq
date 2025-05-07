@@ -410,20 +410,22 @@ Additionally, there are multiple valid methods for passing the job token in the 
 - `--header "JOB-TOKEN: $CI_JOB_TOKEN"`
 - `--data "job_token=$CI_JOB_TOKEN"`
 
-## Limit your project's job token access (deprecated)
+<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
+
+## Limit your project's job token access (removed)
 
 {{< history >}}
 
 - Deprecated in GitLab 16.0.
-- Removal process [started](https://gitlab.com/gitlab-org/gitlab/-/issues/537186) in GitLab 18.0 by putting this feature behind [a flag](../../administration/feature_flags.md) named `remove_limit_ci_job_token_scope`, disabled by default.
+- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/537186) in GitLab 18.0.
 
 {{< /history >}}
 
 {{< alert type="warning" >}}
 
-The [**Limit access _from_ this project**](#configure-the-job-token-scope-deprecated)
-setting is disabled by default for all new projects and is [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/383084)
-in GitLab 18.0. Project maintainers or owners should configure the [**Limit access _to_ this project**](#add-a-group-or-project-to-the-job-token-allowlist)
+The [**Limit access _from_ this project**](#configure-the-job-token-scope-removed)
+setting is disabled by default for all new projects and was removed
+in GitLab 18.0. Project maintainers or owners can configure the [**Limit access _to_ this project**](#add-a-group-or-project-to-the-job-token-allowlist)
 setting instead.
 
 {{< /alert >}}
@@ -441,7 +443,7 @@ For example, when the setting is enabled, jobs in a pipeline in project `A` have
 a `CI_JOB_TOKEN` scope limited to project `A`. If the job needs to use the token
 to make an API request to project `B`, then `B` must be added to the allowlist for `A`.
 
-### Configure the job token scope (deprecated)
+### Configure the job token scope (removed)
 
 {{< history >}}
 
@@ -462,6 +464,8 @@ To configure the job token scope:
 1. Toggle **Limit access _from_ this project** to enabled.
 1. Optional. Add existing projects to the token's access scope. The user adding a
    project must have the Maintainer role in both projects.
+
+<!--- end_remove -->
 
 ## Job token authentication log
 

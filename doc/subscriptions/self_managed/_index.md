@@ -16,22 +16,6 @@ title: GitLab Self-Managed subscription
 After you subscribe to GitLab, you can manage the details of your self-managed subscription.
 If you experience any issues, see the [troubleshooting page](../gitlab_com/gitlab_subscription_troubleshooting.md).
 
-## Obtain a self-managed subscription
-
-To subscribe to GitLab for a GitLab Self-Managed instance:
-
-1. Go to the [Pricing page](https://about.gitlab.com/pricing/) and select a self-managed plan. You are redirected to the [Customers Portal](https://customers.gitlab.com/) to complete your purchase.
-1. After purchase, an activation code is sent to the email address associated with the Customers Portal account.
-   You must [add this code to your GitLab instance](../../administration/license.md).
-
-{{< alert type="note" >}}
-
-If you're purchasing a subscription for an existing **Free** GitLab Self-Managed
-instance, ensure you're purchasing enough seats to
-[cover your users](../../administration/admin_area.md#administering-users).
-
-{{< /alert >}}
-
 ## How GitLab bills for users
 
 A GitLab Self-Managed subscription uses a hybrid model. You pay for a subscription
@@ -239,145 +223,6 @@ your instance immediately. If you're using a license file, you receive an update
 To add the seats, [add the license file](../../administration/license_file.md)
 to your instance.
 
-## Subscription data synchronization
-
-Prerequisites:
-
-- GitLab Enterprise Edition (EE).
-- Connection to the internet, and must not have an offline environment.
-- [Activated](../../administration/license.md) your instance with an activation code.
-
-Your [subscription data](#subscription-data) is automatically synchronized once
-a day between your GitLab Self-Managed instance and GitLab.
-
-At approximately 3:00 AM (UTC), this daily synchronization job sends
-[subscription data](#subscription-data) to the Customers Portal. For this reason,
-updates and renewals might not apply immediately.
-
-The data is sent securely through an encrypted HTTPS connection to
-`customers.gitlab.com` on port `443`. If the job fails, it retries up to 12 times
-over approximately 17 hours.
-
-After you have set up automatic data synchronization, the following processes are
-also automated.
-
-- [Quarterly subscription reconciliation](../quarterly_reconciliation.md).
-- Subscription renewals.
-- Subscription updates, such as adding more seats or upgrading a GitLab tier.
-
-### Manually synchronize subscription data
-
-You can also manually synchronize subscription data at any time.
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Subscription**.
-1. In the **Subscription details** section, select **Sync** ({{< icon name="retry" >}}).
-
-A synchronization job is then queued. When the job finishes, the subscription
-details are updated.
-
-### Subscription data
-
-The daily synchronization job sends the following information to the
-Customers Portal:
-
-- Date
-- Timestamp
-- License key, with the following encrypted within the key:
-  - Company name
-  - Licensee name
-  - Licensee email
-- Historical [maximum user count](#maximum-users)
-- [Billable users count](#billable-users)
-- GitLab version
-- Hostname
-- Instance ID
-
-Additionally, we also send add-on metrics such as:
-
-- Add-on type
-- Purchased seats
-- Assigned seats
-
-Example of a license sync request:
-
-```json
-{
-  "gitlab_version": "14.1.0-pre",
-  "timestamp": "2021-06-14T12:00:09Z",
-  "date": "2021-06-14",
-  "license_key": "eyJkYXRhIjoiYlR2MFBPSEJPSnNOc1plbGtFRGZ6M
-  Ex1mWWhyM1Y3NWFOU0Zj\nak1xTmtLZHU1YzJJUWJzZzVxT3FQRU1PXG5
-  KRzErL2ZNd0JuKzBwZmQ3YnY4\nTkFrTDFsMFZyQi9NcG5DVEdkTXQyNT
-  R3NlR0ZEc0MjBoTTVna2VORlVcbjAz\nbUgrNGl5N0NuenRhZlljd096R
-  nUzd2JIWEZ3NzV2V2lqb3FuQ3RYZWppWVFU\neDdESkgwSUIybFJhZlxu
-  Y2k0Mzl3RWlKYjltMkJoUzExeGIwWjN3Uk90ZGp1\nNXNNT3dtL0Vtc3l
-  zWVowSHE3ekFILzBjZ2FXSXVQXG5ENWJwcHhOZzRlcFhr\neFg0K3d6Zk
-  w3cHRQTTJMTGdGb2Vwai90S0VJL0ZleXhxTEhvaUc2NzVIbHRp\nVlRcb
-  nYzY090bmhsdTMrc0VGZURJQ3VmcXFFUS9ISVBqUXRhL3ZTbW9SeUNh\n
-  SjdDTkU4YVJnQTlBMEF5OFBiZlxuT0VORWY5WENQVkREdUMvTTVCb25Re
-  ENv\nK0FrekFEWWJ6VGZLZ1dBRjgzUXhyelJWUVJGTTErWm9TeTQ4XG5V
-  aWdXV0d4\nQ2graGtoSXQ1eXdTaUFaQzBtZGd2aG1YMnl1KzltcU9WMUx
-  RWXE4a2VSOHVn\nV3BMN1VFNThcbnMvU3BtTk1JZk5YUHhOSmFlVHZqUz
-  lXdjlqMVZ6ODFQQnFx\nL1phaTd6MFBpdG5NREFOVnpPK3h4TE5CQ1xub
-  GtacHNRdUxTZmtWWEZVUnB3\nWTZtWGdhWE5GdXhURjFndWhyVDRlTE92
-  bTR3bW1ac0pCQnBkVWJIRGNyXG5z\nUjVsTWJxZEVUTXJNRXNDdUlWVlZ
-  CTnJZVTA2M2dHblc4eVNXZTc0enFUcW1V\nNDBrMUZpN3RTdzBaZjBcbm
-  16UGNYV0RoelpkVk02cWR1dTl0Q1VqU05tWWlU\nOXlwRGZFaEhXZWhjb
-  m50RzA5UWVjWEM5em52Y1BjU1xueFU0MDMvVml5R3du\nQXNMTHkyajN5
-  b3hhTkJUSWpWQ1BMUjdGeThRSEVnNGdBd0x6RkRHVWg1M0Qz\nMHFRXG5
-  5eWtXdHNHN3VBREdCNmhPODFJanNSZnEreDhyb2ZpVU5JVXo4NCtD\nem
-  Z1V1Q0K1l1VndPTngyc1l0TU5cbi9WTzlaaVdPMFhtMkZzM2g1NlVXcGI
-  y\nSUQzRnRlbW5vZHdLOWU4L0tiYWRESVRPQmgzQnIxbDNTS2tHN1xuQ3
-  hpc29D\nNGh4UW5mUmJFSmVoQkh6eHV1dkY5aG11SUsyVmVDQm1zTXZCY
-  nZQNGdDbHZL\ndUExWnBEREpDXG41eEhEclFUd3E1clRYS2VuTjhkd3BU
-  SnVLQXgvUjlQVGpy\ncHJLNEIzdGNMK0xIN2JKcmhDOTlabnAvLzZcblZ
-  HbXk5SzJSZERIcXp3U2c3\nQjFwSmFPcFBFUHhOUFJxOUtnY2hVR0xWMF
-  d0Rk9vPVxuIiwia2V5IjoiUURM\nNU5paUdoRlVwZzkwNC9lQWg5bFY0Q
-  3pkc2tSQjBDeXJUbG1ZNDE2eEpPUzdM\nVXkrYXRhTFdpb0lTXG5sTWlR
-  WEU3MVY4djFJaENnZHJGTzJsTUpHbUR5VHY0\ndWlSc1FobXZVWEhpL3h
-  vb1J4bW9XbzlxK2Z1OGFcblB6anp1TExhTEdUQVdJ\nUDA5Z28zY3JCcz
-  ZGOEVLV28xVzRGWWtUUVh2TzM0STlOSjVHR1RUeXkzVkRB\nc1xubUdRe
-  jA2eCtNNkFBM1VxTUJLZXRMUXRuNUN2R3l3T1VkbUx0eXZNQ3JX\nSWVQ
-  TElrZkJwZHhPOUN5Z1dCXG44UkpBdjRSQ1dkMlFhWVdKVmxUMllRTXc5\
-  nL29LL2hFNWRQZ1pLdWEyVVZNRWMwRkNlZzg5UFZrQS9mdDVcbmlETWlh
-  YUZz\nakRVTUl5SjZSQjlHT2ovZUdTRTU5NVBBMExKcFFiVzFvZz09XG4
-  iLCJpdiI6\nImRGSjl0YXlZWit2OGlzbGgyS2ZxYWc9PVxuIn0=\n",
-  "max_historical_user_count": 75,
-  "billable_users_count": 75,
-  "hostname": "gitlab.example.com",
-  "instance_id": "9367590b-82ad-48cb-9da7-938134c29088",
-  "add_on_metrics": [
-    {
-      "add_on_type": "duo_enterprise",
-      "purchased_seats": 100,
-      "assigned_seats": 50
-    }
-  ]
-}
-```
-
-## View your subscription
-
-Prerequisites:
-
-- You must be an administrator.
-
-You can view the status of your subscription:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Subscription**.
-
-The **Subscription** page includes the following information:
-
-- Licensee
-- Plan
-- When it was uploaded, started, and when it expires
-- Number of [users in subscription](#users-in-subscription)
-- Number of [billable users](#billable-users)
-- [Maximum users](#maximum-users)
-- Number of [users over subscription](#users-over-subscription)
-
 ## Export your license usage
 
 Prerequisites:
@@ -521,7 +366,7 @@ To add products to your subscription, [contact the sales team](https://customers
 
 Prerequisites:
 
-- You must have enabled the [synchronization of subscription data](#subscription-data-synchronization).
+- You must have enabled the [synchronization of subscription data](../manage_subscription.md#subscription-data-synchronization).
 
 At least two days before your renewal date, you should [review your account](#review-your-account)
 so that your changes synchronize to GitLab in time for your renewal.
@@ -573,25 +418,6 @@ the card is charged for the invoice amount.
 
 If we are unable to process a payment or the auto-renewal fails for any other reason,
 you have 14 days to renew your subscription, after which your GitLab tier is downgraded.
-
-## Upgrade your subscription tier
-
-To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):
-
-1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select **Upgrade plan** on the relevant subscription card.
-1. Confirm the active form of payment, or add a new form of payment.
-1. Select the **I accept the Privacy Statement and Terms of Service** checkbox.
-1. Select **Upgrade subscription**.
-
-The following is emailed to you:
-
-- A payment receipt. You can also access this information in the Customers Portal under
-  [**Invoices**](https://customers.gitlab.com/invoices).
-- A new activation code for your license.
-
-The new tier takes effect on the next subscription sync, or you can [synchronize your subscription manually](#manually-synchronize-subscription-data)
-to upgrade right away.
 
 ## Add or change the contacts for your subscription
 

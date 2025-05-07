@@ -146,6 +146,7 @@
   "NoteableInterface": [
     "AlertManagementAlert",
     "BoardEpic",
+    "CountableVulnerability",
     "Design",
     "Epic",
     "EpicIssue",
@@ -244,6 +245,7 @@
     "AutocompletedUser",
     "BoardEpic",
     "Commit",
+    "CountableVulnerability",
     "CurrentUser",
     "Design",
     "Epic",

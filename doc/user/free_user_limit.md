@@ -102,7 +102,7 @@ To remove user limits on groups with Free tier subscriptions, include those grou
 in your organization's subscription:
 
 1. To check if a group is included in the subscription,
-   [view that group's subscription details](../subscriptions/gitlab_com/_index.md#view-gitlabcom-subscription).
+   [view that group's subscription details](../subscriptions/manage_subscription.md#view-subscription).
 
    If the group has a Free tier subscription, it is not included in your organization's
    subscription.
@@ -113,7 +113,7 @@ in your organization's subscription:
 
 If the five-user limit has been applied to your group even though you have
 a paid subscription in the Premium or Ultimate tier, make sure that
-[your subscription is linked](../subscriptions/gitlab_com/_index.md#link-subscription-to-a-group)
+[your subscription is linked](../subscriptions/manage_subscription.md#link-subscription-to-a-group)
 to either of the following:
 
 - The correct top-level namespace.
@@ -145,10 +145,7 @@ top-level groups with private visibility.
 
 For larger teams, you should upgrade to the paid Premium or Ultimate tiers. These tiers
 do not limit users and have more features to increase team productivity. For more
-information, see:
-
-- [Upgrade your subscription tier on GitLab Self-Managed](../subscriptions/self_managed/_index.md#upgrade-your-subscription-tier).
-- [Upgrade your subscription tier on GitLab.com](../subscriptions/gitlab_com/_index.md#upgrade-subscription-tier).
+information, see [Upgrade your subscription tier on GitLab Self-Managed](../subscriptions/manage_subscription.md#upgrade-subscription-tier).
 
 To try the paid tiers before deciding to upgrade, start a
 [free trial](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com/ee/user/free_user_limit.html)

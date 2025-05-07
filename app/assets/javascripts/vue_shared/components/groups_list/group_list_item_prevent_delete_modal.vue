@@ -44,7 +44,7 @@ export default {
     <gl-sprintf :message="$options.i18n.message">
       <template #link="{ content }">
         <help-page-link
-          href="subscriptions/gitlab_com/_index"
+          href="subscriptions/manage_subscription"
           anchor="link-subscription-to-a-group"
           >{{ content }}</help-page-link
         >

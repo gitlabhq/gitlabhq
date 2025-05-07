@@ -92,7 +92,7 @@ you can also do the following:
    application and the public internet,
    [disable DNS rebinding protection](../../security/webhooks.md#enforce-dns-rebinding-attack-protection).
 
-1. [Manually synchronize subscription data](../../subscriptions/self_managed/_index.md#manually-synchronize-subscription-data).
+1. [Manually synchronize subscription data](../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data).
    - Verify that the GitLab instance [synchronizes your subscription data with GitLab](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
 
 ## GitLab Duo features not available for users

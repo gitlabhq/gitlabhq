@@ -27,7 +27,7 @@ module Ci
       def accessible?(accessed_project)
         return true if self_referential?(accessed_project)
 
-        if outbound_accessible?(accessed_project) && inbound_accessible?(accessed_project)
+        if inbound_accessible?(accessed_project)
           # We capture only successful inbound authorizations
           Ci::JobToken::Authorization.capture(origin_project: current_project, accessed_project: accessed_project)
           true
@@ -85,17 +85,6 @@ module Ci
       end
 
       private
-
-      def outbound_accessible?(accessed_project)
-        return true if Feature.enabled?(:remove_limit_ci_job_token_scope, current_project)
-
-        # if the setting is disabled any project is considered to be in scope.
-        return true unless current_project.ci_outbound_job_token_scope_enabled?
-
-        return true unless accessed_project.private?
-
-        outbound_allowlist.includes_project?(accessed_project)
-      end
 
       def inbound_accessible?(accessed_project)
         if accessed_project.ci_inbound_job_token_scope_enabled?

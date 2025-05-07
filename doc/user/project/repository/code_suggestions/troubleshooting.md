@@ -60,7 +60,7 @@ Token validation failed in Language Server:
 ```
 
 If GitLab has access to the [cloud server](../../../ai_features.md), try
-[manually synchronizing your license](../../../../subscriptions/self_managed/_index.md#manually-synchronize-subscription-data).
+[manually synchronizing your license](../../../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data).
 
 ## Authentication troubleshooting
 

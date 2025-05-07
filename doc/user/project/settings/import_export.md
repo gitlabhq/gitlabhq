@@ -247,9 +247,6 @@ Items that are **not** exported include:
 - Links to related merge requests
 - Pipeline schedule variables
 
-Migrating projects with file exports uses the same export and import mechanisms as creating projects from templates at the [group](../../group/custom_project_templates.md) and
-[instance](../../../administration/custom_project_templates.md) levels. Therefore, the list of exported items is the same.
-
 ### Import a project and its data
 
 You can import a project and its data. The amount of data you can import depends on the maximum import file size:
