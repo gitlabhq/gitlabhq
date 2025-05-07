@@ -3058,6 +3058,36 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#pending_delete?' do
+    context 'when deletion_schedule is not present' do
+      it 'returns false' do
+        expect(group).not_to be_pending_delete
+      end
+    end
+
+    context 'when deletion_schedule is present' do
+      context 'when marked_for_deletion_on is from past' do
+        before do
+          create(:group_deletion_schedule, group: group, marked_for_deletion_on: 1.day.ago)
+        end
+
+        it 'returns false' do
+          expect(group).not_to be_pending_delete
+        end
+      end
+
+      context 'when marked_for_deletion_on is in future' do
+        before do
+          create(:group_deletion_schedule, group: group, marked_for_deletion_on: 2.days.from_now)
+        end
+
+        it 'returns true' do
+          expect(group).to be_pending_delete
+        end
+      end
+    end
+  end
+
   describe '#highest_group_member' do
     let(:nested_group) { create(:group, parent: group) }
     let(:nested_group_2) { create(:group, parent: nested_group) }

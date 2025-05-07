@@ -344,6 +344,8 @@ If you have any `geo_secondary[]` configuration options enabled in your `gitlab.
 file, comment them out or remove them, and then [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
 for the changes to take effect.
 
+At this point, your promoted site is a normal GitLab site without Geo configured. Optionally, you can [bring the old site back as a secondary](bring_primary_back.md#configure-the-former-primary-site-to-be-a-secondary-site).
+
 ## Promoting secondary Geo replica in multi-secondary configurations
 
 If you have more than one **secondary** site and you need to promote one of them, we suggest you follow

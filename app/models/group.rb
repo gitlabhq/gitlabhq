@@ -1184,6 +1184,12 @@ class Group < Namespace
     ::Clusters::Agent.for_projects(all_projects)
   end
 
+  def pending_delete?
+    return false unless deletion_schedule
+
+    deletion_schedule.marked_for_deletion_on.future?
+  end
+
   private
 
   def feature_flag_enabled_for_self_or_ancestor?(feature_flag, type: :development)

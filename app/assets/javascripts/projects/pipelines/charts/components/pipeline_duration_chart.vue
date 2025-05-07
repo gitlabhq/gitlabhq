@@ -1,10 +1,9 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import { engineeringNotation } from '@gitlab/ui/src/utils/number_utils';
 import { GlLineChart } from '@gitlab/ui/dist/charts';
 import { s__ } from '~/locale';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
-import { formatPipelineDuration } from '../format_utils';
+import { formatPipelineDuration, formatPipelineDurationForAxis } from '../format_utils';
 
 export default {
   components: {
@@ -55,12 +54,7 @@ export default {
       type: 'value',
       axisLabel: {
         formatter: (seconds) => {
-          const minutes = seconds / 60;
-          // using engineering notation for small amounts is strange, as we'd render "milliminutes"
-          if (minutes < 1) {
-            return minutes.toFixed(2).replace(/\.?0*$/, '');
-          }
-          return engineeringNotation(minutes, 2);
+          return formatPipelineDurationForAxis(seconds);
         },
       },
     },

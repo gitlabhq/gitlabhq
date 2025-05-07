@@ -1292,6 +1292,26 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
       it { is_expected.to include(expected) }
     end
+
+    context "when project is not marked for deletion" do
+      before do
+        allow(project).to receive(:marked_for_deletion?).and_return(false)
+      end
+
+      subject { helper.home_panel_data_attributes }
+
+      it { is_expected.to include({ is_project_marked_for_deletion: "false" }) }
+    end
+
+    context "when project is marked for deletion" do
+      before do
+        allow(project).to receive(:marked_for_deletion?).and_return(true)
+      end
+
+      subject { helper.home_panel_data_attributes }
+
+      it { is_expected.to include({ is_project_marked_for_deletion: "true" }) }
+    end
   end
 
   shared_examples 'configure import method modal' do

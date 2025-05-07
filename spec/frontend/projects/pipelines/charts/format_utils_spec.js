@@ -2,6 +2,7 @@ import {
   formatPipelineCount,
   formatPipelineCountPercentage,
   formatPipelineDuration,
+  formatPipelineDurationForAxis,
 } from '~/projects/pipelines/charts/format_utils';
 
 const largeNumber = '12345678901234567890'; // Larger than MAX_SAFE_INTEGER
@@ -69,6 +70,22 @@ describe('Stats formatting utilities', () => {
       ${{}}                  | ${'-'}
     `('formats $input to "$output"', ({ input, output }) => {
       expect(formatPipelineDuration(input)).toBe(output);
+    });
+  });
+
+  describe('formatPipelineDurationForAxis', () => {
+    it.each`
+      input             | output
+      ${1}              | ${'0.02'}
+      ${60 * 10}        | ${'10'}
+      ${3600}           | ${'60'}
+      ${60 * 10 ** 3}   | ${'1k'}
+      ${3600 * 10 ** 4} | ${'600k'}
+      ${0}              | ${'0'}
+      ${NaN}            | ${'-'}
+      ${'60000'}        | ${'-'}
+    `('formats $input to "$output"', ({ input, output }) => {
+      expect(formatPipelineDurationForAxis(input)).toBe(output);
     });
   });
 });

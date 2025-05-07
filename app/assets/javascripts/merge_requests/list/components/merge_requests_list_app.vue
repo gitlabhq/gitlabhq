@@ -851,7 +851,7 @@ export default {
         <gl-link
           v-if="issuable.state === $options.STATUS_OPEN && isMergeRequestBroken(issuable)"
           v-gl-tooltip
-          :href="issuable.webUrl"
+          :href="issuable.webPath"
           :title="__('Cannot be merged automatically')"
           data-testid="merge-request-cannot-merge"
         >

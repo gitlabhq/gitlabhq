@@ -1,3 +1,4 @@
+import { engineeringNotation } from '@gitlab/ui/src/utils/number_utils';
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
 import { stringifyTime, parseSeconds } from '~/lib/utils/datetime/date_format_utility';
 import { formatNumber } from '~/locale';
@@ -33,4 +34,16 @@ export const formatPipelineDuration = (seconds) => {
     return stringifyTime(parseSeconds(seconds, { daysPerWeek: 7, hoursPerDay: 24 }));
   }
   return '-';
+};
+
+export const formatPipelineDurationForAxis = (seconds) => {
+  if (!Number.isFinite(seconds)) {
+    return '-';
+  }
+  const minutes = seconds / 60;
+  // using engineering notation for small amounts is strange, as we'd render "milliminutes"
+  if (minutes < 1) {
+    return minutes.toFixed(2).replace(/\.?0*$/, '');
+  }
+  return engineeringNotation(minutes, 2);
 };

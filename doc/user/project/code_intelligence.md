@@ -55,6 +55,7 @@ To see how your language is best supported, review the
 {{< history >}}
 
 - Python support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301111) in GitLab 17.9.
+- .Net/C# support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372243) in GitLab 18.0.
 
 {{< /history >}}
 
@@ -65,6 +66,7 @@ in your `.gitlab-ci.yml` file. The component supports these languages:
 - TypeScript or JavaScript.
 - Java 8, 11, 17, and 21.
 - Python
+- .Net/C#
 
 To contribute more languages to the component, open a merge request in the
 [Code intelligence component project](https://gitlab.com/components/code-intelligence).

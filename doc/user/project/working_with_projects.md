@@ -249,16 +249,14 @@ To star a project:
 
 {{< history >}}
 
-- Default deletion behavior for projects on the Premium and Ultimate tier changed to [delayed project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 16.0.
-- Default deletion behavior changed to delayed deletion on the Premium and Ultimate tier [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+- Default behavior [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) to delayed project deletion for Premium and Ultimate tiers on [GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in 16.0.
+- Default behavior changed to delayed project deletion for [GitLab Free](https://gitlab.com/groups/gitlab-org/-/epics/17208) and [personal projects](https://gitlab.com/gitlab-org/gitlab/-/issues/536244) in 18.0.
 
 {{< /history >}}
 
 You can mark a project to be deleted.
-After you delete a project:
-
-- Projects in personal namespaces are deleted immediately.
-- Projects in groups are deleted after a retention period.
+After you delete a project for the first time, it enters a pending deletion state.
+If you delete a project a second time, it is removed permanently.
 
 Prerequisites:
 
@@ -270,10 +268,10 @@ To delete a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Advanced**.
-1. In the **Delete this project** section, select **Delete project**.
+1. In the **Delete project** section, select **Delete project**.
 1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
 
-This action deletes the project and all associated resources (such as issues and merge requests).
+This action marks the project for deletion and places it in a pending deletion state.
 
 You can also [delete projects using the Rails console](troubleshooting.md#delete-a-project-using-console).
 
@@ -285,6 +283,7 @@ You can also [delete projects using the Rails console](troubleshooting.md#delete
 - [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
 - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
+- [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/issues/536244) in GitLab 18.0.
 
 {{< /history >}}
 
@@ -292,7 +291,7 @@ Prerequisites:
 
 - You must have the Owner role for the project.
 
-Projects in a group (not a personal namespace) can be deleted after a delay period.
+Projects enter a pending deletion state when deleted for the first time.
 
 On GitLab Self-Managed instances, group administrators can define a deletion delay period of between 1 and 90 days.
 On SaaS, there is a non-adjustable default retention period of seven days.
@@ -327,14 +326,14 @@ If during this delayed deletion time you run a second deletion cycle, the projec
 Prerequisites:
 
 - You must have the Owner role for the project.
-- The project must be [marked for deletion](#delete-a-project).
+- The project must be [pending deletion](#delete-a-project).
 
-To immediately delete a project marked for deletion:
+To immediately delete a project pending deletion:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Advanced**.
-1. In the **Delete this project** section, select **Delete project**.
+1. In the **Delete project** section, select **Delete project**.
 1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
 
 ### View projects pending deletion
@@ -344,6 +343,7 @@ To immediately delete a project marked for deletion:
 - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) tab label from "Pending deletion" to "Inactive" in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `your_work_projects_vue`. Disabled by default.
 - [Changed tab label generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/465889) in GitLab 17.10. Feature flag `your_work_projects_vue` removed.
 - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
+- [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/issues/536244) in GitLab 18.0.
 
 {{< /history >}}
 
@@ -351,13 +351,7 @@ To view a list of all projects that are pending deletion:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **View all my projects**.
-1. Select the **Pending deletion** tab.
-
-{{< alert type="note" >}}
-
-This tab appears as **Inactive** when the `your_work_projects_vue` feature flag is enabled.
-
-{{< /alert >}}
+1. Select the **Inactive** tab.
 
 Each project in the list shows:
 
@@ -368,17 +362,24 @@ Each project in the list shows:
 
 ## Restore a project
 
+{{< history >}}
+
+- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
+- [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/issues/536244) in GitLab 18.0.
+
+{{< /history >}}
+
 Prerequisites:
 
 - You must have the Owner role for the project.
-- The project must be marked for deletion.
+- The project must be [pending deletion](#delete-a-project).
 
-To restore a project marked for deletion:
+To restore a project pending deletion:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Advanced**.
-1. In the Restore project section, select **Restore project**.
+1. In the **Restore project** section, select **Restore project**.
 
 ## Archive a project
 

@@ -168,7 +168,7 @@ To prioritize labels:
 1. Prioritize all the labels you previously created.
    Make sure that labels of higher priority and severity are higher on the list than those of lower values.
 
-![List of priority labels](img/priority_labels_v16_3.png)
+![List of eleven prioritized scoped labels](img/priority_labels_v16_3.png)
 
 ## Create a group issue triage board
 
@@ -238,7 +238,7 @@ Your first triage issue board is ready!
 Try it out by dragging some issues from the **Open** list to one of the label lists to add one of
 the severity labels.
 
-![Triage issue board with example issues](img/triage_board_v16_3.png)
+![Issue board with unlabeled issues and prioritized "severity" labels for labeling issues](img/triage_board_v16_3.png)
 
 ## Next steps
 
@@ -259,7 +259,7 @@ Next, you can:
 - Create policies that help automate issue triage in a project with the [`gitlab-triage` gem](https://gitlab.com/gitlab-org/ruby/gems/gitlab-triage).
   Generate summary reports with heatmaps like the following:
 
-  ![Example triage report heatmap](img/triage_report_v16_3.png)
+  ![Diagonal heatmap for issues with "priority" and "severity" labels](img/triage_report_v16_3.png)
 
 To learn more about issue triage at GitLab, see [Issue Triage](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/)
 and [Triage Operations](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/).

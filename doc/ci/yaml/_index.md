@@ -2886,7 +2886,6 @@ test-job:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27919) in GitLab 16.7. Requires GitLab Runner 16.7 or later.
 - `user` input option [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137907) in GitLab 16.8.
-- `user` input option [applied to the Kubernetes executor](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/5469) in GitLab 17.11.
 
 {{< /history >}}
 
@@ -2920,6 +2919,50 @@ arm-sql-job:
 
 - `image:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/reference/cli/docker/image/pull/#options).
 - `image:docker:user` maps to the [`docker run --user` option](https://docs.docker.com/reference/cli/docker/container/run/#options).
+
+#### `image:kubernetes`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/38451) in GitLab 18.0. Requires GitLab Runner 17.11 or later.
+- `user` input option [introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/5469) in GitLab Runner 17.11.
+- `user` input option [extended to support `uid:gid` format](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/5540) in GitLab 18.0.
+
+{{< /history >}}
+
+Use `image:kubernetes` to pass options to the GitLab Runner [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/).
+This keyword does not work with other executor types.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Supported values**:
+
+A hash of options for the Kubernetes executor, which can include:
+
+- `user`: Specify the username or UID to use when the container runs. You can also use it to set GID by using the `UID:GID` format.
+
+**Example of `image:kubernetes` with only UID**:
+
+```yaml
+arm-sql-job:
+  script: echo "Run sql tests"
+  image:
+    name: super/sql:experimental
+    kubernetes:
+      user: "1001"
+```
+
+**Example of `image:kubernetes` with both UID and GID**:
+
+```yaml
+arm-sql-job:
+  script: echo "Run sql tests"
+  image:
+    name: super/sql:experimental
+    kubernetes:
+      user: "1001:1001"
+```
 
 #### `image:pull_policy`
 
@@ -5398,6 +5441,51 @@ arm-sql-job:
 
 - `services:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/reference/cli/docker/image/pull/#options).
 - `services:docker:user` maps to the [`docker run --user` option](https://docs.docker.com/reference/cli/docker/container/run/#options).
+
+#### `services:kubernetes`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/38451) in GitLab 18.0. Requires GitLab Runner 17.11 or later.
+- `user` input option [introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/5469) in GitLab Runner 17.11.
+- `user` input option [extended to support `uid:gid` format](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/5540) in GitLab 18.0.
+
+{{< /history >}}
+
+Use `services:kubernetes` to pass options to the GitLab Runner [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/).
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Supported values**:
+
+A hash of options for the Kubernetes executor, which can include:
+
+- `user`: Specify the username or UID to use when the container runs. You can also use it to set GID by using the `UID:GID` format.
+
+**Example of `services:kubernetes` with only UID**:
+
+```yaml
+arm-sql-job:
+  script: echo "Run sql tests"
+  image: ruby:2.6
+  services:
+    - name: super/sql:experimental
+      kubernetes:
+        user: "1001"
+```
+
+**Example of `services:kubernetes` with both UID and GID**:
+
+```yaml
+arm-sql-job:
+  script: echo "Run sql tests"
+  image: ruby:2.6
+  services:
+    - name: super/sql:experimental
+      kubernetes:
+        user: "1001:1001"
+```
 
 #### `services:pull_policy`
 
