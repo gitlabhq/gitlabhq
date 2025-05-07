@@ -39,6 +39,8 @@ RSpec.describe Import::GithubService, feature_category: :importers do
         timeout_strategy: timeout_strategy,
         pagination_limit: pagination_limit
       )
+
+    allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
   end
 
   context 'with an input error' do
@@ -65,6 +67,22 @@ RSpec.describe Import::GithubService, feature_category: :importers do
         message: s_('GithubImport|Import failed because of a GitHub error: Not Found (HTTP 404)'),
         status: :error,
         http_status: :unprocessable_entity
+      )
+    end
+  end
+
+  context 'when the rate limit is reached' do
+    before do
+      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+    end
+
+    it 'returns an error relating to the rate limit' do
+      result = github_importer.execute(access_params, :github)
+
+      expect(result).to include(
+        message: _('This endpoint has been requested too many times. Try again later.'),
+        status: :error,
+        http_status: :too_many_requests
       )
     end
   end

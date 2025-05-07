@@ -44,7 +44,7 @@ RSpec.describe 'Creation of a new merge request', feature_category: :code_review
     end
 
     context 'when the description uses the work item closing pattern', :sidekiq_inline do
-      let(:work_item) { create(:work_item, :task, :group_level, namespace: group) }
+      let(:work_item) { create(:work_item, :task, project: project) }
       let(:extra_params) { { description: "Closes #{Gitlab::UrlBuilder.build(work_item)}" } }
 
       it 'creates a merge request closing issue record' do

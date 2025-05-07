@@ -19,6 +19,7 @@ module Gitlab
       # and only do that when it's needed.
       def rate_limits # rubocop:disable Metrics/AbcSize
         {
+          github_import: { threshold: 6, interval: 1.minute },
           issues_create: { threshold: -> { application_settings.issues_create_limit }, interval: 1.minute },
           notes_create: { threshold: -> { application_settings.notes_create_limit }, interval: 1.minute },
           project_export: { threshold: -> { application_settings.project_export_limit }, interval: 1.minute },

@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.9.8 (2025-05-07)
+
+### Fixed (2 changes)
+
+- [Bump devfile gem to v0.4.3](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4586145dda8558f5af93e24aaeeb7810dd8d4986)
+- [Only check records with encrypted data in gitlab:doctor:encryption_keys](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8ea60ee95fa9603bbfab42374ce4be932f80c571)
+
+### Security (3 changes)
+
+- [Improve Octokit::ResponseValidation middleware and add rate limits](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dbf91625730119709829caf0de36a1a0a85e1cca) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4937))
+- [Remove id attribute from OAuth form](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c62d3390b16495e22db7aca5ea2464d5b3c2df24) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4950))
+- [Use IssuePolicy for #issues_readable_by_user](https://gitlab.com/gitlab-org/security/gitlab/-/commit/03bdcca386dda566770614d21b099e2819b86b53) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4957))
+
 ## 17.9.7 (2025-04-22)
 
 ### Security (4 changes)
