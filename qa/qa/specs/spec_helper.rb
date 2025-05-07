@@ -69,7 +69,11 @@ RSpec.configure do |config|
 
     # Reset coverage persistence at the start of each test
     if Capybara::Session.instance_created? && QA::Runtime::Env.istanbul_coverage_enabled?
-      Capybara.current_session.execute_script("window.__coveragePathsPersistence.reset()")
+      begin
+        Capybara.current_session.execute_script("window.__coveragePathsPersistence.reset()")
+      rescue StandardError => e
+        QA::Runtime::Logger.warn("Failed to reset coverage paths: #{e.message}")
+      end
     end
 
     # Reset fabrication counters tracked in resource base

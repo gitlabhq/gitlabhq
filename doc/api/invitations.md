@@ -32,6 +32,17 @@ levels are defined in the `Gitlab::Access` module. Currently, these levels are v
 
 Adds a new member. You can specify a user ID or invite a user by email.
 
+Prerequisites:
+
+- For groups, you must have the Owner role for the group.
+- For projects:
+  - You must have the Owner or Maintainer role for the project.
+  - [Group membership lock]( ../../doc/user/group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) must be disabled.
+- For GitLab Self-Managed instances:
+  - If [user sign-ups are disabled](../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), an administrator must add the user.
+  - If [user invitations are disabled](../administration/settings/visibility_and_access_controls.md#disable-user-invitations), an administrator must add the user.
+  - If [administrator approval for role promotions is enabled](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions), an administrator must approve the invitation.
+
 ```plaintext
 POST /groups/:id/invitations
 POST /projects/:id/invitations
@@ -74,12 +85,6 @@ When there was any error sending the email:
              }
 }
 ```
-
-{{< alert type="note" >}}
-
-If [administrator approval for role promotions](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, membership requests that promote existing users into a billable role require administrator approval.
-
-{{< /alert >}}
 
 To enable **Manage non-billable promotions**,
 you must first enable the `enable_member_promotion_management` application setting.

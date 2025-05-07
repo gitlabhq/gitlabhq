@@ -164,6 +164,7 @@ class Group < Namespace
   delegate :subgroup_runner_token_expiration_interval, :subgroup_runner_token_expiration_interval=, :subgroup_runner_token_expiration_interval_human_readable, :subgroup_runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
   delegate :project_runner_token_expiration_interval, :project_runner_token_expiration_interval=, :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
   delegate :force_pages_access_control, :force_pages_access_control=, to: :namespace_settings, allow_nil: true
+  delegate :model_prompt_cache_enabled, :model_prompt_cache_enabled=, to: :namespace_settings, allow_nil: true
 
   delegate :require_dpop_for_manage_api_endpoints, :require_dpop_for_manage_api_endpoints=, to: :namespace_settings
   delegate :require_dpop_for_manage_api_endpoints?, to: :namespace_settings

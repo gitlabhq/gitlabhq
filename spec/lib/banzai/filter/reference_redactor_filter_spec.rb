@@ -142,32 +142,15 @@ RSpec.describe Banzai::Filter::ReferenceRedactorFilter, feature_category: :markd
         expect(doc.css('a').length).to eq 1
       end
 
-      context 'for admin' do
-        context 'when admin mode is enabled', :enable_admin_mode do
-          it 'allows references' do
-            admin = create(:admin)
-            project = create(:project, :public)
-            issue = create(:issue, :confidential, project: project)
-            link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
+      it 'allows references for admins' do
+        admin = create(:admin)
+        project = create(:project, :public)
+        issue = create(:issue, :confidential, project: project)
+        link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
 
-            doc = filter(link, current_user: admin)
+        doc = filter(link, current_user: admin)
 
-            expect(doc.css('a').length).to eq 1
-          end
-        end
-
-        context 'when admin mode is disabled' do
-          it 'removes references' do
-            admin = create(:admin)
-            project = create(:project, :public)
-            issue = create(:issue, :confidential, project: project)
-            link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
-
-            doc = filter(link, current_user: admin)
-
-            expect(doc.css('a').length).to eq 0
-          end
-        end
+        expect(doc.css('a').length).to eq 1
       end
 
       context "when a confidential issue is moved from a public project to a private one" do

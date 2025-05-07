@@ -3073,6 +3073,9 @@ msgstr ""
 msgid "AccessTokens|For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members."
 msgstr ""
 
+msgid "AccessTokens|Forces new personal access tokens for service accounts to require an expiration date. Does not affect existing token expiration dates. %{link_start}How does this affect expiration dates?%{link_end}"
+msgstr ""
+
 msgid "AccessTokens|Grant access to download Service Ping payload via API when authenticated as an admin user."
 msgstr ""
 
@@ -3163,6 +3166,9 @@ msgid "AccessTokens|Personal / project / group access token expiration"
 msgstr ""
 
 msgid "AccessTokens|Personal access tokens"
+msgstr ""
+
+msgid "AccessTokens|Require expiration dates for service accounts"
 msgstr ""
 
 msgid "AccessTokens|Revoke"
@@ -5930,6 +5936,12 @@ msgstr ""
 msgid "AiPowered|Turn on experiment and beta GitLab Duo features"
 msgstr ""
 
+msgid "AiPowered|Turn on prompt caching"
+msgstr ""
+
+msgid "AiPowered|Turn on prompt caching to improve Duo performance. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "AiPowered|Unlock advanced AI-powered capabilities with the Premium or Ultimate tier designed for your development needs."
 msgstr ""
 
@@ -5949,6 +5961,9 @@ msgid "AiPowered|What is this service account?"
 msgstr ""
 
 msgid "AiPowered|When GitLab Duo is not available, experiment and beta features cannot be turned on."
+msgstr ""
+
+msgid "AiPowered|When GitLab Duo is not available, prompt caching cannot be turned on."
 msgstr ""
 
 msgid "AiPowered|When turned on, all billable users can access GitLab Duo Chat and Code Suggestions in supported IDEs."
@@ -6463,6 +6478,9 @@ msgid "Allow access to the following IP addresses"
 msgstr ""
 
 msgid "Allow commits from members who can merge to the target branch. %{link_start}About this feature.%{link_end}"
+msgstr ""
+
+msgid "Allow group and project access tokens"
 msgstr ""
 
 msgid "Allow group owners to manage LDAP-related settings"
@@ -30045,7 +30063,7 @@ msgstr ""
 msgid "GroupSettings|Default to Auto DevOps pipeline for all projects within this group"
 msgstr ""
 
-msgid "GroupSettings|Disable personal access tokens"
+msgid "GroupSettings|Disable personal access tokens for enterprise users"
 msgstr ""
 
 msgid "GroupSettings|Emails are not encrypted. Concerned administrators may want to disable diff previews."
@@ -30177,9 +30195,6 @@ msgstr ""
 msgid "GroupSettings|Service access tokens expiration enforced setting was not saved"
 msgstr ""
 
-msgid "GroupSettings|Service account token expiration"
-msgstr ""
-
 msgid "GroupSettings|Set a size limit for all content in each Pages site in this group. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
@@ -30216,7 +30231,7 @@ msgstr ""
 msgid "GroupSettings|Unless manually disabled, this setting will be automatically enabled in GitLab 18.0. This setting is scheduled to be removed in GitLab 18.3, and the JWT format will be used by all job tokens."
 msgstr ""
 
-msgid "GroupSettings|Users can create %{link_start_project}project access tokens%{link_end} and %{link_start_group}group access tokens%{link_end} in this group"
+msgid "GroupSettings|Users can create %{link_start_group}group access tokens%{link_end} and %{link_start_project}project access tokens%{link_end} in this group"
 msgstr ""
 
 msgid "GroupSettings|Value Streams Dashboard"
@@ -31998,7 +32013,7 @@ msgstr ""
 msgid "InProductMarketing|Boost efficiency and collaboration"
 msgstr ""
 
-msgid "InProductMarketing|Build in security"
+msgid "InProductMarketing|Built-in security"
 msgstr ""
 
 msgid "InProductMarketing|End-to-end security and compliance"
@@ -49008,6 +49023,9 @@ msgstr ""
 msgid "Promotions|You can restrict access to protected branches by choosing a role (Maintainers, Developers) as well as certain users."
 msgstr ""
 
+msgid "Prompt Cache"
+msgstr ""
+
 msgid "Prompt users to upload SSH keys"
 msgstr ""
 
@@ -56487,6 +56505,9 @@ msgstr ""
 msgid "Select start date"
 msgstr ""
 
+msgid "Select state"
+msgstr ""
+
 msgid "Select status"
 msgstr ""
 
@@ -56638,9 +56659,6 @@ msgid "Service Desk Ticket"
 msgstr ""
 
 msgid "Service Desk allows people to create issues in your GitLab instance without their own user account. It provides a unique email address for end users to create issues in a project. Replies can be sent either through the GitLab interface or by email. End users only see threads through email."
-msgstr ""
-
-msgid "Service access token expiration"
 msgstr ""
 
 msgid "Service account"

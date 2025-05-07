@@ -77,7 +77,7 @@ inside the workload identity pool created in the previous step, using the follow
   - The address must not end in a trailing slash.
 - **Provider attributes mapping**: Create the following mappings, where `attribute.X` is the
   name of the attribute to be included as a claim in the Google token, and `assertion.X`
-  is the value to extract from the [GitLab claim](../_index.md#how-it-works):
+  is the value to extract from the [GitLab claim](../_index.md#id-token-authentication-for-cloud-services):
 
   | Attribute (on Google) | Assertion (from GitLab) |
   | --- | --- |

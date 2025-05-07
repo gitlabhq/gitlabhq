@@ -1770,6 +1770,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 - Immediately deleting subgroups was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4.
 - Immediately deleting subgroups was [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) by default in GitLab 15.4.
 - The flag `immediate_delete_subgroup_api` for immediately deleting subgroups was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/374069) in GitLab 15.9.
+- [Marking group for deletion was moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
 
 {{< /history >}}
 
@@ -1777,8 +1778,7 @@ Only available to group owners and administrators.
 
 This endpoint:
 
-- On Premium and Ultimate tiers, marks the group for deletion. The deletion happens 7 days later by default, but you can change the retention period in the [instance settings](../administration/settings/visibility_and_access_controls.md#deletion-protection).
-- On Free tier, deletes the group immediately and queues a background job to delete all projects in the group.
+- Marks the group for deletion. The deletion happens 7 days later by default, but you can change the retention period in the [instance settings](../administration/settings/visibility_and_access_controls.md#deletion-protection).
 - Deletes a subgroup immediately if the subgroup is marked for deletion (GitLab 15.4 and later). The endpoint does not immediately delete top-level groups.
 
 ```plaintext
@@ -1790,8 +1790,8 @@ Parameters:
 | Attribute            | Type           | Required | Description |
 |----------------------|----------------|----------|-------------|
 | `id`                 | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
-| `permanently_remove` | boolean/string | no       | Immediately deletes a subgroup if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. Premium and Ultimate only. |
-| `full_path`          | string         | no       | Full path of subgroup to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. To find the subgroup path, see the [group details](groups.md#get-a-single-group). Premium and Ultimate only. |
+| `permanently_remove` | boolean/string | no       | Immediately deletes a subgroup if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4 for Premium and Ultimate only and moved to GitLab Free in 18.0. |
+| `full_path`          | string         | no       | Full path of subgroup to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. To find the subgroup path, see the [group details](groups.md#get-a-single-group). |
 
 The response is `202 Accepted` if the user has authorization.
 

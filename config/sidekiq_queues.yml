@@ -75,6 +75,8 @@
   - 1
 - - authn_sync_group_scim_token_record
   - 1
+- - authn_sync_scim_group_members
+  - 1
 - - authn_sync_scim_identity_record
   - 1
 - - authn_sync_scim_token_record

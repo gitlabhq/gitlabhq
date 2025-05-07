@@ -25,10 +25,6 @@ export default {
       type: String,
       required: true,
     },
-    formLabelId: {
-      type: String,
-      required: true,
-    },
     fullPath: {
       type: String,
       required: true,
@@ -170,19 +166,21 @@ export default {
 </script>
 
 <template>
-  <gl-form-group :label="formLabel" :label-for="formLabelId">
+  <gl-form-group :label="formLabel">
     <gl-collapsible-listbox
       ref="listbox"
       block
+      :header-text="__('Select labels')"
       is-check-centered
       :items="listboxItems"
       multiple
       :no-results-text="s__('WorkItem|No matching results')"
+      :reset-button-label="__('Reset')"
       searchable
       :searching="isLoading"
       :selected="selectedIds"
-      :toggle-id="formLabelId"
       :toggle-text="toggleText"
+      @reset="handleSelect([])"
       @search="setSearchTermDebounced"
       @select="handleSelect"
       @shown="handleShown"

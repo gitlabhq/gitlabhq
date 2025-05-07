@@ -25471,7 +25471,7 @@ Ancestor path of a given dependency.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="dependencypathiscyclic"></a>`isCyclic` | [`Boolean!`](#boolean) | Indicates if the path is cyclic. |
-| <a id="dependencypathmaxdepthreached"></a>`maxDepthReached` | [`Boolean!`](#boolean) | Indicates if the path reached the maximum depth (20). |
+| <a id="dependencypathmaxdepthreached"></a>`maxDepthReached` | [`Boolean!`](#boolean) | Indicates if the path reached the maximum depth (8). |
 | <a id="dependencypathpath"></a>`path` | [`[DependencyPathPartial!]!`](#dependencypathpartial) | Name of the dependency. |
 
 ### `DependencyPathPartial`

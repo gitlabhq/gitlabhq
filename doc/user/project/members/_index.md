@@ -94,8 +94,10 @@ Prerequisites:
 
 - You must have the Owner or Maintainer role.
 - [Group membership lock](../../group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) must be disabled.
-- If [sign-up is disabled](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), an administrator must add the user by email first.
-- If [approval for role promotion](../../../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is enabled, an administrator must approve the invite.
+- For GitLab Self-Managed instances:
+  - If [user sign-ups are disabled](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), an administrator must add the user.
+  - If [user invitations are disabled](../../../administration/settings/visibility_and_access_controls.md#disable-user-invitations), an administrator must add the user.
+  - If [administrator approval is enabled](../../../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions), an administrator must approve the invitation.
 
 To add a user to a project:
 

@@ -1,11 +1,19 @@
 <script>
 import { GlForm } from '@gitlab/ui';
+import { createAlert } from '~/alert';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import axios from '~/lib/utils/axios_utils';
+import { s__ } from '~/locale';
+import workItemBulkUpdateMutation from '../../graphql/list/work_item_bulk_update.mutation.graphql';
+import workItemParent from '../../graphql/list/work_item_parent.query.graphql';
 import WorkItemBulkEditLabels from './work_item_bulk_edit_labels.vue';
+import WorkItemBulkEditState from './work_item_bulk_edit_state.vue';
 
 export default {
   components: {
     GlForm,
     WorkItemBulkEditLabels,
+    WorkItemBulkEditState,
   },
   props: {
     checkedItems: {
@@ -17,6 +25,11 @@ export default {
       type: String,
       required: true,
     },
+    isEpicsList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isGroup: {
       type: Boolean,
       required: true,
@@ -25,18 +38,82 @@ export default {
   data() {
     return {
       addLabelIds: [],
+      parentId: undefined,
       removeLabelIds: [],
+      state: undefined,
     };
   },
+  apollo: {
+    parentId: {
+      query: workItemParent,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+        };
+      },
+      update(data) {
+        return data.namespace.id;
+      },
+      skip() {
+        return !this.isEpicsList;
+      },
+    },
+  },
+  computed: {
+    legacyBulkEditEndpoint() {
+      const domain = gon.relative_url_root || '';
+      const basePath = this.isGroup ? `groups/${this.fullPath}` : this.fullPath;
+      return `${domain}/${basePath}/-/issues/bulk_update`;
+    },
+  },
   methods: {
-    handleFormSubmitted() {
-      this.$emit('bulk-update', {
-        ids: this.checkedItems.map((item) => item.id),
-        addLabelIds: this.addLabelIds,
-        removeLabelIds: this.removeLabelIds,
+    async handleFormSubmitted() {
+      this.$emit('start');
+
+      const executeBulkEdit = this.isEpicsList ? this.performBulkEdit : this.performLegacyBulkEdit;
+
+      try {
+        await executeBulkEdit();
+        this.$emit('success', { refetchCounts: Boolean(this.state) });
+        this.resetData();
+      } catch (error) {
+        createAlert({
+          message: s__('WorkItem|Something went wrong while bulk editing.'),
+          captureError: true,
+          error,
+        });
+      } finally {
+        this.$emit('finish');
+      }
+    },
+    performBulkEdit() {
+      return this.$apollo.mutate({
+        mutation: workItemBulkUpdateMutation,
+        variables: {
+          input: {
+            parentId: this.parentId,
+            ids: this.checkedItems.map((item) => item.id),
+            labelsWidget: {
+              addLabelIds: this.addLabelIds,
+              removeLabelIds: this.removeLabelIds,
+            },
+          },
+        },
       });
+    },
+    performLegacyBulkEdit() {
+      const update = {
+        add_label_ids: this.addLabelIds.map(getIdFromGraphQLId),
+        issuable_ids: this.checkedItems.map((item) => getIdFromGraphQLId(item.id)).join(','),
+        remove_label_ids: this.removeLabelIds.map(getIdFromGraphQLId),
+        state_event: this.state,
+      };
+      return axios.post(this.legacyBulkEditEndpoint, { update });
+    },
+    resetData() {
       this.addLabelIds = [];
       this.removeLabelIds = [];
+      this.state = undefined;
     },
   },
 };
@@ -44,9 +121,9 @@ export default {
 
 <template>
   <gl-form id="work-item-list-bulk-edit" class="gl-p-5" @submit.prevent="handleFormSubmitted">
+    <work-item-bulk-edit-state v-if="!isEpicsList" v-model="state" />
     <work-item-bulk-edit-labels
       :form-label="__('Add labels')"
-      form-label-id="bulk-update-add-labels"
       :full-path="fullPath"
       :is-group="isGroup"
       :selected-labels-ids="addLabelIds"
@@ -55,7 +132,6 @@ export default {
     <work-item-bulk-edit-labels
       :checked-items="checkedItems"
       :form-label="__('Remove labels')"
-      form-label-id="bulk-update-remove-labels"
       :full-path="fullPath"
       :is-group="isGroup"
       :selected-labels-ids="removeLabelIds"

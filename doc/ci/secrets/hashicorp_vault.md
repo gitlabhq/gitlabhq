@@ -46,7 +46,7 @@ and `gitlab.example.com` with the URL of your GitLab instance.
 
 {{< /alert >}}
 
-## How it works
+## HashiCorp Vault secrets integration
 
 ID tokens are JSON Web Tokens (JWTs) used for OIDC authentication with third-party services.
 If a job has at least one ID token defined, the `secrets` keyword automatically uses that token
@@ -226,7 +226,7 @@ EOF
 Combined with [protected branches](../../user/project/repository/branches/protected.md),
 you can restrict who is able to authenticate and read the secrets.
 
-Any of the claims [included in the JWT](#how-it-works) can be matched against a list of values
+Any of the claims [included in the JWT](#hashicorp-vault-secrets-integration) can be matched against a list of values
 in the bound claims. For example:
 
 ```json
@@ -262,7 +262,7 @@ specifies the name for the Identity alias created by Vault upon a successful log
 configures the interpretation of the `bound_claims` values. If set to `glob`, the values are interpreted as globs,
 with `*` matching any number of characters.
 
-The claim fields listed in [the table above](#how-it-works) can also be accessed for
+The claim fields listed in [the table above](#hashicorp-vault-secrets-integration) can also be accessed for
 [Vault's policy path templating](https://developer.hashicorp.com/vault/tutorials/policies/policy-templating?in=vault%2Fpolicies)
 purposes by using the accessor name of the JWT auth in Vault.
 The [mount accessor name](https://developer.hashicorp.com/vault/tutorials/auth-methods/identity#step-1-create-an-entity-with-alias)

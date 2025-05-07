@@ -49,8 +49,6 @@ import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
 import { sortOptions, urlSortParams } from '~/work_items/pages/list/constants';
 import getWorkItemStateCountsQuery from '~/work_items/graphql/list/get_work_item_state_counts.query.graphql';
 import getWorkItemsQuery from '~/work_items/graphql/list/get_work_items.query.graphql';
-import workItemBulkUpdateMutation from '~/work_items/graphql/list/work_item_bulk_update.mutation.graphql';
-import workItemParentQuery from '~/work_items/graphql/list//work_item_parent.query.graphql';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import {
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -67,7 +65,6 @@ import { createRouter } from '~/work_items/router';
 import {
   groupWorkItemsQueryResponse,
   groupWorkItemStateCountsQueryResponse,
-  workItemParentQueryResponse,
 } from '../../mock_data';
 import mockQuery from '../../graphql/mock_query.query.graphql';
 
@@ -93,8 +90,6 @@ describeSkipVue3(skipReason, () => {
     .fn()
     .mockResolvedValue(groupWorkItemStateCountsQueryResponse);
   const mutationHandler = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
-  const workItemParentQueryHandler = jest.fn().mockResolvedValue(workItemParentQueryResponse);
-  const workItemBulkUpdateHandler = jest.fn();
 
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
@@ -129,9 +124,7 @@ describeSkipVue3(skipReason, () => {
       apolloProvider: createMockApollo([
         [getWorkItemsQuery, queryHandler],
         [getWorkItemStateCountsQuery, countsQueryHandler],
-        [workItemParentQuery, workItemParentQueryHandler],
         [setSortPreferenceMutation, sortPreferenceMutationResponse],
-        [workItemBulkUpdateMutation, workItemBulkUpdateHandler],
         ...additionalHandlers,
       ]),
       provide: {
@@ -989,78 +982,72 @@ describeSkipVue3(skipReason, () => {
   });
 
   describe('when bulk editing', () => {
-    describe('when workItemType=Epic', () => {
-      it.each([true, false])('renders=$s when canBulkEditEpics=%s', async (canBulkEditEpics) => {
-        mountComponent({ provide: { canBulkEditEpics, workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
-        await waitForPromises();
-
-        expect(findBulkEditStartButton().exists()).toBe(canBulkEditEpics);
-      });
-    });
-
-    describe('when group', () => {
-      it.each`
-        canBulkUpdate | hasGroupBulkEditFeature | renders
-        ${true}       | ${true}                 | ${true}
-        ${true}       | ${false}                | ${false}
-        ${false}      | ${true}                 | ${false}
-        ${false}      | ${false}                | ${false}
-      `(
-        'renders=$renders when canBulkUpdate=$canBulkUpdate and hasGroupBulkEditFeature=$hasGroupBulkEditFeature',
-        async ({ canBulkUpdate, hasGroupBulkEditFeature, renders }) => {
-          mountComponent({ provide: { isGroup: true, canBulkUpdate, hasGroupBulkEditFeature } });
+    describe('user permissions', () => {
+      describe('when workItemType=Epic', () => {
+        it.each([true, false])('renders=$s when canBulkEditEpics=%s', async (canBulkEditEpics) => {
+          mountComponent({ provide: { canBulkEditEpics, workItemType: WORK_ITEM_TYPE_NAME_EPIC } });
           await waitForPromises();
 
-          expect(findBulkEditStartButton().exists()).toBe(renders);
-        },
-      );
-    });
+          expect(findBulkEditStartButton().exists()).toBe(canBulkEditEpics);
+        });
+      });
 
-    describe('when project', () => {
-      it.each([true, false])('renders depending on canBulkUpdate=%s', async (canBulkUpdate) => {
-        mountComponent({ provide: { isGroup: false, canBulkUpdate } });
-        await waitForPromises();
+      describe('when group', () => {
+        it.each`
+          canBulkUpdate | hasGroupBulkEditFeature | renders
+          ${true}       | ${true}                 | ${true}
+          ${true}       | ${false}                | ${false}
+          ${false}      | ${true}                 | ${false}
+          ${false}      | ${false}                | ${false}
+        `(
+          'renders=$renders when canBulkUpdate=$canBulkUpdate and hasGroupBulkEditFeature=$hasGroupBulkEditFeature',
+          async ({ canBulkUpdate, hasGroupBulkEditFeature, renders }) => {
+            mountComponent({ provide: { isGroup: true, canBulkUpdate, hasGroupBulkEditFeature } });
+            await waitForPromises();
 
-        expect(findBulkEditStartButton().exists()).toBe(canBulkUpdate);
+            expect(findBulkEditStartButton().exists()).toBe(renders);
+          },
+        );
+      });
+
+      describe('when project', () => {
+        it.each([true, false])('renders depending on canBulkUpdate=%s', async (canBulkUpdate) => {
+          mountComponent({ provide: { isGroup: false, canBulkUpdate } });
+          await waitForPromises();
+
+          expect(findBulkEditStartButton().exists()).toBe(canBulkUpdate);
+        });
       });
     });
 
-    it('opens the bulk update sidebar when the toggle is clicked', async () => {
-      mountComponent({ provide: { isGroup: false, canBulkUpdate: true } });
+    it('closes the bulk edit sidebar when the "success" event is emitted', async () => {
+      mountComponent();
       await waitForPromises();
 
       findBulkEditStartButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(findIssuableList().props('showBulkEditSidebar')).toBe(true);
+
+      findBulkEditSidebar().vm.$emit('success');
+      await nextTick();
+
+      expect(findIssuableList().props('showBulkEditSidebar')).toBe(false);
+    });
+
+    it('does not close the bulk edit sidebar when no "success" event is emitted', async () => {
+      mountComponent();
+      await waitForPromises();
+
+      findBulkEditStartButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(findIssuableList().props('showBulkEditSidebar')).toBe(true);
+
+      findBulkEditSidebar().vm.$emit('finish');
       await nextTick();
 
       expect(findIssuableList().props('showBulkEditSidebar')).toBe(true);
-    });
-
-    it('triggers the bulk edit mutation when bulk edit is submitted', async () => {
-      mountComponent({ provide: { isGroup: false, canBulkUpdate: true } });
-      await waitForPromises();
-
-      const ids = ['gid://gitlab/WorkItem/1', 'gid://gitlab/WorkItem/2'];
-      const addLabelIds = ['gid://gitlab/Label/1', 'gid://gitlab/Label/2', 'gid://gitlab/Label/3'];
-      const removeLabelIds = [
-        'gid://gitlab/Label/4',
-        'gid://gitlab/Label/5',
-        'gid://gitlab/Label/6',
-      ];
-
-      findBulkEditStartButton().vm.$emit('click');
-      await waitForPromises();
-      findBulkEditSidebar().vm.$emit('bulk-update', { ids, addLabelIds, removeLabelIds });
-
-      expect(workItemBulkUpdateHandler).toHaveBeenCalledWith({
-        input: {
-          parentId: workItemParentQueryResponse.data.namespace.id,
-          ids,
-          labelsWidget: {
-            addLabelIds,
-            removeLabelIds,
-          },
-        },
-      });
     });
   });
 });

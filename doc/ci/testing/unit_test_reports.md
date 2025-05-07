@@ -32,7 +32,7 @@ Consider the following workflow:
    exposes them in the merge request. No more searching in the job logs.
 1. Your development and debugging workflow becomes easier, faster and efficient.
 
-## How it works
+## Unit test reporting workflow
 
 First, GitLab Runner uploads all [JUnit report format XML files](https://www.ibm.com/docs/en/developer-for-zos/16.0?topic=formats-junit-xml-format)
 as [artifacts](../yaml/artifacts_reports.md#artifactsreportsjunit) to GitLab. Then, when you visit a merge request, GitLab starts

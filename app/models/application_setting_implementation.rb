@@ -140,6 +140,8 @@ module ApplicationSettingImplementation
         max_attachment_size: Settings.gitlab['max_attachment_size'],
         max_decompressed_archive_size: 25600,
         max_export_size: 0,
+        max_github_response_size_limit: 8,
+        max_github_response_json_value_count: 250_000,
         max_import_size: 0,
         max_import_remote_file_size: 10240,
         max_login_attempts: nil,

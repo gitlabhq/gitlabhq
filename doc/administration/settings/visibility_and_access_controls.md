@@ -439,3 +439,26 @@ Prerequisites:
    - Applies to both SSH or HTTP authorized IP address ranges. You cannot split
      this list by authorization type.
 1. Select **Save changes**.
+
+## Disable user invitations
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189954) in GitLab 18.0. Disabled by default.
+
+{{< /history >}}
+
+You can disable the ability for non-administrators to invite users to groups or projects. After
+you configure this setting, only administrators can invite users to groups or projects on the instance.
+
+Prerequisites:
+
+- You must be an administrator.
+
+To disable user invitations:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand **Visibility and access controls**.
+1. Select the **Prevent group member invitations** checkbox.
+1. Select **Save changes**.

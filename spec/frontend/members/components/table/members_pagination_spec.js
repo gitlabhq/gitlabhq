@@ -1,13 +1,13 @@
 import { GlPagination } from '@gitlab/ui';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { extendedWrapper, mountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import MembersPagination from '~/members/components/table/members_pagination.vue';
 import { pagination as mockPagination } from '../../mock_data';
 
 describe('MembersPagination', () => {
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
-  const findPagination = () => extendedWrapper(wrapper.findComponent(GlPagination));
+  const findPagination = () => wrapper.findComponent(GlPagination);
   const mockURL = 'https://localhost/foo-bar/-/project_members';
 
   /**
@@ -15,7 +15,7 @@ describe('MembersPagination', () => {
    * @param {string} expectedUrl
    */
   const expectCorrectLinkToPage2 = (expectedUrl) => {
-    const secondPageLink = findPagination().findByText('2', { selector: 'a' });
+    const secondPageLink = findPagination().findAll('a').at(1);
     expect(secondPageLink.exists()).toBe(true);
     expect(secondPageLink.attributes('href')).toBe(expectedUrl);
   };

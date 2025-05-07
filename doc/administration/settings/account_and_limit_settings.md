@@ -258,7 +258,7 @@ For details, see [cookies used for sign-in](../../user/profile/_index.md#cookies
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395038) in GitLab 17.11 with a [flag](../feature_flags.md) named `session_expire_from_init`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395038) in GitLab 18.0 with a [flag](../feature_flags.md) named `session_expire_from_init`. Enabled by default.
 
 {{< /history >}}
 

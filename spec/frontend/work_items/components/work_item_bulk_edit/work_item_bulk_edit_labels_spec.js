@@ -59,10 +59,13 @@ describe('WorkItemBulkEditLabels component', () => {
     expect(findFormGroup().attributes('label')).toBe('Labels');
   });
 
-  it('connects the form group and the listbox', () => {
+  it('renders a header and reset button', () => {
     createComponent();
 
-    expect(findFormGroup().attributes('label-for')).toBe(findListbox().props('toggleId'));
+    expect(findListbox().props()).toMatchObject({
+      headerText: 'Select labels',
+      resetButtonLabel: 'Reset',
+    });
   });
 
   it('renders the manage labels button with correct text for project', () => {
@@ -70,6 +73,21 @@ describe('WorkItemBulkEditLabels component', () => {
 
     expect(findManageLabelsButton().text()).toBe('Manage project labels');
     expect(findManageLabelsButton().attributes('href')).toBe(labelsManagePath);
+  });
+
+  it('resets the selected labels when the Reset button is clicked', async () => {
+    createComponent();
+
+    findListbox().vm.$emit('select', ['gid://gitlab/Label/2']);
+    findListbox().vm.$emit('shown');
+    await waitForPromises();
+
+    expect(findListbox().props('selected')).toEqual(['gid://gitlab/Label/2']);
+
+    findListbox().vm.$emit('reset');
+    await nextTick();
+
+    expect(findListbox().props('selected')).toEqual([]);
   });
 
   describe('search labels query', () => {

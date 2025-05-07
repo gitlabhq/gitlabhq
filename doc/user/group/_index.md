@@ -412,8 +412,10 @@ You can give a user access to all projects in a group.
 Prerequisites:
 
 - You must have the Owner role for the group.
-- If [sign-up is disabled](../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), an administrator must add the user by email first.
-- If [administrator for role promotions](../../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, an administrator must approve the invite.
+- For GitLab Self-Managed instances:
+  - If [New sign-ups are disabled](../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), an administrator must add the user.
+  - If [User invitations are disabled](../../administration/settings/visibility_and_access_controls.md#disable-user-invitations), an administrator must add the user.
+  - If [administrator approval is enabled](../../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions), an administrator must approve the invitation.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.

@@ -200,6 +200,7 @@ project_setting:
     - extended_prat_expiry_webhooks_execute
     - protect_merge_request_pipelines
     - model_prompt_cache_enabled
+    - web_based_commit_signing_enabled
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

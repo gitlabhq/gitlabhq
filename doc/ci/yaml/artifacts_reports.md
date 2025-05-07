@@ -34,7 +34,7 @@ To browse the report output files, ensure you include the [`artifacts:paths`](_i
 {{< alert type="note" >}}
 
 Combined reports in parent pipelines using [artifacts from child pipelines](_index.md#needspipelinejob) is
-not supported. Track progress on adding support in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/215725).
+not supported. Support for this feature is proposed in [epic 8205](https://gitlab.com/groups/gitlab-org/-/epics/8205).
 
 {{< /alert >}}
 
@@ -155,12 +155,18 @@ artifacts:
 
 The collected coverage report is uploaded to GitLab as an artifact.
 
-You can generate multiple JaCoCo or Cobertura reports within a job and include them in the final
+You can generate multiple JaCoCo or Cobertura reports and include them in the final
 job artifact using [wildcards](../jobs/job_artifacts.md#with-wildcards).
 The results of the reports are aggregated in the final coverage report.
 
-GitLab can display the results of coverage report in the merge request
-[diff annotations](../testing/test_coverage_visualization/_index.md).
+The results of coverage reports appear in merge request [diff annotations](../testing/code_coverage/_index.md#coverage-visualization).
+
+{{< alert type="note" >}}
+
+Coverage reports from child pipelines appear in merge request diff annotations,
+but the artifacts themselves are not shared with parent pipelines.
+
+{{< /alert >}}
 
 ## `artifacts:reports:codequality`
 
@@ -341,7 +347,7 @@ rspec:
 
 GitLab can display the results of one or more reports in:
 
-- The merge request [code quality widget](../testing/unit_test_reports.md#how-it-works).
+- The merge request [code quality widget](../testing/unit_test_reports.md#unit-test-reporting-workflow).
 - The [full report](../testing/unit_test_reports.md#view-unit-test-reports-on-gitlab).
 
 Some JUnit tools export to multiple XML files. You can specify multiple test report paths in a single job to

@@ -41,7 +41,8 @@ module TriggerableHooks
         resource_access_token_hooks: :resource_access_token_events,
         subgroup_hooks: :subgroup_events,
         tag_push_hooks: :tag_push_events,
-        wiki_page_hooks: :wiki_page_events
+        wiki_page_hooks: :wiki_page_events,
+        vulnerability_hooks: :vulnerability_events
       }
     end
 

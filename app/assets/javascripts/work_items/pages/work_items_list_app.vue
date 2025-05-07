@@ -1,7 +1,6 @@
 <script>
 import { GlButton, GlFilteredSearchToken, GlLoadingIcon } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
-import { createAlert } from '~/alert';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
@@ -83,7 +82,6 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
-import WorkItemBulkEditSidebar from '../components/work_item_bulk_edit/work_item_bulk_edit_sidebar.vue';
 import WorkItemHealthStatus from '../components/work_item_health_status.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
 import {
@@ -99,8 +97,6 @@ import {
 } from '../constants';
 import getWorkItemStateCountsQuery from '../graphql/list/get_work_item_state_counts.query.graphql';
 import getWorkItemsQuery from '../graphql/list/get_work_items.query.graphql';
-import workItemBulkUpdateMutation from '../graphql/list/work_item_bulk_update.mutation.graphql';
-import workItemParent from '../graphql/list/work_item_parent.query.graphql';
 import { sortOptions, urlSortParams } from './list/constants';
 
 const EmojiToken = () =>
@@ -128,7 +124,8 @@ export default {
     IssuableList,
     IssueCardStatistics,
     IssueCardTimeInfo,
-    WorkItemBulkEditSidebar,
+    WorkItemBulkEditSidebar: () =>
+      import('~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_sidebar.vue'),
     WorkItemDrawer,
     WorkItemHealthStatus,
     EmptyStateWithoutAnyIssues,
@@ -189,7 +186,6 @@ export default {
       pageInfo: {},
       pageParams: {},
       pageSize: DEFAULT_PAGE_SIZE,
-      parentId: undefined,
       showBulkEditSidebar: false,
       sortKey: CREATED_DESC,
       state: STATUS_OPEN,
@@ -258,20 +254,6 @@ export default {
       error(error) {
         this.error = s__('WorkItem|An error occurred while getting work item counts.');
         Sentry.captureException(error);
-      },
-    },
-    parentId: {
-      query: workItemParent,
-      variables() {
-        return {
-          fullPath: this.fullPath,
-        };
-      },
-      update(data) {
-        return data.namespace.id;
-      },
-      skip() {
-        return !this.showBulkEditSidebar;
       },
     },
   },
@@ -697,6 +679,10 @@ export default {
     getStatus(issue) {
       return issue.state === STATE_CLOSED ? __('Closed') : undefined;
     },
+    async handleBulkEditSuccess(event) {
+      this.showBulkEditSidebar = false;
+      await this.refetchItems(event);
+    },
     handleClickTab(state) {
       if (this.state === state) {
         return;
@@ -754,36 +740,6 @@ export default {
 
       this.$router.push({ query: this.urlParams });
     },
-    async handleWorkItemBulkEdit({ ids, addLabelIds, removeLabelIds }) {
-      this.bulkEditInProgress = true;
-
-      try {
-        await this.$apollo.mutate({
-          mutation: workItemBulkUpdateMutation,
-          variables: {
-            input: {
-              parentId: this.parentId,
-              ids,
-              labelsWidget: {
-                addLabelIds,
-                removeLabelIds,
-              },
-            },
-          },
-        });
-
-        await this.refetchItems();
-      } catch (error) {
-        createAlert({
-          message: s__('WorkItem|Something went wrong while bulk editing.'),
-          captureError: true,
-          error,
-        });
-      } finally {
-        this.bulkEditInProgress = false;
-        this.showBulkEditSidebar = false;
-      }
-    },
     saveSortPreference(sortKey) {
       this.$apollo
         .mutate({
@@ -811,9 +767,12 @@ export default {
         this.refetchItems();
       }
     },
-    async refetchItems() {
+    async refetchItems({ refetchCounts = false } = {}) {
       this.isRefetching = true;
       await this.$apollo.queries.workItems.refetch();
+      if (refetchCounts) {
+        await this.$apollo.queries.workItemStateCounts.refetch();
+      }
       this.isRefetching = false;
     },
     updateData(sort) {
@@ -1018,10 +977,14 @@ export default {
 
         <template #sidebar-items="{ checkedIssuables }">
           <work-item-bulk-edit-sidebar
+            v-if="showBulkEditSidebar"
             :checked-items="checkedIssuables"
             :full-path="fullPath"
+            :is-epics-list="isEpicsList"
             :is-group="isGroup"
-            @bulk-update="handleWorkItemBulkEdit"
+            @finish="bulkEditInProgress = false"
+            @start="bulkEditInProgress = true"
+            @success="handleBulkEditSuccess"
           />
         </template>
 

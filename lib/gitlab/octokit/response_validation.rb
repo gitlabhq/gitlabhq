@@ -3,32 +3,37 @@
 module Gitlab
   module Octokit
     class ResponseValidation < ::Faraday::Middleware
-      MAX_ALLOWED_OBJECTS = 250_000
-      MAX_ALLOWED_BYTES = 50.megabytes
-
       ResponseSizeTooLarge = Class.new(StandardError)
 
       def on_complete(env)
+        return if env.url.host == "api.github.com"
+
         body = env.response.body
+
         return if body.empty?
 
-        raise ResponseSizeTooLarge if body.bytesize > MAX_ALLOWED_BYTES
-
-        parsed_response = Gitlab::Json.parse(body)
-
-        raise ResponseSizeTooLarge if total_object_count(parsed_response) > MAX_ALLOWED_OBJECTS
-      rescue JSON::ParserError => e
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
+        if (max_allowed_bytes != 0 && body.bytesize > max_allowed_bytes) ||
+            (max_allowed_values != 0 && total_value_count_estimate(body) > max_allowed_values)
+          raise ResponseSizeTooLarge
+        end
       end
 
       private
 
-      def total_object_count(object)
-        return 1 unless object.is_a?(Hash) || object.is_a?(Array)
+      # : => Number of key-value pairs
+      # , => Number of elements in arrays (off by one since [1, 2, 3] has just 2 commas)
+      # [ => Number of arrays
+      # { => Number of objects
+      def total_value_count_estimate(body)
+        body.count("{[,:")
+      end
 
-        child_objects = object.is_a?(Hash) ? object.values : object
+      def max_allowed_bytes
+        Gitlab::CurrentSettings.max_github_response_size_limit.megabytes
+      end
 
-        1 + child_objects.sum { |v| total_object_count(v) }
+      def max_allowed_values
+        Gitlab::CurrentSettings.max_github_response_json_value_count
       end
     end
   end

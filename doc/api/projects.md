@@ -2145,20 +2145,18 @@ Example response:
 
 ### Delete a project
 
+{{< history >}}
+
+- Immediately deleting projects was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11.
+- [Marking project for deletion was moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
+
+{{< /history >}}
+
 Delete a project. This endpoint:
 
 - Deletes a project including all associated resources, including issues and merge requests.
-- On [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers,
-  [delayed project deletion](../user/project/working_with_projects.md#delayed-project-deletion)
-  is applied if enabled.
-- From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) on
-  [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers, deletes a project immediately if:
-  - The project is already marked for deletion.
-  - The `permanently_remove` and `full_path` parameters are passed.
-- From [GitLab 16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on
-  [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers, delayed project deletion is enabled by default.
-  The deletion happens after the number of days specified in the
-  [default deletion delay](../administration/settings/visibility_and_access_controls.md#deletion-protection).
+- Marks the project for deletion. The deletion happens 7 days later by default, but you can change the retention period in the [instance settings](../administration/settings/visibility_and_access_controls.md#deletion-protection).
+- Deletes project immediately if the project is marked for deletion (GitLab 15.11 and later).
 
 {{< alert type="warning" >}}
 
@@ -2176,8 +2174,8 @@ Supported attributes:
 | Attribute            | Type              | Required | Description |
 |:---------------------|:------------------|:---------|:------------|
 | `id`                 | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `full_path`          | string            | no       | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-a-single-project). Premium and Ultimate only. |
-| `permanently_remove` | boolean/string    | no       | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. Premium and Ultimate only. |
+| `full_path`          | string            | no       | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11 for Premium and Ultimate only and moved to GitLab Free in 18.0. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-a-single-project). Premium and Ultimate only. |
+| `permanently_remove` | boolean/string    | no       | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11 for Premium and Ultimate only and moved to GitLab Free in 18.0. |
 
 ### Restore a project marked for deletion
 

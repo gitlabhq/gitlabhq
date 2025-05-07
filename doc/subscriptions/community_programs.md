@@ -31,56 +31,26 @@ Applicants must add the correct license to each project in their respective grou
 
 {{< alert type="note" >}}
 
-GitLab for Open Source Program benefits apply to an entire GitLab namespace. To qualify for the GitLab for Open Source Program, all projects in an applicant's namespace must meet program requirements. Applicants submit materials related to one project in the applying namespace, and the open source program team uses that project to verify eligibility of the entire namespace.
+GitLab for Open Source Program benefits apply to an entire GitLab namespace. To qualify for the GitLab for Open Source Program, all projects in your namespace must meet program requirements.
 
 {{< /alert >}}
 
 ### Verification for Open Source Program
 
-Next, take screenshots of your project to confirm that project's eligibility. You must upload three screenshots:
+The verification process depends on where your projects are hosted:
 
-- [OSI-approved license overview](#screenshot-1-license-overview)
-- [OSI-approved license contents](#screenshot-2-license-contents)
-- [Publicly visible settings](#screenshot-3-publicly-visible-settings)
+- For projects on GitLab.com, verification is automatic.
+- For projects on GitLab Self-Managed, when you submit your request, you must provide a link to the publicly accessible namespace that contains the projects.
+
+GitLab verifies three aspects of your namespace:
+
+- The namespace must be publicly accessible.
+- Each project in the namespace must use an [OSI-approved license](https://opensource.org/licenses).
+- Projects in the namespace must be publicly visible, except one private project is allowed for security purposes.
 
 {{< alert type="note" >}}
 
 Benefits of the GitLab Open Source Program apply to all projects in a GitLab namespace. All projects in an eligible namespace must meet program requirements.
-
-{{< /alert >}}
-
-#### Screenshot 1: License overview
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select your project avatar. If you haven't specified an avatar for your project, the avatar displays as a single letter.
-1. Take a screenshot of the project overview that clearly displays the license you've chosen for your project.
-
-![License overview](img/license-overview_v14_0.png)
-
-#### Screenshot 2: License contents
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Repository** and locate the project's `LICENSE` file.
-1. Take a screenshot of the contents of the file. Make sure the screenshot includes the title of the license.
-
-![License file](img/license-file_v14_0.png)
-
-#### Screenshot 3: Publicly visible settings
-
-To be eligible for the GitLab Open Source Program, projects must be publicly visible. To check your project's public visibility settings:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
-1. Expand **Visibility, project features, permissions**.
-1. From the **Project visibility** dropdown list, select **Public**.
-1. Select the **Users can request access** checkbox.
-1. Take a screenshot of this view. Include as much of the publicly visible settings as possible. Make sure to include your project's name in the upper-left of the screenshot.
-
-![Project settings page showing enabled visibility settings for a public project](img/publicly-visible_v14_0.png)
-
-{{< alert type="note" >}}
-
-Exceptions to this public visibility requirement apply in select circumstances (for example, in cases where a project in an applicant's namespace may hold sensitive data). Email `opensource@gitlab.com` with details of your use case to request written permission for exceptions.
 
 {{< /alert >}}
 

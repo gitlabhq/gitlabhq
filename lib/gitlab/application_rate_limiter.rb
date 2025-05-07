@@ -35,6 +35,7 @@ module Gitlab
           email_verification_code_send: { threshold: 10, interval: 1.hour },
           expanded_diff_files: { threshold: 6, interval: 1.minute },
           fetch_google_ip_list: { threshold: 10, interval: 1.minute },
+          github_import: { threshold: 6, interval: 1.minute },
           fogbugz_import: { threshold: 1, interval: 1.minute },
           gitlab_shell_operation: { threshold: application_settings.gitlab_shell_operation_limit, interval: 1.minute },
           glql: { threshold: 1, interval: 15.minutes },
