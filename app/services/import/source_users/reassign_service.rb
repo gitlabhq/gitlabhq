@@ -3,6 +3,8 @@
 module Import
   module SourceUsers
     class ReassignService < BaseService
+      include Gitlab::Utils::StrongMemoize
+
       def initialize(import_source_user, assignee_user, current_user:)
         @import_source_user = import_source_user
         @current_user = current_user
@@ -64,7 +66,7 @@ module Import
         return error_invalid_permissions unless current_user.can?(:admin_import_source_user, import_source_user)
         return error_namespace_type if root_namespace.user_namespace?
 
-        error_invalid_assignee unless valid_assignee?(assignee_user)
+        error_invalid_assignee unless valid_assignee?
       end
 
       def error_invalid_assignee
@@ -76,28 +78,39 @@ module Import
       end
 
       def invalid_assignee_message
-        if allow_mapping_to_admins?
+        if allow_mapping_to_inactive_users? && allow_mapping_to_admins?
           s_('UserMapping|You can assign users with regular, auditor, or administrator access only.')
+        elsif allow_mapping_to_admins?
+          s_('UserMapping|You can assign active users with regular, auditor, or administrator access only.')
+        elsif allow_mapping_to_inactive_users?
+          s_('UserMapping|You can assign users with regular or auditor access only.')
         else
-          s_('UserMapping|You can assign only active users with regular or auditor access. ' \
-            'To assign users with administrator access, ask your GitLab administrator to ' \
-            'enable the "Allow contribution mapping to administrators" setting.')
+          s_('UserMapping|You can assign active users with regular or auditor access only.')
         end
       end
 
-      def valid_assignee?(user)
-        user.present? &&
-          user.human? &&
-          user.active? &&
+      def valid_assignee?
+        assignee_user.present? &&
+          assignee_user.human? &&
+          (allow_mapping_to_inactive_users? || assignee_user.active?) &&
           # rubocop:disable Cop/UserAdmin -- This should not be affected by admin mode.
           # We just want to know whether the user CAN have admin privileges or not.
-          (allow_mapping_to_admins? ? true : !user.admin?)
+          (allow_mapping_to_admins? || !assignee_user.admin?)
         # rubocop:enable Cop/UserAdmin
+      end
+
+      def allow_mapping_to_inactive_users?
+        bypass_confirmation_authorizer.allow_mapping_to_inactive_users?
       end
 
       def allow_mapping_to_admins?
         ::Gitlab::CurrentSettings.allow_contribution_mapping_to_admins?
       end
+
+      def bypass_confirmation_authorizer
+        Import::UserMapping::BypassConfirmationAuthorizer.new(current_user)
+      end
+      strong_memoize_attr :bypass_confirmation_authorizer
     end
   end
 end

@@ -24,8 +24,8 @@ export default {
     return {
       updateInProgress: false,
       errorMessage: null,
-      identity: this.formData?.identity ?? null,
-      secret: null,
+      identity: this.formData?.identity ?? '',
+      secret: '',
       secretPlaceholder: this.formData?.identity ? SECRET_PLACEHOLDER : '',
     };
   },
@@ -59,8 +59,8 @@ export default {
           return;
         }
 
-        this.secret = null;
-        this.secretPlaceholder = SECRET_PLACEHOLDER;
+        this.secret = '';
+        this.secretPlaceholder = this.identity ? SECRET_PLACEHOLDER : '';
         this.$emit('success');
       } catch (e) {
         this.errorMessage = e.message;
@@ -102,7 +102,7 @@ export default {
               )
             "
           >
-            <gl-form-input id="identity" v-model.trim="identity" required trim width="xl" />
+            <gl-form-input id="identity" v-model.trim="identity" trim width="xl" />
           </gl-form-group>
           <gl-form-group
             class="gl-grow gl-basis-0"
@@ -116,9 +116,7 @@ export default {
           >
             <gl-form-input
               id="secret"
-              v-model.trim="secret"
-              required
-              trim
+              v-model="secret"
               width="xl"
               :placeholder="secretPlaceholder"
             />

@@ -36,7 +36,8 @@ RSpec.describe Import::SourceUsers::AcceptReassignmentService, feature_category:
           additional_properties: {
             label: Gitlab::GlobalAnonymousId.user_id(import_source_user.placeholder_user),
             property: Gitlab::GlobalAnonymousId.user_id(import_source_user.reassign_to_user),
-            import_type: import_source_user.import_type
+            import_type: import_source_user.import_type,
+            reassign_to_user_state: import_source_user.reassign_to_user.state
           }
         )
     end
@@ -94,7 +95,8 @@ RSpec.describe Import::SourceUsers::AcceptReassignmentService, feature_category:
             additional_properties: {
               label: Gitlab::GlobalAnonymousId.user_id(import_source_user.placeholder_user),
               property: Gitlab::GlobalAnonymousId.user_id(import_source_user.reassign_to_user),
-              import_type: import_source_user.import_type
+              import_type: import_source_user.import_type,
+              reassign_to_user_state: import_source_user.reassign_to_user.state
             }
           )
 

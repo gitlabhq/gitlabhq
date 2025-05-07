@@ -4,14 +4,16 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::TopologyServiceClient::CellService, feature_category: :cell do
   subject(:cell_service) { described_class.new }
+
   let(:service_class) { Gitlab::Cells::TopologyService::CellService::Stub } # gRpc Service Class
+  let(:sequence_ranges) { [Gitlab::Cells::TopologyService::SequenceRange.new(minval: 1, maxval: 1000)] }
 
   let(:cell_info) do
     Gitlab::Cells::TopologyService::CellInfo.new(
       id: 1,
       address: "127.0.0.1:3000",
       session_prefix: "cell-1-",
-      sequence_range: Gitlab::Cells::TopologyService::SequenceRange.new(minval: 1, maxval: 1000)
+      sequence_ranges: sequence_ranges
     )
   end
 
@@ -54,7 +56,7 @@ RSpec.describe Gitlab::TopologyServiceClient::CellService, feature_category: :ce
     end
   end
 
-  describe '#cell_sequence_range' do
+  describe '#cell_sequence_ranges' do
     context 'when cell is enabled' do
       before do
         allow(Gitlab.config.cell).to receive(:id).twice.and_return(1)
@@ -70,7 +72,7 @@ RSpec.describe Gitlab::TopologyServiceClient::CellService, feature_category: :ce
           end
         end
 
-        it { expect(cell_service.cell_sequence_range).to match_array([1, 1000]) }
+        it { expect(cell_service.cell_sequence_ranges).to match_array(sequence_ranges) }
       end
 
       context 'when a cell is not found in topology service' do
@@ -80,7 +82,7 @@ RSpec.describe Gitlab::TopologyServiceClient::CellService, feature_category: :ce
           end
         end
 
-        it { expect(cell_service.cell_sequence_range).to be_nil }
+        it { expect(cell_service.cell_sequence_ranges).to be_nil }
       end
     end
   end

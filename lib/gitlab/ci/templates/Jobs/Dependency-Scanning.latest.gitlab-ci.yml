@@ -438,7 +438,7 @@ gitlab-static-reachability:
   stage: !reference [.ds-analyzer, stage]
   variables:
     SEARCH_MAX_DEPTH: 20
-    STATIC_REACHABILITY_ANALYZER_IMAGE_TAG: 1
+    STATIC_REACHABILITY_ANALYZER_IMAGE_TAG: 2
     # For now we are using GLAS as our static reachability analyzer
     STATIC_REACHABILITY_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gitlab-advanced-sast:$STATIC_REACHABILITY_ANALYZER_IMAGE_TAG"
   image:

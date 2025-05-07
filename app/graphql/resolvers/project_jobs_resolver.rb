@@ -26,14 +26,13 @@ module Resolvers
     argument :sources, [::Types::Ci::JobSourceEnum],
       required: false,
       experiment: { milestone: '17.7' },
-      description: "Filter jobs by source. Ignored if " \
-        "'populate_and_use_build_source_table' feature flag is disabled."
+      description: "Filter jobs by source."
 
     alias_method :project, :object
 
     def resolve_with_lookahead(**args)
       filter_by_name = Feature.enabled?(:populate_and_use_build_names_table, project) && args[:name].to_s.present?
-      filter_by_sources = Feature.enabled?(:populate_and_use_build_source_table, project) && args[:sources].present?
+      filter_by_sources = args[:sources].present?
 
       jobs = ::Ci::JobsFinder.new(
         current_user: current_user, project: project, params: {

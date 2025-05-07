@@ -78,7 +78,17 @@ describe('DockerHubAuthenticationSection', () => {
       it('exists', () => {
         mountComponent();
 
-        expect(findIdentityInput().exists()).toBe(true);
+        expect(findIdentityInput().props('value')).toBe('foo');
+      });
+
+      describe('when formData has no identity', () => {
+        it('has no value', () => {
+          mountComponent({
+            formData: {},
+          });
+
+          expect(findIdentityInput().props('value')).toBe('');
+        });
       });
     });
 
@@ -86,7 +96,7 @@ describe('DockerHubAuthenticationSection', () => {
       it('exists', () => {
         mountComponent();
 
-        expect(findSecretInput().exists()).toBe(true);
+        expect(findSecretInput().props('value')).toBe('');
       });
     });
   });
@@ -144,8 +154,21 @@ describe('DockerHubAuthenticationSection', () => {
 
       expect(findSecretInput().props('placeholder')).toBe('');
       await submitForm();
-      expect(findSecretInput().props('value')).toBe(null);
+      expect(findSecretInput().props('value')).toBe('');
       expect(findSecretInput().props('placeholder')).toBe('*****');
+    });
+
+    it('clears placeholder on secret input field when identity is cleared', async () => {
+      mountComponent();
+
+      expect(findSecretInput().props('placeholder')).toBe('*****');
+
+      await findIdentityInput().vm.$emit('input', '');
+      await findSecretInput().vm.$emit('input', '');
+      await findForm().vm.$emit('submit', { preventDefault: jest.fn() });
+      await waitForPromises();
+
+      expect(findSecretInput().props('placeholder')).toBe('');
     });
 
     describe.each`

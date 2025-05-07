@@ -6,8 +6,6 @@ module Gitlab
       module Chain
         class SetBuildSources < Chain::Base
           def perform!
-            return unless Feature.enabled?(:populate_and_use_build_source_table, project)
-
             command.pipeline_seed.stages.each do |stage|
               stage.statuses.each do |build|
                 next unless build.instance_of?(::Ci::Build)

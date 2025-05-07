@@ -16476,6 +16476,12 @@ CREATE TABLE ldap_admin_role_links (
     provider text NOT NULL,
     cn text,
     filter text,
+    sync_status smallint DEFAULT 0 NOT NULL,
+    sync_started_at timestamp with time zone,
+    sync_ended_at timestamp with time zone,
+    last_successful_sync_at timestamp with time zone,
+    sync_error text,
+    CONSTRAINT check_044d783383 CHECK ((char_length(sync_error) <= 255)),
     CONSTRAINT check_7f4c5b8292 CHECK ((char_length(filter) <= 255)),
     CONSTRAINT check_db3fe65cb5 CHECK ((char_length(cn) <= 255)),
     CONSTRAINT check_f2efc15b43 CHECK ((char_length(provider) <= 255))
@@ -20463,7 +20469,8 @@ CREATE VIEW postgres_sequences AS
     pg_attribute.attname AS col_name,
     pg_sequence.seqmax AS seq_max,
     pg_sequence.seqmin AS seq_min,
-    pg_sequence.seqstart AS seq_start
+    pg_sequence.seqstart AS seq_start,
+    pg_sequence_last_value((pg_sequence.seqrelid)::regclass) AS last_value
    FROM ((((pg_class seq_pg_class
      JOIN pg_sequence ON ((seq_pg_class.oid = pg_sequence.seqrelid)))
      LEFT JOIN pg_depend ON (((seq_pg_class.oid = pg_depend.objid) AND (pg_depend.classid = ('pg_class'::regclass)::oid) AND (pg_depend.refclassid = ('pg_class'::regclass)::oid))))

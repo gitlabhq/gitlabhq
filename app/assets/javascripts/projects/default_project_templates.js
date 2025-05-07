@@ -37,6 +37,10 @@ export default {
     text: s__('ProjectTemplates|Pages/Astro'),
     icon: '.template-option .icon-astro',
   },
+  docusaurus: {
+    text: s__('ProjectTemplates|Pages/Docusaurus'),
+    icon: '.template-option .icon-gitlab_logo',
+  },
   hugo: {
     text: s__('ProjectTemplates|Pages/Hugo'),
     icon: '.template-option .icon-hugo',

@@ -33,6 +33,11 @@ export default {
     GlButton,
     GlCollapsibleListbox,
   },
+  inject: {
+    allowInactivePlaceholderReassignment: {
+      default: false,
+    },
+  },
   props: {
     sourceUser: {
       type: Object,
@@ -74,12 +79,14 @@ export default {
 
   computed: {
     queryVariables() {
-      return {
+      const query = {
         first: USERS_PER_PAGE,
-        active: true,
+        ...(this.allowInactivePlaceholderReassignment ? {} : { active: true }),
         humans: true,
         search: this.search,
       };
+
+      return query;
     },
 
     hasNextPage() {

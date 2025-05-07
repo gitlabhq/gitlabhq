@@ -122,6 +122,7 @@ func (u *upstream) observabilityMiddlewares(handler http.Handler, method string,
 	handler = log.AccessLogger(
 		handler,
 		log.WithAccessLogger(u.accessLogger),
+		log.WithTrustedProxies(u.TrustedCIDRsForXForwardedFor),
 		log.WithExtraFields(func(_ *http.Request) log.Fields {
 			return log.Fields{
 				"route":      metadata.regexpStr, // This field matches the `route` label in Prometheus metrics

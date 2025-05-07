@@ -14,6 +14,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :address, :string, 3, json_name: "address"
       optional :session_prefix, :string, 4, json_name: "sessionPrefix"
       optional :sequence_range, :message, 5, "gitlab.cells.topology_service.SequenceRange", json_name: "sequenceRange"
+      repeated :sequence_ranges, :message, 6, "gitlab.cells.topology_service.SequenceRange", json_name: "sequenceRanges"
     end
     add_message "gitlab.cells.topology_service.GetCellsRequest" do
     end

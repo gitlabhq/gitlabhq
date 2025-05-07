@@ -15909,6 +15909,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Configure code owners to ensure appropriate review of specific code sections."
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Configure code owners to require approval for code changes."
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Configure issue tracking to organize and prioritize project work."
 msgstr ""
 
@@ -15940,6 +15943,12 @@ msgid "ComplianceStandardsAdherence|Configure push permissions"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Configure push rules to prevent sensitive information from being committed."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Configure push rules to reject unsigned commits."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Configure push rules to require that all commits are signed."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Configure settings to prevent editing of merge request approval rules."
@@ -15976,6 +15985,9 @@ msgid "ComplianceStandardsAdherence|Controls whether users can merge changes to 
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Controls whether users can push directly to the default branch."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Create a fork of the project."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Create valid CI configuration"
@@ -16056,10 +16068,10 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Enable stale branch cleanup"
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|Enable version control"
+msgid "ComplianceStandardsAdherence|Enforce MFA for contributors"
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|Enforce MFA for contributors"
+msgid "ComplianceStandardsAdherence|Enforce code owner approval"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Ensure each repository has at least two administrators assigned for redundancy."
@@ -16098,9 +16110,6 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Ensures a linear commit history by forbidding merge commits."
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|Ensures a minimum number of administrators are assigned to the project."
-msgstr ""
-
 msgid "ComplianceStandardsAdherence|Ensures a status page is configured for the project."
 msgstr ""
 
@@ -16135,6 +16144,9 @@ msgid "ComplianceStandardsAdherence|Ensures dependency scanning is configured an
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Ensures error tracking is enabled for the project."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Ensures fewer administrators are assigned to the project than total members."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Ensures fuzz testing is configured and running in the project pipelines."
@@ -16179,13 +16191,28 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Ensures strict permissions are set for repository access."
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Ensures that a Git repository exists for the project."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Ensures that code owners file is configured."
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Ensures that merge requests require at least one approval before merging."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Ensures that merge requests require at least two approvals before merging."
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Ensures that project contains protected branches."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Ensures that signed commits are required"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Ensures that the author of a merge request cannot approve their own changes."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Ensures that the project has been forked."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Ensures the GitLab instance is using an Ultimate license level."
@@ -16198,9 +16225,6 @@ msgid "ComplianceStandardsAdherence|Ensures the project has a valid CI/CD config
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Ensures the source branch is up to date with the target branch before merging."
-msgstr ""
-
-msgid "ComplianceStandardsAdherence|Ensures version control functionality is enabled for the project."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Ensures vulnerabilities are addressed within SLO thresholds."
@@ -16360,6 +16384,9 @@ msgid "ComplianceStandardsAdherence|Prevents users who have committed to a merge
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Project"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Project repository exists"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Projects"
@@ -25220,6 +25247,9 @@ msgstr ""
 msgid "Everything you need to create a GitLab Pages site using Astro"
 msgstr ""
 
+msgid "Everything you need to create a GitLab Pages site using Docusaurus"
+msgstr ""
+
 msgid "Everything you need to create a GitLab Pages site using Hugo"
 msgstr ""
 
@@ -31634,6 +31664,9 @@ msgid "ImportAProjectModal|You're importing members to the %{strongStart}%{name}
 msgstr ""
 
 msgid "ImportButtons|Connect repositories from"
+msgstr ""
+
+msgid "ImportHistory|%{groupName} import history"
 msgstr ""
 
 msgid "ImportProjects|%{provider} rate limit exceeded. Try again later"
@@ -48266,6 +48299,9 @@ msgid "ProjectTemplates|NodeJS Express"
 msgstr ""
 
 msgid "ProjectTemplates|Pages/Astro"
+msgstr ""
+
+msgid "ProjectTemplates|Pages/Docusaurus"
 msgstr ""
 
 msgid "ProjectTemplates|Pages/Hugo"
@@ -65838,10 +65874,16 @@ msgstr ""
 msgid "UserMapping|User ID"
 msgstr ""
 
-msgid "UserMapping|You can assign only active users with regular or auditor access. To assign users with administrator access, ask your GitLab administrator to enable the \"Allow contribution mapping to administrators\" setting."
+msgid "UserMapping|You can assign active users with regular or auditor access only."
+msgstr ""
+
+msgid "UserMapping|You can assign active users with regular, auditor, or administrator access only."
 msgstr ""
 
 msgid "UserMapping|You can assign only users with linked SAML and SCIM identities. Ensure the user has signed into GitLab through your SAML SSO provider and has an active SCIM identity for this group."
+msgstr ""
+
+msgid "UserMapping|You can assign users with regular or auditor access only."
 msgstr ""
 
 msgid "UserMapping|You can assign users with regular, auditor, or administrator access only."

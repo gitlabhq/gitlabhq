@@ -65,7 +65,8 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
         group_name: shared_group.name,
         group_path: shared_group.full_path,
         can_approve_access_requests: true,
-        available_roles: available_roles
+        available_roles: available_roles,
+        allow_inactive_placeholder_reassignment: 'false'
       }
 
       expect(subject).to include(expected)
@@ -181,6 +182,30 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
             reassigned_items: 1
           }
         )
+      end
+    end
+
+    context 'when allow_bypass_placeholder_confirmation application setting is disabled' do
+      before do
+        expect_next_instance_of(Import::UserMapping::BypassConfirmationAuthorizer, current_user) do |authorizer|
+          allow(authorizer).to receive(:allow_mapping_to_inactive_users?).and_return(false)
+        end
+      end
+
+      it 'returns false' do
+        expect(subject[:allow_inactive_placeholder_reassignment]).to eq('false')
+      end
+    end
+
+    context 'when allow_bypass_placeholder_confirmation application setting is enabled' do
+      before do
+        expect_next_instance_of(Import::UserMapping::BypassConfirmationAuthorizer, current_user) do |authorizer|
+          allow(authorizer).to receive(:allow_mapping_to_inactive_users?).and_return(true)
+        end
+      end
+
+      it 'returns true' do
+        expect(subject[:allow_inactive_placeholder_reassignment]).to eq('true')
       end
     end
   end

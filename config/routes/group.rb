@@ -180,6 +180,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resources :work_items, only: [:index, :show], param: :iid
 
+    resource :import_history, only: [:show]
+
     post :preview_markdown
 
     post '/restore' => '/groups#restore', as: :restore

@@ -5,21 +5,27 @@ module Gitlab
     class AlterCellSequencesRange
       MISSING_LIMIT_MSG = 'minval and maxval are required to alter sequence range'
 
-      attr_reader :minval, :maxval, :connection, :logger
+      attr_reader :minval, :maxval, :connection, :sequence_names, :logger
 
-      def initialize(minval, maxval, connection, logger: Gitlab::AppLogger)
+      def initialize(minval, maxval, connection, sequence_names: nil, logger: Gitlab::AppLogger)
         raise MISSING_LIMIT_MSG unless minval.present? && maxval.present?
 
         @minval = minval
         @maxval = maxval
         @connection = connection
         @logger = logger
+        @sequence_names = Array(sequence_names)
       end
 
       def execute
-        logger.info("Altering existing sequences with minval: #{minval}, maxval: #{maxval}")
+        logger.info("Altering sequences with minval: #{minval}, maxval: #{maxval}")
 
         sequences.each do |sequence|
+          # Ensures sequence will not provide already existing IDs
+          if minval <= sequence.last_value.to_i
+            raise "`minval` should be greater than the `last_value` of the sequence #{sequence.seq_name}"
+          end
+
           with_lock_retries do
             alter_sequence_query = <<~SQL
               ALTER SEQUENCE #{sequence.seq_name}
@@ -30,7 +36,9 @@ module Gitlab
           end
         end
 
-        logger.info("Altered all existing sequences range.")
+        logger.info("Altered [#{sequences.pluck(:seq_name).join(',')}] range.")
+
+        return if sequence_names.present? # Below event trigger is needed only while loading the Db.
 
         connection.execute(alter_new_sequences_range_function)
         connection.execute(alter_new_sequences_range_trigger)
@@ -39,7 +47,11 @@ module Gitlab
       private
 
       def sequences
-        Gitlab::Database::PostgresSequence.all
+        if sequence_names.present?
+          Gitlab::Database::PostgresSequence.where(seq_name: sequence_names)
+        else
+          Gitlab::Database::PostgresSequence.all
+        end
       end
 
       def with_lock_retries(&)

@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::AlterCellSequencesRange, feature_category: :database do
   describe '#execute' do
     let(:connection) { ApplicationRecord.connection }
-    let(:alter_cell_sequences_range) { described_class.new(*params, logger: logger) }
+    let(:sequence_names) { nil }
+    let(:alter_cell_sequences_range) { described_class.new(*params, sequence_names: sequence_names, logger: logger) }
     let(:params) { [minval, maxval, connection] }
     let(:minval) { 100_000 }
     let(:maxval) { 200_000 }
@@ -50,31 +51,96 @@ RSpec.describe Gitlab::Database::AlterCellSequencesRange, feature_category: :dat
     end
 
     context 'with both minval and maxval' do
-      before do
-        execute
+      context 'without sequence_names' do
+        before do
+          execute
+        end
+
+        it 'updates given limits for all existing sequences' do
+          incorrect_min = Gitlab::Database::PostgresSequence.where.not(seq_min: minval)
+          expect(incorrect_min).to be_empty
+
+          incorrect_max = Gitlab::Database::PostgresSequence.where.not(seq_max: maxval)
+          expect(incorrect_max).to be_empty
+
+          expect(logger).to have_received(:info)
+                              .with("Altering sequences with minval: #{minval}, maxval: #{maxval}")
+                              .exactly(:once)
+        end
+
+        context 'for newly created sequences' do
+          let(:test_table_name) { '_test_sequences_range' }
+
+          before do
+            connection.execute <<~SQL
+              CREATE TABLE #{test_table_name} (
+                id BIGSERIAL PRIMARY KEY,
+                int_id SERIAL
+              )
+            SQL
+          end
+
+          after do
+            connection.execute("DROP TABLE #{test_table_name}")
+          end
+
+          it_behaves_like 'sequence with proper range' do
+            let(:sequence_name) { "#{test_table_name}_id_seq" }
+          end
+
+          it_behaves_like 'sequence with proper range' do
+            let(:sequence_name) { "#{test_table_name}_int_id_seq" }
+          end
+
+          context 'with new explicit sequence column added to the existing table' do
+            let(:col_name) { 'explicit_id' }
+            let(:sequence_name) { "#{test_table_name}_#{col_name}_seq" }
+
+            before do
+              connection.execute <<~SQL
+                CREATE SEQUENCE #{sequence_name};
+
+                ALTER TABLE #{test_table_name}
+                  ADD COLUMN #{col_name} bigint DEFAULT nextval('#{sequence_name}');
+              SQL
+            end
+
+            it_behaves_like 'sequence with proper range'
+          end
+
+          context 'with new implicit sequence column added to the existing table' do
+            let(:col_name) { 'implicit_id' }
+
+            before do
+              connection.execute <<~SQL
+                ALTER TABLE #{test_table_name} ADD COLUMN #{col_name} bigserial;
+              SQL
+            end
+
+            it_behaves_like 'sequence with proper range' do
+              let(:sequence_name) { "#{test_table_name}_#{col_name}_seq" }
+            end
+          end
+        end
       end
 
-      it 'updates given limits for all existing sequences' do
-        incorrect_min = Gitlab::Database::PostgresSequence.where.not(seq_min: minval)
-        expect(incorrect_min).to be_empty
-
-        incorrect_max = Gitlab::Database::PostgresSequence.where.not(seq_max: maxval)
-        expect(incorrect_max).to be_empty
-
-        expect(logger).to have_received(:info)
-                            .with('Altered all existing sequences range.')
-                            .exactly(:once)
-      end
-
-      context 'for newly created sequences' do
-        let(:test_table_name) { '_test_sequences_range' }
+      context 'with sequence_names' do
+        let(:test_table_name) { '_test_sequences_range_bump' }
+        let(:saturating_column_1) { 'saturating_column_1' }
+        let(:saturating_column_2) { 'saturating_column_2' }
+        let(:saturating_sequence_1) { 'saturating_id_1' }
+        let(:saturating_sequence_2) { 'saturating_id_2' }
+        let(:sequence_names) { [saturating_sequence_1, saturating_sequence_2] }
 
         before do
           connection.execute <<~SQL
+            CREATE SEQUENCE #{saturating_sequence_1};
+            CREATE SEQUENCE #{saturating_sequence_2};
+
             CREATE TABLE #{test_table_name} (
-              id BIGSERIAL PRIMARY KEY,
-              int_id SERIAL
-            )
+              #{saturating_column_1} bigint DEFAULT nextval('#{saturating_sequence_1}'),
+              #{saturating_column_2} bigint DEFAULT nextval('#{saturating_sequence_2}')
+            );
           SQL
         end
 
@@ -82,41 +148,35 @@ RSpec.describe Gitlab::Database::AlterCellSequencesRange, feature_category: :dat
           connection.execute("DROP TABLE #{test_table_name}")
         end
 
-        it_behaves_like 'sequence with proper range' do
-          let(:sequence_name) { "#{test_table_name}_id_seq" }
-        end
-
-        it_behaves_like 'sequence with proper range' do
-          let(:sequence_name) { "#{test_table_name}_int_id_seq" }
-        end
-
-        context 'with new explicit sequence column added to the existing table' do
-          let(:col_name) { 'explicit_id' }
-          let(:sequence_name) { "#{test_table_name}_#{col_name}_seq" }
-
+        context 'with minval less than last value of the sequence' do
           before do
             connection.execute <<~SQL
-              CREATE SEQUENCE #{sequence_name};
-
-              ALTER TABLE #{test_table_name}
-                ADD COLUMN #{col_name} bigint DEFAULT nextval('#{sequence_name}');
+              ALTER TABLE #{test_table_name} ADD COLUMN test_invalid_sequence_id BIGSERIAL;
+              SELECT nextval('#{sequence_name}');
             SQL
           end
 
-          it_behaves_like 'sequence with proper range'
+          let(:sequence_name) { "#{test_table_name}_test_invalid_sequence_id_seq" }
+          let(:sequence_names) { [sequence_name] }
+          let(:minval) { 1 }
+
+          it 'throws an error' do
+            expect { execute }
+              .to raise_error("`minval` should be greater than the `last_value` of the sequence #{sequence_name}")
+          end
         end
 
-        context 'with new implicit sequence column added to the existing table' do
-          let(:col_name) { 'implicit_id' }
-
+        context 'with correct minval' do
           before do
-            connection.execute <<~SQL
-              ALTER TABLE #{test_table_name} ADD COLUMN #{col_name} bigserial;
-            SQL
+            execute
           end
 
           it_behaves_like 'sequence with proper range' do
-            let(:sequence_name) { "#{test_table_name}_#{col_name}_seq" }
+            let(:sequence_name) { saturating_sequence_1 }
+          end
+
+          it_behaves_like 'sequence with proper range' do
+            let(:sequence_name) { saturating_sequence_2 }
           end
         end
       end

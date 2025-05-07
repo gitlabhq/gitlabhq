@@ -60,6 +60,7 @@ module Gitlab
           ProjectTemplate.new('android', 'Android', _('A ready-to-go template for use with Android apps'), 'https://gitlab.com/gitlab-org/project-templates/android', 'illustrations/logos/android.svg'),
           ProjectTemplate.new('gomicro', 'Go Micro', _('Go Micro is a framework for micro service development'), 'https://gitlab.com/gitlab-org/project-templates/go-micro', 'illustrations/logos/gomicro.svg'),
           ProjectTemplate.new('astro', 'Pages/Astro', _('Everything you need to create a GitLab Pages site using Astro'), 'https://gitlab.com/pages/astro', 'illustrations/third-party-logos/astro.svg'),
+          ProjectTemplate.new('docusaurus', 'Pages/Docusaurus', _('Everything you need to create a GitLab Pages site using Docusaurus'), 'https://gitlab.com/pages/docusaurus'),
           ProjectTemplate.new('hugo', 'Pages/Hugo', _('Everything you need to create a GitLab Pages site using Hugo'), 'https://gitlab.com/pages/hugo', 'illustrations/logos/hugo.svg'),
           ProjectTemplate.new('jekyll', 'Pages/Jekyll', _('Everything you need to create a GitLab Pages site using Jekyll'), 'https://gitlab.com/pages/jekyll', 'illustrations/logos/jekyll.svg'),
           ProjectTemplate.new('nextjs', 'Pages/Next.js', _('Everything you need to create a GitLab Pages site using Next.js'), 'https://gitlab.com/pages/nextjs'),

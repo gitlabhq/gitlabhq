@@ -15,8 +15,9 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
       import_source_user.namespace.add_owner(user)
     end
 
-    context 'when reassignment is successful' do
-      it 'returns success' do
+    shared_examples 'a success response' do
+      it 'returns success', :aggregate_failures do
+        expect(Import::ReassignPlaceholderUserRecordsWorker).not_to receive(:perform_async)
         expect(Notify).to receive_message_chain(:import_source_user_reassign, :deliver_later)
         expect { result }
           .to trigger_internal_events('propose_placeholder_user_reassignment')
@@ -26,7 +27,8 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
             additional_properties: {
               label: Gitlab::GlobalAnonymousId.user_id(import_source_user.placeholder_user),
               property: Gitlab::GlobalAnonymousId.user_id(assignee_user),
-              import_type: import_source_user.import_type
+              import_type: import_source_user.import_type,
+              reassign_to_user_state: assignee_user.state
             }
           )
 
@@ -36,6 +38,10 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
         expect(result.payload.reassigned_by_user).to eq(current_user)
         expect(result.payload.awaiting_approval?).to eq(true)
       end
+    end
+
+    context 'when the reassigned by and reassigning user are valid' do
+      it_behaves_like 'a success response'
     end
 
     shared_examples 'an error response' do |desc, error:|
@@ -68,36 +74,28 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
       let(:assignee_user) { nil }
 
       it_behaves_like 'an error response', 'invalid assignee',
-        error: s_('UserMapping|You can assign only active users with regular or auditor access. ' \
-          'To assign users with administrator access, ask your GitLab administrator to ' \
-          'enable the "Allow contribution mapping to administrators" setting.')
+        error: s_('UserMapping|You can assign active users with regular or auditor access only.')
     end
 
     context 'when assignee user is not a human' do
       let(:assignee_user) { create(:user, :bot) }
 
       it_behaves_like 'an error response', 'invalid assignee',
-        error: s_('UserMapping|You can assign only active users with regular or auditor access. ' \
-          'To assign users with administrator access, ask your GitLab administrator to ' \
-          'enable the "Allow contribution mapping to administrators" setting.')
+        error: s_('UserMapping|You can assign active users with regular or auditor access only.')
     end
 
     context 'when assignee user is not active' do
       let(:assignee_user) { create(:user, :deactivated) }
 
       it_behaves_like 'an error response', 'invalid assignee',
-        error: s_('UserMapping|You can assign only active users with regular or auditor access. ' \
-          'To assign users with administrator access, ask your GitLab administrator to ' \
-          'enable the "Allow contribution mapping to administrators" setting.')
+        error: s_('UserMapping|You can assign active users with regular or auditor access only.')
     end
 
     context 'when assignee user is an admin' do
       let(:assignee_user) { create(:user, :admin) }
 
       it_behaves_like 'an error response', 'invalid assignee',
-        error: s_('UserMapping|You can assign only active users with regular or auditor access. ' \
-          'To assign users with administrator access, ask your GitLab administrator to ' \
-          'enable the "Allow contribution mapping to administrators" setting.')
+        error: s_('UserMapping|You can assign active users with regular or auditor access only.')
     end
 
     context 'when allow_contribution_mapping_to_admins setting is enabled' do
@@ -105,32 +103,65 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
         stub_application_setting(allow_contribution_mapping_to_admins: true)
       end
 
-      context 'and the assignee user is invalid' do
+      context 'and the assignee user is inactive' do
         let(:assignee_user) { create(:user, :deactivated) }
 
         it_behaves_like 'an error response', 'invalid assignee',
-          error: s_('UserMapping|You can assign users with regular, auditor, or administrator access only.')
+          error: s_('UserMapping|You can assign active users with regular, auditor, or administrator access only.')
       end
 
       context 'and the assignee user is an admin' do
         let(:assignee_user) { create(:user, :admin) }
 
-        it 'assigns the user' do
-          expect(Notify).to receive_message_chain(:import_source_user_reassign, :deliver_later)
-          expect { result }
-          .to trigger_internal_events('propose_placeholder_user_reassignment')
-          .with(
-            namespace: import_source_user.namespace,
-            user: current_user,
-            additional_properties: {
-              label: Gitlab::GlobalAnonymousId.user_id(import_source_user.placeholder_user),
-              property: Gitlab::GlobalAnonymousId.user_id(assignee_user),
-              import_type: import_source_user.import_type
-            }
-          )
+        it_behaves_like 'a success response'
+      end
 
-          expect(result).to be_success
+      context 'and mapping to inactive users is allowed' do
+        before do
+          expect_next_instance_of(Import::UserMapping::BypassConfirmationAuthorizer, current_user) do |authorizer|
+            allow(authorizer).to receive(:allow_mapping_to_inactive_users?).and_return(true)
+          end
         end
+
+        context 'and assignee user is not a human' do
+          let(:assignee_user) { create(:user, :bot) }
+
+          it_behaves_like 'an error response', 'invalid assignee',
+            error: s_('UserMapping|You can assign users with regular, auditor, or administrator access only.')
+        end
+      end
+    end
+
+    context 'when mapping to inactive users is allowed' do
+      before do
+        expect_next_instance_of(Import::UserMapping::BypassConfirmationAuthorizer, current_user) do |authorizer|
+          allow(authorizer).to receive(:allow_mapping_to_inactive_users?).and_return(true)
+        end
+      end
+
+      context 'and the assignee user is an admin' do
+        let(:assignee_user) { create(:user, :admin) }
+
+        it_behaves_like 'an error response', 'invalid assignee',
+          error: s_('UserMapping|You can assign users with regular or auditor access only.')
+      end
+
+      context 'and the assignee user is blocked' do
+        let(:assignee_user) { create(:user, :blocked) }
+
+        it_behaves_like 'a success response'
+      end
+
+      context 'and the assignee user is banned' do
+        let(:assignee_user) { create(:user, :banned) }
+
+        it_behaves_like 'a success response'
+      end
+
+      context 'and the assignee user is deactivated' do
+        let(:assignee_user) { create(:user, :deactivated) }
+
+        it_behaves_like 'a success response'
       end
     end
 
@@ -152,7 +183,8 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
             additional_properties: {
               label: Gitlab::GlobalAnonymousId.user_id(import_source_user.placeholder_user),
               property: Gitlab::GlobalAnonymousId.user_id(assignee_user),
-              import_type: import_source_user.import_type
+              import_type: import_source_user.import_type,
+              reassign_to_user_state: assignee_user.state
             }
           )
       end

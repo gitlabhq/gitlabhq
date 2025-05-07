@@ -21,6 +21,12 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     stub_feature_flags(disallow_database_ddl_feature_flags: false)
   end
 
+  shared_examples 'AlterCellSequencesRange is not called' do
+    it 'does not instantiate AlterCellSequencesRange' do
+      expect(Gitlab::Database::AlterCellSequencesRange).not_to receive(:new)
+    end
+  end
+
   describe 'gitlab:db:sos task' do
     before do
       Rake::Task['gitlab:db:sos'].reenable
@@ -169,6 +175,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   describe 'configure' do
     let(:configured_cell) { true }
     let(:skip_sequence_alteration) { false }
+    let(:sequence_ranges) { [Gitlab::Cells::TopologyService::SequenceRange.new(minval: 1, maxval: 1000)] }
 
     before do
       stub_config(cell: { enabled: true, id: 1, database: { skip_sequence_alteration: skip_sequence_alteration } })
@@ -182,7 +189,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         skip_if_database_exists(:ci)
 
         allow_next_instance_of(Gitlab::TopologyServiceClient::CellService) do |instance|
-          allow(instance).to receive(:cell_sequence_range).and_return([0, 1000])
+          allow(instance).to receive(:cell_sequence_ranges).and_return(sequence_ranges)
         end
       end
 
@@ -214,7 +221,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             expect(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke)
             expect(Rake::Task['db:seed_fu']).to receive(:invoke)
             expect(Rake::Task['db:migrate']).not_to receive(:invoke)
-            expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).to receive(:invoke).with(0, 1000)
+            expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).to receive(:invoke).with(1, 1000)
 
             run_rake_task('gitlab:db:configure')
           end
@@ -228,7 +235,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             expect(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke)
             expect(Rake::Task['db:seed_fu']).to receive(:invoke)
             expect(Rake::Task['db:migrate']).not_to receive(:invoke)
-            expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).to receive(:invoke).with(0, 1000)
+            expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).to receive(:invoke).with(1, 1000)
 
             run_rake_task('gitlab:db:configure')
           end
@@ -268,7 +275,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
               expect(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke)
               expect(Rake::Task['db:seed_fu']).to receive(:invoke)
               expect(Rake::Task['db:migrate']).not_to receive(:invoke)
-              expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).to receive(:invoke).with(0, 1000)
+              expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).to receive(:invoke).with(1, 1000)
 
               run_rake_task('gitlab:db:configure')
 
@@ -352,7 +359,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(base_models)
 
         allow_next_instance_of(Gitlab::TopologyServiceClient::CellService) do |instance|
-          allow(instance).to receive(:cell_sequence_range).and_return([0, 1000])
+          allow(instance).to receive(:cell_sequence_ranges).and_return(sequence_ranges)
         end
       end
 
@@ -378,7 +385,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             expect(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke)
             expect(Rake::Task['db:seed_fu']).to receive(:invoke)
 
-            expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).to receive(:invoke).with(0, 1000)
+            expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).to receive(:invoke).with(1, 1000)
 
             run_rake_task('gitlab:db:configure')
           end
@@ -433,7 +440,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             allow(ci_model.connection).to receive(:tables).and_return([])
 
             allow_next_instance_of(Gitlab::TopologyServiceClient::CellService) do |instance|
-              allow(instance).to receive(:cell_sequence_range).and_return(nil)
+              allow(instance).to receive(:cell_sequence_ranges).and_return(nil)
             end
           end
 
@@ -1418,6 +1425,87 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       expect(Rake::Task['db:migrate:main']).to receive(:invoke)
 
       run_rake_task('gitlab:db:reset_as_non_superuser', '[foo]')
+    end
+  end
+
+  describe 'gitlab:db:increase_sequences_range task' do
+    before do
+      allow(Gitlab.config.cell).to receive(:enabled).and_return(true)
+
+      connection.execute(<<~SQL)
+        CREATE SEQUENCE test_sequence_range_0_90000 START 1 MINVALUE 1 MAXVALUE 90000;
+        CREATE SEQUENCE test_sequence_range_300000_390000 START 300000 MINVALUE 300000 MAXVALUE 390000;
+        CREATE SEQUENCE test_sequence_range_700000_790000 START 700000 MINVALUE 700000 MAXVALUE 790000;
+
+        SELECT nextval('test_sequence_range_0_90000');
+        SELECT nextval('test_sequence_range_300000_390000');
+        SELECT nextval('test_sequence_range_700000_790000');
+      SQL
+    end
+
+    let(:sequence_ranges) do
+      [
+        Gitlab::Cells::TopologyService::SequenceRange.new(minval: 1, maxval: 100000),
+        Gitlab::Cells::TopologyService::SequenceRange.new(minval: 300000, maxval: 399999),
+        Gitlab::Cells::TopologyService::SequenceRange.new(minval: 600000, maxval: 699999)
+      ]
+    end
+
+    let(:connection) { ApplicationRecord.connection }
+
+    subject(:run_db_increase_sequences_range_rake) do
+      run_rake_task(
+        'gitlab:db:increase_sequences_range',
+        "[test_sequence_range_0_90000 test_sequence_range_300000_390000 test_sequence_range_700000_790000]"
+      )
+    end
+
+    context 'with cells disabled' do
+      before do
+        allow(Gitlab.config.cell).to receive(:enabled).and_return(false)
+        run_db_increase_sequences_range_rake
+      end
+
+      it_behaves_like 'AlterCellSequencesRange is not called'
+    end
+
+    context 'with cells enabled' do
+      context 'without cells.sequence_ranges' do
+        before do
+          allow_next_instance_of(Gitlab::TopologyServiceClient::CellService) do |instance|
+            allow(instance).to receive(:cell_sequence_ranges).and_return(nil)
+          end
+          run_db_increase_sequences_range_rake
+        end
+
+        it_behaves_like 'AlterCellSequencesRange is not called'
+      end
+
+      context 'with cells.sequence_ranges' do
+        before do
+          allow_next_instance_of(Gitlab::TopologyServiceClient::CellService) do |instance|
+            allow(instance).to receive(:cell_sequence_ranges).and_return(sequence_ranges)
+          end
+        end
+
+        it 'updates the given sequences minval, maxval with the smallest possible range' do
+          allow(Gitlab::AppLogger).to receive(:info).and_call_original
+
+          expect(Gitlab::AppLogger)
+            .to receive(:info)
+                  .with("No additional sequence range could be found for sequence: test_sequence_range_700000_790000")
+
+          run_db_increase_sequences_range_rake
+
+          sequence_0_90000 = Gitlab::Database::PostgresSequence.find_by(seq_name: 'test_sequence_range_0_90000')
+          expect(sequence_0_90000.seq_min).to eq(sequence_ranges[1].minval)
+          expect(sequence_0_90000.seq_max).to eq(sequence_ranges[1].maxval)
+
+          test_sequence_range_300000_390000 = Gitlab::Database::PostgresSequence.find_by(seq_name: 'test_sequence_range_300000_390000')
+          expect(test_sequence_range_300000_390000.seq_min).to eq(sequence_ranges[2].minval)
+          expect(test_sequence_range_300000_390000.seq_max).to eq(sequence_ranges[2].maxval)
+        end
+      end
     end
   end
 
