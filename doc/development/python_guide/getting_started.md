@@ -127,7 +127,7 @@ Refer to [Track and Propose Sessions for Python Learning Group](https://gitlab.c
 
 - **Bi-weekly sessions** for code review and discussion, led by experienced Python developers.
 - These sessions are designed to help you improve your Python skills through practical feedback.
-- Please feel free to add the office hours to your calendar.
+- Feel free to add the office hours to your calendar.
 
 ---
 
@@ -141,7 +141,7 @@ Add any uploaded videos to the [Python Resources](https://www.youtube.com/playli
 
 ### Mentorship Process
 
-1:1 mentorship for Python is possible and encouraged. For more information on how to get started with a mentor, please refer to the [GitLab Mentoring Handbook](https://handbook.gitlab.com/handbook/engineering/careers/mentoring/#mentoring).
+1:1 mentorship for Python is possible and encouraged. For more information on how to get started with a mentor, see the [GitLab Mentoring Handbook](https://handbook.gitlab.com/handbook/engineering/careers/mentoring/#mentoring).
 
 ---
 

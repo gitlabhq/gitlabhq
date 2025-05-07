@@ -2,6 +2,7 @@
 
 class Oauth::AuthorizedApplicationsController < Doorkeeper::AuthorizedApplicationsController
   include PageLayoutHelper
+  include ViteCSP
 
   layout 'profile'
 

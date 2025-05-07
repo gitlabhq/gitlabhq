@@ -13,7 +13,6 @@ Layout/LineBreakAfterFinalMixin:
     - 'app/services/batched_git_ref_updates/cleanup_scheduler_service.rb'
     - 'app/services/jira_connect_subscriptions/create_service.rb'
     - 'app/services/projects/transfer_service.rb'
-    - 'app/workers/admin_email_worker.rb'
     - 'app/workers/ci/delete_unit_tests_worker.rb'
     - 'app/workers/ci/pipeline_artifacts/expire_artifacts_worker.rb'
     - 'app/workers/ci/schedule_delete_objects_cron_worker.rb'

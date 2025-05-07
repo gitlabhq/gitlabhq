@@ -11,7 +11,7 @@ The policy used is based on the subject's class name - so `Ability.allowed?(user
 
 The Ruby gem source is available in the [declarative-policy](https://gitlab.com/gitlab-org/ruby/gems/declarative-policy) GitLab project.
 
-For information about naming and conventions, please refer to [Permission conventions page](permissions/conventions.md).
+For information about naming and conventions, see [permission conventions](permissions/conventions.md).
 
 ## Managing Permission Rules
 

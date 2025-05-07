@@ -41609,6 +41609,8 @@ Represents a Status widget definition.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetdefinitionstatusallowedstatuses"></a>`allowedStatuses` {{< icon name="warning-solid" >}} | [`[WorkItemStatus!]`](#workitemstatus) | **Introduced** in GitLab 17.8. **Status**: Experiment. Allowed statuses for the work item type. |
+| <a id="workitemwidgetdefinitionstatusdefaultclosedstatus"></a>`defaultClosedStatus` {{< icon name="warning-solid" >}} | [`WorkItemStatus`](#workitemstatus) | **Introduced** in GitLab 18.0. **Status**: Experiment. Default status for the `Closed` state for given work item type. |
+| <a id="workitemwidgetdefinitionstatusdefaultopenstatus"></a>`defaultOpenStatus` {{< icon name="warning-solid" >}} | [`WorkItemStatus`](#workitemstatus) | **Introduced** in GitLab 18.0. **Status**: Experiment. Default status for the `Open` state for given work item type. |
 | <a id="workitemwidgetdefinitionstatustype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetDefinitionWeight`

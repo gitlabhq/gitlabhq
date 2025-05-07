@@ -7,6 +7,8 @@ class ForkNetwork < ApplicationRecord
   has_many :fork_network_members
   has_many :projects, through: :fork_network_members
 
+  validate :organization_match
+
   after_create :add_root_as_member, if: :root_project
 
   def add_root_as_member
@@ -19,5 +21,14 @@ class ForkNetwork < ApplicationRecord
 
   def merge_requests
     MergeRequest.where(target_project: projects)
+  end
+
+  private
+
+  def organization_match
+    return unless root_project
+    return if root_project.organization_id == organization_id
+
+    errors.add(:organization_id, _("must match the root project organization's ID"))
   end
 end

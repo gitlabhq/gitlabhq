@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import { GlTab, GlBadge } from '@gitlab/ui';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerList from '~/ci/runner/components/runner_list.vue';
+import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
 import { PROJECT_TYPE } from '~/ci/runner/constants';
 import { projectRunnersData, runnerJobCountData } from 'jest/ci/runner/mock_data';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -16,6 +17,7 @@ import RunnersTab from '~/ci/runner/project_runners_settings/components/runners_
 Vue.use(VueApollo);
 
 const mockRunners = projectRunnersData.data.project.runners.edges;
+const mockPageInfo = projectRunnersData.data.project.runners.pageInfo;
 const mockRunnerId = getIdFromGraphQLId(mockRunners[0].node.id);
 const mockRunnerSha = mockRunners[0].node.shortSha;
 
@@ -55,6 +57,7 @@ describe('RunnersTab', () => {
   const findTab = () => wrapper.findComponent(GlTab);
   const findBadge = () => wrapper.findComponent(GlBadge);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
+  const findRunnerPagination = () => wrapper.findComponent(RunnerPagination);
   const findEmptyMessage = () => wrapper.findByTestId('empty-message');
 
   describe('when rendered', () => {
@@ -67,6 +70,7 @@ describe('RunnersTab', () => {
       expect(projectRunnersHandler).toHaveBeenCalledWith({
         fullPath: 'group/project',
         type: PROJECT_TYPE,
+        first: 10,
       });
     });
 
@@ -84,6 +88,10 @@ describe('RunnersTab', () => {
 
     it('shows runner list in loading state', () => {
       expect(findRunnerList().props('loading')).toBe(true);
+    });
+
+    it('shows a disabled pagination', () => {
+      expect(findRunnerPagination().attributes('disabled')).toBeDefined();
     });
   });
 
@@ -115,6 +123,27 @@ describe('RunnersTab', () => {
       expect(wrapper.findByTestId('runner-link').text()).toBe(
         `#${mockRunnerId} (${mockRunnerSha})`,
       );
+    });
+
+    describe('pagination', () => {
+      it('shows pagination', () => {
+        expect(findRunnerPagination().attributes('disabled')).toBeUndefined();
+        expect(findRunnerPagination().props('pageInfo')).toEqual({ ...mockPageInfo });
+      });
+
+      it('changes page', async () => {
+        findRunnerPagination().vm.$emit('input', { after: mockPageInfo.endCursor });
+
+        await waitForPromises();
+
+        expect(projectRunnersHandler).toHaveBeenCalledTimes(2);
+        expect(projectRunnersHandler).toHaveBeenLastCalledWith({
+          fullPath: 'group/project',
+          type: PROJECT_TYPE,
+          first: 10,
+          after: mockPageInfo.endCursor,
+        });
+      });
     });
   });
 

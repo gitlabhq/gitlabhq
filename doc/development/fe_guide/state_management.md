@@ -69,7 +69,7 @@ If you're still uncertain, prefer using Apollo before Pinia.
 
 **[Pilot Phase](https://gitlab.com/gitlab-org/gitlab/-/issues/479279)**: Adopt Pinia with caution.
 This is a new technology at GitLab and we might not have all the necessary precautions and best practices in place yet.
-If you're considering using Pinia please drop a message in the `#frontend` internal Slack channel for evaluation.
+If you're considering using Pinia, drop a message in the `#frontend` internal Slack channel for evaluation.
 
 {{< /alert >}}
 
@@ -108,7 +108,7 @@ However there may be cases when it's OK to combine these two to seek specific be
 - If there's a significant percentage of client-side state that would be best managed in Pinia.
 - If domain-specific concerns warrant Apollo for cohesive GraphQL requests within a component.
 
-If you have to use both Apollo and Pinia, please follow these rules:
+If you have to use both Apollo and Pinia, follow these rules:
 
 - **Never use Apollo Client in Pinia stores**. Apollo Client should only be consumed within a Vue component or a [composable](vue.md#composables).
 - Do not sync data between Apollo and Pinia.

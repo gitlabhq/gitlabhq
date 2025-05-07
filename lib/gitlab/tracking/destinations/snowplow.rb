@@ -9,7 +9,8 @@ module Gitlab
         extend ::Gitlab::Utils::Override
 
         SNOWPLOW_NAMESPACE = 'gl'
-        PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT = 'events-stg.gitlab.net'
+        PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT = 'events.gitlab.net'
+        PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT_STG = 'events-stg.gitlab.net'
         DEDICATED_APP_ID = 'gitlab_dedicated'
         SELF_MANAGED_APP_ID = 'gitlab_sm'
 
@@ -59,6 +60,8 @@ module Gitlab
         def hostname
           if Gitlab::CurrentSettings.snowplow_enabled?
             Gitlab::CurrentSettings.snowplow_collector_hostname
+          elsif Feature.enabled?(:use_staging_endpoint_for_product_usage_events, :instance)
+            PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT_STG
           else
             PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT
           end

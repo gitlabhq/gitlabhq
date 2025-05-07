@@ -842,7 +842,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         it_behaves_like 'appearance header and footer not enabled'
 
         it 'has the correct subject' do
-          is_expected.to have_referable_subject(wiki_page_meta, reply: true)
+          is_expected.to have_subject('Re: a-known-name | Page 1 (slug)')
         end
 
         it 'contains a link to the wiki page note' do

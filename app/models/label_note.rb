@@ -24,7 +24,7 @@ class LabelNote < SyntheticNote
   def events=(events)
     @events = events
 
-    update_outdated_markdown
+    update_outdated_reference
   end
 
   def cached_html_up_to_date?(markdown_field)
@@ -32,20 +32,16 @@ class LabelNote < SyntheticNote
   end
 
   def note_html
-    label_note_html = if Feature.enabled?(:render_label_notes_lazily, resource_parent)
-                        Banzai::Renderer.cacheless_render_field(
-                          self, :note,
-                          {
-                            group: group,
-                            project: project,
-                            pipeline: :label,
-                            only_path: true,
-                            label_url_method: label_url_method
-                          }
-                        )
-                      else
-                        note_text(html: true)
-                      end
+    label_note_html = Banzai::Renderer.cacheless_render_field(
+      self, :note,
+      {
+        group: group,
+        project: project,
+        pipeline: :label,
+        only_path: true,
+        label_url_method: label_url_method
+      }
+    )
 
     "<p dir=\"auto\">#{label_note_html}</p>"
   end
@@ -53,17 +49,17 @@ class LabelNote < SyntheticNote
 
   private
 
-  def update_outdated_markdown
+  def update_outdated_reference
     events.each do |event|
-      if event.outdated_markdown?
+      if event.outdated_reference?
         event.refresh_invalid_reference
       end
     end
   end
 
   def note_text(html: false)
-    added = labels_str(label_refs_by_action('add', html).uniq, prefix: 'added')
-    removed = labels_str(label_refs_by_action('remove', html).uniq, prefix: 'removed')
+    added = labels_str(label_refs_by_action('add').uniq, prefix: 'added')
+    removed = labels_str(label_refs_by_action('remove').uniq, prefix: 'removed')
 
     [added, removed].compact.join(' and ')
   end
@@ -89,10 +85,8 @@ class LabelNote < SyntheticNote
     "#{prefix} #{label_list_str} #{suffix.squish}"
   end
 
-  def label_refs_by_action(action, html)
-    field = html ? :reference_html : :reference
-
-    events.select { |e| e.action == action }.map(&field)
+  def label_refs_by_action(action)
+    events.select { |e| e.action == action }.map(&:reference)
   end
 
   def label_url_method

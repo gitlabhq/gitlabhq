@@ -11,7 +11,7 @@ GitLab standard [code review guidelines](../code_review.md#approval-guidelines) 
 
 There are two main approaches to set up a Python code review process at GitLab:
 
-1. **Established Projects:** Larger Python projects typically have their own dedicated pool of reviewers through reviewer-roulette. To set this up, please refer to [Setting Up Reviewer Roulette](#setting-up-reviewer-roulette).
+1. **Established Projects:** Larger Python projects typically have their own dedicated pool of reviewers through reviewer-roulette. To set this up, see [Setting Up Reviewer Roulette](#setting-up-reviewer-roulette).
 1. **Smaller Projects:** For projects with fewer contributors, we maintain a shared pool of Python reviewers across GitLab.
 
 ### Setting Up Reviewer Roulette
@@ -40,7 +40,7 @@ When a merge request is created, Review Roulette will randomly select qualified 
 
 ### Additional recommendations
 
-Please refer to [the documentation](../code_review.md#reviewer-roulette)
+For more information, see [reviewer roulette](../code_review.md#reviewer-roulette)
 
 ### Ask for help
 
@@ -136,6 +136,6 @@ When reviewing Python code at GitLab, consider the following areas:
 ### Backward Compatibility Requirements
 
 When maintaining customer-facing services, maintainers must ensure backward compatibility across supported GitLab versions.
-Please, refer to the GitLab [Statement of Support](https://about.gitlab.com/support/statement-of-support/#version-support)
+See the GitLab [Statement of Support](https://about.gitlab.com/support/statement-of-support/#version-support)
 and Python [deployment guidelines](deployment.md#versioning).
 Before merging changes, verify that they maintain compatibility with all supported versions to prevent disruption for users on different GitLab releases.

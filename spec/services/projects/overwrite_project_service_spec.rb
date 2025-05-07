@@ -245,5 +245,49 @@ RSpec.describe Projects::OverwriteProjectService, feature_category: :groups_and_
         expect(project_from.fork_network_member).to be_nil
       end
     end
+
+    context 'fork network membership behavior' do
+      shared_examples 'does not modify ForkNetworkMember' do
+        it 'does not add the source project to the fork network' do
+          expect { subject.execute(project_from) }.not_to change {
+            ForkNetworkMember.count
+          }
+        end
+      end
+
+      context 'when fork network conditions are met' do
+        it 'adds the source project to the fork network' do
+          expect { subject.execute(project_from) }.to change {
+            ForkNetworkMember.count
+          }.by(1)
+        end
+      end
+
+      context 'when source project is the same as target project' do
+        it_behaves_like 'does not modify ForkNetworkMember' do
+          let(:project_from) { project_to }
+        end
+      end
+
+      context 'when fork_network does not exist' do
+        it_behaves_like 'does not modify ForkNetworkMember' do
+          before do
+            allow(subject).to receive(:fork_network).and_return(nil)
+          end
+        end
+      end
+
+      context 'when organizations do not match' do
+        it_behaves_like 'does not modify ForkNetworkMember' do
+          before do
+            other_organization = create(:organization)
+            allow(project_from).to receive(:organization_id).and_return(other_organization.id)
+
+            # Stub rename_project to not interrupt test flow
+            allow(subject).to receive(:rename_project).and_return({ status: :success })
+          end
+        end
+      end
+    end
   end
 end

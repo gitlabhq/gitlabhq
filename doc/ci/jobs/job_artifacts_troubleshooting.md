@@ -143,6 +143,8 @@ To troubleshoot this error, verify that:
 - The `project`, `job`, and `ref` combination exists and results in the desired dependency.
 - Any variables in use evaluate to the correct values.
 
+If you use the `CI_JOB_TOKEN`, add the token to the project's [allowlist](ci_job_token.md#control-job-token-access-to-your-project) to pull artifacts from a different project.
+
 ### For a job configured with `needs:pipeline:job`
 
 The `could not retrieve the needed artifacts.` error can happen for a job using

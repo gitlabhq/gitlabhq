@@ -243,6 +243,7 @@ ul.related-merge-requests > li gl-emoji {
   z-index: 1;
   position: sticky;
   top: calc(#{$calc-application-header-height} + var(--issuable-sticky-header-height, 0px) - 2px);
+  margin-left: 1px;
   @apply gl-bg-default;
 }
 

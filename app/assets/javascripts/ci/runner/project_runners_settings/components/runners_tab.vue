@@ -2,8 +2,10 @@
 import { GlLink, GlTab, GlBadge } from '@gitlab/ui';
 import RunnerList from '~/ci/runner/components/runner_list.vue';
 import RunnerName from '~/ci/runner/components/runner_name.vue';
+import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
 import { fetchPolicies } from '~/lib/graphql';
 import projectRunnersQuery from '~/ci/runner/graphql/list/project_runners.query.graphql';
+import { getPaginationVariables } from '../../utils';
 
 export default {
   name: 'RunnersTab',
@@ -13,6 +15,7 @@ export default {
     GlBadge,
     RunnerList,
     RunnerName,
+    RunnerPagination,
   },
   props: {
     projectFullPath: {
@@ -32,9 +35,11 @@ export default {
   data() {
     return {
       loading: 0, // Initialized to 0 as this is used by a "loadingKey". See https://apollo.vuejs.org/api/smart-query.html#options
+      pagination: {},
       runners: {
         count: null,
         items: [],
+        pageInfo: {},
       },
     };
   },
@@ -47,12 +52,13 @@ export default {
         return this.variables;
       },
       update(data) {
-        const { edges = [], count } = data?.project?.runners || {};
+        const { edges = [], pageInfo = {}, count } = data?.project?.runners || {};
         const items = edges.map(({ node, webUrl }) => ({ ...node, webUrl }));
 
         return {
           count,
           items,
+          pageInfo,
         };
       },
       error(error) {
@@ -65,6 +71,7 @@ export default {
       return {
         fullPath: this.projectFullPath,
         type: this.runnerType,
+        ...getPaginationVariables(this.pagination),
       };
     },
     isLoading() {
@@ -72,6 +79,11 @@ export default {
     },
     isEmpty() {
       return !this.runners.items?.length && !this.loading;
+    },
+  },
+  methods: {
+    onPaginationInput(value) {
+      this.pagination = value;
     },
   },
 };
@@ -95,5 +107,12 @@ export default {
         </gl-link>
       </template>
     </runner-list>
+
+    <runner-pagination
+      class="gl-border-t gl-mb-3 gl-mt-5 gl-pt-5 gl-text-center"
+      :disabled="isLoading"
+      :page-info="runners.pageInfo"
+      @input="onPaginationInput"
+    />
   </gl-tab>
 </template>

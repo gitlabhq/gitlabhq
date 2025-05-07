@@ -160,7 +160,13 @@ class WikiPage
       self.canonical_slug = wiki_page.slug
     end
 
-    def to_reference
+    def gfm_reference(from = nil)
+      "#{container.class.name.downcase} wiki page #{to_reference(from)}"
+    end
+
+    def to_reference(_from = nil)
+      return "[[#{canonical_slug}]]" unless for_group_wiki?
+
       canonical_slug
     end
 

@@ -1,57 +1,67 @@
 import Vue from 'vue';
-import { GlTab, GlTabs } from '@gitlab/ui';
 import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
-import setWindowLocation from 'helpers/set_window_location_helper';
-import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import waitForPromises from 'helpers/wait_for_promises';
-import { JOBS_ROUTE_PATH, I18N_DETAILS, I18N_JOBS } from '~/ci/runner/constants';
 
-import RunnerDetailsTabs from '~/ci/runner/components/runner_details_tabs.vue';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import setWindowLocation from 'helpers/set_window_location_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import runnerQuery from '~/ci/runner/graphql/show/runner.query.graphql';
+
+import waitForPromises from 'helpers/wait_for_promises';
+import { createAlert } from '~/alert';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
+import { visitUrl } from '~/lib/utils/url_utility';
+
+import { saveAlertToLocalStorage } from '~/ci/runner/local_storage_alert/save_alert_to_local_storage';
+import { captureException } from '~/ci/runner/sentry_utils';
+import { JOBS_ROUTE_PATH } from '~/ci/runner/constants';
+
+import RunnerHeader from '~/ci/runner/components/runner_header.vue';
+import RunnerHeaderActions from '~/ci/runner/components/runner_header_actions.vue';
 import RunnerDetails from '~/ci/runner/components/runner_details.vue';
 import RunnerJobs from '~/ci/runner/components/runner_jobs.vue';
 
+import RunnerDetailsTabs from '~/ci/runner/components/runner_details_tabs.vue';
+
 import { runnerData } from '../mock_data';
 
-// Vue Test Utils `stubs` option does not stub components mounted
-// in <router-view>. Use mocking instead:
-jest.mock('~/ci/runner/components/runner_jobs.vue', () => {
-  const { props } = jest.requireActual('~/ci/runner/components/runner_jobs.vue').default;
-  return {
-    props,
-    render() {},
-  };
-});
+jest.mock('~/alert');
+jest.mock('~/lib/utils/url_utility');
+jest.mock('~/ci/runner/local_storage_alert/save_alert_to_local_storage');
+jest.mock('~/ci/runner/sentry_utils');
 
-jest.mock('~/ci/runner/components/runner_managers_detail.vue', () => {
-  const { props } = jest.requireActual('~/ci/runner/components/runner_managers_detail.vue').default;
-  return {
-    props,
-    render() {},
-  };
-});
-
-const mockRunner = runnerData.data.runner;
-
-Vue.use(VueApollo);
 Vue.use(VueRouter);
+Vue.use(VueApollo);
+
+const mockRunnerId = '1';
+const mockRunnersPath = '/runners';
+const mockEditPath = '/runners/1/edit';
+const mockRunner = runnerData.data.runner;
 
 describe('RunnerDetailsTabs', () => {
   let wrapper;
+  let mockApollo;
   let routerPush;
+  let runnerQueryHandler;
 
-  const findTabs = () => wrapper.findComponent(GlTabs);
   const findRunnerDetails = () => wrapper.findComponent(RunnerDetails);
   const findRunnerJobs = () => wrapper.findComponent(RunnerJobs);
   const findJobCountBadge = () => wrapper.findByTestId('job-count-badge');
+  const findRunnerHeader = () => wrapper.findComponent(RunnerHeader);
+  const findRunnerHeaderActions = () => wrapper.findComponent(RunnerHeaderActions);
+  const findHelpPopover = () => wrapper.findComponent(HelpPopover);
 
-  const createComponent = ({ props = {}, mountFn = shallowMountExtended, ...options } = {}) => {
+  const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
+    mockApollo = createMockApollo([[runnerQuery, runnerQueryHandler]]);
+
     wrapper = mountFn(RunnerDetailsTabs, {
+      apolloProvider: mockApollo,
       propsData: {
-        runner: mockRunner,
+        runnerId: mockRunnerId,
+        runnersPath: mockRunnersPath,
+        editPath: mockEditPath,
         ...props,
       },
-      ...options,
     });
 
     routerPush = jest.spyOn(wrapper.vm.$router, 'push');
@@ -59,10 +69,98 @@ describe('RunnerDetailsTabs', () => {
     return waitForPromises();
   };
 
+  beforeEach(() => {
+    runnerQueryHandler = jest.fn().mockResolvedValue({
+      data: {
+        runner: mockRunner,
+      },
+    });
+  });
+
+  it('fetches runner data with the correct ID', async () => {
+    await createComponent();
+
+    expect(runnerQueryHandler).toHaveBeenCalledWith({
+      id: expect.stringContaining(`/${mockRunnerId}`),
+    });
+  });
+
+  it('passes the correct props to RunnerHeader', async () => {
+    await createComponent();
+
+    expect(findRunnerHeader().props('runner')).toEqual(mockRunner);
+    expect(findRunnerHeaderActions().props()).toEqual({
+      runner: mockRunner,
+      editPath: mockEditPath,
+    });
+  });
+
+  it('redirects to runners path when runner is deleted', async () => {
+    await createComponent();
+
+    const message = 'Runner deleted successfully';
+
+    findRunnerHeaderActions().vm.$emit('deleted', { message });
+
+    expect(saveAlertToLocalStorage).toHaveBeenCalledWith({
+      message,
+      variant: 'success',
+    });
+    expect(visitUrl).toHaveBeenCalledWith(mockRunnersPath);
+  });
+
+  it('shows an alert when fetching runner data fails', async () => {
+    const error = new Error('Network error');
+    runnerQueryHandler.mockRejectedValue(error);
+
+    await createComponent();
+
+    expect(findRunnerHeader().exists()).toEqual(false);
+    expect(createAlert).toHaveBeenCalledWith({
+      message: 'Something went wrong while fetching runner data.',
+    });
+    expect(captureException).toHaveBeenCalledWith({
+      error,
+      component: 'RunnerDetailsTabs',
+    });
+  });
+
+  it('does not redirect when runnersPath is not provided', async () => {
+    await createComponent({
+      props: {
+        runnersPath: '',
+      },
+    });
+
+    const message = 'Runner deleted successfully';
+    wrapper.findComponent(RunnerHeaderActions).vm.$emit('deleted', { message });
+
+    expect(saveAlertToLocalStorage).not.toHaveBeenCalled();
+    expect(visitUrl).not.toHaveBeenCalled();
+  });
+
+  describe('access help', () => {
+    it('show popover when showAccessHelp is true', async () => {
+      await createComponent({
+        props: {
+          showAccessHelp: true,
+        },
+      });
+
+      expect(findHelpPopover().exists()).toBe(true);
+    });
+
+    it('hides popover when showAccessHelp is not added', async () => {
+      await createComponent();
+
+      expect(findHelpPopover().exists()).toBe(false);
+    });
+  });
+
   it('shows basic runner details', async () => {
     await createComponent({ mountFn: mountExtended });
 
-    expect(findRunnerDetails().props('runner')).toBe(mockRunner);
+    expect(findRunnerDetails().props('runner')).toEqual(mockRunner);
     expect(findRunnerJobs().exists()).toBe(false);
   });
 
@@ -71,7 +169,7 @@ describe('RunnerDetailsTabs', () => {
     await wrapper.vm.$router.push({ path: JOBS_ROUTE_PATH });
 
     expect(findRunnerDetails().exists()).toBe(false);
-    expect(findRunnerJobs().props('runner')).toBe(mockRunner);
+    expect(findRunnerJobs().props('runnerId')).toBe(mockRunnerId);
   });
 
   it.each`
@@ -81,17 +179,13 @@ describe('RunnerDetailsTabs', () => {
     ${1000}  | ${'1,000'}
     ${1001}  | ${'1,000+'}
   `('shows runner jobs count', async ({ jobCount, badgeText }) => {
-    await createComponent({
-      stubs: {
-        GlTab,
-      },
-      props: {
-        runner: {
-          ...mockRunner,
-          jobCount,
-        },
+    runnerQueryHandler = jest.fn().mockResolvedValue({
+      data: {
+        runner: { ...mockRunner, jobCount },
       },
     });
+
+    await createComponent();
 
     if (!badgeText) {
       expect(findJobCountBadge().exists()).toBe(false);
@@ -104,17 +198,16 @@ describe('RunnerDetailsTabs', () => {
     createComponent({ mountFn: mountExtended });
     await wrapper.vm.$router.push({ path });
 
-    expect(findTabs().props('value')).toBe(0);
     expect(findRunnerDetails().exists()).toBe(true);
     expect(findRunnerJobs().exists()).toBe(false);
   });
 
   describe.each`
-    location       | tab             | navigatedTo
-    ${'#/details'} | ${I18N_DETAILS} | ${[]}
-    ${'#/details'} | ${I18N_JOBS}    | ${[[{ name: 'jobs' }]]}
-    ${'#/jobs'}    | ${I18N_JOBS}    | ${[]}
-    ${'#/jobs'}    | ${I18N_DETAILS} | ${[[{ name: 'details' }]]}
+    location       | tab          | navigatedTo
+    ${'#/details'} | ${'Details'} | ${[]}
+    ${'#/details'} | ${'Jobs'}    | ${[[{ name: 'jobs' }]]}
+    ${'#/jobs'}    | ${'Jobs'}    | ${[]}
+    ${'#/jobs'}    | ${'Details'} | ${[[{ name: 'details' }]]}
   `('When at $location', ({ location, tab, navigatedTo }) => {
     beforeEach(async () => {
       setWindowLocation(location);

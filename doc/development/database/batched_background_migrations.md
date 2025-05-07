@@ -213,7 +213,7 @@ database health check framework. For more details, see
 
 #### How to disable/enable autovacuum indicator on tables
 
-As of GitLab 18.0, this health indicator is enabled by default. To disable it, please run the following command on the rails console:
+As of GitLab 18.0, this health indicator is enabled by default. To disable it, run the following command on the rails console:
 
 ```ruby
 Feature.disable(:batched_migrations_health_status_autovacuum)

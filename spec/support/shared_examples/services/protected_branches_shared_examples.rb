@@ -8,7 +8,7 @@ RSpec.shared_context 'with scan result policy' do
   let(:default_branch) { policy_project.default_branch }
 
   let(:policy_yaml) do
-    build(:orchestration_policy_yaml, scan_execution_policy: [], scan_result_policy: scan_result_policies)
+    build(:orchestration_policy_yaml, scan_execution_policy: [], approval_policy: scan_result_policies)
   end
 
   let(:scan_result_policies) { [scan_result_policy] }
@@ -54,7 +54,7 @@ RSpec.shared_context 'with scan result policy preventing force pushing' do
     end
 
     let(:policy_yaml) do
-      build(:orchestration_policy_yaml, scan_result_policy: [scan_result_policy])
+      build(:orchestration_policy_yaml, approval_policy: [scan_result_policy])
     end
   end
 

@@ -215,7 +215,7 @@ Unless you really need to have a test disabled very fast (`< 10min`), consider [
 To quickly quarantine a test without having to open a merge request and wait for pipelines,
 you can follow [the fast quarantining process](https://gitlab.com/gitlab-org/quality/engineering-productivity/fast-quarantine/-/tree/main/#fast-quarantine-a-test).
 
-**Please always proceed** to [open a long-term quarantine merge request](#long-term-quarantine) after fast-quarantining a test! This is to ensure the fast-quarantined test was correctly fixed by running tests from the CI/CD pipelines (which are not run in the context of the fast-quarantine project).
+**Always proceed** to [open a long-term quarantine merge request](#long-term-quarantine) after fast-quarantining a test! This is to ensure the fast-quarantined test was correctly fixed by running tests from the CI/CD pipelines (which are not run in the context of the fast-quarantine project).
 
 ##### Long-term quarantine
 
@@ -250,7 +250,7 @@ bin/rspec --tag ~quarantine
 bin/rspec --tag \~quarantine
 ```
 
-Also, please ensure that:
+Also, ensure that:
 
 1. The ~"quarantine" label is present on the merge request.
 1. The MR description mentions the flaky test issue with [the usual terms to link a merge request to an issue](https://gitlab.com/gitlab-org/quality/triage-ops/-/blob/8b8621ba5c0db3c044a771ebf84887a0a07353b3/triage/triage/related_issue_finder.rb#L8-18).

@@ -277,10 +277,23 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     context 'when snowplow is disabled' do
       before do
         stub_application_setting(snowplow_enabled?: false)
+        stub_feature_flags(use_staging_endpoint_for_product_usage_events: enable_stg_events)
       end
 
-      it 'returns product usage event collection hostname' do
-        expect(subject.hostname).to eq('events-stg.gitlab.net')
+      context "with use_staging_endpoint_for_product_usage_events FF disabled" do
+        let(:enable_stg_events) { false }
+
+        it 'returns product usage event collection hostname' do
+          expect(subject.hostname).to eq('events.gitlab.net')
+        end
+      end
+
+      context "with use_staging_endpoint_for_product_usage_events FF enabled" do
+        let(:enable_stg_events) { true }
+
+        it 'returns product usage event collection hostname' do
+          expect(subject.hostname).to eq('events-stg.gitlab.net')
+        end
       end
     end
 

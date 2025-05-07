@@ -41,6 +41,12 @@ describe('RunnerDetails', () => {
     });
   };
 
+  it('shows no content if no runner is provided', () => {
+    createComponent();
+
+    expect(wrapper.text()).toBe('');
+  });
+
   describe('Details tab', () => {
     describe.each`
       field                    | runner                                                             | expectedValue

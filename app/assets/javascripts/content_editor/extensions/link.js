@@ -79,7 +79,7 @@ export default Link.extend({
     return {
       ...this.parent?.(),
       editLink:
-        (attrs) =>
+        (attrs = { href: '' }) =>
         ({ chain }) => {
           chain().setMeta('creatingLink', true).setLink(attrs).run();
         },

@@ -953,7 +953,6 @@ excluded_attributes:
     - :group_id
   resource_label_events:
     - :reference
-    - :reference_html
     - :epic_id
     - :issue_id
     - :merge_request_id

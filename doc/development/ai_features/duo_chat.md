@@ -82,7 +82,7 @@ you find a solution.
 | Requests take too long to appear in UI                               | Consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`. Alternatively, you can bypass Sidekiq entirely. To do that temporary alter `Llm::CompletionWorker.perform_async` statements with `Llm::CompletionWorker.perform_inline` |
 | There is no Chat button in GitLab UI when GDK is running on non-SaaS mode | You do not have cloud connector access token record or seat assigned. To create cloud connector access record, in rails console put following code: `CloudConnector::Access.new(data: { available_services: [{ name: "duo_chat", serviceStartTime: ":date_in_the_future" }] }).save`. |
 
-Please, see also the section on [error codes](#interpreting-gitlab-duo-chat-error-codes) where you can read about codes
+For more information, see [interpreting GitLab Duo Chat error codes](#interpreting-gitlab-duo-chat-error-codes).
 that Chat sends to assist troubleshooting.
 
 ## Contributing to GitLab Duo Chat
@@ -161,9 +161,9 @@ required parameters of the prompt and sending them to AI gateway. AI gateway is 
 selecting Chat tools that are available for user based on their subscription and addon.
 
 When LLM selects the tool to use, this tool is executed on the Rails side. Tools use different endpoint to make
-a request to AI gateway. When you add a new tool, please take into account that AI gateway works with different clients
-and GitLab applications that have different versions. That means that old versions of GitLab won't know about a new tool,
-please contact Duo Chat team if you want to add a new tool. We're working on long-term solution for this [problem](https://gitlab.com/gitlab-org/gitlab/-/issues/466247).
+a request to AI gateway. When you add a new tool, take into account that AI gateway works with different clients
+and GitLab applications that have different versions. That means that old versions of GitLab won't know about a new tool.
+If you want to add a new tool, contact the Duo Chat team. We're working on long-term solution for this [problem](https://gitlab.com/gitlab-org/gitlab/-/issues/466247).
 
 #### Changes in AI gateway
 
@@ -214,7 +214,7 @@ Duo Chat supports multiple conversations. Each conversation is represented by a 
 
 - `id`: The `id` is required when replying to a thread.
 - `conversation_type`: This allows for distinguishing between the different available Duo Chat conversation types. See the [thread conversation types list](../../api/graphql/reference/_index.md#aiconversationsthreadsconversationtype).
-  - If your feature needs its own conversation type, please contact the Duo Chat team.
+  - If your feature needs its own conversation type, contact the Duo Chat team.
 
 If your feature requires calling GraphQL API directly, the following queries and mutations are available, for which you **must** specify the `conversation_type`.
 
@@ -345,7 +345,7 @@ To view the results of these tests, open the `e2e:test-on-omnibus-ee` child pipe
 
 The `ai-gateway` job activates a cloud license and then assigns a Duo Pro seat to a test user, before the tests are run.
 
-For further information, please refer to the [GitLab QA documentation](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#aigateway-scenarios)
+For more information, see [AiGateway Scenarios](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#aigateway-scenarios).
 
 ## GraphQL Subscription
 
@@ -411,7 +411,7 @@ Examples of GraphQL Subscriptions in a Vue component:
     },
    ```
 
-Please keep in mind that the clientSubscriptionId must be unique for every request. Reusing a clientSubscriptionId will cause several unwanted side effects in the subscription responses.
+Keep in mind that the `clientSubscriptionId` must be unique for every request. Reusing a `clientSubscriptionId` will cause several unwanted side effects in the subscription responses.
 
 ### Duo Chat GraphQL queries
 
@@ -586,7 +586,7 @@ Follow the
 to evaluate GitLab Duo Chat changes locally. The prompt library documentation is
 the single source of truth and should be the most up-to-date.
 
-Please, see the video ([internal link](https://drive.google.com/file/d/1X6CARf0gebFYX4Rc9ULhcfq9LLLnJ_O-)) that covers the full setup.
+See the video ([internal link](https://drive.google.com/file/d/1X6CARf0gebFYX4Rc9ULhcfq9LLLnJ_O-)) that covers the full setup.
 
 ### (Deprecated) Issue and epic experiments
 
@@ -705,7 +705,7 @@ GitLab Duo Chat has error codes with specified meanings to assist in debugging.
 
 See the [GitLab Duo Chat troubleshooting documentation](../../user/gitlab_duo_chat/troubleshooting.md) for a list of all GitLab Duo Chat error codes.
 
-When developing for GitLab Duo Chat, please include these error codes when returning an error and [document them](../../user/gitlab_duo_chat/troubleshooting.md), especially for user-facing errors.
+When developing for GitLab Duo Chat, include these error codes when returning an error and [document them](../../user/gitlab_duo_chat/troubleshooting.md), especially for user-facing errors.
 
 ### Error Code Format
 

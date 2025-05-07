@@ -78,6 +78,7 @@ module Projects
     def add_source_project_to_fork_network(source_project)
       return if source_project == @project
       return unless fork_network
+      return if fork_network.organization_id != source_project.organization_id
 
       # Because they have moved all references in the fork network from the source_project
       # we won't be able to query the database (only through its cached data),

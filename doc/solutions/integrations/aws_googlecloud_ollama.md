@@ -54,7 +54,7 @@ We will install GitLab, GitLab AI Gateway and Ollama each in their own separate 
 | **AI Gateway** | e2-medium     | t2.medium   | Ubuntu 24 | 20 GB    |
 | **Ollama**     | n1-standard-4 | g4dn.xlarge | Ubuntu 24 | 50 GB    |
 
-For details on the [AI Gateway](../../user/gitlab_duo/gateway.md) component and its purpose, please refer to the documentation page.
+For more information about the component and its purpose, see [AI Gateway](../../user/gitlab_duo/gateway.md).
 
 ```mermaid
 flowchart LR
@@ -139,7 +139,7 @@ When you host an AI model yourself, you'll also need to choose a serving platfor
 
 In this analogy, the brain part for ChatGPT is the GPT-4 model, while in the Anthropic ecosystem, it's the Claude 3.7 Sonnet model. The serving platform acts as the vital framework that connects the brain to the world, enabling it to "think" and interact effectively.
 
-For further information about supported serving platforms and models, please refer to the documentation for [LLM Serving Platforms](../../administration/gitlab_duo_self_hosted/supported_llm_serving_platforms.md) and [Models](../../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md).
+For further information about supported serving platforms and models, see [LLM Serving Platforms](../../administration/gitlab_duo_self_hosted/supported_llm_serving_platforms.md) and [Models](../../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md).
 
 **What is Ollama?**
 
@@ -164,7 +164,7 @@ Designed for simplicity and performance, Ollama empowers users to harness the po
 
 While the official installation guide is available [here](../../install/install_ai_gateway.md), here's a streamlined approach for setting up the AI Gateway. As of January 2025, the image `gitlab/model-gateway:self-hosted-v17.6.0-ee` has been verified to work with GitLab 17.7.
 
-1. Please ensure that ...
+1. Ensure that ...
 
    - TCP port 5052 to the API Gateway VM is permitted (check security group configuration)
    - You replace `GITLAB_DOMAIN` with the domain name to YOUR instance of GitLab in the following code snippet:

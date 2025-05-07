@@ -451,7 +451,7 @@ allowed.
 
 ### Dropping a `NOT NULL` constraint with a check constraint on the column
 
-First, please verify there's a constraint in place on the column. You can do this in several ways:
+First, verify there's a constraint in place on the column. You can do this in several ways:
 
 - Query the [`Gitlab::Database::PostgresConstraint`](https://gitlab.com/gitlab-org/gitlab/-/blob/71892a3c97f52ddcef819dd210ab32864e90c85c/lib/gitlab/database/postgres_constraint.rb) view in rails console
 - Use `psql` to check the table itself: `\d+ table_name`
@@ -468,7 +468,7 @@ CREATE TABLE labels (
 
 {{< alert type="note" >}}
 
-The milestone number is just an example. Please use the correct version.
+The milestone number is just an example. Use the correct version.
 
 {{< /alert >}}
 
@@ -535,7 +535,7 @@ CREATE TABLE labels (
 
 {{< alert type="note" >}}
 
-The milestone number is just an example. Please use the correct version.
+The milestone number is just an example. Use the correct version.
 
 {{< /alert >}}
 

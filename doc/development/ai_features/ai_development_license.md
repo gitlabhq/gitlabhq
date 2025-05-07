@@ -234,7 +234,7 @@ This approach uses a real cloud license through CustomersDot, providing the most
 
 ### Future improvements
 
-> **Note:** There are ongoing plans to streamline the configuration of AI Gateway in development environments to reduce manual setup steps. In the future, we aim to automate this process as part of the GDK setup. For now, please follow the manual configuration steps described above.
+> **Note:** There are ongoing plans to streamline the configuration of AI Gateway in development environments to reduce manual setup steps. In the future, we aim to automate this process as part of the GDK setup. For now, follow the manual configuration steps described above.
 
 ## Setting up Duo on your GitLab.com staging account
 

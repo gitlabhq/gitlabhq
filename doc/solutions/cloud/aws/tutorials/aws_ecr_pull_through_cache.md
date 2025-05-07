@@ -32,7 +32,7 @@ For Secret name, specify a descriptive name for the secret. Secret names must co
 
 For GitLab Container Registry username, specify your GitLab Container Registry username.
 
-For GitLab Container Registry access token, specify your GitLab Container Registry access token. To follow principles of least privilege, please create a Group Access Token with the Guest role and only the read_registry scope.
+For GitLab Container Registry access token, specify your GitLab Container Registry access token. To follow principles of least privilege, create a Group Access Token with the Guest role and only the `read_registry` scope.
 
 On the Step 3: Specify a destination page, for Amazon ECR repository prefix, specify the repository namespace to use when caching images pulled from the source public registry and then choose Next.
 

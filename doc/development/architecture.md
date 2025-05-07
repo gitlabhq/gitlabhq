@@ -578,7 +578,7 @@ You can use it either for personal or business websites, such as portfolios, doc
 
 GitLab Runner runs jobs and sends the results to GitLab.
 
-GitLab CI/CD is the open-source continuous integration service included with GitLab that coordinates the testing. The old name of this project was `GitLab CI Multi Runner` but please use `GitLab Runner` (without CI) from now on.
+GitLab CI/CD is the open-source continuous integration service included with GitLab that coordinates the testing. The old name of this project was `GitLab CI Multi Runner`, but you should use `GitLab Runner` (without CI) from now on.
 
 #### GitLab Shell
 

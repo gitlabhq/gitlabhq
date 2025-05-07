@@ -20,7 +20,7 @@ The instructions include a sample [**React Native**](https://reactnative.dev) ap
 
 ## Getting Started
 
-Please follow the steps below on how to use this React Native Mobile App sample project to jump start your mobile application delivery using GitLab.
+Follow the steps below on how to use this React Native Mobile App sample project to jump start your mobile application delivery using GitLab.
 
 ### Download the Solution Component
 
@@ -34,9 +34,9 @@ Please follow the steps below on how to use this React Native Mobile App sample 
   1. Create a new GitLab project to host this Snyk CI/CD catalog project
   1. Copy the provided files into your project
   1. Configure the required CI/CD variables in your project settings
-  1. Make sure the project is marked as a CI/CD catalog project. Please see [the GitLab guide here](../../ci/components/_index.md#publish-a-component-project) on how to publish a component project.
+  1. Make sure the project is marked as a CI/CD catalog project. For more information, see [publish a component project](../../ci/components/_index.md#publish-a-component-project).
   > There is a public GitLab Snyk component on GitLab.com, if you are on SaaS, and you are able to access the public GitLab Snyk component, to set up your own Snyk CI/CD catalog project is not needed, and you can follow the documentation in the public GitLab Snyk component on GitLab.com to use the component directly.
-- Please use the Change Control Workflow with ServiceNow solution pack to configure the DevOps Change Velocity integration with GitLab to automate change request creation in ServiceNow for deployments require change controls. [Here](../../solutions/components/integrated_servicenow.md) is the documentation link to the change control workflow with ServiceNow solution component, and please work with your account team to get an access code to download the Change Control Workflow with ServiceNow solution package.
+- Use the Change Control Workflow with ServiceNow solution pack to configure the DevOps Change Velocity integration with GitLab to automate change request creation in ServiceNow for deployments require change controls. [Here](../../solutions/components/integrated_servicenow.md) is the documentation link to the change control workflow with ServiceNow solution component, and work with your account team to get an access code to download the Change Control Workflow with ServiceNow solution package.
 - Copy the CI YAML files into your project: 
   - `.gitlab-ci.yml`
   - `build-android.yml` in the pipelines directory. You will need to update the file path in `.gitlab-ci.yml` if the `build-android.yml` file is put in a different location other than /pipeline because the main `.gitlab-ci.yml` file references the `build-android.yml` file for the build job.
@@ -53,7 +53,7 @@ Please follow the steps below on how to use this React Native Mobile App sample 
       image: reactnativecommunity/react-native-android
    ```
 
-- Configure the required CI/CD variables in your project settings. Please see below for how the pipeline works.
+- Configure the required CI/CD variables in your project settings. See the following section to learn how the pipeline works.
 
 ## How the Pipeline Works
 
@@ -89,13 +89,13 @@ The pipeline consists of the following stages and jobs:
 
 ## Prerequisites
 
-There are multiple third party tools integrated in the mobile pipeline workflow. In order to successfully run the pipeline, please make sure the following prerequisites are in place.
+There are multiple third party tools integrated in the mobile pipeline workflow. In order to successfully run the pipeline, make sure the following prerequisites are in place.
 
 ### Snyk Integration using the Component
 
-In order to use the GitLab Snyk CI/CD component for security scans, please make sure your group or project in GitLab is already connected with Snyk, if not, please follow [this tutorial](https://docs.snyk.io/scm-ide-and-ci-cd-integrations/snyk-scm-integrations/gitlab) to configure it. 
+In order to use the GitLab Snyk CI/CD component for security scans, make sure your group or project in GitLab is already connected with Snyk, if not, follow [this tutorial](https://docs.snyk.io/scm-ide-and-ci-cd-integrations/snyk-scm-integrations/gitlab) to configure it. 
 
-In the mobile app project, please add the required variables for the Snyk integration.
+In the mobile app project, add the required variables for the Snyk integration.
 
 #### Required CI/CD Variables
 
@@ -112,7 +112,7 @@ DOCKER_AUTH_CONFIG: '{"auths":{"registry.gitlab.com":{"username":"$SNYK_PROJECT_
 
 #### Update the component path 
 
-Please update the component path in the `.gitlab-ci.yml` file so that the pipeline can successfully reference the Snyk component. 
+Update the component path in the `.gitlab-ci.yml` file so that the pipeline can successfully reference the Snyk component. 
 
 ```yaml
  - component: $CI_SERVER_FQDN/gitlab-com/product-accelerator/work-streams/packaging/snyk/snyk@1.0.0 #snky sast scan, this examples uses the component in GitLab the product accelerator group. Please update the path and stage accordingly.
@@ -178,4 +178,4 @@ The mobile app project pipeline includes several external configurations and com
 
 ## Notes
 
-Please reach out to your account team for obtaining an invitation code to access the solution component and for any additional questions.
+Reach out to your account team for obtaining an invitation code to access the solution component and for any additional questions.

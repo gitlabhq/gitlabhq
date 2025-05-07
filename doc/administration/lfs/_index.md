@@ -572,6 +572,32 @@ To delete these references:
    lfs_object.destroy
    ```
 
+#### Remove multiple missing LFS objects
+
+To remove references to multiple missing LFS objects at once:
+
+1. Open the [GitLab Rails Console](../operations/rails_console.md#starting-a-rails-console-session).
+1. Run the following script:
+
+   ```ruby
+   lfs_files_deleted = 0
+   LfsObject.find_each do |lfs_file|
+     next if lfs_file.file.file.exists?
+     lfs_files_deleted += 1
+     p "LFS file with ID #{lfs_file.id} and path #{lfs_file.file.path} is missing."
+     # lfs_file.lfs_objects_projects.destroy_all     # Uncomment to delete parent records
+     # lfs_file.destroy                              # Uncomment to destroy the LFS object reference
+   end
+   p "Count of identified/destroyed invalid references: #{lfs_files_deleted}"
+   ```
+
+This script identifies all missing LFS objects in the database. Before deleting any records:
+
+- It first prints information about missing files for verification.
+- The commented lines prevent accidental deletion. If you uncomment them, the script deletes the
+  identified records.
+- The script automatically prints a final count of deleted records for comparison.
+
 ### LFS commands fail on TLS v1.3 server
 
 If you configure GitLab to [disable TLS v1.2](https://docs.gitlab.com/omnibus/settings/nginx.html)

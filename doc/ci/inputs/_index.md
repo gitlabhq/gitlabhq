@@ -252,7 +252,7 @@ spec:
 
         Based on the policy for inactive issues, this is now being closed.
 
-        If this issue requires further attention, please reopen this issue.'
+        If this issue requires further attention, reopen this issue.'
 ---
 ```
 

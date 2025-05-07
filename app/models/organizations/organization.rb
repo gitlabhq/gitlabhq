@@ -5,6 +5,7 @@ module Organizations
     include Gitlab::Utils::StrongMemoize
     include Gitlab::SQL::Pattern
     include Gitlab::VisibilityLevel
+    include FeatureGate
 
     DEFAULT_ORGANIZATION_ID = 1
 

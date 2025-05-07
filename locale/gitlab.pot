@@ -60048,6 +60048,9 @@ msgstr ""
 msgid "Target project cannot be equal to source project"
 msgstr ""
 
+msgid "Target project must belong to source project organization"
+msgstr ""
+
 msgid "Target roles"
 msgstr ""
 
@@ -72839,6 +72842,9 @@ msgid "must match the bulk import organization's ID"
 msgstr ""
 
 msgid "must match the parent organization's ID"
+msgstr ""
+
+msgid "must match the root project organization's ID"
 msgstr ""
 
 msgid "must not be a placeholder email"

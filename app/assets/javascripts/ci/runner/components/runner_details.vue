@@ -86,7 +86,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div v-if="runner">
     <div class="gl-pt-4">
       <dl class="gl-mb-0 gl-grid gl-grid-cols-[auto_1fr]">
         <runner-detail :label="s__('Runners|Description')" :value="runner.description" />

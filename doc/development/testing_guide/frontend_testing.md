@@ -1944,7 +1944,7 @@ Inside the terminal, where capybara is running, you can also execute `next` whic
 
 ### Improving execution time on the GDK
 
-Running the Jest test suite, the number of workers is set to use 60% of the available cores of your machine; this results in faster execution times but higher memory consumption. For more benchmarks on how this works please refer to this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/456885).
+Running the Jest test suite, the number of workers is set to use 60% of the available cores of your machine; this results in faster execution times but higher memory consumption. For more benchmarks on how this works, see [issue 456885](https://gitlab.com/gitlab-org/gitlab/-/issues/456885).
 
 ### Updating ChromeDriver
 

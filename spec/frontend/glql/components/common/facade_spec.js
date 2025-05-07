@@ -7,11 +7,14 @@ import { stubCrypto } from 'helpers/crypto';
 import GlqlFacade from '~/glql/components/common/facade.vue';
 import { executeAndPresentQuery, presentPreview } from '~/glql/core';
 import Counter from '~/glql/utils/counter';
+import { eventHubByKey } from '~/glql/utils/event_hub_factory';
 
 jest.mock('~/glql/core');
 
 describe('GlqlFacade', () => {
   let wrapper;
+  const mockQueryKey = 'glql_key';
+  const mockEventHub = eventHubByKey(mockQueryKey);
 
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
   const createComponent = async (props = {}, glFeatures = {}) => {
@@ -22,7 +25,7 @@ describe('GlqlFacade', () => {
       },
       provide: {
         glFeatures,
-        queryKey: 'glql_key',
+        queryKey: mockQueryKey,
       },
     });
     await nextTick();
@@ -83,6 +86,16 @@ describe('GlqlFacade', () => {
         { label: 'glql_key' },
         undefined,
       );
+    });
+
+    it('reloads the query when reload event is emitted on event hub', async () => {
+      jest.spyOn(wrapper.vm, 'reloadGlqlBlock');
+
+      mockEventHub.$emit('dropdownAction', 'reload');
+
+      await nextTick();
+
+      expect(wrapper.vm.reloadGlqlBlock).toHaveBeenCalled();
     });
   });
 

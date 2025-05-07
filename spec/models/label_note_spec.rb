@@ -25,23 +25,6 @@ RSpec.describe LabelNote, feature_category: :team_planning do
 
       expect(note.note_html).to include(project_issues_path(project, label_name: label.title))
     end
-
-    context 'when render_label_notes_lazily is disabled' do
-      before do
-        stub_feature_flags(render_label_notes_lazily: false)
-      end
-
-      it_behaves_like 'label note created from events'
-
-      it 'includes a link to the list of issues filtered by the label' do
-        note = described_class.from_events(
-          [
-            create(:resource_label_event, label: label, issue: resource)
-          ], resource: resource, resource_parent: resource.resource_parent)
-
-        expect(note.note_html).to include(project_issues_path(project, label_name: label.title))
-      end
-    end
   end
 
   context 'when resource is merge request' do
@@ -56,23 +39,6 @@ RSpec.describe LabelNote, feature_category: :team_planning do
         ], resource: resource, resource_parent: resource.resource_parent)
 
       expect(note.note_html).to include(project_merge_requests_path(project, label_name: label.title))
-    end
-
-    context 'when render_label_notes_lazily is disabled' do
-      before do
-        stub_feature_flags(render_label_notes_lazily: false)
-      end
-
-      it_behaves_like 'label note created from events'
-
-      it 'includes a link to the list of merge requests filtered by the label' do
-        note = described_class.from_events(
-          [
-            create(:resource_label_event, label: label, merge_request: resource)
-          ], resource: resource, resource_parent: resource.resource_parent)
-
-        expect(note.note_html).to include(project_merge_requests_path(project, label_name: label.title))
-      end
     end
   end
 end
