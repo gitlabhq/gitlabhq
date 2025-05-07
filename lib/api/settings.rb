@@ -115,6 +115,8 @@ module API
       optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size for each job's artifacts"
       optional :max_attachment_size, type: Integer, desc: 'Maximum attachment size in MB'
       optional :max_export_size, type: Integer, desc: 'Maximum export size in MB'
+      optional :max_github_response_size_limit, type: Integer, desc: "Maximum allowed size in MB for GitHub API responses. 0 for unlimited."
+      optional :max_github_response_json_value_count, type: Integer, desc: "Maximum allowed object count for GitHub API responses. 0 for unlimited. Count is an estimate based on the number of : , { and [ occurrences in the response."
       optional :max_import_size, type: Integer, desc: 'Maximum import size in MB'
       optional :max_import_remote_file_size, type: Integer, desc: 'Maximum remote file size in MB for imports from external object storages'
       optional :max_decompressed_archive_size, type: Integer, desc: 'Maximum decompressed size in MB'
