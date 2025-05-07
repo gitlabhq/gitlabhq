@@ -153,34 +153,18 @@ class GroupsController < Groups::ApplicationController
   def merge_requests; end
 
   def update
-    update_result = Groups::UpdateService.new(@group, current_user, group_params).execute
+    if Groups::UpdateService.new(@group, current_user, group_params).execute
 
-    respond_to do |format|
-      if update_result
-        format.html do
-          if @group.namespace_settings.errors.present?
-            flash[:alert] = @group.namespace_settings.errors.full_messages.to_sentence
-          else
-            flash[:notice] = "Group '#{@group.name}' was successfully updated."
-          end
-
-          redirect_to edit_group_origin_location
-        end
-
-        format.json do
-          head :no_content
-        end
+      if @group.namespace_settings.errors.present?
+        flash[:alert] = group.namespace_settings.errors.full_messages.to_sentence
       else
-        format.html do
-          @group.reset
-
-          render action: 'edit'
-        end
-
-        format.json do
-          render json: {}, status: :unprocessable_entity
-        end
+        flash[:notice] = "Group '#{@group.name}' was successfully updated."
       end
+
+      redirect_to edit_group_origin_location
+    else
+      @group.reset
+      render action: "edit"
     end
   end
 

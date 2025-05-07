@@ -21,7 +21,7 @@ class ResourceMilestoneEvent < ResourceTimeboxEvent
   scope :include_relations, -> { includes(:user, milestone: [:project, :group]) }
 
   # state is used for issue and merge request states.
-  enum state: Issue.available_states.merge(MergeRequest.available_states)
+  enum :state, Issue.available_states.merge(MergeRequest.available_states)
 
   def milestone_title
     milestone&.title

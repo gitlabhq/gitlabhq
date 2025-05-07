@@ -16,7 +16,7 @@ export default {
 };
 </script>
 <template>
-  <help-popover v-if="glFeatures.ciImprovedProjectPipelineAnalytics">
+  <help-popover>
     <template #title>
       {{ s__('PipelineCharts|Try ClickHouse for advanced analytics') }}
     </template>

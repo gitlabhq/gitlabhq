@@ -315,4 +315,56 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
       end
     end
   end
+
+  describe 'emitter class' do
+    context 'when snowplow is enabled' do
+      before do
+        stub_application_setting(snowplow_enabled?: true)
+      end
+
+      it 'uses AsyncEmitter' do
+        expect(SnowplowTracker::AsyncEmitter).to receive(:new)
+        expect(Gitlab::Tracking::SnowplowLoggingEmitter).not_to receive(:new)
+
+        subject.send(:emitter)
+      end
+    end
+
+    context 'when snowplow is disabled' do
+      before do
+        stub_application_setting(snowplow_enabled?: false)
+      end
+
+      context 'when GITLAB_DISABLE_PRODUCT_USAGE_EVENT_LOGGING env variable is true' do
+        it 'uses AsyncEmitter' do
+          stub_env('GITLAB_DISABLE_PRODUCT_USAGE_EVENT_LOGGING', '1')
+
+          expect(SnowplowTracker::AsyncEmitter).to receive(:new)
+          expect(Gitlab::Tracking::SnowplowLoggingEmitter).not_to receive(:new)
+
+          subject.send(:emitter)
+        end
+      end
+
+      context 'when GITLAB_DISABLE_PRODUCT_USAGE_EVENT_LOGGING env variable is falsey' do
+        it 'uses SnowplowLoggingEmitter' do
+          stub_env('GITLAB_DISABLE_PRODUCT_USAGE_EVENT_LOGGING', 'false')
+
+          expect(SnowplowTracker::AsyncEmitter).not_to receive(:new)
+          expect(Gitlab::Tracking::SnowplowLoggingEmitter).to receive(:new)
+
+          subject.send(:emitter)
+        end
+      end
+
+      context 'when GITLAB_DISABLE_PRODUCT_USAGE_EVENT_LOGGING env variable is not set' do
+        it 'uses SnowplowLoggingEmitter' do
+          expect(SnowplowTracker::AsyncEmitter).not_to receive(:new)
+          expect(Gitlab::Tracking::SnowplowLoggingEmitter).to receive(:new)
+
+          subject.send(:emitter)
+        end
+      end
+    end
+  end
 end

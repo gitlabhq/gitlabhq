@@ -140,7 +140,7 @@ export default {
       :style="floatingWrapperStyles"
     >
       <panel-resizer
-        class="diff-tree-list-resizer"
+        class="diff-tree-list-resizer gl-hidden lg:gl-block"
         :start-size="treeWidth"
         :min-size="$options.minTreeWidth"
         :max-size="$options.maxTreeWidth"

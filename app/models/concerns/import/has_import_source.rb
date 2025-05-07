@@ -29,7 +29,7 @@ module Import
     }.freeze
 
     included do
-      enum imported_from: IMPORT_SOURCES, _prefix: :imported_from
+      enum :imported_from, IMPORT_SOURCES, prefix: :imported_from
     end
 
     def imported?

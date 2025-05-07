@@ -37,10 +37,10 @@ class CommitStatus < Ci::ApplicationRecord
 
   attribute :retried, default: false
 
-  enum scheduling_type: { stage: 0, dag: 1 }, _prefix: true
+  enum :scheduling_type, { stage: 0, dag: 1 }, prefix: true
   # We use `Enums::Ci::CommitStatus.failure_reasons` here so that EE can more easily
   # extend this `Hash` with new values.
-  enum failure_reason: Enums::Ci::CommitStatus.failure_reasons
+  enum :failure_reason, Enums::Ci::CommitStatus.failure_reasons
 
   delegate :commit, to: :pipeline
   delegate :sha, :short_sha, :before_sha, to: :pipeline

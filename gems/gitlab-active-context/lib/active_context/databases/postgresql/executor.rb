@@ -6,9 +6,11 @@ module ActiveContext
       class Executor
         include ActiveContext::Databases::Concerns::Executor
 
+        RESERVED_FIELDS = %w[id partition_id ref_id ref_version].freeze
+
         private
 
-        def do_create_collection(name:, number_of_partitions:, fields:)
+        def do_create_collection(name:, number_of_partitions:, fields:, options: {})
           strategy = PartitionStrategy.new(
             name: name,
             number_of_partitions: number_of_partitions
@@ -17,7 +19,7 @@ module ActiveContext
           return if collection_exists?(strategy)
 
           # Create parent table if it doesn't exist
-          create_parent_table(strategy.collection_name, fields) unless table_exists?(strategy.collection_name)
+          create_parent_table(strategy.collection_name, fields, options) unless table_exists?(strategy.collection_name)
 
           # Create child partition tables
           strategy.each_partition do |partition_name|
@@ -34,7 +36,7 @@ module ActiveContext
           create_indices(strategy, fields)
         end
 
-        def create_parent_table(name, fields)
+        def create_parent_table(name, fields, options = {})
           fixed_columns, variable_columns = sort_fields_by_size(fields)
 
           adapter.client.with_connection do |connection|
@@ -50,10 +52,12 @@ module ActiveContext
 
               # Add id columns
               table.string :id, null: false
-              table.string :ref_id, null: false
 
-              # Add ref_version column
-              table.bigint :ref_version, null: false
+              # Add reference tracking columns if enabled
+              if options.fetch(:include_ref_fields, true)
+                table.string :ref_id, null: false
+                table.bigint :ref_version, null: false
+              end
 
               # Add variable width columns last
               variable_columns.each do |field|
@@ -91,6 +95,8 @@ module ActiveContext
         end
 
         def add_column_from_field(table, field)
+          return if RESERVED_FIELDS.include?(field.name.to_s)
+
           case field
           when Field::Bigint
             table.bigint(field.name, **field.options.except(:index))

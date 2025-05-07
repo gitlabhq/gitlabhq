@@ -43,20 +43,20 @@ Value stream analytics offers different features at the project and group level 
 - On GitLab Free, value stream analytics does not aggregate data. It queries the database directly where the date range filter is applied to the creation date of issues and merge request. You can view value stream analytics with pre-defined default stages.
 - On GitLab Premium, value stream analytics aggregates data and applies the date range filter on the end event. You can also create, edit, and delete value streams.
 
-|Feature|Group level (licensed)|Project level (licensed)|Project level (FOSS)|
-|-|-|-|-|
-|Create custom value streams|Yes|Yes|no, only one value stream (default) is present with the default stages|
-|Create custom stages|Yes|Yes|No|
-|Filtering (for example, by author, label, milestone)|Yes|Yes|Yes|
-|Stage time chart|Yes|Yes|No|
-|Total time chart|Yes|Yes|No|
-|Task by type chart|Yes|No|No|
-|DORA Metrics|Yes|Yes|No|
-|Cycle time and lead time summary (Lifecycle metrics)|Yes|Yes|No|
-|New issues, commits, and deploys (Lifecycle metrics)|Yes, excluding commits|Yes|Yes|
-|Uses aggregated backend|Yes|Yes|No|
-|Date filter behavior|Filters items [finished within the date range](https://gitlab.com/groups/gitlab-org/-/epics/6046)|Filters items by creation date.|Filters items by creation date.|
-|Authorization|At least reporter|At least reporter|Can be public|
+| Feature                                              | Group level (licensed)                                                                        | Project level (licensed)        | Project level (FOSS) |
+|------------------------------------------------------|-----------------------------------------------------------------------------------------------|---------------------------------|----------------------|
+| Create custom value streams                          | Yes                                                                                           | Yes                             | No, only one value stream (default) is present with the default stages |
+| Create custom stages                                 | Yes                                                                                           | Yes                             | No                   |
+| Filtering (for example, by author, label, milestone) | Yes                                                                                           | Yes                             | Yes                  |
+| Stage time chart                                     | Yes                                                                                           | Yes                             | No                   |
+| Total time chart                                     | Yes                                                                                           | Yes                             | No                   |
+| Task by type chart                                   | Yes                                                                                           | No                              | No                   |
+| DORA Metrics                                         | Yes                                                                                           | Yes                             | No                   |
+| Cycle time and lead time summary (Lifecycle metrics) | Yes                                                                                           | Yes                             | No                   |
+| New issues, commits, and deploys (Lifecycle metrics) | Yes, excluding commits                                                                        | Yes                             | Yes                  |
+| Uses aggregated backend                              | Yes                                                                                           | Yes                             | No                   |
+| Date filter behavior                                 | Filters items [finished in the date range](https://gitlab.com/groups/gitlab-org/-/epics/6046) | Filters items by creation date. | Filters items by creation date. |
+| Authorization                                        | At least reporter                                                                             | At least reporter               | Can be public        |
 
 ## How value stream analytics works
 

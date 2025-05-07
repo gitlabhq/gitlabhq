@@ -197,15 +197,15 @@ module Ci
 
     # We use `Enums::Ci::Pipeline.sources` here so that EE can more easily extend
     # this `Hash` with new values.
-    enum source: Enums::Ci::Pipeline.sources
+    enum :source, Enums::Ci::Pipeline.sources
 
-    enum config_source: Enums::Ci::Pipeline.config_sources
+    enum :config_source, Enums::Ci::Pipeline.config_sources
 
     # We use `Enums::Ci::Pipeline.failure_reasons` here so that EE can more easily
     # extend this `Hash` with new values.
-    enum failure_reason: Enums::Ci::Pipeline.failure_reasons
+    enum :failure_reason, Enums::Ci::Pipeline.failure_reasons
 
-    enum locked: { unlocked: 0, artifacts_locked: 1 }
+    enum :locked, { unlocked: 0, artifacts_locked: 1 }
 
     state_machine :status, initial: :created do
       event :enqueue do

@@ -36,7 +36,7 @@ class LooseForeignKeys::DeletedRecord < Gitlab::Database::SharedModel
   scope :for_partition, ->(partition) { where(partition: partition) }
   scope :consume_order, -> { order(:partition, :consume_after, :id) }
 
-  enum status: { pending: 1, processed: 2 }, _prefix: :status
+  enum :status, { pending: 1, processed: 2 }, prefix: :status
 
   def self.load_batch_for_table(table, batch_size)
     partition_names = Gitlab::Database::PostgresPartitionedTable.each_partition(table_name).map(&:name)

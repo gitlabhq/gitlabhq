@@ -19,6 +19,12 @@ Use the CI/CD analytics page to view pipeline success rates and duration, and th
 CI/CD analytics shows the history of your pipeline successes and failures, as well as how long each pipeline
 ran.
 
+{{< history >}}
+
+- [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/353607) in GitLab 18.0 to improve analytics by using ClickHouse as the data source when available.
+
+{{< /history >}}
+
 Pipeline statistics are gathered by collecting all available pipelines for the
 project, regardless of status. The data available for each individual day is based
 on when the pipeline was created.

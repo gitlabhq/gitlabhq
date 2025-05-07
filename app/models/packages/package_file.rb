@@ -16,7 +16,7 @@ class Packages::PackageFile < ApplicationRecord
   delegate :file_type, :dsc?, :component, :architecture, :fields, to: :debian_file_metadatum, prefix: :debian
   delegate :channel, :metadata, to: :helm_file_metadatum, prefix: :helm
 
-  enum status: { default: 0, pending_destruction: 1, processing: 2, error: 3 }
+  enum :status, { default: 0, pending_destruction: 1, processing: 2, error: 3 }
 
   belongs_to :package
 

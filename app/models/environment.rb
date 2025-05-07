@@ -194,7 +194,7 @@ class Environment < ApplicationRecord
     where(auto_delete_at: nil)
   end
 
-  enum tier: {
+  enum :tier, {
     production: 0,
     staging: 1,
     testing: 2,
@@ -202,10 +202,10 @@ class Environment < ApplicationRecord
     other: 4
   }
 
-  enum auto_stop_setting: {
+  enum :auto_stop_setting, {
     always: 0,
     with_action: 1
-  }, _prefix: true
+  }, prefix: true
 
   state_machine :state, initial: :available do
     event :start do

@@ -12,7 +12,7 @@ module AntiAbuse
     belongs_to :user, inverse_of: :abuse_events
     belongs_to :abuse_report, inverse_of: :abuse_events
 
-    enum category: Enums::Abuse::Category.categories
-    enum source: Enums::Abuse::Source.sources
+    enum :category, Enums::Abuse::Category.categories
+    enum :source, Enums::Abuse::Source.sources
   end
 end

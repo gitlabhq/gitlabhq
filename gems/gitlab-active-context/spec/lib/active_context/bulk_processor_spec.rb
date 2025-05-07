@@ -7,7 +7,7 @@ RSpec.describe ActiveContext::BulkProcessor do
   let(:reference_class) { Test::References::MockWithDatabaseRecord }
 
   let(:ref) { reference_class.new(collection_id: collection_id, routing: partition, args: 1) }
-  let(:mock_collection) { double(name: collection_name, partition_for: partition) }
+  let(:mock_collection) { double(name: collection_name, partition_for: partition, include_ref_fields: true) }
   let(:mock_object) { double(id: object_id) }
   let(:mock_relation) { double(find_by: mock_object) }
   let(:mock_connection) { double(id: connection_id) }

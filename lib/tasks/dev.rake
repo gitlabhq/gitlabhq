@@ -67,7 +67,7 @@ namespace :dev do
       end
 
       # Clear connections opened by this rake task too
-      ActiveRecord::Base.clear_all_connections! # rubocop:disable Database/MultipleDatabases
+      ActiveRecord::Base.connection_handler.clear_all_connections!
     end
   end
 

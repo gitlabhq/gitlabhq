@@ -56,11 +56,11 @@ For example:
 To ensure merge request changes are reviewed and approved by Code Owners, specified in the
 [`CODEOWNERS` file](#codeowners-file), the merge request's target branch must be
 [protected](../repository/branches/protected.md)
-and [Code Owner approval](../repository/branches/protected.md#require-code-owner-approval-on-a-protected-branch) must be enabled.
+and [Code Owner approval](../repository/branches/protected.md#require-code-owner-approval) must be enabled.
 
 The following features are available when you enable Code Owner approvals on protected branches:
 
-- [Require approvals from Code Owners](../repository/branches/protected.md#require-code-owner-approval-on-a-protected-branch).
+- [Require approvals from Code Owners](../repository/branches/protected.md#require-code-owner-approval).
 - [Require multiple approvals from Code Owners](advanced.md#require-multiple-approvals-from-code-owners).
 - [Optional approvals from Code Owners](reference.md#optional-sections).
 
@@ -97,7 +97,7 @@ Prerequisites:
 1. Define some rules in the file following the [`CODEOWNERS` syntax](reference.md).
    Some suggestions:
    - Configure [All eligible approvers](../merge_requests/approvals/rules.md#code-owners-as-eligible-approvers) approval rule.
-   - [Require Code Owner approval](../repository/branches/protected.md#require-code-owner-approval-on-a-protected-branch) on a protected branch.
+   - [Require Code Owner approval](../repository/branches/protected.md#require-code-owner-approval) on a protected branch.
 1. Commit your changes, and push them up to GitLab.
 
 ## `CODEOWNERS` file

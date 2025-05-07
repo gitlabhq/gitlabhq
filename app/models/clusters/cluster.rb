@@ -73,17 +73,17 @@ module Clusters
     alias_attribute :base_domain, :domain
     alias_attribute :provided_by_user?, :user?
 
-    enum cluster_type: {
+    enum :cluster_type, {
       instance_type: 1,
       group_type: 2,
       project_type: 3
     }
 
-    enum platform_type: {
+    enum :platform_type, {
       kubernetes: 1
     }
 
-    enum provider_type: {
+    enum :provider_type, {
       user: 0,
       gcp: 1,
       aws: 2

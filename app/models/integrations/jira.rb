@@ -66,7 +66,7 @@ module Integrations
     before_save :format_project_keys, if: :project_keys_changed?
     after_commit :update_deployment_type, on: [:create, :update], if: :update_deployment_type?
 
-    enum comment_detail: {
+    enum :comment_detail, {
       standard: 1,
       all_details: 2
     }

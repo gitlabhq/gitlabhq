@@ -18,7 +18,7 @@ class BulkImport < ApplicationRecord
 
   validates :source_type, :status, presence: true
 
-  enum source_type: { gitlab: 0 }
+  enum :source_type, { gitlab: 0 }
 
   scope :stale, -> { where('updated_at < ?', 24.hours.ago).where(status: [0, 1]) }
   scope :order_by_updated_at_and_id, ->(direction) { order(updated_at: direction, id: :asc) }

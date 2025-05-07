@@ -39,6 +39,7 @@ module ActiveContext
     end
 
     attr_reader :collection_id, :collection, :routing, :serialized_args, :ref_version
+    attr_accessor :include_ref_fields
     attr_writer :documents
 
     def initialize(collection_id:, routing:, args: [])
@@ -47,6 +48,7 @@ module ActiveContext
       @routing = routing
       @serialized_args = Array(args)
       @ref_version = Time.now.to_i
+      @include_ref_fields = collection.include_ref_fields
       init
     end
 
@@ -79,11 +81,16 @@ module ActiveContext
       end
 
       docs.map.with_index do |json, index|
-        json.merge(
-          unique_identifier: unique_identifier(index),
-          ref_id: identifier,
-          ref_version: ref_version
-        )
+        result = json.merge(unique_identifier: unique_identifier(index))
+
+        if include_ref_fields
+          result.merge!(
+            ref_id: identifier,
+            ref_version: ref_version
+          )
+        end
+
+        result
       end
     end
 

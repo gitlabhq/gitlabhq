@@ -24,7 +24,7 @@ module Ci
     partitionable scope: :job, partitioned: true
     query_constraints :id, :partition_id
 
-    enum accessibility: { public: 0, private: 1, none: 2 }, _suffix: true
+    enum :accessibility, { public: 0, private: 1, none: 2 }, suffix: true
 
     belongs_to :project
     belongs_to :job,
@@ -96,7 +96,7 @@ module Ci
     scope :created_in_time_range, ->(from: nil, to: nil) { where(created_at: from..to) }
 
     delegate :filename, :exists?, :open, to: :file
-    enum file_type: Enums::Ci::JobArtifact.file_type
+    enum :file_type, Enums::Ci::JobArtifact.file_type
 
     # `file_location` indicates where actual files are stored.
     # Ideally, actual files should be stored in the same directory, and use the same
@@ -107,7 +107,7 @@ module Ci
     #                 `ci_builds.artifacts_file` and `ci_builds.artifacts_metadata`
     # hashed_path ... The actual file is stored at a path consists of a SHA2 based on the project ID.
     #                 This is the default value.
-    enum file_location: Enums::Ci::JobArtifact.file_location
+    enum :file_location, Enums::Ci::JobArtifact.file_location
 
     def validate_file_format!
       unless Enums::Ci::JobArtifact.type_and_format_pairs[self.file_type&.to_sym] == self.file_format&.to_sym

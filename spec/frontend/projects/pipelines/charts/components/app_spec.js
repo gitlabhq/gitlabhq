@@ -12,9 +12,6 @@ describe('ProjectsPipelinesChartsApp', () => {
   const createWrapper = ({ provide, ...options } = {}) => {
     wrapper = shallowMount(App, {
       provide: {
-        glFeatures: {
-          ciImprovedProjectPipelineAnalytics: true,
-        },
         ...provide,
       },
       ...options,
@@ -60,22 +57,6 @@ describe('ProjectsPipelinesChartsApp', () => {
     it('shows pipelines dashboard with clickhouse', () => {
       expect(findPipelinesDashboardClickhouse().exists()).toBe(true);
       expect(findPipelinesDashboard().exists()).toBe(false);
-    });
-  });
-
-  describe('ci_improved_project_pipeline_analytics feature flag', () => {
-    describe('when flag is disabled', () => {
-      it('renders component', () => {
-        createWrapper({
-          provide: {
-            glFeatures: {
-              ciImprovedProjectPipelineAnalytics: false,
-            },
-          },
-        });
-
-        expect(findPipelinesDashboard().exists()).toBe(true);
-      });
     });
   });
 });

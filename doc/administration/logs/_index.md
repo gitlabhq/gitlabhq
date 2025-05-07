@@ -65,18 +65,19 @@ GITLAB_LOG_LEVEL=info
 For some services, other log levels are in place that are not affected by this setting.
 Some of these services have their own environment variables to override the log level. For example:
 
-| Service              | Log level | Environment variable |
-|:---------------------|:----------|:---------------------|
-| GitLab Cleanup       | `INFO`    | `DEBUG`              |
-| GitLab Doctor        | `INFO`    | `VERBOSE`            |
-| GitLab Export        | `INFO`    | `EXPORT_DEBUG`       |
-| GitLab Import        | `INFO`    | `IMPORT_DEBUG`       |
-| GitLab QA Runtime    | `INFO`    | `QA_LOG_LEVEL`       |
-| Google APIs          | `INFO`    |                      |
-| Rack Timeout         | `ERROR`   |                      |
-| Snowplow Tracker     | `FATAL`   |                      |
-| gRPC Client (Gitaly) | `WARN`    | `GRPC_LOG_LEVEL`     |
-| LLM                  | `INFO`    | `LLM_DEBUG`          |
+| Service                   | Log level | Environment variable |
+|:--------------------------|:----------|:---------------------|
+| GitLab Cleanup            | `INFO`    | `DEBUG`              |
+| GitLab Doctor             | `INFO`    | `VERBOSE`            |
+| GitLab Export             | `INFO`    | `EXPORT_DEBUG`       |
+| GitLab Import             | `INFO`    | `IMPORT_DEBUG`       |
+| GitLab QA Runtime         | `INFO`    | `QA_LOG_LEVEL`       |
+| GitLab Product Usage Data | `INFO`    |                      |
+| Google APIs               | `INFO`    |                      |
+| Rack Timeout              | `ERROR`   |                      |
+| Snowplow Tracker          | `FATAL`   |                      |
+| gRPC Client (Gitaly)      | `WARN`    | `GRPC_LOG_LEVEL`     |
+| LLM                       | `INFO`    | `LLM_DEBUG`          |
 
 ## Log Rotation
 
@@ -1227,6 +1228,46 @@ For example:
   "uid": 998
 }
 ```
+
+## Product Usage Data log
+
+Note: We recommend against using the raw logs for analysing feature usage, as the data quality has not yet been certified for accuracy. Certified in-product adoption reports will be available once the data is ready for analysis.
+This file is located at:
+
+- `/var/log/gitlab/gitlab-rails/product_usage_data.log` on Linux package installations.
+- `/home/git/gitlab/log/product_usage_data.log` on self-compiled installations.
+
+It contains JSON-formatted logs of product usage events tracked through Snowplow. Each line in the file contains a separate JSON entry that can be ingested by services like Elasticsearch or Splunk. Line breaks were added to examples for legibility:
+
+```json
+{
+  "severity":"INFO",
+  "time":"2025-04-09T13:43:40.254Z",
+  "message":"sending event",
+  "payload":"{
+  \"e\":\"se\",
+  \"se_ca\":\"projects:merge_requests:diffs\",
+  \"se_ac\":\"i_code_review_user_searches_diff\",
+  \"cx\":\"eyJzY2hlbWEiOiJpZ2x1OmNvbS5zbm93cGxvd2FuYWx5dGljcy5zbm93cGxvdy9jb250ZXh0cy9qc29uc2NoZW1hLzEtMC0xIiwiZGF0YSI6W3sic2NoZW1hIjoiaWdsdTpjb20uZ2l0bGFiL2dpdGxhYl9zdGFuZGFyZC9qc29uc2NoZW1hLzEtMS0xIiwiZGF0YSI6eyJlbnZpcm9ubWVudCI6ImRldmVsb3BtZW50Iiwic291cmNlIjoiZ2l0bGFiLXJhaWxzIiwiY29ycmVsYXRpb25faWQiOiJlNDk2NzNjNWI2MGQ5ODc0M2U4YWI0MjZiMTZmMTkxMiIsInBsYW4iOiJkZWZhdWx0IiwiZXh0cmEiOnt9LCJ1c2VyX2lkIjpudWxsLCJnbG9iYWxfdXNlcl9pZCI6bnVsbCwiaXNfZ2l0bGFiX3RlYW1fbWVtYmVyIjpudWxsLCJuYW1lc3BhY2VfaWQiOjMxLCJwcm9qZWN0X2lkIjo2LCJmZWF0dXJlX2VuYWJsZWRfYnlfbmFtZXNwYWNlX2lkcyI6bnVsbCwicmVhbG0iOiJzZWxmLW1hbmFnZWQiLCJpbnN0YW5jZV9pZCI6IjJkMDg1NzBkLWNmZGItNDFmMy1iODllLWM3MTM5YmFjZTI3NSIsImhvc3RfbmFtZSI6ImpsYXJzZW4tLTIwMjIxMjE0LVBWWTY5IiwiaW5zdGFuY2VfdmVyc2lvbiI6IjE3LjExLjAiLCJjb250ZXh0X2dlbmVyYXRlZF9hdCI6IjIwMjUtMDQtMDkgMTM6NDM6NDAgVVRDIn19LHsic2NoZW1hIjoiaWdsdTpjb20uZ2l0bGFiL2dpdGxhYl9zZXJ2aWNlX3BpbmcvanNvbnNjaGVtYS8xLTAtMSIsImRhdGEiOnsiZGF0YV9zb3VyY2UiOiJyZWRpc19obGwiLCJldmVudF9uYW1lIjoiaV9jb2RlX3Jldmlld191c2VyX3NlYXJjaGVzX2RpZmYifX1dfQ==\",
+  \"p\":\"srv\",
+  \"dtm\":\"1744206220253\",
+  \"tna\":\"gl\",
+  \"tv\":\"rb-0.8.0\",
+  \"eid\":\"4f067989-d10d-40b0-9312-ad9d7355be7f\"
+}
+```
+
+To analyze these logs, you can use the `scripts/product_usage_data_event_formatter.rb` tool which formats the JSON output and decodes base64-encoded context data for better readability:
+
+```shell
+scripts/product_usage_data_event_formatter.rb log/product_usage_data.log
+# or pipe the logs directly
+cat log/product_usage_data.log | scripts/product_usage_data_event_formatter.rb
+# or tail the logs in real-time
+tail -f log/product_usage_data.log | scripts/product_usage_data_event_formatter.rb
+```
+
+You can disable this log by setting the `GITLAB_DISABLE_PRODUCT_USAGE_EVENT_LOGGING` environment variable to any value.
 
 ## Let's Encrypt logs
 

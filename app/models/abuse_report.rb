@@ -82,7 +82,7 @@ class AbuseReport < ApplicationRecord
   scope :with_users, -> { includes(:reporter, :user) }
   scope :with_labels, -> { includes(:labels) }
 
-  enum category: {
+  enum :category, {
     spam: 1,
     offensive: 2,
     phishing: 3,
@@ -93,7 +93,7 @@ class AbuseReport < ApplicationRecord
     other: 8
   }
 
-  enum status: {
+  enum :status, {
     open: 1,
     closed: 2
   }

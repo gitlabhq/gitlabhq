@@ -9,7 +9,7 @@ module CommitSignature
 
     sha_attribute :commit_sha
 
-    enum verification_status: Enums::CommitSignature.verification_statuses
+    enum :verification_status, Enums::CommitSignature.verification_statuses
 
     belongs_to :project, class_name: 'Project', foreign_key: 'project_id', optional: false
 

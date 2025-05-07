@@ -24,7 +24,7 @@ class ErrorTracking::Error < ApplicationRecord
   validates :platform, length: { maximum: 255 }
   validates :status, presence: true
 
-  enum status: {
+  enum :status, {
     unresolved: 0,
     resolved: 1,
     ignored: 2

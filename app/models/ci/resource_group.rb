@@ -14,7 +14,7 @@ module Ci
 
     before_create :ensure_resource
 
-    enum process_mode: {
+    enum :process_mode, {
       unordered: 0,
       oldest_first: 1,
       newest_first: 2,

@@ -20,7 +20,7 @@ class ProjectCiCdSetting < ApplicationRecord
 
   ALLOWED_SUB_CLAIM_COMPONENTS = %w[project_path ref_type ref].freeze
 
-  enum pipeline_variables_minimum_override_role: PIPELINE_VARIABLES_OVERRIDE_ROLES, _prefix: true
+  enum :pipeline_variables_minimum_override_role, PIPELINE_VARIABLES_OVERRIDE_ROLES, prefix: true
 
   before_validation :set_pipeline_variables_secure_defaults, on: :create
   before_create :set_default_git_depth

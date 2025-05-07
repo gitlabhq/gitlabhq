@@ -15,7 +15,7 @@ module Ci
 
     before_save :truncate_long_content
 
-    enum severity: { error: 0, warning: 1 }
+    enum :severity, { error: 0, warning: 1 }
 
     private
 

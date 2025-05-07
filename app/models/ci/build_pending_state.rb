@@ -13,8 +13,8 @@ class Ci::BuildPendingState < Ci::ApplicationRecord
 
   partitionable scope: :build
 
-  enum state: Ci::Stage.statuses
-  enum failure_reason: CommitStatus.failure_reasons
+  enum :state, Ci::Stage.statuses
+  enum :failure_reason, CommitStatus.failure_reasons
 
   validates :build, presence: true
   validates :project_id, presence: true, on: :create

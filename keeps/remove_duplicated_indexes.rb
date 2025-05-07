@@ -193,7 +193,7 @@ module Keeps
     end
 
     def reset_db
-      ApplicationRecord.clear_all_connections!
+      ApplicationRecord.connection_handler.clear_all_connections!
       ::Gitlab::Housekeeper::Shell.execute('rails', 'db:reset', env: { 'RAILS_ENV' => 'test' })
     end
 

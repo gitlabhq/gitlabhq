@@ -47,7 +47,7 @@ module HasUserType
   INTERNAL_USER_TYPES = (USER_TYPES.keys - NON_INTERNAL_USER_TYPES).freeze
 
   included do
-    enum user_type: USER_TYPES
+    enum :user_type, USER_TYPES
 
     scope :bots, -> { where(user_type: BOT_USER_TYPES) }
     scope :without_bots, -> { where(user_type: USER_TYPES.keys - BOT_USER_TYPES) }

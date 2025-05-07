@@ -25,7 +25,7 @@
       toggle_options: { data: { testid: 'add-protected-branch-button' } }) do |c|
       - c.with_description do
         = s_("ProtectedBranch|By default, protected branches restrict who can modify the branch.")
-        = link_to s_("ProtectedBranch|Learn more."), help_page_path("user/project/repository/branches/protected.md", anchor: "who-can-modify-a-protected-branch")
+        = link_to s_("ProtectedBranch|Learn more."), help_page_path("user/project/repository/branches/protection_rules.md", anchor: "push-and-merge-permissions")
       - c.with_body do
         = content_for :branches_list
 

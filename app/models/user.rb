@@ -212,7 +212,6 @@ class User < ApplicationRecord
     -> { where(members: { access_level: [Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER] }) },
     through: :group_members,
     source: :group
-  alias_attribute :masters_groups, :maintainers_groups
   has_many :developer_maintainer_owned_groups,
     -> { where(members: { access_level: [Gitlab::Access::DEVELOPER, Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER] }) },
     through: :group_members,

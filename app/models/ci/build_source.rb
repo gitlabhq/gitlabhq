@@ -10,7 +10,7 @@ module Ci
 
     ignore_column :pipeline_source, remove_with: '17.9', remove_after: '2025-01-15'
 
-    enum source: {
+    enum :source, {
       scan_execution_policy: 1001,
       pipeline_execution_policy: 1002
     }.merge(::Enums::Ci::Pipeline.sources)

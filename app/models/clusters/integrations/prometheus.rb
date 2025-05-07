@@ -16,7 +16,7 @@ module Clusters
       validates :enabled, inclusion: { in: [true, false] }
 
       # Periodically checked and kept up to date for Monitor demo projects
-      enum health_status: {
+      enum :health_status, {
         unknown: 0,
         healthy: 1,
         unhealthy: 2

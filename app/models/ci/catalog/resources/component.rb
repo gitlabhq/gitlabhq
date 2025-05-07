@@ -19,7 +19,7 @@ module Ci
         # an error about the save callback that is auto generated for this association.
         include BulkInsertSafe
 
-        enum component_type: { template: 1 }
+        enum :component_type, { template: 1 }
 
         validates :spec, json_schema: { filename: 'catalog_resource_component_spec' }
         validates :version, :catalog_resource, :project, :name, presence: true

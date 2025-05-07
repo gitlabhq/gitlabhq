@@ -42,7 +42,7 @@ module Ci
     end.freeze
     LIVE_STORES = %i[redis redis_trace_chunks].freeze
 
-    enum data_store: DATA_STORES
+    enum :data_store, DATA_STORES
 
     scope :live, -> { where(data_store: LIVE_STORES) }
     scope :persisted, -> { where.not(data_store: LIVE_STORES).order(:chunk_index) }

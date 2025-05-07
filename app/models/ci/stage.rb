@@ -15,7 +15,7 @@ module Ci
     query_constraints :id, :partition_id
     partitionable scope: :pipeline, partitioned: true
 
-    enum status: Ci::HasStatus::STATUSES_ENUM
+    enum :status, Ci::HasStatus::STATUSES_ENUM
 
     belongs_to :project
     belongs_to :pipeline, ->(stage) { in_partition(stage) },

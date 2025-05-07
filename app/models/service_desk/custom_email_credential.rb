@@ -6,7 +6,7 @@ module ServiceDesk
 
     # Used to explicitly set the SMTP AUTH method.
     # If nil Net::SMTP will choose one of methods listed by the SMTP server.
-    enum smtp_authentication: {
+    enum :smtp_authentication, {
       plain: 0,
       login: 1,
       cram_md5: 2

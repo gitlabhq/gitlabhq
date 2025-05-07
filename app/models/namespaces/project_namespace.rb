@@ -19,7 +19,7 @@ module Namespaces
     #
     # TODO: we can remove these attribute aliases when we no longer need to sync these with project model,
     # see ProjectNamespace#sync_attributes_from_project
-    alias_attribute :namespace, :parent
+    alias_method :namespace, :parent
     alias_attribute :namespace_id, :parent_id
     has_one :project, inverse_of: :project_namespace
 

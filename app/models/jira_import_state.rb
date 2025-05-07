@@ -84,7 +84,7 @@ class JiraImportState < ApplicationRecord
     end
   end
 
-  enum status: STATUSES
+  enum :status, STATUSES
 
   def in_progress?
     scheduled? || started?

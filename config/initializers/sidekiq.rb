@@ -76,7 +76,7 @@ Sidekiq.configure_server do |config|
   config.on :startup do
     # Clear any connections that might have been obtained before starting
     # Sidekiq (e.g. in an initializer).
-    ActiveRecord::Base.clear_all_connections! # rubocop:disable Database/MultipleDatabases
+    ActiveRecord::Base.connection_handler.clear_all_connections!
 
     # Start monitor to track running jobs. By default, cancel job is not enabled
     # To cancel job, it requires `SIDEKIQ_MONITOR_WORKER=1` to enable notification channel

@@ -15,7 +15,7 @@ class Packages::Conan::FileMetadatum < ApplicationRecord
   validate :conan_package_type
   validate :ensure_recipe_revision_with_package_revision
 
-  enum conan_file_type: { recipe_file: 1, package_file: 2 }
+  enum :conan_file_type, { recipe_file: 1, package_file: 2 }
 
   RECIPE_FILES = ::Gitlab::Regex::Packages::CONAN_RECIPE_FILES
   PACKAGE_FILES = ::Gitlab::Regex::Packages::CONAN_PACKAGE_FILES

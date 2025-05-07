@@ -178,7 +178,7 @@ namespace :gitlab do
       database_name = ":#{database_name}" if database_name
       load_database = connection.tables.count <= 1
 
-      ActiveRecord::Base.connection_handler.clear_all_connections!(:all)
+      ActiveRecord::Base.connection_handler.clear_all_connections!
 
       if load_database
         puts "Running db:schema:load#{database_name} rake task"
@@ -210,7 +210,7 @@ namespace :gitlab do
 
     desc "Clear all connections"
     task :clear_all_connections do
-      ActiveRecord::Base.connection_handler.clear_all_connections!(:all)
+      ActiveRecord::Base.connection_handler.clear_all_connections!
     end
 
     ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|

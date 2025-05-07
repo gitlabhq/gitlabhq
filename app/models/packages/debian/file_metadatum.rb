@@ -12,7 +12,7 @@ module Packages
       validates :package_file, presence: true
       validate :valid_debian_package_type
 
-      enum file_type: {
+      enum :file_type, {
         unknown: 1, source: 2, dsc: 3, deb: 4, udeb: 5, buildinfo: 6, changes: 7, ddeb: 8
       }
 

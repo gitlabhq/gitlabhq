@@ -107,6 +107,10 @@ module Gitlab
           end
         end
 
+        def disable_product_usage_event_logging?
+          Gitlab::Utils.to_boolean(ENV['GITLAB_DISABLE_PRODUCT_USAGE_EVENT_LOGGING'], default: false)
+        end
+
         def protocol
           'https'
         end
@@ -125,10 +129,20 @@ module Gitlab
         end
 
         def emitter
-          @emitter ||= SnowplowTracker::AsyncEmitter.new(
+          @emitter ||= emitter_class.new(
             endpoint: hostname,
             options: emitter_options
           )
+        end
+
+        def emitter_class
+          # snowplow_enabled? is true for gitlab.com and customers that configured their own Snowplow collector
+          # In both bases we do not want to log the events being sent as the instance is controlled by the same company
+          # controlling the Snowplow collector.
+          return SnowplowTracker::AsyncEmitter if Gitlab::CurrentSettings.snowplow_enabled?
+          return SnowplowTracker::AsyncEmitter if disable_product_usage_event_logging?
+
+          SnowplowLoggingEmitter
         end
 
         def emitter_options

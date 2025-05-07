@@ -120,7 +120,7 @@ Pipelines might not run for multiple reasons:
   being added to the pipeline.
 - Pipelines are triggered using [the account that set up the pull mirror](https://gitlab.com/gitlab-org/gitlab/-/issues/13697).
   If the account is no longer valid, pipelines do not run.
-- [Branch protection](../branches/protected.md#run-pipelines-on-protected-branches)
+- [Branch protection](../branches/protected.md#cicd-on-protected-branches)
   might prevent the account that set up mirroring from running pipelines.
 
 ## `The repository is being updated`, but neither fails nor succeeds visibly

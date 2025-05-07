@@ -12,7 +12,7 @@ class CustomerRelations::Organization < ApplicationRecord
 
   strip_attributes! :name
 
-  enum state: {
+  enum :state, {
     inactive: 0,
     active: 1
   }

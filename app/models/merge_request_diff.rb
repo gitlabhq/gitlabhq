@@ -71,7 +71,7 @@ class MergeRequestDiff < ApplicationRecord
     state :overflow_diff_lines_limit
   end
 
-  enum diff_type: {
+  enum :diff_type, {
     regular: 1,
     merge_head: 2
   }

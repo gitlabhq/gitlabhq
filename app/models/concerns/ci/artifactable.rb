@@ -28,11 +28,11 @@ module Ci
     JUNIT_MAX_BYTES = 100.megabytes
 
     included do
-      enum file_format: {
+      enum :file_format, {
         raw: 1,
         zip: 2,
         gzip: 3
-      }, _suffix: true
+      }, suffix: true
 
       scope :expired_before, ->(timestamp) { where(arel_table[:expire_at].lt(timestamp)) }
       scope :expired, -> { expired_before(Time.current) }

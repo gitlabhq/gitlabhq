@@ -94,28 +94,26 @@ RSpec.describe 'Project Graph', :js, feature_category: :source_code_management d
       project.enable_ci
     end
 
-    context 'with ci_improved_project_pipeline_analytics feature flag on' do
-      it 'renders Pipeline graphs' do
-        visit_path
+    it 'renders CI graphs' do
+      visit_path
 
-        expect(page).to have_content 'CI/CD Analytics'
-        expect(page).to have_content 'Pipelines'
-      end
+      expect(page).to have_content 'CI/CD Analytics'
+      expect(page).to have_content 'Last week'
+      expect(page).to have_content 'Last month'
+      expect(page).to have_content 'Last year'
+      expect(page).to have_content 'Pipeline durations for the last 30 commits'
     end
 
-    context 'with ci_improved_project_pipeline_analytics feature flag off' do
+    context 'when clickhouse is the data source', :click_house do
       before do
-        stub_feature_flags(ci_improved_project_pipeline_analytics: false)
+        allow(::Gitlab::ClickHouse).to receive(:enabled_for_analytics?).and_return(true)
       end
 
-      it 'renders CI graphs' do
-        visit_path
-
+      it 'renders Pipeline graphs' do
         expect(page).to have_content 'CI/CD Analytics'
-        expect(page).to have_content 'Last week'
-        expect(page).to have_content 'Last month'
-        expect(page).to have_content 'Last year'
-        expect(page).to have_content 'Pipeline durations for the last 30 commits'
+        expect(page).to have_content 'Total pipeline runs'
+        expect(page).to have_content 'Median duration'
+        expect(page).to have_content 'Success rate'
       end
     end
   end

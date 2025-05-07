@@ -35,26 +35,26 @@ module Ci
         }
       }
 
-    enum access_level: {
+    enum :access_level, {
       not_protected: 0,
       ref_protected: 1
     }
 
-    enum runner_type: {
+    enum :runner_type, {
       instance_type: 1,
       group_type: 2,
       project_type: 3
     }
 
-    enum creation_state: {
+    enum :creation_state, {
       started: 0,
       finished: 100
-    }, _suffix: true
+    }, suffix: true
 
-    enum registration_type: {
+    enum :registration_type, {
       registration_token: 0,
       authenticated_user: 1
-    }, _suffix: true
+    }, suffix: true
 
     # Prefix assigned to runners created from the UI, instead of registered via the command line
     CREATED_RUNNER_TOKEN_PREFIX = 'glrt-'

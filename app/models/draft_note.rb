@@ -28,7 +28,7 @@ class DraftNote < ApplicationRecord
   validates :discussion_id, allow_nil: true, format: { with: /\A\h{40}\z/ }
   validates :line_code, length: { maximum: 255 }, allow_nil: true
 
-  enum note_type: {
+  enum :note_type, {
     Note: 0,
     DiffNote: 1,
     DiscussionNote: 2

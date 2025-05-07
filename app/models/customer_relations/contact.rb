@@ -14,7 +14,7 @@ class CustomerRelations::Contact < ApplicationRecord
 
   strip_attributes! :phone, :first_name, :last_name
 
-  enum state: {
+  enum :state, {
     inactive: 0,
     active: 1
   }

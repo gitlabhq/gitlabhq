@@ -7158,6 +7158,9 @@ msgstr ""
 msgid "An error occurred while triggering the job."
 msgstr ""
 
+msgid "An error occurred while trying to enable GitLab Duo Core. Reload the page to try again."
+msgstr ""
+
 msgid "An error occurred while trying to follow this user, please try again."
 msgstr ""
 

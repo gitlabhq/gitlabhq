@@ -3,12 +3,10 @@
 module ContainerRegistry
   module Protection
     class Rule < ApplicationRecord
-      enum minimum_access_level_for_delete:
-             Gitlab::Access.sym_options_with_admin.slice(:maintainer, :owner, :admin),
-        _prefix: :minimum_access_level_for_delete
-      enum minimum_access_level_for_push:
-             Gitlab::Access.sym_options_with_admin.slice(:maintainer, :owner, :admin),
-        _prefix: :minimum_access_level_for_push
+      enum :minimum_access_level_for_delete, Gitlab::Access.sym_options_with_admin.slice(:maintainer, :owner, :admin),
+        prefix: :minimum_access_level_for_delete
+      enum :minimum_access_level_for_push, Gitlab::Access.sym_options_with_admin.slice(:maintainer, :owner, :admin),
+        prefix: :minimum_access_level_for_push
 
       belongs_to :project, inverse_of: :container_registry_protection_rules
 

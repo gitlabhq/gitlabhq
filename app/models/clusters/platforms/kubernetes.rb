@@ -63,11 +63,11 @@ module Clusters
 
       alias_attribute :ca_pem, :ca_cert
 
-      enum authorization_type: {
+      enum :authorization_type, {
         unknown_authorization: nil,
         rbac: 1,
         abac: 2
-      }, _default: :rbac
+      }, default: :rbac
 
       nullify_if_blank :namespace
 

@@ -54,7 +54,7 @@ class BulkImports::Entity < ApplicationRecord
   validate :validate_source_full_path_format
   validate :validate_bulk_import_organization_matches
 
-  enum source_type: { group_entity: 0, project_entity: 1 }
+  enum :source_type, { group_entity: 0, project_entity: 1 }
 
   scope :by_user_id, ->(user_id) { joins(:bulk_import).where(bulk_imports: { user_id: user_id }) }
   scope :stale, -> { where('updated_at < ?', 24.hours.ago).where(status: [0, 1]) }

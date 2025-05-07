@@ -4,7 +4,7 @@ module MergeRequestReviewerState
   extend ActiveSupport::Concern
 
   included do
-    enum state: {
+    enum :state, {
       unreviewed: 0,
       reviewed: 1,
       requested_changes: 2,

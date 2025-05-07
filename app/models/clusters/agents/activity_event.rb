@@ -19,21 +19,21 @@ module Clusters
 
       nullify_if_blank :detail
 
-      enum kind: {
+      enum :kind, {
         token_created: 0,
         token_revoked: 1,
         agent_connected: 2,
         agent_disconnected: 3
-      }, _prefix: true
+      }, prefix: true
 
-      enum level: {
+      enum :level, {
         debug: 0,
         info: 1,
         warn: 2,
         error: 3,
         fatal: 4,
         unknown: 5
-      }, _prefix: true
+      }, prefix: true
     end
   end
 end

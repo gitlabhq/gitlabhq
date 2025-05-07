@@ -151,7 +151,7 @@ class Deployment < ApplicationRecord
     end
   end
 
-  enum status: {
+  enum :status, {
     created: 0,
     running: 1,
     success: 2,

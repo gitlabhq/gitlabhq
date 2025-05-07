@@ -36,7 +36,7 @@ module AlertManagement
     scope :active, -> { where(active: true) }
     scope :ordered_by_type_and_id, -> { order(:type_identifier, :id) }
 
-    enum type_identifier: {
+    enum :type_identifier, {
       http: 0,
       prometheus: 1
     }

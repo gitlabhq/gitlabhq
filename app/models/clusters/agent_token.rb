@@ -29,7 +29,7 @@ module Clusters
     scope :active, -> { where(status: :active) }
     scope :connected, -> { active.where("last_used_at > ?", Clusters::Agent::INACTIVE_AFTER.ago) }
 
-    enum status: {
+    enum :status, {
       active: 0,
       revoked: 1
     }

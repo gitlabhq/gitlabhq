@@ -14,7 +14,7 @@ module Ci
 
       belongs_to :namespace
 
-      enum verification_level: VERIFICATION_LEVELS
+      enum :verification_level, VERIFICATION_LEVELS
 
       validates :namespace_id, presence: true, uniqueness: true
 

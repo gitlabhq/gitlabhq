@@ -36,8 +36,7 @@ export default {
     },
   },
   data() {
-    const isClickHouseAvailable =
-      this.clickHouseEnabledForAnalytics && this.glFeatures?.ciImprovedProjectPipelineAnalytics;
+    const isClickHouseAvailable = this.clickHouseEnabledForAnalytics;
 
     const tabs = [
       {

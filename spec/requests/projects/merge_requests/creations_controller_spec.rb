@@ -39,6 +39,15 @@ RSpec.describe 'Merge Request Creation', feature_category: :code_review_workflow
       end
     end
 
+    context 'when rapid_diffs_disabled param is present' do
+      it 'uses default action' do
+        get_diffs(rapid_diffs_disabled: true)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to include('data-page="projects:merge_requests:creations:new"')
+      end
+    end
+
     it 'uses rapid diffs action' do
       get_diffs
 

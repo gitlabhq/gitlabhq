@@ -32,7 +32,7 @@ A Code Owner approval rule is optional if any of these conditions are true:
 - The user or group is not a member of the project.
   Code Owners [cannot inherit members from parent groups](https://gitlab.com/gitlab-org/gitlab/-/issues/288851/).
 - The user or group is [malformed or inaccessible](advanced.md#malformed-owners).
-- [Code Owner approval on a protected branch](../repository/branches/protected.md#require-code-owner-approval-on-a-protected-branch) has not been set up.
+- [Code Owner approval on a protected branch](../repository/branches/protected.md#require-code-owner-approval) has not been set up.
 - The section is [marked as optional](reference.md#optional-sections).
 - No eligible code owners are available to approve the merge request due to conflicts
   with other [merge request approval settings](../merge_requests/approvals/settings.md).

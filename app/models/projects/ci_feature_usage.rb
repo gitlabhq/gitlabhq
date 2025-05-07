@@ -8,7 +8,7 @@ module Projects
 
     validates :project, :feature, presence: true
 
-    enum feature: {
+    enum :feature, {
       code_coverage: 1,
       security_report: 2
     }

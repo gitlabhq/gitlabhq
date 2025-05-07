@@ -17,7 +17,7 @@ class ResourceLabelEvent < ResourceEvent
 
   after_commit :broadcast_notes_changed, unless: :importing?
 
-  enum action: {
+  enum :action, {
     add: 1,
     remove: 2
   }

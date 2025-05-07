@@ -7,7 +7,7 @@ module ServiceDesk
     TIMEFRAME = 30.minutes
     STATES = { started: 0, finished: 1, failed: 2 }.freeze
 
-    enum error: {
+    enum :error, {
       incorrect_token: 0,
       incorrect_from: 1,
       mail_not_received_within_timeframe: 2,
@@ -94,7 +94,7 @@ module ServiceDesk
 
     # Needs to be below `state_machine` definition to suppress
     # its method override warnings
-    enum state: STATES
+    enum :state, STATES
 
     class << self
       def generate_token

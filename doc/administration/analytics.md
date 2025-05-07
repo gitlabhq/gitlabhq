@@ -20,7 +20,7 @@ title: Use ClickHouse for analytics reports
 
 {{< /history >}}
 
-The [contribution analytics](../user/group/contribution_analytics/_index.md) report and [Value Streams Dashboard](../user/analytics/value_streams_dashboard.md#dashboard-metrics-and-drill-down-reports) contributors count metric can use ClickHouse as a data source.
+The [contribution analytics](../user/group/contribution_analytics/_index.md) report, [CI/CD analytics dashboard](../user/analytics/ci_cd_analytics.md), and [Value Streams Dashboard](../user/analytics/value_streams_dashboard.md#dashboard-metrics-and-drill-down-reports) contributors count metric can use ClickHouse as a data source.
 
 Prerequisites:
 

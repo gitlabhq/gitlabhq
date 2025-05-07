@@ -20,7 +20,7 @@ if defined?(ActiveRecord::Base)
 
     # the following is highly recommended for Rails + "preload_app true"
     # as there's no need for the master process to hold a connection
-    ActiveRecord::Base.clear_all_connections! # rubocop:disable Database/MultipleDatabases
+    ActiveRecord::Base.connection_handler.clear_all_connections!
 
     Gitlab::AppLogger.debug("ActiveRecord connections disconnected")
   end

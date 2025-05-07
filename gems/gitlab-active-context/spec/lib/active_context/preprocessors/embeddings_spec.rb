@@ -18,7 +18,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
   let(:reference) { reference_class.new(collection_id: collection_id, routing: partition, args: object_id) }
 
   let(:mock_adapter) { double }
-  let(:mock_collection) { double(name: collection_name, partition_for: partition) }
+  let(:mock_collection) { double(name: collection_name, partition_for: partition, include_ref_fields: true) }
   let(:mock_object) { double(id: object_id) }
   let(:mock_relation) { double(find_by: mock_object) }
 

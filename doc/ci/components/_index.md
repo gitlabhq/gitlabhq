@@ -842,7 +842,7 @@ you deliver to users, follow these best practices:
 - **Use protected branches**:
   - Use [protected branches](../../user/project/repository/branches/protected.md)
     for component project releases.
-  - Protect the default branch, and protect all release branches [using wildcard rules](../../user/project/repository/branches/protected.md#protect-multiple-branches-with-wildcard-rules).
+  - Protect the default branch, and protect all release branches [using wildcard rules](../../user/project/repository/branches/protected.md#use-wildcard-rules).
   - Require everyone submit merge requests for changes to protected branches. Set the
     **Allowed to push and merge** option to `No one` for protected branches.
   - Block force pushes to protected branches.

@@ -150,7 +150,8 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   end
 
   def rapid_diffs?
-    ::Feature.enabled?(:rapid_diffs, current_user, type: :wip) &&
+    params[:rapid_diffs_disabled] != 'true' &&
+      ::Feature.enabled?(:rapid_diffs, current_user, type: :wip) &&
       ::Feature.enabled?(:rapid_diffs_on_mr_creation, current_user, type: :wip)
   end
 

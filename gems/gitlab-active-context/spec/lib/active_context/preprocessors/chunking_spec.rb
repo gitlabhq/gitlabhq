@@ -21,7 +21,7 @@ RSpec.describe ActiveContext::Preprocessors::Chunking do
   let(:reference_2) { reference_class.new(collection_id: 1, routing: 1, args: 1) }
   let(:references) { [reference_1, reference_2] }
 
-  let(:mock_collection) { double(name: collection_name, partition_for: partition) }
+  let(:mock_collection) { double(name: collection_name, partition_for: partition, include_ref_fields: true) }
   let(:mock_chunker) { double }
 
   let(:partition) { 2 }

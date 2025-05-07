@@ -862,11 +862,11 @@ patroni['remove_data_directory_on_diverged_timelines'] = false
 
 [The upstream documentation is always more up to date](https://patroni.readthedocs.io/en/latest/patroni_configuration.html), but the table below should provide a minimal overview of functionality.
 
-|Setting|Overview|
-|-|-|
-|`use_pg_rewind`|Try running `pg_rewind` on the former cluster leader before it rejoins the database cluster.|
-|`remove_data_directory_on_rewind_failure`|If `pg_rewind` fails, remove the local PostgreSQL data directory and re-replicate from the current cluster leader.|
-|`remove_data_directory_on_diverged_timelines`|If `pg_rewind` cannot be used and the former leader's timeline has diverged from the current one, delete the local data directory and re-replicate from the current cluster leader.|
+| Setting                                       | Overview |
+|-----------------------------------------------|----------|
+| `use_pg_rewind`                               | Try running `pg_rewind` on the former cluster leader before it rejoins the database cluster. |
+| `remove_data_directory_on_rewind_failure`     | If `pg_rewind` fails, remove the local PostgreSQL data directory and re-replicate from the current cluster leader. |
+| `remove_data_directory_on_diverged_timelines` | If `pg_rewind` cannot be used and the former leader's timeline has diverged from the current one, delete the local data directory and re-replicate from the current cluster leader. |
 
 ### Database authorization for Patroni
 

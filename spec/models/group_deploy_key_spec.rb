@@ -30,12 +30,6 @@ RSpec.describe GroupDeployKey do
     end
   end
 
-  describe '.defined_enums' do
-    it 'excludes the inherited enum' do
-      expect(described_class.defined_enums).to eq({})
-    end
-  end
-
   describe '#can_be_edited_for' do
     let_it_be(:user) { create(:user) }
 
