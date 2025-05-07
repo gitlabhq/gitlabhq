@@ -369,8 +369,7 @@ The analyzers are published as Docker images, which Dependency Scanning uses to 
 containers for each analysis. You can also integrate a custom
 security scanner.
 
-Each analyzer is updated as new versions of Gemnasium are released. For more information, see the
-analyzer Release Process documentation.
+Each analyzer is updated as new versions of Gemnasium are released.
 
 ### How analyzers obtain dependency information
 
@@ -894,6 +893,7 @@ The following variables configure the behavior of specific dependency scanning a
 | `GEMNASIUM_DB_UPDATE_DISABLED`       | `gemnasium`        | `"false"`                    | Disable automatic updates for the `gemnasium-db` advisory database. For usage see [Access to the GitLab Advisory Database](#access-to-the-gitlab-advisory-database). |
 | `GEMNASIUM_DB_REMOTE_URL`            | `gemnasium`        | `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` | Repository URL for fetching the GitLab Advisory Database. |
 | `GEMNASIUM_DB_REF_NAME`              | `gemnasium`        | `master`                     | Branch name for remote repository database. `GEMNASIUM_DB_REMOTE_URL` is required. |
+| `GEMNASIUM_IGNORED_SCOPES`           | `gemnasium`        |                              | Comma-separated list of Maven dependency scopes to ignore. For more details, see the [Maven dependency scope documentation](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope) |
 | `DS_REMEDIATE`                       | `gemnasium`        | `"true"`, `"false"` in FIPS mode | Enable automatic remediation of vulnerable dependencies. Not supported in FIPS mode. |
 | `DS_REMEDIATE_TIMEOUT`               | `gemnasium`        | `5m`                         | Timeout for auto-remediation. |
 | `GEMNASIUM_LIBRARY_SCAN_ENABLED`     | `gemnasium`        | `"true"`                     | Enable detecting vulnerabilities in vendored JavaScript libraries (libraries which are not managed by a package manager). This functionality requires a JavaScript lockfile to be present in a commit, otherwise Dependency Scanning is not executed and vendored files are not scanned.<br>Dependency scanning uses the [Retire.js](https://github.com/RetireJS/retire.js) scanner to detect a limited set of vulnerabilities. For details of which vulnerabilities are detected, see the [Retire.js repository](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json). |
@@ -1048,10 +1048,8 @@ Dependency scanning outputs a report containing details of all vulnerabilities. 
 processed internally and the results are shown in the UI. The report is also output as an artifact
 of the dependency scanning job, named `gl-dependency-scanning-report.json`.
 
-For more details of the dependency scanning report, see:
-
-- Security scanner integration.
-- [Dependency scanning report schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json).
+For more details of the dependency scanning report, see the
+[Dependency scanning report schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json).
 
 ### CycloneDX Software Bill of Materials
 

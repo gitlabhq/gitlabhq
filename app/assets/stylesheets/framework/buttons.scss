@@ -118,7 +118,7 @@ fieldset[disabled] .btn,
 [disabled].dropdown-menu-toggle {
   &,
   &:hover {
-    background-color: $gray-10;
+    @apply gl-bg-disabled;
     border-color: $gray-100;
     @apply gl-text-disabled;
     opacity: 1;

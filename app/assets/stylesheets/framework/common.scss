@@ -286,7 +286,7 @@ li.note {
     clip: auto;
     text-decoration: none;
     @apply gl-text-default;
-    background: $gray-10;
+    @apply gl-bg-subtle;
     z-index: 1;
   }
 }
@@ -345,7 +345,7 @@ li.note {
   width: 4px;
 
   &:hover {
-    background-color: $gray-50;
+    @apply gl-bg-strong;
   }
 
   &.is-dragging {

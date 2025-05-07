@@ -41397,9 +41397,6 @@ msgstr ""
 msgid "Number of commits per MR"
 msgstr ""
 
-msgid "Number of employees"
-msgstr ""
-
 msgid "Number of files touched"
 msgstr ""
 
@@ -54464,6 +54461,9 @@ msgstr ""
 msgid "SecurityOrchestration|A consultant will show up in the bot comment and developers should ask them for help if needed."
 msgstr ""
 
+msgid "SecurityOrchestration|A new project will be created to be used to store security policies. If a project already exists with security policies, link it via the policy list page."
+msgstr ""
+
 msgid "SecurityOrchestration|A scan execution policy exceeds the limit of %{maxScanExecutionPolicySchedules} scheduled rules per policy. Remove or consolidate rules across policies to reduce the total number of rules."
 msgstr ""
 
@@ -54633,6 +54633,9 @@ msgid "SecurityOrchestration|Create more robust vulnerability rules and apply th
 msgstr ""
 
 msgid "SecurityOrchestration|Create new framework label"
+msgstr ""
+
+msgid "SecurityOrchestration|Create new project with the new policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Create security policy"
@@ -63911,9 +63914,6 @@ msgid "Trial|Please provide the following information to start your trial."
 msgstr ""
 
 msgid "Trial|Privacy Statement"
-msgstr ""
-
-msgid "Trial|Select number of employees"
 msgstr ""
 
 msgid "Trial|Select state or province"

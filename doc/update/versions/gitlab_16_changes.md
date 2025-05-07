@@ -729,7 +729,7 @@ Specific information applies to installations using Geo:
   character limit.
 
   ```sql
-  ;; replace `delete_branch_regex` with a name of the field used in constraint
+  -- replace `delete_branch_regex` with a name of the field used in constraint
   SELECT id FROM push_rules WHERE LENGTH(delete_branch_regex) > 511;
   ```
 

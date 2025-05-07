@@ -33,7 +33,7 @@ module Mutations
         result = ::WorkItems::CreateFromTaskService.new(
           work_item: work_item,
           current_user: current_user,
-          work_item_params: work_item_data_with_fallback_type(work_item_data)
+          work_item_params: work_item_data
         ).execute
 
         check_spam_action_response!(result[:work_item]) if result[:work_item]
@@ -42,17 +42,6 @@ module Mutations
         response.merge!(work_item: work_item, new_work_item: result[:work_item]) if result.success?
 
         response
-      end
-
-      private
-
-      def work_item_data_with_fallback_type(work_item_data)
-        work_item_type_id = work_item_data.delete(:work_item_type_id)
-        work_item_type = ::WorkItems::Type.find_by_id_with_fallback(work_item_type_id)
-
-        work_item_data[:work_item_type] = work_item_type
-
-        work_item_data
       end
     end
   end

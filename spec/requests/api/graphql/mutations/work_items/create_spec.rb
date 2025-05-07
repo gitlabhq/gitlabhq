@@ -50,30 +50,6 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
       )
     end
 
-    context 'when an old ID is used' do
-      let(:work_item_type_gid) do
-        ::Gitlab::GlobalId.build(work_item_create_type, id: work_item_create_type.old_id).to_s
-      end
-
-      it 'converts the work item' do
-        expect(work_item_create_type.old_id).not_to eq(work_item_create_type.id)
-
-        expect do
-          post_graphql_mutation(mutation, current_user: current_user)
-        end.to change { WorkItem.count }.by(1)
-
-        created_work_item = WorkItem.last
-        expect(response).to have_gitlab_http_status(:success)
-        expect(created_work_item.work_item_type).to eq(work_item_create_type)
-        expect(mutation_response['workItem']).to include(
-          input.except('workItemTypeId').merge(
-            'id' => created_work_item.to_gid.to_s,
-            'workItemType' => hash_including('name' => 'Task')
-          )
-        )
-      end
-    end
-
     context 'when input is invalid' do
       let(:input) { { 'title' => '', 'workItemTypeId' => WorkItems::Type.default_by_type(:task).to_gid.to_s } }
 

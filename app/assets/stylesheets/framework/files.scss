@@ -496,7 +496,7 @@ span.idiff {
   .blame-commit {
     width: 400px;
     flex: none;
-    background: $gray-10;
+    @apply gl-bg-subtle;
     border-left: 3px solid;
 
     .commit-row-title {

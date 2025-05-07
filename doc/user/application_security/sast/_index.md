@@ -280,10 +280,6 @@ issues are marked by a symbol beside the gutter. Select the symbol to see the li
 
 ![SAST Inline Indicator](img/sast_inline_indicator_v16_7.png)
 
-## Contribute your scanner
-
-The Security Scanner Integration documentation explains how to integrate other security scanners into GitLab.
-
 ## Configuration
 
 SAST scanning runs in your CI/CD pipeline.

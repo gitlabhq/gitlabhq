@@ -208,8 +208,6 @@ You can provide your own analyzers by defining jobs in your CI/CD configuration.
 consistency with the default analyzers, you should add the suffix `-sast` to your custom
 SAST jobs.
 
-For more details on integrating a custom security scanner into GitLab, see Security Scanner Integration.
-
 #### Example custom analyzer
 
 This example shows how to add a scanning job that's based on the Docker image

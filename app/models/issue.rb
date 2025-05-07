@@ -359,12 +359,6 @@ class Issue < ApplicationRecord
     [:assignees] + super
   end
 
-  def work_item_type_id=(input_work_item_type_id)
-    work_item_type = WorkItems::Type.find_by_id_with_fallback(input_work_item_type_id)
-
-    super(work_item_type&.id)
-  end
-
   def next_object_by_relative_position(ignoring: nil, order: :asc)
     array_mapping_scope = ->(id_expression) do
       relation = Issue.where(Issue.arel_table[:project_id].eq(id_expression))

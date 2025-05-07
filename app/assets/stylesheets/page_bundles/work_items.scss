@@ -124,10 +124,10 @@ $work-item-overview-gap-width: 2rem;
 $disclosure-hierarchy-chevron-dimension: 1.2rem;
 
 @mixin hierarchy-active-item-color {
-  background-color: var(--gray-50, $gray-50);
+  @apply gl-bg-strong;
 
   &::after {
-    background-color: var(--gray-50, $gray-50);
+    @apply gl-bg-strong;
   }
 }
 
@@ -375,7 +375,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 
       .time-tracking-spent-and-progress {
         @apply gl-flex-col-reverse gl-w-full gl-items-stretch;
-        
+
         .time-tracking-progress {
           @apply gl-mx-0 gl-my-2;
         }
@@ -426,18 +426,18 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
       }
     }
   }
-  
+
   .work-item-sidebar-container {
     container-type: unset;
   }
 }
 
-// Safari 
+// Safari
 @supports (-webkit-appearance:none) and (stroke-color:transparent) {
   @include browser-specific-overrides;
 }
 
-// Firefox 
+// Firefox
 @-moz-document url-prefix() {
   @include browser-specific-overrides;
 }

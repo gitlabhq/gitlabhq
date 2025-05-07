@@ -379,7 +379,7 @@
     &.stripes-odd tr:nth-of-type(odd),
     &.stripes-even tr:nth-of-type(even),
     &.stripes-hover tr:hover {
-      background: $gray-10;
+      @apply gl-bg-subtle;
     }
   }
 
@@ -657,7 +657,7 @@
   }
 
   .sidebarblock {
-    background: $gray-50;
+    @apply gl-bg-strong;
     padding: $gl-padding-12 $gl-padding-24;
     border-radius: $gl-border-radius-large;
 

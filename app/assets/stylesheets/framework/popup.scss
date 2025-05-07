@@ -7,7 +7,7 @@
   );
 
   padding: $gl-padding;
-  background-color: $gray-10;
+  @apply gl-bg-subtle;
   border: 1px solid $gray-50;
   @apply gl-rounded-base;
   box-shadow: 0 5px 8px $popup-box-shadow-color;

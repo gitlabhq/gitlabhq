@@ -113,11 +113,11 @@
 
     .build-job {
       &.retried {
-        background-color: var(--gray-10, $gray-10);
+        @apply gl-bg-subtle;
       }
 
       &:hover {
-        background-color: var(--gray-50, $gray-50);
+        @apply gl-bg-strong;
       }
     }
   }

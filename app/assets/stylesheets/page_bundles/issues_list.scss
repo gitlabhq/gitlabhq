@@ -2,7 +2,7 @@
 
 .issues-list {
   &.manual-ordering {
-    background-color: var(--gray-10, $gray-10);
+    @apply gl-bg-subtle;
     @apply gl-rounded-base;
     padding: $gl-padding-8;
 

@@ -105,7 +105,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    background-color: $gray-10;
+    background-color: $gl-background-color-subtle;
     border: $border-style;
     border-bottom: 0;
     padding: $gl-padding;
@@ -163,7 +163,7 @@
       border-right: 0;
 
       &:hover {
-        background-color: $gray-50;
+        background-color: $gl-background-color-strong;
         border-color: $gray-100;
         text-decoration: none;
       }

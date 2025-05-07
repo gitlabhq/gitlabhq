@@ -160,7 +160,7 @@
 
   [class^='skeleton-line-'] {
     position: relative;
-    background-color: $gray-50;
+    @apply gl-bg-strong;
     height: 10px;
     overflow: hidden;
 

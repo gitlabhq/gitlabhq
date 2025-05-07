@@ -12,19 +12,19 @@
 
 .issue-token-reference {
   margin-right: 1px;
-  background-color: $gray-10;
+  @apply gl-bg-subtle;
   transition: background $general-hover-transition-duration $general-hover-transition-curve, color $general-hover-transition-duration $general-hover-transition-curve;
 
   .issue-token:hover &,
   .issue-token-link:focus > & {
-    background-color: $gray-50;
+    @apply gl-bg-strong;
     color: $blue-800;
     text-decoration: none;
   }
 }
 
 .issue-token-title {
-  background-color: $gray-50;
+  @apply gl-bg-strong;
   transition: background $general-hover-transition-duration $general-hover-transition-curve;
 
   .issue-token:hover &,
@@ -34,7 +34,7 @@
 }
 
 .issue-token-remove-button {
-  background-color: $gray-50;
+  @apply gl-bg-strong;
   transition: background $general-hover-transition-duration $general-hover-transition-curve;
 
   &:hover,
@@ -77,7 +77,7 @@ ul.related-merge-requests > li gl-emoji {
 .issue {
   &.closed,
   &.merged {
-    background: $gray-10;
+    @apply gl-bg-subtle;
   }
 }
 

@@ -75,8 +75,7 @@ accDescr: How a post-processing hook revokes a secret in the GitLab application.
    (**4** and **5**) to determine which kinds of secrets can be automatically revoked.
 1. The worker sends (**6** and **7**) the list of detected secrets which the GitLab Token Revocation API is able to
    revoke.
-1. The GitLab Token Revocation API sends (**8** and **9**) each revocable token to their respective vendor's [Partner API](#implement-a-partner-api). See the GitLab Token Revocation API
-   documentation for more information.
+1. The GitLab Token Revocation API sends (**8** and **9**) each revocable token to their respective vendor's [Partner API](#implement-a-partner-api).
 
 ## Partner program for leaked-credential notifications
 

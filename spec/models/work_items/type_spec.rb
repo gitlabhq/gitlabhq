@@ -95,53 +95,6 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
   end
 
   describe 'scopes' do
-    describe 'with_id_and_fallback' do
-      let_it_be(:type1) do
-        create(:work_item_type, :non_default).tap { |type| type.update!(old_id: type.id * 10) }
-      end
-
-      let_it_be(:type2) do
-        create(:work_item_type, :non_default).tap { |type| type.update!(old_id: type.id * 10) }
-      end
-
-      let_it_be(:type3) do
-        create(:work_item_type, :non_default).tap { |type| type.update!(old_id: type2.id) }
-      end
-
-      subject { described_class.with_id_and_fallback(ids_for_scope) }
-
-      context 'when ids are null' do
-        let(:ids_for_scope) { nil }
-
-        it { is_expected.to be_empty }
-      end
-
-      context 'when ids are empty array' do
-        let(:ids_for_scope) { [] }
-
-        it { is_expected.to be_empty }
-      end
-
-      context 'when using old ids' do
-        let(:ids_for_scope) { [type1, type2].map(&:old_id) }
-
-        it { is_expected.to contain_exactly(type1, type2) }
-      end
-
-      context 'when using ids' do
-        let(:ids_for_scope) { [type1, type2].map(&:id) }
-
-        # type3 only gets matched because it's old_id matches type2.id
-        it { is_expected.to contain_exactly(type1, type2, type3) }
-      end
-
-      context 'when using ids but another type has the same old_id value' do
-        let(:ids_for_scope) { [type2].map(&:id) }
-
-        it { is_expected.to contain_exactly(type2, type3) }
-      end
-    end
-
     describe 'order_by_name_asc' do
       subject { described_class.order_by_name_asc.pluck(:name) }
 
@@ -191,40 +144,6 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
     end
 
     it { is_expected.not_to allow_value('s' * 256).for(:icon_name) }
-  end
-
-  describe '.find_by_id_with_fallback' do
-    let_it_be(:type1) do
-      create(:work_item_type, :non_default).tap { |type| type.update!(old_id: type.id * 10) }
-    end
-
-    let_it_be(:type2) do
-      create(:work_item_type, :non_default).tap { |type| type.update!(old_id: type.id * 10) }
-    end
-
-    let_it_be(:type3) do
-      create(:work_item_type, :non_default).tap { |type| type.update!(old_id: type2.id) }
-    end
-
-    subject { described_class.find_by_id_with_fallback(id_input) }
-
-    context 'when fetching by id' do
-      let(:id_input) { type1.id }
-
-      it { is_expected.to eq(type1) }
-    end
-
-    context 'when fetching by old_id' do
-      let(:id_input) { type1.old_id }
-
-      it { is_expected.to eq(type1) }
-    end
-
-    context 'when fetching by id but an old_id matches the value' do
-      let(:id_input) { type3.old_id }
-
-      it { is_expected.to eq(type2) }
-    end
   end
 
   describe '.default_by_type' do

@@ -65,23 +65,6 @@ RSpec.describe "Create a work item from a task in a work item's description", fe
       expect(mutation_response['newWorkItem']).to include('id' => created_work_item.to_global_id.to_s)
     end
 
-    context 'when an old type ID is used' do
-      let(:task_gid) { ::Gitlab::GlobalId.build(task_type, id: task_type.old_id).to_s }
-
-      it 'creates the work item' do
-        expect(task_type.old_id).not_to eq(task_type.id)
-
-        expect do
-          post_graphql_mutation(mutation, current_user: current_user)
-        end.to change(WorkItem, :count).by(1)
-
-        created_work_item = WorkItem.last
-
-        expect(response).to have_gitlab_http_status(:success)
-        expect(created_work_item.work_item_type.base_type).to eq('task')
-      end
-    end
-
     context 'when creating a work item fails' do
       let(:lock_version) { 2 }
 

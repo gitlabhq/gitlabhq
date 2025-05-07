@@ -47,9 +47,6 @@ To create the CI/CD job:
 
    {{< /alert >}}
 
-   For more information about template versioning, see the
-   CI/CD documentation.
-
 1. Add a `dast` stage to your GitLab CI/CD stages configuration.
 
 1. Define the URL to be scanned by DAST by using one of these methods:

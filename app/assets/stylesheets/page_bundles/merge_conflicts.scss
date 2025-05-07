@@ -141,7 +141,7 @@
   }
 
   .discard-changes-alert {
-    background-color: var(--gray-10, $gray-10);
+    @apply gl-bg-subtle;
     text-align: right;
     padding: $gl-padding-top $gl-padding;
     color: var(--gl-text-color-default);

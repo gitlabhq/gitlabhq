@@ -416,13 +416,6 @@ module TestEnv
     Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.upsert_types
     Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter.upsert_restrictions
     Gitlab::DatabaseImporters::WorkItems::RelatedLinksRestrictionsImporter.upsert_restrictions
-
-    # Updating old_id to simulate an environment that has gone through the process of cleaning
-    # the issues.work_item_type_id column. old_id is used as a fallback id.
-    # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/520023
-    WorkItems::Type.find_each do |work_item_type|
-      work_item_type.update!(old_id: -work_item_type.id)
-    end
   end
 
   private

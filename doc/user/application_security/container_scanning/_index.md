@@ -712,8 +712,6 @@ These reports must follow a format defined in the
 - [Latest schema for the container scanning report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json).
 - [Example container scanning report](https://gitlab.com/gitlab-examples/security/security-reports/-/blob/master/samples/container-scanning.json)
 
-For more information, see Security scanner integration.
-
 ### CycloneDX Software Bill of Materials
 
 {{< history >}}

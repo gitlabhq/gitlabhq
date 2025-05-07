@@ -33,7 +33,7 @@
 
   .sidebar-collapsed-icon {
     .btn {
-      background-color: $gray-10;
+      @apply gl-bg-subtle;
     }
 
     &:not(.disabled) {
@@ -362,7 +362,7 @@
 
     &:hover {
       @apply gl-text-default;
-      background: $gray-50;
+      @apply gl-bg-strong;
     }
 
     &:hover,
