@@ -279,6 +279,7 @@ class User < ApplicationRecord
 
   has_many :bulk_imports
   has_one :namespace_import_user, class_name: 'Import::NamespaceImportUser', inverse_of: :import_user
+  has_one :placeholder_user_detail, class_name: 'Import::PlaceholderUserDetail', foreign_key: :placeholder_user_id, inverse_of: :placeholder_user
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
   has_one  :trusted_with_spam_attribute, -> { UserCustomAttribute.trusted_with_spam }, class_name: 'UserCustomAttribute'

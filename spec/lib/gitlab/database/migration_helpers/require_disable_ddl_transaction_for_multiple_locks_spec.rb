@@ -44,6 +44,33 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RequireDisableDdlTransactionF
     end
   end
 
+  let_it_be(:multiple_locks_on_single_table_migration_module) do
+    Module.new do
+      def up
+        create_table :taggings do |t|
+          t.bigint :tag_id
+          t.string :taggable_type
+          t.bigint :tagger_id
+          t.string :tagger_type
+          t.string :context
+          t.timestamp :created_at
+          t.bigint :taggable_id
+
+          t.index :tag_id, name: 'index_taggings_on_tag_id'
+          t.index [:taggable_id, :taggable_type, :context],
+            name: 'index_taggings_on_taggable_id_and_taggable_type_and_context'
+          t.index [:tag_id, :taggable_id, :taggable_type, :context, :tagger_id, :tagger_type],
+            unique: true,
+            name: 'taggings_idx'
+        end
+      end
+
+      def down
+        drop_table :taggings
+      end
+    end
+  end
+
   let_it_be(:multiple_locks_single_statement_migration_module) do
     Module.new do
       def up
@@ -61,6 +88,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RequireDisableDdlTransactionF
 
   before do
     stub_const('TestMultipleLocksMigrationModule', multiple_locks_migration_module)
+    stub_const('TestMultipleLocksOnSingleTableMigrationModule', multiple_locks_on_single_table_migration_module)
     stub_const('TestMultipleLocksInSingleStmtMigrationModule', multiple_locks_single_statement_migration_module)
 
     migration.instance_variable_set(:@_defining_file, 'db/migrate/00000000000000_example.rb')
@@ -126,6 +154,26 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RequireDisableDdlTransactionF
           it 'does not raise an error' do
             expect { migrate_up }.not_to raise_error
           end
+        end
+      end
+    end
+
+    context 'when migration locks single table across multiple statements' do
+      let(:migration) { migration_base_klass.extend(TestMultipleLocksOnSingleTableMigrationModule) }
+
+      context 'when migration does not include module' do
+        let(:migration_version) { 2.2 }
+
+        it 'does not raise an error' do
+          expect { migrate_up }.not_to raise_error
+        end
+      end
+
+      context 'when migration includes module' do
+        let(:migration_version) { 2.3 }
+
+        it 'does not raise an error' do
+          expect { migrate_up }.not_to raise_error
         end
       end
     end

@@ -47,7 +47,7 @@ To edit an issue:
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com
 - Status: Experiment
@@ -58,6 +58,7 @@ To edit an issue:
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [experiment](../../../policy/development_stages_support.md#experiment).
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- Changed to include Premium in GitLab 18.0.
 
 {{< /history >}}
 

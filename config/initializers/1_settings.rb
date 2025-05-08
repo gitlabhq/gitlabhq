@@ -756,6 +756,9 @@ Settings.cron_jobs['version_version_check_cron']['args'] = {
   'within_minutes' => 59,
   'within_hours' => 23
 }
+Settings.cron_jobs['import_placeholder_user_cleanup_worker'] ||= {}
+Settings.cron_jobs['import_placeholder_user_cleanup_worker']['cron'] ||= "0 0 * * *"
+Settings.cron_jobs['import_placeholder_user_cleanup_worker']['job_class'] = 'Import::PlaceholderUserCleanupWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}

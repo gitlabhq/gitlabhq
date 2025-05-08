@@ -179,6 +179,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_one(:credit_card_validation) }
     it { is_expected.to have_one(:phone_number_validation) }
     it { is_expected.to have_one(:banned_user) }
+    it { is_expected.to have_one(:placeholder_user_detail).class_name('Import::PlaceholderUserDetail') }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
     it { is_expected.to have_many(:members) }
     it { is_expected.to have_many(:member_namespaces) }

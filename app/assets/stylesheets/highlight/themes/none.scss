@@ -19,6 +19,7 @@ $none-code-mark: #d3e3f4;
 }
 
 .code.none {
+  --code-light-theme: 1;
   --diff-expansion-background-color: #{$gl-color-neutral-100};
 
   --code-background: #{$gl-color-neutral-0};

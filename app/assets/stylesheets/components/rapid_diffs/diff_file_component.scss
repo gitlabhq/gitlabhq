@@ -44,7 +44,7 @@
   border-radius: var(--rd-diff-file-border-radius);
 }
 
-.rd-diff-file-title {
+.rd-diff-file-header-main {
   position: relative;
   display: flex;
   flex-wrap: wrap;
@@ -54,6 +54,17 @@
   margin: -$gl-spacing-scale-3;
   gap: $gl-padding-4;
   z-index: 1;
+}
+
+.rd-diff-file-title {
+  @apply gl-text-default;
+  font: inherit;
+  font-weight: $gl-font-weight-heading;
+  margin: 0;
+}
+
+.rd-diff-file-moved {
+  font-weight: $gl-font-weight-normal;
 }
 
 .rd-diff-file-toggle {
@@ -87,17 +98,18 @@
 .rd-diff-file-stats {
   display: flex;
   align-items: center;
-  margin-left: auto;
+  margin: 0 0 0 auto;
   white-space: nowrap;
 }
 
 .rd-lines-added {
   @apply gl-text-success;
+  margin: 0;
 }
 
 .rd-lines-removed {
   @apply gl-text-danger;
-  margin-left: $gl-padding-8;
+  margin: 0 0 0 $gl-padding-8;
 }
 
 .rd-diff-file-body {

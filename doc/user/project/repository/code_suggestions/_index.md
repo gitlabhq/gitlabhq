@@ -41,12 +41,14 @@ Use GitLab Duo Code Suggestions to write code more efficiently by using generati
 
 To use Code Suggestions, you need:
 
-- A Premium or Ultimate subscription with the GitLab Duo Pro or Enterprise add-on.
-- An assigned seat in your GitLab Duo subscription.
+- A GitLab Duo Core, Pro, or Enterprise add-on.
+- A Premium or Ultimate subscription.
+- If you have GitLab Duo Pro or Enterprise, an assigned seat.
+- If you have GitLab Duo Core, [IDE features turned on](../../../gitlab_duo/turn_on_off.md#change-gitlab-duo-core-availability).
 
 {{< alert type="note" >}}
 
-GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however, the experience may be degraded. You should [upgrade to the latest version of GitLab](../../../../update/_index.md#upgrade-gitlab) for the best experience.
+GitLab Duo requires GitLab 17.2 or later. For GitLab Duo Core access, and for the best user experience and results, [upgrade to GitLab 18.0 or later](../../../../update/_index.md#upgrade-gitlab). Earlier versions might continue to work, however the experience might be degraded.
 
 {{< /alert >}}
 

@@ -113,4 +113,34 @@ describe('system note component', () => {
 
     expect(vm.find("[data-testid='outdated-lines']").exists()).toBe(true);
   });
+
+  describe('when duo code review bot', () => {
+    beforeEach(() => {
+      createComponent({
+        note: {
+          id: '1424',
+          author: {
+            id: 1,
+            name: 'Root',
+            username: 'root',
+            state: 'active',
+            avatar_url: 'path',
+            path: '/root',
+            user_type: 'duo_code_review_bot',
+          },
+          note_html: '<p dir="auto">closed</p>',
+          system_note_icon_name: 'status_closed',
+          created_at: '2017-08-02T10:51:58.559Z',
+        },
+      });
+    });
+
+    it('renders loading icon', () => {
+      expect(vm.find('[data-testid="duo-loading-icon"]').exists()).toBe(true);
+    });
+
+    it('renders avatar', () => {
+      expect(vm.find('[data-testid="system-note-avatar"]').exists()).toBe(true);
+    });
+  });
 });

@@ -55,14 +55,6 @@ For users without permission to view the project's code, the overview page shows
 - The wiki homepage.
 - The list of issues in the project.
 
-### Access a project by using the project ID
-
-{{< history >}}
-
-- Project ID [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
-
-{{< /history >}}
-
 You can access a project by using its ID instead of its name at `https://gitlab.example.com/projects/<id>`.
 For example, if in your personal namespace `alex` you have a project `my-project` with the ID `123456`,
 you can access the project either at `https://gitlab.example.com/alex/my-project` or `https://gitlab.example.com/projects/123456`.
@@ -73,9 +65,11 @@ In GitLab 17.5 and later, you can also use `https://gitlab.example.com/-/p/<id>`
 
 {{< /alert >}}
 
+## Find the Project ID
+
 You might also need the project ID if you want to interact with the project using the [GitLab API](../../api/_index.md).
 
-To copy the project ID:
+To find the project ID:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. On the project overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).

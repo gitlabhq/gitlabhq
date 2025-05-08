@@ -37,5 +37,13 @@ module RapidDiffs
 
       [*base_items, *@additional_menu_items].sort_by { |item| item[:position] || Float::INFINITY }
     end
+
+    def moved_title_label
+      helpers.safe_format(
+        s_('RapidDiffs|File moved from %{old} to %{new}'),
+        old: @diff_file.old_path,
+        new: @diff_file.new_path
+      )
+    end
   end
 end

@@ -7,6 +7,7 @@ module Import
     data_consistency :delayed
     idempotent!
     feature_category :importers
+    concurrency_limit -> { 20 }
 
     def perform(source_user_or_placeholder_user_id, params = {})
       placeholder_user = find_placeholder_user(source_user_or_placeholder_user_id, params.symbolize_keys)

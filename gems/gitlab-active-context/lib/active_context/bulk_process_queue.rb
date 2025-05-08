@@ -21,7 +21,7 @@ module ActiveContext
       start_time = current_time
       specs_buffer = []
       scores = {}
-      @failures = []
+      failures = []
 
       queue.each_queued_items_by_shard(redis, shards: [shard]) do |shard_number, specs|
         next if specs.empty?
@@ -48,12 +48,14 @@ module ActiveContext
 
       refs = deserialize_all(specs_buffer)
 
-      Reference.preprocess_references(refs).each do |ref|
-        bulk_processor.process(ref)
-      end
+      preprocess_result = Reference.preprocess_references(refs)
+
+      preprocess_result[:successful].each { |ref| bulk_processor.process(ref) }
+
+      failures += preprocess_result[:failed]
 
       flushing_duration_s = Benchmark.realtime do
-        @failures = bulk_processor.flush
+        failures += bulk_processor.flush
       end
 
       logger.info(
@@ -63,7 +65,7 @@ module ActiveContext
       )
 
       # Re-enqueue any failures so they are retried
-      ActiveContext.track!(@failures, queue: queue)
+      ActiveContext.track!(failures, queue: queue)
 
       # Remove all the successes
       scores.each do |set_key, (first_score, last_score, count)|
@@ -76,12 +78,12 @@ module ActiveContext
           'meta.indexing.refs_count' => count,
           'meta.indexing.first_score' => first_score,
           'meta.indexing.last_score' => last_score,
-          'meta.indexing.failures_count' => @failures.count,
+          'meta.indexing.failures_count' => failures.count,
           'meta.indexing.bulk_execution_duration_s' => current_time - start_time
         )
       end
 
-      [specs_buffer.count, @failures.count]
+      [specs_buffer.count, failures.count]
     end
 
     private

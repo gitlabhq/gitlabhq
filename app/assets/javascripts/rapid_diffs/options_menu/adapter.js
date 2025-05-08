@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { GlDisclosureDropdown } from '@gitlab/ui';
+import { s__ } from '~/locale';
 
 function getMenuItems(container) {
   return JSON.parse(container.querySelector('script').textContent);
@@ -32,6 +33,8 @@ export const OptionsMenuAdapter = {
               category: 'tertiary',
               size: 'small',
               items,
+              toggleText: s__('RapidDiffs|Show options'),
+              textSrOnly: true,
             },
             attrs: {
               'data-options-toggle': true,

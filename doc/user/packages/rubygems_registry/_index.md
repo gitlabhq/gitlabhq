@@ -62,7 +62,7 @@ To authenticate with an access token:
 In this example:
 
 - `<token>` must be the token value of either your personal access token or deploy token.
-- `<project_id>` is displayed on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
+- `<project_id>` is displayed on the [project overview page](../../project/working_with_projects.md#find-the-project-id).
 
 {{< /tab >}}
 

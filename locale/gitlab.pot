@@ -49861,6 +49861,9 @@ msgstr ""
 msgid "RapidDiffs|Failed to expand lines, please try again."
 msgstr ""
 
+msgid "RapidDiffs|File moved from %{old} to %{new}"
+msgstr ""
+
 msgid "RapidDiffs|Line %d"
 msgstr ""
 
@@ -49880,6 +49883,9 @@ msgid "RapidDiffs|Show lines after"
 msgstr ""
 
 msgid "RapidDiffs|Show lines before"
+msgstr ""
+
+msgid "RapidDiffs|Show options"
 msgstr ""
 
 msgid "Rate Limits"

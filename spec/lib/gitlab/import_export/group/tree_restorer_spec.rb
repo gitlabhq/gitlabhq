@@ -106,7 +106,6 @@ RSpec.describe Gitlab::ImportExport::Group::TreeRestorer, feature: :subgroups, f
     end
 
     context 'excluded attributes' do
-      let!(:source_user) { create(:user, id: 123) }
       let!(:importer_user) { create(:user) }
       let(:group) { create(:group, name: 'user-inputed-name', path: 'user-inputed-path') }
       let(:shared) { Gitlab::ImportExport::Shared.new(group) }

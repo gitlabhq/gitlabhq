@@ -37,6 +37,7 @@ module Gitlab
 
         user.skip_confirmation_notification!
         user.assign_personal_namespace(namespace.organization)
+        user.build_placeholder_user_detail(namespace: namespace, organization: namespace.organization)
         user.save!
 
         log_placeholder_user_creation(user)

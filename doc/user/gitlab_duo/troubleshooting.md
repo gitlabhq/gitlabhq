@@ -100,8 +100,13 @@ you can also do the following:
 In addition to [turning on GitLab Duo features](turn_on_off.md),
 you can also do the following:
 
-1. Verify that [subscription seats have been purchased](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo).
-1. Ensure that [seats are assigned to users](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
-1. For IDE users with the [GitLab Duo extension](../project/repository/code_suggestions/supported_extensions.md#supported-editor-extensions):
-   - Verify that the extension is up-to-date.
-   - Run extension setting health checks, and test the authentication.
+- If you have GitLab Duo Core, verify that you have:
+  - A Premium or Ultimate subscription.
+  - [Turned on IDE features](turn_on_off.md#change-gitlab-duo-core-availability).
+- If you have GitLab Duo Pro or Enterprise:
+  - Verify that [a subscription add-on has been purchased](../../subscriptions/subscription-add-ons.md#purchase-gitlab-duo).
+  - Ensure that [seats are assigned to users](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
+- For your IDE:
+  - Verify that the [extension](../project/repository/code_suggestions/set_up.md#configure-editor-extension)
+    or plugin is up-to-date.
+  - Run health checks, and test the authentication.

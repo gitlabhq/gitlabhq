@@ -619,6 +619,28 @@ export function fetchUpdatedNotes() {
       }
 
       if (data.notes?.length) {
+        const botNote = data.notes?.find(
+          (note) => note.author.user_type === 'duo_code_review_bot' && !note.system,
+        );
+
+        if (botNote) {
+          let discussions = this.discussions.filter((d) => d.id === botNote.discussion_id);
+
+          if (!discussions.length) {
+            discussions = this.discussions;
+          }
+
+          for (const discussion of discussions) {
+            const systemNote = discussion.notes.find(
+              (note) => note.author.user_type === 'duo_code_review_bot' && note.system,
+            );
+            if (systemNote) {
+              this.removeNote(systemNote);
+              break;
+            }
+          }
+        }
+
         await this.updateOrCreateNotes(data.notes);
         this.startTaskList();
         this.updateResolvableDiscussionsCounts();

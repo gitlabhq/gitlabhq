@@ -104,7 +104,9 @@ module Gitlab
           locks = connection.execute(<<-SQL)
             SELECT DISTINCT relation::regclass AS table_name
             FROM pg_locks
+            JOIN pg_class ON pg_locks.relation = pg_class.oid
             WHERE relation IS NOT NULL
+              AND pg_class.relkind IN ('r', 'p')  -- Only regular/partitioned tables
               AND pid = pg_backend_pid()
               AND relation::regclass::text NOT LIKE 'pg_%'
               AND relation::regclass::text NOT LIKE 'information_schema.%'

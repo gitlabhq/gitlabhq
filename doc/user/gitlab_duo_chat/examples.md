@@ -28,7 +28,7 @@ The example questions on this page, including the [slash commands](#gitlab-duo-c
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise
+- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI, Web IDE, VS Code, and JetBrains IDEs
 - LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
@@ -42,6 +42,7 @@ The example questions on this page, including the [slash commands](#gitlab-duo-c
 - [Generally available and feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154876) in GitLab 17.1.
 - Changed to require GitLab Duo add-on in GitLab 17.6.
 - [Enabled](https://gitlab.com/groups/gitlab-org/-/epics/15227) for [self-hosted model configuration](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms) as well as the [default GitLab external AI vendor configuration](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms) in GitLab 17.9.
+- Changed to include GitLab Duo Core add-on in GitLab 18.0.
 
 {{< /history >}}
 
@@ -61,7 +62,7 @@ To keep Chat up to date with the documentation, its knowledge base is updated da
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
@@ -75,6 +76,7 @@ To keep Chat up to date with the documentation, its knowledge base is updated da
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for GitLab Self-Managed and GitLab Dedicated in GitLab 16.8.
 - Changed to require GitLab Duo add-on in GitLab 17.6.
 - [Enabled](https://gitlab.com/groups/gitlab-org/-/epics/15227) for [self-hosted model configuration](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms) as well as the [default GitLab external AI vendor configuration](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms) in GitLab 17.9.
+- Changed to include Premium in GitLab 18.0.
 
 {{< /history >}}
 
@@ -98,7 +100,7 @@ For tips on how GitLab Duo Chat can improve your productivity with issues and ep
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
@@ -112,6 +114,7 @@ For tips on how GitLab Duo Chat can improve your productivity with issues and ep
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128487) for GitLab Self-Managed and GitLab Dedicated in GitLab 16.8.
 - Changed to require GitLab Duo add-on in GitLab 17.6.
 - [Enabled](https://gitlab.com/groups/gitlab-org/-/epics/15227) for [self-hosted model configuration](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms) as well as the [default GitLab external AI vendor configuration](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms) in GitLab 17.9.
+- Changed to include Premium in GitLab 18.0.
 
 {{< /history >}}
 
@@ -131,7 +134,7 @@ If the epic contains a large amount of text (more than 40,000 words), GitLab Duo
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI
@@ -143,6 +146,7 @@ If the epic contains a large amount of text (more than 40,000 words), GitLab Duo
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464587) in GitLab 17.5.
 - Changed to require GitLab Duo add-on in GitLab 17.6.
+- Changed to include Premium in GitLab 18.0.
 
 {{< /history >}}
 
@@ -164,7 +168,7 @@ While in the merge request, open Chat and type your question. For example:
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI
@@ -175,6 +179,7 @@ While in the merge request, open Chat and type your question. For example:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468460) in GitLab 17.6.
+- Changed to include Premium in GitLab 18.0.
 
 {{< /history >}}
 
@@ -188,7 +193,7 @@ You can ask about a specific GitLab commit. For example:
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI
@@ -199,6 +204,7 @@ You can ask about a specific GitLab commit. For example:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468461) in GitLab 17.6.
+- Changed to include Premium in GitLab 18.0.
 
 {{< /history >}}
 
@@ -214,7 +220,7 @@ You can ask about a specific GitLab pipeline job. For example:
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
+- Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
 - LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
@@ -228,6 +234,7 @@ You can ask about a specific GitLab pipeline job. For example:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab Self-Managed and GitLab Dedicated in GitLab 16.8.
 - Changed to require GitLab Duo add-on in GitLab 17.6.
 - [Enabled](https://gitlab.com/groups/gitlab-org/-/epics/15227) for [self-hosted model configuration](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms) as well as the [default GitLab external AI vendor configuration](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms) in GitLab 17.9.
+- Changed to include GitLab Duo Core add-on in GitLab 18.0.
 
 {{< /history >}}
 
@@ -265,7 +272,7 @@ In the GitLab UI, you can also explain code in:
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise
+- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
 - LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
@@ -278,6 +285,7 @@ In the GitLab UI, you can also explain code in:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for GitLab Self-Managed and GitLab Dedicated in GitLab 16.8.
 - Changed to require GitLab Duo add-on in GitLab 17.6.
 - [Enabled](https://gitlab.com/groups/gitlab-org/-/epics/15227) for [self-hosted model configuration](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms) as well as the [default GitLab external AI vendor configuration](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms) in GitLab 17.9.
+- Changed to include GitLab Duo Core add-on in GitLab 18.0.
 
 {{< /history >}}
 
@@ -298,11 +306,23 @@ You can also ask Chat to generate code. For example:
 - `Create a product-consumer example with threads and shared memory in C++. Use atomic locks when possible.`
 - `Generate Rust code for high performance gRPC calls. Provide a source code example for a server and client.`
 
-## Ask follow up questions
+## Ask follow-up questions
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Core, Pro, or Enterprise
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
+- LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2)
+- LLM for GitLab.com: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+
+{{< /details >}}
 
 {{< history >}}
 
 - [Enabled](https://gitlab.com/groups/gitlab-org/-/epics/15227) for [self-hosted model configuration](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms) as well as the [default GitLab external AI vendor configuration](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms) in GitLab 17.9.
+- Changed to include GitLab Duo Core add-on in GitLab 18.0.
 
 {{< /history >}}
 
@@ -320,9 +340,21 @@ A follow-up to the question `How to start a C# project?` could be:
 
 ## Ask about errors
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Core, Pro, or Enterprise
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
+- LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2)
+- LLM for GitLab.com: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+
+{{< /details >}}
+
 {{< history >}}
 
 - [Enabled](https://gitlab.com/groups/gitlab-org/-/epics/15227) for [self-hosted model configuration](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms) as well as the [default GitLab external AI vendor configuration](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms) in GitLab 17.9.
+- Changed to include GitLab Duo Core add-on in GitLab 18.0.
 
 {{< /history >}}
 
@@ -339,7 +371,7 @@ Programming languages that require compiling the source code may throw cryptic e
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise
+- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: VS Code, JetBrains IDEs
 - LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
@@ -352,6 +384,7 @@ Programming languages that require compiling the source code may throw cryptic e
 - [Enabled](https://gitlab.com/groups/gitlab-org/-/epics/15227) for [self-hosted model configuration](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms) as well as the [default GitLab external AI vendor configuration](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms) in GitLab 17.9.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15183) in GitLab 17.9.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188613) in GitLab 18.0. All feature flags removed.
+- Changed to include the GitLab Duo Core add-on in GitLab 18.0.
 
 {{< /history >}}
 
@@ -386,7 +419,7 @@ You cannot use [Quick Chat](_index.md#in-gitlab-duo-quick-chat-in-the-editor-vie
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
+- Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: Web IDE, VS Code, JetBrains IDEs
 - LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
@@ -400,6 +433,7 @@ You cannot use [Quick Chat](_index.md#in-gitlab-duo-quick-chat-in-the-editor-vie
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab Self-Managed and GitLab Dedicated in GitLab 16.8.
 - Changed to require GitLab Duo add-on in GitLab 17.6.
 - [Enabled](https://gitlab.com/groups/gitlab-org/-/epics/15227) for [self-hosted model configuration](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms) as well as the [default GitLab external AI vendor configuration](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms) in GitLab 17.9.
+- Changed to include GitLab Duo Core add-on in GitLab 18.0.
 
 {{< /history >}}
 
@@ -425,7 +459,7 @@ For more information, see <i class="fa-youtube-play" aria-hidden="true"></i> [Ap
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
+- Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: Web IDE, VS Code, JetBrains IDEs
 - LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
@@ -438,6 +472,7 @@ For more information, see <i class="fa-youtube-play" aria-hidden="true"></i> [Ap
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com, GitLab Self-Managed and GitLab Dedicated in GitLab 17.3.
 - Changed to require GitLab Duo add-on in GitLab 17.6.
 - [Enabled](https://gitlab.com/groups/gitlab-org/-/epics/15227) for [self-hosted model configuration](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms) as well as the [default GitLab external AI vendor configuration](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms) in GitLab 17.9.
+- Changed to include GitLab Duo Core add-on in GitLab 18.0.
 
 {{< /history >}}
 
@@ -459,7 +494,7 @@ You can include additional instructions to be considered. For example:
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
+- Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: Web IDE, VS Code, JetBrains IDEs
 - LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
@@ -473,6 +508,7 @@ You can include additional instructions to be considered. For example:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab Self-Managed and GitLab Dedicated in GitLab 16.8.
 - Changed to require GitLab Duo add-on in GitLab 17.6.
 - [Enabled](https://gitlab.com/groups/gitlab-org/-/epics/15227) for [self-hosted model configuration](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms) as well as the [default GitLab external AI vendor configuration](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms) in GitLab 17.9.
+- Changed to include GitLab Duo Core add-on in GitLab 18.0.
 
 {{< /history >}}
 
@@ -533,7 +569,7 @@ Alternatively, you can use GitLab Duo Root Cause Analysis to [troubleshoot faile
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI
@@ -548,6 +584,7 @@ Alternatively, you can use GitLab Duo Root Cause Analysis to [troubleshoot faile
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/441681) and moved to GitLab Duo Chat in GitLab 17.3.
 - Changed to require GitLab Duo add-on in GitLab 17.6.
 - Failed jobs widget for merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174586) in GitLab 17.7.
+- Changed to include Premium in GitLab 18.0.
 
 {{< /history >}}
 
@@ -664,7 +701,7 @@ Use the commands to quickly accomplish specific tasks.
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise
+- Add-on: GitLab Duo Core, Pro or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
 
@@ -673,6 +710,7 @@ Use the commands to quickly accomplish specific tasks.
 {{< history >}}
 
 - [Enabled](https://gitlab.com/groups/gitlab-org/-/epics/15227) for [self-hosted model configuration](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms) as well as the [default GitLab external AI vendor configuration](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms) in GitLab 17.9.
+- Changed to include GitLab Duo Core add-on in GitLab 18.0.
 
 {{< /history >}}
 
@@ -692,12 +730,18 @@ On GitLab.com, in GitLab 17.10 and later, when having [multiple conversations](_
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI
 
 {{< /details >}}
+
+{{< history >}}
+
+- Changed to include Premium in GitLab 18.0.
+
+{{< /history >}}
 
 These commands are dynamic and are available only in the GitLab UI when using Duo Chat:
 
@@ -713,7 +757,7 @@ These commands are dynamic and are available only in the GitLab UI when using Du
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise
+- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: Web IDE, VS Code, JetBrains IDEs
 
@@ -722,6 +766,7 @@ These commands are dynamic and are available only in the GitLab UI when using Du
 {{< history >}}
 
 - [Enabled](https://gitlab.com/groups/gitlab-org/-/epics/15227) for [self-hosted model configuration](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms) as well as the [default GitLab external AI vendor configuration](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms) in GitLab 17.9.
+- Changed to include GitLab Duo Core add-on in GitLab 18.0.
 
 {{< /history >}}
 

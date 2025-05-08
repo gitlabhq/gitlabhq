@@ -116,6 +116,12 @@ This page shows groups that you are a member of through:
 
 ## View a group
 
+{{< history >}}
+
+- Accessing the group with the group ID was [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165889) in GitLab 17.5.
+
+{{< /history >}}
+
 The group overview page displays information about the group and its members, subgroups, and projects, such as:
 
 - Group description
@@ -133,6 +139,20 @@ To view a group:
 You can search for the subgroups and projects of the group
 and sort them in ascending or descending order.
 
+You can access a group by using its ID instead of its name at `https://gitlab.example.com/-/g/<id>`.
+For example, if your group `example-group` has an ID `123456`, you can access the group either at
+`https://gitlab.example.com/example-group` or `https://gitlab.example.com/-/g/123456`.
+
+## Find the Group ID
+
+You might need the group ID if you want to interact with it using the [GitLab API](../../api/_index.md).
+
+To find the Group ID:
+
+1. On the left sidebar, select **Search or go to** and find your Group.
+1. On the Group overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
+1. Select **Copy Group ID**.
+
 ## View group activity
 
 To view the activity of a group:
@@ -149,26 +169,6 @@ To view the activity of a group:
    - **Wiki**: Updates to wiki pages in the group.
    - **Designs**: Designs added, updated, and removed in the group's projects.
    - **Team**: Group members who joined and left the group's projects.
-
-### Access a group by using the group ID
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165889) in GitLab 17.5.
-
-{{< /history >}}
-
-You can access a group by using its ID instead of its name at `https://gitlab.example.com/-/g/<id>`.
-For example, if your group `example-group` has an ID `123456`, you can access the group either at
-`https://gitlab.example.com/example-group` or `https://gitlab.example.com/-/g/123456`.
-
-You might need the group ID if you want to interact with it using the [GitLab API](../../api/_index.md).
-
-To copy the Group ID:
-
-1. On the left sidebar, select **Search or go to** and find your Group.
-1. On the Group overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
-1. Select **Copy Group ID**.
 
 ## Create a group
 

@@ -78,6 +78,16 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
       )
     end
 
+    it 'creates a placeholder user detail with correct namespace' do
+      placeholder_user = service.execute
+      detail = placeholder_user.placeholder_user_detail
+
+      expect(detail.placeholder_user).to eq(placeholder_user)
+      expect(detail.namespace).to eq(namespace)
+      expect(detail.deletion_attempts).to eq(0)
+      expect(detail.last_deletion_attempt_at).to be_nil
+    end
+
     context 'when there are non-unique usernames on the same import source' do
       it 'creates two unique users with different usernames and emails' do
         placeholder_user1 = described_class.new(source_user).execute

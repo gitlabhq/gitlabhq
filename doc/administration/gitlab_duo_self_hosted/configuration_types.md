@@ -8,7 +8,7 @@ title: GitLab Duo Self-Hosted configuration and authentication
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
@@ -19,8 +19,9 @@ title: GitLab Duo Self-Hosted configuration and authentication
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags.md) named `ai_custom_model`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
-- Feature flag `ai_custom_model` removed in GitLab 17.8
-- Generally available in GitLab 17.9
+- Feature flag `ai_custom_model` removed in GitLab 17.8.
+- Generally available in GitLab 17.9.
+- Changed to include Premium in GitLab 18.0.
 
 {{< /history >}}
 

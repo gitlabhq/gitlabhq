@@ -118,6 +118,7 @@ class Namespace < ApplicationRecord
 
   has_many :bot_user_details, class_name: 'UserDetail', foreign_key: 'bot_namespace_id', inverse_of: :bot_namespace
   has_many :bot_users, through: :bot_user_details, source: :user
+  has_one :placeholder_user_detail, class_name: 'Import::PlaceholderUserDetail'
 
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :organization, presence: true

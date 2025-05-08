@@ -73,7 +73,7 @@ nuget source Add -Name <source_name> -Source "https://gitlab.example.com/api/v4/
 Replace:
 
 - `<source_name>` with your source name
-- `<project_id>` with the project ID found on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id)
+- `<project_id>` with the project ID found on the [project overview page](../../project/working_with_projects.md#find-the-project-id)
 - `<gitlab_username>` with your GitLab username
 - `<personal_access_token>` with your personal access token
 
@@ -96,7 +96,7 @@ dotnet nuget add source "https://gitlab.example.com/api/v4/projects/<project_id>
 Replace:
 
 - `<source_name>` with your source name
-- `<project_id>` with the project ID found on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id)
+- `<project_id>` with the project ID found on the [project overview page](../../project/working_with_projects.md#find-the-project-id)
 - `<gitlab_username>` with your GitLab username
 - `<personal_access_token>` with your personal access token
 
@@ -123,7 +123,7 @@ choco source add -n=<source_name> -s "'https://gitlab.example.com/api/v4/project
 Replace:
 
 - `<source_name>` with your source name
-- `<project_id>` with the project ID found on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id)
+- `<project_id>` with the project ID found on the [project overview page](../../project/working_with_projects.md#find-the-project-id)
 - `<gitlab_username>` with your GitLab username
 - `<personal_access_token>` with your personal access token
 
@@ -212,7 +212,7 @@ nuget source Add -Name <source_name> -Source "https://gitlab.example.com/api/v4/
 Replace:
 
 - `<source_name>` with your source name
-- `<group_id>` with the group ID found on the [Group overview page](../../group/_index.md#access-a-group-by-using-the-group-id)
+- `<group_id>` with the group ID found on the [Group overview page](../../group/_index.md#find-the-group-id)
 - `<gitlab_username>` with your GitLab username
 - `<personal_access_token>` with your personal access token
 
@@ -235,7 +235,7 @@ dotnet nuget add source "https://gitlab.example.com/api/v4/groups/<group_id>/-/p
 Replace:
 
 - `<source_name>` with your source name
-- `<group_id>` with the group ID found on the [Group overview page](../../group/_index.md#access-a-group-by-using-the-group-id)
+- `<group_id>` with the group ID found on the [Group overview page](../../group/_index.md#find-the-group-id)
 - `<gitlab_username>` with your GitLab username
 - `<personal_access_token>` with your personal access token
 

@@ -35,6 +35,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to have_one :namespace_route }
     it { is_expected.to have_many :namespace_members }
     it { is_expected.to have_one :cluster_enabled_grant }
+    it { is_expected.to have_one :placeholder_user_detail }
     it { is_expected.to have_many(:work_items) }
     it { is_expected.to have_many(:work_items_dates_source) }
     it { is_expected.to have_many :achievements }

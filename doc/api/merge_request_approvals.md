@@ -666,9 +666,9 @@ Supported attributes:
 | Attribute                           | Type              | Required | Description |
 |-------------------------------------|-------------------|----------|-------------|
 | `id`                                | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/_index.md#namespaced-paths). |
-| `approvals_required`                | integer           | Yes      | The number of required approvals for this rule. |
+| `approvals_required`                | integer           | No       | The number of required approvals for this rule. |
 | `approval_rule_id`                  | integer           | Yes      | The ID of a approval rule. |
-| `name`                              | string            | Yes      | The name of the approval rule. Limited to 1024 characters. |
+| `name`                              | string            | No       | The name of the approval rule. Limited to 1024 characters. |
 | `applies_to_all_protected_branches` | boolean           | No       | Whether to apply the rule to all protected branches. If set to `true`, it ignores the value of `protected_branch_ids`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3. |
 | `group_ids`                         | Array             | No       | The IDs of groups as approvers. |
 | `protected_branch_ids`              | Array             | No       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches). |

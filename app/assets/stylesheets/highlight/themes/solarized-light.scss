@@ -109,6 +109,7 @@ $solarized-light-il: #2aa198;
 }
 
 .code.solarized-light {
+  --code-light-theme: 1;
   --diff-expansion-background-color: #{$gl-color-neutral-100};
 
   --code-background: #{$solarized-light-pre-bg};

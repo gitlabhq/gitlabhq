@@ -139,7 +139,7 @@ According to Sentry [it is safe to keep a DSN public](https://docs.sentry.io/con
 
 Prerequisites:
 
-- You need the numeric [project ID](../user/project/working_with_projects.md#access-a-project-by-using-the-project-id)
+- You need the numeric [project ID](../user/project/working_with_projects.md#find-the-project-id)
   for your project.
 
 To rotate the Sentry DSN:

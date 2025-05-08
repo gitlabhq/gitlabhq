@@ -39,7 +39,7 @@ You can find this file in root directory of your project, in the same place as t
 
   - Replace `<my-org>` with your organization scope. Do not include the `@` symbol.
   - Replace `<domain>` with your domain name.
-  - Replace `<project_id>` with your project's ID, which you can find on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
+  - Replace `<project_id>` with your project's ID, which you can find on the [project overview page](../../project/working_with_projects.md#find-the-project-id).
   - Replace `<token>` with a deployment token, group access token, project access token, or personal access token.
 
 In Yarn Classic, scoped registries with `publishConfig["@scope:registry"]` are not supported. See [Yarn pull request 7829](https://github.com/yarnpkg/yarn/pull/7829) for more information.
@@ -241,7 +241,7 @@ If you have a one-off package, you can install it from a group or project.
 
    - Replace `<my-org>` with the top-level group that contains the group you want to install from. Exclude the `@` symbol.
    - Replace `<domain_name>` with your domain name, for example, `gitlab.com`.
-   - Replace `<group_id>` with your group ID, found on the [group overview page](../../group#access-a-group-by-using-the-group-id).
+   - Replace `<group_id>` with your group ID, found on the [group overview page](../../group#find-the-group-id).
 
 1. Optional. If your package is private, you must set the registry:
 
@@ -254,7 +254,7 @@ If you have a one-off package, you can install it from a group or project.
 
    - Replace `<domain_name>` with your domain name, for example, `gitlab.com`.
    - Replace `<token>` with a deployment token (recommended), group access token, project access token, or personal access token.
-   - Replace `<group_id>` with your group ID, found on the [group overview page](../../group#access-a-group-by-using-the-group-id).
+   - Replace `<group_id>` with your group ID, found on the [group overview page](../../group#find-the-group-id).
 
 1. [Install the package with Yarn](#install-with-yarn).
 
@@ -272,7 +272,7 @@ If you have a one-off package, you can install it from a group or project.
 
    - Replace `<my-org>` with the top-level group that contains the project you want to install from. Exclude the `@` symbol.
    - Replace `<domain_name>` with your domain name, for example, `gitlab.com`.
-   - Replace `<project_id>` with your project ID, found on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
+   - Replace `<project_id>` with your project ID, found on the [project overview page](../../project/working_with_projects.md#find-the-project-id).
 
 1. Optional. If your package is private, you must set the registry:
 
@@ -285,7 +285,7 @@ If you have a one-off package, you can install it from a group or project.
 
    - Replace `<domain_name>` with your domain name, for example, `gitlab.com`.
    - Replace `<token>` with a deployment token (recommended), group access token, project access token, or personal access token.
-   - Replace `<project_id>` with your project ID, found on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
+   - Replace `<project_id>` with your project ID, found on the [project overview page](../../project/working_with_projects.md#find-the-project-id).
 
 1. [Install the package with Yarn](#install-with-yarn).
 

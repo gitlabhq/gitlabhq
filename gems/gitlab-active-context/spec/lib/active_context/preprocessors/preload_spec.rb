@@ -60,14 +60,11 @@ RSpec.describe ActiveContext::Preprocessors::Preload do
   end
 
   context 'when the model klass does not implement :preload_indexing_data' do
-    it 'logs and does not raise an error' do
-      expect(::ActiveContext::Logger).to receive(:exception).with(ActiveContext::Preprocessors::Preload::IndexingError)
+    it 'returns all refs as failed' do
+      expect(::ActiveContext::Logger).to receive(:retryable_exception).with(
+        ActiveContext::Preprocessors::Preload::PreloadError, refs: anything)
 
-      expect { preprocess_refs }.not_to raise_error
-    end
-
-    it 'returns references' do
-      expect(preprocess_refs).to eq([reference_1, reference_2])
+      expect(preprocess_refs[:failed]).to match_array([reference_1, reference_2])
     end
   end
 end

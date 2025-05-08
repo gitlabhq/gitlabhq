@@ -12,11 +12,58 @@ module ActiveContext
       end
 
       def preprocess(refs)
+        result = { successful: [], failed: [] }
+
         refs_by_class = refs.group_by(&:class)
-        refs_by_class.flat_map do |klass, class_refs|
-          klass.preprocessors.reduce(class_refs) do |processed_refs, preprocessor|
-            preprocessor[:block].call(processed_refs)
+
+        refs_by_class.each do |klass, class_refs|
+          all_failed_refs = []
+          current_successful_refs = class_refs
+
+          klass.preprocessors.each do |preprocessor|
+            next if current_successful_refs.empty?
+
+            processed = preprocessor[:block].call(current_successful_refs)
+
+            all_failed_refs.concat(processed[:failed])
+            current_successful_refs = processed[:successful]
           end
+
+          result[:successful].concat(current_successful_refs)
+          result[:failed].concat(all_failed_refs)
+        end
+
+        result
+      end
+
+      def with_per_ref_handling(refs, error_types: [StandardError])
+        return { successful: [], failed: [] } unless refs.any?
+
+        failed_refs = []
+        successful_refs = []
+
+        refs.each do |ref|
+          yield(ref)
+          successful_refs << ref
+        rescue *error_types => e
+          ::ActiveContext::Logger.retryable_exception(e, ref: ref.serialize)
+          failed_refs << ref
+        end
+
+        { successful: successful_refs, failed: failed_refs }
+      end
+
+      def with_batch_handling(refs, error_types: [StandardError])
+        return { successful: [], failed: [] } unless refs.any?
+
+        begin
+          yield(refs)
+
+          { successful: refs, failed: [] }
+        rescue *error_types => e
+          ::ActiveContext::Logger.retryable_exception(e, refs: refs.map(&:serialize))
+
+          { successful: [], failed: refs }
         end
       end
     end

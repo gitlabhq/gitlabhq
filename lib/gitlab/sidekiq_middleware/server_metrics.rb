@@ -189,7 +189,7 @@ module Gitlab
           @metrics[:sidekiq_jobs_completion_seconds_sum].increment(labels, monotonic_time)
           @metrics[:sidekiq_jobs_completion_count].increment(labels, 1)
           @metrics[:sidekiq_jobs_cpu_seconds_sum].increment(labels, job_thread_cputime)
-          @metrics[:sidekiq_jobs_db_seconds_sum].increment(labels, ActiveRecord::LogSubscriber.runtime / 1000)
+          @metrics[:sidekiq_jobs_db_seconds_sum].increment(labels, ActiveRecord::RuntimeRegistry.sql_runtime / 1000)
           @metrics[:sidekiq_jobs_gitaly_seconds_sum].increment(labels, get_gitaly_time(instrumentation))
           @metrics[:sidekiq_redis_requests_duration_seconds_sum].increment(labels, get_redis_time(instrumentation))
           @metrics[:sidekiq_elasticsearch_requests_duration_seconds_sum].increment(labels, get_elasticsearch_time(instrumentation))
@@ -201,7 +201,7 @@ module Gitlab
 
         @metrics[:sidekiq_jobs_completion_seconds]&.observe(labels, monotonic_time)
 
-        @metrics[:sidekiq_jobs_db_seconds]&.observe(labels, ActiveRecord::LogSubscriber.runtime / 1000)
+        @metrics[:sidekiq_jobs_db_seconds]&.observe(labels, ActiveRecord::RuntimeRegistry.sql_runtime / 1000)
         @metrics[:sidekiq_jobs_gitaly_seconds]&.observe(labels, get_gitaly_time(instrumentation))
         @metrics[:sidekiq_redis_requests_duration_seconds]&.observe(labels, get_redis_time(instrumentation))
         @metrics[:sidekiq_elasticsearch_requests_duration_seconds]&.observe(labels, get_elasticsearch_time(instrumentation))

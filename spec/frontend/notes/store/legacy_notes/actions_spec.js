@@ -363,6 +363,30 @@ describe('Actions Notes Store', () => {
 
       expect(store.lastFetchedAt).toBe('123456');
     });
+
+    describe('when includes duo code review note', () => {
+      it('removes duo code review sytem note', () => {
+        const systemNote = { author: { user_type: 'duo_code_review_bot' }, system: true };
+
+        axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_OK, {
+          notes: [{ author: { user_type: 'duo_code_review_bot' }, system: false }],
+          last_fetched_at: '123456',
+        });
+
+        return testAction(
+          store.fetchUpdatedNotes,
+          undefined,
+          { discussions: [{ notes: [systemNote] }] },
+          [],
+          [
+            {
+              type: store.removeNote,
+              payload: systemNote,
+            },
+          ],
+        );
+      });
+    });
   });
 
   describe('setNotesFetchedState', () => {

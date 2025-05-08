@@ -102,6 +102,7 @@ $solarized-dark-il: #2aa198;
 }
 
 .code.solarized-dark {
+  --code-dark-theme: 1;
   --code-border-lightness-adjust: 0.1;
   --diff-expansion-background-color: #{lighten($solarized-dark-pre-bg, 10%)};
 

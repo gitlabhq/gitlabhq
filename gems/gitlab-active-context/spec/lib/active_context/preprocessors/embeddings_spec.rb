@@ -15,6 +15,8 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
     end
   end
 
+  let(:preprocessed_result) { ActiveContext::Reference.preprocess_references([reference]) }
+
   let(:reference) { reference_class.new(collection_id: collection_id, routing: partition, args: object_id) }
 
   let(:mock_adapter) { double }
@@ -39,9 +41,10 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
 
       Array.new(contents.size, vectors)
     end
+    allow(ActiveContext::Logger).to receive(:retryable_exception)
   end
 
-  subject(:preprocessed_reference) { ActiveContext::Reference.preprocess_references([reference]).first }
+  subject(:preprocessed_reference) { preprocessed_result[:successful].first }
 
   describe '.apply_embeddings' do
     context 'when :content_method is passed and defined' do
@@ -297,9 +300,11 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
             end
 
             it 'raises and logs an error because the embedding content cannot be blank' do
-              expect(ActiveContext::ErrorHandler).to receive(:log_and_raise_error).with(vertex_blank_error).once
+              expect(ActiveContext::Logger).to receive(:retryable_exception).with(vertex_blank_error, refs: anything)
 
-              expect { preprocessed_reference }.not_to change { reference.documents.count }
+              expect { preprocessed_result }.not_to change { reference.documents.count }
+              expect(preprocessed_result[:successful]).to be_empty
+              expect(preprocessed_result[:failed]).to eq([reference])
             end
           end
         end
@@ -338,9 +343,11 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
             end
 
             it 'raises and logs an error because the embedding content cannot be blank' do
-              expect(ActiveContext::ErrorHandler).to receive(:log_and_raise_error).with(vertex_blank_error).once
+              expect(ActiveContext::Logger).to receive(:retryable_exception).with(vertex_blank_error, refs: anything)
 
-              expect { preprocessed_reference }.not_to change { reference.documents.count }
+              expect { preprocessed_result }.not_to change { reference.documents.count }
+              expect(preprocessed_result[:successful]).to be_empty
+              expect(preprocessed_result[:failed]).to eq([reference])
             end
           end
         end

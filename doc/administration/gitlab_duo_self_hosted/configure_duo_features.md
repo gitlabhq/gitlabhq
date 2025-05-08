@@ -8,7 +8,7 @@ title: Configure GitLab to access GitLab Duo Self-Hosted
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
@@ -21,7 +21,8 @@ title: Configure GitLab to access GitLab Duo Self-Hosted
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - Feature flag `ai_custom_model` removed in GitLab 17.8
 - Ability to set AI gateway URL using UI [added](https://gitlab.com/gitlab-org/gitlab/-/issues/473143) in GitLab 17.9.
-- Generally available in GitLab 17.9
+- Generally available in GitLab 17.9.
+- Changed to include Premium in GitLab 18.0.
 
 {{< /history >}}
 

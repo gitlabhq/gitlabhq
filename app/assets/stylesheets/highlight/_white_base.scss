@@ -79,6 +79,7 @@ $white-gc-bg: #eaf2f5;
 }
 
 @mixin white-base {
+  --code-light-theme: 1;
   --diff-expansion-background-color: #{$gl-color-neutral-100};
 
   --code-background: #{$gl-color-neutral-0};

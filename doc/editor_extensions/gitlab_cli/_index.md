@@ -76,7 +76,7 @@ glab mr merge
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - LLM: Anthropic [Claude 3 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-haiku)
@@ -86,6 +86,7 @@ glab mr merge
 {{< history >}}
 
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- Changed to include Premium in GitLab 18.0.
 
 {{< /history >}}
 

@@ -48,9 +48,14 @@ RSpec.describe ActiveContext::Preprocessors::Chunking do
 
     result = preprocess_refs
 
-    expect(result).to eq(references)
-    expect(result[0].documents).to eq([{ some_content_field: 'Chunk 1.1' }, { some_content_field: 'Chunk 1.2' }])
-    expect(result[1].documents).to eq([{ some_content_field: 'Chunk 2.1' }])
+    expect(result).to be_a(Hash)
+    expect(result).to have_key(:successful)
+    expect(result).to have_key(:failed)
+    expect(result[:successful]).to eq(references)
+    expect(result[:failed]).to be_empty
+    expect(result[:successful][0].documents).to eq([{ some_content_field: 'Chunk 1.1' },
+      { some_content_field: 'Chunk 1.2' }])
+    expect(result[:successful][1].documents).to eq([{ some_content_field: 'Chunk 2.1' }])
   end
 
   context 'when the chunker raises an error' do
@@ -58,13 +63,17 @@ RSpec.describe ActiveContext::Preprocessors::Chunking do
 
     before do
       allow(mock_chunker).to receive(:chunks).and_raise(error)
-      allow(ActiveContext::ErrorHandler).to receive(:log_and_raise_error)
+      allow(ActiveContext::Logger).to receive(:retryable_exception)
     end
 
-    it 'delegates error handling to ErrorHandler' do
-      expect(ActiveContext::ErrorHandler).to receive(:log_and_raise_error).with(error)
+    it 'logs the error and returns failed references' do
+      expect(ActiveContext::Logger).to receive(:retryable_exception).with(error, ref: anything).twice
 
-      preprocess_refs
+      result = preprocess_refs
+
+      expect(result).to be_a(Hash)
+      expect(result[:successful]).to be_empty
+      expect(result[:failed]).to eq(references)
     end
   end
 end

@@ -12,6 +12,20 @@
   font-size: constants.$code-font-size;
 }
 
+// we can only use gl-dark for now because prefers-color-scheme can be overridden by user setting
+// light-dark() also doesn't work because it always returns a color and can never be 'initial'
+// stylelint-disable-next-line gitlab/no-gl-class
+:root.gl-dark .rd-text-view-root {
+  // disable side borders when light theme is used in dark mode
+  --rd-disable-border-colors: var(--code-light-theme);
+}
+
+// stylelint-disable-next-line gitlab/no-gl-class
+:root:not(.gl-dark) .rd-text-view-root {
+  // disable side borders when light theme is used in dark mode
+  --rd-disable-border-colors: var(--code-dark-theme);
+}
+
 .rd-text-view-root,
 .rd-text-view-content {
   display: block;
@@ -179,12 +193,12 @@
 }
 
 .rd-line-number:first-child {
-  box-shadow: -1px 0 var(--rd-line-border-color);
+  box-shadow: var(--rd-disable-border-colors, -1px 0 var(--rd-line-border-color));
   border-bottom-left-radius: var(--rd-row-bottom-left-radius);
 }
 
 .rd-line-content:last-child {
-  box-shadow: 1px 0 var(--rd-line-border-color);
+  box-shadow: var(--rd-disable-border-colors, 1px 0 var(--rd-line-border-color));
   border-bottom-right-radius: var(--rd-row-bottom-right-radius);
 }
 
