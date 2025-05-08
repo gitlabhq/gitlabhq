@@ -219,6 +219,16 @@ module TreeHelper
     }
   end
 
+  def code_dropdown_ide_data
+    {
+      gitpod_enabled: current_user&.gitpod_enabled || false,
+      show_web_ide_button: show_web_ide_button?,
+      show_gitpod_button: show_gitpod_button?,
+      web_ide_url: web_ide_url,
+      gitpod_url: gitpod_url
+    }
+  end
+
   def download_links(project, ref, archive_prefix)
     Gitlab::Workhorse::ARCHIVE_FORMATS.map do |fmt|
       {
@@ -237,6 +247,17 @@ module TreeHelper
         path: project_archive_path(project, id: tree_join(ref, archive_prefix), format: fmt)
       }
     end
+  end
+
+  def compact_code_dropdown_data(project, ref)
+    archive_prefix = ref ? "#{project.path}-#{ref.tr('/', '-')}" : ''
+    {
+      ssh_url: ssh_enabled? ? ssh_clone_url_to_repo(project) : '',
+      http_url: http_enabled? ? http_clone_url_to_repo(project) : '',
+      xcode_url: show_xcode_link?(project) ? xcode_uri_to_repo(project) : '',
+      ide_data: current_user&.namespace ? code_dropdown_ide_data.to_json : '',
+      directory_download_links: !project.empty_repo? ? download_links(project, ref, archive_prefix).to_json : []
+    }
   end
 end
 

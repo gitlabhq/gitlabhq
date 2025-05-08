@@ -63,7 +63,12 @@ export default {
       required: false,
       default: true,
     },
-    showGitpodButton: {
+    isGitpodEnabledForInstance: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isGitpodEnabledForUser: {
       type: Boolean,
       required: false,
       default: false,
@@ -96,6 +101,9 @@ export default {
           target: '_blank',
         },
       };
+    },
+    showGitpodButton() {
+      return this.isGitpodEnabledForInstance && this.isGitpodEnabledForUser && this.gitpodUrl;
     },
     gitPodAction() {
       return {

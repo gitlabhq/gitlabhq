@@ -32,27 +32,27 @@ class Milestone < ApplicationRecord
 
   scope :by_iid, ->(iid) { where(iid: iid) }
   scope :active, -> { with_state(:active) }
-  scope :started, ->(new_filter_logic: false) do
-    if new_filter_logic
+  scope :started, ->(legacy_filtering_logic: false) do
+    if legacy_filtering_logic
+      active.where('milestones.start_date <= CURRENT_DATE')
+    else
       active
         .where('(milestones.start_date <= CURRENT_DATE OR milestones.start_date IS NULL) AND
               (milestones.due_date IS NULL OR milestones.due_date > CURRENT_DATE) AND
               NOT (milestones.start_date IS NULL AND milestones.due_date IS NULL)')
-    else
-      active.where('milestones.start_date <= CURRENT_DATE')
     end
   end
   scope :not_started, -> { active.where('milestones.start_date > CURRENT_DATE') }
 
-  scope :not_upcoming, ->(new_filter_logic: false) do
-    if new_filter_logic
-      active
-        .where('milestones.start_date <= CURRENT_DATE')
-        .order(:project_id, :group_id, :start_date)
-    else
+  scope :not_upcoming, ->(legacy_filtering_logic: false) do
+    if legacy_filtering_logic
       active
         .where('milestones.due_date <= CURRENT_DATE')
         .order(:project_id, :group_id, :due_date)
+    else
+      active
+        .where('milestones.start_date <= CURRENT_DATE')
+        .order(:project_id, :group_id, :start_date)
     end
   end
 
@@ -141,17 +141,17 @@ class Milestone < ApplicationRecord
     @link_reference_pattern ||= compose_link_reference_pattern('milestones', /(?<milestone>\d+)/)
   end
 
-  def self.upcoming_ids(projects, groups, new_filter_logic: false)
-    if new_filter_logic
-      unscoped
-        .for_projects_and_groups(projects, groups)
-        .active.where('milestones.start_date > CURRENT_DATE')
-        .order(:project_id, :group_id, :start_date).select(:id)
-    else
+  def self.upcoming_ids(projects, groups, legacy_filtering_logic: false)
+    if legacy_filtering_logic
       unscoped
         .for_projects_and_groups(projects, groups)
         .active.where('milestones.due_date > CURRENT_DATE')
         .order(:project_id, :group_id, :due_date).select('DISTINCT ON (project_id, group_id) id')
+    else
+      unscoped
+        .for_projects_and_groups(projects, groups)
+        .active.where('milestones.start_date > CURRENT_DATE')
+        .order(:project_id, :group_id, :start_date).select(:id)
     end
   end
 

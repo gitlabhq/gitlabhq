@@ -611,6 +611,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_snippet
     enable :rename_project
     enable :admin_project_member
+    enable :invite_member
     enable :admin_note
     enable :admin_wiki
     enable :admin_project

@@ -87,12 +87,19 @@ pipelines:
 These jobs check links, including anchor links, and report any problems. Any link that requires a network
 connection is skipped.
 
-## Translation documentation tests
+## Tests for translated documentation
 
-We also run tests on documentation translations documentation. Merge requests containing changes to
-Markdown (`.md`) files in the `/doc-locale/` directory run these CI/CD jobs:
+To ensure quality across all our translated content, we've implemented testing for our documentation in
+multiple languages. These tests mirror those used for the English version, but run on internationalized
+content in the `/doc-locale/` or `/docs-locale/` directories.
 
-- `docs-i18n-lint markdown`: Runs `scripts/lint-i18n-doc.sh` which runs Vale and markdownlint.
+| Project | English Dir | Translation Dir | Linting Jobs |
+| ----- | ----- | ----- | ----- |
+| GitLab | [`/doc`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc-locale) | `docs-i18n-lint markdown` |
+| GitLab Runner | [`/docs`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs) | [`/docs-locale`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs-locale?ref_type=heads) | `docs:lint i18n markdown` |
+| Linux package | [`/doc`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/tree/master/doc-locale) | `docs-lint-i18n markdown` <br/> `docs-lint-i18n content` |
+| Charts | [`/doc`](https://gitlab.com/gitlab-org/charts/gitlab/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/charts/gitlab/-/tree/master/doc-locale) | `check_docs_i18n_content` <br/> `check_docs_i18n_markdown` |
+| Operator | [`/doc`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc-locale) | `docs-i18n-lint content` <br/> `docs-i18n-lint markdown` |
 
 ## Install documentation linters
 

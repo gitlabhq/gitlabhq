@@ -202,7 +202,8 @@ describe('HeaderArea', () => {
         webIdeUrl: headerAppInjected.webIdeUrl,
         gitpodUrl: headerAppInjected.gitpodUrl,
         showWebIdeButton: headerAppInjected.showWebIdeButton,
-        showGitpodButton: headerAppInjected.isGitpodEnabledForInstance,
+        isGitpodEnabledForInstance: headerAppInjected.isGitpodEnabledForInstance,
+        isGitpodEnabledForUser: headerAppInjected.isGitpodEnabledForUser,
         currentPath: defaultMockRoute.params.path,
         directoryDownloadLinks: headerAppInjected.downloadLinks,
       });

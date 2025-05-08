@@ -205,7 +205,12 @@ Because [Advanced SAST](gitlab_advanced_sast.md) scans your program in detail, s
 
 ### Reduce scan time by excluding files
 
-Because each file is analyzed against all applicable rules, you can reduce the number of files scanned to decrease scan time. To do this, use the [SAST_EXCLUDED_PATHS](_index.md#vulnerability-filters) variable to exclude folders that do not need to be scanned.
+Because each file is analyzed against all applicable rules, you can reduce the number of files scanned to decrease scan time. To do this, use the [SAST_EXCLUDED_PATHS](_index.md#vulnerability-filters) variable to exclude folders that do not need to be scanned. Effective exclusions vary, but might include:
+
+- Database migrations
+- Unit tests
+- Dependency directories, such as `node_modules/`
+- Build directories
 
 ### Optimize scans with multi-core scanning
 

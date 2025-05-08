@@ -1,9 +1,0 @@
----
-name: commit_message_logger
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520302
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183530
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/523395
-milestone: '17.10'
-group: group::source code
-type: ops
-default_enabled: false

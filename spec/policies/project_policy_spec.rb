@@ -542,12 +542,13 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
-  context 'importing members from another project' do
+  context 'for inviting and adding members' do
     %w[maintainer owner].each do |role|
       context "with #{role}" do
         let(:current_user) { send(role) }
 
         it { is_expected.to be_allowed(:import_project_members_from_another_project) }
+        it { is_expected.to be_allowed(:invite_member) }
       end
     end
 
@@ -556,6 +557,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         let(:current_user) { send(role) }
 
         it { is_expected.to be_disallowed(:import_project_members_from_another_project) }
+        it { is_expected.to be_disallowed(:invite_member) }
       end
     end
 
@@ -564,10 +566,12 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it { expect_allowed(:import_project_members_from_another_project) }
+        it { expect_allowed(:invite_member) }
       end
 
       context 'when admin mode is disabled' do
         it { expect_disallowed(:import_project_members_from_another_project) }
+        it { expect_disallowed(:invite_member) }
       end
     end
   end

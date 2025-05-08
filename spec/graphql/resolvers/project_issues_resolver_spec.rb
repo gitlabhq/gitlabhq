@@ -65,87 +65,39 @@ RSpec.describe Resolvers::ProjectIssuesResolver, feature_category: :team_plannin
         let(:wildcard_any) { 'ANY' }
         let(:wildcard_none) { 'NONE' }
 
-        context 'when new_milestone_filtering_logic is false' do
-          before do
-            stub_feature_flags(new_milestone_filtering_logic: false)
-          end
+        it 'returns issues with started milestone' do
+          expect(resolve_issues(milestone_wildcard_id: wildcard_started)).to contain_exactly(issue1, issue5)
+        end
 
-          it 'returns issues with started milestone' do
-            expect(resolve_issues(milestone_wildcard_id: wildcard_started)).to contain_exactly(issue1, issue5)
-          end
+        it 'returns issues with upcoming milestone' do
+          expect(resolve_issues(milestone_wildcard_id: wildcard_upcoming)).to contain_exactly(issue7)
+        end
 
-          it 'returns issues with upcoming milestone' do
-            expect(resolve_issues(milestone_wildcard_id: wildcard_upcoming)).to contain_exactly(issue5)
-          end
+        it 'returns issues with any milestone' do
+          expect(resolve_issues(milestone_wildcard_id: wildcard_any)).to contain_exactly(issue1, issue5, issue6, issue7)
+        end
 
-          it 'returns issues with any milestone' do
-            expect(resolve_issues(milestone_wildcard_id: wildcard_any)).to contain_exactly(issue1, issue5, issue6, issue7)
-          end
+        it 'returns issues with no milestone' do
+          expect(resolve_issues(milestone_wildcard_id: wildcard_none)).to contain_exactly(issue2)
+        end
 
-          it 'returns issues with no milestone' do
-            expect(resolve_issues(milestone_wildcard_id: wildcard_none)).to contain_exactly(issue2)
-          end
-
-          it 'generates a mutually exclusive filter error when wildcard and title are provided' do
-            expect_graphql_error_to_be_created(GraphQL::Schema::Validator::ValidationFailedError, 'Only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.') do
-              resolve_issues(milestone_title: ["started milestone"], milestone_wildcard_id: wildcard_started)
-            end
-          end
-
-          context 'when using negated filters' do
-            it 'returns issues matching the searched title after applying a negated filter' do
-              expect(resolve_issues(milestone_title: ['past milestone'], not: { milestone_wildcard_id: wildcard_upcoming })).to contain_exactly(issue6)
-            end
-
-            it 'returns issues excluding the ones with started milestone' do
-              expect(resolve_issues(not: { milestone_wildcard_id: wildcard_started })).to contain_exactly(issue7)
-            end
-
-            it 'returns issues excluding the ones with upcoming milestone' do
-              expect(resolve_issues(not: { milestone_wildcard_id: wildcard_upcoming })).to contain_exactly(issue6)
-            end
+        it 'generates a mutually exclusive filter error when wildcard and title are provided' do
+          expect_graphql_error_to_be_created(GraphQL::Schema::Validator::ValidationFailedError, 'Only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.') do
+            resolve_issues(milestone_title: ["started milestone"], milestone_wildcard_id: wildcard_started)
           end
         end
 
-        context 'when new_milestone_filtering_logic is true' do
-          before do
-            stub_feature_flags(new_milestone_filtering_logic: true)
+        context 'when using negated filters' do
+          it 'returns issues matching the searched title after applying a negated filter' do
+            expect(resolve_issues(milestone_title: ['current milestone'], not: { milestone_wildcard_id: wildcard_upcoming })).to contain_exactly(issue5)
           end
 
-          it 'returns issues with started milestone' do
-            expect(resolve_issues(milestone_wildcard_id: wildcard_started)).to contain_exactly(issue1, issue5)
+          it 'returns issues excluding the ones with started milestone' do
+            expect(resolve_issues(not: { milestone_wildcard_id: wildcard_started })).to contain_exactly(issue7)
           end
 
-          it 'returns issues with upcoming milestone' do
-            expect(resolve_issues(milestone_wildcard_id: wildcard_upcoming)).to contain_exactly(issue7)
-          end
-
-          it 'returns issues with any milestone' do
-            expect(resolve_issues(milestone_wildcard_id: wildcard_any)).to contain_exactly(issue1, issue5, issue6, issue7)
-          end
-
-          it 'returns issues with no milestone' do
-            expect(resolve_issues(milestone_wildcard_id: wildcard_none)).to contain_exactly(issue2)
-          end
-
-          it 'generates a mutually exclusive filter error when wildcard and title are provided' do
-            expect_graphql_error_to_be_created(GraphQL::Schema::Validator::ValidationFailedError, 'Only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.') do
-              resolve_issues(milestone_title: ["started milestone"], milestone_wildcard_id: wildcard_started)
-            end
-          end
-
-          context 'when using negated filters' do
-            it 'returns issues matching the searched title after applying a negated filter' do
-              expect(resolve_issues(milestone_title: ['current milestone'], not: { milestone_wildcard_id: wildcard_upcoming })).to contain_exactly(issue5)
-            end
-
-            it 'returns issues excluding the ones with started milestone' do
-              expect(resolve_issues(not: { milestone_wildcard_id: wildcard_started })).to contain_exactly(issue7)
-            end
-
-            it 'returns issues excluding the ones with upcoming milestone' do
-              expect(resolve_issues(not: { milestone_wildcard_id: wildcard_upcoming })).to contain_exactly(issue1, issue5)
-            end
+          it 'returns issues excluding the ones with upcoming milestone' do
+            expect(resolve_issues(not: { milestone_wildcard_id: wildcard_upcoming })).to contain_exactly(issue1, issue5)
           end
         end
       end

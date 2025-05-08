@@ -65,8 +65,10 @@ module Gitlab
             .preload_users.find_each.map { |member| owner_data(member.user) if member.user }
         else
           data = []
-          project.project_authorizations.owners.preload_users.each_batch(column: :user_id) do |relation|
-            data.concat(relation.map { |member| owner_data(member.user) })
+          Gitlab::Bullet.skip_bullet do
+            project.project_authorizations.owners.preload_users.each_batch(column: :user_id) do |relation|
+              data.concat(relation.map { |member| owner_data(member.user) })
+            end
           end
           data |= Array.wrap(owner_data(project.owner)) if project.owner
           data

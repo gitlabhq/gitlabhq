@@ -44610,8 +44610,8 @@ Milestone ID wildcard values.
 | ----- | ----------- |
 | <a id="milestonewildcardidany"></a>`ANY` | Milestone is assigned. |
 | <a id="milestonewildcardidnone"></a>`NONE` | No milestone is assigned. |
-| <a id="milestonewildcardidstarted"></a>`STARTED` | Milestone assigned is open and started (start date <= today). |
-| <a id="milestonewildcardidupcoming"></a>`UPCOMING` | Milestone assigned is due in the future (due date > today). |
+| <a id="milestonewildcardidstarted"></a>`STARTED` | Milestone assigned is open and started (overlaps current date). This differs from the behavior in the [REST API implementation](https://docs.gitlab.com/api/issues/#list-issues). |
+| <a id="milestonewildcardidupcoming"></a>`UPCOMING` | Milestone assigned starts in the future (start date > today). This differs from the behavior in the [REST API implementation](https://docs.gitlab.com/api/issues/#list-issues). |
 
 ### `MlModelVersionsOrderBy`
 
@@ -44708,7 +44708,7 @@ Negated Milestone ID wildcard values.
 | Value | Description |
 | ----- | ----------- |
 | <a id="negatedmilestonewildcardidstarted"></a>`STARTED` | Milestone assigned is open and yet to be started (start date > today). |
-| <a id="negatedmilestonewildcardidupcoming"></a>`UPCOMING` | Milestone assigned is open but due in the past (due date <= today). |
+| <a id="negatedmilestonewildcardidupcoming"></a>`UPCOMING` | Milestone assigned is open but starts in the past (start date <= today). This differs from the behavior in the [REST API implementation](https://docs.gitlab.com/api/issues/#list-issues). |
 
 ### `NotesFilterType`
 

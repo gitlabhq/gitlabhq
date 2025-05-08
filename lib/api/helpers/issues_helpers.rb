@@ -52,6 +52,11 @@ module API
 
         args.delete(:id)
         args[:not] ||= {}
+
+        # Use the legacy milestone filtering in the RestAPI to avoid breaking change
+        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/429728
+        args[:use_legacy_milestone_filtering] = true
+
         args[:milestone_title] ||= args.delete(:milestone)
         args[:milestone_wildcard_id] ||= args.delete(:milestone_id)
         args[:not][:milestone_title] ||= args[:not].delete(:milestone)

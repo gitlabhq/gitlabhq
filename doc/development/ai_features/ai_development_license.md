@@ -195,6 +195,7 @@ This approach uses a real cloud license through CustomersDot, providing the most
       ```shell
       export GITLAB_LICENSE_MODE=test
       export CUSTOMER_PORTAL_URL=https://customers.staging.gitlab.com
+      export GITLAB_SIMULATE_SAAS=0
       ```
 
   - **Note on GDK and AI Gateway:** While GDK can include AI Gateway as part of its distribution, developers may run AI Gateway with different configurations or ports. Currently, GitLab instances need explicit configuration of the AI Gateway URL, even in development environments.

@@ -724,6 +724,9 @@ msgstr ""
 msgid "%{completed} of %{total} weight completed"
 msgstr ""
 
+msgid "%{completed}/%{total} completed"
+msgstr ""
+
 msgid "%{component} is not an allowed sub claim component"
 msgstr ""
 
@@ -27845,13 +27848,88 @@ msgstr ""
 msgid "Get started!"
 msgstr ""
 
+msgid "GetStarted|Add code owners"
+msgstr ""
+
+msgid "GetStarted|Add code to a repository"
+msgstr ""
+
+msgid "GetStarted|Analyze your application for vulnerabilities with DAST"
+msgstr ""
+
+msgid "GetStarted|Assign a GitLab Duo seat to your colleagues"
+msgstr ""
+
+msgid "GetStarted|Complete these tasks first so you can enjoy GitLab's features to their fullest."
+msgstr ""
+
+msgid "GetStarted|Configure a project"
+msgstr ""
+
+msgid "GetStarted|Create a repository"
+msgstr ""
+
+msgid "GetStarted|Create a workflow, and learn how GitLab features work together."
+msgstr ""
+
+msgid "GetStarted|Create an issue"
+msgstr ""
+
+msgid "GetStarted|Enable require merge approvals"
+msgstr ""
+
 msgid "GetStarted|Follow these steps to get familiar with the GitLab workflow."
 msgstr ""
 
 msgid "GetStarted|Get started"
 msgstr ""
 
+msgid "GetStarted|GitLab University"
+msgstr ""
+
+msgid "GetStarted|Included in trial"
+msgstr ""
+
+msgid "GetStarted|Included in trial. Use GitLab to deploy your application, monitor its health, and keep it secure."
+msgstr ""
+
+msgid "GetStarted|Invite your colleagues"
+msgstr ""
+
+msgid "GetStarted|Plan and execute work together"
+msgstr ""
+
 msgid "GetStarted|Quick start"
+msgstr ""
+
+msgid "GetStarted|Scan dependencies for licenses"
+msgstr ""
+
+msgid "GetStarted|Scan dependencies for vulnerabilities"
+msgstr ""
+
+msgid "GetStarted|Secure your deployment"
+msgstr ""
+
+msgid "GetStarted|Set up your code"
+msgstr ""
+
+msgid "GetStarted|Set up your first project's CI/CD"
+msgstr ""
+
+msgid "GetStarted|Start a free trial of GitLab Ultimate"
+msgstr ""
+
+msgid "GetStarted|Submit a merge request (MR)"
+msgstr ""
+
+msgid "GetStarted|Use the Web IDE or upload code using your preferred method."
+msgstr ""
+
+msgid "GetStarted|You don't have sufficient access to perform this action"
+msgstr ""
+
+msgid "GetStarted|You don't have sufficient access to perform this action: "
 msgstr ""
 
 msgid "GiB"

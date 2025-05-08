@@ -302,25 +302,25 @@ From [group issue boards](../issue_board.md#group-issue-boards), you can filter 
 
 ### Special milestone filters
 
+{{< history >}}
+
+- Logic for **Started** and **Upcoming** filters [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/429728) in GitLab 18.0.
+
+{{< /history >}}
+
 When filtering by milestone, in addition to choosing a specific project milestone or group milestone, you can choose a special milestone filter.
 
 - **None**: Show issues or merge requests with no assigned milestone.
-- **Any**: Show issues or merge requests that have an assigned milestone.
-- **Upcoming**: Show issues or merge requests that have been assigned the open milestone and has the nearest due date in the future.
-- **Started**: Show issues or merge requests that have an open assigned milestone with a start date that is before today.
+- **Any**: Show issues or merge requests with an assigned milestone.
+- **Upcoming**: Show issues or merge requests with an open assigned milestone starting in the future.
 
-<!--- When Upcoming and Started milestones change in GitLab 18.0, integrate the contents
-of the below topic into "Special milestone filters" -->
+  In GitLab 17.11 and earlier, this filter showed items with an open assigned milestone that had the nearest due date in
+  the future. The GitLab REST API continues to use the filtering
+  logic from GitLab 17.11 and earlier to avoid introducing a breaking change.
 
-#### "Upcoming" and "Started" filters (deprecated)
+- **Started**: Show issues or merge requests with an open assigned milestone that overlaps with the current date. The
+  list excludes milestones without a defined start and due date.
 
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/501294) in GitLab 17.7
-and is [planned for change](https://gitlab.com/gitlab-org/gitlab/-/issues/429728) in 18.0.
-
-{{< /alert >}}
-
-The behavior of "Upcoming" and "Started" special filters is planned to change in upcoming GitLab major release 18.0.
-The new behavior of both the filters is outlined in
-[issue 429728](https://gitlab.com/gitlab-org/gitlab/-/issues/429728#proposed-issue-filter-logic-for-upcoming-and-started-milestones).
+  In GitLab 17.11 and earlier, this filter showed items that had an open assigned milestone with a start date that was
+  before today. The GitLab REST API continues to use the filtering
+  logic from GitLab 17.11 and earlier to avoid introducing a breaking change.

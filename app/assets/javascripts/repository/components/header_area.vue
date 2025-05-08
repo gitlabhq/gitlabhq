@@ -367,7 +367,8 @@ export default {
               :project-id="projectId"
               :project-path="projectPath"
               :show-web-ide-button="showWebIdeButton"
-              :show-gitpod-button="isGitpodEnabledForInstance"
+              :is-gitpod-enabled-for-instance="isGitpodEnabledForInstance"
+              :is-gitpod-enabled-for-user="isGitpodEnabledForUser"
             />
             <repository-overflow-menu
               :full-path="projectPath"

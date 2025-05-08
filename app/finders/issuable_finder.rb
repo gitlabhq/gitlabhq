@@ -427,10 +427,11 @@ class IssuableFinder
       items.any_milestone
     elsif params.filter_by_upcoming_milestone?
       upcoming_ids = Milestone.upcoming_ids(params.projects, params.related_groups,
-        new_filter_logic: use_new_milestone_filtering_logic?)
+        legacy_filtering_logic: use_legacy_milestone_filtering?)
       items.left_joins_milestones.where(milestone_id: upcoming_ids)
     elsif params.filter_by_started_milestone?
-      items.left_joins_milestones.merge(Milestone.started(new_filter_logic: use_new_milestone_filtering_logic?))
+      items.left_joins_milestones
+           .merge(Milestone.started(legacy_filtering_logic: use_legacy_milestone_filtering?))
     else
       items.with_milestone(params[:milestone_title])
     end
@@ -443,7 +444,7 @@ class IssuableFinder
 
     if not_params.filter_by_upcoming_milestone?
       items.joins(:milestone)
-           .merge(Milestone.not_upcoming(new_filter_logic: use_new_milestone_filtering_logic?))
+           .merge(Milestone.not_upcoming(legacy_filtering_logic: use_legacy_milestone_filtering?))
     elsif not_params.filter_by_started_milestone?
       items.joins(:milestone).merge(Milestone.not_started)
     else
@@ -522,18 +523,9 @@ class IssuableFinder
     end
   end
 
-  def use_new_milestone_filtering_logic?
-    strong_memoize(:use_new_milestone_filtering_logic) do
-      # For the dashboard queries, we allow filtering by milestones across different groups. Since the feature flag
-      # actor is at the group level, we only apply the new logic in cases where we're querying in a specific group or
-      # project so we can effectively scope down the flag. Once the feature flag has been removed and this behaviour is
-      # the default, we can then enable the new filtering for cross group queries.
-      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/429728
-      if params.project || params.group
-        ::Feature.enabled?(:new_milestone_filtering_logic, (params.project || params.group).root_ancestor)
-      else
-        false
-      end
+  def use_legacy_milestone_filtering?
+    strong_memoize(:use_legacy_milestone_filtering) do
+      params[:use_legacy_milestone_filtering].present?
     end
   end
 end

@@ -7,7 +7,9 @@ module Types
 
     value 'NONE', 'No milestone is assigned.'
     value 'ANY', 'Milestone is assigned.'
-    value 'STARTED', 'Milestone assigned is open and started (start date <= today).'
-    value 'UPCOMING', 'Milestone assigned is due in the future (due date > today).'
+    value 'STARTED', description: "Milestone assigned is open and started (overlaps current date). This " \
+                       "differs from the behavior in the [REST API implementation](https://docs.gitlab.com/api/issues/#list-issues)."
+    value 'UPCOMING', description: "Milestone assigned starts in the future (start date > today). This differs " \
+                        "from the behavior in the [REST API implementation](https://docs.gitlab.com/api/issues/#list-issues)."
   end
 end

@@ -1183,6 +1183,36 @@ GitLab 18.2 will be the last GitLab version with Linux packages for Ubuntu 20.04
 You should upgrade to Ubuntu 22.04 for continued support.
 
 </div>
+
+<div class="deprecation breaking-change" data-milestone="18.3">
+
+### cert-manager Helm chart update
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.0</span>
+- Removal in GitLab <span class="milestone">18.3</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5928).
+
+</div>
+
+To enable schema validation of newer cert-manager charts, the GitLab Helm chart `certmanager.install` value is
+deprecated in favor of `installCertmanager`. The schema definition does not accept the extra property that we
+added within the `certmanager` section of the GitLab chart.
+
+In GitLab 18.3 (GitLab chart 9.3), we will remove the deprecated value and update the bundled cert-manager.
+
+If you've previously used the `certmanager.install` setting:
+
+1. Transfer the value of `certmanager.install` to `installCertmanager`.
+1. Remove the `certmanager.install` setting completely.
+
+Also review the cert-manager release notes:
+
+- [Release Notes 1.12 - 1.16](https://cert-manager.io/docs/releases/upgrading/upgrading-1.12)
+- [Release Notes 1.17](https://cert-manager.io/docs/releases/upgrading/upgrading-1.16-1.17)
+
+</div>
 </div>
 
 <div class="milestone-wrapper" data-milestone="18.0">
@@ -1272,6 +1302,9 @@ Specifically, the following analyzers will no longer be updated after the GitLab
 The behavior of "Upcoming" and "Started" special filters is planned to change in upcoming GitLab major release 18.0.
 The new behavior of both the filters is outlined in
 [issue 429728](https://gitlab.com/gitlab-org/gitlab/-/issues/429728#proposed-issue-filter-logic-for-upcoming-and-started-milestones).
+
+This change does not impact the GitLab REST API, which will continue to use the existing milestone filtering logic.
+The GitLab GraphQL API will be updated to adhere to the new filtering logic.
 
 </div>
 
