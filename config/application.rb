@@ -41,7 +41,7 @@ module Gitlab
     config.active_support.executor_around_test_case = nil # New default is true
     config.active_support.isolation_level = nil # New default is thread
     config.active_support.key_generator_hash_digest_class = nil # New default is OpenSSL::Digest::SHA256
-    config.active_support.cache_format_version = nil
+    config.active_support.cache_format_version = 7.1
 
     # Rails 6.1
     config.action_dispatch.cookies_same_site_protection = nil # New default is :lax

@@ -193,15 +193,15 @@ export default {
     :is="containerTag"
     :id="anchorId"
     ref="crudComponent"
-    class="crud gl-border gl-rounded-base gl-border-section gl-bg-subtle"
+    class="crud gl-border gl-rounded-lg gl-border-section gl-bg-subtle"
     :class="{ 'gl-mt-5': isCollapsible }"
   >
     <header
-      class="crud-header gl-border-b gl-relative gl-flex gl-flex-wrap gl-justify-between gl-gap-x-5 gl-gap-y-2 gl-rounded-t-base gl-border-section gl-bg-section gl-px-5 gl-py-4 md:gl-flex-nowrap"
+      class="crud-header gl-border-b gl-relative gl-flex gl-flex-wrap gl-justify-between gl-gap-x-5 gl-gap-y-2 gl-rounded-t-lg gl-border-section gl-bg-section gl-p-4 gl-pl-5 md:gl-flex-nowrap"
       :class="[
         headerClass,
         {
-          'gl-rounded-base gl-border-b-transparent': !isContentVisible,
+          'gl-rounded-lg gl-border-b-transparent': !isContentVisible,
           'gl-relative gl-pr-10': isCollapsible,
         },
       ]"
@@ -285,7 +285,7 @@ export default {
     <div
       v-if="isContentVisible"
       class="crud-body gl-mx-5 gl-my-4"
-      :class="[bodyClass, { 'gl-rounded-b-base': !$scopedSlots.footer }]"
+      :class="[bodyClass, { 'gl-rounded-b-lg': !$scopedSlots.footer }]"
       data-testid="crud-body"
     >
       <gl-skeleton-loader v-if="isLoading" :width="400" :lines="3" data-testid="crud-loading" />
@@ -306,7 +306,7 @@ export default {
 
     <footer
       v-if="isContentVisible && $scopedSlots.footer"
-      class="gl-border-t gl-rounded-b-base gl-border-section gl-bg-section gl-px-5 gl-py-4"
+      class="gl-border-t gl-rounded-b-lg gl-border-section gl-bg-section gl-px-5 gl-py-4"
       :class="footerClass"
       data-testid="crud-footer"
     >

@@ -12,7 +12,8 @@ module SessionHelpers
 
     store = ActiveSupport::Cache::RedisCacheStore.new(
       namespace: Gitlab::Redis::Sessions::SESSION_NAMESPACE,
-      redis: Gitlab::Redis::Sessions
+      redis: Gitlab::Redis::Sessions,
+      coder: Gitlab::Sessions::CacheStoreCoder
     )
     store.write(session_id.private_id, session_data)
 

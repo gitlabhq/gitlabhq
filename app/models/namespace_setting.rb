@@ -15,7 +15,7 @@ class NamespaceSetting < ApplicationRecord
   ignore_column :third_party_ai_features_enabled, remove_with: '16.11', remove_after: '2024-04-18'
   ignore_column :code_suggestions, remove_with: '17.8', remove_after: '2024-05-16'
 
-  cascading_attr :math_rendering_limits_enabled, :resource_access_token_notify_inherited
+  cascading_attr :math_rendering_limits_enabled, :resource_access_token_notify_inherited, :web_based_commit_signing_enabled
 
   scope :for_namespaces, ->(namespaces) { where(namespace: namespaces) }
 

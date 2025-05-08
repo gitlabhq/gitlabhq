@@ -32,6 +32,17 @@ RSpec.shared_context "with diff file component tests" do
     expect(web_component['data-diff-lines-path']).to eq("#{diff_path}/diff_lines")
   end
 
+  it "renders line count" do
+    render_component
+    total_count = web_component.all(:css, 'table tbody tr').count
+    expect(web_component).to have_css("[style~='--total-rows: #{total_count}']")
+  end
+
+  it "enables virtual rendering" do
+    render_component
+    expect(web_component).to have_css("[data-virtual]")
+  end
+
   context "when is text diff" do
     before do
       allow(diff_file).to receive(:diffable_text?).and_return(true)
@@ -68,6 +79,11 @@ RSpec.shared_context "with diff file component tests" do
       render_component
       expect(web_component['data-viewer']).to eq('no_preview')
     end
+
+    it "disables virtual rendering" do
+      render_component
+      expect(web_component).not_to have_css("[data-virtual]")
+    end
   end
 
   context "when file is collapsed" do
@@ -78,6 +94,11 @@ RSpec.shared_context "with diff file component tests" do
     it "renders no preview" do
       render_component
       expect(web_component['data-viewer']).to eq('no_preview')
+    end
+
+    it "disables virtual rendering" do
+      render_component
+      expect(web_component).not_to have_css("[data-virtual]")
     end
   end
 end

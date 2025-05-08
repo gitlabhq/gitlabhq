@@ -30,7 +30,7 @@ exports[`WorkItemRelationshipList renders linked item list 1`] = `
     value="[object Object]"
   >
     <li
-      class="!gl-border-b-1 !gl-border-solid !gl-border-t-0 !gl-border-x-0 !gl-px-0 !gl-py-2 last:!gl-border-b-0 linked-item"
+      class="!gl-border-b-1 !gl-border-solid !gl-border-t-0 !gl-border-x-0 !gl-mx-0 !gl-px-0 !gl-py-2 last:!gl-border-b-0 linked-item"
       data-testid="link-child-contents-container"
       data-work-item-id="gid://gitlab/WorkItem/675"
     >

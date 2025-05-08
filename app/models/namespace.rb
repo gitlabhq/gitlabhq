@@ -195,6 +195,8 @@ class Namespace < ApplicationRecord
       delegate :archived, :archived=
       delegate :math_rendering_limits_enabled, :lock_math_rendering_limits_enabled
       delegate :emails_enabled, :emails_enabled=
+      delegate :web_based_commit_signing_enabled?, :lock_web_based_commit_signing_enabled?
+      delegate :web_based_commit_signing_enabled, :lock_web_based_commit_signing_enabled
     end
   end
 

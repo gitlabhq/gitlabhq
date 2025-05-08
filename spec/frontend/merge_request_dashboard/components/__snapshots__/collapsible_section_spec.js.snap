@@ -2,11 +2,11 @@
 
 exports[`Merge request dashboard collapsible section renders section 1`] = `
 <section
-  class="crud gl-bg-subtle gl-border gl-border-section gl-mt-5 gl-rounded-base"
+  class="crud gl-bg-subtle gl-border gl-border-section gl-mt-5 gl-rounded-lg"
   id=""
 >
   <header
-    class="crud-header gl-bg-section gl-border-b gl-border-section gl-flex gl-flex-wrap gl-gap-x-5 gl-gap-y-2 gl-justify-between gl-pr-10 gl-px-5 gl-py-4 gl-relative gl-rounded-t-base md:gl-flex-nowrap"
+    class="crud-header gl-bg-section gl-border-b gl-border-section gl-flex gl-flex-wrap gl-gap-x-5 gl-gap-y-2 gl-justify-between gl-p-4 gl-pl-5 gl-pr-10 gl-relative gl-rounded-t-lg md:gl-flex-nowrap"
   >
     <div
       class="gl-flex gl-flex-col gl-grow gl-self-center"
@@ -60,7 +60,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
     </div>
   </header>
   <div
-    class="!gl-mx-0 crud-body gl-mb-0 gl-mx-5 gl-my-4 gl-rounded-b-base"
+    class="!gl-mx-0 crud-body gl-mb-0 gl-mx-5 gl-my-4 gl-rounded-b-lg"
     data-testid="crud-body"
   >
     <div

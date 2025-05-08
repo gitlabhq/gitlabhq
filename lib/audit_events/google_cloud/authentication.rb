@@ -13,7 +13,9 @@ module AuditEvents
           scope: @scope
         )
         credentials.fetch_access_token!["access_token"]
-      rescue StandardError, OpenSSL::PKey::RSAError => e
+      rescue OpenSSL::PKey::RSAError => e
+        Gitlab::ErrorTracking.log_exception(e)
+      rescue StandardError => e
         ::Gitlab::ErrorTracking.track_exception(e, client_email: client_email)
         nil
       end

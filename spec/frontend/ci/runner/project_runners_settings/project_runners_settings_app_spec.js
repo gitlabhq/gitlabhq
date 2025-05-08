@@ -46,7 +46,7 @@ describe('ProjectRunnersSettingsApp', () => {
 
   it('renders new runner button when canCreateRunner is true', () => {
     expect(findNewRunnerButton().attributes('href')).toBe('/runners/new');
-    expect(findNewRunnerButton().text()).toBe('New project runner');
+    expect(findNewRunnerButton().text()).toBe('Create project runner');
   });
 
   it('does not render new runner button when canCreateRunner is false', () => {

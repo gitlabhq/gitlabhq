@@ -41,7 +41,7 @@ export default {
 
 <template>
   <div>
-    <page-heading :heading="s__('Runners|New group runner')">
+    <page-heading :heading="s__('Runners|Create group runner')">
       <template #description>
         {{
           s__(

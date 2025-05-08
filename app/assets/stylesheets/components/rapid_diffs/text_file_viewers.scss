@@ -22,21 +22,29 @@
   display: grid;
 }
 
-.rd-hunk-lines:last-child > :first-child {
-  border-bottom-left-radius: var(--rd-diff-file-border-radius);
+.rd-text-view-content tr:last-child {
+  --rd-row-bottom-left-radius: var(--rd-diff-file-border-radius);
+  --rd-row-bottom-right-radius: var(--rd-diff-file-border-radius);
 }
 
-.rd-hunk-lines:last-child > :last-child {
-  border-bottom-right-radius: var(--rd-diff-file-border-radius);
+.rd-text-view-content tr:last-child td:not(:last-child) {
+  --rd-row-bottom-right-radius: 0;
+}
+
+.rd-text-view-content tr:last-child td:not(:first-child) {
+  --rd-row-bottom-left-radius: 0;
 }
 
 .rd-hunk-header {
+  position: relative;
+  // overlap line numbers
+  z-index: 2;
   // this is used when a hunk header doesn't have any text, only expand buttons
   min-height: calc(1em * $code-line-height);
-  border-top: 1px solid var(--diff-expansion-background-color, var(--gl-border-color-default));
-  border-bottom: 1px solid var(--diff-expansion-background-color, var(--gl-border-color-default));
   background-color: var(--code-diff-hunk-header-background-color, $gray-50);
   color: var(--code-diff-hunk-header-color, $gray-400);
+  border-radius: 0 0 var(--rd-row-bottom-right-radius) var(--rd-row-bottom-left-radius);
+  outline: 1px solid var(--diff-expansion-background-color, var(--gl-border-color-default));
 
   &:first-child {
     border-top: 0;
@@ -89,6 +97,7 @@
 
   background-color: var(--code-diff-expand-button-background-color, $gray-100);
   color: var(--code-diff-expand-button-color, var(--gl-text-color-subtle));
+  border-radius: 0 0 var(--rd-row-bottom-right-radius) var(--rd-row-bottom-left-radius);
 
   &:hover,
   &:focus {
@@ -171,10 +180,12 @@
 
 .rd-line-number:first-child {
   box-shadow: -1px 0 var(--rd-line-border-color);
+  border-bottom-left-radius: var(--rd-row-bottom-left-radius);
 }
 
 .rd-line-content:last-child {
   box-shadow: 1px 0 var(--rd-line-border-color);
+  border-bottom-right-radius: var(--rd-row-bottom-right-radius);
 }
 
 .rd-line-link {

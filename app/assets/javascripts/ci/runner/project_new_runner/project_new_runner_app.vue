@@ -41,7 +41,7 @@ export default {
 
 <template>
   <div>
-    <page-heading :heading="s__('Runners|New project runner')">
+    <page-heading :heading="s__('Runners|Create project runner')">
       <template #description>
         {{
           s__(

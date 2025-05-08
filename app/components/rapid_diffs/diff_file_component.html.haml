@@ -1,7 +1,7 @@
 -# TODO: add fork suggestion (commits only)
 
 %diff-file.rd-diff-file-component{ id: id, data: {  testid: 'rd-diff-file', **server_data } }
-  .rd-diff-file
+  .rd-diff-file{ data: { virtual: virtual? }, style: ("--total-rows: #{total_rows}" if virtual?) }
     = header || default_header
     -# extra wrapper needed so content-visibility: hidden doesn't require removing border or other styles
     %div{ data: { file_body: '' } }

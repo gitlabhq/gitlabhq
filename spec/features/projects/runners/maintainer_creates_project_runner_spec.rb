@@ -22,7 +22,7 @@ RSpec.describe 'Maintainer creates project runner', feature_category: :fleet_vis
     end
 
     it 'shows link with instructions on how to install GitLab Runner' do
-      expect(page).to have_link(s_('Runners|New project runner'), href: new_project_runner_path(project))
+      expect(page).to have_link(s_('Runners|Create project runner'), href: new_project_runner_path(project))
     end
 
     it_behaves_like "shows and resets runner registration token" do

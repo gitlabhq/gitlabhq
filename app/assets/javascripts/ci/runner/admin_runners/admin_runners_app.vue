@@ -214,7 +214,7 @@ export default {
       <template #actions>
         <runner-dashboard-link />
         <gl-button v-if="canAdminRunners" :href="newRunnerPath" variant="confirm">
-          {{ s__('Runners|New instance runner') }}
+          {{ s__('Runners|Create instance runner') }}
         </gl-button>
         <registration-dropdown
           v-if="canAdminRunners"

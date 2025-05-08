@@ -254,7 +254,7 @@ export default {
 </script>
 
 <template>
-  <li class="tree-item !gl-px-0 !gl-py-2">
+  <li class="tree-item !gl-mx-0 !gl-px-0 !gl-py-2">
     <div class="gl-flex gl-items-start">
       <div v-if="hasIndirectChildren" class="gl-mr-4 gl-h-7 gl-w-5">
         <gl-button

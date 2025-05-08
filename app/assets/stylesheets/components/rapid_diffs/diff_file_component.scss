@@ -1,10 +1,25 @@
+@use 'constants';
+
 .rd-diff-file-component {
+  display: block;
   scroll-margin-top: var(--rd-app-sticky-top-with-padding);
+  margin-bottom: $gl-padding;
 }
 
 .rd-diff-file {
   --rd-diff-file-border-radius: #{calc($gl-border-radius-base - 1px)};
-  padding-bottom: $gl-padding;
+}
+
+.rd-diff-file[data-virtual]:not([data-collapsed]) {
+  $header-padding: constants.$diff-file-header-padding-y * 2;
+  // top/bottom padding + toggle button size, excluding borders
+  $file-header-height: calc($header-padding + $gl-button-small-size);
+  // header top/bottom borders + body border
+  $total-borders: constants.$diff-file-border-width * 3;
+  content-visibility: var(--rd-content-visibility-auto, auto);
+  contain-intrinsic-size:
+    auto 0 auto
+    calc(#{$file-header-height} + #{$total-borders} + (#{constants.$code-row-height-target} * var(--total-rows)));
 }
 
 .rd-diff-file-header {
@@ -15,10 +30,10 @@
   display: flex;
   background-color: var(--gl-background-color-subtle);
   border: 1px solid var(--gl-border-color-default);
-  padding: $gl-spacing-scale-3 $gl-spacing-scale-4;
+  padding: constants.$diff-file-header-padding-y $gl-spacing-scale-4;
   border-radius: var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius) 0 0;
   word-break: break-word;
-  z-index: 1;
+  z-index: 3;
 }
 
 .rd-diff-file-header:has([data-options-toggle] button[aria-expanded='true']) {
@@ -86,7 +101,7 @@
 }
 
 .rd-diff-file-body {
-  border: 1px solid var(--gl-border-color-default);
+  border: constants.$diff-file-border-width solid var(--gl-border-color-default);
   border-top: 0;
   border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
 

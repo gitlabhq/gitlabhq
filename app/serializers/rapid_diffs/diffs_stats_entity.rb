@@ -23,7 +23,8 @@ module RapidDiffs
     private
 
     def overflow_safe?(diff_collection)
-      diff_collection.collapsed_safe_lines? || diff_collection.collapsed_safe_files? ||
+      diff_collection.collapsed_safe_limits? ||
+        diff_collection.collapsed_safe_lines? || diff_collection.collapsed_safe_files? ||
         diff_collection.collapsed_safe_bytes?
     end
 

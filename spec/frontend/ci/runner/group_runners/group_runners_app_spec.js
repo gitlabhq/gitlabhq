@@ -87,7 +87,7 @@ describe('GroupRunnersApp', () => {
   const findRunnerStats = () => wrapper.findComponent(RunnerStats);
   const findRunnerActionsCell = () => wrapper.findComponent(RunnerActionsCell);
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
-  const findNewRunnerBtn = () => wrapper.findByText('New group runner');
+  const findNewRunnerBtn = () => wrapper.findByText('Create group runner');
   const findRunnerTypeTabs = () => wrapper.findComponent(RunnerTypeTabs);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerListEmptyState = () => wrapper.findComponent(RunnerListEmptyState);

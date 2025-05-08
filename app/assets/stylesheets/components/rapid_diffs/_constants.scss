@@ -10,3 +10,6 @@ $code-line-height: calc($code-row-height-target / $code-font-size-target);
 
 $app-header-vertical-padding: $gl-spacing-scale-3;
 $app-vertical-breakpoint: md;
+
+$diff-file-border-width: 1px;
+$diff-file-header-padding-y: $gl-spacing-scale-3;

@@ -220,7 +220,7 @@ export default {
         v-for="linkedItem in linkedItems"
         :key="linkedItem.workItem.id"
         data-testid="link-child-contents-container"
-        class="linked-item !gl-border-x-0 !gl-border-b-1 !gl-border-t-0 !gl-border-solid !gl-px-0 !gl-py-2 last:!gl-border-b-0"
+        class="linked-item !gl-mx-0 !gl-border-x-0 !gl-border-b-1 !gl-border-t-0 !gl-border-solid !gl-px-0 !gl-py-2 last:!gl-border-b-0"
         :data-work-item-id="linkedItem.workItem.id"
       >
         <work-item-link-child-contents

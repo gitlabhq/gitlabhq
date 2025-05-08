@@ -32,7 +32,7 @@ describe('Create Runner Required Fields', () => {
   describe('form', () => {
     it('passes the correct props to MultiStepFormTemplate', () => {
       expect(findMultiStepFormTemplate().props()).toMatchObject({
-        title: 'New instance runner',
+        title: 'Create instance runner',
         currentStep: 1,
         stepsTotal: 3,
       });

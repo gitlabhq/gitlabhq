@@ -28,24 +28,43 @@ RSpec.describe RapidDiffs::DiffsStatsEntity, feature_category: :code_review_work
         })
     end
 
-    context 'when diffs overflow' do
+    where(:safe_lines, :safe_files, :safe_bytes, :safe_limits, :expected_overflow) do
+      [
+        [false, false, false, false, false],
+        [true, false, false, false, true],
+        [false, true, false, false, true],
+        [false, false, true, false, true],
+        [false, false, false, true, true],
+        [true, true, true, true, true]
+      ]
+    end
+
+    with_them do
       let(:diff_files) { instance_double(Gitlab::Git::DiffCollection) }
 
       before do
         allow(diffs_resource).to receive(:diff_files).and_return(diff_files)
-        allow(diff_files).to receive_messages(collapsed_safe_lines?: true, collapsed_safe_files?: false,
-          collapsed_safe_bytes?: false)
+
+        allow(diff_files).to receive_messages(
+          collapsed_safe_lines?: safe_lines,
+          collapsed_safe_files?: safe_files,
+          collapsed_safe_bytes?: safe_bytes,
+          collapsed_safe_limits?: safe_limits
+        )
       end
 
-      it 'includes overflow information' do
-        expect(diffs_stats).to include(
-          {
+      it 'returns correct overflow value' do
+        if expected_overflow
+          expect(diffs_stats).to include(
             overflow: {
               visible_count: 20,
               email_path: 'email_format_path',
               diff_path: 'complete_diff_path'
             }
-          })
+          )
+        else
+          expect(diffs_stats).not_to have_key(:overflow)
+        end
       end
     end
   end

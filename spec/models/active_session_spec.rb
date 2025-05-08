@@ -185,7 +185,8 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions, feature_category: :s
       before do
         store = ActiveSupport::Cache::RedisCacheStore.new(
           namespace: Gitlab::Redis::Sessions::SESSION_NAMESPACE,
-          redis: Gitlab::Redis::Sessions
+          redis: Gitlab::Redis::Sessions,
+          coder: Gitlab::Sessions::CacheStoreCoder
         )
         # ActiveSupport::Cache::RedisCacheStore wraps the data in ActiveSupport::Cache::Entry
         # https://github.com/rails/rails/blob/v7.0.8.6/activesupport/lib/active_support/cache.rb#L506

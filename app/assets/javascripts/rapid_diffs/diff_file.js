@@ -76,7 +76,14 @@ export class DiffFile extends HTMLElement {
   }
 
   selectFile() {
-    this.scrollIntoView();
+    this.scrollIntoView({ block: 'start' });
+    setTimeout(() => {
+      // with content-visibility we might get a layout shift which we have to account for
+      // 1. first scroll: renders target file and neighbours, they receive proper dimensions
+      // 2. layout updates: target file might jump up or down, depending on the intrinsic size mismatch in neighbours
+      // 3. second scroll: layout is stable, we can now properly scroll the file into the viewport
+      this.scrollIntoView({ block: 'start' });
+    });
     // TODO: add outline for active file
   }
 

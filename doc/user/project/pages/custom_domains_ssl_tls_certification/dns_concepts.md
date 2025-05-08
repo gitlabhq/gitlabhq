@@ -57,11 +57,21 @@ search the web for `how to add dns record on <my hosting service>`.
 
 A DNS `A` record maps a host to an IPv4 IP address.
 It points a root domain as `example.com` to the host's IP address as
-`192.192.192.192`.
+`192.0.2.1`.
 
 Example:
 
-- `example.com` => `A` => `192.192.192.192`
+- `example.com` => `A` => `192.0.2.1`
+
+## `AAAA` record
+
+A DNS `AAAA` record maps a host to an IPv6 IP address.
+It points a root domain as `example.com` to the host's IP address as
+`2001:db8::1`.
+
+Example:
+
+- `example.com` => `AAAA` => `2001:db8::1`
 
 ## `CNAME` record
 
@@ -101,7 +111,8 @@ This way, you can verify the ownership for that domain name.
 
 You can have one DNS record or more than one combined:
 
-- `example.com` => `A` => `192.192.192.192`
+- `example.com` => `A` => `192.0.2.1`
+- `example.com` => `AAAA` => `2001:db8::1`
 - `www` => `CNAME` => `example.com`
 - `MX` => `mail.example.com`
 - `example.com`=> `TXT` => `"google-site-verification=6P08Ow5E-8Q0m6vQ7FMAqAYIDprkVV8fUf_7hZ4Qvc8"`

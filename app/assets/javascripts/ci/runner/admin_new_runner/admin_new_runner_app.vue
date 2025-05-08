@@ -37,7 +37,7 @@ export default {
 <template>
   <runner-create-wizard v-if="glFeatures.runnerCreateWizardAdmin" />
   <div v-else>
-    <page-heading :heading="s__('Runners|New instance runner')">
+    <page-heading :heading="s__('Runners|Create instance runner')">
       <template #description>
         {{
           s__(

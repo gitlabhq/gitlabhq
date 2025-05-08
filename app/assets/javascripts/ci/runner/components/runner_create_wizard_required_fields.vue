@@ -56,7 +56,7 @@ export default {
 </script>
 <template>
   <multi-step-form-template
-    :title="s__('Runners|New instance runner')"
+    :title="s__('Runners|Create instance runner')"
     :current-step="currentStep"
     :steps-total="stepsTotal"
   >

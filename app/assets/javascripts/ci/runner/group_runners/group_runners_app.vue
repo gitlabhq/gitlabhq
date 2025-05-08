@@ -223,7 +223,7 @@ export default {
           variant="confirm"
           data-testid="new-group-runner-button"
         >
-          {{ s__('Runners|New group runner') }}
+          {{ s__('Runners|Create group runner') }}
         </gl-button>
         <registration-dropdown
           :allow-registration-token="allowRegistrationToken"

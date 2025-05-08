@@ -64,7 +64,7 @@ export default {
     <crud-component :title="s__('Runners|Available Runners')" body-class="!gl-m-0">
       <template #actions>
         <gl-button v-if="canCreateRunner" size="small" :href="newProjectRunnerPath">{{
-          s__('Runners|New project runner')
+          s__('Runners|Create project runner')
         }}</gl-button>
         <registration-dropdown
           size="small"

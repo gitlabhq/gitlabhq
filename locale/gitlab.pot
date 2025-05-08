@@ -51913,6 +51913,9 @@ msgstr ""
 msgid "Runners|Copy registration token"
 msgstr ""
 
+msgid "Runners|Create"
+msgstr ""
+
 msgid "Runners|Create a %{codeStart}main.tf%{codeEnd} file with the following Terraform configuration. Save this file in the directory most suitable to your Terraform environment. If you don't have a directory, create a new project, and then follow the guidelines to %{linkStart}set up Terraform with GitLab%{linkEnd}."
 msgstr ""
 
@@ -51932,6 +51935,15 @@ msgid "Runners|Create an instance runner"
 msgstr ""
 
 msgid "Runners|Create an instance runner to generate a command that registers the runner with all its configurations."
+msgstr ""
+
+msgid "Runners|Create group runner"
+msgstr ""
+
+msgid "Runners|Create instance runner"
+msgstr ""
+
+msgid "Runners|Create project runner"
 msgstr ""
 
 msgid "Runners|Create runner"
@@ -52194,28 +52206,13 @@ msgstr ""
 msgid "Runners|Never expires"
 msgstr ""
 
-msgid "Runners|New"
-msgstr ""
-
-msgid "Runners|New group runner"
-msgstr ""
-
 msgid "Runners|New group runners can be registered"
-msgstr ""
-
-msgid "Runners|New instance runner"
-msgstr ""
-
-msgid "Runners|New project runner"
 msgstr ""
 
 msgid "Runners|New project runners can be registered"
 msgstr ""
 
 msgid "Runners|New registration token generated!"
-msgstr ""
-
-msgid "Runners|New runner"
 msgstr ""
 
 msgid "Runners|No description"

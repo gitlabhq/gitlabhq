@@ -87,8 +87,10 @@ Provide feedback on this feature in issue [517386](https://gitlab.com/gitlab-org
 
 Data usage: When you use this feature, the following data is sent to the large language model:
 
-- Contents of the file
-- The filename
+- Contents of the changed files
+- Filenames
+- Merge request title
+- Merge request description
 
 ### Interact with GitLab Duo in reviews
 

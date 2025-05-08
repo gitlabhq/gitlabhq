@@ -23,7 +23,7 @@ RSpec.describe 'projects/runners/_project_runners.html.haml', feature_category: 
       it 'renders the New project runner button' do
         render 'projects/runners/project_runners', project: project
 
-        expect(rendered).to have_link(s_('Runners|New project runner'), href: new_project_runner_path(project))
+        expect(rendered).to have_link(s_('Runners|Create project runner'), href: new_project_runner_path(project))
       end
     end
 
@@ -35,7 +35,7 @@ RSpec.describe 'projects/runners/_project_runners.html.haml', feature_category: 
       it 'does not render the New project runner button' do
         render 'projects/runners/project_runners', project: project
 
-        expect(rendered).not_to have_link(s_('Runners|New project runner'))
+        expect(rendered).not_to have_link(s_('Runners|Create project runner'))
       end
     end
   end

@@ -12,6 +12,7 @@ import { __ } from '~/locale';
 import { fixWebComponentsStreamingOnSafari } from '~/rapid_diffs/app/safari_fix';
 import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { disableContentVisibilityOnOlderChrome } from '~/rapid_diffs/app/chrome_fix';
 
 // This facade interface joins together all the bits and pieces of Rapid Diffs: DiffFile, Settings, File browser, etc.
 // It's a unified entrypoint for Rapid Diffs and all external communications should happen through this interface.
@@ -22,6 +23,7 @@ class RapidDiffsFacade {
 
   init() {
     this.#registerCustomElements();
+    disableContentVisibilityOnOlderChrome();
     fixWebComponentsStreamingOnSafari(
       document.querySelector('[data-diffs-list]'),
       this.DiffFileImplementation,
