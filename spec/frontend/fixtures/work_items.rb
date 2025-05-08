@@ -13,7 +13,7 @@ RSpec.describe "Work items", '(JavaScript fixtures)', type: :request, feature_ca
 
   let(:namespace_work_item_types_query_path) { 'work_items/graphql/namespace_work_item_types.query.graphql' }
 
-  it 'graphql/work_items/namespace_work_item_types.query.graphql.json' do
+  it 'graphql/work_items/project_namespace_work_item_types.query.graphql.json' do
     query = get_graphql_query_as_string(namespace_work_item_types_query_path)
 
     post_graphql(query, current_user: user, variables: { fullPath: project.full_path })
