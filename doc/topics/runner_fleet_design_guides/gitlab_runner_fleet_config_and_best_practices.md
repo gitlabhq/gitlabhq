@@ -194,9 +194,9 @@ The configuration in the table demonstrates the flexibility available when confi
 
 | Runner Type | Runner Tag | Scope | Count of Runner type to offer | Runner Worker Specification | Runner Host Environment | Environment Configuration |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
-| Instance | ci-runner-small | Available to run CI/CD jobs for all groups and projects by default. | 5 | 2 vCPU, 8GB RAM | Kubernetes | → 3 nodes <br> → Runner worker compute node \= **e2-standard-2**  |
-| Instance | ci-runner-medium | Available to run CI/CD jobs for all groups and projects by default. | 2 | 4 vCPU, 16GB RAM | Kubernetes | → 3 nodes <br> → Runner worker compute node \= **e2-standard-4**   |
-| Instance | ci-runner-large | Available to run CI/CD jobs for all groups and projects by default. | 1 | 8 vCPU, 32GB RAM | Kubernetes | → 3 nodes <br> → Runner worker compute node \= **e2-standard-8**   |
+| Instance | ci-runner-small | Available to run CI/CD jobs for all groups and projects by default. | 5 | 2 vCPU, 8 GB RAM | Kubernetes | → 3 nodes <br> → Runner worker compute node \= **e2-standard-2**  |
+| Instance | ci-runner-medium | Available to run CI/CD jobs for all groups and projects by default. | 2 | 4 vCPU, 16 GB RAM | Kubernetes | → 3 nodes <br> → Runner worker compute node \= **e2-standard-4**   |
+| Instance | ci-runner-large | Available to run CI/CD jobs for all groups and projects by default. | 1 | 8 vCPU, 32 GB RAM | Kubernetes | → 3 nodes <br> → Runner worker compute node \= **e2-standard-8**   |
 
 In the runner fleet configuration example, there are a total of three runner configurations and eight runners actively running CI/CD jobs.
 
@@ -282,7 +282,7 @@ node_pools = {
   "worker-pool" = {
     node_count = 3,
     node_config = {
-      machine_type = "e2-standard-4",    #4vCPU, 16GB each
+      machine_type = "e2-standard-4",    #4 vCPU, 16 GB each
       image_type   = "cos_containerd",   #Linux OS container only. Change to windows_ltsc_containerd for Windows OS container
       disk_size_gb = 150,
       disk_type    = "pd-balanced",
@@ -405,7 +405,7 @@ node_pools = {
   "medium-pool" = {
     node_count = 3,
     node_config = {
-      machine_type = "e2-standard-4",    #4vCPU, 16GB each
+      machine_type = "e2-standard-4",    #4 vCPU, 16 GB each
       image_type   = "cos_containerd",   #Linux OS container only. Change to windows_ltsc_containerd for Windows OS container
       disk_size_gb = 150,
       disk_type    = "pd-balanced",
@@ -417,7 +417,7 @@ node_pools = {
   "cpu-intensive-pool" = {
     node_count = 1,
     node_config = {
-      machine_type = "e2-highcpu-32", #32vCPU, 32GB each
+      machine_type = "e2-highcpu-32", #32 vCPU, 32 GB each
       image_type   = "cos_containerd",
       disk_size_gb = 150,
       disk_type    = "pd-balanced",

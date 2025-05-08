@@ -54496,6 +54496,9 @@ msgstr ""
 msgid "SecurityInventory|Add projects to this group to start tracking their security posture."
 msgstr ""
 
+msgid "SecurityInventory|An error occurred while fetching subgroups. Please try again."
+msgstr ""
+
 msgid "SecurityInventory|Basic SAST"
 msgstr ""
 
@@ -66499,10 +66502,10 @@ msgstr ""
 msgid "ValueStreamAnalytics|Median time between merge request created and merge request merged."
 msgstr ""
 
-msgid "ValueStreamAnalytics|Median time from issue created to issue closed."
+msgid "ValueStreamAnalytics|Median time between when an issue is first referenced in the commit message of a merge request and when that referenced issue is closed."
 msgstr ""
 
-msgid "ValueStreamAnalytics|Median time from the earliest commit of a linked issue's merge request to when that issue is closed."
+msgid "ValueStreamAnalytics|Median time from issue created to issue closed."
 msgstr ""
 
 msgid "ValueStreamAnalytics|Merge request analytics"

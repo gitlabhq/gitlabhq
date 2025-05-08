@@ -140,7 +140,7 @@ There are two levels of access control when making requests into backend service
    we issue short-lived tokens for each request. These tokens are implemented as JWTs and are
    cryptographically signed by the issuer.
 1. **User access.** We currently expect all end-user requests to go through the respective GitLab instance
-   first at least once. For certain requests (e.g. code completions) we allow users to make requests to
+   first at least once. For certain requests (for example, code completions) we allow users to make requests to
    a backend service directly using a backend-scoped UJWT.
    This token has a more limited lifespan and access than an instance token. To get a user token
    the user will first have to go through the respective GitLab instance to request the token.
@@ -150,13 +150,13 @@ There are two levels of access control when making requests into backend service
 The JWT issued for instance access carries the following claims (not exhaustive, subject to change):
 
 - `aud`: The audience. This is the name of the backend service (for example, `gitlab-ai-gateway`).
-- `sub`: The subject. This is the UUID of the GitLab instance the token was issued for (e.g.: `8f6e4253-58ce-42b9-869c-97f5c2287ad2`).
+- `sub`: The subject. This is the UUID of the GitLab instance the token was issued for (for example: `8f6e4253-58ce-42b9-869c-97f5c2287ad2`).
 - `iss`: The issuer URL. Either `https://gitlab.com` or `https://customers.gitlab.com`.
 - `exp`: The expiration time of the token (UNIX timestamp). Currently 1 hour for GitLab.com and 3 days
   for SM/Dedicated.
 - `nbf`: The time this token can not be used before (UNIX timestamp), this is set to 5 seconds before the time the token was issued.
 - `iat`: The time this token was issued at (UNIX timestamp), this is set to the time the token was issued.
-- `jti`: The JWT ID, set to a randomly created UUID (e.g.: `0099dd6c-b66e-4787-8ae2-c451d86025ae`).
+- `jti`: The JWT ID, set to a randomly created UUID (for example: `0099dd6c-b66e-4787-8ae2-c451d86025ae`).
 - `gitlab_realm`: A string to differentiate between requests from GitLab Self-Managed and GitLab.com.
   This is `self-managed` when issued by the Customers Portal and `saas` when issued by GitLab.com.
 - `scopes`: A list of access scopes that define which features this token is valid for. We obtain these
@@ -165,12 +165,12 @@ The JWT issued for instance access carries the following claims (not exhaustive,
 The JWT issues for user access carries the following claims (not exhaustive, subject to change):
 
 - `aud`: The audience. This is the name of the backend service (`gitlab-ai-gateway`).
-- `sub`: The subject. This is a globally unique anonymous user ID hash of the GitLab user the token was issued for (e.g.: `W2HPShrOch8RMah8ZWsjrXtAXo+stqKsNX0exQ1rsQQ=`).
+- `sub`: The subject. This is a globally unique anonymous user ID hash of the GitLab user the token was issued for (for example: `W2HPShrOch8RMah8ZWsjrXtAXo+stqKsNX0exQ1rsQQ=`).
 - `iss`: The issuer (`gitlab-ai-gateway`).
 - `exp`: The expiration time of the token (UNIX timestamp). Currently 1 hour after the issued at time.
 - `nbf`: The time this token can not be used before (UNIX timestamp), this is set to the time the token was issued.
 - `iat`: The time this token was issued at (UNIX timestamp), this is set to the time the token was issued.
-- `jti`: The JWT ID, set to a randomly created UUID (e.g.: `0099dd6c-b66e-4787-8ae2-c451d86025ae`).
+- `jti`: The JWT ID, set to a randomly created UUID (for example: `0099dd6c-b66e-4787-8ae2-c451d86025ae`).
 - `gitlab_realm`: A string to differentiate between requests from GitLab Self-Managed and GitLab.com. Either `self-managed` or `saas`.
 - `scopes`: A list of access scopes that define which features this token is valid for. We obtain these
   based on decisions such as how paid features are bundled into GitLab tiers and add-ons as well as what features

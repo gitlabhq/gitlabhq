@@ -19,6 +19,7 @@ Standard context, also referred to as [Cloud context](https://gitlab.com/gitlab-
 |-------------------|---------------|---------------------------------------------------------------------------------------------------|---------------------|
 | `project_id`      | integer, null | ID of the associated project. This is available when tracking is done inside any project path. (example: [GitLab project](https://gitlab.com/gitlab-org/gitlab))                                                                    | `12345`            |
 | `namespace_id`    | integer, null | ID of the associated namespace. This is available when tracking is done inside any group path. (example: [GitLab-org](https://gitlab.com/gitlab-org))                                                                                                                        | `67890`            |
+| `ultimate_parent_namespace_id`   | integer, null | Ultimate parent namespace ID of the associated namespace. This is available when the namespace ID of the event is known                                                                                                                                          | `67869`            |
 | `user_id`         | integer, null | ID of the associated user. This gets pseudonymized in the Snowplow enricher. Refer to the [metrics dictionary](https://metrics.gitlab.com/identifiers/). | `longhash`         |
 | `global_user_id`  | string, null  | An anonymized `user_id` hash unique across instances.                                            | `longhash`         |
 | `is_gitlab_team_member` | boolean, null | Indicates if the action was triggered by a GitLab team member.                                   | `true`, `false`    |
@@ -28,6 +29,7 @@ Standard context, also referred to as [Cloud context](https://gitlab.com/gitlab-
 | Field            | Type          | Description                                              | Example                   |
 |------------------|---------------|----------------------------------------------------------|---------------------------|
 | `instance_id`    | string, null  | ID of the GitLab instance where the request originated.  | `instance_long_uuid`      |
+| `unique_instance_id`    | string, null  | Unique ID of the GitLab instance where the request originated.  | `instance_long_uuid`      |
 | `host_name`      | string, null  | Hostname of the GitLab instance.                        | `"gitlab-host-id"`        |
 | `instance_version` | string, null | Version of the GitLab instance.                         | `"15.8.0"`                |
 | `realm`          | string, null  | Deployment type of GitLab. Must be one of: `"self-managed"`, `"saas"`, `"dedicated"`. | `"saas"`                  |

@@ -23912,6 +23912,7 @@ Represents a ComplianceFramework associated with a Project.
 | <a id="complianceframeworkprojects"></a>`projects` | [`ProjectConnection`](#projectconnection) | Projects associated with the compliance framework. (see [Connections](#connections)) |
 | <a id="complianceframeworkscanexecutionpolicies"></a>`scanExecutionPolicies` | [`ScanExecutionPolicyConnection`](#scanexecutionpolicyconnection) | Scan Execution Policies of the compliance framework. (see [Connections](#connections)) |
 | <a id="complianceframeworkscanresultpolicies"></a>`scanResultPolicies` | [`ScanResultPolicyConnection`](#scanresultpolicyconnection) | Scan Result Policies of the compliance framework. (see [Connections](#connections)) |
+| <a id="complianceframeworkupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the compliance framework was last updated. |
 | <a id="complianceframeworkvulnerabilitymanagementpolicies"></a>`vulnerabilityManagementPolicies` | [`VulnerabilityManagementPolicyConnection`](#vulnerabilitymanagementpolicyconnection) | Vulnerability Management Policies of the compliance framework. (see [Connections](#connections)) |
 
 #### Fields with arguments

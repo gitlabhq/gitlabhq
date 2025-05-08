@@ -11,7 +11,6 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import pipelineCiStatusUpdatedSubscription from '~/graphql_shared/subscriptions/pipeline_ci_status_updated.subscription.graphql';
 import { LOAD_FAILURE, POST_FAILURE, DELETE_FAILURE, DEFAULT } from '../constants';
 import cancelPipelineMutation from '../graphql/mutations/cancel_pipeline.mutation.graphql';
@@ -58,7 +57,6 @@ export default {
     [DELETE_FAILURE]: __('An error occurred while deleting the pipeline.'),
     [DEFAULT]: __('An unknown error occurred.'),
   },
-  mixins: [glFeatureFlagMixin()],
   inject: {
     graphqlResourceEtag: {
       default: '',
@@ -88,7 +86,7 @@ export default {
       result({ data }) {
         // we use a manual subscribeToMore call due to issues with
         // the skip hook not working correctly for the subscription
-        if (this.showRealTimePipelineStatus && data?.project?.pipeline?.id) {
+        if (data?.project?.pipeline?.id) {
           this.$apollo.queries.pipeline.subscribeToMore({
             document: pipelineCiStatusUpdatedSubscription,
             variables: {
@@ -263,9 +261,6 @@ export default {
     },
     isMergeTrainPipeline() {
       return this.pipeline.mergeRequestEventType === MERGE_TRAIN_EVENT_TYPE;
-    },
-    showRealTimePipelineStatus() {
-      return this.glFeatures.ciPipelineStatusRealtime;
     },
   },
   methods: {

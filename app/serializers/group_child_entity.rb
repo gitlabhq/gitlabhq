@@ -29,6 +29,8 @@ class GroupChildEntity < Grape::Entity
     polymorphic_path(instance)
   end
 
+  expose :web_url
+
   expose :permission do |instance|
     membership&.human_access
   end

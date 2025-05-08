@@ -13,7 +13,7 @@ module Gitlab
         # Otherwise the schema_spec fails
         validates :info, json_schema: { filename: 'security_scan_info' }
 
-        enum status: { succeeded: 1, purged: 6 }
+        enum :status, { succeeded: 1, purged: 6 }
 
         scope :to_purge, -> { where('id <= ?', last_stale_record_id) }
         scope :by_range, ->(range) { where(id: range) }

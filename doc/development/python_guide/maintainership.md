@@ -31,7 +31,7 @@ Then, depending on your project size:
   - Eligible team members should add the Python project to the `projects` field in their individual entry in [team_members](https://gitlab.com/gitlab-com/www-gitlab-com/-/tree/master/data/team_members/person) or [team_database](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/doc/team_database.md), specifying appropriate roles such as reviewer or maintainer.
   - Add the [individual roulette configuration](https://gitlab.com/gitlab-org/python/code-review-templates/-/tree/main/individual_roulette?ref_type=heads) to your project.
 
-- **For smaller projects (e.g. fewer than 10 contributors):**
+- **For smaller projects (for example, fewer than 10 contributors):**
 
   - Leverage the company wide pool of Python experts by adding the [shared pool configuration](https://gitlab.com/gitlab-org/python/code-review-templates/-/tree/main/shared_pull/danger?ref_type=heads) to your project.
   - You can also encourage contributors or other non-domain reviewers to reach out in your team's Slack channel for domain expertise where needed.

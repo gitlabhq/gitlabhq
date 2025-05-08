@@ -14,7 +14,7 @@ module Gitlab
         validates :name, presence: true, uniqueness: { scope: :table_name }, length: { maximum: MAX_IDENTIFIER_LENGTH }
         validates :table_name, presence: true, length: { maximum: MAX_IDENTIFIER_LENGTH }
 
-        enum constraint_type: { foreign_key: 0, check_constraint: 1 }
+        enum :constraint_type, { foreign_key: 0, check_constraint: 1 }
 
         scope :ordered, -> { order(attempts: :asc, id: :asc) }
         scope :foreign_key_type, -> { constraint_type_exists? ? foreign_key : all }

@@ -34,7 +34,8 @@ RSpec.describe GroupChildEntity do
        can_edit
        visibility
        permission
-       relative_path].each do |attribute|
+       relative_path
+       web_url].each do |attribute|
       it "includes #{attribute}" do
         expect(json[attribute.to_sym]).to be_present
       end

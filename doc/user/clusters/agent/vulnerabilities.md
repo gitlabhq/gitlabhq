@@ -239,7 +239,7 @@ For example:
 
 ```yaml
 container_scanning:
-  report_max_size: "300000000" # 300MB
+  report_max_size: "300000000" # 300 MB
 ```
 
 ## Configure Trivy Kubernetes resource detection
@@ -343,7 +343,7 @@ To resolve this, [configure the resource requirement](#configure-scanner-resourc
 
 ### `Pod ephemeral local storage usage exceeds the total limit of containers`
 
-OCS scans could fail for Kubernetes clusters that have low default ephemeral storage. For example, [GKE autopilot](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#defaults) sets the default ephemeral storage to 1GB. This is an issue for OCS when scanning namespaces with large images, as there may not be enough space to store all data necessary for OCS.
+OCS scans could fail for Kubernetes clusters that have low default ephemeral storage. For example, [GKE autopilot](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#defaults) sets the default ephemeral storage to 1 GB. This is an issue for OCS when scanning namespaces with large images, as there may not be enough space to store all data necessary for OCS.
 
 To resolve this, [configure the resource requirement](#configure-scanner-resource-requirements) to increase the amount of ephemeral storage available.
 

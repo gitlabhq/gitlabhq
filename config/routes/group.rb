@@ -27,6 +27,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     end
 
     get '/', action: :show, as: :group_canonical
+    delete '/', action: :destroy, as: :destroy_group_canonical
   end
 
   scope(

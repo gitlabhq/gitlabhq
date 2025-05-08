@@ -58,7 +58,7 @@ module Gitlab
           class Feedback < ApplicationRecord
             self.table_name = "vulnerability_feedback"
 
-            enum feedback_type: { dismissal: 0, issue: 1, merge_request: 2 }, _prefix: :for
+            enum :feedback_type, { dismissal: 0, issue: 1, merge_request: 2 }, prefix: :for
           end
 
           class Read < ApplicationRecord
@@ -68,7 +68,7 @@ module Gitlab
           class Statistic < ApplicationRecord
             self.table_name = 'vulnerability_statistics'
 
-            enum letter_grade: { a: 0, b: 1, c: 2, d: 3, f: 4 }
+            enum :letter_grade, { a: 0, b: 1, c: 2, d: 3, f: 4 }
           end
 
           module Statistics

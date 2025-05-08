@@ -883,7 +883,7 @@ For Linux package (Omnibus):
      'aws_secret_access_key' => 'secret123'
    }
    gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
-   # Consider using multipart uploads when file size reaches 100MB. Enter a number in bytes.
+   # Consider using multipart uploads when file size reaches 100 MB. Enter a number in bytes.
    # gitlab_rails['backup_multipart_chunk_size'] = 104857600
    ```
 

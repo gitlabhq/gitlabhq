@@ -251,7 +251,7 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
   [FLOW_METRICS.CYCLE_TIME]: {
     label: s__('DORA4Metrics|Cycle time'),
     description: s__(
-      "ValueStreamAnalytics|Median time from the earliest commit of a linked issue's merge request to when that issue is closed.",
+      'ValueStreamAnalytics|Median time between when an issue is first referenced in the commit message of a merge request and when that referenced issue is closed.',
     ),
     groupLink: '-/analytics/value_stream_analytics',
     projectLink: '-/value_stream_analytics',

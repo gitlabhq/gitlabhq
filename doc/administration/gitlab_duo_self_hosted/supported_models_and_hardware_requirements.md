@@ -92,10 +92,10 @@ The following hardware specifications are the minimum requirements for running G
 
 | Model size                                 | Minimum GPU configuration | Minimum VRAM required |
 |--------------------------------------------|---------------------------|-----------------------|
-| 7B models<br>(for example, Mistral 7B)     | 1x NVIDIA A100 (40GB)     | 35 GB                 |
-| 22B models<br>(for example, Codestral 22B) | 2x NVIDIA A100 (80GB)     | 110 GB                |
-| Mixtral 8x7B                               | 2x NVIDIA A100 (80GB)     | 220 GB                |
-| Mixtral 8x22B                              | 8x NVIDIA A100 (80GB)     | 526 GB                |
+| 7B models<br>(for example, Mistral 7B)     | 1x NVIDIA A100 (40 GB)    | 35 GB                 |
+| 22B models<br>(for example, Codestral 22B) | 2x NVIDIA A100 (80 GB)    | 110 GB                |
+| Mixtral 8x7B                               | 2x NVIDIA A100 (80 GB)    | 220 GB                |
+| Mixtral 8x22B                              | 8x NVIDIA A100 (80 GB)    | 526 GB                |
 
 Use [Hugging Face's memory utility](https://huggingface.co/spaces/hf-accelerate/model-memory-usage) to verify memory requirements.
 

@@ -135,9 +135,10 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           allow(Gitlab::Git::Commit).to receive(:between) { [] }
         end
 
-        context 'when git_push_create_all_pipelines is disabled' do
-          before do
-            stub_feature_flags(git_push_create_all_pipelines: false)
+        context 'with a git_push_pipeline_limit value that has not reached the limit' do
+          it 'creates all pipelines' do
+            # We don't run a pipeline for a deletion
+            expect { subject.execute }.to change { Ci::Pipeline.count }.by(changes.count - 1)
           end
 
           it 'creates pipeline for branches and tags' do
@@ -158,9 +159,9 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           end
         end
 
-        context 'when git_push_create_all_pipelines is enabled' do
+        context 'when git_push_pipeline_limit is unlimited' do
           before do
-            stub_feature_flags(git_push_create_all_pipelines: true)
+            stub_application_setting(git_push_pipeline_limit: 0)
           end
 
           it 'creates all pipelines' do
@@ -169,14 +170,15 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           end
         end
 
-        context 'when git_push_pipeline_limit is unlimited' do
+        context 'when git_push_pipeline_limit is exceeded' do
+          let(:push_pipeline_limit) { 1 }
+
           before do
-            allow(Gitlab::CurrentSettings).to receive(:git_push_pipeline_limit).and_return(0)
+            stub_application_setting(git_push_pipeline_limit: push_pipeline_limit)
           end
 
-          it 'creates all pipelines' do
-            # We don't run a pipeline for a deletion
-            expect { subject.execute }.to change { Ci::Pipeline.count }.by(changes.count - 1)
+          it 'creates pipelines until the limit is reached and logs the skipped refs' do
+            expect { subject.execute }.to change { Ci::Pipeline.count }.by(push_pipeline_limit)
           end
         end
       end
@@ -313,10 +315,6 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
       end
 
       context 'when git_push_pipeline_limit is reached' do
-        before do
-          stub_feature_flags(git_push_create_all_pipelines: true)
-        end
-
         it 'logs a warning' do
           allow(Gitlab::AppJsonLogger).to receive(:info).and_call_original
 

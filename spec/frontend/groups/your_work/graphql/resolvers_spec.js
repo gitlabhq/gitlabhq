@@ -63,17 +63,20 @@ describe('your work groups resolver', () => {
       fullPath: '/frontend-fixtures-group',
       fullName: 'frontend-fixtures-group',
       parent: { id: null },
-      webUrl: '/frontend-fixtures-group',
+      webUrl: mockGroup.web_url,
       organizationEditPath: '',
       descriptionHtml: '',
       avatarUrl: null,
       descendantGroupsCount: 1,
       projectsCount: 2,
-      groupMembersCount: 0,
+      groupMembersCount: mockGroup.group_members_count,
       visibility: 'public',
       createdAt: mockGroup.created_at,
       updatedAt: mockGroup.updated_at,
       markedForDeletionOn: mockGroup.marked_for_deletion_on,
+      isLinkedToSubscription: mockGroup.is_linked_to_subscription,
+      isAdjournedDeletionEnabled: mockGroup.is_adjourned_deletion_enabled,
+      permanentDeletionDate: mockGroup.permanent_deletion_date,
       userPermissions: {
         canLeave: false,
         removeGroup: true,
@@ -95,7 +98,6 @@ describe('your work groups resolver', () => {
         },
       ],
       childrenCount: 1,
-      isLinkedToSubscription: false,
     });
 
     expect(pageInfo).toEqual({

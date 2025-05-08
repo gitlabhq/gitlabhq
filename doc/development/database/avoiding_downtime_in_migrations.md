@@ -766,7 +766,7 @@ table being converted, but in general it's done in the following steps:
          runner_id
          user_id
        ],
-       # optional. Only needed when there is no primary key e.g. like schema_migrations
+       # optional. Only needed when there is no primary key, for example, like schema_migrations.
        primary_key: :id
      )
    end

@@ -65,8 +65,12 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
 
     context 'with standard properties' do
       let(:user) { build_stubbed(:user) }
+      let(:top_level_group) { create(:group) }
+      let(:subgroup1) { create(:group, parent: top_level_group) }
+      let(:subgroup2) { create(:group, parent: subgroup1) }
+      let(:bottom_level_group) { create(:group, parent: subgroup2) }
       let(:project_id) { 2 }
-      let(:namespace_id) { 3 }
+      let(:namespace) { bottom_level_group }
       let(:plan_name) { "plan name" }
       let(:hostname) { 'example.com' }
       let(:version) { '17.3.0' }
@@ -78,13 +82,14 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
       end
 
       subject do
-        described_class.new(user: user, project_id: project_id, namespace_id: namespace_id, plan_name: plan_name)
+        described_class.new(user: user, project_id: project_id, namespace: namespace, plan_name: plan_name)
       end
 
       it 'holds the correct values', :aggregate_failures do
         expect(json_data[:is_gitlab_team_member]).to eq(nil)
         expect(json_data[:project_id]).to eq(project_id)
-        expect(json_data[:namespace_id]).to eq(namespace_id)
+        expect(json_data[:namespace_id]).to eq(namespace.id)
+        expect(json_data[:ultimate_parent_namespace_id]).to eq(top_level_group.id)
         expect(json_data[:plan]).to eq(plan_name)
         expect(json_data[:host_name]).to eq(hostname)
         expect(json_data[:instance_version]).to eq(version)

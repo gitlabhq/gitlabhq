@@ -35,7 +35,7 @@ set `per_worker_max_memory_mb` to the new RSS limit in megabytes:
 1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   puma['per_worker_max_memory_mb'] = 1024 # 1GB
+   puma['per_worker_max_memory_mb'] = 1024 # 1 GB
    ```
 
 1. Reconfigure GitLab:

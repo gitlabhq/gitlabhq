@@ -58,7 +58,7 @@ How to enable:
       - GCK: `make console`
       - GitLab Distribution: [Start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session)
    1. Run `Feature.enable(:observability_features);`
-1. Restart your instance (e.g. `gdk restart`).
+1. Restart your instance (for example, `gdk restart`).
 1. Follow the [instructions to activate your new license](../../administration/license.md#activate-gitlab-ee).
 1. Test out the GitLab Observability feature by navigating to a project and selecting Tracing, Metrics, or Logs from the Monitor section of the navigation menu.
 1. If you are seeing 404 errors you might need to manually [refresh](../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data) your license data.

@@ -290,8 +290,6 @@ The default value is `4` for GitLab Self-Managed and GitLab.com.
 
 To change this limit on your GitLab Self-Managed instance, use the [Admin Area](settings/continuous_integration.md#pipeline-limit-per-git-push).
 
-Changing the limit is currently behind the [`git_push_create_all_pipelines` feature flag](feature_flags.md), without this feature flag turned on the amount of pipelines that can be triggered is limited to 4.
-
 {{< alert type="warning" >}}
 
 Increasing this limit is not recommended. It can cause excessive load on your GitLab instance if many changes are pushed simultaneously, potentially creating a flood of pipelines.
@@ -525,17 +523,21 @@ Set the limit to `0` to disable it.
 
 ### Limit pipeline hierarchy size
 
-A [pipeline hierarchy](../ci/pipelines/downstream_pipelines.md) can
-contain up to 1000 downstream pipelines by default. This limit is checked when creating new
-downstream pipelines. If a new downstream pipeline would cause the hierarchy to exceed this
-limit, the pipeline creation fails.
+By default, a [pipeline hierarchy](../ci/pipelines/downstream_pipelines.md) can contain up to 1000 downstream pipelines.
+When this limit is exceeded, pipeline creation fails with the error `downstream pipeline tree is too large`.
 
-Set the limit to `0` to disable it. Defaults to `1000` on GitLab Self-Managed.
+{{< alert type="warning" >}}
 
-To set this limit to `2000` on your instance, run the following command in the GitLab Rails console:
+Increasing this limit is not recommended. The default limit protects your GitLab instance from excessive resource consumption, potential pipeline recursion, and database overload.
+
+Instead of increasing the limit, restructure your CI/CD configuration by splitting large pipeline hierarchies into smaller pipelines or using parallel jobs.
+
+{{< /alert >}}
+
+To modify this limit on your instance, run the following command in the GitLab Rails console:
 
 ```ruby
-Plan.default.actual_limits.update!(pipeline_hierarchy_size: 2000)
+Plan.default.actual_limits.update!(pipeline_hierarchy_size: 500)
 ```
 
 You can also set this limit by using the GitLab UI in the [Admin area](settings/continuous_integration.md#set-cicd-limits).

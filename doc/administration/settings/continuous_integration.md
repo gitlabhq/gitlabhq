@@ -260,7 +260,7 @@ The default value is `0`, which means there is no restriction.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186134) in GitLab 18.0 [Behind `git_push_create_all_pipelines` feature flag](../../administration/feature_flags.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186134) in GitLab 18.0.
 
 {{< /history >}}
 

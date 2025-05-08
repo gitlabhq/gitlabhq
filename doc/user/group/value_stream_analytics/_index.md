@@ -368,9 +368,7 @@ The **Overview** page in value stream analytics displays key metrics of the DevS
 Value stream analytics includes the following lifecycle metrics:
 
 - **Lead time**: Median time from when the issue was created to when it was closed.
-- **Cycle time**: Median time from first commit to issue closed. GitLab measures cycle time from the earliest commit of a
-  [linked issue's merge request](../../project/issues/crosslinking_issues.md#from-commit-messages) to when that issue is closed.
-  The cycle time approach underestimates the lead time because merge request creation is always later than commit time.
+- **Cycle time**: Median time between when an issue is first [referenced in the commit message](../../project/issues/crosslinking_issues.md#from-commit-messages) of a merge request and when that referenced issue is closed. You must include `#` followed by the issue number (for example, `#123`) in the commit message, otherwise no data is displayed. Cycle time is typically shorter than lead time because the merge request is created after the first commit.
 - **New issues**: Number of new issues created.
 - **Deploys**: Total number of deployments to production.
 

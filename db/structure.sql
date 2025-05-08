@@ -34229,10 +34229,6 @@ CREATE INDEX p_ci_job_artifacts_id_idx ON ONLY p_ci_job_artifacts USING btree (i
 
 CREATE INDEX index_ci_job_artifacts_id_for_terraform_reports ON ci_job_artifacts USING btree (id) WHERE (file_type = 18);
 
-CREATE INDEX p_ci_job_artifacts_expire_at_job_id_idx ON ONLY p_ci_job_artifacts USING btree (expire_at, job_id);
-
-CREATE INDEX index_ci_job_artifacts_on_expire_at_and_job_id ON ci_job_artifacts USING btree (expire_at, job_id);
-
 CREATE INDEX p_ci_job_artifacts_file_final_path_idx ON ONLY p_ci_job_artifacts USING btree (file_final_path) WHERE (file_final_path IS NOT NULL);
 
 CREATE INDEX index_ci_job_artifacts_on_file_final_path ON ci_job_artifacts USING btree (file_final_path) WHERE (file_final_path IS NOT NULL);
@@ -40696,8 +40692,6 @@ ALTER INDEX p_ci_job_artifacts_expire_at_idx ATTACH PARTITION index_ci_job_artif
 ALTER INDEX p_ci_job_artifacts_project_id_id_idx ATTACH PARTITION index_ci_job_artifacts_for_terraform_reports;
 
 ALTER INDEX p_ci_job_artifacts_id_idx ATTACH PARTITION index_ci_job_artifacts_id_for_terraform_reports;
-
-ALTER INDEX p_ci_job_artifacts_expire_at_job_id_idx ATTACH PARTITION index_ci_job_artifacts_on_expire_at_and_job_id;
 
 ALTER INDEX p_ci_job_artifacts_file_final_path_idx ATTACH PARTITION index_ci_job_artifacts_on_file_final_path;
 

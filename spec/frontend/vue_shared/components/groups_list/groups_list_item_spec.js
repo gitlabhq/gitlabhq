@@ -365,7 +365,7 @@ describe('GroupsListItem', () => {
         describe('when deletion is confirmed', () => {
           describe('when API call is successful', () => {
             it('calls DELETE on group path, properly sets loading state, and emits refetch event', async () => {
-              axiosMock.onDelete(`/${groupWithDeleteAction.fullPath}`).reply(200);
+              axiosMock.onDelete(groupWithDeleteAction.webUrl).reply(200);
 
               await deleteModalFireConfirmEvent();
               expect(findDeleteConfirmationModal().props('confirmLoading')).toBe(true);
@@ -382,7 +382,7 @@ describe('GroupsListItem', () => {
 
           describe('when API call is not successful', () => {
             it('calls DELETE on group path, properly sets loading state, and shows error alert', async () => {
-              axiosMock.onDelete(`/${groupWithDeleteAction.fullPath}`).networkError();
+              axiosMock.onDelete(groupWithDeleteAction.webUrl).networkError();
 
               await deleteModalFireConfirmEvent();
               expect(findDeleteConfirmationModal().props('confirmLoading')).toBe(true);

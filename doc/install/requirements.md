@@ -129,9 +129,9 @@ Here are some required settings for externally managed PostgreSQL instances.
 
 | Tunable setting        | Required value | More information |
 |:-----------------------|:---------------|:-----------------|
-| `work_mem`             | minimum `8MB`  | This value is the Linux package default. In large deployments, if queries create temporary files, you should increase this setting. |
-| `maintenance_work_mem` | minimum `64MB` | You require [more for larger database servers](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8377#note_1728173087). |
-| `shared_buffers`       | minimum `2GB`  | You require more for larger database servers. The Linux package default is set to 25% of server RAM. |
+| `work_mem`             | minimum `8 MB`  | This value is the Linux package default. In large deployments, if queries create temporary files, you should increase this setting. |
+| `maintenance_work_mem` | minimum `64 MB` | You require [more for larger database servers](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8377#note_1728173087). |
+| `shared_buffers`       | minimum `2 GB`  | You require more for larger database servers. The Linux package default is set to 25% of server RAM. |
 | `statement_timeout`    | maximum 1 min  | A statement timeout prevents runaway issues with locks and the database rejecting new clients. One minute matches the Puma rack timeout setting. |
 
 ## Puma

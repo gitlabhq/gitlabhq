@@ -64,7 +64,7 @@ export default {
       result() {
         // we use a manual subscribeToMore call due to issues with
         // the skip hook not working correctly for the subscription
-        if (this.showRealTimePipelineStatus && this.commit?.pipeline?.id) {
+        if (this.commit?.pipeline?.id) {
           this.$apollo.queries.commit.subscribeToMore({
             document: pipelineCiStatusUpdatedSubscription,
             variables: {
@@ -132,9 +132,6 @@ export default {
     },
     showCommitId() {
       return this.commit?.sha?.substr(0, 8);
-    },
-    showRealTimePipelineStatus() {
-      return this.glFeatures.ciPipelineStatusRealtime;
     },
   },
   watch: {

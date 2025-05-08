@@ -19,7 +19,11 @@ export const formatGroup = (group) => ({
     removeGroup: group.can_remove,
     viewEditPage: group.can_edit,
   },
-  webUrl: group.relative_path,
+  webUrl: group.web_url,
+  groupMembersCount: group.group_members_count,
+  isLinkedToSubscription: group.is_linked_to_subscription,
+  isAdjournedDeletionEnabled: group.is_adjourned_deletion_enabled,
+  permanentDeletionDate: group.permanent_deletion_date,
   maxAccessLevel: {
     integerValue: group.permission
       ? ACCESS_LEVELS_STRING_TO_INTEGER[group.permission.toUpperCase()]
@@ -35,8 +39,4 @@ export const formatGroup = (group) => ({
   // Properties below are hard coded for now until API has been
   // updated to support these fields.
   organizationEditPath: '',
-  groupMembersCount: 0,
-  isLinkedToSubscription: false,
-  isAdjournedDeletionEnabled: false,
-  permanentDeletionDate: null,
 });

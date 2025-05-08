@@ -1239,7 +1239,7 @@ to swap the primary key.
 By default, an integer column can hold up to a 4-byte (32-bit) number. That is
 a max value of 2,147,483,647. Be aware of this when creating a column that
 holds file sizes in byte units. If you are tracking file size in bytes, this
-restricts the maximum file size to just over 2GB.
+restricts the maximum file size to just over 2 GB.
 
 To allow an integer column to hold up to an 8-byte (64-bit) number, explicitly
 set the limit to 8-bytes. This allows the column to hold a value up to

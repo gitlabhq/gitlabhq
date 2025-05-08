@@ -69,7 +69,7 @@ Milestone 2:
 1. Implement the deduplication logic in a post deployment migration.
 1. Replace the existing index with a unique index.
 
-How to resolve duplicates (e.g., merge attributes, keep the most recent record) depends on the features built on top of the database table. In this example, we keep the most recent record.
+How to resolve duplicates (for example, merge attributes, keep the most recent record) depends on the features built on top of the database table. In this example, we keep the most recent record.
 
 ```ruby
 def up

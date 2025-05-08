@@ -8,7 +8,7 @@ class IncreaseQuantityForGitlabcomDuoProTrials < Gitlab::Database::Migration[2.2
   class AddOn < MigrationRecord
     self.table_name = :subscription_add_ons
 
-    enum name: {
+    enum :name, {
       code_suggestions: 1
     }
   end

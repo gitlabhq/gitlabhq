@@ -132,7 +132,7 @@ export default {
       this.isDeleteModalLoading = true;
 
       try {
-        await axios.delete(`/${this.group.fullPath}`, {
+        await axios.delete(this.group.webUrl, {
           params: deleteParams(this.group),
         });
         this.refetch();

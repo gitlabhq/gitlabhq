@@ -6,7 +6,7 @@ module Gitlab
       class QueuedAction < SharedModel
         self.table_name = 'postgres_reindex_queued_actions'
 
-        enum state: { queued: 0, done: 1, failed: 2 }
+        enum :state, { queued: 0, done: 1, failed: 2 }
 
         belongs_to :index, foreign_key: :index_identifier, class_name: 'Gitlab::Database::PostgresIndex'
 

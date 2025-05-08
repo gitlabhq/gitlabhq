@@ -13,6 +13,10 @@ RSpec.shared_examples 'groups routing' do
     expect(get("/groups/#{group_path}/-/inactive")).to route_to('groups#show', id: group_path)
   end
 
+  it "to #destroy" do
+    expect(delete("/groups/#{group_path}")).to route_to('groups#destroy', id: group_path)
+  end
+
   it "also supports nested groups" do
     nested_group = create(:group, parent: group)
     expect(get("/#{group_path}/#{nested_group.path}")).to route_to('groups#show', id: "#{group_path}/#{nested_group.path}")

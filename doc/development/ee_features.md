@@ -1387,7 +1387,7 @@ export default {
 
 An EE component can be imported
 [asynchronously](https://v2.vuejs.org/v2/guide/components-dynamic-async.html#Async-Components) if
-its rendering within CE codebase relies on some check (e.g. a feature flag check).
+its rendering within CE codebase relies on some check (for example, a feature flag check).
 
 {{< /alert >}}
 

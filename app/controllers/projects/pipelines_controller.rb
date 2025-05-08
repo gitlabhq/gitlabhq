@@ -11,10 +11,6 @@ class Projects::PipelinesController < Projects::ApplicationController
     :charts, :destroy, :status, :manual_variables
   ]
 
-  before_action only: [:show] do
-    push_frontend_feature_flag(:ci_pipeline_status_realtime, project)
-  end
-
   before_action only: [:new, :create, :manual_variables] do
     push_frontend_feature_flag(:ci_inputs_for_pipelines, project)
   end

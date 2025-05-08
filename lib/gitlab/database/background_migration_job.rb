@@ -13,7 +13,7 @@ module Gitlab
         for_migration_class(class_name).where('arguments = ?', arguments.to_json) # rubocop:disable Rails/WhereEquals
       end
 
-      enum status: {
+      enum :status, {
         pending: 0,
         succeeded: 1
       }

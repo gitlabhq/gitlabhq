@@ -1340,3 +1340,11 @@ Scalability/RandomCronSchedule:
 Migration/PreventFeatureFlagsUsage:
   Enabled: true
   EnforcedSince: 20250505000000
+
+Rails/EnumSyntax:
+  Enabled: true
+  Include:
+    - 'app/models/**/*.rb'
+    - 'ee/app/models/**/*.rb'
+    - 'lib/**/*.rb'
+    - 'ee/lib/**/*.rb'

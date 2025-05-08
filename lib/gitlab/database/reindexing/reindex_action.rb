@@ -7,7 +7,7 @@ module Gitlab
         self.table_name = 'postgres_reindex_actions'
 
         belongs_to :index, foreign_key: :index_identifier, class_name: 'Gitlab::Database::PostgresIndex'
-        enum state: { started: 0, finished: 1, failed: 2 }
+        enum :state, { started: 0, finished: 1, failed: 2 }
 
         # Amount of time to consider a previous reindexing *recent*
         RECENT_THRESHOLD = 10.days

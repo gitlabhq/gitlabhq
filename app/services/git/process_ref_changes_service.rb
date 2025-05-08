@@ -68,17 +68,13 @@ module Git
     end
 
     def under_process_limit?(change)
-      return true if Feature.enabled?(:git_push_create_all_pipelines, project)
+      return true if process_limit == 0 # 0 allows for unlimited pipelines
 
-      change[:index] < (Gitlab::CurrentSettings.git_push_pipeline_limit || 4)
+      change[:index] < process_limit
     end
 
     def process_limit
-      if Feature.enabled?(:git_push_create_all_pipelines, project)
-        Gitlab::CurrentSettings.git_push_pipeline_limit || 0
-      else
-        Gitlab::CurrentSettings.git_push_pipeline_limit || 4
-      end
+      Gitlab::CurrentSettings.git_push_pipeline_limit
     end
 
     def warn_if_over_process_limit(changes)

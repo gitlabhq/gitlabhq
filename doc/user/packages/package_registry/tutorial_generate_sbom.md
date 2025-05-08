@@ -528,7 +528,7 @@ If you experience memory issues:
 
 For optimal performance:
 
-- Use runners with at least 2GB of RAM.
+- Use runners with at least 2 GB of RAM.
 - Allow 5-10 minutes per 1,000 packages.
 - Increase the job timeout for groups with many packages.
 

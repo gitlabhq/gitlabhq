@@ -171,13 +171,16 @@ export default {
       });
 
       if (!search) {
-        const theseUsers = toUsernames(users);
-        const newOptions = difference(theseUsers, this.currentSelectedReviewers);
+        const eligibleReviewers = toUsernames(users);
+        const unselectedEligibleReviewers = difference(
+          eligibleReviewers,
+          this.currentSelectedReviewers,
+        );
 
         setReviewersForList({
           issuableId: this.issuableId,
           listId: this.uniqueId,
-          reviewers: newOptions,
+          reviewers: unselectedEligibleReviewers,
         });
       }
 

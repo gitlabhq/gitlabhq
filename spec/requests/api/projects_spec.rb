@@ -1510,11 +1510,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       url = 'http://example.com'
       stub_application_setting(import_sources: nil)
 
-      endpoint_url = "#{url}/info/refs?service=git-upload-pack"
-      stub_full_request(endpoint_url, method: :get).to_return(
-        { status: 200,
-          body: '001e# service=git-upload-pack',
-          headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' } })
+      allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with(url).and_return(true)
 
       project_params = { import_url: url, path: 'path-project-Foo', name: 'Foo Project' }
       expect { post api(path, user), params: project_params }
@@ -1532,29 +1528,12 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(response).to have_gitlab_http_status(:created)
     end
 
-    it 'disallows creating a project with an import_url that is not reachable' do
-      url = 'http://example.com'
-      endpoint_url = "#{url}/info/refs?service=git-upload-pack"
-      error_response = { status: 301, body: '', headers: nil }
-      stub_full_request(endpoint_url, method: :get).to_return(error_response)
-      project_params = { import_url: url, path: 'path-project-Foo', name: 'Foo Project' }
-
-      expect { post api(path, user), params: project_params }.not_to change { Project.count }
-
-      expect(response).to have_gitlab_http_status(:unprocessable_entity)
-      expect(json_response['message']).to eq("#{url} endpoint error: #{error_response[:status]}")
-    end
-
     it 'creates a project with an import_url that is valid' do
       url = 'http://example.com'
-      endpoint_url = "#{url}/info/refs?service=git-upload-pack"
-      git_response = {
-        status: 200,
-        body: '001e# service=git-upload-pack',
-        headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' }
-      }
+
+      allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with(url).and_return(true)
       stub_application_setting(import_sources: ['git'])
-      stub_full_request(endpoint_url, method: :get).to_return(git_response)
+
       project_params = { import_url: url, path: 'path-project-Foo', name: 'Foo Project' }
 
       expect { post api(path, user), params: project_params }.to change { Project.count }.by(1)

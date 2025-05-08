@@ -40,6 +40,6 @@ This method also ensures that on environments that allow for user fabrication, t
 
 ## Disable email verification
 
-If [email verification](../../../../security/email_verification.md) is enabled on the test environment (via the `require_email_verification` feature flag), a user cannot log in under certain conditions (e.g., logging in the first time from a new location) unless they enter a verification code that is sent to their email address.
+If [email verification](../../../../security/email_verification.md) is enabled on the test environment (via the `require_email_verification` feature flag), a user cannot log in under certain conditions (for example, logging in the first time from a new location) unless they enter a verification code that is sent to their email address.
 
 To disable email verification you can disable the `require_email_verification` feature flag, which will disable email verification for all users on the instance. Alternatively, you can skip verification for individual users by enabling the `skip_require_email_verification` feature flag for that user.

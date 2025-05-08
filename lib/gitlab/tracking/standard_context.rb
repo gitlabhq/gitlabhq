@@ -3,18 +3,18 @@
 module Gitlab
   module Tracking
     class StandardContext
-      GITLAB_STANDARD_SCHEMA_URL = 'iglu:com.gitlab/gitlab_standard/jsonschema/1-1-5'
+      GITLAB_STANDARD_SCHEMA_URL = 'iglu:com.gitlab/gitlab_standard/jsonschema/1-1-6'
       GITLAB_RAILS_SOURCE = 'gitlab-rails'
 
       def initialize(
-        namespace_id: nil, plan_name: nil, project_id: nil, user: nil,
+        namespace: nil, plan_name: nil, project_id: nil, user: nil,
         feature_enabled_by_namespace_ids: nil, **extra)
-        check_argument_type(:namespace_id, namespace_id, [Integer])
+        check_argument_type(:namespace, namespace, [Namespace])
         check_argument_type(:plan_name, plan_name, [String])
         check_argument_type(:project_id, project_id, [Integer])
         check_argument_type(:user, user, [User, DeployToken])
 
-        @namespace_id = namespace_id
+        @namespace = namespace
         @plan_name = plan_name
         @project_id = project_id
         @user = user
@@ -44,7 +44,7 @@ module Gitlab
 
       private
 
-      attr_accessor :namespace_id, :project_id, :extra, :plan_name, :user, :feature_enabled_by_namespace_ids
+      attr_accessor :namespace, :project_id, :extra, :plan_name, :user, :feature_enabled_by_namespace_ids
 
       def to_h
         {
@@ -56,7 +56,8 @@ module Gitlab
           user_id: tracked_user_id,
           global_user_id: global_user_id,
           is_gitlab_team_member: gitlab_team_member?(user&.id),
-          namespace_id: namespace_id,
+          namespace_id: namespace&.id,
+          ultimate_parent_namespace_id: namespace&.root_ancestor&.id,
           project_id: project_id,
           feature_enabled_by_namespace_ids: feature_enabled_by_namespace_ids,
           realm: realm,

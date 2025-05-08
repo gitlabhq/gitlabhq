@@ -105,15 +105,12 @@ describe('Pipeline header', () => {
     return createMockApollo(handlers);
   };
 
-  const createComponent = (handlers = defaultHandlers, isRealTime = true) => {
+  const createComponent = (handlers = defaultHandlers) => {
     apolloProvider = createMockApolloProvider(handlers);
 
     wrapper = shallowMountExtended(PipelineHeader, {
       provide: {
         ...defaultProvideOptions,
-        glFeatures: {
-          ciPipelineStatusRealtime: isRealTime,
-        },
       },
       stubs: { GlSprintf },
       apolloProvider,
@@ -457,14 +454,6 @@ describe('Pipeline header', () => {
         expect(subscriptionHandler).toHaveBeenCalledWith({
           pipelineId: pipeline.id,
         });
-      });
-
-      it('does not call subscription when flag is false', async () => {
-        const realTime = false;
-
-        await createComponent(defaultHandlers, realTime);
-
-        expect(subscriptionHandler).not.toHaveBeenCalled();
       });
     });
   });

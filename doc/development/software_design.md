@@ -97,7 +97,7 @@ For **domain layer** we refer to:
 This includes `ActiveRecord` models, service objects, workers, and domain-specific Plain Old Ruby Objects.
 
 For now we exclude application adapters from the modularization in order to keep the effort smaller and because
-a given endpoint don't always match to a single domain (e.g. settings, merge request view, project view, etc.).
+a given endpoint does not always match to a single domain (for example, settings, a merge request view, or a project view).
 
 For **infrastructure layer** we refer to code in `lib` that is for generic purposes, not containing GitLab business concepts,
 and that could be extracted into Ruby gems.
