@@ -326,6 +326,10 @@ deployment_clusters:
   - table: clusters
     column: cluster_id
     on_delete: async_delete
+duo_workflows_workloads:
+  - table: p_ci_workloads
+    column: workload_id
+    on_delete: async_delete
 events:
   - table: users
     column: author_id
@@ -495,6 +499,10 @@ p_ci_runner_machine_builds:
     column: project_id
     on_delete: async_delete
 p_ci_stages:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+p_ci_workloads:
   - table: projects
     column: project_id
     on_delete: async_delete

@@ -83,6 +83,10 @@ module Ci
     has_many :stages, ->(pipeline) { in_partition(pipeline).order(position: :asc) },
       partition_foreign_key: :partition_id, inverse_of: :pipeline
 
+    has_one :workload, ->(pipeline) { in_partition(pipeline) },
+      class_name: "Ci::Workloads::Workload",
+      partition_foreign_key: :partition_id, inverse_of: :pipeline
+
     #
     # In https://gitlab.com/groups/gitlab-org/-/epics/9991, we aim to convert all CommitStatus related models to
     # Ci::Job models. With that epic, we aim to replace `statuses` with `jobs`.

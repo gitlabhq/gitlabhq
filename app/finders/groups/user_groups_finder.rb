@@ -74,8 +74,7 @@ module Groups
     end
 
     def exact_matches_first_enabled?
-      params[:exact_matches_first] && params[:search].present? &&
-        Feature.enabled?(:exact_matches_first_project_transfer, current_user)
+      params[:exact_matches_first] && params[:search].present?
     end
   end
 end

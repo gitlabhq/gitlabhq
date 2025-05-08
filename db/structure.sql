@@ -4624,6 +4624,18 @@ CREATE TABLE p_ci_stages (
 )
 PARTITION BY LIST (partition_id);
 
+CREATE TABLE p_ci_workloads (
+    id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    pipeline_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    branch_name text,
+    CONSTRAINT check_f2fe503728 CHECK ((char_length(branch_name) <= 255))
+)
+PARTITION BY LIST (partition_id);
+
 CREATE SEQUENCE shared_audit_event_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -13945,6 +13957,22 @@ CREATE SEQUENCE duo_workflows_workflows_id_seq
 
 ALTER SEQUENCE duo_workflows_workflows_id_seq OWNED BY duo_workflows_workflows.id;
 
+CREATE TABLE duo_workflows_workloads (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    workflow_id bigint NOT NULL,
+    workload_id bigint NOT NULL
+);
+
+CREATE SEQUENCE duo_workflows_workloads_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE duo_workflows_workloads_id_seq OWNED BY duo_workflows_workloads.id;
+
 CREATE TABLE early_access_program_tracking_events (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -18749,6 +18777,15 @@ CREATE SEQUENCE p_ci_job_annotations_id_seq
     CACHE 1;
 
 ALTER SEQUENCE p_ci_job_annotations_id_seq OWNED BY p_ci_job_annotations.id;
+
+CREATE SEQUENCE p_ci_workloads_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE p_ci_workloads_id_seq OWNED BY p_ci_workloads.id;
 
 CREATE TABLE packages_build_infos (
     id bigint NOT NULL,
@@ -27080,6 +27117,8 @@ ALTER TABLE ONLY duo_workflows_events ALTER COLUMN id SET DEFAULT nextval('duo_w
 
 ALTER TABLE ONLY duo_workflows_workflows ALTER COLUMN id SET DEFAULT nextval('duo_workflows_workflows_id_seq'::regclass);
 
+ALTER TABLE ONLY duo_workflows_workloads ALTER COLUMN id SET DEFAULT nextval('duo_workflows_workloads_id_seq'::regclass);
+
 ALTER TABLE ONLY early_access_program_tracking_events ALTER COLUMN id SET DEFAULT nextval('early_access_program_tracking_events_id_seq'::regclass);
 
 ALTER TABLE ONLY elastic_index_settings ALTER COLUMN id SET DEFAULT nextval('elastic_index_settings_id_seq'::regclass);
@@ -27465,6 +27504,8 @@ ALTER TABLE ONLY p_catalog_resource_component_usages ALTER COLUMN id SET DEFAULT
 ALTER TABLE ONLY p_catalog_resource_sync_events ALTER COLUMN id SET DEFAULT nextval('p_catalog_resource_sync_events_id_seq'::regclass);
 
 ALTER TABLE ONLY p_ci_builds_metadata ALTER COLUMN id SET DEFAULT nextval('ci_builds_metadata_id_seq'::regclass);
+
+ALTER TABLE ONLY p_ci_workloads ALTER COLUMN id SET DEFAULT nextval('p_ci_workloads_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_build_infos ALTER COLUMN id SET DEFAULT nextval('packages_build_infos_id_seq'::regclass);
 
@@ -29512,6 +29553,9 @@ ALTER TABLE ONLY duo_workflows_events
 ALTER TABLE ONLY duo_workflows_workflows
     ADD CONSTRAINT duo_workflows_workflows_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY duo_workflows_workloads
+    ADD CONSTRAINT duo_workflows_workloads_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY early_access_program_tracking_events
     ADD CONSTRAINT early_access_program_tracking_events_pkey PRIMARY KEY (id);
 
@@ -30228,6 +30272,9 @@ ALTER TABLE ONLY p_ci_pipelines_config
 
 ALTER TABLE ONLY p_ci_runner_machine_builds
     ADD CONSTRAINT p_ci_runner_machine_builds_pkey PRIMARY KEY (build_id, partition_id);
+
+ALTER TABLE ONLY p_ci_workloads
+    ADD CONSTRAINT p_ci_workloads_pkey PRIMARY KEY (id, partition_id);
 
 ALTER TABLE ONLY packages_build_infos
     ADD CONSTRAINT packages_build_infos_pkey PRIMARY KEY (id);
@@ -34895,6 +34942,12 @@ CREATE INDEX index_duo_workflows_workflows_on_project_id ON duo_workflows_workfl
 
 CREATE INDEX index_duo_workflows_workflows_on_user_id ON duo_workflows_workflows USING btree (user_id);
 
+CREATE INDEX index_duo_workflows_workloads_on_project_id ON duo_workflows_workloads USING btree (project_id);
+
+CREATE INDEX index_duo_workflows_workloads_on_workflow_id ON duo_workflows_workloads USING btree (workflow_id);
+
+CREATE INDEX index_duo_workflows_workloads_on_workload_id ON duo_workflows_workloads USING btree (workload_id);
+
 CREATE INDEX index_early_access_program_tracking_events_on_category ON early_access_program_tracking_events USING btree (category);
 
 CREATE INDEX index_early_access_program_tracking_events_on_event_label ON early_access_program_tracking_events USING btree (event_label);
@@ -36284,6 +36337,8 @@ CREATE INDEX index_p_ci_pipelines_config_on_project_id ON ONLY p_ci_pipelines_co
 CREATE INDEX index_p_ci_runner_machine_builds_on_project_id ON ONLY p_ci_runner_machine_builds USING btree (project_id);
 
 CREATE INDEX index_p_ci_runner_machine_builds_on_runner_machine_id ON ONLY p_ci_runner_machine_builds USING btree (runner_machine_id);
+
+CREATE INDEX index_p_ci_workloads_on_project_id ON ONLY p_ci_workloads USING btree (project_id);
 
 CREATE INDEX index_packages_build_infos_on_pipeline_id ON packages_build_infos USING btree (pipeline_id);
 
@@ -38220,6 +38275,8 @@ CREATE INDEX p_ci_builds_scheduled_at_idx ON ONLY p_ci_builds USING btree (sched
 CREATE UNIQUE INDEX p_ci_builds_token_encrypted_partition_id_idx ON ONLY p_ci_builds USING btree (token_encrypted, partition_id) WHERE (token_encrypted IS NOT NULL);
 
 CREATE INDEX p_ci_job_artifacts_expire_at_job_id_idx1 ON ONLY p_ci_job_artifacts USING btree (expire_at, job_id) WHERE ((locked = 2) AND (expire_at IS NOT NULL));
+
+CREATE UNIQUE INDEX p_ci_workloads_pipeline_id_idx ON ONLY p_ci_workloads USING btree (pipeline_id, partition_id);
 
 CREATE INDEX package_name_index ON packages_packages USING btree (name);
 
@@ -41135,6 +41192,8 @@ CREATE TRIGGER p_ci_builds_loose_fk_trigger AFTER DELETE ON p_ci_builds REFERENC
 
 CREATE TRIGGER p_ci_pipelines_loose_fk_trigger AFTER DELETE ON p_ci_pipelines REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('p_ci_pipelines');
 
+CREATE TRIGGER p_ci_workloads_loose_fk_trigger AFTER DELETE ON p_ci_workloads REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('p_ci_workloads');
+
 CREATE TRIGGER plans_loose_fk_trigger AFTER DELETE ON plans REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER pool_repositories_loose_fk_trigger AFTER DELETE ON pool_repositories REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
@@ -41679,6 +41738,9 @@ ALTER TABLE ONLY work_item_type_custom_lifecycles
 
 ALTER TABLE ONLY external_status_checks_protected_branches
     ADD CONSTRAINT fk_0480f2308c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY duo_workflows_workloads
+    ADD CONSTRAINT fk_04d2023c20 FOREIGN KEY (workflow_id) REFERENCES duo_workflows_workflows(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_requirement_compliance_statuses
     ADD CONSTRAINT fk_04ffb1e9ab FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE RESTRICT;
@@ -43579,6 +43641,9 @@ ALTER TABLE ONLY abuse_events
 ALTER TABLE ONLY user_preferences
     ADD CONSTRAINT fk_e5e029c10b FOREIGN KEY (home_organization_id) REFERENCES organizations(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY duo_workflows_workloads
+    ADD CONSTRAINT fk_e62ee9a85e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY packages_debian_group_components
     ADD CONSTRAINT fk_e63e8ee3b1 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -44772,6 +44837,9 @@ ALTER TABLE ONLY merge_request_context_commit_diff_files
 
 ALTER TABLE ONLY audit_events_streaming_http_group_namespace_filters
     ADD CONSTRAINT fk_rails_74a28d2432 FOREIGN KEY (external_audit_event_destination_id) REFERENCES audit_events_external_audit_event_destinations(id) ON DELETE CASCADE;
+
+ALTER TABLE p_ci_workloads
+    ADD CONSTRAINT fk_rails_74f339da60 FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY group_crm_settings
     ADD CONSTRAINT fk_rails_74fdf2f13d FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

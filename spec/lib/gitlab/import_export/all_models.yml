@@ -382,6 +382,7 @@ ci_pipelines: &pipeline_definition
 - pipeline_metadata
 - build_execution_configs
 - project_mirror
+- workload
 pipeline_metadata:
 - project
 - pipeline

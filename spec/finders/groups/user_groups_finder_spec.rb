@@ -187,18 +187,6 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
         expect(result.first).to eq(private_maintainer_group)
         expect(result[1..]).to match_array(other_groups)
       end
-
-      context 'when exact_matches_first_project_transfer feature flag is disabled' do
-        let(:expected_groups) { other_groups + [private_maintainer_group] }
-
-        before do
-          stub_feature_flags(exact_matches_first_project_transfer: false)
-        end
-
-        it 'returns matching groups sorted by namespace path' do
-          expect(result).to match_array(expected_groups.sort_by(&:path))
-        end
-      end
     end
 
     it 'returns all groups where the user is a direct member' do

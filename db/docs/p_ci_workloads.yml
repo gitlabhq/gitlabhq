@@ -1,0 +1,17 @@
+---
+table_name: p_ci_workloads
+classes:
+- Ci::Workloads::Workload
+feature_categories:
+- continuous_integration
+description: Stores a small amount of metadata related to a workload object. This
+  is primarily to keep track of the pipeline which the workload ran in. Longer term
+  it acts as an abstraction around the pipeline so that we can replace the backing
+  pipeline with another runtime without consumers (e.g. Duo Workflow) needing to change
+  any logic.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187094
+milestone: '18.0'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects
+table_size: small

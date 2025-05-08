@@ -10,13 +10,13 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
   let_it_be(:source) { :duo_workflow }
   let_it_be(:commands) { ['echo hello world'] }
   let_it_be(:variables) { { 'MY_ENV_VAR' => 'my env var value' } }
-  let_it_be(:workload) { ::Ci::Workloads::Workload.new }
-  let_it_be(:ci_job) do
-    {
-      image: image,
-      script: commands,
-      variables: variables
-    }
+
+  let_it_be(:workload_definition) do
+    definition = ::Ci::Workloads::WorkloadDefinition.new
+    definition.image = image
+    definition.commands = commands
+    definition.variables = variables
+    definition
   end
 
   let(:create_branch) { false }
@@ -24,13 +24,17 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
   describe '#execute' do
     subject(:execute) do
       described_class
-        .new(project: project, current_user: user, source: source, workload: workload, create_branch: create_branch)
-        .execute
+        .new(
+          project: project,
+          current_user: user,
+          source: source,
+          workload_definition: workload_definition,
+          create_branch: create_branch
+        ).execute
     end
 
     context 'when pipeline creation is success' do
       before do
-        allow(workload).to receive(:job).and_return(ci_job)
         create(:ci_variable, key: 'A_PROJECT_VARIABLE', project: project)
         create(:ci_group_variable, key: 'A_GROUP_VARIABLE', group: group)
         create(:ci_instance_variable, key: 'A_INSTANCE_VARIABLE')
@@ -42,28 +46,35 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
           expect(pipeline_service).to receive(:execute)
                                         .and_call_original
         end
-        expect(execute).to be_success
-        expect(execute.payload).to be_a(Ci::Pipeline)
+        result = execute
+        expect(result).to be_success
 
-        pipeline = execute.payload
-        expect(pipeline.full_error_messages).to eq('')
+        workload = result.payload
+        expect(workload).to be_a(Ci::Workloads::Workload)
+        expect(workload.pipeline).to be_present
       end
 
       it 'does not include project/group/instance variables' do
-        expect(execute).to be_success
+        result = execute
+        expect(result).to be_success
 
-        pipeline = execute.payload
+        pipeline = result.payload.pipeline
         build = pipeline.builds.first
         expect(build.variables.map(&:key)).not_to include('A_PROJECT_VARIABLE')
         expect(build.variables.map(&:key)).not_to include('A_GROUP_VARIABLE')
         expect(build.variables.map(&:key)).not_to include('A_INSTANCE_VARIABLE')
       end
 
-      it 'sets the branch on the workload to the project default_branch' do
-        pipeline = execute.payload
+      it 'adds the CI_WORKLOAD_REF variable' do
+        result = execute
 
-        expect(pipeline.ref).to eq("master")
-        expect(pipeline.ref).to eq(workload.instance_variable_get(:@branch))
+        expect(result).to be_success
+
+        pipeline = result.payload.pipeline
+        build = pipeline.builds.first
+        variable = build.variables.find { |v| v.key == 'CI_WORKLOAD_REF' }
+        expect(variable).to be_present
+        expect(variable.value).to match(pipeline.ref)
       end
 
       context 'when create_branch: true' do
@@ -74,15 +85,11 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
             .with(user, match(%r{^workloads/\w+}), project.default_branch_or_main, skip_ci: true)
             .and_call_original
 
-          expect(execute).to be_success
+          result = execute
+          expect(result).to be_success
 
-          pipeline = execute.payload
-          expect(pipeline.ref).to match(%r{workloads/\w+})
-        end
-
-        it 'sets the branch on the workload to the created branch' do
-          pipeline = execute.payload
-          expect(pipeline.ref).to eq(workload.instance_variable_get(:@branch))
+          workload = result.payload
+          expect(workload.branch_name).to match(%r{workloads/\w+})
         end
       end
     end
@@ -103,7 +110,6 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
       let(:service_response) { ServiceResponse.error(message: 'Error in creating pipeline', payload: pipeline) }
 
       before do
-        allow(workload).to receive(:job).and_return(ci_job)
         allow_next_instance_of(::Ci::CreatePipelineService) do |instance|
           allow(instance).to receive(:execute).and_return(service_response)
         end
@@ -111,10 +117,7 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
 
       it 'does not start a pipeline to execute workflow' do
         expect(execute).to be_error
-        expect(execute.message).to eq('Error in creating pipeline')
-
-        pipeline = execute.payload
-        expect(pipeline.full_error_messages).to eq('I am an error')
+        expect(execute.message).to eq('Error in creating workload: I am an error')
       end
     end
   end

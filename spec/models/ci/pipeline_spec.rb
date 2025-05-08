@@ -77,6 +77,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   it { is_expected.to have_one(:source_job) }
   it { is_expected.to have_one(:pipeline_config) }
   it { is_expected.to have_one(:pipeline_metadata) }
+  it { is_expected.to have_one(:workload) }
 
   it do
     is_expected.to have_many(:daily_build_group_report_results).class_name('Ci::DailyBuildGroupReportResult')
