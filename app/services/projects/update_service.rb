@@ -37,6 +37,12 @@ module Projects
       if project.update(params.except(*non_assignable_project_params))
         after_update
 
+        if Feature.enabled?(:destroy_fork_network_on_archive, project) &&
+            project.previous_changes[:archived] == [false, true]
+
+          UnlinkForkService.new(project, current_user).execute
+        end
+
         success
       else
         update_failed!

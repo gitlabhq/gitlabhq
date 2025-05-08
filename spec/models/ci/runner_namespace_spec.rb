@@ -11,10 +11,14 @@ RSpec.describe Ci::RunnerNamespace, feature_category: :runner do
     subject { build(:ci_runner_namespace, namespace: group, runner: runner) }
   end
 
-  it_behaves_like 'cleanup by a loose foreign key' do
-    let!(:parent) { create(:group) }
-    let!(:runner) { create(:ci_runner, :group, groups: [parent]) }
-    let(:model) { runner.runner_namespaces.first }
+  describe 'loose foreign keys' do
+    context 'with loose foreign key on namespaces.id' do
+      it_behaves_like 'cleanup by a loose foreign key' do
+        let!(:parent) { create(:group) }
+        let!(:runner) { create(:ci_runner, :group, groups: [parent]) }
+        let(:model) { runner.runner_namespaces.first }
+      end
+    end
   end
 
   describe 'validations' do

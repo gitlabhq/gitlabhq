@@ -566,6 +566,30 @@ path = "/gitleaks.toml"
 
 This ignores any secrets detected in either `/gitleaks.toml` file or any file ending with one of the specified extensions.
 
+From [Gitleaks v8.20.0](https://github.com/gitleaks/gitleaks/releases/tag/v8.20.0), you can also use `regexTarget` with `[allowlist]`. This means you can configure a [personal access token prefix](../../../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix) or a [custom instance prefix](../../../../administration/settings/account_and_limit_settings.md#instance-token-prefix) by overriding existing rules. For example, for `personal access tokens`, you could configure:
+
+```toml
+# extended-gitleaks-config.toml
+[extend]
+# Extends default packaged ruleset, NOTE: do not change the path.
+path = "/gitleaks.toml"
+
+[[rules]]
+# Rule id you want to override:
+id = "gitlab_personal_access_token"
+# all the other attributes from the default rule are inherited
+    [[rules.allowlists]]
+    regexTarget = "line"
+    regexes = [ '''CUSTOMglpat-''' ]
+
+[[rules]]
+id = "gitlab_personal_access_token_with_custom_prefix"
+regex = '<Regex that match a personal access token starting with your CUSTOM prefix>'
+
+```
+
+Keep in mind that you need to account for all rules configured in the [default ruleset](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/blob/main/rules/mit/gitlab/gitlab.toml).
+
 For more information on the passthrough syntax to use, see [Schema](custom_rulesets_schema.md#schema).
 
 ### Ignore secrets inline

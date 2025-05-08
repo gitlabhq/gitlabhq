@@ -80,6 +80,7 @@ module API
         file[:action] = :create
         file.symbolize_keys
       end
+      args[:organization_id] = Current.organization.id
 
       args
     end

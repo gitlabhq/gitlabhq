@@ -61,6 +61,15 @@ describe('helpers/init_simple_app_helper/initSimpleApp', () => {
     });
   });
 
+  it('passes the provide to the component if data-provide exists', () => {
+    initMock(`<div id="mount-here" data-provide={"someKey":"thing","count":123}></div>`);
+
+    expect(wrapper.vm.$options.provide).toEqual({
+      someKey: 'thing',
+      count: 123,
+    });
+  });
+
   describe('options', () => {
     describe('withApolloProvider', () => {
       describe('if not true or not VueApollo', () => {
@@ -90,6 +99,7 @@ describe('helpers/init_simple_app_helper/initSimpleApp', () => {
         });
       });
     });
+
     describe('name', () => {
       describe('if no name is given', () => {
         it('name is undefined', () => {

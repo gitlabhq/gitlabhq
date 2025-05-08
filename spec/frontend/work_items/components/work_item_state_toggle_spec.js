@@ -21,9 +21,11 @@ import workItemOpenChildCountQuery from '~/work_items/graphql/open_child_count.q
 import {
   updateWorkItemMutationResponse,
   mockBlockedByLinkedItem,
+  mockBlockedByOpenAndClosedLinkedItems,
   workItemByIidResponseFactory,
   workItemBlockedByLinkedItemsResponse,
   workItemNoBlockedByLinkedItemsResponse,
+  workItemsClosedAndOpenLinkedItemsResponse,
   mockOpenChildrenCount,
   mockNoOpenChildrenCount,
 } from 'ee_else_ce_jest/work_items/mock_data';
@@ -250,6 +252,22 @@ describe('Work Item State toggle button component', () => {
           blockers[index].workItem.webUrl,
         );
       });
+    });
+
+    it('does not show closed linked items', async () => {
+      const blockersWithClosed = mockBlockedByOpenAndClosedLinkedItems.linkedItems.nodes;
+
+      createComponent({
+        workItemLinkedItemsHandler: jest
+          .fn()
+          .mockResolvedValue(workItemsClosedAndOpenLinkedItemsResponse),
+        workItemType: 'Epic',
+      });
+      await waitForPromises();
+
+      expect(findBlockedByModal().findAllComponents(GlLink).length).toEqual(
+        blockersWithClosed.length - 1,
+      );
     });
   });
 

@@ -240,7 +240,8 @@ function change_exit_code_if_known_flaky_tests() {
   echo "${found_known_flaky_tests_output}"
   if [[ $found_known_flaky_tests_status -eq 0 ]]; then
     echo
-    echo "Changing the CI/CD job exit code to 112."
+    echo "Changing the CI/CD job exit code to 112, and creating the ${RSPEC_TEST_ALREADY_FAILED_ON_DEFAULT_BRANCH_MARKER_PATH} file"
+    touch "${RSPEC_TEST_ALREADY_FAILED_ON_DEFAULT_BRANCH_MARKER_PATH}"
 
     new_exit_code=112
   else

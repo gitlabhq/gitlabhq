@@ -4,7 +4,10 @@ module API
   class ProjectSnippets < ::API::Base
     include PaginationParams
 
-    before { check_snippets_enabled }
+    before do
+      check_snippets_enabled
+      set_current_organization
+    end
 
     feature_category :source_code_management
 

@@ -2716,6 +2716,32 @@ When you see this failure category, it likely means there's an actual issue with
 - Check for server-side SSL configuration changes
 - Verify that firewalls or proxies allow SSL connections
 
+## test_already_failed_on_default_branch
+
+**Description**: Tests that are already failing on the default branch, indicating these failures are not introduced by the current changes but are pre-existing flaky tests in the codebase.
+
+**Source File**: None. We detect those without scanning the CI/CD job trace.
+
+**Patterns**:
+- Not Applicable
+
+**Causes**:
+- Flaky tests that intermittently fail
+- Tests that are consistently failing on the default branch
+- Environment-dependent test behavior
+- Race conditions in test execution
+- Timing or resource sensitivity in tests
+- Insufficient test isolation
+
+**Solutions**:
+- Mark flaky tests with appropriate tags (e.g., `:quarantine`)
+- Create an issue to track and fix the flaky test
+- Improve test isolation to reduce environmental dependencies
+- Fix race conditions by adding proper synchronization
+- Rewrite tests to be more deterministic
+- Consider if test expectations need updating due to legitimate code changes
+- If fixing in the current MR, note that you're addressing a pre-existing flaky test
+
 ## unexpected
 
 **Description**: Generic unexpected errors that don't match other categories, serving as a catch-all for miscellaneous issues. These often require manual investigation to determine the root cause.

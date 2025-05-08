@@ -12,11 +12,13 @@ RSpec.describe Ci::RunnerProject, feature_category: :runner do
     subject { build(:ci_runner_project, project: project, runner: runner) }
   end
 
-  context 'loose foreign key on ci_runner_projects.project_id' do
-    it_behaves_like 'cleanup by a loose foreign key' do
-      let(:parent) { project }
-      let!(:runner) { create(:ci_runner, :project, projects: [parent]) }
-      let(:model) { runner.runner_projects.first }
+  describe 'loose foreign keys' do
+    context 'with loose foreign key on projects.id' do
+      it_behaves_like 'cleanup by a loose foreign key' do
+        let(:parent) { project }
+        let!(:runner) { create(:ci_runner, :project, projects: [parent]) }
+        let(:model) { runner.runner_projects.first }
+      end
     end
   end
 

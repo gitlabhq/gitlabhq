@@ -27,6 +27,9 @@ const getApolloProvider = (apolloProviderOption) => {
  * has a data attribute named `data-view-model`, the content of that attributed will be
  * converted from json and passed on to the component as a prop. The root component is then
  * responsible for setting up it's children, injections, and other desired features.
+ * If the element has a data attribute named `data-provide`
+ * the content of that attribute will be
+ * converted from json and passed on to the component as a provide values.
  *
  * @param {string} selector css selector for where to build
  * @param {Vue.component} component The Vue compoment to be built as the root of the app
@@ -46,6 +49,18 @@ const getApolloProvider = (apolloProviderOption) => {
  *
  * This will mount MyApp as root on '#mount-here'. It will receive {'some': 'object'} as it's
  * view model prop.
+ *
+ * @example
+ * ```html
+ * <div id='#mount-here' data-provide="{'some': 'object'}" />
+ * ```
+ *
+ * ```javascript
+ * initSimpleApp('#mount-here', MyApp, { withApolloProvider: true, name: 'MyAppRoot' })
+ * ```
+ *
+ * This will mount MyApp as root on '#mount-here'. It will receive {'some': 'object'} as it's
+ * provide values.
  */
 export const initSimpleApp = (selector, component, { withApolloProvider, name } = {}) => {
   const element = document.querySelector(selector);
@@ -55,11 +70,13 @@ export const initSimpleApp = (selector, component, { withApolloProvider, name } 
   }
 
   const props = element.dataset.viewModel ? JSON.parse(element.dataset.viewModel) : {};
+  const provide = element.dataset.provide ? JSON.parse(element.dataset.provide) : {};
 
   return new Vue({
     el: element,
     apolloProvider: getApolloProvider(withApolloProvider),
     name,
+    provide,
     render(h) {
       return h(component, { props });
     },

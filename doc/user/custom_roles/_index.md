@@ -48,61 +48,34 @@ could also manage CI/CD variables added by other Maintainers or Owners for the g
 
 ## Create a custom role
 
-You create a custom role by adding [permissions](abilities.md) to a base role.
-You can add multiple permissions to that custom role. For example, you can create a custom role
-with the permission to do all of the following:
+To create a custom role, add [permissions](abilities.md) to a base role. Each custom role can
+have one or more permissions. For example, you might base a custom role on the Reporter role,
+but also include permission to view vulnerability reports, change the status of vulnerabilities,
+and approve merge requests.
 
-- View vulnerability reports.
-- Change the status of vulnerabilities.
-- Approve merge requests.
+Custom roles are available to groups and projects:
 
-### GitLab SaaS
-
-Prerequisites:
-
-- You must have the Owner role for the top-level group.
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Roles and permissions**.
-1. Select **New role**.
-1. In **Base role to use as template**, select an existing default role.
-1. In **Role name**, enter the custom role's title.
-1. In **Description**, enter a description for the custom role. 255 characters max.
-1. Select the **Permissions** for the new custom role.
-1. Select **Create role**.
-
-In **Settings > Roles and permissions**, the list of all custom roles displays the:
-
-- Custom role name.
-- Role ID.
-- Base role that the custom role uses as a template.
-- Permissions.
-
-### GitLab Self-Managed
+- On GitLab.com, under the top-level group where the custom role was created.
+- On GitLab Self-Managed and GitLab Dedicated, in the entire instance.
 
 Prerequisites:
 
-- You must be an administrator for the GitLab Self-Managed instance.
+- For GitLab.com, you must have the Owner role for the group.
+- For GitLab Self-Managed and GitLab Dedicated, you must have administrator access to the instance.
 
-After you create a custom role for your GitLab Self-Managed instance, you can assign that custom role to a user in any group or subgroup in that instance.
+To create a custom role:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar:
+   - For GitLab.com, select **Search or go to** and find your group.
+   - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**.
 1. Select **Settings > Roles and permissions**.
 1. Select **New role**.
-1. In **Base role to use as template**, select an existing default role.
-1. In **Role name**, enter the custom role's title.
-1. In **Description**, enter a description for the custom role. 255 characters max.
-1. Select the **Permissions** for the new custom role.
+1. Enter a name and description for the custom role.
+1. From the **Base role** dropdown list, select a default role.
+1. Select any permissions for the custom role.
 1. Select **Create role**.
 
-In **Settings > Roles and permissions**, the list of all custom roles displays the:
-
-- Custom role name.
-- Role ID.
-- Base role that the custom role uses as a template.
-- Permissions.
-
-To create a custom role, you can also [use the API](../../api/graphql/reference/_index.md#mutationmemberrolecreate).
+You can also [use the API](../../api/graphql/reference/_index.md#mutationmemberrolecreate) to create a custom role.
 
 ## Edit a custom role
 
@@ -112,54 +85,67 @@ To create a custom role, you can also [use the API](../../api/graphql/reference/
 
 {{< /history >}}
 
-After a custom role has been created, you can edit that custom role's name, description,
-and permissions. You cannot change the base role. If you need to change the base role,
-you must create a new custom role.
-
-### GitLab SaaS
+You can edit the name, description, and permissions of a custom role, but you cannot edit the
+base role. If you need to change the base role, you must create a new custom role.
 
 Prerequisites:
 
-- You must have the Owner role for the group.
+- For GitLab.com, you must have the Owner role for the group.
+- For GitLab Self-Managed and GitLab Dedicated, you must have administrator access to the instance.
 
-1. On the left sidebar, select **Search or go to** and find your group.
+To edit a custom role:
+
+1. On the left sidebar:
+   - For GitLab.com, select **Search or go to** and find your group.
+   - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**.
 1. Select **Settings > Roles and permissions**.
-1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) for the custom role, then
-   select **Edit role**.
-1. Modify the role as needed.
-1. Select **Save role** to update the role.
+1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Edit role**.
+1. Modify the role.
+1. Select **Save role**.
 
-### GitLab Self-Managed
+You can also [use the API](../../api/graphql/reference/_index.md#mutationmemberroleupdate) to edit a custom role.
+
+## View details of a custom role
+
+The **Roles and permissions** page lists basic information about all available default and custom roles. This
+includes information like the name, description, and number of users assigned each custom role. Custom roles
+are labeled with a `Custom member role` badge.
+
+You can also view more detailed information about a custom role including the role ID,
+base role, and specific permissions.
 
 Prerequisites:
 
-- You must be an administrator for the GitLab Self-Managed instance.
+- For GitLab.com, you must have the Owner role for the group.
+- For GitLab Self-Managed and GitLab Dedicated, you must have administrator access to the instance.
 
-1. On the left sidebar, at the bottom, select **Admin**.
+To view details of a custom role:
+
+1. On the left sidebar:
+   - For GitLab.com, select **Search or go to** and find your group.
+   - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**.
 1. Select **Settings > Roles and permissions**.
-1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) for the custom role, then
-   select **Edit role**.
-1. Modify the role as needed.
-1. Select **Save role** to update the role.
-
-To edit a custom role, you can also [use the API](../../api/graphql/reference/_index.md#mutationmemberroleupdate).
+1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **View details**.
 
 ## Delete a custom role
 
+You cannot delete custom roles currently assigned to a user. See [assign a custom role to a user](#assign-a-custom-role-to-a-user).
+
 Prerequisites:
 
-- You must be an administrator or have the Owner role for the group.
+- For GitLab.com, you must have the Owner role for the group.
+- For GitLab Self-Managed and GitLab Dedicated, you must have administrator access to the instance.
 
-You can't remove a custom role from a group if there are members assigned that role. See [assign a custom role to a user](#assign-a-custom-role-to-a-user).
+To delete a custom role:
 
 1. On the left sidebar:
-   - For GitLab Self-Managed, at the bottom, select **Admin**.
-   - For SaaS, select **Search or go to** and find your group.
+   - For GitLab.com, select **Search or go to** and find your group.
+   - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**.
 1. Select **Settings > Roles and permissions**.
-1. Select **Custom Roles**.
-1. In the **Actions** column, select **Delete role** ({{< icon name="remove" >}}) and confirm.
+1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Delete role**.
+1. On the confirmation dialog, select **Delete role**.
 
-You can also [use the API](../../api/graphql/reference/_index.md#mutationmemberroledelete) to delete a custom role. To use the API, you must provide the `id` of the custom role. If you do not know this `id`, you can find it by making an [API request on the group](../../api/graphql/reference/_index.md#groupmemberroles) or an [API request on the instance](../../api/graphql/reference/_index.md#querymemberroles).
+You can also [use the API](../../api/graphql/reference/_index.md#mutationmemberroledelete) to delete a custom role.
 
 ## Assign a custom role to a user
 

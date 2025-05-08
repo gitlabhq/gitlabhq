@@ -2,16 +2,20 @@
 package sendurl
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/metrics"
 
 	"gitlab.com/gitlab-org/labkit/mask"
 
@@ -116,6 +120,11 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 		return
 	}
 
+	// Get the tracker from context and set flags
+	if tracker, ok := metrics.FromContext(r.Context()); ok {
+		tracker.SetFlag(metrics.KeyFetchedExternalURL, strconv.FormatBool(true))
+	}
+
 	setDefaultMethod(&params)
 
 	log.WithContextFields(r.Context(), log.Fields{
@@ -187,10 +196,14 @@ func (e *entry) createNewRequest(w http.ResponseWriter, r *http.Request, params 
 
 func (e *entry) handleRequestError(w http.ResponseWriter, r *http.Request, err error, params *entryParams) {
 	status := http.StatusInternalServerError
+	var allowedIPError *transport.AllowedIPError
 
-	if params.TimeoutResponseStatus != 0 && os.IsTimeout(err) {
+	switch {
+	case params.TimeoutResponseStatus != 0 && os.IsTimeout(err):
 		status = params.TimeoutResponseStatus
-	} else if params.ErrorResponseStatus != 0 {
+	case errors.As(err, &allowedIPError):
+		status = http.StatusForbidden
+	case params.ErrorResponseStatus != 0:
 		status = params.ErrorResponseStatus
 	}
 

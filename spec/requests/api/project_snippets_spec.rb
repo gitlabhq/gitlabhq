@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectSnippets, :aggregate_failures, feature_category: :source_code_management do
+RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_failures, feature_category: :source_code_management do
   include SnippetHelpers
 
   let_it_be(:project) { create(:project, :public) }

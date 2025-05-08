@@ -903,6 +903,9 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                             }
                           }
                         }
+                        discussion {
+                          id
+                        }
                       }
                     }
                   }
@@ -1026,14 +1029,15 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
 
           expect_graphql_errors_to_be_empty
 
-          another_note = create(:note, project: work_item.project, noteable: work_item)
+          another_note = create(:discussion_note, project: work_item.project, noteable: work_item)
+          create(:note, project: work_item.project, noteable: work_item, in_reply_to: another_note)
+
           create(:award_emoji, awardable: another_note, name: 'star', user: guest)
           another_user = create(:user, developer_of: note.resource_parent)
           note_with_different_user = create(:note, project: note.project, noteable: work_item, author: another_user)
           create(:award_emoji, awardable: note_with_different_user, name: 'star', user: developer)
 
-          # TODO: Fix existing N+1 queries in https://gitlab.com/gitlab-org/gitlab/-/issues/414747
-          expect { post_graphql(query, current_user: developer) }.not_to exceed_query_limit(control).with_threshold(4)
+          expect { post_graphql(query, current_user: developer) }.not_to exceed_query_limit(control)
           expect_graphql_errors_to_be_empty
         end
       end

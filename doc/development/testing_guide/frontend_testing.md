@@ -494,9 +494,9 @@ describe('Cleanup before destroy', () => {
 })
 ```
 
-The above example does not explicitly check for the function that is called on the `keydown` listener as it will normally be an implementation detail. The same happens with the `clearTimeout` call, as the parameter will be a pointer to a timer created internally in the component.
+The above example does not explicitly check for the function that is called on the `keydown` listener as it will usually be an implementation detail. The same happens with the `clearTimeout` call, as the parameter will be a pointer to a timer created internally in the component.
 
-Due to this, it is normally sufficient to check that the spies have been called, with the recommended addition of checking the _times_ that they have been called.
+Due to this, it is usually sufficient to check that the spies have been called, with the recommended addition of checking the _times_ that they have been called.
 
 ### Waiting in tests
 

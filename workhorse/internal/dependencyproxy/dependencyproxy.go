@@ -3,16 +3,20 @@ package dependencyproxy
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
 
 	"gitlab.com/gitlab-org/labkit/log"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/metrics"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/forwardheaders"
@@ -121,6 +125,11 @@ func (p *Injector) SetUploadHandler(uploadHandler upload.BodyUploadHandler) {
 
 // Inject performs the injection of dependencies
 func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData string) {
+	// Get the tracker from context and set flags
+	if tracker, ok := metrics.FromContext(r.Context()); ok {
+		tracker.SetFlag(metrics.KeyFetchedExternalURL, strconv.FormatBool(true))
+	}
+
 	params, err := p.unpackParams(sendData)
 	if err != nil {
 		fail.Request(w, r, err)
@@ -185,9 +194,14 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 
 func handleFetchError(w http.ResponseWriter, r *http.Request, err error) {
 	status := http.StatusBadGateway
-	if os.IsTimeout(err) {
+	var allowedIPError *transport.AllowedIPError
+
+	if errors.As(err, &allowedIPError) {
+		status = http.StatusForbidden
+	} else if os.IsTimeout(err) {
 		status = http.StatusGatewayTimeout
 	}
+
 	fail.Request(w, r, err, fail.WithStatus(status))
 }
 

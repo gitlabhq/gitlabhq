@@ -43,7 +43,13 @@ module Notes
     # we intend to call on the Discussion object don't require it to have all of its notes,
     # and just depend on the first note or the type of discussion. This saves us a DB query.
     def to_discussion(noteable = nil)
-      ::Discussion.build([self], noteable)
+      ::Discussion.build([self], noteable, inverse_relations: false)
+    end
+
+    # Set the discussion manually.
+    # This is used to setup the inverse relationship between the note and its discussion
+    def discussion=(discussion)
+      @discussion = discussion # rubocop:disable Gitlab/ModuleWithInstanceVariables -- Overriding a memoized value below
     end
 
     # Returns the entire discussion this note is part of.

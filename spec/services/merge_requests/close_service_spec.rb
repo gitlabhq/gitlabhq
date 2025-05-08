@@ -143,5 +143,56 @@ RSpec.describe MergeRequests::CloseService, feature_category: :code_review_workf
         execute
       end
     end
+
+    describe 'handling authorization' do
+      let(:service_with_skip) do
+        described_class.new(
+          project: project,
+          current_user: user,
+          params: { skip_authorization: true }
+        )
+      end
+
+      let(:service_without_skip) { described_class.new(project: project, current_user: guest) }
+
+      context 'when authorization is skipped' do
+        it 'closes MR' do
+          result = service_with_skip.execute(merge_request)
+
+          expect(result).to be_closed
+        end
+      end
+
+      context 'when authorization is not skipped' do
+        it 'does not close MR' do
+          result = service_without_skip.execute(merge_request)
+
+          expect(result).to be_open
+        end
+      end
+    end
+
+    context 'with feature flag :destroy_fork_network_on_archive disabled' do
+      before do
+        stub_feature_flags(destroy_fork_network_on_archive: false)
+      end
+
+      context 'when user has permission' do
+        it 'closes MR' do
+          result = service.execute(merge_request)
+
+          expect(result).to be_closed
+        end
+      end
+
+      context 'when user does not have permission' do
+        it 'does not close MR' do
+          guest_service = described_class.new(project: project, current_user: guest)
+          result = guest_service.execute(merge_request)
+
+          expect(result).to be_open
+        end
+      end
+    end
   end
 end

@@ -11,19 +11,19 @@ RSpec.describe RapidDiffs::Viewers::Text::LineNumberComponent, type: :component,
 
   it "renders empty cell without position param" do
     render_component(line: old_line)
-    expect(page).to have_selector('td')
+    expect(page).to have_selector('td[data-change=removed]')
     expect(page).not_to have_selector('a')
   end
 
   it "renders empty cell for removed line on right side" do
     render_component(line: old_line, position: :new)
-    expect(page).to have_selector('td')
+    expect(page).to have_selector('td[data-change=removed]')
     expect(page).not_to have_selector('a')
   end
 
   it "renders empty cell for added line on left side" do
     render_component(line: new_line, position: :old)
-    expect(page).to have_selector('td')
+    expect(page).to have_selector('td[data-change=added]')
     expect(page).not_to have_selector('a')
   end
 

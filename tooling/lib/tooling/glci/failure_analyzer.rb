@@ -25,17 +25,23 @@ module Tooling
     # in GitLab CI/CD jobs for operation.
     class FailureAnalyzer
       def analyze_job(job_id)
-        trace_path = Tooling::Glci::FailureCategories::DownloadJobTrace.new.download
+        # If we already know the job failed due to a known flaky test, we can skip the job trace download/analysis.
+        if ENV.key?('RSPEC_TEST_ALREADY_FAILED_ON_DEFAULT_BRANCH_MARKER_PATH') &&
+            File.exist?(ENV['RSPEC_TEST_ALREADY_FAILED_ON_DEFAULT_BRANCH_MARKER_PATH'])
+          failure_category_hash = { failure_category: 'test_already_failed_on_default_branch', pattern: 'N/A' }
+        else
+          trace_path = Tooling::Glci::FailureCategories::DownloadJobTrace.new.download
 
-        unless trace_path
-          warn "[GCLI Failure Analyzer] Missing job trace. Exiting."
-          return {}
-        end
+          unless trace_path
+            warn "[GCLI Failure Analyzer] Missing job trace. Exiting."
+            return {}
+          end
 
-        failure_category_hash = Tooling::Glci::FailureCategories::JobTraceToFailureCategory.new.process(trace_path)
-        if failure_category_hash.empty?
-          warn "[GCLI Failure Analyzer] Missing failure category. Exiting."
-          return {}
+          failure_category_hash = Tooling::Glci::FailureCategories::JobTraceToFailureCategory.new.process(trace_path)
+          if failure_category_hash.empty?
+            warn "[GCLI Failure Analyzer] Missing failure category. Exiting."
+            return {}
+          end
         end
 
         Tooling::Glci::FailureCategories::ReportJobFailure.new(

@@ -84,7 +84,7 @@ end up with a deadlock on both transactions in Postgres. Here is how it happens:
 1. `Todo.create` attempts to acquire a row lock on `todos` but this blocks on the other transaction which has a table lock on `todos`
 
 This illustrates how both transactions can be stuck waiting for each other to
-finish and they will both timeout. We normally have transaction retries in our
+finish and they will both timeout. We usually have transaction retries in our
 migrations so it is usually OK but the application code might also timeout and
 there might be an error for that user. If this application code is running very
 frequently it's possible that we will be constantly timing out the migration

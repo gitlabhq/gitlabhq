@@ -261,6 +261,7 @@ export default {
       </gl-form-group>
       <pipeline-inputs-form
         v-if="isPipelineInputsFeatureAvailable"
+        emit-modified-only
         :project-path="projectPath"
         :query-ref="refQueryParam"
         @update-inputs="handleInputsUpdated"

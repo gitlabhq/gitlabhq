@@ -790,7 +790,7 @@ as Transaction 1 is still executing and holding the `RowExclusiveLock`
 on `my_notes`.
 
 A more pernicious effect is blocking the transactions that would
-normally not conflict with Transaction 1 because Transaction 2
+usually not conflict with Transaction 1 because Transaction 2
 is queueing to acquire `AccessExclusiveLock`.
 In a normal situation, if another transaction attempted to read from and write
 to the same table `my_notes` at the same time as Transaction 1,

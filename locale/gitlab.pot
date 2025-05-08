@@ -5738,6 +5738,9 @@ msgstr ""
 msgid "AiPowered|Automatic Code Reviews"
 msgstr ""
 
+msgid "AiPowered|Availability"
+msgstr ""
+
 msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
 msgstr ""
 
@@ -5838,6 +5841,12 @@ msgid "AiPowered|GitLab Duo Core available to all users"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Core will be available to all users in your %{plan} plan, including Chat and Code Suggestions in supported IDEs. %{eligibilityLinkStart}Eligibility requirements apply%{eligibilityLinkEnd}. By enabling GitLab Duo, you accept the %{aiLinkStart}GitLab AI functionality terms%{aiLinkEnd}."
+msgstr ""
+
+msgid "AiPowered|GitLab Duo Enterprise availability"
+msgstr ""
+
+msgid "AiPowered|GitLab Duo Pro availability"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Pro or Enterprise"
@@ -37116,6 +37125,9 @@ msgstr ""
 msgid "Maximum number of requests per minute for each raw path (default is 300). Set to 0 to disable throttling."
 msgstr ""
 
+msgid "Maximum number of schedule rules per scan execution policy"
+msgstr ""
+
 msgid "Maximum number of stages per value stream exceeded"
 msgstr ""
 
@@ -66892,6 +66904,9 @@ msgstr ""
 msgid "VirtualRegistry|Create registry"
 msgstr ""
 
+msgid "VirtualRegistry|Failed to fetch list of maven virtual registries."
+msgstr ""
+
 msgid "VirtualRegistry|Get started with virtual registries"
 msgstr ""
 
@@ -66901,7 +66916,7 @@ msgstr ""
 msgid "VirtualRegistry|Maven"
 msgstr ""
 
-msgid "VirtualRegistry|Maven virtual registries"
+msgid "VirtualRegistry|Maven virtual registry"
 msgstr ""
 
 msgid "VirtualRegistry|New maven virtual registry"
@@ -66911,6 +66926,12 @@ msgid "VirtualRegistry|No upstreams yet"
 msgstr ""
 
 msgid "VirtualRegistry|Registry types"
+msgstr ""
+
+msgid "VirtualRegistry|There are no maven virtual registries yet"
+msgstr ""
+
+msgid "VirtualRegistry|Updated %{date}"
 msgstr ""
 
 msgid "VirtualRegistry|Upstreams"

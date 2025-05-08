@@ -152,10 +152,11 @@ describe('Pipeline New Form', () => {
         await waitForPromises();
       });
 
-      it('displays the pipeline inputs form component', () => {
+      it('displays the pipeline inputs form component with emitModifiedOnly set to true', () => {
         expect(findPipelineInputsForm().exists()).toBe(true);
         expect(findPipelineInputsForm().props()).toMatchObject({
           queryRef: `refs/heads/${defaultProps.refParam}`,
+          emitModifiedOnly: true,
         });
       });
 

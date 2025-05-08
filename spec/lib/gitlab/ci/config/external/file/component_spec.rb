@@ -202,7 +202,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
       end
 
       let(:params) do
-        { component: 'gitlab.com/acme/components/my-component@1.0', with: { env: 'production' } }
+        { component: 'gitlab.com/acme/components/my-component@1.0', inputs: { env: 'production' } }
       end
 
       it 'correctly interpolates the content' do

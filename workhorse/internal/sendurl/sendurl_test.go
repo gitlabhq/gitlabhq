@@ -52,7 +52,12 @@ func testEntryServer(t *testing.T, requestURL string, httpHeaders http.Header, a
 		w.Header().Set("Date", "Wed, 21 Oct 2015 05:28:00 GMT")
 		w.Header().Set("Pragma", "no-cache")
 
+		// add metrics tracker
+		r = testhelper.RequestWithMetrics(t, r)
+
 		SendURL.Inject(w, r, data)
+
+		testhelper.AssertMetrics(t, r)
 	}
 	serveFile := func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "GET", r.Method)
@@ -239,7 +244,11 @@ func TestPostRequest(t *testing.T) {
 
 		data := base64.URLEncoding.EncodeToString(jsonParams)
 
+		// add metrics tracker
+		r = testhelper.RequestWithMetrics(t, r)
+
 		SendURL.Inject(w, r, data)
+		testhelper.AssertMetrics(t, r)
 	}
 	externalPostURLHandler := func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "POST", r.Method)
@@ -300,9 +309,13 @@ func TestErrorWithCustomStatusCode(t *testing.T) {
 	response := httptest.NewRecorder()
 	request := httptest.NewRequest("GET", "/target", nil)
 
+	// add metrics tracker
+	request = testhelper.RequestWithMetrics(t, request)
+
 	SendURL.Inject(response, request, data)
 
 	require.Equal(t, http.StatusTeapot, response.Code)
+	testhelper.AssertMetrics(t, request)
 }
 
 func TestHttpClientReuse(t *testing.T) {
@@ -328,7 +341,8 @@ func TestSSRFFilter(t *testing.T) {
 	response := testEntryServer(t, "/get/request", nil, false, option{Key: "SSRFFilter", Value: true})
 
 	// Test uses loopback IP like 127.0.0.x and thus fails
-	require.Equal(t, http.StatusInternalServerError, response.Code)
+	require.Equal(t, http.StatusForbidden, response.Code)
+	require.Equal(t, "Forbidden\n", response.Body.String())
 }
 
 func TestSSRFFilterWithAllowLocalhost(t *testing.T) {

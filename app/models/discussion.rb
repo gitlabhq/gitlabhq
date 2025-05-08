@@ -40,8 +40,8 @@ class Discussion
     project&.id
   end
 
-  def self.build(notes, context_noteable = nil)
-    notes.first.discussion_class(context_noteable).new(notes, context_noteable)
+  def self.build(notes, context_noteable = nil, inverse_relations: true)
+    notes.first.discussion_class(context_noteable).new(notes, context_noteable, inverse_relations: inverse_relations)
   end
 
   def self.build_collection(notes, context_noteable = nil)
@@ -108,9 +108,11 @@ class Discussion
     Note
   end
 
-  def initialize(notes, context_noteable = nil)
+  def initialize(notes, context_noteable = nil, inverse_relations: true)
     @notes = notes
     @context_noteable = context_noteable
+
+    notes.each { |n| n.discussion = self } if inverse_relations
   end
 
   def on_image?

@@ -231,6 +231,7 @@ variables:
   RSPEC_CHANGED_FILES_PATH: rspec/changed_files.txt
   RSPEC_FAIL_FAST_THRESHOLD: 20
   RSPEC_FAST_QUARANTINE_PATH: rspec/fast_quarantine-gitlab.txt
+  RSPEC_TEST_ALREADY_FAILED_ON_DEFAULT_BRANCH_MARKER_PATH: rspec/test_already_failed_on_master.txt
   RSPEC_LAST_RUN_RESULTS_FILE: rspec/rspec_last_run_results.txt
   RSPEC_MATCHING_JS_FILES_PATH: rspec/js_matching_files.txt
   RSPEC_MATCHING_TESTS_EE_PATH: rspec/matching_tests-ee.txt

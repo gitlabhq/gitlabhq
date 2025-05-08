@@ -43,8 +43,8 @@ module WorkhorseHelper
     head :ok
   end
 
-  def send_dependency(dependency_headers, url, filename)
-    headers.store(*Gitlab::Workhorse.send_dependency(dependency_headers, url))
+  def send_dependency(dependency_headers, url, filename, ssrf_params: {})
+    headers.store(*Gitlab::Workhorse.send_dependency(dependency_headers, url, **ssrf_params))
     headers['Content-Disposition'] =
       ActionDispatch::Http::ContentDisposition.format(disposition: 'attachment', filename: filename)
     headers['Content-Type'] = 'application/gzip'

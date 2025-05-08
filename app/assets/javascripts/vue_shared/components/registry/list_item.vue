@@ -102,7 +102,7 @@ export default {
           </div>
         </div>
         <div
-          class="gl-flex gl-shrink-0 gl-flex-col gl-justify-between gl-text-subtle sm:gl-items-end"
+          class="gl-flex gl-shrink-0 gl-flex-col gl-justify-center gl-text-subtle sm:gl-items-end"
         >
           <div
             v-if="

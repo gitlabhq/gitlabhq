@@ -383,6 +383,13 @@ To restore a project pending deletion:
 
 {{< /history >}}
 
+{{< alert type="note" >}}
+
+When a project is archived, its fork relationship is removed and any open merge requests from forks
+targeting this project are automatically closed.
+
+{{< /alert >}}
+
 When you archive a project, some features become read-only.
 These features are still accessible, but not writable.
 

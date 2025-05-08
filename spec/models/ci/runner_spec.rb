@@ -32,14 +32,16 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
   it_behaves_like 'having unique enum values'
 
-  it_behaves_like 'it has loose foreign keys' do
-    let(:factory_name) { :ci_runner }
-  end
+  describe 'loose foreign keys' do
+    it_behaves_like 'it has loose foreign keys' do
+      let(:factory_name) { :ci_runner }
+    end
 
-  context 'loose foreign key on ci_runners.creator_id' do
-    it_behaves_like 'cleanup by a loose foreign key' do
-      let!(:parent) { create(:user) }
-      let!(:model) { create(:ci_runner, creator: parent) }
+    context 'with loose foreign key on users.id' do
+      it_behaves_like 'cleanup by a loose foreign key' do
+        let!(:parent) { create(:user) }
+        let!(:model) { create(:ci_runner, creator: parent) }
+      end
     end
   end
 

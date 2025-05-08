@@ -8,7 +8,7 @@ title: Keep-around ref usage guidelines
 ## What are keep-around refs
 
 Keep-around refs protect specific commits from the Git garbage collection process. While Git GC
-normally removes unreferenced commits (those not reachable through branches or tags), there are cases
+usually removes unreferenced commits (those not reachable through branches or tags), there are cases
 where preserving these orphaned commits is essential - such as maintaining commit comments and CI build
 history. By creating a keep-around ref, we ensure these commits remain in the repository even when
 they're no longer part of the active branch history.

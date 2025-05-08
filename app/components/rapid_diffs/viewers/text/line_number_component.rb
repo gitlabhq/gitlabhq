@@ -25,6 +25,7 @@ module RapidDiffs
         end
 
         def change_type
+          return unless @line
           return 'added' if @line.added?
 
           'removed' if @line.removed?

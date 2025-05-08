@@ -3,9 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Snippets::CreateService, feature_category: :source_code_management do
+  let_it_be(:organization) { create(:organization) }
+
   describe '#execute' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:admin) { create(:user, :admin) }
+    let_it_be(:user) { create(:user, organizations: [organization]) }
+    let_it_be(:admin) { create(:user, :admin, organizations: [organization]) }
 
     let(:action) { :create }
     let(:opts) { base_opts.merge(extra_opts) }
@@ -14,7 +16,8 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
         title: 'Test snippet',
         file_name: 'snippet.rb',
         content: 'puts "hello world"',
-        visibility_level: Gitlab::VisibilityLevel::PRIVATE
+        visibility_level: Gitlab::VisibilityLevel::PRIVATE,
+        organization_id: organization.id
       }
     end
 
@@ -24,10 +27,6 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
     subject { described_class.new(project: project, current_user: creator, params: opts).execute }
 
     let(:snippet) { subject.payload[:snippet] }
-
-    before do
-      create(:organization, :default)
-    end
 
     shared_examples 'a service that creates a snippet' do
       it 'creates a snippet with the provided attributes' do
@@ -275,7 +274,8 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
         {
           title: 'Test snippet',
           visibility_level: Gitlab::VisibilityLevel::PRIVATE,
-          snippet_actions: snippet_actions
+          snippet_actions: snippet_actions,
+          organization_id: organization.id
         }
       end
 
@@ -409,9 +409,9 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
       end
 
       context 'when Current.organization is not set' do
-        it 'still uses the default organization_id' do
+        it 'uses user first organization' do
           expect(snippet.organization_id)
-            .to eq(Organizations::Organization::DEFAULT_ORGANIZATION_ID)
+            .to eq(user.organizations.first.id)
         end
       end
 

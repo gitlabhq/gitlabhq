@@ -142,6 +142,15 @@ RSpec.describe SendFileUpload, feature_category: :user_profile do
       end
     end
 
+    shared_examples 'sets SSRF parameters for the Workhorse send-url instruction' do
+      specify do
+        expect(Gitlab::Workhorse).to receive(:send_url).with(an_instance_of(String), **ssrf_params)
+          .and_call_original
+
+        subject
+      end
+    end
+
     context 'when local file is used' do
       before do
         uploader.store!(temp_file)
@@ -207,6 +216,18 @@ RSpec.describe SendFileUpload, feature_category: :user_profile do
 
           subject
         end
+
+        context 'with ssrf_params' do
+          let(:ssrf_params) { { ssrf_filter: true } }
+          let(:params) { super().merge(ssrf_params: ssrf_params) }
+
+          before do
+            allow(controller).to receive(:headers).and_return({})
+            allow(controller).to receive(:head).with(:ok)
+          end
+
+          it_behaves_like 'sets SSRF parameters for the Workhorse send-url instruction'
+        end
       end
     end
 
@@ -239,6 +260,19 @@ RSpec.describe SendFileUpload, feature_category: :user_profile do
         end
 
         it_behaves_like 'proxied file'
+
+        context 'with ssrf_params' do
+          let(:ssrf_params) { { ssrf_filter: true } }
+          let(:params) { { ssrf_params: ssrf_params } }
+          let(:headers) { {} }
+
+          before do
+            allow(controller).to receive(:headers).and_return(headers)
+            allow(controller).to receive(:head).with(:ok)
+          end
+
+          it_behaves_like 'sets SSRF parameters for the Workhorse send-url instruction'
+        end
       end
 
       context 'and proxying is disabled' do

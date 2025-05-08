@@ -376,7 +376,7 @@ Following this:
 - `Project.fullPath` should be an `ID` because there will be no other `Project` with that `fullPath` across the API, and the field is also an identifier.
 - `Issue.iid` _should not_ be an `ID` because there can be many `Issue` types that have the same `iid` across the API.
   Treating it as an `ID` would be problematic if the client has a cache of `Issue`s from different projects.
-- `Project.id` normally would qualify to be an `ID` because there can only be one `Project` with that ID value -
+- `Project.id` typically would qualify to be an `ID` because there can only be one `Project` with that ID value -
   except we use [Global ID types](#global-ids) instead of `ID` types for database ID values so we would type it as a Global ID instead.
 
 This is summarized in the following table:

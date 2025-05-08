@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Creating a Snippet', feature_category: :source_code_management do
+RSpec.describe 'Creating a Snippet', :with_current_organization, feature_category: :source_code_management do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
@@ -35,10 +35,6 @@ RSpec.describe 'Creating a Snippet', feature_category: :source_code_management d
 
   def mutation_response
     graphql_mutation_response(:create_snippet)
-  end
-
-  before do
-    create(:organization, :default)
   end
 
   subject { post_graphql_mutation(mutation, current_user: current_user) }
@@ -115,7 +111,7 @@ RSpec.describe 'Creating a Snippet', feature_category: :source_code_management d
         let(:project) { nil }
       end
 
-      context 'when Current organization is present', :with_current_organization do
+      context 'when Current organization is present' do
         it 'adds an organization_id' do
           expect do
             subject
@@ -133,7 +129,7 @@ RSpec.describe 'Creating a Snippet', feature_category: :source_code_management d
 
       it_behaves_like 'creates snippet'
 
-      context 'when Current organization is present', :with_current_organization do
+      context 'when Current organization is present' do
         it 'does not add an organization_id' do
           expect do
             subject

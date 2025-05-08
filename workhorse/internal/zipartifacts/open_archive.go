@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/httprs"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
 
@@ -56,15 +56,11 @@ func OpenArchiveWithReaderFunc(ctx context.Context, location string, readerFunc 
 }
 
 func openArchiveLocation(ctx context.Context, location string) (*archive, error) {
-	if isURL(location) {
+	if helper.IsURL(location) {
 		return openHTTPArchive(ctx, location)
 	}
 
 	return openFileArchive(ctx, location)
-}
-
-func isURL(path string) bool {
-	return strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://")
 }
 
 func openHTTPArchive(ctx context.Context, archivePath string) (*archive, error) {
