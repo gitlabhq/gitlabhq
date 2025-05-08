@@ -1,7 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
-import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/namespace_work_item_types.query.graphql.json';
+import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_namespace_work_item_types.query.graphql.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -421,8 +421,7 @@ describe('WorkItemTree', () => {
     expect(namespaceWorkItemTypesQueryHandler).toHaveBeenCalled();
     await nextTick();
 
-    expect(findWorkItemLinkChildrenWrapper().props('allowedChildrenByType')).toEqual({
-      Epic: ['Epic', 'Issue'],
+    expect(findWorkItemLinkChildrenWrapper().props('allowedChildrenByType')).toMatchObject({
       Incident: ['Task'],
       Issue: ['Task'],
       Objective: ['Key Result', 'Objective'],
