@@ -14,6 +14,11 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
   let(:should_sort_metadata_files) { false }
   let(:lazy) { false }
 
+  it "renders app" do
+    render_component
+    expect(page).to have_css('[data-rapid-diffs]')
+  end
+
   it "renders diffs slice" do
     render_component
     expect(page.all('diff-file').size).to eq(2)
@@ -22,29 +27,29 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
   it "renders app data" do
     render_component
     app = page.find('[data-rapid-diffs]')
-    expect(app).not_to be_nil
-    expect(app['data-reload-stream-url']).to eq(reload_stream_url)
-    expect(app['data-diffs-stats-endpoint']).to eq(diffs_stats_endpoint)
-    expect(app['data-diff-files-endpoint']).to eq(diff_files_endpoint)
+    data = Gitlab::Json.parse(app['data-app-data'])
+    expect(data['reload_stream_url']).to eq(reload_stream_url)
+    expect(data['diffs_stats_endpoint']).to eq(diffs_stats_endpoint)
+    expect(data['diff_files_endpoint']).to eq(diff_files_endpoint)
+    expect(data['show_whitespace']).to eq(show_whitespace)
+    expect(data['diff_view_type']).to eq(diff_view)
+    expect(data['update_user_endpoint']).to eq(update_user_endpoint)
+    expect(data['diffs_stream_url']).to eq(stream_url)
   end
 
   context "with should_sort_metadata_files set to true" do
     let(:should_sort_metadata_files) { true }
 
-    it "renders should_sort_metadata_files" do
+    it "enables sorting metadata" do
       render_component
       app = page.find('[data-rapid-diffs]')
-      expect(app['data-should-sort-metadata-files']).to eq('true')
+      expect(Gitlab::Json.parse(app['data-app-data'])['should_sort_metadata_files']).to eq(should_sort_metadata_files)
     end
   end
 
   it "renders view settings" do
     render_component
-    settings = page.find('[data-view-settings]')
-    expect(settings).not_to be_nil
-    expect(settings['data-show-whitespace']).to eq('true')
-    expect(settings['data-diff-view-type']).to eq(diff_view)
-    expect(settings['data-update-user-endpoint']).to eq(update_user_endpoint)
+    expect(page).to have_css('[data-view-settings]')
   end
 
   it "renders file browser toggle" do
@@ -82,9 +87,7 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
 
   it "renders stream container" do
     render_component
-    container = page.find("#js-stream-container")
-    expect(container).not_to be_nil
-    expect(container['data-diffs-stream-url']).to eq(stream_url)
+    expect(page).to have_css("[data-stream-remaining-diffs]")
   end
 
   it "renders diffs_list slot" do

@@ -836,7 +836,6 @@
 - './ee/spec/lib/ee/gitlab/group_search_results_spec.rb'
 - './ee/spec/lib/ee/gitlab/hook_data/group_member_builder_spec.rb'
 - './ee/spec/lib/ee/gitlab/hook_data/issue_builder_spec.rb'
-- './ee/spec/lib/ee/gitlab/import_export/after_export_strategies/custom_template_export_import_strategy_spec.rb'
 - './ee/spec/lib/ee/gitlab/import_export/group/tree_restorer_spec.rb'
 - './ee/spec/lib/ee/gitlab/import_export/group/tree_saver_spec.rb'
 - './ee/spec/lib/ee/gitlab/import_export/project/tree_restorer_spec.rb'

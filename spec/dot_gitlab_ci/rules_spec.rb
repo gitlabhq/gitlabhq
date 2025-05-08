@@ -7,7 +7,7 @@ require('fast_spec_helper') # NOTE: Do not remove the parentheses from this requ
 
 PatternsList = Struct.new(:name, :patterns)
 
-RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
+RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output_length, feature_category: :tooling do
   config = YAML.safe_load_file(
     File.expand_path('../../.gitlab/ci/rules.gitlab-ci.yml', __dir__),
     aliases: true
@@ -192,6 +192,7 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
         '.gitlab/agents/review-apps/config.yaml',
         '.gitlab/changelog_config.yml',
         '.gitlab/CODEOWNERS',
+        '.gitlab/lint/unused_helper_methods/exluded_methods.yml',
         '.gitleaksignore',
         '.gitpod.yml',
         '.graphqlrc',

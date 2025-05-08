@@ -831,7 +831,6 @@ Layout/LineLength:
     - 'ee/lib/ee/gitlab/ci/pipeline/chain/validate/security_orchestration_policy.rb'
     - 'ee/lib/ee/gitlab/ci/status/build/manual.rb'
     - 'ee/lib/ee/gitlab/git_access.rb'
-    - 'ee/lib/ee/gitlab/import_export/after_export_strategies/custom_template_export_import_strategy.rb'
     - 'ee/lib/ee/gitlab/middleware/read_only/controller.rb'
     - 'ee/lib/ee/gitlab/project_template.rb'
     - 'ee/lib/ee/gitlab/quick_actions/epic_actions.rb'

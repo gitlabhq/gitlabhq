@@ -18,9 +18,7 @@ const loadFileBrowserData = async (diffFilesEndpoint, shouldSort) => {
   });
 };
 
-const initToggle = () => {
-  const el = document.querySelector('[data-file-browser-toggle]');
-
+const initToggle = (el) => {
   // eslint-disable-next-line no-new
   new Vue({
     el,
@@ -31,8 +29,7 @@ const initToggle = () => {
   });
 };
 
-const initBrowserComponent = async (shouldSort) => {
-  const el = document.querySelector('[data-file-browser]');
+const initBrowserComponent = async (el, shouldSort) => {
   // eslint-disable-next-line no-new
   new Vue({
     el,
@@ -52,8 +49,8 @@ const initBrowserComponent = async (shouldSort) => {
   });
 };
 
-export async function initFileBrowser(diffFilesEndpoint, shouldSort) {
-  initToggle();
-  await loadFileBrowserData(diffFilesEndpoint, shouldSort);
-  initBrowserComponent(shouldSort);
+export async function initFileBrowser({ toggleTarget, browserTarget, appData }) {
+  initToggle(toggleTarget);
+  await loadFileBrowserData(appData.diffFilesEndpoint, appData.shouldSortMetadataFiles);
+  initBrowserComponent(browserTarget, appData.shouldSortMetadataFiles);
 }

@@ -28,6 +28,23 @@ module RapidDiffs
       @lazy = lazy
     end
 
+    def app_data
+      {
+        diffs_stream_url: @stream_url,
+        reload_stream_url: @reload_stream_url,
+        diffs_stats_endpoint: @diffs_stats_endpoint,
+        diff_files_endpoint: @diff_files_endpoint,
+        should_sort_metadata_files: @should_sort_metadata_files,
+        show_whitespace: @show_whitespace,
+        diff_view_type: @diff_view,
+        update_user_endpoint: @update_user_endpoint
+      }
+    end
+
+    def parallel_view?
+      @diff_view == :parallel
+    end
+
     def empty_diff?
       @diffs_slice.nil? || @diffs_slice.empty?
     end

@@ -29,7 +29,7 @@ RSpec.shared_context "with diff file component tests" do
   it "renders server data" do
     render_component
     diff_path = "/#{namespace.to_param}/#{project.to_param}/-/blob/#{diff_file.content_sha}/#{diff_file.file_path}"
-    expect(web_component['data-diff-lines-path']).to eq("#{diff_path}/diff_lines")
+    expect(file_data['diff_lines_path']).to eq("#{diff_path}/diff_lines")
   end
 
   it "renders line count" do
@@ -55,18 +55,18 @@ RSpec.shared_context "with diff file component tests" do
 
       it "renders no preview" do
         render_component
-        expect(web_component['data-viewer']).to eq('no_preview')
+        expect(file_data['viewer']).to eq('no_preview')
       end
     end
 
     it "renders inline text viewer" do
       render_component
-      expect(web_component['data-viewer']).to eq('text_inline')
+      expect(file_data['viewer']).to eq('text_inline')
     end
 
     it "renders parallel text viewer" do
       render_component(parallel_view: true)
-      expect(web_component['data-viewer']).to eq('text_parallel')
+      expect(file_data['viewer']).to eq('text_parallel')
     end
   end
 
@@ -77,7 +77,7 @@ RSpec.shared_context "with diff file component tests" do
 
     it "renders no preview" do
       render_component
-      expect(web_component['data-viewer']).to eq('no_preview')
+      expect(file_data['viewer']).to eq('no_preview')
     end
 
     it "disables virtual rendering" do
@@ -93,12 +93,16 @@ RSpec.shared_context "with diff file component tests" do
 
     it "renders no preview" do
       render_component
-      expect(web_component['data-viewer']).to eq('no_preview')
+      expect(file_data['viewer']).to eq('no_preview')
     end
 
     it "disables virtual rendering" do
       render_component
       expect(web_component).not_to have_css("[data-virtual]")
     end
+  end
+
+  def file_data
+    Gitlab::Json.parse(web_component['data-file-data'])
   end
 end

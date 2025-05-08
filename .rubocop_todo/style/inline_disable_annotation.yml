@@ -1447,7 +1447,6 @@ Style/InlineDisableAnnotation:
     - 'ee/lib/ee/gitlab/ci/status/build/waiting_for_approval.rb'
     - 'ee/lib/ee/gitlab/exclusive_lease.rb'
     - 'ee/lib/ee/gitlab/geo_git_access.rb'
-    - 'ee/lib/ee/gitlab/import_export/after_export_strategies/custom_template_export_import_strategy.rb'
     - 'ee/lib/ee/gitlab/import_export/project/object_builder.rb'
     - 'ee/lib/ee/gitlab/object_hierarchy.rb'
     - 'ee/lib/ee/gitlab/quick_actions/users_extractor.rb'

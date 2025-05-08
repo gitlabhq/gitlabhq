@@ -349,7 +349,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/lib/ee/gitlab/etag_caching/router/rails.rb'
     - 'ee/lib/ee/gitlab/git_access.rb'
     - 'ee/lib/ee/gitlab/gitaly_client/with_feature_flag_actors.rb'
-    - 'ee/lib/ee/gitlab/import_export/after_export_strategies/custom_template_export_import_strategy.rb'
     - 'ee/lib/ee/gitlab/issuable_metadata.rb'
     - 'ee/lib/ee/gitlab/security/scan_configuration.rb'
     - 'ee/lib/ee/gitlab/web_hooks/rate_limiter.rb'

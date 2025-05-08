@@ -5,6 +5,65 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Control GitLab Duo availability
 ---
 
+GitLab Duo availability depends on your subscription add-on:
+
+- [GitLab Duo Core](../../subscriptions/subscription-add-ons.md#gitlab-duo-core), or
+- [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md#gitlab-duo-pro-and-enterprise).
+
+Depending on your add-on, you can turn GitLab Duo on and off for a group, project, or instance.
+
+## Change GitLab Duo Core availability
+
+{{< history >}}
+
+- [Introduced](https://link-to-issue) in GitLab 18.0.
+
+{{< /history >}}
+
+If you have the GitLab Duo Core add-on, which is included with Premium and Ultimate subscriptions,
+GitLab Duo Chat and Code Suggestions are available in your IDEs, and are turned on by default.
+
+If you were an existing user with a Premium or Ultimate subscription before May 15, 2025,
+Chat and Code Suggestions in your IDEs are turned off by default. To turn on these
+features:
+
+1. Upgrade to GitLab 18.0 or later.
+1. Turn on the IDE features for your group or instance.
+
+### For a group
+
+On GitLab.com, you can turn GitLab Duo Core on or off for a top-level group, but not for a subgroup or project.
+
+Prerequisites:
+
+- You must have the Owner role for the top-level group.
+
+To turn GitLab Duo Core on or off for a top-level group on GitLab.com:
+
+1. On the left sidebar, select **Search or go to** and find your top-level group.
+1. Select **Settings > GitLab Duo**.
+1. Select **Change configuration**.
+1. Below **GitLab Duo Core**, select or clear the **Turn on IDE features** checkbox.
+1. Select **Save changes**.
+
+### For an instance
+
+On GitLab Self-Managed, you can turn GitLab Duo Core on or off for an instance.
+
+Prerequisites:
+
+- You must be an administrator.
+
+To turn GitLab Duo Core on or off for an instance:
+
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Below **GitLab Duo Core**, select or clear the **Turn on IDE features** checkbox.
+1. Select **Save changes**.
+
+## Change GitLab Duo Pro and Enterprise availability
+
 {{< history >}}
 
 - [Settings to turn AI features on and off introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10.
@@ -12,20 +71,10 @@ title: Control GitLab Duo availability
 
 {{< /history >}}
 
-GitLab Duo features that are generally available are automatically turned on for all users that have access.
-
-- You must have an [GitLab Duo Pro or Enterprise add-on subscription](../../subscriptions/subscription-add-ons.md).
-- For some generally available features, like [Code Suggestions](../project/repository/code_suggestions/_index.md),
-  [you must also assign seats](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats)
-  to the users you want to have access.
-
-{{< alert type="note" >}}
-
-To turn on GitLab Duo Self-Hosted, see [Configure GitLab to access GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/configure_duo_features.md).
-
-{{< /alert >}}
-
-## Turn GitLab Duo features on or off
+For GitLab Duo Pro or Enterprise, GitLab Duo is turned on by default.
+For some generally available features, like Code Suggestions,
+[you must also assign seats](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats)
+to the users you want to have access.
 
 You can turn GitLab Duo on or off for a group, project, or instance.
 

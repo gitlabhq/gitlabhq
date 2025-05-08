@@ -6,8 +6,10 @@
 
 require 'parallel'
 require 'rainbow'
+require 'yaml'
 
-UNUSED_METHODS = 52
+UNUSED_METHODS = 49
+EXCLUDED_METHODS_PATH = '.gitlab/lint/unused_helper_methods/exluded_methods.yml'
 
 print_output = %w[true 1].include? ENV["REPORT_ALL_UNUSED_METHODS"]
 
@@ -33,6 +35,14 @@ helpers = source_files.keys.grep(%r{app/helpers}).flat_map do |filename|
   source_files[filename].flat_map do |line|
     line =~ /def ([^(\s]+)/ ? [{ method: Regexp.last_match(1).chomp, file: filename }] : []
   end
+end
+
+# Remove any excluded methods
+#
+excluded_methods = YAML.load_file(EXCLUDED_METHODS_PATH, symbolize_names: true)
+
+helpers.reject! do |h|
+  excluded_methods.dig(h[:method].to_sym, :file) == h[:file]
 end
 
 puts "Scanning #{source_files.size} files for #{helpers.size} helpers..." if print_output

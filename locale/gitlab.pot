@@ -36198,9 +36198,6 @@ msgstr[1] ""
 msgid "Line changes"
 msgstr ""
 
-msgid "Line number %{number}"
-msgstr ""
-
 msgid "Link"
 msgstr ""
 
@@ -49852,6 +49849,9 @@ msgstr ""
 msgid "Random"
 msgstr ""
 
+msgid "RapidDiffs|Added line %d"
+msgstr ""
+
 msgid "RapidDiffs|Diff line"
 msgstr ""
 
@@ -49861,10 +49861,16 @@ msgstr ""
 msgid "RapidDiffs|Failed to expand lines, please try again."
 msgstr ""
 
+msgid "RapidDiffs|Line %d"
+msgstr ""
+
 msgid "RapidDiffs|Original line"
 msgstr ""
 
 msgid "RapidDiffs|Original line number"
+msgstr ""
+
+msgid "RapidDiffs|Removed line %d"
 msgstr ""
 
 msgid "RapidDiffs|Show hidden lines"

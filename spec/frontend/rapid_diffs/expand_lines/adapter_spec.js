@@ -17,7 +17,7 @@ describe('ExpandLinesAdapter', () => {
     return [prev ? new DiffLineRow(prev) : null, next ? new DiffLineRow(next) : null];
   };
   const getDiffFileContext = () => {
-    return { data: { diffLinesPath: '/lines' }, viewer: 'text_parallel' };
+    return { data: { diffLinesPath: '/lines', viewer: 'text_parallel' } };
   };
   const click = (direction) => {
     return ExpandLinesAdapter.clicks.expandLines.call(

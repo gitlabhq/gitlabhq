@@ -39,7 +39,6 @@ Layout/LineBreakAfterFinalMixin:
     - 'app/workers/users/create_statistics_worker.rb'
     - 'ee/app/graphql/subscriptions/ai_completion_response.rb'
     - 'ee/app/services/ee/ip_restrictions/update_service.rb'
-    - 'ee/app/services/gitlab_subscriptions/trials/base_apply_trial_service.rb'
     - 'ee/app/services/incident_management/oncall_rotations/edit_service.rb'
     - 'ee/app/services/incident_management/oncall_rotations/remove_participant_service.rb'
     - 'ee/app/services/llm/generate_description_service.rb'

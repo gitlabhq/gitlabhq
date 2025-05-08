@@ -80,7 +80,6 @@ RSpec.describe 'Database schema',
       ci_pipeline_messages: %w[partition_id project_id],
       ci_pipeline_metadata: %w[partition_id],
       ci_pipeline_schedule_variables: %w[project_id],
-      ci_pipeline_variables: %w[partition_id pipeline_id project_id],
       ci_pipelines_config: %w[partition_id project_id],
       ci_pipelines: %w[partition_id auto_canceled_by_partition_id project_id user_id merge_request_id trigger_id], # LFKs are defined on the routing table
       ci_secure_file_states: %w[project_id],

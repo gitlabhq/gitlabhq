@@ -15,7 +15,7 @@ module RapidDiffs
       @diff_file.file_hash
     end
 
-    def server_data
+    def file_data
       project = @diff_file.repository.project
       params = tree_join(@diff_file.content_sha, @diff_file.file_path)
       {

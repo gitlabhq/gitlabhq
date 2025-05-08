@@ -1,5 +1,6 @@
+/** @typedef {import('./app/index.js').RapidDiffsFacade} */
+import { camelizeKeys } from '~/lib/utils/object_utils';
 import { DIFF_FILE_MOUNTED } from './dom_events';
-import { VIEWER_ADAPTERS } from './adapters';
 // required for easier mocking in tests
 import IntersectionObserver from './intersection_observer';
 import * as events from './events';
@@ -16,13 +17,14 @@ const sharedObserver = new IntersectionObserver((entries) => {
   });
 });
 
+const dataCacheKey = Symbol('data');
+
 export class DiffFile extends HTMLElement {
+  /** @param {RapidDiffsFacade} app */
+  app;
   diffElement;
-  viewer;
   // intermediate state storage for adapters
   sink = {};
-
-  adapterConfig = VIEWER_ADAPTERS;
 
   static findByFileHash(hash) {
     return document.querySelector(`diff-file[id="${hash}"]`);
@@ -32,17 +34,30 @@ export class DiffFile extends HTMLElement {
     return Array.from(document.querySelectorAll('diff-file'));
   }
 
-  mount() {
+  // connectedCallback() is called immediately when the tag appears in DOM
+  // when we're streaming components their children might not be present at the moment this is called
+  // that's why we manually call mount() from <diff-file-mounted> component, which is always a last child
+  mount(app) {
+    this.app = app;
     const [diffElement] = this.children;
     this.diffElement = diffElement;
-    this.viewer = this.dataset.viewer;
     this.observeVisibility();
-    this.diffElement.addEventListener('click', this.onClick.bind(this));
+    this.onClickHandler = this.onClick.bind(this);
+    this.diffElement.addEventListener('click', this.onClickHandler);
+    this.trigger = this.#trigger.bind(this);
     this.trigger(events.MOUNTED);
     this.dispatchEvent(new CustomEvent(DIFF_FILE_MOUNTED, { bubbles: true }));
   }
 
-  trigger(event, ...args) {
+  disconnectedCallback() {
+    sharedObserver.unobserve(this);
+    this.diffElement.removeEventListener('click', this.onClickHandler);
+    this.app = null;
+    this.sink = null;
+    this.diffElement = null;
+  }
+
+  #trigger(event, ...args) {
     if (!eventNames.includes(event))
       throw new Error(
         `Missing event declaration: ${event}. Did you forget to declare this in ~/rapid_diffs/events.js?`,
@@ -88,16 +103,14 @@ export class DiffFile extends HTMLElement {
   }
 
   get data() {
-    const data = { ...this.dataset };
-    // viewer is dynamic, should be accessed via this.viewer
-    delete data.viewer;
-    return data;
+    if (!this[dataCacheKey]) this[dataCacheKey] = camelizeKeys(JSON.parse(this.dataset.fileData));
+    return this[dataCacheKey];
   }
 
   get adapterContext() {
     return {
+      appData: this.app.appData,
       diffElement: this.diffElement,
-      viewer: this.viewer,
       sink: this.sink,
       data: this.data,
       trigger: this.trigger,
@@ -105,6 +118,6 @@ export class DiffFile extends HTMLElement {
   }
 
   get adapters() {
-    return this.adapterConfig[this.viewer] || [];
+    return this.app.adapterConfig[this.data.viewer] || [];
   }
 }

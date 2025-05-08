@@ -81,7 +81,7 @@ In GitLab 16.8, 16.9, and 16.10, on GitLab Dedicated, GitLab Duo Chat is availab
 ## Turn off GitLab Duo Chat
 
 To limit the data that GitLab Duo Chat has access to, follow the instructions for
-[turning off GitLab Duo features](../gitlab_duo/turn_on_off.md#turn-gitlab-duo-features-on-or-off).
+[turning off GitLab Duo features](../gitlab_duo/turn_on_off.md).
 
 ## Turn off Chat in VS Code
 

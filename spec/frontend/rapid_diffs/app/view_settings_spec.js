@@ -8,8 +8,6 @@ import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { DiffFile } from '~/rapid_diffs/diff_file';
 import { COLLAPSE_FILE, EXPAND_FILE } from '~/rapid_diffs/events';
 
-const streamUrl = '/stream';
-
 jest.mock('~/diffs/components/diff_app_controls.vue', () => ({
   props: jest.requireActual('~/diffs/components/diff_app_controls.vue').default.props,
   render(h) {
@@ -36,11 +34,21 @@ Vue.use(PiniaVuePlugin);
 
 describe('View settings', () => {
   let pinia;
+  let appData;
 
   const getDiffAppControls = () => document.querySelector('[data-diff-app-controls]');
   const getVueInstance = () => getDiffAppControls().getInstance();
 
+  const init = () => {
+    initViewSettings({ pinia, target: document.querySelector('[data-view-settings]'), appData });
+  };
+
   beforeEach(() => {
+    appData = {
+      showWhitespace: true,
+      diffViewType: 'parallel',
+      updateUserEndpoint: '/update-user-endpoint',
+    };
     setHTMLFixture(`
       <div
         data-view-settings
@@ -53,20 +61,19 @@ describe('View settings', () => {
   });
 
   it('sets initial state', () => {
-    initViewSettings({ pinia, streamUrl });
+    init();
     expect(useDiffsView().viewType).toBe('parallel');
     expect(useDiffsView().showWhitespace).toBe(true);
     expect(useDiffsView().updateUserEndpoint).toBe('/update-user-endpoint');
-    expect(useDiffsView().streamUrl).toBe(streamUrl);
   });
 
   it('sets loaded files', () => {
-    initViewSettings({ pinia, streamUrl });
+    init();
     expect(useDiffsList().fillInLoadedFiles).toHaveBeenCalled();
   });
 
   it('renders diff app controls', () => {
-    initViewSettings({ pinia, streamUrl });
+    init();
     expect(getDiffAppControls()).not.toBe(null);
   });
 
@@ -77,7 +84,7 @@ describe('View settings', () => {
       removedLines: 2,
       diffsCount: 3,
     };
-    initViewSettings({ pinia, streamUrl });
+    init();
     const el = getDiffAppControls();
     const getProp = (prop) => JSON.parse(el.dataset[prop]);
     expect(getProp('hasChanges')).toBe(true);
@@ -93,7 +100,7 @@ describe('View settings', () => {
   it('triggers collapse all files', () => {
     const trigger = jest.fn();
     jest.spyOn(DiffFile, 'getAll').mockReturnValue([{ trigger }]);
-    initViewSettings({ pinia, streamUrl });
+    init();
     getVueInstance().$emit('collapseAllFiles');
     expect(trigger).toHaveBeenCalledWith(COLLAPSE_FILE);
   });
@@ -101,19 +108,19 @@ describe('View settings', () => {
   it('triggers expand all files', () => {
     const trigger = jest.fn();
     jest.spyOn(DiffFile, 'getAll').mockReturnValue([{ trigger }]);
-    initViewSettings({ pinia, streamUrl });
+    init();
     getVueInstance().$emit('expandAllFiles');
     expect(trigger).toHaveBeenCalledWith(EXPAND_FILE);
   });
 
   it('updates view type', async () => {
-    initViewSettings({ pinia, streamUrl });
+    init();
     await getVueInstance().$emit('updateDiffViewType', 'inline');
     expect(useDiffsView().updateViewType).toHaveBeenCalledWith('inline');
   });
 
   it('toggles whitespace', async () => {
-    initViewSettings({ pinia, streamUrl });
+    init();
     await getVueInstance().$emit('toggleWhitespace', false);
     expect(useDiffsView().updateShowWhitespace).toHaveBeenCalledWith(false);
   });

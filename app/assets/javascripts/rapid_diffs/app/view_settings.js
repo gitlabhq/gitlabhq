@@ -56,14 +56,12 @@ const initSettingsApp = (el, pinia) => {
   });
 };
 
-export const initViewSettings = ({ pinia, streamUrl }) => {
-  const target = document.querySelector('[data-view-settings]');
-  const { showWhitespace, diffViewType, updateUserEndpoint } = target.dataset;
+export const initViewSettings = ({ pinia, target, appData }) => {
+  const { showWhitespace, diffViewType, updateUserEndpoint } = appData;
   useDiffsView(pinia).$patch({
     showWhitespace: parseBoolean(showWhitespace),
     viewType: diffViewType,
     updateUserEndpoint,
-    streamUrl,
   });
   useDiffsList(pinia).fillInLoadedFiles();
   return initSettingsApp(target, pinia);

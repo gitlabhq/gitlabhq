@@ -23,14 +23,14 @@ export const ExpandLinesAdapter = {
       hunkHeaderRow.dataset.loading = expandDirection;
       button.setAttribute('disabled', 'disabled');
 
-      const { diffLinesPath } = this.data;
+      const { diffLinesPath, viewer } = this.data;
       let lines;
       try {
         lines = await getLines({
           expandDirection,
           surroundingLines: getSurroundingLines(hunkHeaderRow),
           diffLinesPath,
-          view: this.viewer === 'text_parallel' ? 'parallel' : undefined,
+          view: viewer === 'text_parallel' ? 'parallel' : undefined,
         });
       } catch (error) {
         createAlert({

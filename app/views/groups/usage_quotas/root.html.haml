@@ -1,6 +1,8 @@
 - content_for :usage_quotas_alerts do
   = render_if_exists 'shared/usage_quotas/alerts'
 
+= render_if_exists 'groups/usage_quotas/google_tag_manager'
+
 - content_for :usage_quotas_subtitle do
   %span{ data: { testid: 'group-usage-message-content' } }
     = safe_format(s_('UsageQuota|Usage of group resources across the projects in the %{strong_start}%{group_name}%{strong_end} group'),

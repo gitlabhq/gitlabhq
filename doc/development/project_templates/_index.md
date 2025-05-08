@@ -99,8 +99,8 @@ steps:
   - Defined in `lib/gitlab/export/logger.rb`.
 - `Gitlab::ImportExport::LogUtil`: Builds log messages.
   - Defined in `lib/gitlab/import_export/log_util.rb`.
-- `Gitlab::ImportExport::AfterExportStrategies::CustomTemplateExportImportStrategy`: Callback class to import the template after it has been exported.
-  - Defined in `ee/lib/ee/gitlab/import_export/after_export_strategies/custom_template_export_import_strategy.rb`.
+- `Import::AfterExportStrategies::CustomTemplateExportImportStrategy`: Callback class to import the template after it has been exported.
+  - Defined in `ee/lib/import/after_export_strategies/custom_template_export_import_strategy.rb`.
 - `Gitlab::TemplateHelper`: Helpers for importing templates.
   - Defined in `lib/gitlab/template_helper.rb`.
 - `ImportExportUpload`: Stores the import and export archive files.
