@@ -106,7 +106,21 @@ describe('Blob Header Default Actions', () => {
             gitpodUrl: gitpodBlobUrl,
             isGitpodEnabledForInstance: applicationInfoMock.gitpodEnabled,
             isGitpodEnabledForUser: userInfoMock.currentUser.gitpodEnabled,
+            disabled: false,
           });
+        });
+
+        it('disables the WebIdeLink component when file is LFS', async () => {
+          await createComponent({
+            options: {
+              provide: {
+                glFeatures: { blobOverflowMenu: false },
+              },
+            },
+            propsData: { isUsingLfs: true },
+          });
+
+          expect(findWebIdeLink().props('disabled')).toBe(true);
         });
 
         it('passes the edit button variant down to the WebIdeLink', () => {

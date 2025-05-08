@@ -67,7 +67,12 @@ export default {
       required: false,
       default: undefined,
     },
-    eeCanLock: {
+    eeCanCreateLock: {
+      type: Boolean,
+      required: false,
+      default: undefined,
+    },
+    eeCanDestroyLock: {
       type: Boolean,
       required: false,
       default: undefined,
@@ -116,9 +121,6 @@ export default {
     },
     canModifyFile() {
       return this.eeCanModifyFile !== undefined ? this.eeCanModifyFile : true;
-    },
-    canLock() {
-      return this.eeCanLock !== undefined ? this.eeCanLock : false;
     },
     isLocked() {
       return this.eeIsLocked !== undefined ? this.eeIsLocked : false;
@@ -175,7 +177,8 @@ export default {
       :is-using-lfs="isUsingLfs"
       :user-permissions="userPermissions"
       :is-loading="isLoading"
-      :can-lock="canLock"
+      :can-create-lock="eeCanCreateLock"
+      :can-destroy-lock="eeCanDestroyLock"
       :is-replace-disabled="!canModifyFile && isLocked"
       :is-locked="isLocked"
       @showForkSuggestion="onShowForkSuggestion"

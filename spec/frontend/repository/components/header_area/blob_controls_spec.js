@@ -277,7 +277,11 @@ describe('Blob controls component', () => {
     });
 
     it('renders blame button when blobInfo.storedExternally is false and externalStorage is not "lfs"', async () => {
-      await createComponent({}, { storedExternally: false, externalStorage: null });
+      const blobOverwriteResolver = overrideBlobControlsResolver({
+        storedExternally: false,
+        externalStorage: null,
+      });
+      await createComponent({ blobControlsResolver: blobOverwriteResolver });
 
       expect(findBlameButton().exists()).toBe(true);
     });
@@ -329,7 +333,20 @@ describe('Blob controls component', () => {
           gitpodUrl: 'gitpod/blob/url/file.js',
           isGitpodEnabledForInstance: true,
           isGitpodEnabledForUser: true,
+          disabled: false,
         });
+      });
+
+      it('disables the WebIdeLink component when file is LFS', async () => {
+        const blobOverwriteResolver = overrideBlobControlsResolver({
+          storedExternally: true,
+          externalStorage: 'lfs',
+        });
+        await createComponent({
+          blobControlsResolver: blobOverwriteResolver,
+          glFeatures: { blobOverflowMenu: true },
+        });
+        expect(findWebIdeLink().props('disabled')).toBe(true);
       });
 
       it('does not render WebIdeLink component if file is archived', async () => {
@@ -435,7 +452,8 @@ describe('Blob controls component', () => {
           overrideCopy: true,
           isEmptyRepository: false,
           isUsingLfs: false,
-          eeCanLock: undefined,
+          eeCanCreateLock: undefined,
+          eeCanDestroyLock: undefined,
           eeCanModifyFile: undefined,
           eeIsLocked: undefined,
         });

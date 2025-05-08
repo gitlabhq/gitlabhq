@@ -75,10 +75,7 @@ RSpec.describe 'Projects > Files > User browses LFS files', feature_category: :s
         click_button 'File actions' # close dropdown to make Download visible
         expect(page).to have_link('Download')
 
-        click_button 'Edit'
-
-        expect(page).not_to have_selector(:link_or_button, text: /^Edit single file$/)
-        expect(page).to have_selector(:link_or_button, 'Open in Web IDE')
+        expect(page).to have_button('Edit', disabled: true)
       end
     end
   end

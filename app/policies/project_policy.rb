@@ -500,28 +500,61 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { environments_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:environment))
-    prevent(*create_read_update_admin_destroy(:deployment))
+    prevent :read_environment
+    prevent :create_environment
+    prevent :update_environment
+    prevent :admin_environment
+    prevent :destroy_environment
+
+    prevent :read_deployment
+    prevent :create_deployment
+    prevent :update_deployment
+    prevent :admin_deployment
+    prevent :destroy_deployment
   end
 
   rule { feature_flags_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:feature_flag))
+    prevent :read_feature_flag
+    prevent :create_feature_flag
+    prevent :update_feature_flag
+    prevent :admin_feature_flag
+    prevent :destroy_feature_flag
+
     prevent(:admin_feature_flags_user_lists)
     prevent(:admin_feature_flags_client)
   end
 
   rule { releases_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:release))
+    prevent :read_release
+    prevent :create_release
+    prevent :update_release
+    prevent :admin_release
+    prevent :destroy_release
   end
 
   rule { monitor_disabled }.policy do
-    prevent(:metrics_dashboard)
-    prevent(*create_read_update_admin_destroy(:sentry_issue))
-    prevent(*create_read_update_admin_destroy(:alert_management_alert))
+    prevent :metrics_dashboard
+
+    prevent :read_sentry_issue
+    prevent :create_sentry_issue
+    prevent :update_sentry_issue
+    prevent :admin_sentry_issue
+    prevent :destroy_sentry_issue
+
+    prevent :read_alert_management_alert
+    prevent :create_alert_management_alert
+    prevent :update_alert_management_alert
+    prevent :admin_alert_management_alert
+    prevent :destroy_alert_management_alert
   end
 
   rule { infrastructure_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:cluster))
+    prevent :read_cluster
+    prevent :create_cluster
+    prevent :update_cluster
+    prevent :admin_cluster
+    prevent :destroy_cluster
+
     prevent(:read_pod_logs)
     prevent(:read_prometheus)
     prevent(:admin_project_google_cloud)
@@ -529,7 +562,11 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { infrastructure_disabled | terraform_state_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:terraform_state))
+    prevent :read_terraform_state
+    prevent :create_terraform_state
+    prevent :update_terraform_state
+    prevent :admin_terraform_state
+    prevent :destroy_terraform_state
   end
 
   rule { can?(:metrics_dashboard) }.policy do
@@ -537,7 +574,11 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { packages_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:package))
+    prevent :read_package
+    prevent :create_package
+    prevent :update_package
+    prevent :admin_package
+    prevent :destroy_package
   end
 
   rule { owner | admin | organization_owner | guest | group_member | group_requester }.prevent :request_access
@@ -707,15 +748,33 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { issues_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:issue))
-    prevent(*create_read_update_admin_destroy(:issue_board))
-    prevent(*create_read_update_admin_destroy(:issue_board_list))
+    prevent :read_issue
+    prevent :create_issue
+    prevent :update_issue
+    prevent :admin_issue
+    prevent :destroy_issue
+
+    prevent :read_issue_board
+    prevent :create_issue_board
+    prevent :update_issue_board
+    prevent :admin_issue_board
+    prevent :destroy_issue_board
+
+    prevent :read_issue_board_list
+    prevent :create_issue_board_list
+    prevent :update_issue_board_list
+    prevent :admin_issue_board_list
+    prevent :destroy_issue_board_list
   end
 
   rule { merge_requests_disabled | repository_disabled }.policy do
     prevent :create_merge_request_in
     prevent :create_merge_request_from
-    prevent(*create_read_update_admin_destroy(:merge_request))
+    prevent :read_merge_request
+    prevent :create_merge_request
+    prevent :update_merge_request
+    prevent :admin_merge_request
+    prevent :destroy_merge_request
   end
 
   rule { ~can?(:download_code) }.policy do
@@ -724,17 +783,33 @@ class ProjectPolicy < BasePolicy
 
   rule { pages_disabled }.policy do
     prevent :read_pages_content
-    prevent(*create_read_update_admin_destroy(:pages))
+    prevent :read_pages
+    prevent :create_pages
+    prevent :update_pages
+    prevent :admin_pages
+    prevent :destroy_pages
   end
 
   rule { issues_disabled & merge_requests_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:label))
-    prevent(*create_read_update_admin_destroy(:milestone))
-    prevent(:read_cycle_analytics)
+    prevent :read_label
+    prevent :create_label
+    prevent :update_label
+    prevent :admin_label
+    prevent :destroy_label
+    prevent :read_milestone
+    prevent :create_milestone
+    prevent :update_milestone
+    prevent :admin_milestone
+    prevent :destroy_milestone
+    prevent :read_cycle_analytics
   end
 
   rule { snippets_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:snippet))
+    prevent :read_snippet
+    prevent :create_snippet
+    prevent :update_snippet
+    prevent :admin_snippet
+    prevent :destroy_snippet
   end
 
   rule { analytics_disabled }.policy do
@@ -746,8 +821,12 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { wiki_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:wiki))
-    prevent(:download_wiki_code)
+    prevent :read_wiki
+    prevent :create_wiki
+    prevent :update_wiki
+    prevent :admin_wiki
+    prevent :destroy_wiki
+    prevent :download_wiki_code
   end
 
   rule { download_code_deploy_token }.policy do
@@ -755,11 +834,30 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { builds_disabled | repository_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:build))
+    prevent :read_build
+    prevent :create_build
+    prevent :update_build
+    prevent :admin_build
+    prevent :destroy_build
     prevent :cancel_build
-    prevent(*create_read_update_admin_destroy(:pipeline_schedule))
-    prevent(*create_read_update_admin_destroy(:environment))
-    prevent(*create_read_update_admin_destroy(:deployment))
+
+    prevent :read_pipeline_schedule
+    prevent :create_pipeline_schedule
+    prevent :update_pipeline_schedule
+    prevent :admin_pipeline_schedule
+    prevent :destroy_pipeline_schedule
+
+    prevent :read_environment
+    prevent :create_environment
+    prevent :update_environment
+    prevent :admin_environment
+    prevent :destroy_environment
+
+    prevent :read_deployment
+    prevent :create_deployment
+    prevent :update_deployment
+    prevent :admin_deployment
+    prevent :destroy_deployment
   end
 
   # There's two separate cases when builds_disabled is true:
@@ -768,9 +866,18 @@ class ProjectPolicy < BasePolicy
   # 2. When the user is not allowed to access CI - builds_disabled && ~internal_builds_disabled
   #   - We prevent the user from accessing Pipelines
   rule { (builds_disabled & ~internal_builds_disabled) | repository_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:pipeline))
+    prevent :read_pipeline
+    prevent :create_pipeline
+    prevent :update_pipeline
+    prevent :admin_pipeline
+    prevent :destroy_pipeline
     prevent :cancel_pipeline
-    prevent(*create_read_update_admin_destroy(:commit_status))
+
+    prevent :read_commit_status
+    prevent :create_commit_status
+    prevent :update_commit_status
+    prevent :admin_commit_status
+    prevent :destroy_commit_status
   end
 
   rule { repository_disabled }.policy do
@@ -782,13 +889,27 @@ class ProjectPolicy < BasePolicy
     prevent :read_commit_status
     prevent :read_pipeline
     prevent :read_pipeline_schedule
-    prevent(*create_read_update_admin_destroy(:feature_flag))
-    prevent(:admin_feature_flags_user_lists)
-    prevent(*create_read_update_admin_destroy(:cluster))
+
+    prevent :read_feature_flag
+    prevent :create_feature_flag
+    prevent :update_feature_flag
+    prevent :admin_feature_flag
+    prevent :destroy_feature_flag
+    prevent :admin_feature_flags_user_lists
+
+    prevent :read_cluster
+    prevent :create_cluster
+    prevent :update_cluster
+    prevent :admin_cluster
+    prevent :destroy_cluster
   end
 
   rule { container_registry_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:container_image))
+    prevent :read_container_image
+    prevent :create_container_image
+    prevent :update_container_image
+    prevent :admin_container_image
+    prevent :destroy_container_image
     prevent :destroy_container_image_tag
     prevent :destroy_container_registry_protection_tag_rule
     prevent :create_container_registry_protection_immutable_tag_rule

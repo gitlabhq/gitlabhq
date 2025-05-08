@@ -4841,7 +4841,7 @@ msgstr ""
 msgid "AdminSettings|Size and domain settings for Pages static sites."
 msgstr ""
 
-msgid "AdminSettings|Skip confirmation when reassigning placeholder users %{link_start}%{icon}%{link_end}"
+msgid "AdminSettings|Skip confirmation when reassigning placeholder users"
 msgstr ""
 
 msgid "AdminSettings|The URL of your Cube instance."
@@ -23671,6 +23671,9 @@ msgid "Edited %{timeago} by %{author}"
 msgstr ""
 
 msgid "Editing"
+msgstr ""
+
+msgid "Editing this file is not supported"
 msgstr ""
 
 msgid "Editor toolbar"
@@ -49218,6 +49221,9 @@ msgstr ""
 msgid "ProtectedBranch|Giving merge rights to a protected branch also gives elevated permissions for certain CI/CD features."
 msgstr ""
 
+msgid "ProtectedBranch|How do I use branch rules?"
+msgstr ""
+
 msgid "ProtectedBranch|Inherited - This setting can be changed at the group level"
 msgstr ""
 
@@ -49255,6 +49261,9 @@ msgid "ProtectedBranch|Protected branch was successfully created"
 msgstr ""
 
 msgid "ProtectedBranch|Protected branches"
+msgstr ""
+
+msgid "ProtectedBranch|Protected branches is moving to %{branch_rules_link_start}Branch rules%{branch_rules_link_end}."
 msgstr ""
 
 msgid "ProtectedBranch|Reject code pushes that change files listed in the CODEOWNERS file."
@@ -49303,6 +49312,9 @@ msgid "ProtectedBranch|What are the security implications?"
 msgstr ""
 
 msgid "ProtectedBranch|You can add only groups that have this project shared. %{learn_more_link}"
+msgstr ""
+
+msgid "ProtectedBranch|You can now manage branch protections, approval rules, and status checks in one place."
 msgstr ""
 
 msgid "ProtectedBranch|default"

@@ -16,7 +16,9 @@ module InitializerConnections
         pool.connections.size
       end
 
-    yield
+    results = debug_database_queries do
+      yield
+    end
 
     new_connection_counts =
       ActiveRecord::Base.connection_handler.connection_pool_list(ApplicationRecord.current_role).map do |pool|
@@ -24,6 +26,26 @@ module InitializerConnections
       end
 
     raise_database_connection_made_error unless previous_connection_counts == new_connection_counts
+
+    results
+  end
+
+  def self.debug_database_queries
+    return yield if Rails.env.production?
+
+    callback = ->(_name, _started, _finished, _unique_id, payload) do
+      # rubocop:disable Gitlab/RailsLogger -- development/test only
+      Rails.logger.debug("InitializerConnections Query: #{payload[:sql]}")
+
+      Gitlab::BacktraceCleaner.clean_backtrace(caller).each do |line|
+        Rails.logger.debug("InitializerConnections Backtrace: #{line}")
+      end
+      # rubocop:enable Gitlab/RailsLogger
+    end
+
+    ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+      yield
+    end
   end
 
   def self.raise_database_connection_made_error

@@ -347,6 +347,7 @@ export default {
       :user-profile-enable-gitpod-path="currentUser && currentUser.profileEnableGitpodPath"
       is-blob
       disable-fork-modal
+      :disabled="isUsingLfs"
       @edit="onEdit"
     />
     <fork-suggestion-modal

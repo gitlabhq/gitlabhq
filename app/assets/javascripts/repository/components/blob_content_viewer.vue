@@ -402,6 +402,7 @@ export default {
         :show-blame-toggle="glFeatures.inlineBlame"
         :project-path="projectPath"
         :project-id="projectId"
+        :is-using-lfs="isUsingLfs"
         @viewer-changed="handleViewerChanged"
         @copy="onCopy"
         @edit="editBlob"

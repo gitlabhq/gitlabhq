@@ -44189,6 +44189,9 @@ definitions:
       experiment_features_enabled:
         type: boolean
         description: Enable experiment features for this group
+      model_prompt_cache_enabled:
+        type: boolean
+        description: Enable model prompt cache for this group
     required:
     - name
     - path
@@ -44376,6 +44379,9 @@ definitions:
       experiment_features_enabled:
         type: boolean
         description: Enable experiment features for this group
+      model_prompt_cache_enabled:
+        type: boolean
+        description: Enable model prompt cache for this group
       prevent_sharing_groups_outside_hierarchy:
         type: boolean
         description: Prevent sharing groups within this namespace with any groups

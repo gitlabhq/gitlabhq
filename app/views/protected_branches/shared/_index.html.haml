@@ -8,14 +8,26 @@
   - c.with_description do
     = s_("ProtectedBranch|Keep stable branches secure and force developers to use merge requests.")
     = link_to s_("ProtectedBranch|What are protected branches?"), help_page_path("user/project/repository/branches/protected.md")
-  - c.with_body do
-    .js-alert-protected-branch-created-container.gl-mt-5
 
+    - if @project.present?
+      - branch_rules_docs_link_url = help_page_path('user/project/repository/branches/branch_rules.md')
+      - branch_rules_link_url = project_settings_repository_path(@project, anchor: 'js-branch-rules')
+      - branch_rules_link_start = '<a href="%{url}" rel="noopener noreferrer">'.html_safe % { url: branch_rules_link_url }
+
+      = render Pajamas::AlertComponent.new( alert_options: { class: 'gl-mr-7 gl-mt-5' },
+        dismissible: false) do |c|
+        - c.with_body do
+          = s_("ProtectedBranch|Protected branches is moving to %{branch_rules_link_start}Branch rules%{branch_rules_link_end}.").html_safe % { branch_rules_link_start: branch_rules_link_start, branch_rules_link_end: '</a>'.html_safe }
+          = s_("ProtectedBranch|You can now manage branch protections, approval rules, and status checks in one place.")
+          = link_to s_("ProtectedBranch|How do I use branch rules?"), branch_rules_docs_link_url, target: '_blank', rel: 'noopener noreferrer'
+
+  - c.with_body do
+    .js-alert-protected-branch-created-container
     = render Pajamas::AlertComponent.new(variant: :warning,
       alert_options: { class: 'gl-mb-5' },
       dismissible: false) do |c|
       - c.with_body do
-        =  s_("ProtectedBranch|Giving merge rights to a protected branch also gives elevated permissions for certain CI/CD features.")
+        = s_("ProtectedBranch|Giving merge rights to a protected branch also gives elevated permissions for certain CI/CD features.")
         = link_to s_("ProtectedBranch|What are the security implications?"), help_page_path('ci/pipelines/_index.md', anchor: 'pipeline-security-on-protected-branches'), target: '_blank', rel: 'noopener noreferrer'
 
     = render ::Layouts::CrudComponent.new(s_("ProtectedBranch|Protected branches"),
