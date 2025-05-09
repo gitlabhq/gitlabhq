@@ -502,10 +502,13 @@ module Ci
     # sha - The commit SHA (or multiple SHAs) to limit the list of pipelines to.
     # limit - Number of pipelines to return. Chaining with sampling methods (#pick, #take)
     #         will cause unnecessary subqueries.
-    def self.newest_first(ref: nil, sha: nil, limit: nil)
+    def self.newest_first(ref: nil, sha: nil, limit: nil, source: nil)
       relation = order(id: :desc)
       relation = relation.where(ref: ref) if ref
       relation = relation.where(sha: sha) if sha
+      if source && Feature.enabled?(:source_filter_pipelines, :current_request)
+        relation = relation.where(source: source)
+      end
 
       if limit
         ids = relation.limit(limit).select(:id)

@@ -11,8 +11,15 @@ export function setReviewersForList({ issuableId, listId, reviewers = [] } = {})
 export function getReviewersForList({ issuableId, listId } = {}) {
   const id = cacheId({ issuableId, listId });
   const list = window.sessionStorage.getItem(id);
+  let parsedList;
 
-  return list ? JSON.parse(list) : [];
+  try {
+    parsedList = list ? JSON.parse(list) : [];
+  } catch {
+    parsedList = [];
+  }
+
+  return parsedList;
 }
 
 export function suggestedPosition({ username, list = [] } = {}) {

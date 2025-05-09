@@ -3,6 +3,8 @@
 module Ci
   module ResourceGroups
     class AssignResourceFromResourceGroupService < ::BaseService
+      include Gitlab::InternalEventsTracking
+
       RESPAWN_WAIT_TIME = 1.minute
 
       def execute(resource_group)
@@ -25,6 +27,17 @@ module Ci
               processable.drop!(:failed_outdated_deployment_job)
             else
               processable.enqueue_waiting_for_resource
+
+              track_internal_event(
+                "job_enqueued_by_resource_group",
+                user: processable.user,
+                project: resource_group.project,
+                additional_properties: {
+                  label: resource_group.process_mode,
+                  property: processable.id.to_s,
+                  resource_group_id: resource_group.id
+                }
+              )
             end
           end
         end

@@ -12,7 +12,7 @@ title: Gitaly and Gitaly Cluster
 
 {{< /details >}}
 
-[Gitaly](https://gitlab.com/gitlab-org/gitaly) provides high-level RPC access to Git repositories.
+[Gitaly](https://gitlab.com/gitlab-org/gitaly) provides high-level remote procedure call (RPC) access to Git repositories.
 It is used by GitLab to read and write Git data.
 
 Gitaly is present in every GitLab installation and coordinates Git repository

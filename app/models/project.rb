@@ -1516,16 +1516,16 @@ class Project < ApplicationRecord
     latest_successful_build_for_ref(job_name, ref) || raise(ActiveRecord::RecordNotFound, "Couldn't find job #{job_name}")
   end
 
-  def latest_pipelines(ref: default_branch, sha: nil, limit: nil)
+  def latest_pipelines(ref: default_branch, sha: nil, limit: nil, source: nil)
     ref = ref.presence || default_branch
     sha ||= commit(ref)&.sha
     return ci_pipelines.none unless sha
 
-    ci_pipelines.newest_first(ref: ref, sha: sha, limit: limit)
+    ci_pipelines.newest_first(ref: ref, sha: sha, limit: limit, source: source)
   end
 
-  def latest_pipeline(ref = default_branch, sha = nil)
-    latest_pipelines(ref: ref, sha: sha).take
+  def latest_pipeline(ref = default_branch, sha = nil, source = nil)
+    latest_pipelines(ref: ref, sha: sha, source: source).take
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)

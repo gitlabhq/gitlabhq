@@ -414,6 +414,7 @@ class ProjectPolicy < BasePolicy
     enable :download_wiki_code
     enable :create_wiki
     enable :admin_wiki
+    enable :read_internal_note
     enable :read_merge_request
     enable :export_work_items
   end
@@ -464,6 +465,7 @@ class ProjectPolicy < BasePolicy
     enable :read_package
     enable :read_ci_cd_analytics
     enable :read_external_emails
+    enable :read_internal_note
     enable :read_grafana
     enable :export_work_items
     enable :create_design
@@ -1197,9 +1199,6 @@ class ProjectPolicy < BasePolicy
   rule { can?(:download_code) }.policy do
     enable :read_code
   end
-
-  # Should be matched with GroupPolicy#read_internal_note
-  rule { admin | planner_or_reporter_access }.enable :read_internal_note
 
   rule { can?(:developer_access) & namespace_catalog_available }.policy do
     enable :read_namespace_catalog

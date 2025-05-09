@@ -19,8 +19,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/require"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/metrics"
-
 	"gitlab.com/gitlab-org/labkit/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
@@ -273,27 +271,4 @@ func WriteExecutable(tb testing.TB, path string, content []byte) string {
 	MustClose(tb, executable)
 
 	return path
-}
-
-// RequestWithMetrics wraps the given request with metrics tracking context.
-func RequestWithMetrics(t *testing.T, r *http.Request) *http.Request {
-	t.Helper()
-	// add metrics tracker
-	tracker := metrics.NewRequestTracker()
-	ctx := metrics.NewContext(r.Context(), tracker)
-
-	return r.WithContext(ctx)
-}
-
-// AssertMetrics checks if the request has the expected metrics tracking and flags.
-func AssertMetrics(t *testing.T, r *http.Request) {
-	t.Helper()
-
-	// check metrics
-	tracker, ok := metrics.FromContext(r.Context())
-	require.True(t, ok)
-
-	val, ok := tracker.GetFlag(metrics.KeyFetchedExternalURL)
-	require.True(t, ok)
-	require.Equal(t, "true", val)
 }

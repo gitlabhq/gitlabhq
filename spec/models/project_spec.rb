@@ -3791,6 +3791,22 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
         it { is_expected.to eq(other_pipeline_for_default_branch) }
       end
+
+      context 'with provided source' do
+        before do
+          stub_feature_flags(source_filter_pipelines: true)
+        end
+
+        subject { project.latest_pipeline(project.default_branch, project.commit.parent.id, :push) }
+
+        it { is_expected.to eq(other_pipeline_for_default_branch) }
+      end
+
+      context 'with provided source that does not contain any pipelines' do
+        subject { project.latest_pipeline(project.default_branch, project.commit.parent.id, :schedule) }
+
+        it { is_expected.to be_nil }
+      end
     end
 
     context 'provided ref' do

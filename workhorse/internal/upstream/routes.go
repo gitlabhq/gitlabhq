@@ -21,7 +21,6 @@ import (
 	gobpkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/gob"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/imageresizer"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/metrics"
 	proxypkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
@@ -120,32 +119,26 @@ func withAllowOrigins(pattern string) func(*routeOptions) {
 }
 
 func (u *upstream) observabilityMiddlewares(handler http.Handler, method string, metadata routeMetadata, opts *routeOptions) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		tracker := metrics.NewRequestTracker()
-		ctx := metrics.NewContext(r.Context(), tracker)
-		r = r.WithContext(ctx)
+	handler = log.AccessLogger(
+		handler,
+		log.WithAccessLogger(u.accessLogger),
+		log.WithTrustedProxies(u.TrustedCIDRsForXForwardedFor),
+		log.WithExtraFields(func(_ *http.Request) log.Fields {
+			return log.Fields{
+				"route":      metadata.regexpStr, // This field matches the `route` label in Prometheus metrics
+				"route_id":   metadata.routeID,
+				"backend_id": metadata.backendID,
+			}
+		}),
+	)
 
-		handler = log.AccessLogger(
-			handler,
-			log.WithAccessLogger(u.accessLogger),
-			log.WithTrustedProxies(u.TrustedCIDRsForXForwardedFor),
-			log.WithExtraFields(func(_ *http.Request) log.Fields {
-				return log.Fields{
-					"route":      metadata.regexpStr, // This field matches the `route` label in Prometheus metrics
-					"route_id":   metadata.routeID,
-					"backend_id": metadata.backendID,
-				}
-			}),
-		)
+	handler = instrumentRoute(handler, method, metadata) // Add prometheus metrics
 
-		handler = instrumentRoute(handler, method, metadata) // Add prometheus metrics
+	if opts != nil && opts.isGeoProxyRoute {
+		handler = instrumentGeoProxyRoute(handler, method, metadata) // Add Geo prometheus metrics
+	}
 
-		if opts != nil && opts.isGeoProxyRoute {
-			handler = instrumentGeoProxyRoute(handler, method, metadata) // Add Geo prometheus metrics
-		}
-
-		handler.ServeHTTP(w, r)
-	})
+	return handler
 }
 
 func (u *upstream) route(method string, metadata routeMetadata, handler http.Handler, opts ...func(*routeOptions)) routeEntry {

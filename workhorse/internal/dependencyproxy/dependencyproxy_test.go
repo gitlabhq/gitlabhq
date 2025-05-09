@@ -134,13 +134,9 @@ func TestInject(t *testing.T) {
 		r := httptest.NewRequest("GET", "/target", nil)
 		sendData := base64.StdEncoding.EncodeToString([]byte(tokenJSON + originResourceServer.URL + urlJSON))
 
-		// add metrics tracker
-		r = testhelper.RequestWithMetrics(t, r)
-
 		injector.Inject(tc.responseWriter, r, sendData)
 
 		require.Equal(t, tc.handlerMustBeCalled, handlerIsCalled, "a partial file must not be saved")
-		testhelper.AssertMetrics(t, r)
 	}
 }
 
@@ -174,7 +170,7 @@ func TestSuccessfullRequest(t *testing.T) {
 	injector := NewInjector()
 	injector.SetUploadHandler(uploadHandler)
 
-	response := makeRequest(t, injector, tokenJSON+originResourceServer.URL+urlJSON)
+	response := makeRequest(injector, tokenJSON+originResourceServer.URL+urlJSON)
 
 	require.Equal(t, "/target/upload", uploadHandler.request.URL.Path)
 	require.Equal(t, int64(6), uploadHandler.request.ContentLength)
@@ -295,7 +291,7 @@ func TestValidUploadConfiguration(t *testing.T) {
 			sendDataJSONString, err := json.Marshal(sendData)
 			require.NoError(t, err)
 
-			response := makeRequest(t, injector, string(sendDataJSONString))
+			response := makeRequest(injector, string(sendDataJSONString))
 
 			// check the response
 			require.Equal(t, 200, response.Code)
@@ -349,7 +345,7 @@ func TestInvalidUploadConfiguration(t *testing.T) {
 			sendDataJSONString, err := json.Marshal(tc.sendData)
 			require.NoError(t, err)
 
-			response := makeRequest(t, NewInjector(), string(sendDataJSONString))
+			response := makeRequest(NewInjector(), string(sendDataJSONString))
 
 			require.Equal(t, 500, response.Code)
 			require.Equal(t, "Internal Server Error\n", response.Body.String())
@@ -382,7 +378,7 @@ func TestTimeoutConfiguration(t *testing.T) {
 	sendDataJSONString, err := json.Marshal(sendData)
 	require.NoError(t, err)
 
-	response := makeRequest(t, injector, string(sendDataJSONString))
+	response := makeRequest(injector, string(sendDataJSONString))
 	responseResult := response.Result()
 	defer responseResult.Body.Close()
 	require.Equal(t, http.StatusGatewayTimeout, responseResult.StatusCode)
@@ -400,7 +396,7 @@ func TestSSRFFilter(t *testing.T) {
 	sendDataJSONString, err := json.Marshal(sendData)
 	require.NoError(t, err)
 
-	response := makeRequest(t, NewInjector(), string(sendDataJSONString))
+	response := makeRequest(NewInjector(), string(sendDataJSONString))
 
 	// Test uses loopback IP like 127.0.0.x and thus fails
 	require.Equal(t, http.StatusForbidden, response.Code)
@@ -429,7 +425,7 @@ func TestSSRFFilterWithAllowLocalhost(t *testing.T) {
 	injector := NewInjector()
 	injector.SetUploadHandler(uploadHandler)
 
-	response := makeRequest(t, injector, string(sendDataJSONString))
+	response := makeRequest(injector, string(sendDataJSONString))
 
 	require.Equal(t, http.StatusOK, response.Code)
 }
@@ -475,7 +471,7 @@ func TestRestrictForwardedResponseHeaders(t *testing.T) {
 		},
 	})
 
-	response := makeRequest(t, injector, entryParamsJSON)
+	response := makeRequest(injector, entryParamsJSON)
 
 	require.Equal(t, "/target/upload", uploadHandler.request.URL.Path)
 	require.Equal(t, int64(6), uploadHandler.request.ContentLength)
@@ -500,14 +496,14 @@ func jsonEntryParams(t *testing.T, params *map[string]interface{}) string {
 }
 
 func TestIncorrectSendData(t *testing.T) {
-	response := makeRequest(t, NewInjector(), "")
+	response := makeRequest(NewInjector(), "")
 
 	require.Equal(t, 500, response.Code)
 	require.Equal(t, "Internal Server Error\n", response.Body.String())
 }
 
 func TestIncorrectSendDataUrl(t *testing.T) {
-	response := makeRequest(t, NewInjector(), `{"Token": "token", "Url": "url"}`)
+	response := makeRequest(NewInjector(), `{"Token": "token", "Url": "url"}`)
 
 	require.Equal(t, http.StatusBadGateway, response.Code)
 	require.Equal(t, "Bad Gateway\n", response.Body.String())
@@ -528,7 +524,7 @@ func TestFailedOriginServer(t *testing.T) {
 	injector := NewInjector()
 	injector.SetUploadHandler(uploadHandler)
 
-	response := makeRequest(t, injector, tokenJSON+originResourceServer.URL+urlJSON)
+	response := makeRequest(injector, tokenJSON+originResourceServer.URL+urlJSON)
 
 	require.Equal(t, 404, response.Code)
 	require.Equal(t, "Not found", response.Body.String())
@@ -579,7 +575,7 @@ func TestLongUploadRequest(t *testing.T) {
 	r := httptest.NewRequest("GET", uploadServer.URL+"/upload", nil).WithContext(ctx)
 	r.Header.Set("Overridden-Header", "request")
 
-	response := makeCustomRequest(t, injector, `{"Token": "token", "Url": "`+originResourceServer.URL+`/upstream"}`, r)
+	response := makeCustomRequest(injector, `{"Token": "token", "Url": "`+originResourceServer.URL+`/upstream"}`, r)
 
 	// wait for the slow upload to finish
 	require.Equal(t, http.StatusOK, response.Code)
@@ -605,7 +601,7 @@ func TestHttpClientReuse(t *testing.T) {
 	injector := NewInjector()
 	injector.SetUploadHandler(uploadHandler)
 
-	response := makeRequest(t, injector, tokenJSON+originResourceServer.URL+urlJSON)
+	response := makeRequest(injector, tokenJSON+originResourceServer.URL+urlJSON)
 	require.Equal(t, http.StatusOK, response.Code)
 	_, found := httpClients.Load(expectedKey)
 	require.True(t, found)
@@ -616,21 +612,17 @@ func TestHttpClientReuse(t *testing.T) {
 	require.NotEqual(t, cachedClient(&entryParams{SSRFFilter: true}), storedClient)
 }
 
-func makeRequest(t *testing.T, injector *Injector, data string) *httptest.ResponseRecorder {
+func makeRequest(injector *Injector, data string) *httptest.ResponseRecorder {
 	r := httptest.NewRequest("GET", "/target", nil)
 	r.Header.Set("Overridden-Header", "request")
-	return makeCustomRequest(t, injector, data, r)
+
+	return makeCustomRequest(injector, data, r)
 }
 
-func makeCustomRequest(t *testing.T, injector *Injector, data string, r *http.Request) *httptest.ResponseRecorder {
-	// add metrics tracker
-	r = testhelper.RequestWithMetrics(t, r)
-
+func makeCustomRequest(injector *Injector, data string, r *http.Request) *httptest.ResponseRecorder {
 	w := httptest.NewRecorder()
 	sendData := base64.StdEncoding.EncodeToString([]byte(data))
 	injector.Inject(w, r, sendData)
-
-	testhelper.AssertMetrics(t, r)
 
 	return w
 }

@@ -91,8 +91,8 @@ RSpec.describe EventForward::EventForwardController, feature_category: :product_
 
     context 'when filtering events by eligibility' do
       before do
-        allow(event_eligibility_checker).to receive(:eligible?).with("event_1").and_return(true)
-        allow(event_eligibility_checker).to receive(:eligible?).with("event_2").and_return(false)
+        allow(event_eligibility_checker).to receive(:eligible?).with("event_1", "app_id_1").and_return(true)
+        allow(event_eligibility_checker).to receive(:eligible?).with("event_2", "app_id_2").and_return(false)
         stub_application_setting(gitlab_dedicated_instance?: true)
       end
 

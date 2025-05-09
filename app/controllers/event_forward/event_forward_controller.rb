@@ -24,7 +24,7 @@ module EventForward
       payload = Gitlab::Json.parse(request.raw_post)
 
       events_to_forward = payload['data'].select do |event|
-        event_eligibility_checker.eligible?(event['se_ac'])
+        event_eligibility_checker.eligible?(event['se_ac'], event['aid'])
       end
 
       events_to_forward.each do |event|

@@ -1,0 +1,23 @@
+---
+description: Job enqueued by resource group
+internal_events: true
+action: job_enqueued_by_resource_group
+identifiers:
+- project
+- namespace
+additional_properties:
+  label:
+    description: process_mode of the resource group
+  property:
+    description: id of the job which was enqueued
+  resource_group_id:
+    description: id of the resource group
+product_group: environments
+product_categories:
+- continuous_delivery
+milestone: '18.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189859
+tiers:
+- free
+- premium
+- ultimate

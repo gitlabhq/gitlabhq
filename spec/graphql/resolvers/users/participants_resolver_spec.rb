@@ -126,7 +126,7 @@ RSpec.describe Resolvers::Users::ParticipantsResolver do
           query.call
         end
 
-        it 'does not execute N+1 for project relation' do
+        it 'does not execute N+1 for project relation', :request_store do
           control_count = ActiveRecord::QueryRecorder.new { query.call }
 
           create(:award_emoji, :upvote, awardable: issue)

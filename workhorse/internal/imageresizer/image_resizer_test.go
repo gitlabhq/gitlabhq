@@ -1,7 +1,6 @@
 package imageresizer
 
 import (
-	"bytes"
 	"encoding/base64"
 	"encoding/json"
 	"image"
@@ -10,7 +9,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"strconv"
 	"testing"
 	"time"
 
@@ -230,77 +228,6 @@ func TestServeOriginalImageWhenSourceImageIsTooSmall(t *testing.T) {
 	responseData, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
 	require.Equal(t, content, responseData, "expected original image")
-}
-
-func TestResizeImageFromHTTPServer(t *testing.T) {
-	// Create a test server that serves a test image
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		// Open a test image file
-		file, err := os.Open("../../testdata/image.png")
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		defer file.Close()
-
-		// Get file info for content length and modification time
-		fileInfo, err := file.Stat()
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		// Set appropriate headers
-		w.Header().Set("Content-Type", "image/png")
-		w.Header().Set("Content-Length", strconv.FormatInt(fileInfo.Size(), 10))
-		w.Header().Set("Last-Modified", fileInfo.ModTime().UTC().Format(http.TimeFormat))
-
-		// Copy the file to the response
-		_, _ = io.Copy(w, file)
-	}))
-	defer ts.Close()
-
-	// Create resize parameters with the test server URL
-	params := resizeParams{
-		Location:    ts.URL,
-		ContentType: "image/png",
-		Width:       100,
-	}
-
-	// Create a resizer with test configuration
-	resizer := NewResizer(config.Config{
-		ImageResizerConfig: config.ImageResizerConfig{
-			MaxScalerProcs: 1,
-			MaxFilesize:    10 * 1024 * 1024, // 10MB
-		},
-	})
-
-	paramsJSON := encodeParams(t, &params)
-	// Create a test request with metrics
-	req := httptest.NewRequest("GET", "/image", nil)
-	req = testhelper.RequestWithMetrics(t, req)
-	w := httptest.NewRecorder()
-
-	// Call the Inject method
-	resizer.Inject(w, req, paramsJSON)
-
-	// Check the response
-	resp := w.Result()
-	defer resp.Body.Close()
-
-	require.Equal(t, http.StatusOK, resp.StatusCode, "Expected status OK")
-
-	// Verify the response contains image data
-	body, err := io.ReadAll(resp.Body)
-	require.NoError(t, err, "Failed to read response body")
-	require.NotEmpty(t, body, "Response body is empty")
-
-	// Check if the response is a valid image
-	// For PNG, we can check for the PNG signature
-	require.True(t, bytes.HasPrefix(body, []byte(pngMagic)), "Response is not a valid PNG image")
-
-	// Assert metrics were recorded properly
-	testhelper.AssertMetrics(t, req)
 }
 
 // The Rails applications sends a Base64 encoded JSON string carrying

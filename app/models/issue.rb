@@ -152,7 +152,14 @@ class Issue < ApplicationRecord
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :not_in_projects, ->(project_ids) { where.not(project_id: project_ids) }
 
-  scope :non_archived, -> { left_joins(:project).where(project_id: nil).or(where(projects: { archived: false })) }
+  scope :join_project_through_namespace, -> do
+    joins("JOIN projects ON projects.project_namespace_id = issues.namespace_id")
+  end
+
+  scope :non_archived, ->(use_existing_join: false) do
+    relation = use_existing_join ? self : left_joins(:project)
+    relation.where(project_id: nil).or(relation.where(projects: { archived: false }))
+  end
 
   scope :with_due_date, -> { where.not(due_date: nil) }
   scope :without_due_date, -> { where(due_date: nil) }

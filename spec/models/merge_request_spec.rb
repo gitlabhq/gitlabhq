@@ -2850,6 +2850,27 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
       end
     end
+
+    context 'when the MR is merged and there is a pipeline schedule source' do
+      let(:sha)               { subject.target_project.commit.id }
+      let(:pipeline)          { create(:ci_empty_pipeline, sha: sha, ref: subject.target_branch, project: subject.target_project) }
+      let(:schedule_pipeline) { create(:ci_empty_pipeline, sha: sha, ref: subject.target_branch, project: subject.target_project, source: :schedule) }
+
+      before do
+        stub_feature_flags(source_filter_pipelines: true)
+        subject.mark_as_merged!
+      end
+
+      context 'and merged_commit_sha is present' do
+        before do
+          subject.update_attribute(:merged_commit_sha, pipeline.sha)
+        end
+
+        it 'returns the pipeline associated with that merge request' do
+          expect(subject.merge_pipeline).to eq(pipeline)
+        end
+      end
+    end
   end
 
   describe '#has_ci?' do

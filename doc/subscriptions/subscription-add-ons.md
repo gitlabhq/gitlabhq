@@ -41,11 +41,21 @@ to start using GitLab Duo in your IDEs. No further action is needed.
 Users assigned the [Guest role](../administration/guest_users.md) do not have
 access to GitLab Duo Core.
 
-{{< alert type="note" >}}
+### GitLab Duo Core limits
 
-Your eligibility for GitLab Duo Core may be subject to rate limits.
+Usage limits, along with [the GitLab Terms of Service](https://about.gitlab.com/terms/),
+apply to Premium and Ultimate customers' use of the included Code Suggestions and GitLab Duo Chat features.
 
-{{< /alert >}}
+GitLab will provide 30 days prior notice before enforcement of these limits take effect.
+At that time, organization administrators will have tools to monitor and manage consumption and will be able
+to purchase additional capacity.
+
+| Feature          | Requests per user per month |
+|------------------|-----------------------------|
+| Code Suggestions | 2,000                       |
+| GitLab Duo Chat  | 100                         |
+
+Limits do not apply to GitLab Duo Pro or Enterprise.
 
 ## GitLab Duo Pro and Enterprise
 

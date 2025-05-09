@@ -1,0 +1,10 @@
+---
+name: use_namespace_id_for_issue_and_work_item_finders
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/536351
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188961
+rollout_issue_url:
+milestone: '18.0'
+group: group::product planning
+type: wip
+default_enabled: false

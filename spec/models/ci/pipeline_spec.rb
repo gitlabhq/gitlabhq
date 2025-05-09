@@ -3020,6 +3020,30 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '.newest_first' do
+    let_it_be(:merged_commit_pipeline) do
+      create(
+        :ci_pipeline,
+        status: 'success',
+        ref: 'master',
+        sha: '123',
+        source: :push
+      )
+    end
+
+    before do
+      stub_feature_flags(source_filter_pipelines: true)
+    end
+
+    it 'returns the newest pipeline by source' do
+      expect(described_class.newest_first(source: :push)).to contain_exactly(merged_commit_pipeline)
+    end
+
+    it 'returns empty when a specified source has no pipelines' do
+      expect(described_class.newest_first(source: :schedule)).to be_empty
+    end
+  end
+
   describe '.latest_pipeline_per_commit' do
     let!(:commit_123_ref_master) do
       create(

@@ -17,6 +17,7 @@ describe('reviewer_positions utility', () => {
       getItem: jest.fn().mockImplementation((key) => {
         const vals = {
           'MergeRequest/123/test-list-id': mockReviewersString,
+          'MergeRequest/123/invalid-data': '#',
         };
 
         return vals[key];
@@ -60,6 +61,15 @@ describe('reviewer_positions utility', () => {
       const result = getReviewersForList({
         issuableId: 'some-issuable-id-that-doesnt-exist',
         listId: 'some-list-that-doesnt-exist',
+      });
+
+      expect(result).toEqual([]);
+    });
+
+    it('returns an empty array when the data in storage is not a valid JSON string', () => {
+      const result = getReviewersForList({
+        issuableId: mockIssuableId,
+        listId: 'invalid-data',
       });
 
       expect(result).toEqual([]);

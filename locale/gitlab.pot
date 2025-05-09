@@ -15942,12 +15942,6 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Checks"
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|Checks if project is archived (typically false is compliant)."
-msgstr ""
-
-msgid "ComplianceStandardsAdherence|Checks if project is marked for deletion (false is compliant)."
-msgstr ""
-
 msgid "ComplianceStandardsAdherence|Configure DAST in your CI/CD pipeline to automatically test your application for security issues."
 msgstr ""
 
@@ -16279,6 +16273,12 @@ msgid "ComplianceStandardsAdherence|Ensures that merge requests require at least
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Ensures that project contains protected branches."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Ensures that project is not archived."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Ensures that project is not marked for deletion."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Ensures that signed commits are required"
@@ -66901,10 +66901,50 @@ msgstr ""
 msgid "VirtualRegistries|Virtual Registries"
 msgstr ""
 
+msgid "VirtualRegistry|%{count} artifact"
+msgid_plural "VirtualRegistry|%{count} artifacts"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "VirtualRegistry|%{hours} hour cache"
+msgid_plural "VirtualRegistry|%{hours} hours cache"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "VirtualRegistry|%{size} storage used"
+msgstr ""
+
+msgid "VirtualRegistry|Add upstream"
+msgstr ""
+
+msgid "VirtualRegistry|Cache: %{size}"
+msgstr ""
+
+msgid "VirtualRegistry|Caching period"
+msgstr ""
+
+msgid "VirtualRegistry|Clear cache"
+msgstr ""
+
 msgid "VirtualRegistry|Create Maven registry"
 msgstr ""
 
 msgid "VirtualRegistry|Create registry"
+msgstr ""
+
+msgid "VirtualRegistry|Create upstream"
+msgstr ""
+
+msgid "VirtualRegistry|Delete upstream"
+msgstr ""
+
+msgid "VirtualRegistry|Description (optional)"
+msgstr ""
+
+msgid "VirtualRegistry|Edit upstream"
+msgstr ""
+
+msgid "VirtualRegistry|Enter password"
 msgstr ""
 
 msgid "VirtualRegistry|Failed to fetch list of maven virtual registries."
@@ -66922,22 +66962,52 @@ msgstr ""
 msgid "VirtualRegistry|Maven virtual registry"
 msgstr ""
 
+msgid "VirtualRegistry|Move upstream down"
+msgstr ""
+
+msgid "VirtualRegistry|Move upstream up"
+msgstr ""
+
+msgid "VirtualRegistry|Name"
+msgstr ""
+
 msgid "VirtualRegistry|New maven virtual registry"
 msgstr ""
 
 msgid "VirtualRegistry|No upstreams yet"
 msgstr ""
 
+msgid "VirtualRegistry|Password (optional)"
+msgstr ""
+
 msgid "VirtualRegistry|Registry types"
+msgstr ""
+
+msgid "VirtualRegistry|Test upstream"
 msgstr ""
 
 msgid "VirtualRegistry|There are no maven virtual registries yet"
 msgstr ""
 
+msgid "VirtualRegistry|There is a problem with this cached upstream"
+msgstr ""
+
+msgid "VirtualRegistry|Time in hours"
+msgstr ""
+
 msgid "VirtualRegistry|Updated %{date}"
 msgstr ""
 
+msgid "VirtualRegistry|Upstream URL"
+msgstr ""
+
 msgid "VirtualRegistry|Upstreams"
+msgstr ""
+
+msgid "VirtualRegistry|Use the arrow buttons to reorder upstreams. Artifacts are resolved from top to bottom."
+msgstr ""
+
+msgid "VirtualRegistry|Username (optional)"
 msgstr ""
 
 msgid "VirtualRegistry|Virtual registries"
