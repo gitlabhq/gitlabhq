@@ -144,9 +144,9 @@ module AttrEncrypted
     attributes.each do |attribute|
       encrypted_attribute_name = (options[:attribute] ? options[:attribute] : [options[:prefix], attribute, options[:suffix]].join).to_sym
 
-      instance_methods_as_symbols = attribute_instance_methods_as_symbols
-
       if attribute_instance_methods_as_symbols_available?
+        instance_methods_as_symbols = attribute_instance_methods_as_symbols
+
         attr_reader encrypted_attribute_name unless instance_methods_as_symbols.include?(encrypted_attribute_name)
         attr_writer encrypted_attribute_name unless instance_methods_as_symbols.include?(:"#{encrypted_attribute_name}=")
 

@@ -1377,8 +1377,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     describe '#ci_inbound_job_token_scope_enabled?' do
-      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_', default: true do
-        let(:delegated_method) { :inbound_job_token_scope_enabled? }
+      context 'when instance_level_token_scope_enabled is false' do
+        before do
+          allow(::Gitlab::CurrentSettings).to receive(:enforce_ci_inbound_job_token_scope_enabled?).and_return(false)
+        end
+
+        it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_', default: true do
+          let(:delegated_method) { :inbound_job_token_scope_enabled? }
+        end
       end
 
       where(:ci_cd_settings_attrs, :instance_enabled, :expectation) do

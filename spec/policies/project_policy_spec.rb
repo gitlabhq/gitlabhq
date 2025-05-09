@@ -2809,6 +2809,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         end
 
         before do
+          allow(::Gitlab::CurrentSettings).to receive(:enforce_ci_inbound_job_token_scope_enabled?).and_return(instance_level_token_scope_enabled)
           current_user.set_ci_job_token_scope!(job)
           current_user.external = external_user
           project.update!(
@@ -2831,25 +2832,31 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
     end
 
-    where(:user_role, :external_user, :scope_project_type, :token_scope_enabled, :result) do
-      :reporter | false | :same      | true  | true
-      :reporter | true  | :same      | true  | true
-      :reporter | false | :same      | false | true
-      :reporter | false | :different | true  | false
-      :reporter | true  | :different | true  | false
-      :reporter | false | :different | false | true
-      :planner  | false | :same      | true  | true
-      :planner  | true  | :same      | true  | true
-      :planner  | false | :same      | false | true
-      :planner  | false | :different | true  | false
-      :planner  | true  | :different | true  | false
-      :planner  | false | :different | false | true
-      :guest    | false | :same      | true  | true
-      :guest    | true  | :same      | true  | true
-      :guest    | false | :same      | false | true
-      :guest    | false | :different | true  | false
-      :guest    | true  | :different | true  | false
-      :guest    | false | :different | false | true
+    where(:user_role, :external_user, :scope_project_type, :token_scope_enabled, :instance_level_token_scope_enabled, :result) do
+      :reporter | false | :same      | true  | false | true
+      :reporter | true  | :same      | true  | false | true
+      :reporter | false | :same      | false | false | true
+      :reporter | false | :different | true  | false | false
+      :reporter | true  | :different | true  | false | false
+      :reporter | false | :different | false | true  | false
+      :reporter | true  | :different | false | true  | false
+      :reporter | false | :different | false | false | true
+      :planner  | false | :same      | true  | false | true
+      :planner  | true  | :same      | true  | false | true
+      :planner  | false | :same      | false | false | true
+      :planner  | false | :different | true  | false | false
+      :planner  | true  | :different | true  | false | false
+      :planner  | false | :different | false | true  | false
+      :planner  | true  | :different | false | true  | false
+      :planner  | false | :different | false | false | true
+      :guest    | false | :same      | true  | false | true
+      :guest    | true  | :same      | true  | false | true
+      :guest    | false | :same      | false | false | true
+      :guest    | false | :different | true  | false | false
+      :guest    | true  | :different | true  | false | false
+      :guest    | false | :different | false | true  | false
+      :guest    | true  | :different | false | true | false
+      :guest    | false | :different | false | false | true
     end
 
     include_examples "CI_JOB_TOKEN enforces the expected permissions"

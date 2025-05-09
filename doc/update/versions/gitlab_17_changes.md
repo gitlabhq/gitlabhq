@@ -901,12 +901,6 @@ If you have a multi-node configuration, you must ensure these secrets are the sa
       - `bb32` => 1
       ```
 
-   1. Remove the `encryption_keys.rb` file if you downloaded it previously:
-
-      ```shell
-      rm encryption_keys.rb
-      ```
-
 1. Create a new Cloud Connector key:
 
    For GitLab >= 17.10:

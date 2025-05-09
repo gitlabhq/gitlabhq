@@ -38,10 +38,8 @@ fragment WorkItemNote on Note {
   userPermissions {
     adminNote
     awardEmoji
-    readNote
     createNote
     resolveNote
-    repositionNote
   }
   systemNoteMetadata {
     id

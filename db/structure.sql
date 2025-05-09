@@ -8950,7 +8950,7 @@ CREATE TABLE application_settings (
     spp_repository_pipeline_access boolean DEFAULT false NOT NULL,
     lock_spp_repository_pipeline_access boolean DEFAULT false NOT NULL,
     required_instance_ci_template text,
-    enforce_ci_inbound_job_token_scope_enabled boolean DEFAULT false NOT NULL,
+    enforce_ci_inbound_job_token_scope_enabled boolean DEFAULT true NOT NULL,
     allow_top_level_group_owners_to_create_service_accounts boolean DEFAULT false NOT NULL,
     sign_in_restrictions jsonb DEFAULT '{}'::jsonb NOT NULL,
     transactional_emails jsonb DEFAULT '{}'::jsonb NOT NULL,

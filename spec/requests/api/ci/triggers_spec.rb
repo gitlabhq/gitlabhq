@@ -127,6 +127,10 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
     end
 
     it_behaves_like 'logs inbound authorizations via job token', :created, :not_found do
+      before do
+        allow(::Gitlab::CurrentSettings).to receive(:enforce_ci_inbound_job_token_scope_enabled?).and_return(false)
+      end
+
       let(:accessed_project) { project }
       let(:origin_project) { project2 }
 

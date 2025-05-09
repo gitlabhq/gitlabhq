@@ -24,6 +24,10 @@ module QA
           ])
       end
 
+      before do
+        Runtime::ApplicationSettings.set_application_settings(enforce_ci_inbound_job_token_scope_enabled: false)
+      end
+
       context 'without duplication setting' do
         where do
           {

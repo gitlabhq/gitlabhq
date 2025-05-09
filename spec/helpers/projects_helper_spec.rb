@@ -2077,7 +2077,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     subject(:message) { helper.delete_delayed_message(project) }
 
     before do
-      allow(project).to receive(:adjourned_deletion_configured?)
+      allow(project).to receive(:delayed_deletion_ready?)
         .and_return(feature_available)
     end
 

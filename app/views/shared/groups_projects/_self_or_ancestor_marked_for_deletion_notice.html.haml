@@ -1,6 +1,7 @@
 - return unless context.is_a?(Group) || context.is_a?(Project)
-- return unless (context_pending_deletion = context&.self_or_ancestor_marked_for_deletion)
+- return unless context.scheduled_for_deletion_in_hierarchy_chain?
 
+- context_pending_deletion = context.first_scheduled_for_deletion_in_hierarchy_chain
 -# FIXME: Replace `context_pending_deletion.marked_for_deletion_on` with `context_pending_deletion` after https://gitlab.com/gitlab-org/gitlab/-/work_items/527085
 - date = permanent_deletion_date_formatted(context_pending_deletion.marked_for_deletion_on)
 - context_name = context.is_a?(Group) ? _('group') : _('project')

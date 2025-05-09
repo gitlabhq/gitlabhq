@@ -43,10 +43,8 @@ const mockDiscussion = (...children) => {
         userPermissions: {
           adminNote: true,
           awardEmoji: true,
-          readNote: true,
           createNote: true,
           resolveNote: true,
-          repositionNote: true,
         },
         discussion: null,
       })),

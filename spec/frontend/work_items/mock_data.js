@@ -4014,30 +4014,6 @@ export const mockWorkItemNotesResponse = {
       },
       widgets: [
         {
-          __typename: 'WorkItemWidgetIteration',
-        },
-        {
-          __typename: 'WorkItemWidgetWeight',
-        },
-        {
-          __typename: 'WorkItemWidgetAssignees',
-        },
-        {
-          __typename: 'WorkItemWidgetLabels',
-        },
-        {
-          __typename: 'WorkItemWidgetDescription',
-        },
-        {
-          __typename: 'WorkItemWidgetHierarchy',
-        },
-        {
-          __typename: 'WorkItemWidgetStartAndDueDate',
-        },
-        {
-          __typename: 'WorkItemWidgetMilestone',
-        },
-        {
           type: 'NOTES',
           discussions: {
             pageInfo: {
@@ -4077,10 +4053,8 @@ export const mockWorkItemNotesResponse = {
                       userPermissions: {
                         adminNote: false,
                         awardEmoji: true,
-                        readNote: true,
                         createNote: true,
                         resolveNote: true,
-                        repositionNote: true,
                         __typename: 'NotePermissions',
                       },
                       systemNoteMetadata: {
@@ -4129,10 +4103,8 @@ export const mockWorkItemNotesResponse = {
                       userPermissions: {
                         adminNote: false,
                         awardEmoji: true,
-                        readNote: true,
                         createNote: true,
                         resolveNote: true,
-                        repositionNote: true,
                         __typename: 'NotePermissions',
                       },
                       systemNoteMetadata: {
@@ -4184,10 +4156,8 @@ export const mockWorkItemNotesResponse = {
                       userPermissions: {
                         adminNote: false,
                         awardEmoji: true,
-                        readNote: true,
                         createNote: true,
                         resolveNote: true,
-                        repositionNote: true,
                         __typename: 'NotePermissions',
                       },
                       systemNoteMetadata: {
@@ -4237,33 +4207,6 @@ export const mockWorkItemNotesByIidResponse = {
         },
         widgets: [
           {
-            __typename: 'WorkItemWidgetIteration',
-          },
-          {
-            __typename: 'WorkItemWidgetWeight',
-          },
-          {
-            __typename: 'WorkItemWidgetHealthStatus',
-          },
-          {
-            __typename: 'WorkItemWidgetAssignees',
-          },
-          {
-            __typename: 'WorkItemWidgetLabels',
-          },
-          {
-            __typename: 'WorkItemWidgetDescription',
-          },
-          {
-            __typename: 'WorkItemWidgetHierarchy',
-          },
-          {
-            __typename: 'WorkItemWidgetStartAndDueDate',
-          },
-          {
-            __typename: 'WorkItemWidgetMilestone',
-          },
-          {
             type: 'NOTES',
             discussionLocked: false,
             discussions: {
@@ -4305,10 +4248,8 @@ export const mockWorkItemNotesByIidResponse = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          readNote: true,
                           createNote: true,
                           resolveNote: true,
-                          repositionNote: true,
                           __typename: 'NotePermissions',
                         },
                         systemNoteMetadata: {
@@ -4364,10 +4305,8 @@ export const mockWorkItemNotesByIidResponse = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          readNote: true,
                           createNote: true,
                           resolveNote: true,
-                          repositionNote: true,
                           __typename: 'NotePermissions',
                         },
                         systemNoteMetadata: {
@@ -4423,10 +4362,8 @@ export const mockWorkItemNotesByIidResponse = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          readNote: true,
                           createNote: true,
                           resolveNote: true,
-                          repositionNote: true,
                           __typename: 'NotePermissions',
                         },
                         systemNoteMetadata: {
@@ -4479,30 +4416,6 @@ export const mockMoreWorkItemNotesResponse = {
         },
         widgets: [
           {
-            __typename: 'WorkItemWidgetIteration',
-          },
-          {
-            __typename: 'WorkItemWidgetWeight',
-          },
-          {
-            __typename: 'WorkItemWidgetAssignees',
-          },
-          {
-            __typename: 'WorkItemWidgetLabels',
-          },
-          {
-            __typename: 'WorkItemWidgetDescription',
-          },
-          {
-            __typename: 'WorkItemWidgetHierarchy',
-          },
-          {
-            __typename: 'WorkItemWidgetStartAndDueDate',
-          },
-          {
-            __typename: 'WorkItemWidgetMilestone',
-          },
-          {
             type: 'NOTES',
             discussionLocked: false,
             discussions: {
@@ -4543,10 +4456,8 @@ export const mockMoreWorkItemNotesResponse = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          readNote: true,
                           createNote: true,
                           resolveNote: true,
-                          repositionNote: true,
                           __typename: 'NotePermissions',
                         },
                         systemNoteMetadata: {
@@ -4602,10 +4513,8 @@ export const mockMoreWorkItemNotesResponse = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          readNote: true,
                           createNote: true,
                           resolveNote: true,
-                          repositionNote: true,
                           __typename: 'NotePermissions',
                         },
                         systemNoteMetadata: {
@@ -4660,10 +4569,8 @@ export const mockMoreWorkItemNotesResponse = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          readNote: true,
                           createNote: true,
                           resolveNote: true,
-                          repositionNote: true,
                           __typename: 'NotePermissions',
                         },
                         systemNoteMetadata: {
@@ -4751,10 +4658,8 @@ export const createWorkItemNoteResponse = ({
                 userPermissions: {
                   adminNote: true,
                   awardEmoji: true,
-                  readNote: true,
                   createNote: true,
                   resolveNote: true,
-                  repositionNote: true,
                   __typename: 'NotePermissions',
                 },
                 awardEmoji: {
@@ -4805,10 +4710,8 @@ export const mockWorkItemCommentNote = {
   userPermissions: {
     adminNote: false,
     awardEmoji: true,
-    readNote: true,
     createNote: true,
     resolveNote: true,
-    repositionNote: true,
     __typename: 'NotePermissions',
   },
   systemNoteMetadata: null,
@@ -4849,30 +4752,6 @@ export const mockWorkItemNotesResponseWithComments = (resolved = false) => {
             __typename: 'Namespace',
           },
           widgets: [
-            {
-              __typename: 'WorkItemWidgetIteration',
-            },
-            {
-              __typename: 'WorkItemWidgetWeight',
-            },
-            {
-              __typename: 'WorkItemWidgetAssignees',
-            },
-            {
-              __typename: 'WorkItemWidgetLabels',
-            },
-            {
-              __typename: 'WorkItemWidgetDescription',
-            },
-            {
-              __typename: 'WorkItemWidgetHierarchy',
-            },
-            {
-              __typename: 'WorkItemWidgetStartAndDueDate',
-            },
-            {
-              __typename: 'WorkItemWidgetMilestone',
-            },
             {
               type: 'NOTES',
               discussionLocked: false,
@@ -4924,10 +4803,8 @@ export const mockWorkItemNotesResponseWithComments = (resolved = false) => {
                           userPermissions: {
                             adminNote: true,
                             awardEmoji: true,
-                            readNote: true,
                             createNote: true,
                             resolveNote: true,
-                            repositionNote: true,
                             __typename: 'NotePermissions',
                           },
                           awardEmoji: {
@@ -4970,10 +4847,8 @@ export const mockWorkItemNotesResponseWithComments = (resolved = false) => {
                           userPermissions: {
                             adminNote: true,
                             awardEmoji: true,
-                            readNote: true,
                             createNote: true,
                             resolveNote: true,
-                            repositionNote: true,
                             __typename: 'NotePermissions',
                           },
                           awardEmoji: {
@@ -5014,10 +4889,8 @@ export const mockWorkItemNotesResponseWithComments = (resolved = false) => {
                           userPermissions: {
                             adminNote: false,
                             awardEmoji: true,
-                            readNote: true,
                             createNote: true,
                             resolveNote: true,
-                            repositionNote: true,
                             __typename: 'NotePermissions',
                           },
                           systemNoteMetadata: null,
@@ -5095,10 +4968,8 @@ export const workItemNotesCreateSubscriptionResponse = {
               userPermissions: {
                 adminNote: false,
                 awardEmoji: true,
-                readNote: true,
                 createNote: true,
                 resolveNote: true,
-                repositionNote: true,
                 __typename: 'NotePermissions',
               },
               systemNoteMetadata: {
@@ -5126,10 +4997,8 @@ export const workItemNotesCreateSubscriptionResponse = {
       userPermissions: {
         adminNote: false,
         awardEmoji: true,
-        readNote: true,
         createNote: true,
         resolveNote: true,
-        repositionNote: true,
         __typename: 'NotePermissions',
       },
       systemNoteMetadata: {
@@ -5180,10 +5049,8 @@ export const workItemNotesUpdateSubscriptionResponse = {
       userPermissions: {
         adminNote: false,
         awardEmoji: true,
-        readNote: true,
         createNote: true,
         resolveNote: true,
-        repositionNote: true,
         __typename: 'NotePermissions',
       },
       systemNoteMetadata: {
@@ -5252,10 +5119,8 @@ export const workItemSystemNoteWithMetadata = {
   userPermissions: {
     adminNote: false,
     awardEmoji: true,
-    readNote: true,
     createNote: true,
     resolveNote: true,
-    repositionNote: false,
     __typename: 'NotePermissions',
   },
   systemNoteMetadata: {
@@ -5288,21 +5153,6 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
           __typename: 'Namespace',
         },
         widgets: [
-          {
-            __typename: 'WorkItemWidgetAssignees',
-          },
-          {
-            __typename: 'WorkItemWidgetLabels',
-          },
-          {
-            __typename: 'WorkItemWidgetDescription',
-          },
-          {
-            __typename: 'WorkItemWidgetHierarchy',
-          },
-          {
-            __typename: 'WorkItemWidgetMilestone',
-          },
           {
             type: 'NOTES',
             discussionLocked: false,
@@ -5354,10 +5204,8 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          readNote: true,
                           createNote: true,
                           resolveNote: true,
-                          repositionNote: false,
                           __typename: 'NotePermissions',
                         },
                         systemNoteMetadata: {
@@ -5423,10 +5271,8 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          readNote: true,
                           createNote: true,
                           resolveNote: true,
-                          repositionNote: false,
                           __typename: 'NotePermissions',
                         },
                         systemNoteMetadata: {
@@ -5492,10 +5338,8 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          readNote: true,
                           createNote: true,
                           resolveNote: true,
-                          repositionNote: false,
                           __typename: 'NotePermissions',
                         },
                         systemNoteMetadata: {
@@ -6301,10 +6145,8 @@ export const mockToggleResolveDiscussionResponse = {
               userPermissions: {
                 adminNote: true,
                 awardEmoji: true,
-                readNote: true,
                 createNote: true,
                 resolveNote: true,
-                repositionNote: true,
                 __typename: 'NotePermissions',
               },
               systemNoteMetadata: null,
@@ -6352,10 +6194,8 @@ export const mockToggleResolveDiscussionResponse = {
               userPermissions: {
                 adminNote: true,
                 awardEmoji: true,
-                readNote: true,
                 createNote: true,
                 resolveNote: true,
-                repositionNote: true,
                 __typename: 'NotePermissions',
               },
               systemNoteMetadata: null,

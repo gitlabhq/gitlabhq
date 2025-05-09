@@ -13,6 +13,7 @@ class Namespace < ApplicationRecord
   include Namespaces::Traversal::Recursive
   include Namespaces::Traversal::Linear
   include Namespaces::Traversal::Cached
+  include Namespaces::AdjournedDeletable
   include EachBatch
   include BlocksUnsafeSerialization
   include Ci::NamespaceSettings
@@ -781,11 +782,6 @@ class Namespace < ApplicationRecord
 
   def deleted?
     !!deleted_at
-  end
-
-  # Only groups can be marked for deletion
-  def marked_for_deletion?
-    false
   end
 
   def uploads_sharding_key

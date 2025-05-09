@@ -22,7 +22,6 @@ class Group < Namespace
   include Importable
   include IdInOrdered
   include Members::Enumerable
-  include Namespaces::AdjournedDeletable
 
   extend ::Gitlab::Utils::Override
 
@@ -1272,6 +1271,12 @@ class Group < Namespace
 
     # We cannot disclose the Pages unique domain, hence returning generic error message
     errors.add(:path, _('has already been taken'))
+  end
+
+  # Overriding of Namespaces::AdjournedDeletable method
+  override :all_scheduled_for_deletion_in_hierarchy_chain
+  def all_scheduled_for_deletion_in_hierarchy_chain
+    self_and_ancestors(hierarchy_order: :asc).joins(:deletion_schedule)
   end
 end
 

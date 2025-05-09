@@ -82,8 +82,8 @@ class GroupChildEntity < Grape::Entity
   end
 
   # For both group and project
-  expose :marked_for_deletion do |instance|
-    instance.self_or_ancestor_marked_for_deletion.present?
+  expose :marked_for_deletion do |instance| # rubocop:disable Style/SymbolProc -- Avoid a `ArgumentError: wrong number of arguments (given 1, expected 0)` error
+    instance.scheduled_for_deletion_in_hierarchy_chain?
   end
 
   private

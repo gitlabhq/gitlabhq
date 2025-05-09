@@ -755,7 +755,7 @@ module ProjectsHelper
   def delete_delayed_message(project)
     date = permanent_deletion_date_formatted(Date.current)
 
-    if project.adjourned_deletion?
+    if project.delayed_deletion_ready?
       message = _("This action will place this project, including all its resources, in a pending deletion state " \
         "for %{deletion_adjourned_period} days, and delete it permanently on %{date}.")
       ERB::Util.html_escape(message) % delete_message_data(project).merge(date: tag.strong(date),

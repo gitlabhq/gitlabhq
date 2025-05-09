@@ -65,6 +65,7 @@ module Gitlab
             .preload_users.find_each.map { |member| owner_data(member.user) if member.user }
         else
           data = []
+          # There's currently a bug in Bullet that does not handle composite keys properly
           Gitlab::Bullet.skip_bullet do
             project.project_authorizations.owners.preload_users.each_batch(column: :user_id) do |relation|
               data.concat(relation.map { |member| owner_data(member.user) })

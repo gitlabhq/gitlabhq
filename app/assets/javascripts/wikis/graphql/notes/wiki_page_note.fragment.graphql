@@ -25,10 +25,8 @@ fragment WikiPageNote on Note {
   userPermissions {
     adminNote
     awardEmoji
-    readNote
     createNote
     resolveNote
-    repositionNote
   }
   discussion {
     id

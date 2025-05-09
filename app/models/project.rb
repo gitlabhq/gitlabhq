@@ -3862,6 +3862,12 @@ class Project < ApplicationRecord
       ::Ci::Catalog::Resources::SyncEvent.enqueue_worker
     end
   end
+
+  # Overriding of Namespaces::AdjournedDeletable method
+  override :all_scheduled_for_deletion_in_hierarchy_chain
+  def all_scheduled_for_deletion_in_hierarchy_chain
+    ancestors(hierarchy_order: :asc).joins(:deletion_schedule)
+  end
 end
 
 Project.prepend_mod_with('Project')

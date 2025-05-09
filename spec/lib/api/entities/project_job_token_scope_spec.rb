@@ -19,20 +19,39 @@ RSpec.describe ::API::Entities::ProjectJobTokenScope, feature_category: :secrets
   describe "#as_json" do
     subject { entity.as_json }
 
-    it 'includes basic fields' do
-      expect(subject).to eq(
-        inbound_enabled: true,
-        outbound_enabled: true
-      )
+    context 'when instance_level_token_scope_enabled is false' do
+      before do
+        Gitlab::CurrentSettings.update!(enforce_ci_inbound_job_token_scope_enabled: false)
+      end
+
+      it 'includes basic fields' do
+        expect(subject).to eq(
+          inbound_enabled: true,
+          outbound_enabled: true
+        )
+      end
+
+      it 'includes basic fields' do
+        project.update!(ci_inbound_job_token_scope_enabled: false)
+
+        expect(subject).to eq(
+          inbound_enabled: false,
+          outbound_enabled: true
+        )
+      end
     end
 
-    it 'includes basic fields' do
-      project.update!(ci_inbound_job_token_scope_enabled: false)
+    context 'when instance_level_token_scope_enabled is true' do
+      before do
+        Gitlab::CurrentSettings.update!(enforce_ci_inbound_job_token_scope_enabled: true)
+      end
 
-      expect(subject).to eq(
-        inbound_enabled: false,
-        outbound_enabled: true
-      )
+      it 'includes basic fields' do
+        expect(subject).to eq(
+          inbound_enabled: true,
+          outbound_enabled: true
+        )
+      end
     end
   end
 end
