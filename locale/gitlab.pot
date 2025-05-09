@@ -8753,12 +8753,6 @@ msgstr ""
 msgid "Assigned %{reviewer_users_sentence} as %{reviewer_text}."
 msgstr ""
 
-msgid "Assigned (Active)"
-msgstr ""
-
-msgid "Assigned (Inactive)"
-msgstr ""
-
 msgid "Assigned issues"
 msgstr ""
 
@@ -37944,10 +37938,16 @@ msgstr ""
 msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
 msgstr ""
 
+msgid "Merge requests awaiting your review."
+msgstr ""
+
 msgid "Merge requests can't be merged if the status checks did not succeed or are still running."
 msgstr ""
 
 msgid "Merge requests you authored or are assigned to, without reviewers."
+msgstr ""
+
+msgid "Merge requests you've reviewed."
 msgstr ""
 
 msgid "Merge train pipelines continue without the merged changes."
@@ -68706,9 +68706,6 @@ msgstr ""
 msgid "WorkItem|%{count} more assignees"
 msgstr ""
 
-msgid "WorkItem|%{count}+"
-msgstr ""
-
 msgid "WorkItem|%{invalidWorkItemsList} cannot be added: Cannot assign a non-confidential %{childWorkItemType} to a confidential parent %{parentWorkItemType}. Make the selected %{childWorkItemType} confidential and try again."
 msgstr ""
 
@@ -71020,10 +71017,25 @@ msgstr ""
 msgid "Your merge requests"
 msgstr ""
 
+msgid "Your merge requests (Active)"
+msgstr ""
+
+msgid "Your merge requests (Inactive)"
+msgstr ""
+
+msgid "Your merge requests awaiting approvals, or has been approved by all assigned reviewers."
+msgstr ""
+
 msgid "Your merge requests have a new homepage!"
 msgstr ""
 
 msgid "Your merge requests that are waiting for approvals."
+msgstr ""
+
+msgid "Your merge requests that have been merged."
+msgstr ""
+
+msgid "Your merge requests that need reviewers assigned, or has feedback to address."
 msgstr ""
 
 msgid "Your merge requests with approvals by all assigned reviewers."
@@ -71102,6 +71114,9 @@ msgid "Your resource access tokens will expire in %{days_to_expire} or less"
 msgstr ""
 
 msgid "Your review"
+msgstr ""
+
+msgid "Your review requests that have been merged."
 msgstr ""
 
 msgid "Your reviews you've requested changes for or commented on."

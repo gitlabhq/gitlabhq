@@ -490,7 +490,7 @@ module MergeRequestsHelper
               {
                 id: 'reviews',
                 title: _('Reviewer (Active)'),
-                helpContent: _(''),
+                helpContent: _('Merge requests awaiting your review.'),
                 query: 'reviewRequestedMergeRequests',
                 variables: {
                   reviewStates: %w[UNREVIEWED REVIEW_STARTED UNAPPROVED],
@@ -501,7 +501,7 @@ module MergeRequestsHelper
                 id: 'reviews_inactive',
                 title: _('Reviewer (Inactive)'),
                 hideCount: true,
-                helpContent: _(''),
+                helpContent: _("Merge requests you've reviewed."),
                 query: 'reviewRequestedMergeRequests',
                 variables: {
                   reviewStates: %w[APPROVED REQUESTED_CHANGES REVIEWED],
@@ -510,8 +510,11 @@ module MergeRequestsHelper
               },
               {
                 id: 'assigned',
-                title: _('Assigned (Active)'),
-                helpContent: _(''),
+                title: _('Your merge requests (Active)'),
+                helpContent: _(
+                  "Your merge requests that need reviewers assigned, " \
+                    "or has feedback to address."
+                ),
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
                   or: {
@@ -523,9 +526,12 @@ module MergeRequestsHelper
               },
               {
                 id: 'assigned_inactive',
-                title: _('Assigned (Inactive)'),
+                title: _('Your merge requests (Inactive)'),
                 hideCount: true,
-                helpContent: _(''),
+                helpContent: _(
+                  "Your merge requests awaiting approvals, " \
+                    "or has been approved by all assigned reviewers."
+                ),
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
                   reviewStates: %w[APPROVED UNAPPROVED UNREVIEWED REVIEW_STARTED],
@@ -547,7 +553,7 @@ module MergeRequestsHelper
               {
                 id: 'merged_recently_reviews',
                 title: _('Reviews'),
-                helpContent: _(''),
+                helpContent: _('Your review requests that have been merged.'),
                 query: 'reviewRequestedMergeRequests',
                 variables: {
                   state: 'merged',
@@ -558,7 +564,7 @@ module MergeRequestsHelper
               {
                 id: 'merged_recently_assigned',
                 title: _('Assigned'),
-                helpContent: _(''),
+                helpContent: _('Your merge requests that have been merged.'),
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
                   state: 'merged',

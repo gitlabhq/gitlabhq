@@ -21,8 +21,12 @@ module Gitlab
           @logger = Gitlab::Export::Logger.build
         end
 
-        def method_missing(method, *args)
+        def method_missing(method, *_args)
           @options[method]
+        end
+
+        def respond_to_missing?(method, *args)
+          @options.key?(method) || super
         end
 
         def execute(current_user, project)
@@ -56,7 +60,7 @@ module Gitlab
           delete_archive_path
         end
 
-        def to_json(options = {})
+        def to_json(_options = {})
           @options.to_h.merge!(klass: self.class.name).to_json
         end
 

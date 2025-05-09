@@ -1909,7 +1909,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/import/database_helpers.rb'
     - 'lib/gitlab/import/errors.rb'
     - 'lib/gitlab/import/merge_request_helpers.rb'
-    - 'lib/gitlab/import_export/after_export_strategies/web_upload_strategy.rb'
     - 'lib/gitlab/import_export/base/relation_object_saver.rb'
     - 'lib/gitlab/import_export/command_line_util.rb'
     - 'lib/gitlab/import_export/fast_hash_serializer.rb'

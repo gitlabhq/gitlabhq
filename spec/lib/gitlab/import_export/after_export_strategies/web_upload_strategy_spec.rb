@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy do
+RSpec.describe Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy, feature_category: :importers do
   include StubRequests
 
   before do
@@ -13,7 +13,7 @@ RSpec.describe Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy do
   end
 
   let(:example_url) { 'http://www.example.com' }
-  let(:strategy) { subject.new(url: example_url, http_method: 'post') }
+  let(:strategy) { described_class.new(url: example_url, http_method: 'post') }
   let(:user) { build(:user) }
   let(:project) { create(:project, creator: user) }
   let!(:import_export_upload) do
@@ -25,20 +25,18 @@ RSpec.describe Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy do
     )
   end
 
-  subject { described_class }
-
   describe 'validations' do
     it 'only POST and PUT method allowed' do
       %w[POST post PUT put].each do |method|
-        expect(subject.new(url: example_url, http_method: method)).to be_valid
+        expect(described_class.new(url: example_url, http_method: method)).to be_valid
       end
 
-      expect(subject.new(url: example_url, http_method: 'whatever')).not_to be_valid
+      expect(described_class.new(url: example_url, http_method: 'whatever')).not_to be_valid
     end
 
     it 'only allow urls as upload urls' do
-      expect(subject.new(url: example_url)).to be_valid
-      expect(subject.new(url: 'whatever')).not_to be_valid
+      expect(described_class.new(url: example_url)).to be_valid
+      expect(described_class.new(url: 'whatever')).not_to be_valid
     end
   end
 
@@ -116,8 +114,7 @@ RSpec.describe Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy do
 
         export_file = import_export_upload.export_file
         allow(project).to receive(:export_file).with(user).and_return(export_file)
-        allow(export_file).to receive(:url).and_return(object_store_url)
-        allow(export_file).to receive(:file_storage?).and_return(false)
+        allow(export_file).to receive_messages(url: object_store_url, file_storage?: false)
       end
 
       it 'uploads file as a remote stream' do

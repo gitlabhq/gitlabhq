@@ -876,11 +876,13 @@ end
 
 ### Code in `lib/`
 
-Place EE-specific logic in the top-level `EE` module namespace. Namespace the
+Place EE logic that overrides CE in the top-level `EE` module namespace. Namespace the
 class beneath the `EE` module as you usually would.
 
 For example, if CE has LDAP classes in `lib/gitlab/ldap/` then you would place
-EE-specific LDAP classes in `ee/lib/ee/gitlab/ldap`.
+EE-specific overrides in `ee/lib/ee/gitlab/ldap`.
+
+EE-only classes, with no CE counterpart, would be placed in `ee/lib/gitlab/ldap`.
 
 ### Code in `lib/api/`
 

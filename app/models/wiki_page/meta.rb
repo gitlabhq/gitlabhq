@@ -30,6 +30,9 @@ class WikiPage
 
       joins(:slugs).where(slug_table_name => { canonical: true, slug: slug }).order(created_at: :asc)
     end
+    scope :for_project, ->(project) do
+      where(project: project)
+    end
 
     delegate :wiki, to: :container
 
@@ -177,6 +180,10 @@ class WikiPage
     # Used by app/policies/todo_policy.rb
     def readable_by?(user)
       Ability.allowed?(user, :read_wiki, self)
+    end
+
+    def to_ability_name
+      'wiki_page'
     end
 
     private

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Gitlab OAuth2 Resource Owner Password Credentials Flow', feature_category: :system_access do
-  let_it_be(:organization) { create(:organization, :default) }
+  let_it_be(:organization) { create(:organization) }
   let_it_be(:application) { create(:oauth_application, redirect_uri: 'urn:ietf:wg:oauth:2.0:oob') }
   let_it_be(:user) { create(:user, :with_namespace, organizations: [organization], password: 'High5ive!') }
   let_it_be(:client_id) { application.uid }

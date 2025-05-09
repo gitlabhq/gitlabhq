@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::AfterExportStrategyBuilder do
+RSpec.describe Gitlab::ImportExport::AfterExportStrategyBuilder, feature_category: :importers do
   let!(:strategies_namespace) { 'Gitlab::ImportExport::AfterExportStrategies' }
 
   describe '.build!' do

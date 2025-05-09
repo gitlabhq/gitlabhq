@@ -3,9 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Oauth::TokensController, feature_category: :system_access do
-  # The logic is still depending on the database default
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/507325
-  let_it_be(:organization) { create(:organization, :default) }
+  let_it_be(:organization) { create(:organization) }
 
   describe 'POST /oauth/token' do
     context 'with dynamic user scope', :aggregate_failures do
@@ -62,7 +60,7 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
       end
 
       context 'when user does not have two factor enabled' do
-        let_it_be(:user) { create(:user, password: password) }
+        let_it_be(:user) { create(:user, password: password, organizations: [organization]) }
 
         it 'authenticates successfully' do
           expect(::Gitlab::Auth).to receive(:find_with_user_password).and_call_original

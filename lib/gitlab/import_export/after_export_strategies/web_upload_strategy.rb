@@ -11,9 +11,9 @@ module Gitlab
         validates :url, addressable_url: true
 
         validate do
-          unless [PUT_METHOD, POST_METHOD].include?(http_method.upcase)
-            errors.add(:http_method, INVALID_HTTP_METHOD)
-          end
+          next if [PUT_METHOD, POST_METHOD].include?(http_method.upcase)
+
+          errors.add(:http_method, INVALID_HTTP_METHOD)
         end
 
         def initialize(url:, http_method: PUT_METHOD)
@@ -37,9 +37,9 @@ module Gitlab
         end
 
         def handle_response_error(response)
-          unless response.success?
-            raise StrategyError, "Error uploading the project. Code #{response.code}: #{response.message}"
-          end
+          return if response.success?
+
+          raise StrategyError, "Error uploading the project. Code #{response.code}: #{response.message}"
         end
 
         def delete_export?
@@ -49,7 +49,7 @@ module Gitlab
         private
 
         def send_file
-          Gitlab::HTTP.public_send(http_method.downcase, url, send_file_options) # rubocop:disable GitlabSecurity/PublicSend
+          Gitlab::HTTP.public_send(http_method.downcase, url, send_file_options) # rubocop:disable GitlabSecurity/PublicSend -- http method from allowlist
         ensure
           export_file.close if export_file
         end

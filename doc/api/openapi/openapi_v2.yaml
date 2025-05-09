@@ -49217,6 +49217,11 @@ definitions:
       title:
         type: string
         example: deploy
+      wiki_page_meta_id:
+        type: integer
+        format: int32
+        example:
+          wiki_page_meta_id: 123
     description: API_Entities_WikiPageBasic model
   API_Entities_WikiPage:
     type: object
@@ -49230,6 +49235,11 @@ definitions:
       title:
         type: string
         example: deploy
+      wiki_page_meta_id:
+        type: integer
+        format: int32
+        example:
+          wiki_page_meta_id: 123
       content:
         type: string
         example: Here is an instruction how to deploy this project.

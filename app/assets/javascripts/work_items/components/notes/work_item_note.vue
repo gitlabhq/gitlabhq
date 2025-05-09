@@ -389,6 +389,7 @@ export default {
             :note-id="note.id"
             :note-url="noteUrl"
             :is-internal-note="note.internal"
+            :is-imported="note.imported"
             :email-participant="externalAuthor"
           />
           <div class="gl-inline-flex">

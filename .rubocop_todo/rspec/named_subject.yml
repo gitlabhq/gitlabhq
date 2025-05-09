@@ -1974,7 +1974,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/import/merge_request_creator_spec.rb'
     - 'spec/lib/gitlab/import/merge_request_helpers_spec.rb'
     - 'spec/lib/gitlab/import/metrics_spec.rb'
-    - 'spec/lib/gitlab/import_export/after_export_strategies/web_upload_strategy_spec.rb'
     - 'spec/lib/gitlab/import_export/attribute_cleaner_spec.rb'
     - 'spec/lib/gitlab/import_export/attributes_permitter_spec.rb'
     - 'spec/lib/gitlab/import_export/base/object_builder_spec.rb'

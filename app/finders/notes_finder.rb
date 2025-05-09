@@ -121,6 +121,8 @@ class NotesFinder
       SnippetsFinder.new(@current_user, project: @project).execute # rubocop: disable CodeReuse/Finder
     when "personal_snippet"
       SnippetsFinder.new(@current_user, only_personal: true).execute # rubocop: disable CodeReuse/Finder
+    when "wiki_page/meta"
+      WikiPage::Meta.for_project(@project)
     else
       raise "invalid target_type '#{noteable_type}'"
     end

@@ -664,3 +664,300 @@ Parameters:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/5/epics/52/notes/1659"
 ```
+
+## Project wikis
+
+### List all project wiki notes
+
+Gets a list of all notes for a project wiki page. Project wiki notes are comments users can post to a wiki page.
+
+{{< alert type="note" >}}
+
+The wiki page notes API uses the wiki page meta ID instead of wiki page slug. If you use the page's slug, GitLab returns a 404
+error. You can retrieve the meta ID from the [project wikis API](wikis.md).
+
+{{< /alert >}}
+
+```plaintext
+GET /projects/:id/wiki_pages/:wiki_page_meta_id/notes
+GET /projects/:id/wiki_pages/:wiki_page_meta_id/notes?sort=asc&order_by=updated_at
+```
+
+Parameters:
+
+| Attribute  | Type              | Required | Description |
+|------------|-------------------|----------|-------------|
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `wiki_page_meta_id`  | integer           | yes      | The ID of a wiki page meta |
+| `sort`     | string            | no       | Return wiki page notes sorted in `asc` or `desc` order. Default is `desc` |
+| `order_by` | string            | no       | Return wiki page notes ordered by `created_at` or `updated_at` fields. Default is `created_at` |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/wiki_pages/35/notes"
+```
+
+### Get single wiki page note
+
+Returns a single note for a given wiki page.
+
+```plaintext
+GET /projects/:id/wiki_pages/:wiki_page_meta_id/notes/:note_id
+```
+
+Parameters:
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `wiki_page_meta_id`  | integer           | yes      | The ID of a wiki page meta |
+| `note_id` | integer           | yes      | The ID of a note |
+
+```json
+{
+  "author": {
+      "id": 1,
+      "username": "pipin",
+      "email": "admin@example.com",
+      "name": "Pip",
+      "state": "active",
+      "created_at": "2013-09-30T13:46:01Z"
+  },
+  "body": "foobar",
+  "commands_changes": {},
+  "confidential": false,
+  "created_at": "2025-03-11T11:36:32.222Z",
+  "id": 1218,
+  "imported": false,
+  "imported_from": "none",
+  "internal": false,
+  "noteable_id": 35,
+  "noteable_iid": null,
+  "noteable_type": "WikiPage::Meta",
+  "project_id": 5,
+  "resolvable": false,
+  "system": false,
+  "type": null,
+  "updated_at": "2025-03-11T11:36:32.222Z"
+}
+```
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/wiki_pages/35/notes/1218"
+```
+
+### Create new wiki page note
+
+Creates a new note for a single wiki page. Wiki page notes are comments users can post to a wiki page.
+
+```plaintext
+POST /projects/:id/wiki_pages/:wiki_page_meta_id/notes
+```
+
+Parameters:
+
+| Attribute      | Type              | Required | Description |
+|----------------|-------------------|----------|-------------|
+| `body`         | string            | yes      | The content of a note. Limited to 1,000,000 characters. |
+| `wiki_page_meta_id`  | integer           | yes      | The ID of a wiki page meta |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/wiki_pages/35/notes?body=note"
+```
+
+### Modify existing wiki page note
+
+Modifies an existing note on a wiki page.
+
+```plaintext
+PUT /projects/:id/wiki_pages/:wiki_page_meta_id/notes/:note_id
+```
+
+Parameters:
+
+| Attribute      | Type              | Required | Description |
+|----------------|-------------------|----------|-------------|
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `wiki_page_meta_id`  | integer           | yes      | The ID of a wiki page meta |
+| `note_id`      | integer           | yes      | The ID of a note |
+| `body`         | string            | yes      | The content of a note. Limited to 1,000,000 characters. |
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/wiki_pages/35/notes/1218?body=note"
+```
+
+### Delete a wiki page note
+
+Deletes a note from a wiki page.
+
+```plaintext
+DELETE /projects/:id/wiki_pages/:wiki_page_meta_id/notes/:note_id
+```
+
+Parameters:
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `wiki_page_meta_id`  | integer           | yes      | The ID of a wiki page meta |
+| `note_id` | integer           | yes      | The ID of a note |
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/wiki_pages/35/notes/1218"
+```
+
+## Group wikis
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+### List all group wiki notes
+
+Gets a list of all notes for a group wiki page. Group wiki notes are comments users can post to a wiki page.
+
+{{< alert type="note" >}}
+
+The wiki page notes API uses the wiki page meta ID instead of wiki page slug. If you use the page's slug, GitLab returns a 404
+error. You can retrieve the meta ID from the [group wikis API](group_wikis.md).
+
+{{< /alert >}}
+
+```plaintext
+GET /groups/:id/wiki_pages/:wiki_page_meta_id/notes
+GET /groups/:id/wiki_pages/:wiki_page_meta_id/notes?sort=asc&order_by=updated_at
+```
+
+| Attribute  | Type              | Required | Description |
+|------------|-------------------|----------|-------------|
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `wiki_page_meta_id`  | integer           | yes      | The ID of a wiki page meta |
+| `sort`     | string            | no       | Return wiki page notes sorted in `asc` or `desc` order. Default is `desc` |
+| `order_by` | string            | no       | Return wiki page notes ordered by `created_at` or `updated_at` fields. Default is `created_at` |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/wiki_pages/35/notes"
+```
+
+### Get single wiki page note
+
+Returns a single note for a given wiki page.
+
+```plaintext
+GET /groups/:id/wiki_pages/:wiki_page_meta_id/notes/:note_id
+```
+
+Parameters:
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `wiki_page_meta_id`  | integer           | yes      | The ID of a wiki page meta |
+| `note_id` | integer           | yes      | The ID of a note |
+
+```json
+{
+  "author": {
+      "id": 1,
+      "username": "pipin",
+      "email": "admin@example.com",
+      "name": "Pip",
+      "state": "active",
+      "created_at": "2013-09-30T13:46:01Z"
+  },
+  "body": "foobar",
+  "commands_changes": {},
+  "confidential": false,
+  "created_at": "2025-03-11T11:36:32.222Z",
+  "id": 1218,
+  "imported": false,
+  "imported_from": "none",
+  "internal": false,
+  "noteable_id": 35,
+  "noteable_iid": null,
+  "noteable_type": "WikiPage::Meta",
+  "project_id": null,
+  "resolvable": false,
+  "system": false,
+  "type": null,
+  "updated_at": "2025-03-11T11:36:32.222Z"
+}
+```
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/wiki_pages/35/notes/1218"
+```
+
+### Create new wiki page note
+
+Creates a new note for a single wiki page. Wiki page notes are comments users can post to a wiki page.
+
+```plaintext
+POST /groups/:id/wiki_pages/:wiki_page_meta_id/notes
+```
+
+Parameters:
+
+| Attribute      | Type              | Required | Description |
+|----------------|-------------------|----------|-------------|
+| `body`         | string            | yes      | The content of a note. Limited to 1,000,000 characters. |
+| `wiki_page_meta_id`  | integer           | yes      | The ID of a wiki page meta |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/wiki_pages/35/notes?body=note"
+```
+
+### Modify existing wiki page note
+
+Modifies an existing note on a wiki page.
+
+```plaintext
+PUT /groups/:id/wiki_pages/:wiki_page_meta_id/notes/:note_id
+```
+
+Parameters:
+
+| Attribute      | Type              | Required | Description |
+|----------------|-------------------|----------|-------------|
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `wiki_page_meta_id`  | integer           | yes      | The ID of a wiki page meta |
+| `note_id`      | integer           | yes      | The ID of a note |
+| `body`         | string            | yes      | The content of a note. Limited to 1,000,000 characters. |
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/wiki_pages/35/notes/1218?body=note"
+```
+
+### Delete a wiki page note
+
+Deletes a note from a wiki page.
+
+```plaintext
+DELETE /groups/:id/wiki_pages/:wiki_page_meta_id/notes/:note_id
+```
+
+Parameters:
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `wiki_page_meta_id`  | integer           | yes      | The ID of a wiki page meta |
+| `note_id` | integer           | yes      | The ID of a note |
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/wiki_pages/35/notes/1218"
+```

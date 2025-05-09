@@ -323,7 +323,6 @@ RSpec/ReceiveMessages:
     - 'spec/lib/gitlab/github_import/client_spec.rb'
     - 'spec/lib/gitlab/github_import/parallel_scheduling_spec.rb'
     - 'spec/lib/gitlab/gon_helper_spec.rb'
-    - 'spec/lib/gitlab/import_export/after_export_strategies/web_upload_strategy_spec.rb'
     - 'spec/lib/gitlab/import_export/importer_spec.rb'
     - 'spec/lib/gitlab/import_export/repo_restorer_spec.rb'
     - 'spec/lib/gitlab/import_export/snippet_repo_restorer_spec.rb'

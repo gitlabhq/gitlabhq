@@ -193,6 +193,15 @@ RSpec.describe NotesFinder do
         expect(notes.count).to eq(1)
       end
 
+      it 'finds notes on wiki pages' do
+        note = create(:note_on_wiki_page, project: project)
+        params = { project: project, target_type: 'wiki_page/meta', target_id: note.noteable.id }
+
+        notes = described_class.new(user, params).execute
+
+        expect(notes.count).to eq(1)
+      end
+
       it 'raises an exception for an invalid target_type' do
         params[:target_type] = 'invalid'
         expect { described_class.new(user, params).execute }.to raise_error("invalid target_type '#{params[:target_type]}'")

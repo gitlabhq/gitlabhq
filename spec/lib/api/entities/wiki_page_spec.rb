@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Entities::WikiPage, feature_category: :wiki do
   let_it_be_with_reload(:wiki_page) { create(:wiki_page) }
+  let_it_be_with_reload(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, wiki_page: wiki_page) }
 
   let(:params) { {} }
   let(:entity) { described_class.new(wiki_page, params) }
@@ -20,6 +21,10 @@ RSpec.describe API::Entities::WikiPage, feature_category: :wiki do
 
   it 'returns the raw wiki page content' do
     expect(subject[:content]).to eq wiki_page.content
+  end
+
+  it 'returns the wiki page meta id' do
+    expect(subject[:wiki_page_meta_id]).to eq wiki_page_meta.id
   end
 
   context "with front matter content" do

@@ -6,7 +6,6 @@ import eventHub from '../../event_hub';
 import MRWidgetService from '../../services/mr_widget_service';
 import {
   MANUAL_DEPLOY,
-  FAILED,
   SUCCESS,
   STOPPING,
   DEPLOYING,
@@ -54,9 +53,6 @@ export default {
     },
     canBeManuallyDeployed() {
       return this.computedDeploymentStatus === MANUAL_DEPLOY && Boolean(this.playPath);
-    },
-    canBeManuallyRedeployed() {
-      return this.computedDeploymentStatus === FAILED && Boolean(this.redeployPath);
     },
     hasExternalUrls() {
       return Boolean(this.deployment.external_url && this.deployment.external_url_formatted);

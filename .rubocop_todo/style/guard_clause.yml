@@ -404,7 +404,6 @@ Style/GuardClause:
     - 'lib/gitlab/github_import/object_counter.rb'
     - 'lib/gitlab/graphql/query_analyzers/ast/recursion_analyzer.rb'
     - 'lib/gitlab/i18n/po_linter.rb'
-    - 'lib/gitlab/import_export/after_export_strategies/web_upload_strategy.rb'
     - 'lib/gitlab/import_export/base/object_builder.rb'
     - 'lib/gitlab/import_export/base/relation_factory.rb'
     - 'lib/gitlab/import_export/command_line_util.rb'

@@ -10,7 +10,6 @@ Style/MissingRespondToMissing:
     - 'lib/gitlab/auth/ldap/dn.rb'
     - 'lib/gitlab/gitaly_client/storage_settings.rb'
     - 'lib/gitlab/graphql/batch_key.rb'
-    - 'lib/gitlab/import_export/after_export_strategies/base_after_export_strategy.rb'
     - 'lib/gitlab/legacy_github_import/client.rb'
     - 'lib/gitlab/metrics/null_metric.rb'
     - 'lib/kramdown/parser/atlassian_document_format.rb'
