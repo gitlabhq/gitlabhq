@@ -177,6 +177,7 @@ unit_primitives:
   - include_merge_request_context
   - include_snippet_context
   - include_terminal_context
+  - include_repository_context
   - refactor_code
   - write_tests
 ```

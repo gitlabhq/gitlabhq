@@ -47,4 +47,7 @@ session_store_class, options = Gitlab::Sessions::StoreBuilder.new(cookie_key, se
 Rails.application.configure do
   config.session_store(session_store_class, **options)
   config.middleware.insert_after session_store_class, Gitlab::Middleware::UnauthenticatedSessionExpiry
+  config.action_dispatch.signed_cookie_salt = Settings['gitlab']['signed_cookie_salt'] || 'signed cookie'
+  config.action_dispatch.authenticated_encrypted_cookie_salt =
+    Settings['gitlab']['authenticated_encrypted_cookie_salt'] || 'authenticated encrypted cookie'
 end

@@ -66060,6 +66060,9 @@ msgstr ""
 msgid "UserMapping|You can assign active users with regular, auditor, or administrator access only."
 msgstr ""
 
+msgid "UserMapping|You can assign only enterprise users in the top-level group you're importing to."
+msgstr ""
+
 msgid "UserMapping|You can assign only users with linked SAML and SCIM identities. Ensure the user has signed into GitLab through your SAML SSO provider and has an active SCIM identity for this group."
 msgstr ""
 
@@ -72555,6 +72558,9 @@ msgid "math|This math block exceeds %{maxMathChars} characters, and may cause pe
 msgstr ""
 
 msgid "math|Too many expansions. Consider using multiple math blocks."
+msgstr ""
+
+msgid "max_resources_per_workspace must be an empty hash if shared_namespace is specified"
 msgstr ""
 
 msgid "member"

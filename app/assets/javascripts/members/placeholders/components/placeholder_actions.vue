@@ -2,11 +2,15 @@
 import produce from 'immer';
 import { debounce, isEmpty, isNull } from 'lodash';
 import { GlAvatarLabeled, GlButton, GlCollapsibleListbox } from '@gitlab/ui';
+import {
+  getFirstPropertyValue,
+  normalizeHeaders,
+  parseIntPagination,
+} from '~/lib/utils/common_utils';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
-import { getFirstPropertyValue } from '~/lib/utils/common_utils';
-
 import searchUsersQuery from '~/graphql_shared/queries/users_search_all_paginated.query.graphql';
+import { fetchGroupEnterpriseUsers } from 'ee_else_ce/api/groups_api';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import {
   PLACEHOLDER_STATUS_AWAITING_APPROVAL,
@@ -34,6 +38,12 @@ export default {
     GlCollapsibleListbox,
   },
   inject: {
+    group: {
+      default: {},
+    },
+    restrictReassignmentToEnterprise: {
+      default: false,
+    },
     allowInactivePlaceholderReassignment: {
       default: false,
     },
@@ -51,11 +61,17 @@ export default {
       isConfirmLoading: false,
       isCancelLoading: false,
       isNotifyLoading: false,
-      isLoadingInitial: true,
-      isLoadingMore: false,
+      apolloIsLoadingInitial: true,
+      apolloIsLoadingMore: false,
       isValidated: false,
       search: '',
       selectedUserToReassign: null,
+      enterpriseUsers: [],
+      enterpriseUsersPageInfo: {
+        nextPage: null,
+      },
+      enterpriseUsersIsLoadingInitial: false,
+      enterpriseUsersIsLoadingMore: false,
     };
   },
 
@@ -69,7 +85,10 @@ export default {
         };
       },
       result() {
-        this.isLoadingInitial = false;
+        this.apolloIsLoadingInitial = false;
+      },
+      skip() {
+        return this.restrictReassignmentToEnterprise;
       },
       error() {
         this.onError();
@@ -90,11 +109,35 @@ export default {
     },
 
     hasNextPage() {
+      if (this.restrictReassignmentToEnterprise) {
+        return Boolean(this.enterpriseUsersPageInfo.nextPage);
+      }
+
       return this.users?.pageInfo?.hasNextPage;
     },
 
     isLoading() {
-      return this.$apollo.queries.users.loading && !this.isLoadingMore;
+      if (this.restrictReassignmentToEnterprise) {
+        return this.enterpriseUsersIsLoadingInitial;
+      }
+
+      return this.$apollo.queries.users.loading && !this.apolloIsLoadingMore;
+    },
+
+    isLoadingMore() {
+      if (this.restrictReassignmentToEnterprise) {
+        return this.enterpriseUsersIsLoadingMore;
+      }
+
+      return this.apolloIsLoadingMore;
+    },
+
+    isLoadingInitial() {
+      if (this.restrictReassignmentToEnterprise) {
+        return this.enterpriseUsersIsLoadingInitial;
+      }
+
+      return this.apolloIsLoadingInitial;
     },
 
     userSelectInvalid() {
@@ -102,6 +145,10 @@ export default {
     },
 
     userItems() {
+      if (this.restrictReassignmentToEnterprise) {
+        return this.enterpriseUsers?.map((user) => this.createUserObjectFromEnterprise(user));
+      }
+
       return this.users?.nodes?.map((user) => createUserObject(user));
     },
 
@@ -146,10 +193,45 @@ export default {
   },
 
   methods: {
+    async fetchEnterpriseUsers(page) {
+      try {
+        const { data, headers } = await fetchGroupEnterpriseUsers(this.group.id, {
+          page,
+          per_page: USERS_PER_PAGE,
+          search: this.search,
+        });
+
+        this.enterpriseUsersPageInfo = parseIntPagination(normalizeHeaders(headers));
+        this.enterpriseUsers.push(...data);
+      } catch (error) {
+        this.onError();
+      }
+    },
+    async loadInitialEnterpriseUsers() {
+      if (!this.restrictReassignmentToEnterprise || this.enterpriseUsers.length > 0) {
+        return;
+      }
+
+      this.enterpriseUsersIsLoadingInitial = true;
+      await this.fetchEnterpriseUsers(1);
+      this.enterpriseUsersIsLoadingInitial = false;
+    },
+
+    async loadMoreEnterpriseUsers() {
+      this.enterpriseUsersIsLoadingMore = true;
+      await this.fetchEnterpriseUsers(this.enterpriseUsersPageInfo.nextPage);
+      this.enterpriseUsersIsLoadingMore = false;
+    },
+
     async loadMoreUsers() {
       if (!this.hasNextPage) return;
 
-      this.isLoadingMore = true;
+      if (this.restrictReassignmentToEnterprise) {
+        this.loadMoreEnterpriseUsers();
+        return;
+      }
+
+      this.apolloIsLoadingMore = true;
 
       try {
         await this.$apollo.queries.users.fetchMore({
@@ -166,7 +248,7 @@ export default {
       } catch (error) {
         this.onError();
       } finally {
-        this.isLoadingMore = false;
+        this.apolloIsLoadingMore = false;
       }
     },
 
@@ -178,6 +260,32 @@ export default {
 
     setSearch(searchTerm) {
       this.search = searchTerm;
+
+      if (this.restrictReassignmentToEnterprise) {
+        this.enterpriseUsers = [];
+        this.loadInitialEnterpriseUsers();
+      }
+    },
+
+    createUserObjectFromEnterprise({
+      id,
+      username,
+      web_url: webUrl,
+      web_path: webPath,
+      avatar_url: avatarUrl,
+      name,
+    }) {
+      const gid = `gid://gitlab/User/${id}`;
+
+      return {
+        username,
+        webUrl,
+        webPath,
+        avatarUrl,
+        id: gid,
+        text: name,
+        value: gid,
+      };
     },
 
     onSelect(value) {
@@ -301,6 +409,7 @@ export default {
         :searching="isLoading"
         infinite-scroll
         :infinite-scroll-loading="isLoadingMore"
+        @shown="loadInitialEnterpriseUsers"
         @search="debouncedSetSearch"
         @select="onSelect"
         @bottom-reached="loadMoreUsers"

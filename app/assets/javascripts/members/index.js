@@ -40,6 +40,7 @@ export const initMembersApp = (el, context, options) => {
     namespaceUserLimit,
     availableRoles,
     reassignmentCsvPath,
+    restrictReassignmentToEnterprise,
     allowInactivePlaceholderReassignment,
     ...vuexStoreAttributes
   } = parseDataAttributes(el);
@@ -86,6 +87,7 @@ export const initMembersApp = (el, context, options) => {
       availableRoles,
       context,
       reassignmentCsvPath,
+      restrictReassignmentToEnterprise,
       allowInactivePlaceholderReassignment: parseBoolean(allowInactivePlaceholderReassignment),
       group: {
         id: isGroup ? sourceId : null,

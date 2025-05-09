@@ -175,6 +175,10 @@ production: &base
     # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
     # webhook_timeout: 10
 
+    ## Session cookie settings
+    # signed_cookie_salt: 'signed cookie'
+    # authenticated_encrypted_cookie_salt: 'authenticated encrypted cookie'
+
     ## HTTP client settings
     http_client:
         # Filename of HTTP client pem

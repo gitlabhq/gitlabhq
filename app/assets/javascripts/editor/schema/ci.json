@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://gitlab.com/.gitlab-ci.yml",
-  "markdownDescription": "Gitlab has a built-in solution for doing CI called Gitlab CI. It is configured by supplying a file called `.gitlab-ci.yml`, which will list all the jobs that are going to run for the project. A full list of all options can be found [here](https://docs.gitlab.com/ci/yaml/). [Learn More](https://docs.gitlab.com/ci/).",
+  "markdownDescription": "GitLab has a built-in solution for doing CI called GitLab CI. It is configured by supplying a file called `.gitlab-ci.yml`, which will list all the jobs that are going to run for the project. A full list of all options can be found [here](https://docs.gitlab.com/ci/yaml/). [Learn More](https://docs.gitlab.com/ci/).",
   "type": "object",
   "properties": {
     "$schema": {
@@ -132,7 +132,7 @@
     },
     "pages": {
       "$ref": "#/definitions/job",
-      "markdownDescription": "A special job used to upload static sites to Gitlab pages. Requires a `public/` directory with `artifacts.path` pointing to it. [Learn More](https://docs.gitlab.com/ci/yaml/#pages)."
+      "markdownDescription": "A special job used to upload static sites to GitLab pages. Requires a `public/` directory with `artifacts.path` pointing to it. [Learn More](https://docs.gitlab.com/ci/yaml/#pages)."
     },
     "workflow": {
       "type": "object",
@@ -210,7 +210,7 @@
         "object",
         "null"
       ],
-      "markdownDescription": "Used to specify a list of files and directories that should be attached to the job if it succeeds. Artifacts are sent to Gitlab where they can be downloaded. [Learn More](https://docs.gitlab.com/ci/yaml/#artifacts).",
+      "markdownDescription": "Used to specify a list of files and directories that should be attached to the job if it succeeds. Artifacts are sent to GitLab where they can be downloaded. [Learn More](https://docs.gitlab.com/ci/yaml/#artifacts).",
       "additionalProperties": false,
       "properties": {
         "paths": {
@@ -269,7 +269,7 @@
         },
         "reports": {
           "type": "object",
-          "markdownDescription": "Reports will be uploaded as artifacts, and often displayed in the Gitlab UI, such as in merge requests. [Learn More](https://docs.gitlab.com/ci/yaml/#artifactsreports).",
+          "markdownDescription": "Reports will be uploaded as artifacts, and often displayed in the GitLab UI, such as in merge requests. [Learn More](https://docs.gitlab.com/ci/yaml/#artifactsreports).",
           "additionalProperties": false,
           "properties": {
             "annotations": {
@@ -715,7 +715,7 @@
         },
         {
           "type": "object",
-          "description": "Specifies the docker image to use for the job or globally for all jobs. Job configuration takes precedence over global setting. Requires a certain kind of Gitlab runner executor.",
+          "description": "Specifies the docker image to use for the job or globally for all jobs. Job configuration takes precedence over global setting. Requires a certain kind of GitLab runner executor.",
           "additionalProperties": false,
           "properties": {
             "name": {
@@ -792,7 +792,7 @@
           ]
         }
       ],
-      "markdownDescription": "Specifies the docker image to use for the job or globally for all jobs. Job configuration takes precedence over global setting. Requires a certain kind of Gitlab runner executor. [Learn More](https://docs.gitlab.com/ci/yaml/#image)."
+      "markdownDescription": "Specifies the docker image to use for the job or globally for all jobs. Job configuration takes precedence over global setting. Requires a certain kind of GitLab runner executor. [Learn More](https://docs.gitlab.com/ci/yaml/#image)."
     },
     "services": {
       "type": "array",
@@ -1748,7 +1748,7 @@
                 "enum": [
                   "external"
                 ],
-                "description": "When using CI services other than Gitlab"
+                "description": "When using CI services other than GitLab"
               },
               {
                 "enum": [
@@ -1778,7 +1778,7 @@
                 "enum": [
                   "web"
                 ],
-                "description": "For pipelines created using *Run pipeline* button in Gitlab UI (under your project's *Pipelines*)."
+                "description": "For pipelines created using *Run pipeline* button in GitLab UI (under your project's *Pipelines*)."
               }
             ]
           },
@@ -2220,7 +2220,7 @@
                 },
                 "url": {
                   "type": "string",
-                  "description": "When set, this will expose buttons in various places for the current environment in Gitlab, that will take you to the defined URL.",
+                  "description": "When set, this will expose buttons in various places for the current environment in GitLab, that will take you to the defined URL.",
                   "format": "uri",
                   "pattern": "^(https?://.+|\\$[A-Za-z]+)"
                 },
@@ -2241,11 +2241,11 @@
                 },
                 "auto_stop_in": {
                   "type": "string",
-                  "description": "The amount of time it should take before Gitlab will automatically stop the environment. Supports a wide variety of formats, e.g. '1 week', '3 mins 4 sec', '2 hrs 20 min', '2h20min', '6 mos 1 day', '47 yrs 6 mos and 4d', '3 weeks and 2 days'."
+                  "description": "The amount of time it should take before GitLab will automatically stop the environment. Supports a wide variety of formats, e.g. '1 week', '3 mins 4 sec', '2 hrs 20 min', '2h20min', '6 mos 1 day', '47 yrs 6 mos and 4d', '3 weeks and 2 days'."
                 },
                 "kubernetes": {
                   "type": "object",
-                  "description": "Used to configure the kubernetes deployment for this environment. This is currently not supported for kubernetes clusters that are managed by Gitlab.",
+                  "description": "Used to configure the kubernetes deployment for this environment. This is currently not supported for kubernetes clusters that are managed by GitLab.",
                   "properties": {
                     "namespace": {
                       "type": "string",
@@ -2254,7 +2254,7 @@
                     },
                     "agent": {
                       "type": "string",
-                      "description": "Specifies the Gitlab Agent for Kubernetes. The format is `path/to/agent/project:agent-name`."
+                      "description": "Specifies the GitLab Agent for Kubernetes. The format is `path/to/agent/project:agent-name`."
                     },
                     "flux_resource_path": {
                       "type": "string",

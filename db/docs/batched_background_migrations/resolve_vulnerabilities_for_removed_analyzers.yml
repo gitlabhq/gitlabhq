@@ -1,8 +1,0 @@
----
-migration_job_name: ResolveVulnerabilitiesForRemovedAnalyzers
-description: Resolves all detected vulnerabilities for removed analyzers.
-feature_category: static_application_security_testing
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162691
-milestone: '17.4'
-queued_migration_version: 20240814085540
-finalized_by: 20241015185528

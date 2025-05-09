@@ -61,4 +61,29 @@ RSpec.describe 'Session initializer for GitLab' do
       end
     end
   end
+
+  describe 'cookie salt settings' do
+    context 'with default settings' do
+      it 'sets signed_cookie_salt and authenticated_encrypted_cookie_salt to default value' do
+        load_session_store
+        expect(subject.action_dispatch.signed_cookie_salt).to eql('signed cookie')
+        expect(subject.action_dispatch.authenticated_encrypted_cookie_salt).to eql('authenticated encrypted cookie')
+      end
+    end
+
+    context 'with custom settings' do
+      before do
+        allow(Settings).to receive(:[]).with('gitlab').and_return({
+          'signed_cookie_salt' => 'custom signed salt',
+          'authenticated_encrypted_cookie_salt' => 'custom encrypted salt'
+        })
+      end
+
+      it 'sets signed_cookie_salt and authenticated_encrypted_cookie_salt to custom values' do
+        load_session_store
+        expect(subject.action_dispatch.signed_cookie_salt).to eql('custom signed salt')
+        expect(subject.action_dispatch.authenticated_encrypted_cookie_salt).to eql('custom encrypted salt')
+      end
+    end
+  end
 end

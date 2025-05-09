@@ -1160,24 +1160,12 @@ Gitlab.ee do
 
   Settings.duo_workflow.reverse_merge!(
     secure: true,
+    service_url: nil, # service_url is constructued in Gitlab::DuoWorkflow::Client
     debug: false,
     executor_binary_url: "https://gitlab.com/api/v4/projects/58711783/packages/generic/duo-workflow-executor/#{executor_version}/duo-workflow-executor.tar.gz",
     executor_binary_urls: executor_binary_urls,
     executor_version: executor_version
   )
-
-  # Default to proxy via Cloud Connector
-  unless Settings.duo_workflow['service_url'].present?
-    cloud_connector_uri = URI.parse(Settings.cloud_connector.base_url)
-
-    # Cloudflare has been disabled untill
-    # gets resolved https://gitlab.com/gitlab-org/gitlab/-/issues/509586
-    # Settings.duo_workflow['service_url'] = "#{cloud_connector_uri.host}:#{cloud_connector_uri.port}"
-
-    service_url = "duo-workflow#{cloud_connector_uri.host.include?('staging') ? '.staging' : ''}.runway.gitlab.net:#{cloud_connector_uri.port}"
-    Settings.duo_workflow['service_url'] = service_url
-    Settings.duo_workflow['secure'] = cloud_connector_uri.scheme == 'https'
-  end
 end
 
 #

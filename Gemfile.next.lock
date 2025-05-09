@@ -2162,7 +2162,7 @@ DEPENDENCIES
   gitlab-active-context!
   gitlab-backup-cli!
   gitlab-chronic (~> 0.10.5)
-  gitlab-cloud-connector (~> 1.5)
+  gitlab-cloud-connector (~> 1.11)
   gitlab-dangerfiles (~> 4.9.0)
   gitlab-duo-workflow-service-client (~> 0.1)!
   gitlab-experiment (~> 0.9.1)

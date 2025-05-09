@@ -97,3 +97,6 @@ export const getSharedGroups = (groupId, params = {}) => {
 
   return axios.get(url, { params: { ...defaultParams, ...params } });
 };
+
+// no-op: See EE code for implementation
+export const fetchGroupEnterpriseUsers = () => {};

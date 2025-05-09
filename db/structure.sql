@@ -22781,7 +22781,8 @@ CREATE TABLE sent_notifications (
     in_reply_to_discussion_id character varying,
     id bigint NOT NULL,
     issue_email_participant_id bigint,
-    created_at timestamp with time zone NOT NULL
+    created_at timestamp with time zone NOT NULL,
+    namespace_id bigint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE sent_notifications_id_seq

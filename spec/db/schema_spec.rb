@@ -180,7 +180,7 @@ RSpec.describe 'Database schema',
       repository_languages: %w[programming_language_id],
       routes: %w[source_id],
       security_findings: %w[project_id],
-      sent_notifications: %w[project_id noteable_id recipient_id commit_id in_reply_to_discussion_id],
+      sent_notifications: %w[project_id noteable_id recipient_id commit_id in_reply_to_discussion_id namespace_id], # namespace_id FK will be added after index creation
       slack_integrations: %w[team_id user_id bot_user_id], # these are external Slack IDs
       snippets: %w[author_id],
       spam_logs: %w[user_id],
