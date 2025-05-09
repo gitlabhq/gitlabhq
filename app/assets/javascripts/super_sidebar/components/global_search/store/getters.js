@@ -1,4 +1,4 @@
-import { omitBy, isNil } from 'lodash';
+import { omitBy, isNil, uniqBy } from 'lodash';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import { sprintf } from '~/locale';
 import {
@@ -267,6 +267,7 @@ export const autocompleteGroupedSearchOptions = (state) => {
 
     if (group) {
       group.items.push(formattedItem);
+      group.items = uniqBy(group.items, 'id');
     } else {
       groupedOptions[item.category] = {
         name: formattedItem.category,

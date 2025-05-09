@@ -396,15 +396,58 @@ describe('Global Search Store Getters', () => {
   });
 
   describe('autocompleteGroupedSearchOptions', () => {
-    beforeEach(() => {
-      createState();
-      state.autocompleteOptions = MOCK_AUTOCOMPLETE_OPTIONS;
+    const findGroupItems = (res, name) => res.find((group) => group.name === name).items;
+
+    const totalResults = 4;
+    const totalProjects = 2;
+
+    const expectUniqueAutocompleteResults = (result) => {
+      expect(result).toStrictEqual(MOCK_GROUPED_AUTOCOMPLETE_OPTIONS);
+
+      expect(findGroupItems(result, 'Users').length).toBe(totalResults);
+      expect(findGroupItems(result, 'Projects').length).toBe(totalProjects);
+    };
+
+    describe('without duplicates', () => {
+      beforeEach(() => {
+        createState();
+
+        state.autocompleteOptions = MOCK_AUTOCOMPLETE_OPTIONS;
+      });
+
+      it('returns the correct grouped array', () => {
+        expectUniqueAutocompleteResults(getters.autocompleteGroupedSearchOptions(state));
+      });
     });
 
-    it('returns the correct grouped array', () => {
-      expect(getters.autocompleteGroupedSearchOptions(state)).toStrictEqual(
-        MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
-      );
+    describe('with duplicates', () => {
+      beforeEach(() => {
+        createState();
+
+        state.autocompleteOptions = [
+          ...MOCK_AUTOCOMPLETE_OPTIONS,
+          {
+            category: 'Users',
+            id: 12457737,
+            value: 'Madelein van Niekerk (duplicate)',
+            label: 'maddievn',
+            url: '/maddievn',
+            avatar_url: '/uploads/-/system/user/avatar/12457737/avatar.png',
+          },
+          {
+            category: 'Projects',
+            id: 1,
+            label: 'Gitlab Org / MockProject1 (duplicate)',
+            value: 'MockProject1',
+            url: 'project/1',
+            avatar_url: '/project/avatar/1/avatar.png',
+          },
+        ];
+      });
+
+      it('returns the correct grouped array with duplicates removed', () => {
+        expectUniqueAutocompleteResults(getters.autocompleteGroupedSearchOptions(state));
+      });
     });
   });
 
