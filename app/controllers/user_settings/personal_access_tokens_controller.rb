@@ -125,8 +125,6 @@ module UserSettings
     def set_index_vars
       @scopes = Gitlab::Auth.available_scopes_for(current_user)
 
-      @scopes = ::VirtualRegistries.filter_token_scopes(@scopes, current_user)
-
       @active_access_tokens, @active_access_tokens_size = active_access_tokens
     end
 

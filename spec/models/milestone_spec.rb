@@ -491,6 +491,7 @@ RSpec.describe Milestone, feature_category: :team_planning do
     let_it_be(:previous_milestone) { create(:milestone, start_date: Time.current - 4.days, due_date: Time.current - 2.days) }
     let_it_be(:milestone_start_after_current_date) { create(:milestone, start_date: Time.current + 2.days) }
     let_it_be(:milestone_due_before_current_date) { create(:milestone, due_date: Time.current - 2.days) }
+    let_it_be(:milestone_ending_today) { create(:milestone, due_date: Time.current) }
   end
 
   describe '#started' do
@@ -504,7 +505,8 @@ RSpec.describe Milestone, feature_category: :team_planning do
       expect(milestone_ids).to contain_exactly(
         milestone_no_start_date.id,
         milestone_no_due_date.id,
-        current_milestone.id
+        current_milestone.id,
+        milestone_ending_today.id
       )
     end
 

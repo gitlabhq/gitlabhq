@@ -62,8 +62,9 @@ Prerequisites:
 To configure a self-hosted model:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **GitLab Duo Self-Hosted**.
-   - If the **GitLab Duo Self-Hosted** menu item is not available, synchronize your
+1. Select **GitLab Duo**.
+1. Select **Configure GitLab Duo Self-Hosted**.
+   - If the **Configure GitLab Duo Self-Hosted** button is not available, synchronize your
      subscription after purchase:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
@@ -141,8 +142,9 @@ Prerequisites:
 ### View configured features
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **GitLab Duo Self-Hosted**.
-   - If the **GitLab Duo Self-Hosted** menu item is not available, synchronize your
+1. Select **GitLab Duo**.
+1. Select **Configure GitLab Duo Self-Hosted**.
+   - If the **Configure GitLab Duo Self-Hosted** button is not available, synchronize your
      subscription after purchase:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
@@ -154,7 +156,8 @@ Prerequisites:
 Configure the GitLab Duo feature and sub-feature to send queries to the configured self-hosted model:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **GitLab Duo Self-Hosted**.
+1. Select **GitLab Duo**.
+1. Select **Configure GitLab Duo Self-Hosted**.
 1. Select the **AI-powered features** tab.
 1. For the feature and sub-feature you want to configure, from the dropdown list, choose the self-hosted model you want to use.
 
@@ -180,7 +183,8 @@ To disable a feature, you must explicitly select **Disabled** when configuring a
 To disable a GitLab Duo feature or sub-feature:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **GitLab Duo Self-Hosted**.
+1. Select **GitLab Duo**.
+1. Select **Configure GitLab Duo Self-Hosted**.
 1. Select the **AI-powered features** tab.
 1. For the feature or sub-feature you want to disable, from the dropdown list, select **Disabled**.
 

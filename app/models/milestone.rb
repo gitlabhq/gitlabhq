@@ -38,7 +38,7 @@ class Milestone < ApplicationRecord
     else
       active
         .where('(milestones.start_date <= CURRENT_DATE OR milestones.start_date IS NULL) AND
-              (milestones.due_date IS NULL OR milestones.due_date > CURRENT_DATE) AND
+              (milestones.due_date IS NULL OR milestones.due_date >= CURRENT_DATE) AND
               NOT (milestones.start_date IS NULL AND milestones.due_date IS NULL)')
     end
   end

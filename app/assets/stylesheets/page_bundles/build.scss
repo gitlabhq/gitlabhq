@@ -15,6 +15,7 @@
 
   .top-bar {
     @include job-log-top-bar;
+    @include translucent-glass-background;
 
     &.has-archived-block {
       top: calc(#{$calc-application-header-height} + 28px);

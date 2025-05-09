@@ -147,6 +147,70 @@ you can use the `CI_COMMIT_TAG` variable to control pipelines for new tags:
 - At the job level with [`rules:if`](../../../../ci/yaml/_index.md#rulesif).
 - At the pipeline level with the [`workflow`](../../../../ci/yaml/workflow.md) keyword.
 
+## Trigger security scans in tag pipelines
+
+By default, scan execution policies only run on branches, not tags. However, you can
+configure pipeline execution policies to run security scans on tags.
+
+To run security scans on tags:
+
+1. Create a CI/CD configuration YAML file with custom jobs that extend the security scanner
+   templates and include rules to run on tags.
+1. Create a pipeline execution policy that injects this configuration into your pipelines.
+
+### Example pipeline execution policy
+
+This example shows how to create a pipeline execution policy that runs dependency scanning
+and SAST scans on tags:
+
+```yaml
+pipeline_execution_policy:
+- name: Pipeline Execution Policy
+  description: Run security scans on tags
+  enabled: true
+  pipeline_config_strategy: inject_policy
+  content:
+    include:
+    - project: <Project path to YAML>
+      file: tag-security-scans.yml
+  skip_ci:
+    allowed: false
+```
+
+### Example CI/CD configuration
+
+This example shows how to extend security scanner jobs to run on tags:
+
+```yaml
+include:
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
+
+# Extend dependency scanning to run on tags
+gemnasium-python-dependency_scanning_tags:
+  extends: gemnasium-python-dependency_scanning
+  rules:
+    - if: $CI_COMMIT_TAG
+
+# Extend SAST scanning to run on tags
+semgrep-sast_tags:
+  extends: semgrep-sast
+  rules:
+    - if: $CI_COMMIT_TAG
+
+# Example of a custom job that runs only on tags
+policy_job_for_tags:
+  script:
+    - echo "This job runs only on tags"
+  rules:
+    - if: $CI_COMMIT_TAG
+
+# Example of a job that runs on all pipelines
+policy_job_always:
+  script:
+    - echo "This policy job runs always."
+```
+
 ## Related topics
 
 - [Tagging (Git reference page)](https://git-scm.com/book/en/v2/Git-Basics-Tagging)

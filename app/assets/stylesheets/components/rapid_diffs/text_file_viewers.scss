@@ -261,6 +261,10 @@
   }
 }
 
+.rd-line-text {
+  all: unset;
+}
+
 // Select text only within one side of the parallel diff
 .rd-diff-file:has([data-position=new]:where(:active, :focus)) [data-position=old],
 .rd-diff-file:has([data-position=old]:where(:active, :focus)) [data-position=new] {

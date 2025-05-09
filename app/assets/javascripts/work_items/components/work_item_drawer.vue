@@ -255,7 +255,7 @@ export default {
     data-testid="work-item-drawer"
     :header-height="getDrawerHeight"
     header-sticky
-    class="gl-w-full gl-leading-reset lg:gl-w-[480px] xl:gl-w-[768px] min-[1440px]:gl-w-[912px]"
+    class="work-item-drawer gl-w-full gl-leading-reset lg:gl-w-[480px] xl:gl-w-[768px] min-[1440px]:gl-w-[912px]"
     @close="handleClose"
     @opened="$emit('opened')"
   >

@@ -58,6 +58,7 @@ Updating any of these settings, except `enabled`, does not affect existing works
 | [`labels`](#labels)                                                                       | Labels to apply to Kubernetes objects.                                                        | Map of key-value pairs. Valid Kubernetes label format       | `{}`                                    | No       |
 | [`max_active_hours_before_stop`](#max_active_hours_before_stop)                           | Maximum number of hours a workspace can be active before it is stopped.                       | Integer                                                     | `36`                                    | No       |
 | [`max_stopped_hours_before_termination`](#max_stopped_hours_before_termination)           | Maximum number of hours a workspace can be stopped before it is terminated.                   | Integer                                                     | `744`                                   | No       |
+| [`shared_namespace`](#shared_namespace)                                                   | Indicates whether to use a shared Kubernetes namespace.                                    | String                                                      | `""`                                    | No       |
 
 ### `enabled`
 
@@ -232,6 +233,14 @@ For more information about possible CPU and memory values, see:
 - [Resource quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/)
 
 Workspaces fail when they exceed the values you set for `requests` and `limits`.
+
+{{< alert type="note" >}}
+
+If [`shared_namespace`](#shared_namespace) is set, `max_resources_per_workspace` must be an
+empty hash. Users can create a Kubernetes [Resource quota](https://kubernetes.io/docs/concepts/policy/resource-quotas/)
+in the `shared_namespace` to achieve the same result as specifying this value here.
+
+{{< /alert >}}
 
 Example configuration:
 
@@ -429,6 +438,7 @@ In this example, the secret `image-pull-secret-name` from the namespace
 
 For `image_pull_secrets`, the `name` and `namespace` attributes are required.
 The name of the secret must be unique.
+If [`shared_namespace`](#shared_namespace) is set, the namespace of the secret must be the same as the `shared_namespace`.
 
 If the secret you've specified does not exist in the Kubernetes cluster, the secret is ignored.
 When you delete or update the secret, the secret is deleted or updated
@@ -578,6 +588,41 @@ A valid value:
 The automatic termination is only triggered on a full reconciliation, which happens every hour.
 This means that the workspace might stop for up to one hour longer than the configured value.
 
+### `shared_namespace`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12327) in GitLab 18.0.
+
+{{< /history >}}
+
+Use this setting to specify a shared Kubernetes namespace for all workspaces.
+
+The default value is `""`, which creates each new workspace in its own separate Kubernetes namespace.
+
+When you specify a value, all workspaces exist in that Kubernetes namespace instead of individual namespaces.
+
+Setting a value for `shared_namespace` imposes restrictions on the acceptable values for [`image_pull_secrets`](#image_pull_secrets) and [`max_resources_per_workspace`](#max_resources_per_workspace).
+
+Example configuration:
+
+```yaml
+remote_development:
+  # NOTE: This is a partial example.
+  # Some required fields are not included.
+  shared_namespace: "example-shared-namespace"
+```
+
+A valid value:
+
+- Contains at most 63 characters.
+- Contains only lowercase alphanumeric characters or '-'.
+- Starts with an alphanumeric character.
+- Ends with an alphanumeric character.
+
+For more information about Kubernetes namespaces, see
+[Namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/).
+
 ## Complete example configuration
 
 The following configuration is a complete, example configuration.
@@ -636,4 +681,5 @@ remote_development:
 
   max_active_hours_before_stop: 60
   max_stopped_hours_before_termination: 4332
+  shared_namespace: ""
 ```

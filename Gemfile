@@ -429,7 +429,7 @@ gem 'cloud_profiler_agent', '~> 0.0.0', path: 'vendor/gems/cloud_profiler_agent'
 gem 'snowplow-tracker', '~> 0.8.0', feature_category: :product_analytics
 
 # Metrics
-gem 'webrick', '~> 1.8.1', require: false, feature_category: :shared
+gem 'webrick', '~> 1.9.0', require: false, feature_category: :shared
 gem 'prometheus-client-mmap', '~> 1.2.8', require: 'prometheus/client', feature_category: :shared
 
 # Event-driven reactor for Ruby

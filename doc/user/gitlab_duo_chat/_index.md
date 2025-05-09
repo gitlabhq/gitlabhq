@@ -35,19 +35,6 @@ contextual, conversational AI. Chat:
 - Integrates directly in the GitLab UI, Web IDE, VS Code, JetBrains IDEs, and Visual Studio.
 - Can include information from your repositories and projects to deliver targeted improvements.
 
-Before you start using Chat, decide which of the following methods you want to use to manage Chat:
-
-- On GitLab.com or GitLab Self-Managed, the default GitLab AI vendor models and
-  cloud-based AI gateway that is hosted by GitLab.
-- On GitLab Self-Managed, in GitLab 17.9 and later, [GitLab Duo Self-Hosted with a supported self-hosted model](../../administration/gitlab_duo_self_hosted/_index.md). Self-hosted models maximize
-  security and privacy by making sure nothing is sent to an external model.
-
-  {{< alert type="note" >}}
-
-  You cannot use all Chat features with GitLab Duo Self-Hosted. For more information, see [supported Chat features](../../administration/gitlab_duo_self_hosted/_index.md#supported-duo-chat-features).
-
-  {{< /alert >}}
-
 ## Supported editor extensions
 
 You can use GitLab Duo Chat in:
@@ -411,6 +398,21 @@ Prerequisites:
    - **Expire conversation based on time conversation was last updated.**
    - **Expire conversation based on time conversation was created.**
 1. Select **Save changes**.
+
+## Available language models
+
+Different language models can be the source for GitLab Duo Chat.
+
+- On GitLab.com or GitLab Self-Managed, the default GitLab AI vendor models and
+  cloud-based AI gateway that is hosted by GitLab.
+- On GitLab Self-Managed, in GitLab 17.9 and later, [GitLab Duo Self-Hosted with a supported self-hosted model](../../administration/gitlab_duo_self_hosted/_index.md). Self-hosted models maximize
+  security and privacy by making sure nothing is sent to an external model.
+
+  {{< alert type="note" >}}
+
+  You cannot use all Chat features with GitLab Duo Self-Hosted. For more information, see [supported Chat features](../../administration/gitlab_duo_self_hosted/_index.md#supported-duo-chat-features).
+
+  {{< /alert >}}
 
 ## Give feedback
 

@@ -880,6 +880,7 @@ $diff-file-header-top: 11px;
 .merge-request-sticky-header {
   z-index: calc($top-bar-z-index - 1);
   height: $mr-sticky-header-height;
+  @include translucent-glass-background;
 }
 
 .merge-request-notification-toggle {

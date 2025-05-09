@@ -1,9 +1,0 @@
----
-name: dependency_proxy_read_write_scopes
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/336800
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180333
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517249
-milestone: '17.9'
-group: group::container registry
-type: wip
-default_enabled: false

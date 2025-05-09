@@ -19,6 +19,8 @@
   @media (prefers-reduced-motion: no-preference) {
     @apply gl-transition-[width,left,right];
   }
+
+  @include translucent-glass-background;
 }
 
 .top-app-header {

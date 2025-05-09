@@ -38,7 +38,7 @@ describe('Settings section', () => {
     mountComponent();
 
     expect(findHeading().text()).toBe('Heading');
-    expect(findHeading().classes()).toEqual(['gl-heading-2', '!gl-mb-3']);
+    expect(findHeading().classes()).toEqual(['gl-heading-2', 'gl-mb-0']);
   });
 
   it('has a description slot', () => {
@@ -52,7 +52,7 @@ describe('Settings section', () => {
 
     expect(findDescription().text()).toBe('Description');
     expect(findDescription().classes()).toEqual(
-      expect.arrayContaining(['gl-text-subtle', 'gl-mb-3']),
+      expect.arrayContaining(['gl-text-subtle', 'gl-mb-0']),
     );
   });
 

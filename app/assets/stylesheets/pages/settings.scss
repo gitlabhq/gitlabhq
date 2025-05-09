@@ -32,7 +32,7 @@
 .settings-section::after {
   content: '';
   display: block;
-  margin-bottom: $gl-spacing-scale-7;
+  padding-bottom: $gl-spacing-scale-7;
 }
 
 .settings-section,
@@ -42,56 +42,60 @@
 
 // Fix for sticky header when there is no search bar.
 .flash-container + .settings-section {
-  padding-top: $gl-spacing-scale-3;
+  @apply gl-pt-3;
 }
 
 .settings-section:not(.settings-section-no-bottom) ~ .settings-section {
-  @apply gl-border-t;
-  padding-top: $gl-spacing-scale-6;
+  @apply gl-border-t gl-pt-6;
 }
 
 .settings-section-no-bottom::after {
   padding-bottom: 0 !important;
 
   @include media-breakpoint-up(sm) {
-    padding-bottom: $gl-spacing-scale-5;
+    @apply gl-pb-5;
   }
-}
-
-$sticky-header-z-index: 98;
-
-.settings-sticky-header,
-.settings-sticky-footer {
-  position: sticky;
-  @apply gl-bg-default;
 }
 
 .settings-sticky-header {
-  z-index: $sticky-header-z-index;
+  z-index: $settings-sticky-header-z-index;
+  position: sticky;
   top: $calc-application-header-height;
+  min-height: $settings-sticky-header-height;
+  @apply gl-bg-default gl-py-3;
 
   &::before {
     content: '';
+    z-index: -1;
     display: block;
-    height: $gl-padding-8;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 1px);
+    @apply gl-bg-default;
+  }
+
+  &::after {
+    content: '';
+    z-index: -2;
+    display: block;
     position: sticky;
-    top: calc(#{$calc-application-header-height} + 36px);
-    box-shadow: 0 1px 0 var(--gl-border-color-default);
+    top: calc(#{$calc-application-header-height} + #{$settings-sticky-header-height - $gl-spacing-scale-3});
+    left: 0;
+    margin-top: -1px;
+    width: 100%;
+    height: 1px;
+    box-shadow: 0 #{$gl-spacing-scale-3} 0 var(--gl-border-color-default);
   }
 }
 
-.settings-sticky-header-inner {
-  position: sticky;
-  padding: $gl-padding-12 $gl-padding $gl-padding-8;
-  margin: #{-$gl-padding} #{-$gl-padding} 0;
-  @apply gl-bg-default;
-}
-
 .settings-sticky-footer {
-  z-index: #{$sticky-header-z-index +1};
+  z-index: $settings-sticky-footer-z-index;
+  position: sticky;
   bottom: 0;
-  padding: $gl-padding-8 0;
-  box-shadow: 0 -1px 0 var(--gl-border-color-default);
+  min-height: $settings-sticky-footer-height;
+  @apply gl-bg-default gl-py-3 gl-border-t;
 }
 
 // Header shouldn't be sticky if only one section on page

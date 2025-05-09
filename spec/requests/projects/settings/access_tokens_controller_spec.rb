@@ -108,7 +108,13 @@ RSpec.describe Projects::Settings::AccessTokensController, feature_category: :sy
   describe '#index' do
     let_it_be(:resource_access_tokens) { create_list(:personal_access_token, 3, user: access_token_user) }
 
+    let(:virtual_registry_maven_enabled) { true }
+    let(:dependency_proxy_enabled) { true }
+
     before do
+      stub_feature_flags(virtual_registry_maven: virtual_registry_maven_enabled)
+      stub_config(dependency_proxy: { enabled: dependency_proxy_enabled })
+
       get project_settings_access_tokens_path(resource)
     end
 
@@ -124,31 +130,11 @@ RSpec.describe Projects::Settings::AccessTokensController, feature_category: :sy
       expect(assigns(:scopes)).to include(Gitlab::Auth::SELF_ROTATE_SCOPE)
     end
 
-    context 'with feature flags virtual_registry_maven and dependency_proxy_read_write_scopes disabled' do
-      before do
-        stub_feature_flags(virtual_registry_maven: false, dependency_proxy_read_write_scopes: false)
-        stub_config(dependency_proxy: { enabled: true })
-
-        get project_settings_access_tokens_path(resource)
-      end
-
-      it 'does not include the virtual registry scopes' do
-        expect(assigns(:scopes)).not_to include(Gitlab::Auth::READ_VIRTUAL_REGISTRY_SCOPE)
-        expect(assigns(:scopes)).not_to include(Gitlab::Auth::WRITE_VIRTUAL_REGISTRY_SCOPE)
-      end
-
-      %i[virtual_registry_maven dependency_proxy_read_write_scopes].each do |feature_flag|
-        context "with feature flag #{feature_flag} enabled" do
-          before do
-            stub_feature_flags(feature_flag => true)
-          end
-
-          it 'includes the virtual registry scopes' do
-            expect(assigns(:scopes)).not_to include(::Gitlab::Auth::READ_VIRTUAL_REGISTRY_SCOPE)
-            expect(assigns(:scopes)).not_to include(::Gitlab::Auth::WRITE_VIRTUAL_REGISTRY_SCOPE)
-          end
-        end
-      end
+    it 'does not include the virtual registry scopes' do
+      expect(assigns(:scopes)).not_to include(
+        ::Gitlab::Auth::READ_VIRTUAL_REGISTRY_SCOPE,
+        ::Gitlab::Auth::WRITE_VIRTUAL_REGISTRY_SCOPE
+      )
     end
   end
 end

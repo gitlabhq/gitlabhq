@@ -39,26 +39,26 @@ export default {
     :class="{ 'settings-section-no-bottom': noBottomBorder }"
     data-testid="settings-section"
   >
-    <div v-if="hasHeading || hasDescription" class="settings-sticky-header">
-      <div class="settings-sticky-header-inner">
-        <h2
-          v-if="hasHeading"
-          class="gl-heading-2 !gl-mb-3"
-          :class="headingClasses"
-          data-testid="settings-section-heading"
-        >
-          <slot v-if="$scopedSlots.heading" name="heading"></slot>
-          <template v-else>{{ heading }}</template>
-        </h2>
-        <p
-          v-if="hasDescription"
-          class="gl-mb-3 gl-text-subtle"
-          data-testid="settings-section-description"
-        >
-          <slot v-if="$scopedSlots.description" name="description"></slot>
-          <template v-else>{{ description }}</template>
-        </p>
-      </div>
+    <div
+      v-if="hasHeading || hasDescription"
+      class="settings-sticky-header"
+      :class="{ 'gl-mb-4': !hasDescription }"
+    >
+      <h2
+        v-if="hasHeading"
+        class="gl-heading-2 gl-mb-0"
+        :class="headingClasses"
+        data-testid="settings-section-heading"
+      >
+        <slot v-if="$scopedSlots.heading" name="heading"></slot>
+        <template v-else>{{ heading }}</template>
+      </h2>
+    </div>
+    <div v-if="hasDescription" class="settings-sticky-header-description gl-mb-6">
+      <p class="gl-mb-0 gl-text-subtle" data-testid="settings-section-description">
+        <slot v-if="$scopedSlots.description" name="description"></slot>
+        <template v-else>{{ description }}</template>
+      </p>
     </div>
     <div class="gl-mt-3">
       <slot></slot>

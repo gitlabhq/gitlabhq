@@ -71,3 +71,18 @@ Events are transmitted to GitLab almost immediately after they occur. The system
 ### Payload size and compression
 
 Each event is approximately 10 kB in JSON format. Batches of 10 events result in an uncompressed payload size of about 100 kB. Before transmission, the payload is compressed to minimize data transfer size and optimize performance.
+
+### Event data logs
+
+Event-level tracking data is logged in the `product_usage_data.log` file. This log contains JSON-formatted entries of tracked product usage events, including payload information and context data. Each line represents a separate tracking event and all the data that was sent.
+
+The log file is located at:
+
+- `/var/log/gitlab/gitlab-rails/product_usage_data.log` on Linux package installations
+- `/home/git/gitlab/log/product_usage_data.log` on self-compiled installations
+
+While these logs provide thorough visibility into data transmission, they're designed specifically for inspection by security teams rather than feature usage analysis. For more detailed information about logging system, see the [Log system documentation](../logs/_index.md#product-usage-data-log).
+
+### Frequently asked questions on event data 
+
+You can access frequently asked questions on event data [here](https://handbook.gitlab.com/handbook/legal/privacy/product-usage-events-faq/).

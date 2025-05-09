@@ -1257,14 +1257,14 @@ It contains JSON-formatted logs of product usage events tracked through Snowplow
 }
 ```
 
-To analyze these logs, you can use the `scripts/product_usage_data_event_formatter.rb` tool which formats the JSON output and decodes base64-encoded context data for better readability:
+To inspect these logs, you can use the [Rake task](../../raketasks/_index.md) `product_usage_data:format` which formats the JSON output and decodes base64-encoded context data for better readability:
 
 ```shell
-scripts/product_usage_data_event_formatter.rb log/product_usage_data.log
+gitlab-rake "product_usage_data:format[log/product_usage_data.log]"
 # or pipe the logs directly
-cat log/product_usage_data.log | scripts/product_usage_data_event_formatter.rb
+cat log/product_usage_data.log | gitlab-rake product_usage_data:format
 # or tail the logs in real-time
-tail -f log/product_usage_data.log | scripts/product_usage_data_event_formatter.rb
+tail -f log/product_usage_data.log | gitlab-rake product_usage_data:format
 ```
 
 You can disable this log by setting the `GITLAB_DISABLE_PRODUCT_USAGE_EVENT_LOGGING` environment variable to any value.

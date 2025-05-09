@@ -283,7 +283,7 @@ Enabling Duo for just the root user is sufficient for initial setup and testing.
 
 1. Access GitLab Duo Self-Hosted Configuration
 
-   - Navigate to Admin Area > GitLab Duo > "Self-hosted models"
+   - Navigate to Admin Area > GitLab Duo > "Configure GitLab Duo Self-hosted"
    - Click "Add self-hosted model" button
 
    ![Configure Self-Hosted Model](img/self_hosted_model/self-hosted-model-initial_v17_10.png)

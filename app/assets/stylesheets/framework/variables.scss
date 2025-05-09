@@ -15,6 +15,10 @@ $super-sidebar-z-index: 600;
 $super-sidebar-skip-to-z-index: 601;
 $super-sidebar-overlay-z-index: 599;
 $top-bar-z-index: 210;
+$settings-sticky-header-height: 3rem;
+$settings-sticky-header-z-index: 98;
+$settings-sticky-footer-height: 3rem;
+$settings-sticky-footer-z-index: #{$settings-sticky-header-z-index +1};
 
 /**
   🚨 Do not use this spacing scale — it is deprecated and being removed. 🚨
