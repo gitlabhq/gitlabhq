@@ -2947,7 +2947,13 @@ msgstr ""
 msgid "AccessDropdown|Users"
 msgstr ""
 
+msgid "AccessTokens|Access token expiration"
+msgstr ""
+
 msgid "AccessTokens|Access token limit reached"
+msgstr ""
+
+msgid "AccessTokens|Access token prefix"
 msgstr ""
 
 msgid "AccessTokens|Access tokens"
@@ -3025,6 +3031,12 @@ msgstr ""
 msgid "AccessTokens|Description"
 msgstr ""
 
+msgid "AccessTokens|Disable access tokens"
+msgstr ""
+
+msgid "AccessTokens|Disable personal, group, project and impersonation tokens. Does not affect personal access tokens for service accounts."
+msgstr ""
+
 msgid "AccessTokens|Enable DPoP"
 msgstr ""
 
@@ -3077,6 +3089,9 @@ msgid "AccessTokens|For example, the application using the token or the purpose 
 msgstr ""
 
 msgid "AccessTokens|Forces new personal access tokens for service accounts to require an expiration date. Does not affect existing token expiration dates. %{link_start}How does this affect expiration dates?%{link_end}"
+msgstr ""
+
+msgid "AccessTokens|Forces new personal, group, project and impersonation tokens to require an expiration date. Does not affect existing token expiration dates or personal access tokens for service accounts. This setting overrides the group-level %{link_start}service account token expiration%{link_end} setting."
 msgstr ""
 
 msgid "AccessTokens|Grant access to download Service Ping payload via API when authenticated as an admin user."
@@ -3132,6 +3147,9 @@ msgstr ""
 msgid "AccessTokens|Incoming email token"
 msgstr ""
 
+msgid "AccessTokens|Instance token prefix"
+msgstr ""
+
 msgid "AccessTokens|It cannot be used to access any other data."
 msgstr ""
 
@@ -3165,10 +3183,10 @@ msgstr ""
 msgid "AccessTokens|Not eligible to rotate token with access level higher than the user"
 msgstr ""
 
-msgid "AccessTokens|Personal / project / group access token expiration"
+msgid "AccessTokens|Personal access tokens"
 msgstr ""
 
-msgid "AccessTokens|Personal access tokens"
+msgid "AccessTokens|Require expiration date for service accounts"
 msgstr ""
 
 msgid "AccessTokens|Require expiration dates for service accounts"
@@ -3262,9 +3280,6 @@ msgid "AccessTokens|Use Demonstrating Proof of Possession (DPoP)"
 msgstr ""
 
 msgid "AccessTokens|View token usage information"
-msgstr ""
-
-msgid "AccessTokens|When enabled, a user will be required to enter in an expiration date when creating an access token. Changes will not affect existing token expiration dates. This setting overrides the group-level %{link_start}service account token expiration%{link_end} setting."
 msgstr ""
 
 msgid "AccessTokens|You can also use personal access tokens to authenticate against Git over HTTP."
@@ -6544,9 +6559,6 @@ msgid "Allow this key to push to this repository"
 msgstr ""
 
 msgid "Allow top-level group owners to create Service accounts."
-msgstr ""
-
-msgid "Allow unauthenticated users to use search"
 msgstr ""
 
 msgid "Allow use of licensed EE features"
@@ -12439,9 +12451,6 @@ msgstr ""
 msgid "Changes to the title have not been saved"
 msgstr ""
 
-msgid "Changes will not affect existing token expiration dates. %{link_start}How will this affect expiration dates?%{link_end}"
-msgstr ""
-
 msgid "Changes:"
 msgstr ""
 
@@ -17059,7 +17068,7 @@ msgstr ""
 msgid "ContainerRegistry|Build an image"
 msgstr ""
 
-msgid "ContainerRegistry|CLI Commands"
+msgid "ContainerRegistry|CLI commands"
 msgstr ""
 
 msgid "ContainerRegistry|Cleanup disabled"
@@ -17110,12 +17119,6 @@ msgstr ""
 msgid "ContainerRegistry|Configure in settings"
 msgstr ""
 
-msgid "ContainerRegistry|Container Scanning for Registry: Off"
-msgstr ""
-
-msgid "ContainerRegistry|Container Scanning for Registry: On"
-msgstr ""
-
 msgid "ContainerRegistry|Container image tags can be created, overwritten, or deleted by specific user roles."
 msgstr ""
 
@@ -17135,6 +17138,12 @@ msgid "ContainerRegistry|Container registry"
 msgstr ""
 
 msgid "ContainerRegistry|Container registry cleanup policies"
+msgstr ""
+
+msgid "ContainerRegistry|Container scanning for registry: Off"
+msgstr ""
+
+msgid "ContainerRegistry|Container scanning for registry: On"
 msgstr ""
 
 msgid "ContainerRegistry|Continuous container scanning runs in the registry when any image or database is updated."
@@ -22644,9 +22653,6 @@ msgid "Disable inviting new members to group or project by group/project owners 
 msgstr ""
 
 msgid "Disable password authentication for users with an SSO identity"
-msgstr ""
-
-msgid "Disable personal access tokens"
 msgstr ""
 
 msgid "Disable two-factor authentication"
@@ -32596,9 +32602,6 @@ msgid "Instance overview"
 msgstr ""
 
 msgid "Instance runners help link"
-msgstr ""
-
-msgid "Instance token prefix"
 msgstr ""
 
 msgid "Insufficient permission to modify user organizations"
@@ -44200,12 +44203,6 @@ msgid "Personal access token"
 msgstr ""
 
 msgid "Personal access token is required."
-msgstr ""
-
-msgid "Personal access token prefix"
-msgstr ""
-
-msgid "Personal access tokens"
 msgstr ""
 
 msgid "Personal namespaces"
@@ -56731,9 +56728,6 @@ msgid "Service account creation"
 msgstr ""
 
 msgid "Service account generated successfully"
-msgstr ""
-
-msgid "Service account token expiration"
 msgstr ""
 
 msgid "Service account was successfully updated."

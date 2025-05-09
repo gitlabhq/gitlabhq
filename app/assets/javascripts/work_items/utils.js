@@ -35,6 +35,8 @@ import {
   WIDGET_TYPE_TIME_TRACKING,
   WIDGET_TYPE_VULNERABILITIES,
   WIDGET_TYPE_WEIGHT,
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
 } from './constants';
 
@@ -127,6 +129,13 @@ export const formatLabelForListbox = (label) => ({
 
 export const convertTypeEnumToName = (workItemTypeEnum) =>
   Object.keys(NAME_TO_ENUM_MAP).find((name) => NAME_TO_ENUM_MAP[name] === workItemTypeEnum);
+
+export const getEnumFromIssueTypeParameter = (param) => {
+  if (!param) {
+    return undefined;
+  }
+  return param === 'incident' ? WORK_ITEM_TYPE_ENUM_INCIDENT : WORK_ITEM_TYPE_ENUM_ISSUE;
+};
 
 /**
  * TODO: Remove this method with https://gitlab.com/gitlab-org/gitlab/-/issues/479637

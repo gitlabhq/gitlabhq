@@ -27,8 +27,6 @@ import SharedProjectsEmptyState from './empty_states/shared_projects_empty_state
 import SharedGroupsEmptyState from './empty_states/shared_groups_empty_state.vue';
 import InactiveProjectsEmptyState from './empty_states/inactive_projects_empty_state.vue';
 
-const MIN_SEARCH_LENGTH = 3;
-
 export default {
   components: {
     GlTabs,
@@ -227,9 +225,7 @@ export default {
     onFilter(filtersQuery) {
       this.search = filtersQuery[OVERVIEW_TABS_FILTERED_SEARCH_TERM_KEY];
 
-      if (!this.search || this.search.length >= MIN_SEARCH_LENGTH) {
-        this.handleSearchOrSortChange();
-      }
+      this.handleSearchOrSortChange();
     },
   },
   i18n: {
@@ -263,7 +259,7 @@ export default {
     >
       <groups-app :action="key" :service="service" :store="store">
         <template v-if="emptyStateComponent" #empty-state>
-          <component :is="emptyStateComponent" />
+          <component :is="emptyStateComponent" :search="search" />
         </template>
       </groups-app>
     </gl-tab>

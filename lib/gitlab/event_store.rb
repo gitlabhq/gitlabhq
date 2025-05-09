@@ -44,6 +44,8 @@ module Gitlab
         store.subscribe ::Namespaces::UpdateRootStatisticsWorker, to: ::Projects::ProjectDeletedEvent
         store.subscribe ::Ci::Runners::UpdateProjectRunnersOwnerWorker, to: ::Projects::ProjectDeletedEvent
 
+        store.subscribe ::MergeRequests::ProcessAutoMergeFromEventWorker,
+          to: ::MergeRequests::AutoMerge::TitleDescriptionUpdateEvent
         store.subscribe ::MergeRequests::ProcessAutoMergeFromEventWorker, to: ::MergeRequests::DraftStateChangeEvent
         store.subscribe ::MergeRequests::ProcessAutoMergeFromEventWorker, to: ::MergeRequests::DiscussionsResolvedEvent
         store.subscribe ::MergeRequests::ProcessAutoMergeFromEventWorker, to: ::MergeRequests::MergeableEvent

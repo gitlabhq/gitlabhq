@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import { GlAlert, GlButton, GlFormSelect, GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_namespace_work_item_types.query.graphql.json';
+import { setHTMLFixture } from 'helpers/fixtures';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -45,17 +46,6 @@ jest.mock('~/work_items/graphql/cache_utils', () => ({
   setNewWorkItemCache: jest.fn(),
 }));
 
-jest.mock('~/lib/utils/url_utility', () => ({
-  getParameterByName: jest.fn().mockReturnValue('13'),
-  mergeUrlParams: jest.fn().mockReturnValue('/branches?state=all&search=%5Emain%24'),
-  joinPaths: jest.fn(),
-  setUrlParams: jest
-    .fn()
-    .mockReturnValue('/project/Project/-/settings/repository/branch_rules?branch=main'),
-  setUrlFragment: jest.fn(),
-  visitUrl: jest.fn().mockName('visitUrlMock'),
-}));
-
 Vue.use(VueApollo);
 
 describe('Create work item component', () => {
@@ -91,6 +81,10 @@ describe('Create work item component', () => {
   const findFormButtons = () => wrapper.find('[data-testid="form-buttons"]');
   const findCreateButton = () => wrapper.find('[data-testid="create-button"]');
   const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
+  const findResolveDiscussionSection = () =>
+    wrapper.find('[data-testid="work-item-resolve-discussion"]');
+  const findResolveDiscussionLink = () =>
+    wrapper.find('[data-testid="work-item-resolve-discussion"]').findComponent(GlLink);
 
   const namespaceWorkItemTypes =
     namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes;
@@ -349,6 +343,9 @@ describe('Create work item component', () => {
 
   describe('Create work item', () => {
     it('emits workItemCreated on successful mutation', async () => {
+      setWindowLocation(
+        '?discussion_to_resolve=f20989738bfe845f73a77a7109b1588852901befJD9I3FGU&merge_request_id=13',
+      );
       const workItem = { ...createWorkItemMutationResponse.data.workItemCreate.workItem };
       // there is a mismatch between the response and the expected workItem object between CE and EE fixture
       // so we need to remove the `promotedToEpicUrl` property from the expected workItem object
@@ -620,6 +617,24 @@ describe('Create work item component', () => {
     });
   });
 
+  describe('confidentiality checkbox', () => {
+    it('is checked when parameter issue[confidential]=true', async () => {
+      setWindowLocation('?issue[confidential]=true');
+      createComponent();
+      await waitForPromises();
+
+      expect(findConfidentialCheckbox().attributes('checked')).toBe('true');
+    });
+
+    it('is not checked when parameter issue[confidential]!=true', async () => {
+      setWindowLocation('?issue[confidential]=tru');
+      createComponent();
+      await waitForPromises();
+
+      expect(findConfidentialCheckbox().attributes('checked')).toBeUndefined();
+    });
+  });
+
   describe('With related item', () => {
     const id = 'gid://gitlab/WorkItem/1';
     const type = 'Epic';
@@ -744,6 +759,44 @@ describe('Create work item component', () => {
     });
   });
 
+  describe('title and description query parameters', () => {
+    it('saves to the cache when the backend provides them', async () => {
+      setHTMLFixture(`
+        <div class="new-issue-params hidden">
+          <div class="params-title">
+            i am a title
+          </div>
+          <div class="params-description">
+            i
+            am
+            a
+            description!
+          </div>
+          <div class="params-add-related-issue">
+            234
+          </div>
+          <div class="params-discussion-to-resolve">
+
+          </div>
+        </div>`);
+      createComponent();
+      await waitForPromises();
+
+      expect(setNewWorkItemCache).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.anything(),
+        expect.anything(),
+        expect.anything(),
+        expect.anything(),
+        'i am a title',
+        `i
+            am
+            a
+            description!`,
+      );
+    });
+  });
+
   describe('New work item to resolve threads', () => {
     it('when not resolving any thread, does not pass resolve params to mutation', async () => {
       createComponent({
@@ -763,28 +816,6 @@ describe('Create work item component', () => {
     });
 
     it('when resolving all threads in a merge request', async () => {
-      setWindowLocation('?merge_request_id=13');
-
-      createComponent({
-        singleWorkItemType: true,
-        preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE,
-      });
-      await waitForPromises();
-
-      await updateWorkItemTitle();
-      await submitCreateForm();
-
-      expect(createWorkItemSuccessHandler).toHaveBeenCalledWith({
-        input: expect.objectContaining({
-          discussionsToResolve: {
-            discussionId: '13',
-            noteableId: 'gid://gitlab/MergeRequest/13',
-          },
-        }),
-      });
-    });
-
-    it('when resolving one thread in a merge request', async () => {
       setWindowLocation(
         '?discussion_to_resolve=13&merge_request_to_resolve_discussions_of=112&merge_request_id=13',
       );
@@ -805,6 +836,65 @@ describe('Create work item component', () => {
             noteableId: 'gid://gitlab/MergeRequest/13',
           },
         }),
+      });
+    });
+
+    describe('when resolving one thread in a merge request', () => {
+      beforeEach(async () => {
+        setHTMLFixture(`
+        <div class="new-issue-params hidden">
+          <div class="params-title">
+            Follow-up from "Necessitatibus delectus ex animi consequatur facere ipsum quaerat iusto veniam architecto."
+          </div>
+          <div class="params-description">
+            The following discussion from !1 should be addressed:
+
+            - [ ] @marlen started a [discussion](http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/1#note_1224):  (+1 comment)
+
+                &gt; Quis nihil est molestias nemo rerum aspernatur.
+          </div>
+          <div class="params-add-related-issue">
+
+          </div>
+          <div class="params-discussion-to-resolve">
+            <a href="http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/1#note_1224">!1 (discussion 1224)</a>
+          </div>
+        </div>`);
+        setWindowLocation(
+          '?discussion_to_resolve=13&merge_request_to_resolve_discussions_of=112&merge_request_id=13',
+        );
+        createComponent({
+          singleWorkItemType: true,
+          preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE,
+        });
+        await waitForPromises();
+      });
+
+      it('renders text', () => {
+        expect(findResolveDiscussionSection().text()).toMatchInterpolatedText(
+          'Creating this issue will resolve the thread in !1 (discussion 1224)',
+        );
+      });
+
+      it('renders "resolve the thread" information', () => {
+        expect(findResolveDiscussionLink().text()).toBe('!1 (discussion 1224)');
+        expect(findResolveDiscussionLink().props('href')).toBe(
+          'http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/1#note_1224',
+        );
+      });
+
+      it('calls mutation', async () => {
+        await updateWorkItemTitle();
+        await submitCreateForm();
+
+        expect(createWorkItemSuccessHandler).toHaveBeenCalledWith({
+          input: expect.objectContaining({
+            discussionsToResolve: {
+              discussionId: '13',
+              noteableId: 'gid://gitlab/MergeRequest/13',
+            },
+          }),
+        });
       });
     });
   });

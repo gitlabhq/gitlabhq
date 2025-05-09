@@ -58,8 +58,8 @@ If you don't have a security policy project yet, you'll need to create one and t
 1. Navigate to that group's **Secure > Policies** page.
 1. Click on **New policy**.
 1. Select **Scan execution policy**.
-1. Enter a name for your policy (e.g., "Dependency Scanning Policy").
-1. Enter a description (e.g., "Enforces dependency scanning to get a list of OSS licenses used").
+1. Enter a name for your policy (for example, "Dependency Scanning Policy").
+1. Enter a description (for example, "Enforces dependency scanning to get a list of OSS licenses used").
 1. Set the **Policy scope** by selecting either "All projects in this group" (and optionally set exceptions) or "Specific projects" (and select the projects from the dropdown).
 1. Under the **Actions** section, select "Dependency scanning" instead of "Secret Detection" (default).
 1. Under the **Conditions** section, you can optionally change "Triggers:" to "Schedules:" if you want to run the scan on a schedule instead of at every commit.
@@ -72,8 +72,8 @@ After setting up dependency scanning, follow these steps to set up the license c
 1. Navigate back to the same group's **Secure > Policies** page.
 1. Click on **New policy**.
 1. Select **Merge request approval policy**.
-1. Enter a name for your policy (e.g., "OSS Compliance Policy").
-1. Enter a description (e.g., "Block any licenses that are not included in the Blue Oak Council's Gold, Silver, or Bronze tiers").
+1. Enter a name for your policy (for example, "OSS Compliance Policy").
+1. Enter a description (for example, "Block any licenses that are not included in the Blue Oak Council's Gold, Silver, or Bronze tiers").
 1. Set the **Policy scope** by selecting either "All projects in this group" (and optionally set exceptions) or "Specific projects" (and select the projects from the dropdown).
 1. Under the **Rules** section, click the "Select scan type" dropdown and select **License Scan**.
 1. Set the target branches (default is all protected branches).
@@ -110,8 +110,8 @@ If you already have a security policy project but don't have dependency and/or l
    - Maintain the existing YAML structure
    - Place these sections at the same level as other top-level sections
    - Set `user_approvers_ids` and/or `group_approvers_ids` and/or `role_approvers` (only one is needed)
-     - Replace `YOUR_USER_ID_HERE` or `YOUR_GROUP_ID_HERE` with appropriate user/group IDs (ensure you paste the user/group IDs e.g. 1234567 and NOT the usernames)
-   - Replace `YOUR_PROJECT_ID_HERE` if you'd like to exclude any projects from the policy (ensure you paste the project IDs e.g. 1234 and NOT the project names/paths)
+     - Replace `YOUR_USER_ID_HERE` or `YOUR_GROUP_ID_HERE` with appropriate user/group IDs (ensure you paste the user/group IDs, for example, 1234567 and NOT the usernames)
+   - Replace `YOUR_PROJECT_ID_HERE` if you'd like to exclude any projects from the policy (ensure you paste the project IDs, for example, 1234 and NOT the project names/paths)
    - Set `approvals_required: 1` to the number of approvals you want to require
    - Modify the `approval_settings` section as needed (anything set to `true` will override project approval settings)
 1. Click **Commit changes**, and commit to a new branch. Select **Create a merge request for this change** so that the policy change can be merged.
@@ -350,8 +350,8 @@ approval_policy:
 ## Customization Options
 
 - **Approvers**: You can specify approvers in three ways:
-  - `user_approvers_ids`: Replace with the user IDs of individuals who should approve licenses (e.g., `1234567`)
-  - `group_approvers_ids`: Replace with the group IDs that contain approvers (e.g., `9876543`)
+  - `user_approvers_ids`: Replace with the user IDs of individuals who should approve licenses (for example, `1234567`)
+  - `group_approvers_ids`: Replace with the group IDs that contain approvers (for example, `9876543`)
   - `role_approvers`: Specify roles that can approve, options are `developer`, `maintainer`, or `owner`
 - **Project Exclusions**: Add project IDs to the `policy_scope.projects.excluding` section to exempt them from the policy
 - **Required approvals**: Change `approvals_required: 1` to require more approvals

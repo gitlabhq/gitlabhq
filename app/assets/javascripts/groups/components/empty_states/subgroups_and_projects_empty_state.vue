@@ -1,11 +1,12 @@
 <script>
-import { GlEmptyState } from '@gitlab/ui';
 import ActionCard from '~/vue_shared/components/action_card.vue';
-
+import ResourceListsEmptyState from '~/vue_shared/components/resource_lists/empty_state.vue';
 import { s__ } from '~/locale';
+import { SEARCH_MINIMUM_LENGTH } from '../../constants';
 
 export default {
-  components: { GlEmptyState, ActionCard },
+  components: { ResourceListsEmptyState, ActionCard },
+  SEARCH_MINIMUM_LENGTH,
   i18n: {
     title: s__('GroupsEmptyState|There are no subgroups or projects in this group'),
     description: s__(
@@ -30,6 +31,13 @@ export default {
     'canCreateSubgroups',
     'canCreateProjects',
   ],
+  props: {
+    search: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
   computed: {
     hasActions() {
       return this.canCreateSubgroups || this.canCreateProjects;
@@ -42,10 +50,12 @@ export default {
 </script>
 
 <template>
-  <gl-empty-state
+  <resource-lists-empty-state
     :title="$options.i18n.title"
     :svg-path="emptySubgroupIllustration"
     :description="description"
+    :search="search"
+    :search-minimum-length="$options.SEARCH_MINIMUM_LENGTH"
   >
     <template v-if="hasActions" #actions>
       <div
@@ -72,5 +82,5 @@ export default {
         />
       </div>
     </template>
-  </gl-empty-state>
+  </resource-lists-empty-state>
 </template>

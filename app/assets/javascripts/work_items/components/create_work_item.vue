@@ -13,7 +13,7 @@ import {
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { createAlert } from '~/alert';
 import { clearDraft } from '~/lib/utils/autosave';
-import { isMetaEnterKeyPair } from '~/lib/utils/common_utils';
+import { isMetaEnterKeyPair, parseBoolean } from '~/lib/utils/common_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { s__, sprintf } from '~/locale';
@@ -193,10 +193,11 @@ export default {
   data() {
     return {
       isTitleValid: true,
-      isConfidential: false,
+      isConfidential: parseBoolean(getParameterByName('issue[confidential]')),
       isRelatedToItem: true,
       localTitle: this.title || '',
       error: null,
+      workItem: {},
       workItemTypes: [],
       selectedProjectFullPath: this.initialSelectedProject(),
       selectedWorkItemTypeId: null,
@@ -212,7 +213,6 @@ export default {
     };
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     workItem: {
       query: workItemByIidQuery,
       variables() {
@@ -252,20 +252,14 @@ export default {
           return;
         }
 
-        let workItemDescription = '';
-        let workItemTitle = '';
-
         // The follow up title and description can come from the backend for the following three use cases
         // 1. when resolving a discussion in the MR and we have the merge request id in the query param
         // 2. when the issue and title are added in the query param . read https://docs.gitlab.com/user/project/issues/create_issues/#using-a-url-with-prefilled-values
         // 3. when following up a work item with a vulnerability, where we have the vulnerability id in the query param
-
-        workItemTitle = document.querySelector(
-          '.follow_up_work_item .follow-up-title',
-        )?.textContent;
-        workItemDescription = document.querySelector(
-          '.follow_up_work_item .follow-up-description',
-        )?.textContent;
+        const workItemTitle = document.querySelector('.params-title')?.textContent.trim();
+        const workItemDescription = document
+          .querySelector('.params-description')
+          ?.textContent.trim();
 
         for await (const workItemType of this.workItemTypes) {
           await setNewWorkItemCache(
@@ -488,10 +482,10 @@ export default {
       );
     },
     resolvingMRDiscussionLink() {
-      return document.querySelector('.follow_up_work_item_details span.note-link a')?.href || '';
+      return document.querySelector('.params-discussion-to-resolve a')?.href || '';
     },
     resolvingMRDiscussionLinkText() {
-      return document.querySelector('.follow_up_work_item_details span.note-link a')?.text || '';
+      return document.querySelector('.params-discussion-to-resolve a')?.text || '';
     },
     createWorkItemWarning() {
       const warning =
@@ -924,7 +918,11 @@ export default {
               @error="updateError = $event"
               @updateDraft="updateDraftData('description', $event)"
             />
-            <div v-if="numberOfDiscussionsResolved && resolvingMRDiscussionLink" class="gl-mb-4">
+            <div
+              v-if="numberOfDiscussionsResolved && resolvingMRDiscussionLink"
+              class="gl-mb-4"
+              data-testid="work-item-resolve-discussion"
+            >
               <gl-icon class="gl-mr-2" name="information-o" />
               {{ createWorkItemWarning }}
               <gl-link :href="resolvingMRDiscussionLink">{{

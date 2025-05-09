@@ -63,14 +63,12 @@ describe('Job table app', () => {
     countHandler = countSuccessHandler,
     mountFn = shallowMount,
     feSearchBuildByName = false,
-    populateAndUseBuildSourceTable = false,
   } = {}) => {
     wrapper = mountFn(JobsTableApp, {
       provide: {
         fullPath: projectPath,
         glFeatures: {
           feSearchBuildByName,
-          populateAndUseBuildSourceTable,
         },
       },
       apolloProvider: createMockApolloProvider(handler, countHandler),
@@ -291,21 +289,24 @@ describe('Job table app', () => {
 
       jest.spyOn(urlUtils, 'updateHistory');
 
-      findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
+      findFilteredSearch().vm.$emit('filterJobsBySearch', [
+        mockFailedSearchToken,
+        mockPushSourceToken,
+      ]);
 
       expect(successHandler).toHaveBeenCalledWith({
         fullPath: 'gitlab-org/gitlab',
         statuses: 'FAILED',
-        sources: null,
+        sources: mockJobSource,
         ...DEFAULT_PAGINATION,
       });
       expect(countSuccessHandler).toHaveBeenCalledWith({
         fullPath: 'gitlab-org/gitlab',
         statuses: 'FAILED',
-        sources: null,
+        sources: mockJobSource,
       });
       expect(urlUtils.updateHistory).toHaveBeenCalledWith({
-        url: `${TEST_HOST}/?statuses=FAILED`,
+        url: `${TEST_HOST}/?statuses=FAILED&sources=${mockJobSource}`,
       });
 
       findFilteredSearch().vm.$emit('filterJobsBySearch', []);
@@ -327,6 +328,86 @@ describe('Job table app', () => {
       });
     });
 
+    it('filters jobs by source', async () => {
+      createComponent();
+
+      await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockPushSourceToken]);
+
+      expect(successHandler).toHaveBeenCalledWith({
+        fullPath: 'gitlab-org/gitlab',
+        sources: mockJobSource,
+        statuses: null,
+        ...DEFAULT_PAGINATION,
+      });
+      expect(countSuccessHandler).toHaveBeenCalledWith({
+        fullPath: 'gitlab-org/gitlab',
+        sources: mockJobSource,
+        statuses: null,
+      });
+    });
+
+    it('filters only by source after removing status filter', async () => {
+      createComponent();
+
+      await findFilteredSearch().vm.$emit('filterJobsBySearch', [
+        mockFailedSearchToken,
+        mockPushSourceToken,
+      ]);
+
+      expect(successHandler).toHaveBeenCalledWith({
+        fullPath: 'gitlab-org/gitlab',
+        sources: mockJobSource,
+        statuses: 'FAILED',
+        ...DEFAULT_PAGINATION,
+      });
+      expect(countSuccessHandler).toHaveBeenCalledWith({
+        fullPath: 'gitlab-org/gitlab',
+        sources: mockJobSource,
+        statuses: 'FAILED',
+      });
+
+      await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockPushSourceToken]);
+
+      expect(successHandler).toHaveBeenCalledWith({
+        fullPath: 'gitlab-org/gitlab',
+        sources: mockJobSource,
+        statuses: null,
+        ...DEFAULT_PAGINATION,
+      });
+      expect(countSuccessHandler).toHaveBeenCalledWith({
+        fullPath: 'gitlab-org/gitlab',
+        sources: mockJobSource,
+        statuses: null,
+      });
+    });
+
+    it('updates URL query string when filtering jobs by source', async () => {
+      createComponent();
+
+      jest.spyOn(urlUtils, 'updateHistory');
+
+      await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockPushSourceToken]);
+
+      expect(urlUtils.updateHistory).toHaveBeenCalledWith({
+        url: `${TEST_HOST}/?sources=${mockJobSource}`,
+      });
+    });
+
+    it('updates URL query string when filtering jobs by source and status', async () => {
+      createComponent();
+
+      jest.spyOn(urlUtils, 'updateHistory');
+
+      await findFilteredSearch().vm.$emit('filterJobsBySearch', [
+        mockFailedSearchToken,
+        mockPushSourceToken,
+      ]);
+
+      expect(urlUtils.updateHistory).toHaveBeenCalledWith({
+        url: `${TEST_HOST}/?statuses=FAILED&sources=${mockJobSource}`,
+      });
+    });
+
     describe('with feature flag feSearchBuildByName enabled', () => {
       beforeEach(() => {
         createComponent({ feSearchBuildByName: true });
@@ -339,12 +420,14 @@ describe('Job table app', () => {
           fullPath: 'gitlab-org/gitlab',
           name: mockJobName,
           statuses: null,
+          sources: null,
           ...DEFAULT_PAGINATION,
         });
         expect(countSuccessHandler).toHaveBeenCalledWith({
           fullPath: 'gitlab-org/gitlab',
           name: mockJobName,
           statuses: null,
+          sources: null,
         });
       });
 
@@ -358,12 +441,14 @@ describe('Job table app', () => {
           fullPath: 'gitlab-org/gitlab',
           name: mockJobName,
           statuses: 'FAILED',
+          sources: null,
           ...DEFAULT_PAGINATION,
         });
         expect(countSuccessHandler).toHaveBeenCalledWith({
           fullPath: 'gitlab-org/gitlab',
           name: mockJobName,
           statuses: 'FAILED',
+          sources: null,
         });
 
         await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockJobName]);
@@ -372,12 +457,14 @@ describe('Job table app', () => {
           fullPath: 'gitlab-org/gitlab',
           name: mockJobName,
           statuses: null,
+          sources: null,
           ...DEFAULT_PAGINATION,
         });
         expect(countSuccessHandler).toHaveBeenCalledWith({
           fullPath: 'gitlab-org/gitlab',
           name: mockJobName,
           statuses: null,
+          sources: null,
         });
       });
 
@@ -412,12 +499,14 @@ describe('Job table app', () => {
         expect(successHandler).toHaveBeenCalledWith({
           fullPath: 'gitlab-org/gitlab',
           statuses: 'FAILED',
+          sources: null,
           name: mockJobName,
           ...DEFAULT_PAGINATION,
         });
         expect(countSuccessHandler).toHaveBeenCalledWith({
           fullPath: 'gitlab-org/gitlab',
           statuses: 'FAILED',
+          sources: null,
           name: mockJobName,
         });
         expect(urlUtils.updateHistory).toHaveBeenCalledWith({
@@ -433,133 +522,15 @@ describe('Job table app', () => {
         expect(successHandler).toHaveBeenCalledWith({
           fullPath: 'gitlab-org/gitlab',
           statuses: null,
+          sources: null,
           name: null,
           ...DEFAULT_PAGINATION,
         });
         expect(countSuccessHandler).toHaveBeenCalledWith({
           fullPath: 'gitlab-org/gitlab',
           statuses: null,
+          sources: null,
           name: null,
-        });
-      });
-    });
-
-    describe('with feature flag populateAndUseBuildSourceTable enabled', () => {
-      beforeEach(() => {
-        createComponent({ populateAndUseBuildSourceTable: true });
-      });
-
-      it('filters jobs by source', async () => {
-        await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockPushSourceToken]);
-
-        expect(successHandler).toHaveBeenCalledWith({
-          fullPath: 'gitlab-org/gitlab',
-          sources: mockJobSource,
-          statuses: null,
-          ...DEFAULT_PAGINATION,
-        });
-        expect(countSuccessHandler).toHaveBeenCalledWith({
-          fullPath: 'gitlab-org/gitlab',
-          sources: mockJobSource,
-          statuses: null,
-        });
-      });
-
-      it('filters only by source after removing status filter', async () => {
-        await findFilteredSearch().vm.$emit('filterJobsBySearch', [
-          mockFailedSearchToken,
-          mockPushSourceToken,
-        ]);
-
-        expect(successHandler).toHaveBeenCalledWith({
-          fullPath: 'gitlab-org/gitlab',
-          sources: mockJobSource,
-          statuses: 'FAILED',
-          ...DEFAULT_PAGINATION,
-        });
-        expect(countSuccessHandler).toHaveBeenCalledWith({
-          fullPath: 'gitlab-org/gitlab',
-          sources: mockJobSource,
-          statuses: 'FAILED',
-        });
-
-        await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockPushSourceToken]);
-
-        expect(successHandler).toHaveBeenCalledWith({
-          fullPath: 'gitlab-org/gitlab',
-          sources: mockJobSource,
-          statuses: null,
-          ...DEFAULT_PAGINATION,
-        });
-        expect(countSuccessHandler).toHaveBeenCalledWith({
-          fullPath: 'gitlab-org/gitlab',
-          sources: mockJobSource,
-          statuses: null,
-        });
-      });
-
-      it('updates URL query string when filtering jobs by source', async () => {
-        jest.spyOn(urlUtils, 'updateHistory');
-
-        await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockPushSourceToken]);
-
-        expect(urlUtils.updateHistory).toHaveBeenCalledWith({
-          url: `${TEST_HOST}/?sources=${mockJobSource}`,
-        });
-      });
-
-      it('updates URL query string when filtering jobs by source and status', async () => {
-        jest.spyOn(urlUtils, 'updateHistory');
-
-        await findFilteredSearch().vm.$emit('filterJobsBySearch', [
-          mockFailedSearchToken,
-          mockPushSourceToken,
-        ]);
-
-        expect(urlUtils.updateHistory).toHaveBeenCalledWith({
-          url: `${TEST_HOST}/?statuses=FAILED&sources=${mockJobSource}`,
-        });
-      });
-
-      it('resets query param after clearing tokens', () => {
-        jest.spyOn(urlUtils, 'updateHistory');
-
-        findFilteredSearch().vm.$emit('filterJobsBySearch', [
-          mockFailedSearchToken,
-          mockPushSourceToken,
-        ]);
-
-        expect(successHandler).toHaveBeenCalledWith({
-          fullPath: 'gitlab-org/gitlab',
-          statuses: 'FAILED',
-          sources: mockJobSource,
-          ...DEFAULT_PAGINATION,
-        });
-        expect(countSuccessHandler).toHaveBeenCalledWith({
-          fullPath: 'gitlab-org/gitlab',
-          statuses: 'FAILED',
-          sources: mockJobSource,
-        });
-        expect(urlUtils.updateHistory).toHaveBeenCalledWith({
-          url: `${TEST_HOST}/?statuses=FAILED&sources=${mockJobSource}`,
-        });
-
-        findFilteredSearch().vm.$emit('filterJobsBySearch', []);
-
-        expect(urlUtils.updateHistory).toHaveBeenCalledWith({
-          url: `${TEST_HOST}/`,
-        });
-
-        expect(successHandler).toHaveBeenCalledWith({
-          fullPath: 'gitlab-org/gitlab',
-          statuses: null,
-          sources: null,
-          ...DEFAULT_PAGINATION,
-        });
-        expect(countSuccessHandler).toHaveBeenCalledWith({
-          fullPath: 'gitlab-org/gitlab',
-          statuses: null,
-          sources: null,
         });
       });
     });

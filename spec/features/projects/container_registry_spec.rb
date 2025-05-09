@@ -82,7 +82,7 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
       it 'list page has cli commands' do
         visit_container_registry
 
-        expect(page).to have_content _('CLI Commands')
+        expect(page).to have_content _('CLI commands')
       end
     end
 

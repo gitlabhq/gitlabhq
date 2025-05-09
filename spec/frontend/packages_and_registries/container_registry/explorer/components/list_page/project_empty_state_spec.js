@@ -55,7 +55,7 @@ describe('Registry Project Empty state', () => {
     });
 
     it('renders the quick start section', () => {
-      expect(wrapper.find('h5').text()).toBe('CLI Commands');
+      expect(wrapper.find('h5').text()).toBe('CLI commands');
     });
   });
 

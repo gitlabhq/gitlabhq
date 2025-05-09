@@ -48,12 +48,6 @@
         = f.label field_name, "#{type.upcase} SSH keys", class: 'label-bold'
         = f.select field_name, key_restriction_options_for_select(type), {}, class: 'form-control'
 
-    = render_if_exists 'admin/application_settings/disable_personal_access_tokens', form: f
-
-    .form-group
-      %label.label-bold= s_('AdminSettings|Feed token')
-      = f.gitlab_ui_checkbox_component :disable_feed_token, s_('AdminSettings|Disable feed token')
-
     = render_if_exists 'admin/application_settings/disable_invite_members_setting', form: f
 
     = render_if_exists 'admin/application_settings/globally_allowed_ips', form: f

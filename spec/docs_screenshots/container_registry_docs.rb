@@ -51,7 +51,7 @@ RSpec.describe 'Container Registry', :js do
       it 'user/packages/container_registry/img/project_image_repositories_list_with_commands_open' do
         visit_project_container_registry
 
-        click_on 'CLI Commands'
+        click_on 'CLI commands'
       end
     end
   end

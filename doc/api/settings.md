@@ -391,6 +391,7 @@ these parameters:
 - `lock_duo_features_enabled`
 - `use_clickhouse_for_analytics`
 - `virtual_registries_endpoints_api_limit`
+- `lock_memberships_to_saml`
 
 Example responses:
 
@@ -602,6 +603,7 @@ to configure other related settings. These requirements are
 | `jira_connect_proxy_url`                 | string           | no                                   | URL of the GitLab instance used as a proxy for the GitLab for Jira Cloud app. |
 | `keep_latest_artifact`                   | boolean          | no                                   | Prevent the deletion of the artifacts from the most recent successful jobs, regardless of the expiry time. Enabled by default. |
 | `local_markdown_version`                 | integer          | no                                   | Increase this value when any cached Markdown should be invalidated. |
+| `lock_memberships_to_saml`               | boolean          | no                                   | Enforce a [global lock on SAML group memberships](../user/group/saml_sso/group_sync.md#global-saml-group-memberships-lock). |
 | `mailgun_signing_key`                    | string           | no                                   | The Mailgun HTTP webhook signing key for receiving events from webhook. |
 | `mailgun_events_enabled`                 | boolean          | no                                   | Enable Mailgun event receiver. |
 | `maintenance_mode_message`               | string           | no                                   | Message displayed when instance is in maintenance mode. Premium and Ultimate only. |

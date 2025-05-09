@@ -60,10 +60,10 @@ export default {
     class="gl-flex gl-flex-col gl-border-b-1 gl-border-t-1 gl-border-b-solid gl-border-t-solid"
     :class="optionalClasses"
   >
-    <div class="gl-flex gl-items-center gl-py-3">
+    <div class="gl-flex gl-py-3">
       <div
         v-if="$slots['left-action'] /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */"
-        class="gl-flex gl-w-7 gl-justify-start gl-pl-2"
+        class="gl-flex gl-w-7 gl-justify-start gl-pt-2"
       >
         <slot name="left-action"></slot>
       </div>
@@ -73,7 +73,7 @@ export default {
             v-if="
               $slots['left-primary'] /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */
             "
-            class="gl-flex gl-min-h-6 gl-min-w-0 gl-items-center gl-font-semibold gl-text-default"
+            class="gl-min-h-6 gl-min-w-0 gl-items-center gl-font-semibold gl-text-default sm:gl-flex"
           >
             <slot name="left-primary"></slot>
             <gl-button
@@ -88,7 +88,6 @@ export default {
               :aria-expanded="isDetailsShown"
               @click="toggleDetails"
             />
-            <slot name="left-after-toggle"></slot>
           </div>
           <div
             v-if="
@@ -130,7 +129,7 @@ export default {
         v-if="
           $slots['right-action'] /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */
         "
-        class="gl-flex gl-w-9 gl-justify-end gl-pr-1"
+        class="gl-items-center gl-pl-3 sm:gl-flex"
       >
         <slot name="right-action"></slot>
       </div>

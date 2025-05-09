@@ -145,7 +145,7 @@ class SearchController < ApplicationController
       return true
     end
 
-    return true unless ::Gitlab::CurrentSettings.anonymous_searches_allowed?
+    return true if ::Feature.disabled?(:allow_anonymous_searches, type: :ops)
 
     false
   end

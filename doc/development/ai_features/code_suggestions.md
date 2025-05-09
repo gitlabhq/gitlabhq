@@ -10,8 +10,8 @@ title: Code Suggestions development guidelines
 
 The recommended setup for locally developing and debugging Code Suggestions is to have all 3 different components running:
 
-- IDE Extension (e.g. GitLab Workflow extension for VS Code).
-- Main application configured correctly (e.g. GDK).
+- IDE Extension (for example, GitLab Workflow extension for VS Code).
+- Main application configured correctly (for example, GDK).
 - [AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist).
 
 This should enable everyone to locally see how any change made in an IDE is sent to the main application to be transformed into a prompt before being sent to the respective model.

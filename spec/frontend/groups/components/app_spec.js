@@ -409,29 +409,22 @@ describe('AppComponent', () => {
       });
 
       describe.each`
-        groups        | fromSearch | shouldRenderEmptyState | shouldRenderSearchEmptyState
-        ${[]}         | ${false}   | ${true}                | ${false}
-        ${mockGroups} | ${false}   | ${false}               | ${false}
-        ${[]}         | ${true}    | ${false}               | ${true}
-      `(
-        'when `groups` is $groups, and `fromSearch` is $fromSearch',
-        ({ groups, fromSearch, shouldRenderEmptyState, shouldRenderSearchEmptyState }) => {
-          it(`${shouldRenderEmptyState ? 'renders' : 'does not render'} empty state`, async () => {
-            createShallowComponent();
+        groups        | shouldRenderEmptyState
+        ${[]}         | ${true}
+        ${mockGroups} | ${false}
+      `('when `groups` is $groups', ({ groups, shouldRenderEmptyState }) => {
+        it(`${shouldRenderEmptyState ? 'renders' : 'does not render'} empty state`, async () => {
+          createShallowComponent();
 
-            await waitForPromises();
+          await waitForPromises();
 
-            vm.updateGroups(groups, fromSearch);
+          vm.updateGroups(groups);
 
-            await nextTick();
+          await nextTick();
 
-            expect(wrapper.findByTestId('empty-state').exists()).toBe(shouldRenderEmptyState);
-            expect(wrapper.findByTestId('search-empty-state').exists()).toBe(
-              shouldRenderSearchEmptyState,
-            );
-          });
-        },
-      );
+          expect(wrapper.findByTestId('empty-state').exists()).toBe(shouldRenderEmptyState);
+        });
+      });
     });
   });
 

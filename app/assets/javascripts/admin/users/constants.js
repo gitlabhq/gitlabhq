@@ -23,13 +23,10 @@ export const I18N_USER_ACTIONS = {
   untrust: s__('AdminUsers|Untrust user'),
 };
 
-// NOTE: the 'access_level' token is overridden in EE version
-export const ACCESS_LEVEL_TOKEN_TYPE = 'access_level';
-
 export const TOKENS = [
   {
     title: s__('AdminUsers|Access level'),
-    type: ACCESS_LEVEL_TOKEN_TYPE,
+    type: 'access_level',
     token: GlFilteredSearchToken,
     operators: OPERATORS_IS,
     unique: true,

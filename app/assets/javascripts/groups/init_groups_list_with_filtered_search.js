@@ -47,7 +47,7 @@ export const initGroupsListWithFilteredSearch = ({ filteredSearchNamespace, Empt
           initialSort,
         },
         scopedSlots: {
-          'empty-state': () => createElement(EmptyState),
+          'empty-state': ({ search }) => createElement(EmptyState, { props: { search } }),
         },
       });
     },

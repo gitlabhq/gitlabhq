@@ -84,7 +84,7 @@ export default {
             <div
               v-for="(row, metadataIndex) in metadataSlots"
               :key="metadataIndex"
-              class="gl-mr-3 gl-flex gl-items-center"
+              class="gl-mr-5 gl-flex gl-flex-wrap gl-items-center"
             >
               <slot :name="row"></slot>
             </div>

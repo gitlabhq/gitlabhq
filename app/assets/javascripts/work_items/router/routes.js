@@ -3,6 +3,7 @@ import CreateWorkItem from '../pages/create_work_item.vue';
 import WorkItemDetail from '../pages/work_item_root.vue';
 import DesignDetail from '../components/design_management/design_preview/design_details.vue';
 import { ROUTES, WORK_ITEM_BASE_ROUTE_MAP } from '../constants';
+import { getEnumFromIssueTypeParameter } from '../utils';
 
 function generateTypeRegex(routeMap) {
   const types = Object.keys(routeMap);
@@ -21,7 +22,10 @@ function getRoutes() {
       name: ROUTES.new,
       component: CreateWorkItem,
       props: ({ params, query }) => ({
-        workItemTypeEnum: query.type || WORK_ITEM_BASE_ROUTE_MAP[params.type],
+        workItemTypeEnum:
+          query.type ||
+          getEnumFromIssueTypeParameter(query['issue[issue_type]']) ||
+          WORK_ITEM_BASE_ROUTE_MAP[params.type],
       }),
     },
     {

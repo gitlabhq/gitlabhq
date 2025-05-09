@@ -15,7 +15,7 @@ title: CI/CD analytics
 Use CI/CD analytics to gain insights into your pipeline performance and success rates.
 
 The CI/CD analytics page provides visualizations for critical CI/CD pipeline metrics directly in the GitLab UI.
-This helps development teams quickly understand the health and efficiency of their software development process.
+These visualizations can help development teams quickly understand the health and efficiency of their software development process.
 
 ## View CI/CD analytics
 

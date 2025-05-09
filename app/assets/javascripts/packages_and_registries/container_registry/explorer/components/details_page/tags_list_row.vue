@@ -266,12 +266,11 @@ export default {
           variant="warning"
         />
       </div>
-    </template>
 
-    <template v-if="signatures.length" #left-after-toggle>
       <gl-badge
+        v-if="signatures.length"
         v-gl-tooltip.d0="$options.i18n.SIGNATURE_BADGE_TOOLTIP"
-        class="gl-ml-4"
+        class="sm:gl-ml-3"
         data-testid="signed-badge"
       >
         {{ s__('ContainerRegistry|Signed') }}

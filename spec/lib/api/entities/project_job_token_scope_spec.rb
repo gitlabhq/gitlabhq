@@ -24,14 +24,14 @@ RSpec.describe ::API::Entities::ProjectJobTokenScope, feature_category: :secrets
         Gitlab::CurrentSettings.update!(enforce_ci_inbound_job_token_scope_enabled: false)
       end
 
-      it 'includes basic fields' do
+      it 'inbound_enabled and outbound_enabled default to true' do
         expect(subject).to eq(
           inbound_enabled: true,
           outbound_enabled: true
         )
       end
 
-      it 'includes basic fields' do
+      it 'inbound_enabled can be changed at the project level' do
         project.update!(ci_inbound_job_token_scope_enabled: false)
 
         expect(subject).to eq(
@@ -46,7 +46,16 @@ RSpec.describe ::API::Entities::ProjectJobTokenScope, feature_category: :secrets
         Gitlab::CurrentSettings.update!(enforce_ci_inbound_job_token_scope_enabled: true)
       end
 
-      it 'includes basic fields' do
+      it 'inbound_enabled and outbound_enabled default to true' do
+        expect(subject).to eq(
+          inbound_enabled: true,
+          outbound_enabled: true
+        )
+      end
+
+      it 'inbound_enabled can not be changed at the project level' do
+        project.update!(ci_inbound_job_token_scope_enabled: false)
+
         expect(subject).to eq(
           inbound_enabled: true,
           outbound_enabled: true

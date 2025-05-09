@@ -340,7 +340,7 @@ from mlflow import MlflowClient
 
 client = MlflowClient()
 model_name = '<your_model_name>'
-version = '<your_version'  # e.g. '1.0.0'
+version = '<your_version'  # for example: '1.0.0'
 
 # Alternatively search the version
 version = mlflow.search_registered_models(filter_string="name='{model_name}'")[0].latest_versions[0].version

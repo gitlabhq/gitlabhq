@@ -302,11 +302,13 @@ export default {
             :docker-build-command="dockerBuildCommand"
             :docker-push-command="dockerPushCommand"
             :docker-login-command="dockerLoginCommand"
+            class="!gl-w-auto"
           />
           <gl-button
             v-if="config.showContainerRegistrySettings"
             v-gl-tooltip="$options.i18n.SETTINGS_TEXT"
             icon="settings"
+            class="!gl-w-auto"
             :href="config.settingsPath"
             :aria-label="$options.i18n.SETTINGS_TEXT"
           />

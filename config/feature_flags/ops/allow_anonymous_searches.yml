@@ -1,0 +1,8 @@
+---
+name: allow_anonymous_searches
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138975
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/434218
+milestone: '16.7'
+type: ops
+group: group::global search
+default_enabled: true

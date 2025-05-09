@@ -36,6 +36,7 @@ import {
   canRouterNav,
   formatSelectOptionForCustomField,
   preserveDetailsState,
+  getEnumFromIssueTypeParameter,
   getParentGroupName,
   createBranchMRApiPathHelper,
 } from '~/work_items/utils';
@@ -219,6 +220,21 @@ describe('convertTypeEnumToName', () => {
     ${WORK_ITEM_TYPE_NAME_TICKET}       | ${WORK_ITEM_TYPE_ENUM_TICKET}
   `('returns %name when given the enum %enumValue', ({ name, enumValue }) => {
     expect(convertTypeEnumToName(enumValue)).toBe(name);
+  });
+});
+
+describe('getEnumFromIssueTypeParameter', () => {
+  it.each`
+    param         | enumValue
+    ${'incident'} | ${WORK_ITEM_TYPE_ENUM_INCIDENT}
+    ${'inciden'}  | ${WORK_ITEM_TYPE_ENUM_ISSUE}
+    ${'issue'}    | ${WORK_ITEM_TYPE_ENUM_ISSUE}
+    ${'asdf'}     | ${WORK_ITEM_TYPE_ENUM_ISSUE}
+    ${''}         | ${undefined}
+    ${null}       | ${undefined}
+    ${undefined}  | ${undefined}
+  `('returns %enumValue when given the param %param', ({ param, enumValue }) => {
+    expect(getEnumFromIssueTypeParameter(param)).toBe(enumValue);
   });
 });
 

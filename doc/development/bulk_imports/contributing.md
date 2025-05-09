@@ -124,7 +124,7 @@ associations that require them. For example, documents must be imported before m
    - Anything that ends on `_id` or `_ids`
    - Anything that includes `attributes` (except `custom_attributes`)
    - Anything that ends on `_html`
-   - Anything sensitive (e.g. tokens, encrypted data)
+   - Anything sensitive (for example, tokens, encrypted data)
 
    See a full list of prohibited references [here](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/attribute_cleaner.rb#L14-21).
 

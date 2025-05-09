@@ -85,85 +85,6 @@ This setting does not apply when pushing Git LFS objects.
 
 {{< /alert >}}
 
-## Personal access token prefix
-
-You can specify a prefix for personal access tokens. You might use a prefix
-to find tokens more quickly, or for use with automation tools.
-
-The default prefix is `glpat-` but administrators can change it.
-
-[Project access tokens](../../user/project/settings/project_access_tokens.md) and
-[group access tokens](../../user/group/settings/group_access_tokens.md) also inherit this prefix.
-
-By default, [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md) and
-[pipeline secret detection](../../user/application_security/secret_detection/pipeline/_index.md#detected-secrets) do not detect custom prefixes.
-Custom prefixes might cause an increase in false negatives.
-
-### Set a prefix
-
-To change the default global prefix:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
-1. Expand the **Account and limit** section.
-1. Fill in the **Personal access token prefix** field.
-1. Select **Save changes**.
-
-You can also configure the prefix by using the
-[settings API](../../api/settings.md).
-
-## Instance token prefix
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179852) in GitLab 17.10 [with a flag](../feature_flags.md) named `custom_prefix_for_all_token_types`. Disabled by default.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
-
-You can set a custom prefix for all tokens generated on your instance.
-By default, GitLab uses `gl` as the instance prefix.
-
-Custom token prefixes apply only to the following tokens:
-
-- [Feed tokens](../../security/tokens/_index.md#feed-token)
-- [Deploy tokens](../../user/project/deploy_tokens/_index.md)
-- [Feature flags client tokens](../../operations/feature_flags.md#get-access-credentials)
-
-Prerequisites:
-
-- You must have administrator access to the instance.
-
-To set a custom token prefix:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
-1. Expand the **Account and limit** section.
-1. In the **Instance token prefix** field, enter your custom prefix.
-1. Select **Save changes**.
-
-{{< alert type="note" >}}
-
-By default, [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md), [client-side secret detection](../../user/application_security/secret_detection/client/_index.md) and
-[pipeline secret detection](../../user/application_security/secret_detection/pipeline/_index.md#detected-secrets) do not detect custom instance token prefixes. This may result in an increase in false negatives.
-
-{{< /alert >}}
-
-### Token prefix benefits
-
-Using custom token prefixes provides the following benefits:
-
-- Makes your tokens distinct and identifiable.
-- Helps identify leaked tokens during security scans.
-- Reduces the risk of token confusion between different instances.
-
 ## Repository size limit
 
 {{< details >}}
@@ -334,48 +255,6 @@ To set a limit on how long these sessions are valid:
 1. Fill in the **Session duration for Git operations when 2FA is enabled (minutes)** field.
 1. Select **Save changes**.
 
-## Require expiration dates for new access tokens
-
-{{< details >}}
-
-- Tier: Free, Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470192) in GitLab 17.3.
-
-{{< /history >}}
-
-Prerequisites:
-
-- You must be an administrator.
-
-You can require all new access tokens to have an expiration date.
-This setting is turned on by default and applies to:
-
-- Project access tokens.
-- Group access tokens.
-- Personal access tokens for non-service account users.
-
-For personal access tokens for service accounts, use the `service_access_tokens_expiration_enforced`
-setting in the [Application Settings API](../../api/settings.md).
-
-To require expiration dates for new access tokens:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
-1. Expand **Account and limit**.
-1. Select the **Personal / Project / Group access token expiration** checkbox.
-1. Select **Save changes**.
-
-When you require expiration dates for new access tokens:
-
-- Users must set an expiration date that does not exceed the allowed lifetime for new access tokens.
-- To control the maximum access token lifetime, use the [**Limit the lifetime of access tokens** setting](#limit-the-lifetime-of-access-tokens).
-
 ## Allow top-level group Owners to create service accounts
 
 {{< details >}}
@@ -407,64 +286,126 @@ To allow top-level group Owners to create service accounts:
 1. Under **Service account creation**, select the **Allow top-level group owners to create Service accounts** checkbox.
 1. Select **Save changes**.
 
-## Limit the lifetime of SSH keys
+## Require expiration dates for new access tokens
 
 {{< details >}}
 
-- Tier: Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470192) in GitLab 17.3.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must be an administrator.
+
+You can require all new access tokens to have an expiration date.
+This setting is turned on by default and applies to:
+
+- Personal access tokens for non-service account users.
+- Group access tokens.
+- Project access tokens.
+
+For personal access tokens for service accounts, use the `service_access_tokens_expiration_enforced`
+setting in the [Application Settings API](../../api/settings.md).
+
+To require expiration dates for new access tokens:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand **Account and limit**.
+1. Select the **Personal / Project / Group access token expiration** checkbox.
+1. Select **Save changes**.
+
+When you require expiration dates for new access tokens:
+
+- Users must set an expiration date that does not exceed the allowed lifetime for new access tokens.
+- To control the maximum access token lifetime, use the [**Limit the lifetime of access tokens** setting](#limit-the-lifetime-of-access-tokens).
+
+## Personal access token prefix
+
+You can specify a prefix for personal access tokens. You might use a prefix
+to find tokens more quickly, or for use with automation tools.
+
+The default prefix is `glpat-` but administrators can change it.
+
+[Project access tokens](../../user/project/settings/project_access_tokens.md) and
+[group access tokens](../../user/group/settings/group_access_tokens.md) also inherit this prefix.
+
+By default, [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md) and
+[pipeline secret detection](../../user/application_security/secret_detection/pipeline/_index.md#detected-secrets) do not detect custom prefixes.
+Custom prefixes might cause an increase in false negatives. To use custom instance prefixes with your pipeline secret detection ruleset, consider [extending the pipeline configuration](../../user/application_security/secret_detection/pipeline/configure.md#ignore-patterns-and-paths).
+
+### Set a prefix
+
+To change the default global prefix:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand the **Account and limit** section.
+1. Fill in the **Personal access token prefix** field.
+1. Select **Save changes**.
+
+You can also configure the prefix by using the
+[settings API](../../api/settings.md).
+
+## Instance token prefix
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179852) in GitLab 17.10 [with a flag](../feature_flags.md) named `custom_prefix_for_all_token_types`. Disabled by default.
 
 {{< /history >}}
 
 {{< alert type="flag" >}}
 
-The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-The feature flag is not available on GitLab Dedicated.
+This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
-Users can optionally specify a lifetime for
-[SSH keys](../../user/ssh.md).
-This lifetime is not a requirement, and can be set to any arbitrary number of days.
+You can set a custom prefix for all tokens generated on your instance.
+By default, GitLab uses `gl` as the instance prefix.
 
-SSH keys are user credentials to access GitLab.
-However, organizations with security requirements may want to enforce more protection by
-requiring the regular rotation of these keys.
+Custom token prefixes apply only to the following tokens:
 
-### Set a lifetime
+- [Feed tokens](../../security/tokens/_index.md#feed-token)
+- [Deploy tokens](../../user/project/deploy_tokens/_index.md)
+- [Feature flags client tokens](../../operations/feature_flags.md#get-access-credentials)
 
-Only a GitLab administrator can set a lifetime. Leaving it empty means
-there are no restrictions.
+Prerequisites:
 
-To set a lifetime on how long SSH keys are valid:
+- You must have administrator access to the instance.
+
+To set a custom token prefix:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand the **Account and limit** section.
-1. Fill in the **Maximum allowable lifetime for SSH keys (days)** field.
+1. In the **Instance token prefix** field, enter your custom prefix.
 1. Select **Save changes**.
-
-After a lifetime for SSH keys is set, GitLab:
-
-- Requires users to set an expiration date that is no later than the allowed lifetime on new SSH keys. The maximum allowed lifetime is:
-  - 365 days by default.
-  - 400 days, if you enable the `buffered_token_expiration_limit` feature flag.
-    This extended limit is not available on GitLab Dedicated.
-- Applies the lifetime restriction to existing SSH keys. Keys with no expiry or a lifetime
-  greater than the maximum immediately become invalid.
 
 {{< alert type="note" >}}
 
-When a user's SSH key becomes invalid they can delete and re-add the same key again.
+By default, [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md), [client-side secret detection](../../user/application_security/secret_detection/client/_index.md) and
+[pipeline secret detection](../../user/application_security/secret_detection/pipeline/_index.md#detected-secrets) do not detect custom instance token prefixes. This may result in an increase in false negatives. To use custom instance prefixes with your pipeline secret detection ruleset, consider [extending the pipeline configuration](../../user/application_security/secret_detection/pipeline/configure.md#ignore-patterns-and-paths).
 
 {{< /alert >}}
+
+### Token prefix benefits
+
+Using custom token prefixes provides the following benefits:
+
+- Makes your tokens distinct and identifiable.
+- Helps identify leaked tokens during security scans.
+- Reduces the risk of token confusion between different instances.
 
 ## Limit the lifetime of access tokens
 
@@ -528,6 +469,65 @@ After a lifetime for access tokens is set, GitLab:
 - After three hours, revoke old tokens with no expiration date or with a lifetime longer than the
   allowed lifetime. Three hours is given to allow administrators to change the allowed lifetime,
   or remove it, before revocation takes place.
+
+## Limit the lifetime of SSH keys
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
+For more information, see the history.
+The feature flag is not available on GitLab Dedicated.
+
+{{< /alert >}}
+
+Users can optionally specify a lifetime for
+[SSH keys](../../user/ssh.md).
+This lifetime is not a requirement, and can be set to any arbitrary number of days.
+
+SSH keys are user credentials to access GitLab.
+However, organizations with security requirements may want to enforce more protection by
+requiring the regular rotation of these keys.
+
+### Set a lifetime
+
+Only a GitLab administrator can set a lifetime. Leaving it empty means
+there are no restrictions.
+
+To set a lifetime on how long SSH keys are valid:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand the **Account and limit** section.
+1. Fill in the **Maximum allowable lifetime for SSH keys (days)** field.
+1. Select **Save changes**.
+
+After a lifetime for SSH keys is set, GitLab:
+
+- Requires users to set an expiration date that is no later than the allowed lifetime on new SSH keys. The maximum allowed lifetime is:
+  - 365 days by default.
+  - 400 days, if you enable the `buffered_token_expiration_limit` feature flag.
+    This extended limit is not available on GitLab Dedicated.
+- Applies the lifetime restriction to existing SSH keys. Keys with no expiry or a lifetime
+  greater than the maximum immediately become invalid.
+
+{{< alert type="note" >}}
+
+When a user's SSH key becomes invalid they can delete and re-add the same key again.
+
+{{< /alert >}}
 
 ## User OAuth applications setting
 

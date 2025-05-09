@@ -1,6 +1,5 @@
 <script>
 import { GlLoadingIcon, GlModal } from '@gitlab/ui';
-import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import { createAlert } from '~/alert';
 import { HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
 import { mergeUrlParams, getParameterByName } from '~/lib/utils/url_utility';
@@ -15,7 +14,6 @@ export default {
     GroupsComponent,
     GlModal,
     GlLoadingIcon,
-    EmptyResult,
   },
   props: {
     action: {
@@ -235,7 +233,6 @@ export default {
     />
     <template v-else>
       <groups-component v-if="hasGroups" :groups="groups" :page-info="pageInfo" :action="action" />
-      <empty-result v-else-if="fromSearch" data-testid="search-empty-state" />
       <slot v-else name="empty-state"></slot>
     </template>
     <gl-modal

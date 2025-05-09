@@ -316,7 +316,7 @@ While there are no strict guidelines for interpreting the comparison results, he
 
 In either of these scenarios, we recommend further investigation:
 
-1. Compare your results with [the daily evaluation results](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner#view-daily-evaluation-result-on-master). e.g. look at the daily evaluations from yesterday and the day before.
+1. Compare your results with [the daily evaluation results](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner#view-daily-evaluation-result-on-master). For instance, look at the daily evaluations from yesterday and the day before.
 1. If you observe similar patterns in these daily evaluations, it's likely that your merge request is safe to merge. However, if the patterns differ, it may indicate that your merge request has introduced unexpected changes.
 
 We strongly recommend running the regression evaluator in at least the following environments:

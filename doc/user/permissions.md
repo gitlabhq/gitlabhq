@@ -57,6 +57,194 @@ By default, all users can create top-level groups and change their
 usernames. A GitLab administrator can [change this behavior](../administration/user_settings.md)
 for the GitLab instance.
 
+## Group members permissions
+
+Any user can remove themselves from a group, unless they are the only Owner of
+the group.
+
+The following table lists group permissions available for each role:
+
+### Analytics group permissions
+
+Group permission for [analytics](analytics/_index.md) features including value streams, product analytics, and insights:
+
+| Action                                                             | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
+| ------------------------------------------------------------------ | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
+| View [Insights](project/insights/_index.md)                         |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| View [Insights](project/insights/_index.md) charts                  |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| View [Issue analytics](group/issues_analytics/_index.md)           |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| View Contribution analytics                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| View value stream analytics                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| View [Productivity analytics](analytics/productivity_analytics.md) |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| View [Group DevOps Adoption](group/devops_adoption/_index.md)      |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| View metrics dashboard annotations                                 |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Create/edit/delete metrics dashboard annotations                   |       |         |          |     ✓     |     ✓      |   ✓   |       |
+
+### Application security group permissions
+
+Group permissions for [Application Security](application_security/secure_your_application.md) features including dependency management, security analyzers, security policies, and vulnerability management.
+
+| Action                                                                          | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
+| ------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
+| View [dependency list](application_security/dependency_list/_index.md)           |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| View [vulnerability report](application_security/vulnerability_report/_index.md) |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| View [security dashboard](application_security/security_dashboard/_index.md)     |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| Create [security policy project](application_security/policies/_index.md)        |       |         |          |           |            |   ✓   |       |
+| Assign [security policy project](application_security/policies/_index.md)        |       |         |          |           |            |   ✓   |       |
+
+### CI/CD group permissions
+
+Group permissions for [CI/CD](../ci/_index.md) features including runners, variables, and protected environments:
+
+| Action                                | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
+| ------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
+| View group runners                    |       |         |          |           |     ✓      |   ✓   |       |
+| Manage group-level Kubernetes cluster |       |         |          |           |     ✓      |   ✓   |       |
+| Manage group runners                  |       |         |          |           |            |   ✓   |       |
+| Manage group level CI/CD variables    |       |         |          |           |            |   ✓   |       |
+| Manage group protected environments   |       |         |          |           |            |   ✓   |       |
+
+### Compliance group permissions
+
+Group permissions for [compliance](compliance/_index.md) features including compliance center, audit events, compliance frameworks, and licenses.
+
+| Action                                                                                | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
+| ------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
+| View [audit events](compliance/audit_events.md)                                       |       |         |          |     ✓     |     ✓      |   ✓   | Users can view only events based on their individual actions. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites). |
+| View licenses in the [dependency list](application_security/dependency_list/_index.md) |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| View the [compliance center](compliance/compliance_center/_index.md)                  |       |         |          |           |            |   ✓   |       |
+| Manage [compliance frameworks](compliance/compliance_frameworks.md)                        |       |         |          |           |            |   ✓   |       |
+| Assign [compliance frameworks](compliance/compliance_frameworks.md) to projects            |       |         |          |           |            |   ✓   |       |
+| Manage [audit streams](compliance/audit_event_streaming.md)                           |       |         |          |           |            |   ✓   |       |
+
+### GitLab Duo group permissions
+
+Group permissions for [GitLab Duo](gitlab_duo/_index.md):
+
+| Action                                                                                                    | Non-member | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
+| --------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
+| Use Duo features                                                                                          |            |       |         |    ✓     |     ✓     |     ✓      |   ✓   | Requires [user being assigned a seat to gain access to a Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats). |
+| Configure [Duo feature availability](gitlab_duo/turn_on_off.md#for-a-group-or-subgroup)                      |            |       |         |          |           |     ✓      |   ✓   |       |
+| Configure [GitLab Duo Self Hosted](../administration/gitlab_duo_self_hosted/configure_duo_features.md)            |            |       |         |          |           |            |   ✓   |       |
+| Enable [beta and experimental features](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) |            |       |         |          |           |            |   ✓   |       |
+| Purchase [Duo seats](../subscriptions/subscription-add-ons.md#purchase-additional-gitlab-duo-seats)       |            |       |         |          |           |            |   ✓   |       |
+
+### Groups group permissions
+
+Group permissions for [group features](group/_index.md):
+
+| Action                                                                                      | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+|---------------------------------------------------------------------------------------------|:-----:|:-------:|:--------:|:---------:|:----------:|:-----:|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Browse group                                                                                |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| [Search](search/_index.md) projects in group                                                |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| View group [audit events](compliance/audit_events.md)                                       |       |         |          |     ✓     |     ✓      |   ✓   | Developers and Maintainers can only view events based on their individual actions. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites).                                                                                                                                                                                                                                                                                                                                                              |
+| Create project in group                                                                     |       |         |          |     ✓     |     ✓      |   ✓   | Developers, Maintainers and Owners: Only if the project creation role is set [for the instance](../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects) or [for the group](group/_index.md#specify-who-can-add-projects-to-a-group).<br><br>Developers: Developers can push commits to the default branch of a new project only if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected". |
+| Create subgroup                                                                             |       |         |          |           |     ✓      |   ✓   | Maintainers: Only if users with the Maintainer role [can create subgroups](group/subgroups/_index.md#change-who-can-create-subgroups).                                                                                                                                                                                                                                                                                                                                                                                               |
+| Change custom settings for [project integrations](project/integrations/_index.md)           |       |         |          |           |            |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Edit [epic](group/epics/_index.md) comments (posted by any user)                            |       |    ✓    |          |           |     ✓      |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Fork project into a group                                                                   |       |         |          |           |     ✓      |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| View [Billing](../subscriptions/manage_subscription.md#view-subscription)           |       |         |          |           |            |   ✓   | Does not apply to subgroups                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| View group [Usage Quotas](storage_usage_quotas.md) page                                     |       |         |          |           |            |   ✓   | Does not apply to subgroups                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| [Migrate group](group/import/_index.md)                                                     |       |         |          |           |            |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Delete group                                                                                |       |         |          |           |            |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Manage [subscriptions, storage, and compute minutes](../subscriptions/gitlab_com/_index.md) |       |         |          |           |            |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Manage [group access tokens](group/settings/group_access_tokens.md)                         |       |         |          |           |            |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Change group visibility level                                                               |       |         |          |           |            |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Edit group settings                                                                         |       |         |          |           |            |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Configure project templates                                                                 |       |         |          |           |            |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Configure [SAML SSO](group/saml_sso/_index.md)                                              |       |         |          |           |            |   ✓   | Does not apply to subgroups                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Disable notification emails                                                                 |       |         |          |           |            |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+
+### Project planning group permissions
+
+Group permissions for project planning features including iterations, milestones, and labels:
+
+| Action                  | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
+| ----------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
+| Manage group labels     |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Manage group milestones |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Manage iterations       |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+
+Group permissions for [epics](group/epics/_index.md):
+
+| Action                                                                        | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes                                                                                                             |
+|-------------------------------------------------------------------------------|:-----:|:-------:|:--------:|:---------:|:----------:|:-----:|-------------------------------------------------------------------------------------------------------------------|
+| View epic                                                                     | ✓     | ✓       | ✓        | ✓         | ✓          | ✓     |                                                                                                                   |
+| [Search](search/_index.md) epics                                              | ✓     | ✓       | ✓        | ✓         | ✓          | ✓     | You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic).                    |
+| Create epic                                                                   |       | ✓       | ✓        | ✓         | ✓          | ✓     |                                                                                                                   |
+| Edit epic, including metadata, item locking, and resolving threads            |       | ✓       | ✓        | ✓         | ✓          | ✓     |                                                                                                                   |
+| Delete epic                                                                   |       | ✓       |          |           |            | ✓     |                                                                                                                   |
+| Manage [epic boards](group/epics/epic_boards.md)                              |       | ✓       | ✓        | ✓         | ✓          | ✓     |                                                                                                                   |
+| Add issue to an [epic](group/epics/_index.md)                                 | ✓     | ✓       | ✓        | ✓         | ✓          | ✓     | You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic) and edit the issue. |
+| Add/remove [child epics](group/epics/manage_epics.md#multi-level-child-epics) | ✓     | ✓       | ✓        | ✓         | ✓          | ✓     | You must have permission to [view](group/epics/manage_epics.md#who-can-view-an-epic) the parent and child epics.  |
+| Add internal note                                                             |       | ✓       | ✓        | ✓         | ✓          | ✓     |                                                                                                                   |
+
+Group permissions for [wikis](project/wiki/group.md):
+
+| Action                                 | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes                                                                                                                       |
+|----------------------------------------|:-----:|:-------:|:--------:|:---------:|:----------:|:-----:|-----------------------------------------------------------------------------------------------------------------------------|
+| View group wiki                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guests: In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.    |
+| [Search](search/_index.md) group wikis |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guests: In addition, if your group is public or internal, all users who can see the group can also search group wiki pages. |
+| Create group wiki pages                |       |    ✓    |          |     ✓     |     ✓      |   ✓   |                                                                                                                             |
+| Edit group wiki pages                  |       |    ✓    |          |     ✓     |     ✓      |   ✓   |                                                                                                                             |
+| Delete group wiki pages                |       |    ✓    |          |     ✓     |     ✓      |   ✓   |                                                                                                                             |
+
+### Packages and registries group permissions
+
+Group permissions for [container registry](packages/_index.md):
+
+| Action                                            | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
+| ------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
+| Pull a container registry image                   |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guests can only view events based on their individual actions. |
+| Pull a container image using the dependency proxy |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Delete a container registry image                 |       |         |          |     ✓     |     ✓      |   ✓   |       |
+
+Group permissions for [package registry](packages/_index.md):
+
+| Action                                   | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
+| ---------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
+| Pull packages                            |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Publish packages                         |       |         |          |     ✓     |     ✓      |   ✓   |       |
+| Delete packages                          |       |         |          |           |     ✓      |   ✓   |       |
+| Manage package settings                  |       |         |          |           |            |   ✓   |       |
+| Manage dependency proxy cleanup policies |       |         |          |           |            |   ✓   |       |
+| Enable dependency proxy                  |       |         |          |           |            |   ✓   |       |
+| Disable dependency proxy                 |       |         |          |           |            |   ✓   |       |
+| Purge the dependency proxy for a group   |       |         |          |           |            |   ✓   |       |
+| Enable package request forwarding        |       |         |          |           |            |   ✓   |       |
+| Disable package request forwarding       |       |         |          |           |            |   ✓   |       |
+
+### Repository group permissions
+
+Group permissions for [repository](project/repository/_index.md) features including merge requests, push rules, and deploy tokens.
+
+| Action                                                                                 | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
+| -------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
+| Manage [deploy tokens](project/deploy_tokens/_index.md)                                 |       |         |          |           |            |   ✓   |       |
+| Manage [merge request settings](group/manage.md#group-merge-request-approval-settings) |       |         |          |           |            |   ✓   |       |
+| Manage [push rules](group/access_and_permissions.md#group-push-rules)                  |       |         |          |           |            |   ✓   |       |
+
+### User management group permissions
+
+Group permissions for user management:
+
+| Action                          | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
+| ------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
+| View 2FA status of members      |       |         |          |           |            |   ✓   |       |
+| Manage group members            |       |         |          |           |            |   ✓   |       |
+| Manage group-level custom roles |       |         |          |           |            |   ✓   |       |
+| Share (invite) groups to groups |       |         |          |           |            |   ✓   |       |
+| Filter members by 2FA status    |       |         |          |           |            |   ✓   |       |
+
+### Workspace group permissions
+
+Groups permissions for workspaces:
+
+| Action                                                    | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
+| --------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
+| View workspace cluster agents mapped to a group           |       |         |          |           |     ✓      |   ✓   |       |
+| Map or unmap workspace cluster agents to and from a group |       |         |          |           |            |   ✓   |       |
+
 ## Project members permissions
 
 A user's role determines what permissions they have on a project. The Owner role provides all permissions but is
@@ -424,194 +612,6 @@ Project permissions for [GitLab Duo](gitlab_duo/_index.md):
 | -------------------------------------------------------------------------------------- | ---------- | ----- | ------- | -------- | --------- | ---------- | ----- | ----- |
 | Use Duo features                                                                       |            | ✓     | ✓       | ✓        | ✓         | ✓          | ✓     | Code Suggestions requires a [user being assigned a seat to gain access to a Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats). |
 | Configure [Duo feature availability](gitlab_duo/turn_on_off.md#for-a-project) |            |       |         |          |           | ✓          | ✓     |       |
-
-## Group members permissions
-
-Any user can remove themselves from a group, unless they are the only Owner of
-the group.
-
-The following table lists group permissions available for each role:
-
-### Analytics group permissions
-
-Group permission for [analytics](analytics/_index.md) features including value streams, product analytics, and insights:
-
-| Action                                                             | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
-| ------------------------------------------------------------------ | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| View [Insights](project/insights/_index.md)                         |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| View [Insights](project/insights/_index.md) charts                  |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| View [Issue analytics](group/issues_analytics/_index.md)           |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| View Contribution analytics                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| View value stream analytics                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| View [Productivity analytics](analytics/productivity_analytics.md) |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| View [Group DevOps Adoption](group/devops_adoption/_index.md)      |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| View metrics dashboard annotations                                 |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Create/edit/delete metrics dashboard annotations                   |       |         |          |     ✓     |     ✓      |   ✓   |       |
-
-### Application security group permissions
-
-Group permissions for [Application Security](application_security/secure_your_application.md) features including dependency management, security analyzers, security policies, and vulnerability management.
-
-| Action                                                                          | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
-| ------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| View [dependency list](application_security/dependency_list/_index.md)           |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| View [vulnerability report](application_security/vulnerability_report/_index.md) |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| View [security dashboard](application_security/security_dashboard/_index.md)     |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| Create [security policy project](application_security/policies/_index.md)        |       |         |          |           |            |   ✓   |       |
-| Assign [security policy project](application_security/policies/_index.md)        |       |         |          |           |            |   ✓   |       |
-
-### CI/CD group permissions
-
-Group permissions for [CI/CD](../ci/_index.md) features including runners, variables, and protected environments:
-
-| Action                                | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
-| ------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| View group runners                    |       |         |          |           |     ✓      |   ✓   |       |
-| Manage group-level Kubernetes cluster |       |         |          |           |     ✓      |   ✓   |       |
-| Manage group runners                  |       |         |          |           |            |   ✓   |       |
-| Manage group level CI/CD variables    |       |         |          |           |            |   ✓   |       |
-| Manage group protected environments   |       |         |          |           |            |   ✓   |       |
-
-### Compliance group permissions
-
-Group permissions for [compliance](compliance/_index.md) features including compliance center, audit events, compliance frameworks, and licenses.
-
-| Action                                                                                | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
-| ------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| View [audit events](compliance/audit_events.md)                                       |       |         |          |     ✓     |     ✓      |   ✓   | Users can view only events based on their individual actions. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites). |
-| View licenses in the [dependency list](application_security/dependency_list/_index.md) |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| View the [compliance center](compliance/compliance_center/_index.md)                  |       |         |          |           |            |   ✓   |       |
-| Manage [compliance frameworks](compliance/compliance_frameworks.md)                        |       |         |          |           |            |   ✓   |       |
-| Assign [compliance frameworks](compliance/compliance_frameworks.md) to projects            |       |         |          |           |            |   ✓   |       |
-| Manage [audit streams](compliance/audit_event_streaming.md)                           |       |         |          |           |            |   ✓   |       |
-
-### GitLab Duo group permissions
-
-Group permissions for [GitLab Duo](gitlab_duo/_index.md):
-
-| Action                                                                                                    | Non-member | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
-| --------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| Use Duo features                                                                                          |            |       |         |    ✓     |     ✓     |     ✓      |   ✓   | Requires [user being assigned a seat to gain access to a Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats). |
-| Configure [Duo feature availability](gitlab_duo/turn_on_off.md#for-a-group-or-subgroup)                      |            |       |         |          |           |     ✓      |   ✓   |       |
-| Configure [GitLab Duo Self Hosted](../administration/gitlab_duo_self_hosted/configure_duo_features.md)            |            |       |         |          |           |            |   ✓   |       |
-| Enable [beta and experimental features](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) |            |       |         |          |           |            |   ✓   |       |
-| Purchase [Duo seats](../subscriptions/subscription-add-ons.md#purchase-additional-gitlab-duo-seats)       |            |       |         |          |           |            |   ✓   |       |
-
-### Groups group permissions
-
-Group permissions for [group features](group/_index.md):
-
-| Action                                                                                      | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-|---------------------------------------------------------------------------------------------|:-----:|:-------:|:--------:|:---------:|:----------:|:-----:|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Browse group                                                                                |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| [Search](search/_index.md) projects in group                                                |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| View group [audit events](compliance/audit_events.md)                                       |       |         |          |     ✓     |     ✓      |   ✓   | Developers and Maintainers can only view events based on their individual actions. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites).                                                                                                                                                                                                                                                                                                                                                              |
-| Create project in group                                                                     |       |         |          |     ✓     |     ✓      |   ✓   | Developers, Maintainers and Owners: Only if the project creation role is set [for the instance](../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects) or [for the group](group/_index.md#specify-who-can-add-projects-to-a-group).<br><br>Developers: Developers can push commits to the default branch of a new project only if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected". |
-| Create subgroup                                                                             |       |         |          |           |     ✓      |   ✓   | Maintainers: Only if users with the Maintainer role [can create subgroups](group/subgroups/_index.md#change-who-can-create-subgroups).                                                                                                                                                                                                                                                                                                                                                                                               |
-| Change custom settings for [project integrations](project/integrations/_index.md)           |       |         |          |           |            |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Edit [epic](group/epics/_index.md) comments (posted by any user)                            |       |    ✓    |          |           |     ✓      |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Fork project into a group                                                                   |       |         |          |           |     ✓      |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| View [Billing](../subscriptions/manage_subscription.md#view-subscription)           |       |         |          |           |            |   ✓   | Does not apply to subgroups                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| View group [Usage Quotas](storage_usage_quotas.md) page                                     |       |         |          |           |            |   ✓   | Does not apply to subgroups                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| [Migrate group](group/import/_index.md)                                                     |       |         |          |           |            |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Delete group                                                                                |       |         |          |           |            |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Manage [subscriptions, storage, and compute minutes](../subscriptions/gitlab_com/_index.md) |       |         |          |           |            |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Manage [group access tokens](group/settings/group_access_tokens.md)                         |       |         |          |           |            |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Change group visibility level                                                               |       |         |          |           |            |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Edit group settings                                                                         |       |         |          |           |            |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Configure project templates                                                                 |       |         |          |           |            |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Configure [SAML SSO](group/saml_sso/_index.md)                                              |       |         |          |           |            |   ✓   | Does not apply to subgroups                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| Disable notification emails                                                                 |       |         |          |           |            |   ✓   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-
-### Project planning group permissions
-
-Group permissions for project planning features including iterations, milestones, and labels:
-
-| Action                  | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
-| ----------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| Manage group labels     |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Manage group milestones |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Manage iterations       |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-
-Group permissions for [epics](group/epics/_index.md):
-
-| Action                                                                        | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes                                                                                                             |
-|-------------------------------------------------------------------------------|:-----:|:-------:|:--------:|:---------:|:----------:|:-----:|-------------------------------------------------------------------------------------------------------------------|
-| View epic                                                                     | ✓     | ✓       | ✓        | ✓         | ✓          | ✓     |                                                                                                                   |
-| [Search](search/_index.md) epics                                              | ✓     | ✓       | ✓        | ✓         | ✓          | ✓     | You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic).                    |
-| Create epic                                                                   |       | ✓       | ✓        | ✓         | ✓          | ✓     |                                                                                                                   |
-| Edit epic, including metadata, item locking, and resolving threads            |       | ✓       | ✓        | ✓         | ✓          | ✓     |                                                                                                                   |
-| Delete epic                                                                   |       | ✓       |          |           |            | ✓     |                                                                                                                   |
-| Manage [epic boards](group/epics/epic_boards.md)                              |       | ✓       | ✓        | ✓         | ✓          | ✓     |                                                                                                                   |
-| Add issue to an [epic](group/epics/_index.md)                                 | ✓     | ✓       | ✓        | ✓         | ✓          | ✓     | You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic) and edit the issue. |
-| Add/remove [child epics](group/epics/manage_epics.md#multi-level-child-epics) | ✓     | ✓       | ✓        | ✓         | ✓          | ✓     | You must have permission to [view](group/epics/manage_epics.md#who-can-view-an-epic) the parent and child epics.  |
-| Add internal note                                                             |       | ✓       | ✓        | ✓         | ✓          | ✓     |                                                                                                                   |
-
-Group permissions for [wikis](project/wiki/group.md):
-
-| Action                                 | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes                                                                                                                       |
-|----------------------------------------|:-----:|:-------:|:--------:|:---------:|:----------:|:-----:|-----------------------------------------------------------------------------------------------------------------------------|
-| View group wiki                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guests: In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.    |
-| [Search](search/_index.md) group wikis |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guests: In addition, if your group is public or internal, all users who can see the group can also search group wiki pages. |
-| Create group wiki pages                |       |    ✓    |          |     ✓     |     ✓      |   ✓   |                                                                                                                             |
-| Edit group wiki pages                  |       |    ✓    |          |     ✓     |     ✓      |   ✓   |                                                                                                                             |
-| Delete group wiki pages                |       |    ✓    |          |     ✓     |     ✓      |   ✓   |                                                                                                                             |
-
-### Packages and registries group permissions
-
-Group permissions for [container registry](packages/_index.md):
-
-| Action                                            | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
-| ------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| Pull a container registry image                   |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | Guests can only view events based on their individual actions. |
-| Pull a container image using the dependency proxy |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Delete a container registry image                 |       |         |          |     ✓     |     ✓      |   ✓   |       |
-
-Group permissions for [package registry](packages/_index.md):
-
-| Action                                   | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
-| ---------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| Pull packages                            |       |         |    ✓     |     ✓     |     ✓      |   ✓   |       |
-| Publish packages                         |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| Delete packages                          |       |         |          |           |     ✓      |   ✓   |       |
-| Manage package settings                  |       |         |          |           |            |   ✓   |       |
-| Manage dependency proxy cleanup policies |       |         |          |           |            |   ✓   |       |
-| Enable dependency proxy                  |       |         |          |           |            |   ✓   |       |
-| Disable dependency proxy                 |       |         |          |           |            |   ✓   |       |
-| Purge the dependency proxy for a group   |       |         |          |           |            |   ✓   |       |
-| Enable package request forwarding        |       |         |          |           |            |   ✓   |       |
-| Disable package request forwarding       |       |         |          |           |            |   ✓   |       |
-
-### Repository group permissions
-
-Group permissions for [repository](project/repository/_index.md) features including merge requests, push rules, and deploy tokens.
-
-| Action                                                                                 | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
-| -------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| Manage [deploy tokens](project/deploy_tokens/_index.md)                                 |       |         |          |           |            |   ✓   |       |
-| Manage [merge request settings](group/manage.md#group-merge-request-approval-settings) |       |         |          |           |            |   ✓   |       |
-| Manage [push rules](group/access_and_permissions.md#group-push-rules)                  |       |         |          |           |            |   ✓   |       |
-
-### User management group permissions
-
-Group permissions for user management:
-
-| Action                          | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
-| ------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| View 2FA status of members      |       |         |          |           |            |   ✓   |       |
-| Manage group members            |       |         |          |           |            |   ✓   |       |
-| Manage group-level custom roles |       |         |          |           |            |   ✓   |       |
-| Share (invite) groups to groups |       |         |          |           |            |   ✓   |       |
-| Filter members by 2FA status    |       |         |          |           |            |   ✓   |       |
-
-### Workspace group permissions
-
-Groups permissions for workspaces:
-
-| Action                                                    | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
-| --------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| View workspace cluster agents mapped to a group           |       |         |          |           |     ✓      |   ✓   |       |
-| Map or unmap workspace cluster agents to and from a group |       |         |          |           |            |   ✓   |       |
 
 ## Subgroup permissions
 

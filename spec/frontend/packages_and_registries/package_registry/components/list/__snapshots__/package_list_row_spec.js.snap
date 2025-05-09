@@ -6,10 +6,10 @@ exports[`packages_list_row renders 1`] = `
   data-testid="package-row"
 >
   <div
-    class="gl-flex gl-items-center gl-py-3"
+    class="gl-flex gl-py-3"
   >
     <div
-      class="gl-flex gl-justify-start gl-pl-2 gl-w-7"
+      class="gl-flex gl-justify-start gl-pt-2 gl-w-7"
     >
       <gl-form-checkbox-stub
         class="gl-m-0"
@@ -23,7 +23,7 @@ exports[`packages_list_row renders 1`] = `
         class="gl-flex gl-flex-col gl-grow gl-mb-3 gl-min-w-0 sm:gl-mb-0"
       >
         <div
-          class="gl-flex gl-font-semibold gl-items-center gl-min-h-6 gl-min-w-0 gl-text-default"
+          class="gl-font-semibold gl-items-center gl-min-h-6 gl-min-w-0 gl-text-default sm:gl-flex"
         >
           <div
             class="gl-flex gl-gap-3 gl-items-center gl-min-w-0 gl-mr-5"
@@ -84,7 +84,7 @@ exports[`packages_list_row renders 1`] = `
       </div>
     </div>
     <div
-      class="gl-flex gl-justify-end gl-pr-1 gl-w-9"
+      class="gl-items-center gl-pl-3 sm:gl-flex"
     >
       <gl-disclosure-dropdown-stub
         autoclose="true"

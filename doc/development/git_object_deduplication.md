@@ -1,5 +1,5 @@
 ---
-stage: Systems
+stage: Data Access
 group: Gitaly
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 title: How Git object deduplication works in GitLab

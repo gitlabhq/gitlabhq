@@ -13,6 +13,7 @@ RSpec.describe 'User Settings > Personal access tokens', :with_current_organizat
   end
 
   before do
+    stub_feature_flags(migrate_user_access_tokens_ui: false)
     sign_in(user)
   end
 

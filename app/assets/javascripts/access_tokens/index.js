@@ -1,9 +1,11 @@
 import Vue from 'vue';
+import { pinia } from '~/pinia/instance';
 
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import { parseRailsFormFields } from '~/lib/utils/forms';
 import { __, sprintf } from '~/locale';
 import Translate from '~/vue_shared/translate';
+import AccessTokens from '~/vue_shared/access_tokens/components/access_tokens.vue';
 import AccessTokenTableApp from './components/access_token_table_app.vue';
 import InactiveAccessTokenTableApp from './components/inactive_access_token_table_app.vue';
 import ExpiresAtField from './components/expires_at_field.vue';
@@ -122,6 +124,44 @@ export const initNewAccessTokenApp = () => {
     },
     render(h) {
       return h(NewAccessTokenApp);
+    },
+  });
+};
+
+export const initSharedAccessTokenApp = () => {
+  const el = document.querySelector('#js-shared-access-token-app');
+
+  if (!el) {
+    return null;
+  }
+
+  const {
+    accessTokenMaxDate,
+    accessTokenMinDate,
+    accessTokenCreate,
+    accessTokenRevoke,
+    accessTokenRotate,
+    accessTokenShow,
+  } = el.dataset;
+
+  return new Vue({
+    el,
+    name: 'AccessTokensRoot',
+    pinia,
+    provide: {
+      accessTokenMaxDate,
+      accessTokenMinDate,
+      accessTokenCreate,
+      accessTokenRevoke,
+      accessTokenRotate,
+      accessTokenShow,
+    },
+    render(createElement) {
+      return createElement(AccessTokens, {
+        props: {
+          id: gon.current_user_id,
+        },
+      });
     },
   });
 };

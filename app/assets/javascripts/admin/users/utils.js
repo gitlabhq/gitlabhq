@@ -6,7 +6,7 @@ import {
   TOKENS,
   SOLO_OWNED_ORGANIZATIONS_EMPTY,
   SOLO_OWNED_ORGANIZATIONS_REQUESTED_COUNT,
-} from 'ee_else_ce/admin/users/constants';
+} from './constants';
 
 export const generateUserPaths = (paths, id) => {
   return Object.fromEntries(

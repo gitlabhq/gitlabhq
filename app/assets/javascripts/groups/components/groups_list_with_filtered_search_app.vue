@@ -149,7 +149,7 @@ export default {
     />
     <groups-app :service="service" :store="store">
       <template #empty-state>
-        <slot name="empty-state"></slot>
+        <slot name="empty-state" :search="search"></slot>
       </template>
     </groups-app>
   </div>

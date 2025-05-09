@@ -2490,9 +2490,9 @@ for an environment.
 
 **Supported values**:
 
-- `agent`: A string specifying the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md). The format is `path/to/agent/project:agent-name`.
-- `namespace`: A string representing the Kubernetes namespace. It needs to be set together with the `agent` keyword.
-- `flux_resource_path`: A string representing the path to the Flux resource. This must be the full resource path. It needs to be set together with the
+- `agent`: A string specifying the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md). The format is `path/to/agent/project:agent-name`. If the agent is connected to the project running the pipeline, use `$CI_PROJECT_PATH:agent-name`.
+- `namespace`: A string representing the Kubernetes namespace where the environment is deployed. The namespace must be set together with the `agent` keyword.
+- `flux_resource_path`: A string representing the full path to the Flux resource, such as a HelmRelease. The Flux resource must be set together with the
   `agent` and `namespace` keywords.
 
 **Example of `environment:kubernetes`**:
@@ -2506,14 +2506,17 @@ deploy:
     kubernetes:
       agent: path/to/agent/project:agent-name
       namespace: my-namespace
-      flux_resource_path: helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent
+      flux_resource_path: helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release-resource
 ```
 
-This configuration sets up the `deploy` job to deploy to the `production`
-environment, associates the [agent](../../user/clusters/agent/_index.md) named `agent-name` with the environment,
-and configures the [dashboard for Kubernetes](../environments/kubernetes_dashboard.md) for an environment with
+This configuration:
+
+- Sets up the `deploy` job to deploy to the `production`
+environment
+- Associates the [agent](../../user/clusters/agent/_index.md) named `agent-name` with the environment
+- Configures the [dashboard for Kubernetes](../environments/kubernetes_dashboard.md) for an environment with
 the namespace `my-namespace` and the `flux_resource_path` set to
-`helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent`.
+`helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release-resource`.
 
 **Additional details**:
 
@@ -2522,7 +2525,8 @@ the namespace `my-namespace` and the `flux_resource_path` set to
   [configure `user_access`](../../user/clusters/agent/user_access.md)
   for the environment's project or its parent group.
 - The user running the job must be authorized to access the cluster agent.
-  Otherwise, it will ignore `agent`, `namespace` and `flux_resource_path` attributes.
+  Otherwise, the dashboard ignores the `agent`, `namespace`, and `flux_resource_path` attributes.
+- If you only want to set the `agent`, you do not have to set the `namespace`, and cannot set `flux_resource_path`. However, this configuration lists all namespaces in a cluster in the dashboard for Kubernetes.
 
 #### `environment:deployment_tier`
 

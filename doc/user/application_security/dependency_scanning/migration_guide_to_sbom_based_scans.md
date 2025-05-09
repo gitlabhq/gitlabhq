@@ -238,7 +238,7 @@ Prerequisites:
 
 To migrate a Go project:
 
-- Ensure that your project provides a `go.mod` and a `go.graph` files. Configure the [`go mod graph` command](https://go.dev/ref/mod#go-mod-graph) from the Go Toolchains in a preceding CI/CD job (for example, `build`) to dynamically generate the `dependencies.lock` file and export it as an [artifact](../../../ci/jobs/job_artifacts.md) prior to running the Dependency Scanning job.
+- Ensure that your project provides a `go.mod` and a `go.graph` files. Configure the [`go mod graph` command](https://go.dev/ref/mod#go-mod-graph) from the Go Toolchains in a preceding CI/CD job (for example: `build`) to dynamically generate the `dependencies.lock` file and export it as an [artifact](../../../ci/jobs/job_artifacts.md) prior to running the Dependency Scanning job.
 
 See the [enablement instructions for Go](dependency_scanning_sbom/_index.md#go) for more details and examples.
 
@@ -260,7 +260,7 @@ To migrate a Gradle project:
 
 - Ensure that your project provides a `dependencies.lock` file. Configure the [Gradle Dependency Lock Plugin](https://github.com/nebula-plugins/gradle-dependency-lock-plugin) in your project and either:
   - Permanently integrate the plugin into your development workflow. This means committing the `dependencies.lock` file into your repository and updating it as you're making changes to your project dependencies.
-  - Use the command in a preceding CI/CD job (for example, `build`) to dynamically generate the `dependencies.lock` file and export it as an [artifact](../../../ci/jobs/job_artifacts.md) prior to running the Dependency Scanning job.
+  - Use the command in a preceding CI/CD job (for example: `build`) to dynamically generate the `dependencies.lock` file and export it as an [artifact](../../../ci/jobs/job_artifacts.md) prior to running the Dependency Scanning job.
 
 See the [enablement instructions for Gradle](dependency_scanning_sbom/_index.md#gradle) for more details and examples.
 
@@ -280,7 +280,7 @@ Prerequisites:
 
 To migrate a Maven project:
 
-- Ensure that your project provides a `maven.graph.json` file. Configure the [maven dependency plugin](https://maven.apache.org/plugins/maven-dependency-plugin/index.html) in a preceding CI/CD job (e.g. `build`) to dynamically generate the `maven.graph.json` file and export it as an [artifact](../../../ci/jobs/job_artifacts.md) prior to running the Dependency Scanning job.
+- Ensure that your project provides a `maven.graph.json` file. Configure the [maven dependency plugin](https://maven.apache.org/plugins/maven-dependency-plugin/index.html) in a preceding CI/CD job (for example: `build`) to dynamically generate the `maven.graph.json` file and export it as an [artifact](../../../ci/jobs/job_artifacts.md) prior to running the Dependency Scanning job.
 
 See the [enablement instructions for Maven](dependency_scanning_sbom/_index.md#maven) for more details and examples.
 
@@ -338,11 +338,11 @@ To migrate a pip project:
 
 - Ensure that your project provides a `requirements.txt` lockfile. Configure the [pip-compile command line tool](https://pip-tools.readthedocs.io/en/latest/cli/pip-compile/) in your project and either:
   - Permanently integrate the command line tool into your development workflow. This means committing the `requirements.txt` file into your repository and updating it as you're making changes to your project dependencies.
-  - Use the command line tool in a preceding CI/CD job (e.g. `build`) to dynamically generate the `requirements.txt` file and export it as an [artifact](../../../ci/jobs/job_artifacts.md) prior to running the Dependency Scanning job.
+  - Use the command line tool in a preceding CI/CD job (for example: `build`) to dynamically generate the `requirements.txt` file and export it as an [artifact](../../../ci/jobs/job_artifacts.md) prior to running the Dependency Scanning job.
 
 OR
 
-- Ensure that your project provides a `pipdeptree.json` lockfile. Configure the [pipdeptree command line utility](https://pypi.org/project/pipdeptree/) in a preceding CI/CD job (e.g. `build`) to dynamically generate the `pipdeptree.json` file and export it as an [artifact](../../../ci/jobs/job_artifacts.md) prior to running the Dependency Scanning job.
+- Ensure that your project provides a `pipdeptree.json` lockfile. Configure the [pipdeptree command line utility](https://pypi.org/project/pipdeptree/) in a preceding CI/CD job (for example: `build`) to dynamically generate the `pipdeptree.json` file and export it as an [artifact](../../../ci/jobs/job_artifacts.md) prior to running the Dependency Scanning job.
 
 See the [enablement instructions for pip](dependency_scanning_sbom/_index.md#pip) for more details and examples.
 
@@ -364,11 +364,11 @@ To migrate a Pipenv project:
 
 - Ensure that your project provides a `Pipfile.lock` file. Configure the [`pipenv lock` command](https://pipenv.pypa.io/en/latest/cli.html#graph) in your project and either:
   - Permanently integrate the command into your development workflow. This means committing the `Pipfile.lock` file into your repository and updating it as you're making changes to your project dependencies.
-  - Use the command in a preceding CI/CD job (for example, `build`) to dynamically generate the `Pipfile.lock` file and export it as an [artifact](../../../ci/jobs/job_artifacts.md) prior to running the Dependency Scanning job.
+  - Use the command in a preceding CI/CD job (for example: `build`) to dynamically generate the `Pipfile.lock` file and export it as an [artifact](../../../ci/jobs/job_artifacts.md) prior to running the Dependency Scanning job.
 
 OR
 
-- Ensure that your project provides a `pipenv.graph.json` file. Configure the [`pipenv graph` command](https://pipenv.pypa.io/en/latest/cli.html#graph) in a preceding CI/CD job (for example, `build`) to dynamically generate the `pipenv.graph.json` file and export it as an [artifact](../../../ci/jobs/job_artifacts.md) prior to running the Dependency Scanning job.
+- Ensure that your project provides a `pipenv.graph.json` file. Configure the [`pipenv graph` command](https://pipenv.pypa.io/en/latest/cli.html#graph) in a preceding CI/CD job (for example: `build`) to dynamically generate the `pipenv.graph.json` file and export it as an [artifact](../../../ci/jobs/job_artifacts.md) prior to running the Dependency Scanning job.
 
 See the [enablement instructions for Pipenv](dependency_scanning_sbom/_index.md#pipenv) for more details and examples.
 
@@ -422,7 +422,7 @@ Prerequisites:
 
 To migrate an sbt project:
 
-- Ensure that your project provides a `dependencies-compile.dot` file. Configure the [sbt-dependency-graph plugin](https://github.com/sbt/sbt-dependency-graph) in a preceding CI/CD job (e.g. `build`) to dynamically generate the `dependencies-compile.dot` file and export it as an [artifact](../../../ci/jobs/job_artifacts.md) prior to running the Dependency Scanning job.
+- Ensure that your project provides a `dependencies-compile.dot` file. Configure the [sbt-dependency-graph plugin](https://github.com/sbt/sbt-dependency-graph) in a preceding CI/CD job (for example: `build`) to dynamically generate the `dependencies-compile.dot` file and export it as an [artifact](../../../ci/jobs/job_artifacts.md) prior to running the Dependency Scanning job.
 
 See the [enablement instructions for sbt](dependency_scanning_sbom/_index.md#sbt) for more details and examples.
 
@@ -503,7 +503,7 @@ There are no additional steps to migrate a Yarn project to use the Dependency Sc
 ## Changes to CI/CD variables
 
 Most of the existing CI/CD variables are no longer relevant with the new Dependency Scanning analyzer so their values will be ignored.
-Unless these are also used to configure other security analyzers (for example, `ADDITIONAL_CA_CERT_BUNDLE`), you should remove them from your CI/CD configuration.
+Unless these are also used to configure other security analyzers (for example: `ADDITIONAL_CA_CERT_BUNDLE`), you should remove them from your CI/CD configuration.
 
 Remove the following CI/CD variables from your CI/CD configuration:
 

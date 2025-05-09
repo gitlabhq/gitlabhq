@@ -34,7 +34,6 @@ describe('Jobs filtered search', () => {
         glFeatures: {
           adminJobsFilterRunnerType: true,
           feSearchBuildByName: true,
-          populateAndUseBuildSourceTable: true,
         },
         ...provideOptions,
       },
@@ -134,32 +133,6 @@ describe('Jobs filtered search', () => {
           },
         },
       ]);
-    });
-  });
-
-  describe('when feature flag `populateAndUseBuildSourceTable` is disabled', () => {
-    const provideOptions = { glFeatures: { populateAndUseBuildSourceTable: false } };
-
-    it('does not display token for job source', () => {
-      createComponent(null, provideOptions);
-
-      expect(findJobSourceToken()).toBeUndefined();
-    });
-
-    describe('with query string passed', () => {
-      it('filtered search returns only data shape for search token `status` and not for search token `job source`', () => {
-        const tokenStatusesValue = 'SUCCESS';
-        const tokenJobSourceValue = 'PUSH';
-
-        createComponent(
-          { queryString: { statuses: tokenStatusesValue, sources: tokenJobSourceValue } },
-          provideOptions,
-        );
-
-        expect(findFilteredSearch().props('value')).toEqual([
-          { type: TOKEN_TYPE_STATUS, value: { data: tokenStatusesValue, operator: '=' } },
-        ]);
-      });
     });
   });
 

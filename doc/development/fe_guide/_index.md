@@ -59,7 +59,7 @@ The application structure typically follows the pattern: `app/assets/javascripts
   - `constants.js` (shared variables)
   - `index.js` (file that injects the Vue app)
 
-There is always a top-level Vue component that acts as the “main” component and imports lower-level components to build a feature. In all cases, there is an accompanying file (often named index.js or app.js but often varies) that looks for the injection point on a Haml view (e.g., `#pipeline-schedules-app`) and mounts the Vue app to the page.
+There is always a top-level Vue component that acts as the “main” component and imports lower-level components to build a feature. In all cases, there is an accompanying file (often named index.js or app.js but often varies) that looks for the injection point on a Haml view (for example, `#pipeline-schedules-app`) and mounts the Vue app to the page.
 
 We achieve this by importing a JavaScript file like [`app/assets/javascripts/ci/pipeline_schedules/mount_pipeline_schedules_app.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/4ce851345054dbf09956dabcc9b958ae8aab77bb/app/assets/javascripts/ci/pipeline_schedules/mount_pipeline_schedules_app.js) (which sets up the Vue app) into the related Haml view’s corresponding page bundle, such as [`app/assets/javascripts/pages/projects/pipeline_schedules/index/index.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/4ce851345054dbf09956dabcc9b958ae8aab77bb/app/assets/javascripts/pages/projects/pipeline_schedules/index/index.js).
 

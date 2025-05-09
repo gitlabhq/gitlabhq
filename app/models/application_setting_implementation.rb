@@ -107,7 +107,6 @@ module ApplicationSettingImplementation
         gitaly_timeout_default: 55,
         gitaly_timeout_fast: 10,
         gitaly_timeout_medium: 30,
-        gitlab_product_usage_data_enabled: Settings.gitlab['initial_gitlab_product_usage_data'],
         gitpod_enabled: false,
         gitpod_url: 'https://gitpod.io/',
         gravatar_enabled: Settings.gravatar['enabled'],

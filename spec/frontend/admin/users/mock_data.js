@@ -112,16 +112,10 @@ export const expectedAccessLevelToken = {
   token: GlFilteredSearchToken,
   operators: OPERATORS_IS,
   unique: true,
-  options: IS_EE
-    ? [
-        { value: 'admins', title: 'Administrator' },
-        { value: 'auditors', title: 'Auditor' },
-        { value: 'external', title: 'External' },
-      ]
-    : [
-        { value: 'admins', title: 'Administrator' },
-        { value: 'external', title: 'External' },
-      ],
+  options: [
+    { value: 'admins', title: 'Administrator' },
+    { value: 'external', title: 'External' },
+  ],
 };
 
 export const expectedTokens = [

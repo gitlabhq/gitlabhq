@@ -1,6 +1,6 @@
 import { s__ } from '~/locale';
 
-export const QUICK_START = s__('ContainerRegistry|CLI Commands');
+export const QUICK_START = s__('ContainerRegistry|CLI commands');
 export const LOGIN_COMMAND_LABEL = s__('ContainerRegistry|Login');
 export const COPY_LOGIN_TITLE = s__('ContainerRegistry|Copy login command');
 export const BUILD_COMMAND_LABEL = s__('ContainerRegistry|Build an image');

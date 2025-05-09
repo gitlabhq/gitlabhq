@@ -120,7 +120,7 @@ Missing field 'description' while writing result {
 1. The backend might not be returning the "description" field in the response for the "WorkItemWidgetDescription" type. Verify that your backend API is correctly sending the data as expected.
 1. Use the `cache.readQuery` method to inspect the contents of the Apollo Client cache. Verify that the "description" field is present in the cached data for the relevant query
 1. Open the error stack trace suggesting that the issue might be related to how Apollo Client is writing data to its cache. It's possible that the cache is not being updated correctly, leading to missing fields
-1. Add console logs within your Apollo Client code (e.g., before and after writing to the cache) to track the data being processed and identify where the "description" field might be missing.
+1. Add console logs within your Apollo Client code (for example, before and after writing to the cache) to track the data being processed and identify where the "description" field might be missing.
 
 **Solution**
 

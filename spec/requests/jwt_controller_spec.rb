@@ -336,21 +336,12 @@ RSpec.describe JwtController, feature_category: :system_access do
       end
     end
 
-    shared_examples 'enforce_abilities_check_for_dependency_proxy disabled' do
-      before do
-        stub_feature_flags(enforce_abilities_check_for_dependency_proxy: false)
-      end
-
-      it_behaves_like 'with valid credentials'
-    end
-
     context 'with personal access token' do
       let(:credential_user) { nil }
       let(:credential_password) { personal_access_token.token }
 
       it_behaves_like 'with valid credentials'
       it_behaves_like 'a token that expires today'
-      it_behaves_like 'enforce_abilities_check_for_dependency_proxy disabled'
 
       # TODO: Cleanup code related to packages_dependency_proxy_containers_scope_check
       # https://gitlab.com/gitlab-org/gitlab/-/issues/520321
@@ -360,7 +351,6 @@ RSpec.describe JwtController, feature_category: :system_access do
         end
 
         it_behaves_like 'with valid credentials'
-        it_behaves_like 'enforce_abilities_check_for_dependency_proxy disabled'
       end
 
       context 'without the required scopes' do
@@ -374,10 +364,7 @@ RSpec.describe JwtController, feature_category: :system_access do
           end
 
           it_behaves_like 'returning response status', :forbidden
-          it_behaves_like 'enforce_abilities_check_for_dependency_proxy disabled'
         end
-
-        it_behaves_like 'enforce_abilities_check_for_dependency_proxy disabled'
       end
     end
 
@@ -404,7 +391,6 @@ RSpec.describe JwtController, feature_category: :system_access do
           end
 
           it_behaves_like 'with valid credentials'
-          it_behaves_like 'enforce_abilities_check_for_dependency_proxy disabled'
         end
 
         context 'revoked' do
@@ -422,8 +408,6 @@ RSpec.describe JwtController, feature_category: :system_access do
 
           it_behaves_like 'returning response status', :unauthorized
         end
-
-        it_behaves_like 'enforce_abilities_check_for_dependency_proxy disabled'
       end
 
       context 'without the required scopes' do
@@ -442,8 +426,6 @@ RSpec.describe JwtController, feature_category: :system_access do
 
           it_behaves_like 'with valid credentials'
         end
-
-        it_behaves_like 'enforce_abilities_check_for_dependency_proxy disabled'
       end
     end
 
@@ -470,7 +452,6 @@ RSpec.describe JwtController, feature_category: :system_access do
         end
 
         it_behaves_like 'with valid credentials'
-        it_behaves_like 'enforce_abilities_check_for_dependency_proxy disabled'
       end
     end
 

@@ -43,8 +43,7 @@ export default {
       :disabled="disabled"
       :title="title"
       :aria-label="title"
-      variant="danger"
-      category="secondary"
+      category="tertiary"
       icon="remove"
       @click="$emit('delete')"
     />
