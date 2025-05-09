@@ -34811,6 +34811,9 @@ msgid_plural "Job|%{searchLength} results found for %{searchTerm}"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Job|An error occurred while fetching the job header data."
+msgstr ""
+
 msgid "Job|Are you sure you want to erase this job log and artifacts?"
 msgstr ""
 

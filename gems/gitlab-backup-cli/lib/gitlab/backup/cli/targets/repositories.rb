@@ -8,9 +8,11 @@ module Gitlab
       module Targets
         # Backup and restores repositories by querying the database
         class Repositories < Target
+          BATCH_SIZE = 1000
+
           def dump(destination)
             gitaly_backup.start(:create, destination)
-            enqueue_consecutive
+            enqueue_repositories
 
           ensure
             gitaly_backup.finish!
@@ -18,7 +20,7 @@ module Gitlab
 
           def restore(source)
             gitaly_backup.start(:restore, source, remove_all_repositories: remove_all_repositories)
-            enqueue_consecutive
+            enqueue_repositories
 
           ensure
             gitaly_backup.finish!
@@ -36,56 +38,54 @@ module Gitlab
             context.config_repositories_storages.keys
           end
 
-          def enqueue_consecutive
-            enqueue_consecutive_projects
-            enqueue_consecutive_snippets
+          def enqueue_repositories
+            enqueue_project_source_code
+            enqueue_project_wiki
+            enqueue_group_wiki
+            enqueue_project_design_management
+            enqueue_project_snippets
+            enqueue_personal_snippets
           end
 
-          def enqueue_consecutive_projects
-            project_relation.find_each(batch_size: 1000) do |project|
-              enqueue_project(project)
+          def enqueue_project_source_code
+            Models::Project.find_each(batch_size: BATCH_SIZE) do |project|
+              gitaly_backup.enqueue(project, always_create: true)
             end
           end
 
-          def enqueue_consecutive_snippets
-            snippet_relation.find_each(batch_size: 1000) { |snippet| enqueue_snippet(snippet) }
+          def enqueue_project_wiki
+            Models::ProjectWiki.find_each(batch_size: BATCH_SIZE) do |project_wiki|
+              gitaly_backup.enqueue(project_wiki)
+            end
           end
 
-          def enqueue_project(project)
-            gitaly_backup.enqueue(project, Gitlab::Backup::Cli::RepoType::PROJECT)
-            gitaly_backup.enqueue(project, Gitlab::Backup::Cli::RepoType::WIKI)
-
-            return unless project.design_management_repository
-
-            gitaly_backup.enqueue(project.design_management_repository, Gitlab::Backup::Cli::RepoType::DESIGN)
+          def enqueue_group_wiki
+            Models::GroupWiki.find_each(batch_size: BATCH_SIZE) do |group_wiki|
+              gitaly_backup.enqueue(group_wiki)
+            end
           end
 
-          def enqueue_snippet(snippet)
-            gitaly_backup.enqueue(snippet, Gitlab::Backup::Cli::RepoType::SNIPPET)
+          def enqueue_project_design_management
+            Models::ProjectDesignManagement.find_each(batch_size: BATCH_SIZE) do |project_design_management|
+              gitaly_backup.enqueue(project_design_management)
+            end
           end
 
-          def project_relation
-            Project.includes(:route, :group, :namespace)
+          def enqueue_project_snippets
+            Models::ProjectSnippet.find_each(batch_size: BATCH_SIZE) do |snippet|
+              gitaly_backup.enqueue(snippet)
+            end
           end
 
-          def snippet_relation
-            Snippet.all
+          def enqueue_personal_snippets
+            Models::PersonalSnippet.find_each(batch_size: BATCH_SIZE) do |snippet|
+              gitaly_backup.enqueue(snippet)
+            end
           end
 
           def restore_object_pools
-            PoolRepository.includes(:source_project).find_each do |pool|
-              Output.info " - Object pool #{pool.disk_path}..."
-
-              unless pool.source_project
-                Output.info " - Object pool #{pool.disk_path}... [SKIPPED]"
-                next
-              end
-
-              pool.state = 'none'
-              pool.save
-
-              pool.schedule
-            end
+            pool = Gitlab::Backup::Cli::Utils::PoolRepositories.new(gitlab_basepath: context.gitlab_basepath)
+            pool.reinitialize!
           end
         end
       end

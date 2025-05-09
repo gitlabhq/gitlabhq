@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ProjectPolicy < BasePolicy
-  include CrudPolicyHelpers
   include ArchivedAbilities
 
   desc "Project has public builds enabled"
@@ -739,7 +738,11 @@ class ProjectPolicy < BasePolicy
     prevent(*archived_abilities)
 
     archived_features.each do |feature|
-      prevent(*create_update_admin(feature))
+      prevent(
+        :"create_#{feature}",
+        :"update_#{feature}",
+        :"admin_#{feature}"
+      )
     end
   end
 

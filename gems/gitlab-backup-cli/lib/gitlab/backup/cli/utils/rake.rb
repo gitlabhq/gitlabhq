@@ -18,10 +18,28 @@ module Gitlab
             @chdir = chdir
           end
 
+          # Execute the rake task and return its execution result status
+          #
           # @return [self]
           def execute
             Bundler.with_original_env do
               @result = Shell::Command.new(*rake_command, chdir: chdir).capture
+            end
+
+            self
+          end
+
+          # Execute the rake task and intercept its output line by line including a final result status
+          #
+          # @example Usage
+          #    Rake.new('some:task').capture_each { |stream, output| puts output if stream == :stdout }
+          # @yield |stream, output| Return output from :stdout or :stderr stream line by line
+          # @yieldparam [Symbol] stream type (either :stdout or :stderr)
+          # @yieldparam [String] output content
+          # @return [Gitlab::Backup::Cli::Command::Result] -- Captured output from executing a process
+          def capture_each(&block)
+            Bundler.with_original_env do
+              @result = Shell::Command.new(*rake_command, chdir: chdir).capture_each(&block)
             end
 
             self

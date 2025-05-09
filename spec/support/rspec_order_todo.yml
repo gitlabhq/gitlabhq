@@ -6339,7 +6339,6 @@
 - './spec/policies/clusters/cluster_policy_spec.rb'
 - './spec/policies/clusters/instance_policy_spec.rb'
 - './spec/policies/commit_policy_spec.rb'
-- './spec/policies/concerns/crud_policy_helpers_spec.rb'
 - './spec/policies/concerns/policy_actor_spec.rb'
 - './spec/policies/container_expiration_policy_policy_spec.rb'
 - './spec/policies/custom_emoji_policy_spec.rb'

@@ -1260,7 +1260,6 @@ Gitlab/BoundedContexts:
     - 'app/policies/commit_signatures/x509_commit_signature_policy.rb'
     - 'app/policies/commit_status_policy.rb'
     - 'app/policies/concerns/archived_abilities.rb'
-    - 'app/policies/concerns/crud_policy_helpers.rb'
     - 'app/policies/concerns/find_group_projects.rb'
     - 'app/policies/concerns/member_policy_helpers.rb'
     - 'app/policies/concerns/policy_actor.rb'

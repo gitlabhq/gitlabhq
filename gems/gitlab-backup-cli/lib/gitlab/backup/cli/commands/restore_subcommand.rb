@@ -11,12 +11,6 @@ module Gitlab
           def all(backup_id)
             Gitlab::Backup::Cli.update_process_title!("restore all from #{backup_id}")
 
-            duration = measure_duration do
-              Gitlab::Backup::Cli::Output.info("Initializing environment...")
-              Gitlab::Backup::Cli.rails_environment!
-            end
-            Gitlab::Backup::Cli::Output.success("Environment loaded. (#{duration.in_seconds}s)")
-
             restore_executor =
               Gitlab::Backup::Cli::RestoreExecutor.new(
                 context: build_context,

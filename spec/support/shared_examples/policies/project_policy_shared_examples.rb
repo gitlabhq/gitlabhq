@@ -3,7 +3,12 @@
 RSpec.shared_examples 'archived project policies' do
   let(:feature_write_abilities) do
     described_class.archived_features.flat_map do |feature|
-      described_class.create_update_admin_destroy(feature)
+      [
+        :"create_#{feature}",
+        :"update_#{feature}",
+        :"admin_#{feature}",
+        :"destroy_#{feature}"
+      ]
     end + additional_maintainer_permissions
   end
 

@@ -33,6 +33,7 @@ module Gitlab
         end
 
         def execute
+          initialize_database_connection!
           execute_all_tasks
 
           write_metadata!
@@ -45,6 +46,10 @@ module Gitlab
         end
 
         private
+
+        def initialize_database_connection!
+          Models::Base.initialize_connection!(context: context)
+        end
 
         def build_metadata
           @metadata = Gitlab::Backup::Cli::Metadata::BackupMetadata.build(gitlab_version: context.gitlab_version)

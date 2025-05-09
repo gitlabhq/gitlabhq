@@ -94,6 +94,61 @@ RSpec.describe Gitlab::Backup::Cli::Shell::Command do
     end
   end
 
+  describe '#capture_each' do
+    it 'streams each stdout line from executed command' do
+      content = "first line\nsecond line"
+      expected_output = [
+        [:stdout, 'first line'], [:stdout, 'second line']
+      ]
+
+      output_streams = []
+      result = command.new('echo', content).capture_each do |stream, line|
+        output_streams << [stream, line]
+      end
+
+      expect(output_streams).to eq(expected_output)
+      expect(result.stdout.chomp).to eq(content)
+    end
+
+    it 'streams each stderr line from executed command' do
+      content = "first line\nsecond line"
+
+      input_file = tmpdir.join('input.txt')
+      File.open(input_file, 'w+') do |file|
+        file.write(content)
+      end
+
+      expected_output = [
+        [:stderr, 'first line'], [:stderr, 'second line']
+      ]
+
+      output_streams = []
+      result = command.new("cat #{input_file} > /dev/stderr").capture_each do |stream, line|
+        output_streams << [stream, line]
+      end
+
+      expect(output_streams).to eq(expected_output)
+      expect(result.stderr.chomp).to eq(content)
+    end
+
+    it 'returns a Process::Status from the executed command' do
+      result = command.new('pwd').capture_each do |_, _|
+        # no-op
+      end
+
+      expect(result.status).to be_a(Process::Status)
+      expect(result.status).to respond_to(:exited?, :termsig, :stopsig, :exitstatus, :success?, :pid)
+    end
+
+    it 'returns the execution duration' do
+      result = command.new('sleep 0.1').capture_each do |_, _|
+        # no-op
+      end
+
+      expect(result.duration).to be > 0.1
+    end
+  end
+
   describe '#run_single_pipeline!' do
     it 'runs without any exceptions' do
       expect { command.new('true').run_single_pipeline! }.not_to raise_exception

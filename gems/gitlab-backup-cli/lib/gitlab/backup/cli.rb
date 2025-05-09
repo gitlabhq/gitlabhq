@@ -5,8 +5,10 @@
 # want to use the Rainbow refinement in the gem code going forward, but
 # while we have this dependency, we need this external require
 require "rainbow/ext/string"
-require 'active_support/all'
-require 'active_record'
+require 'active_support/all' # Used to provide timezone support on timestamp among other things
+require 'active_record' # Used to connect to database views to help run gitaly backups
+require 'tmpdir' # Used to create temporary folders during backup
+require 'base64' # Used by gitaly backup client
 
 module Gitlab
   module Backup
@@ -21,8 +23,8 @@ module Gitlab
       autoload :Errors, 'gitlab/backup/cli/errors'
       autoload :GitlabConfig, 'gitlab/backup/cli/gitlab_config'
       autoload :Metadata, 'gitlab/backup/cli/metadata'
+      autoload :Models, 'gitlab/backup/cli/models'
       autoload :Output, 'gitlab/backup/cli/output'
-      autoload :RepoType, 'gitlab/backup/cli/repo_type'
       autoload :RestoreExecutor, 'gitlab/backup/cli/restore_executor'
       autoload :Runner, 'gitlab/backup/cli/runner'
       autoload :Shell, 'gitlab/backup/cli/shell'
@@ -50,14 +52,6 @@ module Gitlab
 
       def self.root
         Pathname.new(File.expand_path(File.join(__dir__, '../../../')))
-      end
-
-      def self.rails_environment!
-        require File.join(GITLAB_PATH, 'config/application')
-
-        Rails.application.require_environment!
-        Rails.application.autoloaders
-        Rails.application.load_tasks
       end
     end
   end
