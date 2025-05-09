@@ -44,6 +44,7 @@ require_relative '../config/initializers/1_settings'
 
 Gitlab.ee do
   load File.expand_path('../ee/lib/tasks/gitlab/indexer.rake', __dir__)
+  load File.expand_path('../ee/lib/tasks/gitlab/zoekt.rake', __dir__)
   load File.expand_path('../ee/lib/tasks/gitlab/secrets_management/openbao.rake', __dir__)
 
   require_relative '../ee/lib/gitlab/elastic/indexer'

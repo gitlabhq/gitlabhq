@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class GroupMembersFinder < UnionFinder
+  include CreatedAtFilter
+  include Members::RoleParser
+
   RELATIONS = %i[direct inherited descendants shared_from_groups].freeze
   DEFAULT_RELATIONS = %i[direct inherited].freeze
   INVALID_RELATION_TYPE_ERROR_MSG =
@@ -12,9 +15,6 @@ class GroupMembersFinder < UnionFinder
     descendants: "Members in the group's subgroups",
     shared_from_groups: "Invited group's members"
   }.freeze
-
-  include CreatedAtFilter
-  include Members::RoleParser
 
   # Params can be any of the following:
   #   two_factor: string. 'enabled' or 'disabled' are returning different set of data, other values are not effective.

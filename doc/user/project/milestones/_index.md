@@ -313,14 +313,5 @@ When filtering by milestone, in addition to choosing a specific project mileston
 - **None**: Show issues or merge requests with no assigned milestone.
 - **Any**: Show issues or merge requests with an assigned milestone.
 - **Upcoming**: Show issues or merge requests with an open assigned milestone starting in the future.
-
-  In GitLab 17.11 and earlier, this filter showed items with an open assigned milestone that had the nearest due date in
-  the future. The GitLab REST API continues to use the filtering
-  logic from GitLab 17.11 and earlier to avoid introducing a breaking change.
-
 - **Started**: Show issues or merge requests with an open assigned milestone that overlaps with the current date. The
   list excludes milestones without a defined start and due date.
-
-  In GitLab 17.11 and earlier, this filter showed items that had an open assigned milestone with a start date that was
-  before today. The GitLab REST API continues to use the filtering
-  logic from GitLab 17.11 and earlier to avoid introducing a breaking change.

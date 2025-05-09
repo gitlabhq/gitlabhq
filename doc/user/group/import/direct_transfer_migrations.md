@@ -122,9 +122,10 @@ has an existing membership in the destination namespace with a [higher role](../
 the one being mapped, the membership is mapped as a direct membership instead. This ensures the member does not get
 elevated permissions.
 
-[In GitLab 18.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/510673),
-for top-level groups with at least one enterprise user, you can map
-contributions and memberships only to [enterprise users](../../enterprise_user/_index.md).
+[In GitLab 18.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/510673), if your top-level group has at least one
+[enterprise user](../../enterprise_user/_index.md), you can only reassign users' contributions to enterprise users claimed
+by your organization. This significantly reduces the potential for errors during user reassignment. The same scoping is
+also applied to CSV-based reassignment, preventing accidental assignment to users outside your organization.
 
 {{< alert type="note" >}}
 

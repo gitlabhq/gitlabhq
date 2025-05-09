@@ -290,6 +290,20 @@ subsequent imports from the same source instance to the same top-level group or
 subgroup on the destination instance do not create placeholder users.
 Instead, contributions are mapped automatically to the user.
 
+#### Placeholder user deletion
+
+When you delete a top-level group that contains placeholder users, those placeholder users are
+automatically removed. However, placeholder users remain in the system if they are also associated
+with projects or groups outside the deleted top-level group.
+
+{{< alert type="note" >}}
+
+There is no other way to delete placeholder users, but support for improvements is proposed in
+[issue 519391](https://gitlab.com/gitlab-org/gitlab/-/issues/519391) and
+[issue 537340](https://gitlab.com/gitlab-org/gitlab/-/issues/537340).
+
+{{< /alert >}}
+
 #### Placeholder user limits
 
 If importing to GitLab.com, placeholder users are limited per top-level group on the destination instance. The limits differ depending on your plan and seat count. Placeholder users do not count towards license limits.

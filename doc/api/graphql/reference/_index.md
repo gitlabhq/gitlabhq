@@ -9385,6 +9385,30 @@ Input type: `ProjectSecretDeleteInput`
 | <a id="mutationprojectsecretdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationprojectsecretdeleteprojectsecret"></a>`projectSecret` | [`ProjectSecret`](#projectsecret) | Deleted project secret. |
 
+### `Mutation.projectSecretUpdate`
+
+Input type: `ProjectSecretUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecretupdatebranch"></a>`branch` | [`String`](#string) | New branches that can access the secret. |
+| <a id="mutationprojectsecretupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecretupdatedescription"></a>`description` | [`String`](#string) | New description of the project secret. |
+| <a id="mutationprojectsecretupdateenvironment"></a>`environment` | [`String`](#string) | New environments that can access the secret. |
+| <a id="mutationprojectsecretupdatename"></a>`name` | [`String!`](#string) | Name of the project secret to update. |
+| <a id="mutationprojectsecretupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the secret. |
+| <a id="mutationprojectsecretupdatevalue"></a>`value` | [`String`](#string) | New value of the project secret. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecretupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecretupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojectsecretupdateprojectsecret"></a>`projectSecret` | [`ProjectSecret`](#projectsecret) | Updated project secret. |
+
 ### `Mutation.projectSecretsManagerInitialize`
 
 Input type: `ProjectSecretsManagerInitializeInput`

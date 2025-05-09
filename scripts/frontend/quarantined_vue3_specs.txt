@@ -134,7 +134,6 @@ spec/frontend/pages/projects/pipeline_schedules/shared/components/interval_patte
 spec/frontend/pages/shared/wikis/components/delete_wiki_modal_spec.js
 spec/frontend/performance_bar/index_spec.js
 spec/frontend/pipeline_wizard/components/step_spec.js
-spec/frontend/profile/preferences/components/profile_preferences_spec.js
 spec/frontend/projects/commit/components/form_modal_spec.js
 spec/frontend/projects/commits/components/author_select_spec.js
 spec/frontend/projects/report_abuse/components/report_abuse_dropdown_item_spec.js

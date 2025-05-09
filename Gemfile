@@ -533,7 +533,7 @@ group :development, :test do
   gem 'influxdb-client', '~> 3.1', require: false, feature_category: :tooling
 
   gem 'knapsack', '~> 4.0.0', feature_category: :tooling
-  gem 'crystalball', '~> 0.7.0', require: false, feature_category: :tooling
+  gem 'gitlab-crystalball', '~> 0.7.2', require: false, feature_category: :tooling
   gem 'test_file_finder', '~> 0.3.1', feature_category: :tooling
 
   gem 'simple_po_parser', '~> 1.1.6', require: false, feature_category: :shared

@@ -491,7 +491,7 @@ status icon to go to the detail page of that downstream pipeline.
 
 ## Pipeline success and duration charts
 
-Pipeline analytics are available on the [**CI/CD Analytics** page](../../user/analytics/ci_cd_analytics.md#pipeline-success-and-duration-charts).
+Pipeline analytics are available on the [**CI/CD Analytics** page](../../user/analytics/ci_cd_analytics.md).
 
 ## Pipeline badges
 

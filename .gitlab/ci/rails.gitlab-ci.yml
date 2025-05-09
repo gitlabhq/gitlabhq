@@ -44,6 +44,7 @@ setup-test-env:
       - ${TMP_TEST_FOLDER}/gitaly/praefect.config.toml
       - ${TMP_TEST_FOLDER}/gitaly/praefect-db.config.toml
       - ${TMP_TEST_FOLDER}/gitlab-elasticsearch-indexer/bin/gitlab-elasticsearch-indexer
+      - ${TMP_TEST_FOLDER}/gitlab-zoekt/bin/gitlab-zoekt
       - ${TMP_TEST_FOLDER}/gitlab-shell/
       - ${TMP_TEST_FOLDER}/gitlab-test-fork/
       - ${TMP_TEST_FOLDER}/gitlab-test-fork.bundle

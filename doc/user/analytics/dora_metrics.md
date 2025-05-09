@@ -117,6 +117,12 @@ The first step is to benchmark the CI/CD pipelines' efficiency between groups an
 
 ## Time to restore service
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356959) in GitLab 15.1.
+
+{{< /history >}}
+
 Time to restore service is the amount of time it takes an organization to recover from a failure in production.
 
 For software leaders, time to restore service reflects how long it takes an organization to recover from a failure in production.

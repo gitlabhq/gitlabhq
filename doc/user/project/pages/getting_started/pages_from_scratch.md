@@ -45,16 +45,16 @@ Create three files in the root (top-level) directory:
 - `index.html`: An HTML file you can populate with whatever HTML content
   you'd like, for example:
 
-   ```html
-   <html>
-   <head>
-     <title>Home</title>
-   </head>
-   <body>
-     <h1>Hello World!</h1>
-   </body>
-   </html>
-   ```
+  ```html
+  <html>
+  <head>
+    <title>Home</title>
+  </head>
+  <body>
+    <h1>Hello World!</h1>
+  </body>
+  </html>
+  ```
 
 - [`Gemfile`](https://bundler.io/gemfile.html): A file that describes dependencies for Ruby programs.
 

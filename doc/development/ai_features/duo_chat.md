@@ -529,6 +529,27 @@ team member because
 [you can make yourself an instance Admin in Staging Ref](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#admin-access)
 and, as an Admin, easily create licensed groups for testing.
 
+### Important Testing Considerations
+
+**Note**: A user who has a seat in multiple groups with different tiers of Duo add-on gets the highest tier experience across the entire instance.
+
+It's not possible to test feature separation between different Duo add-ons if your test account has a seat in a higher tier add-on.
+To properly test different tiers, create a separate test account for each tier you need to test.
+
+### Staging testing groups
+
+To simplify testing on [staging](https://staging.gitlab.com), several pre-configured groups have been created with the appropriate licenses and add-ons:
+
+| Group | Duo Add-on | GitLab license |
+| --- | --- | --- |
+| [`duo_pro_gitlab_premium`](https://staging.gitlab.com/groups/duo_pro_gitlab_premium) | Pro | Premium |
+| [`duo_pro_gitlab_ultimate`](https://staging.gitlab.com/groups/duo_pro_gitlab_ultimate) | Pro | Ultimate |
+| [`duo_enterprise_gitlab_ultimate`](https://staging.gitlab.com/groups/duo_enterprise_gitlab_ultimate) | Enterprise | Ultimate |
+
+Ask in the `#g_duo_chat` channel on Slack to be added as an Owner to these groups.
+Once added as an Owner, you can add your secondary accounts to the group with a role Developer and assign them a seat in the Duo add-on.
+Then you can sign in as your Developer user and test access control to Duo Chat. 
+
 ### GitLab Duo Chat End-to-End Tests in live environments
 
 Duo Chat end-to-end tests run continuously against [Staging](https://staging.gitlab.com/users/sign_in) and [Production](https://gitlab.com/) GitLab environments.

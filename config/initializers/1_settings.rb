@@ -266,6 +266,9 @@ end
 Gitlab.ee do
   Settings['elasticsearch'] ||= {}
   Settings.elasticsearch['indexer_path'] ||= Gitlab::Utils.which('gitlab-elasticsearch-indexer')
+
+  Settings['zoekt'] ||= {}
+  Settings.zoekt['bin_path'] ||= Gitlab::Utils.which('gitlab-zoekt')
 end
 
 #

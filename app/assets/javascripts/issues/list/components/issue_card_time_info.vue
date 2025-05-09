@@ -77,8 +77,9 @@ export default {
     <work-item-attribute
       v-if="dueDateText"
       anchor-id="issuable-due-date"
+      wrapper-component-class="issuable-due-date"
       :title="dueDateText"
-      title-component-class="issuable-due-date gl-mr-3"
+      title-component-class="gl-mr-3"
       :tooltip-text="dueDateTitle"
       tooltip-placement="top"
     >

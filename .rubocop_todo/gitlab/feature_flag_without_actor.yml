@@ -105,7 +105,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'ee/lib/gitlab/geo/replication/blob_downloader.rb'
     - 'ee/lib/gitlab/geo/replicator.rb'
     - 'ee/lib/gitlab/llm/tanuki_bot.rb'
-    - 'ee/lib/gitlab/search/zoekt/client.rb'
     - 'ee/lib/gitlab/usage_data_counters/epic_activity_unique_counter.rb'
     - 'ee/lib/search/zoekt/circuit_breaker.rb'
     - 'ee/spec/lib/gitlab/product_analytics/developments/setup_spec.rb'
