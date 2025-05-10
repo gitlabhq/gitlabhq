@@ -4,6 +4,7 @@ module Resolvers
   module Projects
     class DeployKeyResolver < BaseResolver
       include LooksAhead
+
       type Types::AccessLevels::DeployKeyType, null: true
 
       def resolve_with_lookahead(**args)

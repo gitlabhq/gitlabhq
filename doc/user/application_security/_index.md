@@ -124,27 +124,6 @@ For GitLab Self-Managed instances, you can choose to run most of the GitLab secu
 
 GitLab Self-Managed instances can also run the security scanners on a GitLab Runner [running inside OpenShift](../../install/openshift_and_gitlab/_index.md).
 
-## Security report validation
-
-GitLab 15.0 enforces validation of the security report artifacts before ingesting the vulnerabilities.
-This prevents ingestion of broken vulnerability data into the database. GitLab validates the
-artifacts against the [report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/tree/master/dist),
-according to the schema version declared in the report.
-
-The pipeline's **Security** tab lists any report artifacts that failed validation, and the
-validation error message.
-
-Validation depends on the schema version declared in the security report artifact:
-
-- If your security report specifies a supported schema version, GitLab uses this version to validate.
-- If your security report uses a deprecated version, GitLab attempts validation against that version and adds a deprecation warning to the validation result.
-- If your security report uses a supported MAJOR-MINOR version of the report schema but the PATCH version doesn't match any vendored versions, GitLab attempts to validate it against latest vendored PATCH version of the schema.
-  - Example: security report uses version 14.1.1 but the latest vendored version is 14.1.0. GitLab would validate against schema version 14.1.0.
-- If your security report uses a version that is not supported, GitLab attempts to validate it against the earliest schema version available in your installation but doesn't ingest the report.
-- If your security report does not specify a schema version, GitLab attempts to validate it against the earliest schema version available in GitLab. Because the `version` property is required, validation always fails in this case, but other validation errors may also be present.
-
-You can always find supported and deprecated schema versions in the [source code](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/parsers/security/validators/schema_validator.rb).
-
 ## Security scanning configuration tips
 
 Each GitLab security scanning tool has a default

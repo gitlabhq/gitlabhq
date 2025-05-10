@@ -432,7 +432,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/repositories/project_push_rules_changes_auditor_spec.rb'
     - 'ee/spec/lib/sidebars/groups/menus/epics_menu_spec.rb'
     - 'ee/spec/lib/sidebars/groups/menus/work_item_epics_menu_spec.rb'
-    - 'ee/spec/lib/sidebars/projects/menus/learn_gitlab_menu_spec.rb'
     - 'ee/spec/lib/sidebars/user_settings/menus/profile_billing_menu_spec.rb'
     - 'ee/spec/lib/system_check/geo/authorized_keys_check_spec.rb'
     - 'ee/spec/lib/system_check/geo/authorized_keys_flag_check_spec.rb'

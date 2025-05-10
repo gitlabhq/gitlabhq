@@ -3,6 +3,7 @@
 module BatchedGitRefUpdates
   class CleanupSchedulerService
     include Gitlab::ExclusiveLeaseHelpers
+
     MAX_PROJECTS = 10_000
     BATCH_SIZE = 100
     LOCK_TIMEOUT = 10.minutes

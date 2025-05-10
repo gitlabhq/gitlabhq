@@ -1527,7 +1527,10 @@ Instead of:
 
 ## limitations
 
-Do not use **limitations**. Use **known issues** instead.
+Do not use **Limitations** as a topic title. For more information,
+see [reference topic titles](../topic_types/reference.md#reference-topic-titles).
+
+If you must, you can use the title **Known issues**.
 
 ## log in, log on
 

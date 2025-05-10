@@ -1631,7 +1631,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def visible_closing_issues_for(current_user = self.author)
-    strong_memoize(:visible_closing_issues_for) do
+    strong_memoize_with(:visible_closing_issues_for, current_user&.id) do
       visible_issues = if self.target_project.has_external_issue_tracker?
                          closes_issues(current_user)
                        else
@@ -1644,7 +1644,7 @@ class MergeRequest < ApplicationRecord
         records: visible_issues.select { |issue| issue.is_a?(Issue) },
         associations: :project
       ).call
-      # Exclude isues that have been cached but their project setting has been disabled, or they belong to a group
+      # Exclude issues that have been cached but their project setting has been disabled, or they belong to a group
       visible_issues.select do |issue|
         !issue.is_a?(Issue) || issue.autoclose_by_merged_closing_merge_request?
       end

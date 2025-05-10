@@ -31,7 +31,6 @@ describe('Blob Simple Viewer component', () => {
     isBlameLinkHidden = false,
     isRawContent = false,
     propsData = {},
-    glFeatures = {},
   } = {}) {
     fakeApollo = createMockApollo([[blameDataQuery, blameDataQueryHandlerSuccess]]);
 
@@ -39,7 +38,6 @@ describe('Blob Simple Viewer component', () => {
       apolloProvider: fakeApollo,
       provide: {
         blobHash,
-        glFeatures,
       },
       propsData: {
         content,

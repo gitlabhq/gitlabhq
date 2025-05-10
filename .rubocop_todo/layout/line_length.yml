@@ -2247,7 +2247,6 @@ Layout/LineLength:
     - 'lib/security/ci_configuration/base_build_action.rb'
     - 'lib/security/ci_configuration/sast_build_action.rb'
     - 'lib/sidebars/groups/menus/packages_registries_menu.rb'
-    - 'lib/sidebars/menu_item.rb'
     - 'lib/sidebars/projects/menus/repository_menu.rb'
     - 'lib/system_check/app/orphaned_group_members_check.rb'
     - 'lib/system_check/app/redis_version_check.rb'

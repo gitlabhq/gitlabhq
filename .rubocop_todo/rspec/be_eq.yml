@@ -182,7 +182,6 @@ RSpec/BeEq:
     - 'ee/spec/lib/search/elastic/task_status_spec.rb'
     - 'ee/spec/lib/security/scan_result_policies/policy_violation_details_spec.rb'
     - 'ee/spec/lib/security/security_orchestration_policies/policy_scope_checker_spec.rb'
-    - 'ee/spec/lib/sidebars/projects/menus/learn_gitlab_menu_spec.rb'
     - 'ee/spec/lib/telesign/transaction_callback_payload_spec.rb'
     - 'ee/spec/lib/telesign/transaction_callback_spec.rb'
     - 'ee/spec/lib/users/identity_verification/authorize_ci_spec.rb'

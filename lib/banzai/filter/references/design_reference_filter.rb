@@ -6,6 +6,7 @@ module Banzai
       class DesignReferenceFilter < AbstractReferenceFilter
         class Identifier
           include Comparable
+
           attr_reader :issue_iid, :filename
 
           def initialize(issue_iid:, filename:)

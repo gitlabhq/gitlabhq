@@ -75,6 +75,7 @@ export default {
     return {
       isMouseIn: false,
       canClickPinButton: false,
+      localPillCount: this.item.pill_count,
     };
   },
   computed: {
@@ -82,6 +83,11 @@ export default {
       if (this.item.pill_count_field) {
         return this.asyncCount[this.item.pill_count_field];
       }
+
+      if (this.item.pill_count_dynamic) {
+        return this.localPillCount;
+      }
+
       return this.item.pill_count;
     },
     hasPill() {
@@ -213,11 +219,7 @@ export default {
     },
     updatePillValue({ value, itemId }) {
       if (this.item.id === itemId) {
-        // https://gitlab.com/gitlab-org/gitlab/-/issues/428246
-        // fixing this linting issue is causing the pills not to async update for learn gitlab nav item
-        //
-        // eslint-disable-next-line vue/no-mutating-props
-        this.item.pill_count = value;
+        this.localPillCount = value;
       }
     },
   },

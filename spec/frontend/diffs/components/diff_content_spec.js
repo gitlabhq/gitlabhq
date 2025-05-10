@@ -33,16 +33,13 @@ describe('DiffContent', () => {
     diffFile: getDiffFileMock(),
   };
 
-  const createComponent = ({ props, provide } = {}) => {
-    const glFeatures = provide ? { ...provide.glFeatures } : {};
-
+  const createComponent = ({ props } = {}) => {
     wrapper = shallowMount(DiffContentComponent, {
       propsData: {
         ...defaultProps,
         ...props,
       },
       pinia,
-      provide: { glFeatures },
     });
   };
 

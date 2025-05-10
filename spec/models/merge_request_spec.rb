@@ -1348,6 +1348,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       subject.cache_merge_request_closes_issues!
 
       expect(subject.visible_closing_issues_for(guest)).to match_array([issue_1, issue_2])
+      expect(subject.visible_closing_issues_for(nil)).to be_empty
     end
 
     it 'shows only allowed issues to developer' do
@@ -1356,6 +1357,30 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       subject.cache_merge_request_closes_issues!
 
       expect(subject.visible_closing_issues_for(developer)).to match_array([issue_1, confidential_issue, issue_2])
+      expect(subject.visible_closing_issues_for(nil)).to be_empty
+    end
+
+    it 'isolates cache per user so each role sees its own issues' do
+      project.add_guest(guest)
+      project.add_developer(developer)
+      subject.cache_merge_request_closes_issues!
+
+      # Call in one order
+      developer_view_first = subject.visible_closing_issues_for(developer)
+      guest_view_first = subject.visible_closing_issues_for(guest)
+
+      expect(developer_view_first).to match_array([issue_1, issue_2, confidential_issue])
+      expect(guest_view_first).to match_array([issue_1, issue_2])
+
+      # Reset memoization
+      subject.clear_memoization(:visible_closing_issues_for) # Specific to strong_memoize
+
+      # Call in reverse order on the same instance after clearing memoization
+      guest_view_second = subject.visible_closing_issues_for(guest)
+      developer_view_second = subject.visible_closing_issues_for(developer)
+
+      expect(guest_view_second).to match_array([issue_1, issue_2])
+      expect(developer_view_second).to match_array([issue_1, issue_2, confidential_issue])
     end
 
     context 'when external issue tracker is enabled' do

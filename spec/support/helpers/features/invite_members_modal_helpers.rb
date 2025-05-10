@@ -7,6 +7,10 @@ module Features
     def invite_member(names, role: 'Guest', expires_at: nil, use_exact_text_match: true)
       click_on 'Invite members'
 
+      invite_with_opened_modal(names, role: role, expires_at: expires_at, use_exact_text_match: use_exact_text_match)
+    end
+
+    def invite_with_opened_modal(names, role: 'Guest', expires_at: nil, use_exact_text_match: true)
       page.within invite_modal_selector do
         select_members(names)
         choose_options(role, expires_at, use_exact_text_match)

@@ -9,6 +9,7 @@ module Gitlab
     # e.g. on web access require re-authentication
     class CurrentUserMode
       include Gitlab::Utils::StrongMemoize
+
       NotRequestedError = Class.new(StandardError)
       NonSidekiqEnvironmentError = Class.new(StandardError)
 

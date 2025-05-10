@@ -4,6 +4,7 @@ module Resolvers
   module Integrations
     class ExclusionsResolver < BaseResolver
       include Gitlab::Graphql::Authorize::AuthorizeResource
+
       type Types::Integrations::ExclusionType.connection_type, null: true
 
       argument :integration_name, Types::Integrations::IntegrationTypeEnum,

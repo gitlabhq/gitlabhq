@@ -30,6 +30,8 @@ features:
 1. Upgrade to GitLab 18.0 or later.
 1. Turn on the IDE features for your group or instance.
 
+It may take up to 10 minutes for the change to take effect.
+
 ### For a group
 
 On GitLab.com, you can turn GitLab Duo Core on or off for a top-level group, but not for a subgroup or project.
@@ -45,6 +47,8 @@ To turn GitLab Duo Core on or off for a top-level group on GitLab.com:
 1. Select **Change configuration**.
 1. Below **GitLab Duo Core**, select or clear the **Turn on IDE features** checkbox.
 1. Select **Save changes**.
+
+It may take up to 10 minutes for the change to take effect.
 
 ### For an instance
 
@@ -339,7 +343,7 @@ To turn on GitLab Duo experiment and beta features for a top-level group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > GitLab Duo**.
 1. Under **GitLab Duo** section, select **Change configuration**.
-1. Select **Turn on experiment and beta GitLab Duo features**.  
+1. Select **Turn on experiment and beta GitLab Duo features**.
 1. Select **Save changes**.
 
 {{< /tab >}}

@@ -75,17 +75,10 @@ describe('diffs/components/app', () => {
 
   const codeQualityAndSastQueryHandlerSuccess = jest.fn().mockResolvedValue({});
 
-  const createComponent = ({ props = {}, provisions = {} } = {}) => {
+  const createComponent = ({ props = {} } = {}) => {
     fakeApollo = createMockApollo([
       [getMRCodequalityAndSecurityReports, codeQualityAndSastQueryHandlerSuccess],
     ]);
-
-    const provide = {
-      ...provisions,
-      glFeatures: {
-        ...provisions.glFeatures,
-      },
-    };
 
     wrapper = shallowMount(App, {
       apolloProvider: fakeApollo,
@@ -99,7 +92,6 @@ describe('diffs/components/app', () => {
         changesEmptyStateIllustration: '',
         ...props,
       },
-      provide,
       store: createDiffsStore(),
       pinia,
     });

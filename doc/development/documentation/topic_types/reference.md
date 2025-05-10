@@ -30,9 +30,11 @@ Reference topic titles are usually nouns.
 Avoid these topic titles:
 
 - `Important notes`. Instead, incorporate this information
-  closer to where it belongs. For example, this information might be a prerequisite
+  closer to where it belongs. This information might be a prerequisite
   for a task, or information about a concept.
 - `Limitations`. Instead, move the content near other similar information.
+  Content listed as limitations can often be considered prerequisite
+  information about how a feature works.
   If you must, you can use the title `Known issues`.
 
 ## Example

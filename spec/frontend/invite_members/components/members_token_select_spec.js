@@ -17,7 +17,7 @@ const handleEnterSpy = jest.fn();
 /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
 let wrapper;
 
-const createComponent = ({ props = {}, glFeatures = {} } = {}) => {
+const createComponent = ({ props = {} } = {}) => {
   wrapper = mountExtended(MembersTokenSelect, {
     propsData: {
       ariaLabelledby: label,
@@ -25,7 +25,6 @@ const createComponent = ({ props = {}, glFeatures = {} } = {}) => {
       placeholder,
       ...props,
     },
-    provide: { glFeatures },
   });
 };
 

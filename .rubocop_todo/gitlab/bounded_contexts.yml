@@ -3292,7 +3292,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/llm/resolve_vulnerability_service.rb'
     - 'ee/app/services/llm/review_merge_request_service.rb'
     - 'ee/app/services/llm/summarize_new_merge_request_service.rb'
-    - 'ee/app/services/member_roles/base_service.rb'
     - 'ee/app/services/member_roles/create_service.rb'
     - 'ee/app/services/member_roles/delete_service.rb'
     - 'ee/app/services/member_roles/update_service.rb'

@@ -11,6 +11,7 @@
 module Projects
   class TransferService < BaseService
     include Gitlab::ShellAdapter
+
     TransferError = Class.new(StandardError)
 
     def log_project_transfer_success(project, new_namespace)

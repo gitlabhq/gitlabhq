@@ -2,6 +2,7 @@
 
 class PipelineSerializer < BaseSerializer
   include WithPagination
+
   entity PipelineDetailsEntity
 
   # rubocop: disable CodeReuse/ActiveRecord

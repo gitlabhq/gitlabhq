@@ -2,6 +2,7 @@
 
 class ProjectMemberPolicy < BasePolicy
   include MemberPolicyHelpers
+
   delegate { @subject.project }
 
   condition(:target_is_holder_of_the_personal_namespace, scope: :subject) do

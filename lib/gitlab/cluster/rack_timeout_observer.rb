@@ -4,6 +4,7 @@ module Gitlab
   module Cluster
     class RackTimeoutObserver
       include ActionView::Helpers::SanitizeHelper
+
       TRANSITION_STATES = %i[ready active].freeze
 
       def initialize
