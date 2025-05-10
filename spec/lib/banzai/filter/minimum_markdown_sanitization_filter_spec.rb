@@ -63,4 +63,12 @@ RSpec.describe Banzai::Filter::MinimumMarkdownSanitizationFilter, feature_catego
       expect(filter(act).to_html).to eq ''
     end
   end
+
+  context 'when the document includes only a space' do
+    it 'returns an empty result' do
+      act = ' '
+
+      expect(filter(act).to_html).to eq ''
+    end
+  end
 end
