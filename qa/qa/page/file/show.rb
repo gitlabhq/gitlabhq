@@ -19,6 +19,10 @@ module QA
           element 'webide-menu-item', ':data-testid="`${action.key}-menu-item`"' # rubocop:disable QA/ElementWithPattern
         end
 
+        view 'app/assets/javascripts/repository/components/code_dropdown/compact_code_dropdown.vue' do
+          element 'code-dropdown'
+        end
+
         def click_edit
           click_element('action-dropdown')
           click_element('edit-menu-item')

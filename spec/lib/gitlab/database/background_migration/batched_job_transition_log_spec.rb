@@ -18,4 +18,15 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog, t
     it { is_expected.to define_enum_for(:previous_status).with_values(%i[pending running failed succeeded]).with_prefix }
     it { is_expected.to define_enum_for(:next_status).with_values(%i[pending running failed succeeded]).with_prefix }
   end
+
+  describe '.sidekiq_shutdown_failures' do
+    it 'returns failures because of Sidekiq::Shutdown errors' do
+      create(:batched_background_job_transition_log, :succeeded)
+      sidekiq_shutdown = create(:batched_background_job_transition_log, :sidekiq_shutdown_failure)
+
+      failures = described_class.sidekiq_shutdown_failures
+
+      expect(failures).to match_array(sidekiq_shutdown)
+    end
+  end
 end

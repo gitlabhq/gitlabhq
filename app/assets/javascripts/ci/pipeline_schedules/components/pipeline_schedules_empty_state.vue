@@ -45,6 +45,7 @@ export default {
     :svg-height="150"
     :primary-button-text="$options.i18n.createNew"
     :primary-button-link="newSchedulePath"
+    data-testid="empty-state-new-schedule-button"
   >
     <template #description>
       <p class="gl-mb-0">{{ $options.i18n.description }}</p>

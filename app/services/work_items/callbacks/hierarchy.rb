@@ -85,8 +85,12 @@ module WorkItems
       def update_work_item_parent(parent)
         return remove_parent_link(work_item) if parent.nil?
 
+        service_params = { target_issuable: work_item }.merge(
+          params.slice(:relative_position)
+        )
+
         service_response = ::WorkItems::ParentLinks::CreateService
-          .new(parent, current_user, { target_issuable: work_item })
+          .new(parent, current_user, service_params)
           .execute
 
         # Reference the parent instead because the error is returned in the child context

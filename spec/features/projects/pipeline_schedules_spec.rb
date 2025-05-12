@@ -14,7 +14,6 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
 
   before do
     project.update!(ci_pipeline_variables_minimum_override_role: :developer)
-    stub_feature_flags(ci_inputs_for_pipelines: false)
   end
 
   context 'logged in as the pipeline schedule owner' do
@@ -139,11 +138,8 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
         it 'changes ownership of the pipeline' do
           find_by_testid('take-ownership-pipeline-schedule-btn').click
 
-          page.within('#pipeline-take-ownership-modal') do
-            click_button s_('PipelineSchedules|Take ownership')
-
-            wait_for_requests
-          end
+          send_keys [:tab, :enter]
+          wait_for_requests
 
           within_testid('pipeline-schedule-table-row') do
             expect(page).not_to have_content('No owner')
@@ -151,14 +147,17 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
           end
         end
 
-        it 'deletes the pipeline' do
+        it 'deletes the pipeline schedule' do
+          row_text = find_by_testid('pipeline-schedule-table-row').text
+
           within_testid('pipeline-schedule-table-row') do
-            click_button s_('PipelineSchedules|Delete scheduled pipeline')
+            find_by_testid('delete-pipeline-schedule-btn').click
           end
 
           accept_gl_confirm(button_text: s_('PipelineSchedules|Delete scheduled pipeline'))
+          wait_for_requests
 
-          expect(page).not_to have_css('[data-testid="pipeline-schedule-table-row"]')
+          expect(page).not_to have_css('[data-testid="pipeline-schedule-table-row"]', text: row_text, wait: 10)
         end
       end
 
@@ -308,47 +307,44 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
     end
   end
 
-  shared_examples 'when not logged in' do
+  shared_examples 'user without project access' do
     describe 'GET /projects/pipeline_schedules' do
-      describe 'the view' do
-        it 'does not show create schedule button' do
-          visit_pipelines_schedules
+      it 'does not show create schedule button' do
+        visit_pipelines_schedules
 
-          expect(page).not_to have_link('New schedule')
+        expect(page).not_to have_link('New schedule')
+      end
+
+      context 'when project is public' do
+        let_it_be(:public_project) { create(:project, :repository, :public, public_builds: true) }
+
+        it 'shows Pipelines Schedules page' do
+          visit project_pipeline_schedules_path(public_project, scope: scope)
+          expect(page).to have_selector(:css, '[data-testid="empty-state-new-schedule-button"]')
         end
 
-        context 'when project is public' do
-          let_it_be(:project) { create(:project, :repository, :public, public_builds: true) }
-
-          it 'shows Pipelines Schedules page' do
-            visit_pipelines_schedules
-
-            expect(page).to have_selector(:css, '[data-testid="new-schedule-button"]')
+        context 'when public pipelines are disabled' do
+          before do
+            public_project.update!(public_builds: false)
           end
 
-          context 'when public pipelines are disabled' do
-            before do
-              project.update!(public_builds: false)
-              visit_pipelines_schedules
-            end
-
-            it 'shows Not Found page' do
-              expect(page).to have_content('Page not found')
-            end
+          it 'shows Not Found page' do
+            visit project_pipeline_schedules_path(public_project, scope: scope)
+            expect(page).to have_content('Page not found')
           end
         end
       end
     end
   end
 
-  it_behaves_like 'when not logged in'
+  it_behaves_like 'user without project access'
 
   context 'logged in as non-member' do
     before do
       gitlab_sign_in(user)
     end
 
-    it_behaves_like 'when not logged in'
+    it_behaves_like 'user without project access'
   end
 
   def visit_new_pipeline_schedule

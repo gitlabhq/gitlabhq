@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model do
+RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model, feature_category: :database do
   it_behaves_like 'having unique enum values'
 
   it { is_expected.to be_a Gitlab::Database::SharedModel }
@@ -182,6 +182,52 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
         expect(transition_log.next_status).to eq('failed')
         expect(transition_log.exception_class).to eq('RuntimeError')
         expect(transition_log.exception_message).to eq('RuntimeError')
+      end
+
+      context 'with Sidekiq::Shutdown' do
+        it 'decrements job attemts' do
+          job.update!(attempts: 2)
+
+          expect { job.failure!(error: Sidekiq::Shutdown.new) }.to change { job.reload.attempts }.by(-1)
+        end
+
+        it 'does not decrement job attemts if less than or equal to 1' do
+          job.update!(attempts: 1)
+
+          expect { job.failure!(error: Sidekiq::Shutdown.new) }.not_to change { job.reload.attempts }
+        end
+
+        it 'does not decrement job attemts if there are more than MAX_SIDEKIQ_SHUTDOWN_FAILURES' do
+          job.update!(attempts: 2)
+
+          stub_const("#{described_class}::MAX_SIDEKIQ_SHUTDOWN_FAILURES", 3)
+
+          (described_class::MAX_SIDEKIQ_SHUTDOWN_FAILURES + 1).times do
+            create(:batched_background_job_transition_log, :sidekiq_shutdown_failure, batched_job: job)
+          end
+
+          expect { job.failure!(error: Sidekiq::Shutdown.new) }.not_to change { job.reload.attempts }
+        end
+
+        context 'when bbm_retry_sidekiq_shutdown_exception is disabled' do
+          before do
+            stub_feature_flags(bbm_retry_sidekiq_shutdown_exception: false)
+          end
+
+          it 'does not decrements job attemts' do
+            job.update!(attempts: 2)
+
+            expect { job.failure!(error: Sidekiq::Shutdown.new) }.not_to change { job.reload.attempts }
+          end
+        end
+      end
+
+      context 'with other exception' do
+        it 'does not update job attemts' do
+          job.update!(attempts: 2)
+
+          expect { job.failure!(error: RuntimeError.new) }.not_to change { job.reload.attempts }
+        end
       end
     end
 

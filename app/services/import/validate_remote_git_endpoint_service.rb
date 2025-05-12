@@ -12,9 +12,11 @@ module Import
     end
 
     def execute
-      ensure_auth_credentials!
+      if uri && uri.hostname && Project::VALID_IMPORT_PROTOCOLS.include?(uri.scheme)
+        ensure_auth_credentials!
 
-      return ServiceResponse.success if Gitlab::GitalyClient::RemoteService.exists?(uri.to_s) # rubocop: disable CodeReuse/ActiveRecord -- false positive
+        return ServiceResponse.success if Gitlab::GitalyClient::RemoteService.exists?(uri.to_s) # rubocop: disable CodeReuse/ActiveRecord -- false positive
+      end
 
       ServiceResponse.error(
         message: 'Unable to access repository with the URL and credentials provided',

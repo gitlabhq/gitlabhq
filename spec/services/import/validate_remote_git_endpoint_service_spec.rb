@@ -43,6 +43,18 @@ RSpec.describe Import::ValidateRemoteGitEndpointService, feature_category: :impo
         end
       end
 
+      context 'when uri is nil' do
+        let(:url) { nil }
+
+        include_examples 'error response'
+      end
+
+      context 'when uri does not have a schema' do
+        let(:url) { 'example.com' }
+
+        include_examples 'error response'
+      end
+
       context 'when uri is using an invalid protocol' do
         let(:url) { 'ssh://demo.host/repo' }
 

@@ -133,7 +133,12 @@ module QA
         end
 
         def open_web_ide!
-          click_element('action-dropdown')
+          if has_element?('action-dropdown')
+            click_element('action-dropdown')
+          else
+            click_element('code-dropdown')
+          end
+
           click_element('webide-menu-item')
           page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
         end

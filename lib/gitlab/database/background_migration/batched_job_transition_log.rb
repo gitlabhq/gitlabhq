@@ -21,6 +21,8 @@ module Gitlab
 
         enum :previous_status, Gitlab::Database::BackgroundMigration::BatchedJob.state_machine.states.map(&:name), prefix: true
         enum :next_status, Gitlab::Database::BackgroundMigration::BatchedJob.state_machine.states.map(&:name), prefix: true
+
+        scope :sidekiq_shutdown_failures, -> { where(next_status: :failed, exception_class: 'Sidekiq::Shutdown') }
       end
     end
   end

@@ -14,7 +14,6 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
     let(:user) { create(:user) }
 
     before do
-      stub_feature_flags(ci_inputs_for_pipelines: false)
       sign_in(user)
 
       project.add_developer(user)
@@ -118,7 +117,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           context 'when canceling' do
-            it 'indicates that pipelines was canceled', :sidekiq_inline do
+            it 'indicates that pipeline was canceled', :sidekiq_inline do
               find('.js-pipelines-cancel-button').click
               click_button 'Stop pipeline'
 

@@ -24,11 +24,9 @@ module WorkItems
       end
 
       def linkable_issuables(work_items)
-        @linkable_issuables ||= if can_add_to_parent?(issuable)
-                                  work_items.select { |work_item| linkable?(work_item) }
-                                else
-                                  []
-                                end
+        @linkable_issuables ||= work_items.select do |work_item|
+          can_add_to_parent?(issuable, work_item) && linkable?(work_item)
+        end
       end
 
       def linkable?(work_item)
@@ -40,7 +38,7 @@ module WorkItems
       end
 
       # Overriden in EE
-      def can_add_to_parent?(parent_work_item)
+      def can_add_to_parent?(parent_work_item, _child_work_item = nil)
         can_admin_link?(parent_work_item)
       end
 

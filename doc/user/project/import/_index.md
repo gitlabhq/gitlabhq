@@ -282,6 +282,8 @@ Placeholder users are associated only with the top-level group.
 When you delete a subgroup or project, their placeholder users
 no longer reference any contributions in the top-level group.
 For testing, you should use a designated top-level group.
+Deleting placeholder users is proposed in [issue 519391](https://gitlab.com/gitlab-org/gitlab/-/issues/519391)
+and [issue 537340](https://gitlab.com/gitlab-org/gitlab/-/issues/537340).
 
 {{< /alert >}}
 
@@ -377,7 +379,7 @@ You can reassign contributions from multiple placeholder users to the same user
 on the destination instance if the placeholder users are from:
 
 - Different source instances
-- The same source instance and are imported to different top-level groups on the destination instance 
+- The same source instance and are imported to different top-level groups on the destination instance
 
 If an assigned user becomes inactive before accepting the reassignment request,
 the pending reassignment remains linked to the user until they accept it.
