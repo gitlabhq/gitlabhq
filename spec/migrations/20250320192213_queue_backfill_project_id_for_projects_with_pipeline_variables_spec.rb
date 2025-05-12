@@ -6,21 +6,15 @@ require_migration!
 RSpec.describe QueueBackfillProjectIdForProjectsWithPipelineVariables, migration: :gitlab_ci, feature_category: :ci_variables do
   let!(:batched_migration) { described_class::MIGRATION }
 
-  it 'schedules a new batched migration' do
+  # No-op because we decided not to pursue the migration. See https://gitlab.com/groups/gitlab-org/-/epics/16522#note_2492640881
+  it 'does not schedules a new batched migration' do
     reversible_migration do |migration|
       migration.before -> {
         expect(batched_migration).not_to have_scheduled_batched_migration
       }
 
       migration.after -> {
-        expect(batched_migration).to have_scheduled_batched_migration(
-          gitlab_schema: :gitlab_ci,
-          table_name: :p_ci_pipeline_variables,
-          column_name: :project_id,
-          interval: described_class::DELAY_INTERVAL,
-          batch_size: described_class::BATCH_SIZE,
-          sub_batch_size: described_class::SUB_BATCH_SIZE
-        )
+        expect(batched_migration).not_to have_scheduled_batched_migration
       }
     end
   end
