@@ -897,6 +897,10 @@ class User < ApplicationRecord
         without_placeholders
       when 'ldap_sync'
         ldap
+      when "without_bots"
+        without_bots
+      when "bots"
+        bots
       else
         all_without_ghosts
       end

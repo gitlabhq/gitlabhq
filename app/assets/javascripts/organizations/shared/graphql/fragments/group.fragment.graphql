@@ -1,5 +1,6 @@
 fragment Group on Group {
   id
+  name
   fullPath
   fullName
   parent {

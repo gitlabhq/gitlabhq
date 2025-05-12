@@ -83,7 +83,7 @@ blocks. These operators cannot be overridden, and are hence banned via a
 
 To see how the rules get evaluated into a judgment, open a Rails console and run: `policy.debug(:some_ability)`. This prints the rules in the order they are evaluated.
 
-For example, let's say you wanted to debug `IssuePolicy`. You might run
+For example, if you wanted to debug `IssuePolicy`. You might run
 the debugger in this way:
 
 ```ruby

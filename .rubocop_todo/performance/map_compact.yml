@@ -85,7 +85,6 @@ Performance/MapCompact:
     - 'lib/gitlab/git/commit.rb'
     - 'lib/gitlab/git/conflict/file.rb'
     - 'lib/gitlab/sql/pattern.rb'
-    - 'qa/qa/page/component/issuable/sidebar.rb'
     - 'qa/qa/tools/ci/ff_changes.rb'
     - 'scripts/lint_templates_bash.rb'
     - 'spec/controllers/every_controller_spec.rb'

@@ -96,7 +96,7 @@ thousands of repositories. A good starting point for the repository count is twi
 the storage.
 
 Because repository cgroups enforce additional limits on top of the parent cgroup, if we configured them by dividing the
-parent limits by the number of groups, we'd end up with overly restrictive limits. For example, let's say:
+parent limits by the number of groups, we'd end up with overly restrictive limits. For example:
 
 - Our parent memory limit is 32GiB.
 - We have roughly 100 active repositories.

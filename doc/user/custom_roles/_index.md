@@ -189,7 +189,7 @@ When a group is invited to another group with a custom role, the following rules
 - When a user has a custom permission in one group with a base access level that is the same or higher than the default role in the other group, the user's maximum role is the default role. That is, the user is granted the lower of the two access levels.
 - When a user is invited with a custom permission with the same base access level as their original group, the user is always granted the custom permission from their original group.
 
-For example, let's say we have 5 users in Group A, and they are assigned the following roles:
+For example, consider Group A with 5 users assigned the following roles:
 
 - User A: Guest role
 - User B: Guest role + `read_code` custom permission

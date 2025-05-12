@@ -10,9 +10,6 @@ RSpec.describe SearchController, '(JavaScript fixtures)', type: :controller do
   let_it_be(:user) { create(:user) }
 
   before do
-    # with this feature flag on the blob search results
-    # are moved to vue and are tested using jest
-    stub_feature_flags(zoekt_multimatch_frontend: false)
     sign_in(user)
   end
 

@@ -193,7 +193,6 @@ Lint/AssignmentInCondition:
     - 'lib/gitlab/task_helpers.rb'
     - 'lib/gitlab/usage/metric_definition.rb'
     - 'lib/gitlab/usage_data/topology.rb'
-    - 'lib/gitlab/utils/merge_hash.rb'
     - 'lib/gitlab/webpack/dev_server_middleware.rb'
     - 'lib/gitlab/wiki_pages/front_matter_parser.rb'
     - 'lib/prometheus/pid_provider.rb'

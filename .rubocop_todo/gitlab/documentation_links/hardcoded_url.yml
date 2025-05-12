@@ -10,7 +10,6 @@ Gitlab/DocumentationLinks/HardcodedUrl:
     - 'app/services/security/ci_configuration/dependency_scanning_create_service.rb'
     - 'app/services/security/ci_configuration/sast_create_service.rb'
     - 'app/services/security/ci_configuration/sast_iac_create_service.rb'
-    - 'app/services/security/ci_configuration/secret_detection_create_service.rb'
     - 'ee/app/graphql/mutations/requirements_management/export_requirements.rb'
     - 'ee/app/graphql/types/vulnerability_state_enum.rb'
     - 'ee/app/mailers/emails/user_cap.rb'

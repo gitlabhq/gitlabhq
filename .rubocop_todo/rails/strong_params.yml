@@ -170,7 +170,6 @@ Rails/StrongParams:
     - 'app/controllers/projects/releases_controller.rb'
     - 'app/controllers/projects/repositories_controller.rb'
     - 'app/controllers/projects/runner_projects_controller.rb'
-    - 'app/controllers/projects/runners_controller.rb'
     - 'app/controllers/projects/service_desk/custom_email_controller.rb'
     - 'app/controllers/projects/service_desk_controller.rb'
     - 'app/controllers/projects/settings/ci_cd_controller.rb'

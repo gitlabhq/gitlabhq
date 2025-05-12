@@ -8352,7 +8352,8 @@ CREATE TABLE analyzer_project_statuses (
     status smallint NOT NULL,
     last_call timestamp with time zone NOT NULL,
     traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
-    build_id bigint
+    build_id bigint,
+    archived boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE analyzer_project_statuses_id_seq

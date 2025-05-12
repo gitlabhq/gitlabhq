@@ -3294,6 +3294,8 @@ RSpec.describe User, feature_category: :user_profile do
       :without_projects         | 'wop'
       :trusted                  | 'trusted'
       :external                 | 'external'
+      :without_bots             | 'without_bots'
+      :bots                     | 'bots'
       :ldap                     | 'ldap_sync'
     end
 
@@ -3301,6 +3303,26 @@ RSpec.describe User, feature_category: :user_profile do
       it 'uses a certain scope for the given filter name' do
         expect(described_class).to receive(scope).and_return([user])
         expect(described_class.filter_items(filter_name)).to include user
+      end
+    end
+
+    context 'with without_bots filter' do
+      it 'returns only humans' do
+        non_human_user = create(:user, user_type: :automation_bot)
+        regular_user = create(:user)
+
+        expect(described_class.filter_items('without_bots')).not_to include(non_human_user)
+        expect(described_class.filter_items('without_bots')).to include(regular_user)
+      end
+    end
+
+    context 'with bots filter' do
+      it 'returns only bots' do
+        non_human_user = create(:user, user_type: :automation_bot)
+        regular_user = create(:user)
+
+        expect(described_class.filter_items('bots')).to include(non_human_user)
+        expect(described_class.filter_items('bots')).not_to include(regular_user)
       end
     end
 

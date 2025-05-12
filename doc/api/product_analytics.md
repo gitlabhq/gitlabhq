@@ -32,7 +32,7 @@ This feature is not ready for production use.
 
 {{< /alert >}}
 
-Use this API to track user behavior and application usage. For more information, see [product analytics](../development/internal_analytics/product_analytics.md).
+Use this API to track user behavior and application usage. For more information, see product analytics.
 
 {{< alert type="note" >}}
 

@@ -5,7 +5,7 @@ import {
   SORT_LABEL_UPDATED,
 } from '~/groups_projects/constants';
 import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
-import { formatGroups } from '~/organizations/shared/utils';
+import { formatGroups } from './utils';
 import memberGroupsQuery from './graphql/queries/member_groups.query.graphql';
 
 const baseTab = {

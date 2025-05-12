@@ -35,7 +35,7 @@ Event data does not include source code or other customer-created content stored
 
 For more information, see also:
 
-- [Internal events payload samples](../../development/internal_analytics/internal_event_instrumentation/internal_events_payload.md)
+- Internal events payload samples
 - [Metrics dictionary](https://metrics.gitlab.com/?status=active) for a list of events and metrics
 - [Customer product usage information](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/) for data privacy policy
 

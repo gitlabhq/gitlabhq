@@ -12,7 +12,6 @@ RSpec/ReturnFromStub:
     - 'ee/spec/models/ee/user_spec.rb'
     - 'ee/spec/models/license_spec.rb'
     - 'ee/spec/models/vulnerabilities/finding_spec.rb'
-    - 'ee/spec/policies/project_policy_spec.rb'
     - 'ee/spec/presenters/ci/build_presenter_spec.rb'
     - 'ee/spec/presenters/merge_request_presenter_spec.rb'
     - 'ee/spec/requests/admin/credentials_controller_spec.rb'

@@ -9,8 +9,11 @@ module WorkItems
         work_item.work_item_parent
       end
 
-      def children
-        work_item.work_item_children_by_relative_position
+      def children(state: nil)
+        children = work_item.work_item_children_by_relative_position
+        children = children.try(state) if state&.to_s.in?(%w[opened closed])
+
+        children
       end
 
       def ancestors

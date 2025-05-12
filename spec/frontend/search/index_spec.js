@@ -51,7 +51,7 @@ describe('initSearchApp', () => {
         `<div id="js-search-sidebar" data-search-type="zoekt" data-navigation-json="{&quot;projects&quot;: {},&quot;blobs&quot;: { &quot;active&quot;: true},&quot;epics&quot;: {},&quot;issues&quot;: {}}" data-group-initial-json="{}" data-project-initial-json="{}">`,
       );
       setWindowLocation('/search?scope=blobs&search=');
-      window.gon = { features: { zoektMultimatchFrontend: true } };
+      window.gon = { features: {} };
       createStore.mockImplementation(() => mockStore);
       initSearchApp();
     });

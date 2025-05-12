@@ -93,12 +93,13 @@ module Keeps
       change.reviewers = reviewer('maintainer::database')
 
       change.description = <<~MARKDOWN
-      Updates database dictionary entries for `#{table_names.join(', ')}`
+      Updates database dictionary entries for `#{table_names.join(', ')}`.
 
-      You can read more about our process to classify table size in
-      https://docs.gitlab.com/ee/development/database/large_tables_limitations.html.
+      The classification of table size changed as defined in the [database dictionary](https://docs.gitlab.com/development/database/database_dictionary/#schema).
 
-      Verify this MR as it was automatically created by `gitlab-housekeeper`.
+      Read more about our process to classify table size in our [documentation](https://docs.gitlab.com/ee/development/database/large_tables_limitations.html).
+
+      Verify this MR by inspecting the `postgres_table_sizes` view for each affected table.
       MARKDOWN
 
       change

@@ -140,17 +140,14 @@ describe('ScopeSidebarNavigation', () => {
 
   describe('Zoekt graphql count', () => {
     beforeEach(() => {
-      createComponent(
-        {
-          zoektAvailable: true,
-          query: {
-            search: 'test search',
-            group_id: '123',
-            regex: 'false',
-          },
+      createComponent({
+        zoektAvailable: true,
+        query: {
+          search: 'test search',
+          group_id: '123',
+          regex: 'false',
         },
-        { glFeatures: { zoektMultimatchFrontend: true } },
-      );
+      });
     });
 
     describe('when conditions are met', () => {
@@ -182,36 +179,13 @@ describe('ScopeSidebarNavigation', () => {
       describe('when group_id and project_id are missing', () => {
         beforeEach(() => {
           blobCountHandler.mockClear();
-          createComponent(
-            {
-              zoektAvailable: true,
-              query: {
-                search: 'test',
-                regex: 'false',
-              },
+          createComponent({
+            zoektAvailable: true,
+            query: {
+              search: 'test',
+              regex: 'false',
             },
-            { glFeatures: { zoektMultimatchFrontend: true } },
-          );
-        });
-
-        it('does not make query', () => {
-          expect(blobCountHandler).not.toHaveBeenCalled();
-        });
-      });
-
-      describe('when zoektMultimatchFrontend feature is disabled', () => {
-        beforeEach(() => {
-          blobCountHandler.mockClear();
-          createComponent(
-            {
-              zoektAvailable: true,
-              query: {
-                search: 'test',
-                regex: 'false',
-              },
-            },
-            { glFeatures: { zoektMultimatchFrontend: false } },
-          );
+          });
         });
 
         it('does not make query', () => {
@@ -222,16 +196,13 @@ describe('ScopeSidebarNavigation', () => {
       describe('when zoektAvailable is false', () => {
         beforeEach(() => {
           blobCountHandler.mockClear();
-          createComponent(
-            {
-              zoektAvailable: false,
-              query: {
-                search: 'test',
-                regex: 'false',
-              },
+          createComponent({
+            zoektAvailable: false,
+            query: {
+              search: 'test',
+              regex: 'false',
             },
-            { glFeatures: { zoektMultimatchFrontend: true } },
-          );
+          });
         });
 
         it('does not make query', () => {
@@ -252,7 +223,7 @@ describe('ScopeSidebarNavigation', () => {
               regex: 'false',
             },
           },
-          { glFeatures: { zoektMultimatchFrontend: true } },
+          { glFeatures: { workItemScopeFrontend: true } },
           mockQueryError,
         );
         jest.runOnlyPendingTimers();
@@ -277,7 +248,6 @@ describe('ScopeSidebarNavigation', () => {
           },
           {
             glFeatures: {
-              zoektMultimatchFrontend: true,
               zoektCrossNamespaceSearch: true,
             },
           },
@@ -293,17 +263,14 @@ describe('ScopeSidebarNavigation', () => {
       beforeEach(() => {
         blobCountHandler.mockClear();
         getterSpies.currentScope.mockReturnValue('blobs');
-        createComponent(
-          {
-            zoektAvailable: true,
-            query: {
-              search: 'test search',
-              group_id: '123',
-              regex: 'false',
-            },
+        createComponent({
+          zoektAvailable: true,
+          query: {
+            search: 'test search',
+            group_id: '123',
+            regex: 'false',
           },
-          { glFeatures: { zoektMultimatchFrontend: true } },
-        );
+        });
       });
 
       it('does not make query regardless of other conditions', () => {
@@ -324,23 +291,6 @@ describe('ScopeSidebarNavigation', () => {
           },
           currentScope: 'blobs',
           features: {
-            zoektMultimatchFrontend: true,
-            zoektCrossNamespaceSearch: true,
-          },
-          expected: true,
-        },
-        {
-          name: 'returns true when zoektMultimatchFrontend feature flag is off',
-          initialState: {
-            zoektAvailable: true,
-            query: {
-              search: 'test',
-              group_id: '123',
-            },
-          },
-          currentScope: 'notes',
-          features: {
-            zoektMultimatchFrontend: false,
             zoektCrossNamespaceSearch: true,
           },
           expected: true,
@@ -356,7 +306,6 @@ describe('ScopeSidebarNavigation', () => {
           },
           currentScope: 'notes',
           features: {
-            zoektMultimatchFrontend: true,
             zoektCrossNamespaceSearch: true,
           },
           expected: true,
@@ -371,7 +320,6 @@ describe('ScopeSidebarNavigation', () => {
           },
           currentScope: 'notes',
           features: {
-            zoektMultimatchFrontend: true,
             zoektCrossNamespaceSearch: false,
           },
           expected: true,
@@ -387,7 +335,6 @@ describe('ScopeSidebarNavigation', () => {
           },
           currentScope: 'notes',
           features: {
-            zoektMultimatchFrontend: true,
             zoektCrossNamespaceSearch: false,
           },
           expected: false,
@@ -403,7 +350,6 @@ describe('ScopeSidebarNavigation', () => {
           },
           currentScope: 'notes',
           features: {
-            zoektMultimatchFrontend: true,
             zoektCrossNamespaceSearch: false,
           },
           expected: false,
@@ -418,7 +364,6 @@ describe('ScopeSidebarNavigation', () => {
           },
           currentScope: 'notes',
           features: {
-            zoektMultimatchFrontend: true,
             zoektCrossNamespaceSearch: true,
           },
           expected: false,

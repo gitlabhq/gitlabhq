@@ -2,7 +2,6 @@
 import { GlButton, GlForm } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import Tracking from '~/tracking';
 
 import {
@@ -18,14 +17,12 @@ export default {
     GlButton,
     GlForm,
   },
-  mixins: [glFeatureFlagsMixin()],
   computed: {
     ...mapState(['sidebarDirty', 'searchType']),
     ...mapGetters(['currentScope', 'hasMissingProjectContext']),
     showApplyButton() {
       return !(
         this.searchType === SEARCH_TYPE_ZOEKT &&
-        this.glFeatures?.zoektMultimatchFrontend &&
         this.hasMissingProjectContext &&
         this.currentScope === 'blobs'
       );

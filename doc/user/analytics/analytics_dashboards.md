@@ -198,7 +198,7 @@ You can define different charts and add visualization options to some of them, s
 - Data table.
 - Single stat, with the only option to set `decimalPlaces` (number, default value is 0).
 
-To add an inline chart visualization to a dashboard, see our [Create a built-in dashboard](../../development/fe_guide/analytics_dashboards.md#create-a-built-in-dashboard) guide.
+To add an inline chart visualization to a dashboard, see our Create a built-in dashboard guide.
 This process can also be followed for user-created dashboards. Each visualization must be written with the following
 required fields:
 
@@ -207,7 +207,7 @@ required fields:
 - data
 - options
 
-To contribute, see [adding a new visualization render type](../../development/fe_guide/analytics_dashboards.md#adding-a-new-visualization-render-type).
+To contribute, see adding a new visualization render type.
 
 ### Define a chart visualization template
 
@@ -293,11 +293,11 @@ To edit an existing custom dashboard:
 If the dashboard displays a global error message that data could not be loaded, first try reloading the page.
 If the error persists:
 
-- Check that your configurations match the [dashboard JSON schema](../../development/fe_guide/analytics_dashboards.md) defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
+- Check that your configurations match the dashboard JSON schema defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
 
 ### `Invalid dashboard configuration`
 
-If the dashboard displays a global error message that the configuration is invalid, check that your configurations match the [dashboard JSON schema](../../development/fe_guide/analytics_dashboards.md) defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
+If the dashboard displays a global error message that the configuration is invalid, check that your configurations match the dashboard JSON schema defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
 
 ### `Invalid visualization configuration`
 

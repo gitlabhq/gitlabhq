@@ -1616,7 +1616,7 @@ You should use a unit test if:
 - You can simulate other components' behavior to trigger the desired effect.
 - You can already select UI elements in the virtual DOM to trigger the desired effects.
 
-Also, if a behavior in your new code needs multiple components to work together, you should consider testing your behavior higher in the component tree. For example, let's say that we have a component called `ParentComponent` with the code:
+Also, if a behavior in your new code needs multiple components to work together, you should consider testing your behavior higher in the component tree. For example, consider a component called `ParentComponent` with the code:
 
 ```vue
   <script>
@@ -1736,7 +1736,7 @@ end
 
 #### Seeding data
 
-Each test is in its own environment and so you must use a factory to seed the required data. To continue on with the pipeline example, let's say that you want a test that takes you to the main pipeline page, which is at the route `/namespace/project/-/pipelines/:id/`.
+Each test is in its own environment and so you must use a factory to seed the required data. For example, to create a test that takes you to the main pipeline page at the route `/namespace/project/-/pipelines/:id/`.
 
 Most feature tests at least require you to create a user, because you want to be signed in. You can skip this step if you don't have to be signed in, but as a general rule, you should **always create a user unless you are specifically testing a feature looked at by an anonymous user**. This makes sure that you explicitly set a level of permission that you can edit in the test as needed to change or test a new level of permission as the section changes. To create a user:
 

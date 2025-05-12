@@ -360,7 +360,7 @@ You can check the following guides for each specific use case:
 
 Changing the type of a column can be done using
 `Gitlab::Database::MigrationHelpers#change_column_type_concurrently`. This
-method works similarly to `rename_column_concurrently`. For example, let's say
+method works similarly to `rename_column_concurrently`. For example, if
 we want to change the type of `users.username` from `string` to `text`:
 
 1. [Create a regular migration](#create-a-regular-migration)

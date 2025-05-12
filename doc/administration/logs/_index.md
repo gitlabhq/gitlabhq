@@ -747,7 +747,7 @@ This file is located at:
 - `/var/log/gitlab/gitlab-rails/features_json.log` on Linux package installations.
 - `/home/git/gitlab/log/features_json.log` on self-compiled installations.
 
-The modification events from [Feature flags in development of GitLab](../../development/feature_flags/_index.md)
+The modification events from Feature flags in development of GitLab
 are recorded in this file. For example:
 
 ```json
@@ -987,7 +987,7 @@ Line breaks have been added to the following example line for clarity:
 
 This file logs the information about exceptions being tracked by
 `Gitlab::ErrorTracking`, which provides a standard and consistent way of
-[processing rescued exceptions](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/logging.md#exception-handling).
+processing rescued exceptions.
 This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/exceptions_json.log` on Linux package installations.

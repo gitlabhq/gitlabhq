@@ -45,7 +45,8 @@ module Emails
 
       @current_user = @user = @key.user
       @target_url = user_url(@user)
-      email_with_layout(to: @user.notification_email_or_default, subject: subject("SSH key was added to your account"))
+      email_with_layout(to: @user.notification_email_or_default,
+        subject: subject(_("SSH key was added to your account")))
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -57,7 +58,8 @@ module Emails
 
       @current_user = @user = @gpg_key.user
       @target_url = user_url(@user)
-      mail_with_locale(to: @user.notification_email_or_default, subject: subject("GPG key was added to your account"))
+      email_with_layout(to: @user.notification_email_or_default,
+        subject: subject(_("GPG key was added to your account")))
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

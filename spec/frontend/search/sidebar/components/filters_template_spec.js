@@ -154,18 +154,11 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
         getterSpies.currentScope = jest.fn(() => 'blobs');
         getterSpies.hasMissingProjectContext = jest.fn(() => true);
 
-        createComponent(
-          {
-            query: { scope: 'blobs' },
-            searchType: 'zoekt',
-            sidebarDirty: true,
-          },
-          {
-            glFeatures: {
-              zoektMultimatchFrontend: true,
-            },
-          },
-        );
+        createComponent({
+          query: { scope: 'blobs' },
+          searchType: 'zoekt',
+          sidebarDirty: true,
+        });
       });
 
       it('shows the button', () => {

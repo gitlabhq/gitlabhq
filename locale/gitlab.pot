@@ -5060,6 +5060,9 @@ msgstr ""
 msgid "AdminUsers|Bot"
 msgstr ""
 
+msgid "AdminUsers|Bots"
+msgstr ""
+
 msgid "AdminUsers|Can create top-level group"
 msgstr ""
 
@@ -5172,6 +5175,9 @@ msgid "AdminUsers|Groups and project settings"
 msgstr ""
 
 msgid "AdminUsers|Here are some helpful links to help you manage your instance:"
+msgstr ""
+
+msgid "AdminUsers|Humans"
 msgstr ""
 
 msgid "AdminUsers|If you have any questions about this process please consult our %{doc_link} or %{support_link}."
@@ -27074,6 +27080,9 @@ msgid "GPG Key ID:"
 msgstr ""
 
 msgid "GPG key mismatch"
+msgstr ""
+
+msgid "GPG key was added to your account"
 msgstr ""
 
 msgid "GPG keys"
@@ -52895,6 +52904,9 @@ msgid "SSH key"
 msgstr ""
 
 msgid "SSH key fingerprint:"
+msgstr ""
+
+msgid "SSH key was added to your account"
 msgstr ""
 
 msgid "SSH keys"

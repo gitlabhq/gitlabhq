@@ -54,8 +54,8 @@ Another approach to finding the correct correlation ID is to search or watch
 your logs and find the `correlation_id` value for the log entry that you're
 watching for.
 
-For example, let's say that you want learn what's happening or breaking when
-you reproduce an action in GitLab. You could tail the GitLab logs, filtering
+For example, if you want to learn what's happening or breaking when
+you reproduce an action in GitLab, you could tail the GitLab logs, filtering
 to requests by your user, and then watch the requests until you see what you're
 interested in.
 

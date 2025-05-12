@@ -168,6 +168,10 @@ class NotifyPreview < ActionMailer::Preview
     end
   end
 
+  def new_gpg_key_email
+    Notify.new_gpg_key_email(gpg_key.id).message
+  end
+
   def closed_merge_request_email
     Notify.closed_merge_request_email(user.id, merge_request.id, user.id).message
   end
@@ -572,6 +576,14 @@ class NotifyPreview < ActionMailer::Preview
 
   def find_or_create_key
     Key.last || Keys::CreateService.new(user).execute
+  end
+
+  def gpg_key
+    @gpg_key ||= find_or_create_gpg_key
+  end
+
+  def find_or_create_gpg_key
+    GpgKey.last || GpgKeys::CreateService.new(user, key: GpgHelpers::User1.public_key).execute
   end
 
   def create_note(params)

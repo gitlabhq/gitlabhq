@@ -2,7 +2,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { ACCESS_LEVELS_STRING_TO_INTEGER } from '~/access_level/constants';
 
-export const formatGroup = (group) => ({
+export const formatGroupForGraphQLResolver = (group) => ({
   __typename: TYPENAME_GROUP,
   id: convertToGraphQLId(TYPENAME_GROUP, group.id),
   name: group.name,
@@ -34,7 +34,7 @@ export const formatGroup = (group) => ({
   },
   descendantGroupsCount: group.subgroup_count,
   projectsCount: group.project_count,
-  children: group.children?.length ? group.children.map(formatGroup) : [],
+  children: group.children?.length ? group.children.map(formatGroupForGraphQLResolver) : [],
   childrenCount: group.subgroup_count,
   // Properties below are hard coded for now until API has been
   // updated to support these fields.

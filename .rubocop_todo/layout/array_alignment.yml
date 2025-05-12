@@ -165,7 +165,6 @@ Layout/ArrayAlignment:
     - 'spec/lib/gitlab/sidekiq_migrate_jobs_spec.rb'
     - 'spec/lib/gitlab/ssh_public_key_spec.rb'
     - 'spec/lib/gitlab/usage_data/topology_spec.rb'
-    - 'spec/lib/gitlab/utils/merge_hash_spec.rb'
     - 'spec/lib/gitlab/visibility_level_spec.rb'
     - 'spec/models/ci/build_spec.rb'
     - 'spec/models/ci/group_spec.rb'

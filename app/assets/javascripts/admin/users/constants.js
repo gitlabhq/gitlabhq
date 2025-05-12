@@ -71,7 +71,11 @@ export const TOKENS = [
     token: GlFilteredSearchToken,
     operators: OPERATORS_IS,
     unique: true,
-    options: [{ value: 'placeholder', title: s__('UserMapping|Placeholder') }],
+    options: [
+      { value: 'without_bots', title: s__('AdminUsers|Humans') },
+      { value: 'bots', title: s__('AdminUsers|Bots') },
+      { value: 'placeholder', title: s__('UserMapping|Placeholder') },
+    ],
   },
   {
     title: s__('AdminUsers|LDAP sync'),

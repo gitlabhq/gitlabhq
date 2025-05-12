@@ -85,7 +85,7 @@ rspec-rails-modified-path-specs:
 
 ### Example test loads
 
-For illustrative purposes, let's say our Rails app spec suite consists of 100 specs per model for ten models.
+For illustrative purposes, our Rails app spec suite consists of 100 specs per model for ten models.
 
 If no Ruby files are changed:
 

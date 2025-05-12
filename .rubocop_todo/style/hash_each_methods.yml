@@ -49,7 +49,6 @@ Style/HashEachMethods:
     - 'ee/app/services/elastic/process_bookkeeping_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/ci_action/template.rb'
     - 'ee/db/fixtures/development/32_compliance_report_violations.rb'
-    - 'ee/lib/gitlab/checks/secrets_check.rb'
     - 'ee/lib/gitlab/code_owners/file.rb'
     - 'ee/lib/gitlab/graphql/aggregations/epics/lazy_epic_aggregate.rb'
     - 'ee/spec/controllers/projects_controller_spec.rb'

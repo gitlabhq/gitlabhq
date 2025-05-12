@@ -38,7 +38,7 @@ which uses the [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob
 describes a list of `Project` associations to be included in the export.
 A similar [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/group/import_export.yml) is available for `Group`.
 
-For example, let's say we have a new `Project` association called `documents`. To add support for importing that new association, we must:
+For example, to add import support for a new `Project` association called `documents`, you must:
 
 1. Add it to `import_export.yml` file.
 1. Add test coverage for the new relation.
@@ -77,7 +77,7 @@ associations that require them. For example, documents must be imported before m
    {{< /alert >}}
 
    If your association doesn't need to include any sub-relations, then this is enough. But if it needs more sub-relations to be included (for example, notes),
-   you must list them out. Let's say documents can have notes (with award emojis on notes) and award emojis (on documents), which we want to migrate. In this
+   you must list them out. For example, documents can have notes (with award emojis on notes) and award emojis (on documents), which we want to migrate. In this
    case, our relation becomes the following:
 
    ```diff

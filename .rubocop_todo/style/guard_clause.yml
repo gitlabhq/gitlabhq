@@ -286,7 +286,6 @@ Style/GuardClause:
     - 'ee/db/geo/migrate/20180314175612_add_partial_index_to_project_registy_verification_failure_columns.rb'
     - 'ee/db/geo/migrate/20180315222132_add_partial_index_to_project_registy_checksum_columns.rb'
     - 'ee/db/geo/migrate/20180412213305_add_index_to_artifact_id_on_job_artifact_registry.rb'
-    - 'ee/lib/ee/api/helpers/projects_helpers.rb'
     - 'ee/lib/ee/api/projects.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/access.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/sync/group.rb'

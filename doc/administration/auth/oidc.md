@@ -110,12 +110,6 @@ The OpenID Connect provider provides you with a client's details and secret for 
    }
    ```
 
-   {{< alert type="note" >}}
-
-   For more information on using multiple identity providers with OIDC, see [issue 5992](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5992).
-
-   {{< /alert >}}
-
    For self-compiled installations:
 
    ```yaml

@@ -16,8 +16,6 @@ module QA
     end
 
     before do
-      http ? Flow::AlertSettings.setup_http_endpoint_integration : Flow::AlertSettings.setup_prometheus_integration
-
       [payload_to_be_resolved, unresolved_payload].each do |payload|
         Flow::AlertSettings.send_test_alert(payload: payload)
       end

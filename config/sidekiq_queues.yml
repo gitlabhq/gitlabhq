@@ -875,6 +875,8 @@
   - 1
 - - secrets_management_provision_project_secrets_manager
   - 1
+- - security_analyzers_status_process_archived_events
+  - 1
 - - security_configuration_set_group_secret_push_protection
   - 1
 - - security_create_security_policy_project

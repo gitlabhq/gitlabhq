@@ -3,7 +3,14 @@ import {
   renderDeleteSuccessToast,
   renderLeaveSuccessToast,
   renderRestoreSuccessToast,
+  availableGraphQLGroupActions,
 } from '~/vue_shared/components/groups_list/utils';
+import {
+  ACTION_EDIT,
+  ACTION_RESTORE,
+  ACTION_DELETE,
+  ACTION_LEAVE,
+} from '~/vue_shared/components/list_actions/constants';
 import toast from '~/vue_shared/plugins/global_toast';
 
 jest.mock('~/vue_shared/plugins/global_toast');
@@ -33,6 +40,28 @@ const MOCK_GROUP_PENDING_DELETION = {
   markedForDeletionOn: '2024-03-24',
   permanentDeletionDate: '2024-03-31',
 };
+
+describe('availableGraphQLGroupActions', () => {
+  describe.each`
+    userPermissions                                              | markedForDeletionOn | availableActions
+    ${{ viewEditPage: false, removeGroup: false }}               | ${null}             | ${[]}
+    ${{ viewEditPage: true, removeGroup: false }}                | ${null}             | ${[ACTION_EDIT]}
+    ${{ viewEditPage: false, removeGroup: true }}                | ${null}             | ${[ACTION_DELETE]}
+    ${{ viewEditPage: true, removeGroup: true }}                 | ${null}             | ${[ACTION_EDIT, ACTION_DELETE]}
+    ${{ viewEditPage: true, removeGroup: false }}                | ${'2024-12-31'}     | ${[ACTION_EDIT]}
+    ${{ viewEditPage: true, removeGroup: true }}                 | ${'2024-12-31'}     | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE]}
+    ${{ viewEditPage: true, removeGroup: true, canLeave: true }} | ${'2024-12-31'}     | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE]}
+  `(
+    'availableGraphQLGroupActions',
+    ({ userPermissions, markedForDeletionOn, availableActions }) => {
+      it(`when userPermissions = ${JSON.stringify(userPermissions)}, markedForDeletionOn is ${markedForDeletionOn}, then availableActions = [${availableActions}] and is sorted correctly`, () => {
+        expect(
+          availableGraphQLGroupActions({ userPermissions, markedForDeletionOn }),
+        ).toStrictEqual(availableActions);
+      });
+    },
+  );
+});
 
 describe('renderDeleteSuccessToast', () => {
   it('when delayed deletion is disabled, renders the delete immediately message', () => {

@@ -153,7 +153,11 @@ export const expectedTokens = [
     token: GlFilteredSearchToken,
     operators: OPERATORS_IS,
     unique: true,
-    options: [{ value: 'placeholder', title: 'Placeholder' }],
+    options: [
+      { value: 'without_bots', title: 'Humans' },
+      { value: 'bots', title: 'Bots' },
+      { value: 'placeholder', title: 'Placeholder' },
+    ],
   },
   {
     title: 'LDAP sync',

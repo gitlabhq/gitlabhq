@@ -900,7 +900,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/geo/graphql_request_service_spec.rb'
     - 'ee/spec/services/geo/metrics_update_service_spec.rb'
     - 'ee/spec/services/geo/replication_toggle_request_service_spec.rb'
-    - 'ee/spec/services/gitlab_subscriptions/activate_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/reconciliations/calculate_seat_count_data_service_spec.rb'
     - 'ee/spec/services/group_saml/identity/destroy_service_spec.rb'
     - 'ee/spec/services/groups/compliance_report_csv_service_spec.rb'
