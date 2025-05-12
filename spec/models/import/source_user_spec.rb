@@ -214,6 +214,42 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
         expect { source_user.cancel_reassignment }.to change { source_user.reassignment_token }.to(nil)
       end
     end
+
+    context 'when switching to reassignment_in_progress without reassigned to user approval' do
+      let_it_be(:reassign_to_user) { create(:user) }
+      let_it_be(:reassigned_by_user) { create(:user, :admin) }
+
+      subject(:source_user) { create(:import_source_user, :pending_reassignment) }
+
+      before do
+        source_user.reassign_to_user = reassign_to_user
+        source_user.reassigned_by_user = reassigned_by_user
+      end
+
+      context 'and admin bypass placeholder user confirmation is allowed' do
+        before do
+          expect_next_instance_of(Import::UserMapping::AdminBypassAuthorizer, reassigned_by_user) do |authorizer|
+            allow(authorizer).to receive(:allowed?).and_return(true)
+          end
+        end
+
+        it 'allows the transition' do
+          expect(source_user.reassign_without_confirmation).to be(true)
+        end
+      end
+
+      context 'and admins bypass placeholder user confirmation is not allowed' do
+        before do
+          expect_next_instance_of(Import::UserMapping::AdminBypassAuthorizer, reassigned_by_user) do |authorizer|
+            allow(authorizer).to receive(:allowed?).and_return(false)
+          end
+        end
+
+        it 'does not allow the transition' do
+          expect(source_user.reassign_without_confirmation).to be(false)
+        end
+      end
+    end
   end
 
   describe '.find_source_user' do

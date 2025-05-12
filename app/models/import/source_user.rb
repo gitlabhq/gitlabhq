@@ -78,6 +78,10 @@ module Import
         transition REASSIGNABLE_STATUSES => :awaiting_approval
       end
 
+      event :reassign_without_confirmation do
+        transition REASSIGNABLE_STATUSES => :reassignment_in_progress, if: :bypass_placeholder_confirmation_allowed?
+      end
+
       event :cancel_reassignment do
         transition CANCELABLE_STATUSES => :pending_reassignment
       end
@@ -170,6 +174,12 @@ module Import
       return if uri && uri.scheme && uri.host && uri.path.blank?
 
       errors.add(:source_hostname, :invalid, message: 'must contain scheme and host, and not path')
+    end
+
+    private
+
+    def bypass_placeholder_confirmation_allowed?
+      Import::UserMapping::AdminBypassAuthorizer.new(reassigned_by_user).allowed?
     end
   end
 end

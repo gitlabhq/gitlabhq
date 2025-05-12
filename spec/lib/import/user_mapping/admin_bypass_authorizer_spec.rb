@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::UserMapping::BypassConfirmationAuthorizer, feature_category: :importers do
+RSpec.describe Import::UserMapping::AdminBypassAuthorizer, feature_category: :importers do
   subject(:authorizer) { described_class.new(reassigning_user) }
 
-  describe '#allow_mapping_to_inactive_users?' do
+  describe '#allowed?' do
     let_it_be(:reassigning_user) { create(:user, :admin) }
 
-    subject(:allow_mapping_to_inactive_users) { authorizer.allow_mapping_to_inactive_users? }
+    subject(:allowed) { authorizer.allowed? }
 
     before do
       stub_application_setting(allow_bypass_placeholder_confirmation: true)
@@ -16,7 +16,7 @@ RSpec.describe Import::UserMapping::BypassConfirmationAuthorizer, feature_catego
     end
 
     it 'returns true for admins with bypass application setting and impersonation enabled', :enable_admin_mode do
-      expect(allow_mapping_to_inactive_users).to be(true)
+      expect(allowed).to be(true)
     end
 
     context 'when the importer_user_mapping_allow_bypass_of_confirmation flag is disabled', :enable_admin_mode do

@@ -187,8 +187,8 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
 
     context 'when allow_bypass_placeholder_confirmation application setting is disabled' do
       before do
-        expect_next_instance_of(Import::UserMapping::BypassConfirmationAuthorizer, current_user) do |authorizer|
-          allow(authorizer).to receive(:allow_mapping_to_inactive_users?).and_return(false)
+        expect_next_instance_of(Import::UserMapping::AdminBypassAuthorizer, current_user) do |authorizer|
+          allow(authorizer).to receive(:allowed?).and_return(false)
         end
       end
 
@@ -199,8 +199,8 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
 
     context 'when allow_bypass_placeholder_confirmation application setting is enabled' do
       before do
-        expect_next_instance_of(Import::UserMapping::BypassConfirmationAuthorizer, current_user) do |authorizer|
-          allow(authorizer).to receive(:allow_mapping_to_inactive_users?).and_return(true)
+        expect_next_instance_of(Import::UserMapping::AdminBypassAuthorizer, current_user) do |authorizer|
+          allow(authorizer).to receive(:allowed?).and_return(true)
         end
       end
 

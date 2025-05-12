@@ -31,7 +31,7 @@ module Groups::GroupMembersHelper
       placeholder: placeholder_users,
       available_roles: available_group_roles(group),
       reassignment_csv_path: group_bulk_reassignment_file_path(group),
-      allow_inactive_placeholder_reassignment: allow_inactive_placeholder_reassignment?.to_s
+      allow_inactive_placeholder_reassignment: Import::UserMapping::AdminBypassAuthorizer.new(current_user).allowed?.to_s
     }
   end
   # rubocop:enable Metrics/ParameterLists
@@ -92,10 +92,6 @@ module Groups::GroupMembersHelper
     group.access_level_roles.sort_by { |_, access_level| access_level }.map do |name, access_level|
       { title: name, value: "static-#{access_level}" }
     end
-  end
-
-  def allow_inactive_placeholder_reassignment?
-    Import::UserMapping::BypassConfirmationAuthorizer.new(current_user).allow_mapping_to_inactive_users?
   end
 end
 

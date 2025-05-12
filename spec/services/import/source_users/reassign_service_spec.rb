@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importers do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let(:import_source_user) { create(:import_source_user) }
   let(:current_user) { user }
   let(:assignee_user) { create(:user) }
@@ -40,17 +40,44 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
       end
     end
 
-    context 'when the reassigned by and reassigning user are valid' do
-      it_behaves_like 'a success response'
+    shared_examples 'a success response that bypasses user confirmation' do
+      it 'returns success', :aggregate_failures do
+        expect(Import::ReassignPlaceholderUserRecordsWorker).to receive(:perform_async).with(import_source_user.id)
+        expect { result }
+          .to trigger_internal_events('reassign_placeholder_user_without_confirmation')
+          .with(
+            namespace: import_source_user.namespace,
+            user: current_user,
+            additional_properties: {
+              label: Gitlab::GlobalAnonymousId.user_id(import_source_user.placeholder_user),
+              property: Gitlab::GlobalAnonymousId.user_id(assignee_user),
+              import_type: import_source_user.import_type,
+              reassign_to_user_state: assignee_user.state
+            }
+          )
+
+        expect(result).to be_success
+        expect(result.payload.reload).to eq(import_source_user)
+        expect(result.payload.reassign_to_user).to eq(assignee_user)
+        expect(result.payload.reassigned_by_user).to eq(current_user)
+        expect(result.payload.reassignment_in_progress?).to eq(true)
+      end
     end
 
     shared_examples 'an error response' do |desc, error:|
-      it "returns #{desc} error" do
+      it "returns #{desc} error", :aggregate_failures do
         expect(Notify).not_to receive(:import_source_user_reassign)
+        expect(Import::ReassignPlaceholderUserRecordsWorker).not_to receive(:perform_async)
+
+        expect { result }.not_to change { import_source_user.status }
 
         expect(result).to be_error
         expect(result.message).to eq(error)
       end
+    end
+
+    context 'when the reassigned by and reassigning user are valid' do
+      it_behaves_like 'a success response'
     end
 
     context 'when current user does not have permission' do
@@ -84,7 +111,21 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
         error: s_('UserMapping|You can assign active users with regular or auditor access only.')
     end
 
-    context 'when assignee user is not active' do
+    context 'when assignee user is blocked' do
+      let(:assignee_user) { create(:user, :blocked) }
+
+      it_behaves_like 'an error response', 'invalid assignee',
+        error: s_('UserMapping|You can assign active users with regular or auditor access only.')
+    end
+
+    context 'when assignee user is banned' do
+      let(:assignee_user) { create(:user, :banned) }
+
+      it_behaves_like 'an error response', 'invalid assignee',
+        error: s_('UserMapping|You can assign active users with regular or auditor access only.')
+    end
+
+    context 'when assignee user is deactivated' do
       let(:assignee_user) { create(:user, :deactivated) }
 
       it_behaves_like 'an error response', 'invalid assignee',
@@ -116,11 +157,18 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
         it_behaves_like 'a success response'
       end
 
-      context 'and mapping to inactive users is allowed' do
+      context 'and the current user is an admin with bypass placeholder confirmation enabled', :enable_admin_mode do
+        let_it_be(:current_user) { create(:user, :admin) }
+
         before do
-          expect_next_instance_of(Import::UserMapping::BypassConfirmationAuthorizer, current_user) do |authorizer|
-            allow(authorizer).to receive(:allow_mapping_to_inactive_users?).and_return(true)
-          end
+          stub_application_setting(allow_bypass_placeholder_confirmation: true)
+          stub_config_setting(impersonation_enabled: true)
+        end
+
+        context 'and the assignee user is an admin' do
+          let(:assignee_user) { create(:user, :admin) }
+
+          it_behaves_like 'a success response that bypasses user confirmation'
         end
 
         context 'and assignee user is not a human' do
@@ -132,11 +180,34 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
       end
     end
 
-    context 'when mapping to inactive users is allowed' do
+    context 'when the current user is an admin with bypass placeholder confirmation enabled', :enable_admin_mode do
+      let_it_be(:current_user) { create(:user, :admin) }
+
       before do
-        expect_next_instance_of(Import::UserMapping::BypassConfirmationAuthorizer, current_user) do |authorizer|
-          allow(authorizer).to receive(:allow_mapping_to_inactive_users?).and_return(true)
-        end
+        stub_application_setting(allow_bypass_placeholder_confirmation: true)
+        stub_config_setting(impersonation_enabled: true)
+      end
+
+      context 'when the assignee user is an active human user' do
+        it_behaves_like 'a success response that bypasses user confirmation'
+      end
+
+      context 'and the assignee user is blocked' do
+        let(:assignee_user) { create(:user, :blocked) }
+
+        it_behaves_like 'a success response that bypasses user confirmation'
+      end
+
+      context 'and the assignee user is banned' do
+        let(:assignee_user) { create(:user, :banned) }
+
+        it_behaves_like 'a success response that bypasses user confirmation'
+      end
+
+      context 'and the assignee user is deactivated' do
+        let(:assignee_user) { create(:user, :deactivated) }
+
+        it_behaves_like 'a success response that bypasses user confirmation'
       end
 
       context 'and the assignee user is an admin' do
@@ -146,23 +217,21 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
           error: s_('UserMapping|You can assign users with regular or auditor access only.')
       end
 
-      context 'and the assignee user is blocked' do
-        let(:assignee_user) { create(:user, :blocked) }
+      context 'and the assignee user is not human' do
+        let(:assignee_user) { create(:user, :bot) }
 
-        it_behaves_like 'a success response'
+        it_behaves_like 'an error response', 'invalid assignee',
+          error: s_('UserMapping|You can assign users with regular or auditor access only.')
       end
+    end
 
-      context 'and the assignee user is banned' do
-        let(:assignee_user) { create(:user, :banned) }
+    context 'when the top level namespace is a personal namespace' do
+      let(:personal_import_source_user) { create(:import_source_user, :user_type_namespace) }
+      let(:current_user) { personal_import_source_user.namespace.owner }
+      let(:service) { described_class.new(personal_import_source_user, assignee_user, current_user: current_user) }
 
-        it_behaves_like 'a success response'
-      end
-
-      context 'and the assignee user is deactivated' do
-        let(:assignee_user) { create(:user, :deactivated) }
-
-        it_behaves_like 'a success response'
-      end
+      it_behaves_like 'an error response', 'invalid namespace',
+        error: s_("UserMapping|You cannot reassign user contributions of imports to a personal namespace.")
     end
 
     context 'when an error occurs' do
@@ -188,18 +257,6 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
             }
           )
       end
-    end
-  end
-
-  context 'when the top level namespace is a personal namespace' do
-    let(:import_source_user) { create(:import_source_user, :user_type_namespace) }
-    let(:user) { import_source_user.namespace.owner }
-    let(:error) { 'You cannot reassign user contributions of imports to a personal namespace.' }
-
-    it 'returns an error' do
-      expect(Notify).not_to receive(:import_source_user_reassign)
-      expect(result).to be_error
-      expect(result.message).to eq(error)
     end
   end
 end
