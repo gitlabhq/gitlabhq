@@ -74,7 +74,7 @@ However, merge request diffs can also be configured to be offloaded to the file 
 
 Gitaly Cluster's Praefect service uses a PostgreSQL database as a single source of truth to manage its Gitaly nodes.
 
-A common PostgreSQL utility, [`pg_dump`](https://www.postgresql.org/docs/current/app-pgdump.html), produces a backup file which can be used to restore a PostgreSQL database. The [backup command](#backup-command) uses this utility under the hood.
+A common PostgreSQL utility, [`pg_dump`](https://www.postgresql.org/docs/16/app-pgdump.html), produces a backup file which can be used to restore a PostgreSQL database. The [backup command](#backup-command) uses this utility under the hood.
 
 Unfortunately, the larger the database, the longer it takes `pg_dump` to execute. Depending on your situation, the duration becomes impractical at some point (days, for example). If your database is over 100 GB, `pg_dump`, and by extension the [backup command](#backup-command), is likely not usable. For more information, see [alternative backup strategies](#alternative-backup-strategies).
 
@@ -1490,7 +1490,7 @@ leaving the `PG*` names as is:
 sudo GITLAB_BACKUP_MAIN_PGHOST=192.168.1.10 GITLAB_BACKUP_CI_PGHOST=192.168.1.12 /opt/gitlab/bin/gitlab-backup create
 ```
 
-See the [PostgreSQL documentation](https://www.postgresql.org/docs/12/libpq-envars.html)
+See the [PostgreSQL documentation](https://www.postgresql.org/docs/16/libpq-envars.html)
 for more details on what these parameters do.
 
 #### `gitaly-backup` for repository backup and restore

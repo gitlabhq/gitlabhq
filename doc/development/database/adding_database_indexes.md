@@ -273,7 +273,7 @@ ORDER BY pg_relation_size(indexrelname::regclass) desc;
 
 This query outputs a list containing all indexes that have not been used since the stats were last reset and sorts
 them by index size in descending order. More information on the meaning of the various columns can be found at
-<https://www.postgresql.org/docs/current/monitoring-stats.html>.
+<https://www.postgresql.org/docs/16/monitoring-stats.html>.
 
 For GitLab.com, you can check the latest generated [production reports](https://console.postgres.ai/gitlab/reports/)
 on postgres.ai and inspect the `H002 Unused Indexes` file.
@@ -516,7 +516,7 @@ It is commonly done by creating two [post deployment migrations](post_deployment
 In most cases, no additional work is needed. The new index is created and is used
 as expected when queuing and executing the batched background migration.
 
-[Expression indexes](https://www.postgresql.org/docs/current/indexes-expressional.html),
+[Expression indexes](https://www.postgresql.org/docs/16/indexes-expressional.html),
 however, do not generate statistics for the new index on creation. Autovacuum
 eventually runs `ANALYZE`, and updates the statistics so the new index is used.
 Run `ANALYZE` explicitly only if it is needed right after the index

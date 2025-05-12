@@ -7,7 +7,7 @@ title: Transaction guidelines
 
 This document gives a few examples of the usage of database transactions in application code.
 
-For further reference, check PostgreSQL documentation about [transactions](https://www.postgresql.org/docs/current/tutorial-transactions.html).
+For further reference, check PostgreSQL documentation about [transactions](https://www.postgresql.org/docs/16/tutorial-transactions.html).
 
 ## Database decomposition and sharding
 

@@ -17,7 +17,7 @@ kinds of upgrades exist for PostgreSQL databases:
 
 - **Major version upgrades**: These change the internal storage format and the database
   catalog. As a result, object statistics used by the query optimizer
-  [are not transferred to the new version](https://www.postgresql.org/docs/current/pgupgrade.html)
+  [are not transferred to the new version](https://www.postgresql.org/docs/16/pgupgrade.html)
   and must be rebuilt with `ANALYZE`.
 
   Not following the documented major version upgrade process often results in
@@ -32,16 +32,16 @@ Read carefully the major version upgrade steps of your external database platfor
 - [Amazon RDS for PostgreSQL](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.PostgreSQL.html#USER_UpgradeDBInstance.PostgreSQL.MajorVersion.Process)
 - [Azure Database for PostgreSQL Flexible Server](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-major-version-upgrade)
 - [Google Cloud SQL for PostgreSQL](https://cloud.google.com/sql/docs/postgres/upgrade-major-db-version-inplace)
-- [PostgreSQL community `pg_upgrade`](https://www.postgresql.org/docs/current/pgupgrade.html)
+- [PostgreSQL community `pg_upgrade`](https://www.postgresql.org/docs/16/pgupgrade.html)
 
 ## Always `ANALYZE` your database after a major version upgrade
 
-It is mandatory to run the [`ANALYZE` operation](https://www.postgresql.org/docs/current/sql-analyze.html)
+It is mandatory to run the [`ANALYZE` operation](https://www.postgresql.org/docs/16/sql-analyze.html)
 to refresh the `pg_statistic` table after a major version upgrade, because optimizer statistics
-[are not transferred by `pg_upgrade`](https://www.postgresql.org/docs/current/pgupgrade.html).
+[are not transferred by `pg_upgrade`](https://www.postgresql.org/docs/16/pgupgrade.html).
 This should be done for all databases on the upgraded PostgreSQL service/instance/cluster.
 
 To speed up the `ANALYZE` operation, use the
-[`vacuumdb` utility](https://www.postgresql.org/docs/current/app-vacuumdb.html),
+[`vacuumdb` utility](https://www.postgresql.org/docs/16/app-vacuumdb.html),
 with `--analyze-only --jobs=njobs` to execute the `ANALYZE` command in parallel by
 running `njobs` commands simultaneously.

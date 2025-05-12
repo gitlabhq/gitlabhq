@@ -248,7 +248,7 @@ version of GitLab. If you [check the status](#check-the-status-of-batched-backgr
 of batched background migrations, some migrations might display in the **Failed** tab
 with a **failed** status:
 
-![failed batched background migrations table](img/batched_background_migrations_failed_v14_3.png)
+![A failed batched background migrations table.](img/batched_background_migrations_failed_v14_3.png)
 
 To determine why the batched background migration failed,
 view the failure error logs

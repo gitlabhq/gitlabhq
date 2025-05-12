@@ -263,7 +263,7 @@ Prerequisites:
 
 To observe a `CREATE INDEX` or `REINDEX` operation:
 
-- Use the built-in [`pg_stat_progress_create_index` view](https://www.postgresql.org/docs/current/progress-reporting.html#CREATE-INDEX-PROGRESS-REPORTING).
+- Use the built-in [`pg_stat_progress_create_index` view](https://www.postgresql.org/docs/16/progress-reporting.html#CREATE-INDEX-PROGRESS-REPORTING).
 
 For example, from a database console session, run the following command:
 

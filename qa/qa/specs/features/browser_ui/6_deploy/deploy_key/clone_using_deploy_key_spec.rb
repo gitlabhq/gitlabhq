@@ -3,7 +3,7 @@
 require 'digest/sha1'
 
 module QA
-  RSpec.describe 'Release', product_group: :environments do
+  RSpec.describe 'Deploy', product_group: :environments do
     describe 'Git clone using a deploy key' do
       let(:runner_name) { "qa-runner-#{SecureRandom.hex(4)}" }
       let(:repository_location) { project.repository_ssh_location }
@@ -70,7 +70,7 @@ module QA
             resource.new_branch = true
           end
 
-          sha1sum = Digest::SHA1.hexdigest(gitlab_ci)
+          sha1sum = Digest::SHA1.hexdigest(gitlab_ci) # rubocop:disable Fips/SHA1 -- Test is for sha1
 
           Flow::Pipeline.visit_latest_pipeline
           Page::Project::Pipeline::Show.perform(&:click_on_first_job)

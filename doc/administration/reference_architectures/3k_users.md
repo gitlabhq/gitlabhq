@@ -1160,7 +1160,7 @@ Praefect's database is recommended if aiming for full High Availability.
 There are many third-party solutions for PostgreSQL HA. The solution selected must have the following to work with Praefect:
 
 - A static IP for all connections that doesn't change on failover.
-- [`LISTEN`](https://www.postgresql.org/docs/12/sql-listen.html) SQL functionality must be supported.
+- [`LISTEN`](https://www.postgresql.org/docs/16/sql-listen.html) SQL functionality must be supported.
 
 {{< alert type="note" >}}
 

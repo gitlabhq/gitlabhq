@@ -157,6 +157,13 @@ Prerequisites:
   - A fork of a public upstream project.
   - A public upstream project with downstream forks.
 
+{{< alert type="note" >}}
+
+To ensure successful blob removal, consider temporarily restricting repository access during the
+process. New commits pushed during blob removal can cause the operation to fail.
+
+{{< /alert >}}
+
 To remove blobs from your repository:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -247,6 +254,31 @@ If you've completed a repository cleanup process but the storage usage remains u
 - These objects are not included in exports but still occupy file system space.
 - After two weeks, these objects are automatically pruned, which updates storage usage statistics.
 - To expedite this process, ask an administrator to run the ['Prune Unreachable Objects' housekeeping task](../../../administration/housekeeping.md).
+
+### Blobs are not removed
+
+When blobs are successfully removed, GitLab adds an entry in the project audit logs and sends an
+email notification to the person who initiated the action.
+
+If the blob removal fails, GitLab sends an email notification to the initiator with the subject
+`<project_name> | Project history rewrite failure`. The email body contains the full error message.
+
+Possible errors and solutions:
+
+- `validating object ID: invalid object ID`:
+
+  The object ID list contains a syntax error or an incorrect object ID. To resolve this:
+
+    1. Regenerate the [object IDs list](#get-a-list-of-object-ids).
+    1. Re-run the [blob removal steps](#remove-blobs).
+
+- `source repository checksum altered`:
+
+  This occurs when someone pushes a commit during the blob removal process. To resolve this:
+
+    1. Temporarily block all pushes to the repository.
+    1. Re-run the [blob removal steps](#remove-blobs).
+    1. Re-enable pushes after the process completes successfully.
 
 ### Repository size limit reached
 

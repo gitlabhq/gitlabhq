@@ -107,7 +107,7 @@ and `epics`: `issues.label_ids` would be an array column of label IDs, and
 `issues.label_titles` would be an array of label titles.
 
 These array columns can be complemented with
-[GIN indexes](https://www.postgresql.org/docs/11/gin-intro.html) to improve
+[GIN indexes](https://www.postgresql.org/docs/16/gin-intro.html) to improve
 matching.
 
 ### Attempt B1: store label IDs for each object

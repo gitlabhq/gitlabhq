@@ -374,7 +374,7 @@ You should always read `disable_ddl_transaction!` as meaning:
 
 Even if you don't use an explicit PostgreSQL transaction `.transaction` (or `BEGIN; COMMIT;`),
 every SQL statement is still executed as a transaction.
-See [the PostgreSQL documentation on transactions](https://www.postgresql.org/docs/current/tutorial-transactions.html).
+See [the PostgreSQL documentation on transactions](https://www.postgresql.org/docs/16/tutorial-transactions.html).
 
 {{< /alert >}}
 
@@ -444,7 +444,7 @@ Custom index and constraint names should follow the [constraint naming conventio
 
 ### Truncate long index names
 
-PostgreSQL [limits the length of identifiers](https://www.postgresql.org/docs/current/limits.html),
+PostgreSQL [limits the length of identifiers](https://www.postgresql.org/docs/16/limits.html),
 like column or index names. Column names are not usually a problem, but index names tend
 to be longer. Some methods for shortening a name that's too long:
 
@@ -551,7 +551,7 @@ is concurrently accessed and modified by other processes, acquiring the lock may
 a while. The lock request is waiting in a queue and it may also block other queries
 on the `users` table once it has been enqueued.
 
-More information about PostgreSQL locks: [Explicit Locking](https://www.postgresql.org/docs/current/explicit-locking.html)
+More information about PostgreSQL locks: [Explicit Locking](https://www.postgresql.org/docs/16/explicit-locking.html)
 
 For stability reasons, GitLab.com has a short `statement_timeout`
 set. When the migration is invoked, any database query has
@@ -618,7 +618,7 @@ end
 
 #### Creating a new table when we have two foreign keys
 
-Only one foreign key should be created per transaction. This is because [the addition of a foreign key constraint requires a `SHARE ROW EXCLUSIVE` lock on the referenced table](https://www.postgresql.org/docs/12/sql-createtable.html#:~:text=The%20addition%20of%20a%20foreign%20key%20constraint%20requires%20a%20SHARE%20ROW%20EXCLUSIVE%20lock%20on%20the%20referenced%20table), and locking multiple tables in the same transaction should be avoided.
+Only one foreign key should be created per transaction. This is because [the addition of a foreign key constraint requires a `SHARE ROW EXCLUSIVE` lock on the referenced table](https://www.postgresql.org/docs/16/sql-createtable.html#:~:text=The%20addition%20of%20a%20foreign%20key%20constraint%20requires%20a%20SHARE%20ROW%20EXCLUSIVE%20lock%20on%20the%20referenced%20table), and locking multiple tables in the same transaction should be avoided.
 
 For this, we need three migrations:
 

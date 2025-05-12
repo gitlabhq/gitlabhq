@@ -559,9 +559,9 @@ The compressed folder contains a large number of files.
 ### Enable optional query statistics data
 
 The `gitlab:db:sos` Rake task can also gather data for troubleshooting slow queries using the
-[`pg_stat_statements` extension](https://www.postgresql.org/docs/current/pgstatstatements.html).
+[`pg_stat_statements` extension](https://www.postgresql.org/docs/16/pgstatstatements.html).
 
-Enabling this extension is optional, and requires restarting PostgreSQL and GitLab. This data is 
+Enabling this extension is optional, and requires restarting PostgreSQL and GitLab. This data is
 likely required for troubleshooting GitLab performance issues caused by slow database queries.
 
 Prerequisites:

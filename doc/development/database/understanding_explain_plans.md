@@ -86,8 +86,8 @@ Execution time: 3428.596 ms
 ```
 
 For more information, refer to the official
-[`EXPLAIN` documentation](https://www.postgresql.org/docs/current/sql-explain.html)
-and [using `EXPLAIN` guide](https://www.postgresql.org/docs/current/using-explain.html).
+[`EXPLAIN` documentation](https://www.postgresql.org/docs/16/sql-explain.html)
+and [using `EXPLAIN` guide](https://www.postgresql.org/docs/16/using-explain.html).
 
 ## Nodes
 

@@ -761,7 +761,7 @@ To filter the list issues for text in a title or description:
 1. In the dropdown list that appears, select **Search within**, and then either **Titles** or **Descriptions**.
 1. Press <kbd>Enter</kbd> or select the search icon ({{< icon name="search" >}}).
 
-Filtering issues uses [PostgreSQL full text search](https://www.postgresql.org/docs/current/textsearch-intro.html)
+Filtering issues uses [PostgreSQL full text search](https://www.postgresql.org/docs/16/textsearch-intro.html)
 to match meaningful and significant words to answer a query.
 
 For example, if you search for `I am securing information for M&A`,

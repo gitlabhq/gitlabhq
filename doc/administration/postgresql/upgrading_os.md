@@ -90,7 +90,7 @@ Backup and restore recreates the entire database, including the indexes.
 
 ## Rebuild all indexes
 
-[Rebuild all indexes](https://www.postgresql.org/docs/14/sql-reindex.html).
+[Rebuild all indexes](https://www.postgresql.org/docs/16/sql-reindex.html).
 
 1. Take a scheduled downtime window. In all nodes, stop unnecessary GitLab services:
 

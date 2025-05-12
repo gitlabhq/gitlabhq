@@ -55,7 +55,7 @@ We are using `integer` in the examples to showcase a more realistic reordering s
 
 ## Type Sizes
 
-While the [PostgreSQL documentation](https://www.postgresql.org/docs/current/datatype.html) contains plenty
+While the [PostgreSQL documentation](https://www.postgresql.org/docs/16/datatype.html) contains plenty
 of information we list the sizes of common types here so it's easier to
 look them up. Here "word" refers to the word size, which is 4 bytes for a 32
 bits platform and 8 bytes for a 64 bits platform.

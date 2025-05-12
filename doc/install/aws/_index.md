@@ -74,7 +74,7 @@ It can take a few hours to validate a certificate provisioned through ACM. To av
 
 Below is a diagram of the recommended architecture.
 
-![Scaled down 2 Availability Zone Non-HA AWS architecture](img/aws_ha_architecture_diagram_v17_0.png)
+![A scaled down 2 Availability Zone and Non-HA AWS architecture.](img/aws_ha_architecture_diagram_v17_0.png)
 
 ## AWS costs
 
@@ -160,7 +160,7 @@ We now create a VPC, a virtual networking environment that you control:
    `10.0.0.0/16`. If you don't require dedicated hardware, you can leave
    "Tenancy" as default. Select **Create VPC** when ready.
 
-   ![Create a VPC for GitLab cloud infrastructure](img/create_vpc_v17_0.png)
+   ![Create a VPC for the GitLab cloud infrastructure.](img/create_vpc_v17_0.png)
 
 1. Select the VPC, select **Actions**, select **Edit VPC Settings** and check **Enable DNS resolution**. Select **Save** when done.
 
@@ -179,7 +179,7 @@ RDS instances as well:
    for example `gitlab-public-10.0.0.0`, select the VPC we created previously, select an availability zone (we use `us-west-2a`),
    and at the IPv4 CIDR block let's give it a 24 subnet `10.0.0.0/24`:
 
-   ![Create subnet](img/create_subnet_v17_0.png)
+   ![Create a subnet.](img/create_subnet_v17_0.png)
 
 1. Follow the same steps to create all subnets:
 
@@ -204,7 +204,7 @@ create a new one:
 1. Select it from the table, and then under the **Actions** dropdown list choose
    "Attach to VPC".
 
-   ![Create an internet gateway](img/create_gateway_v17_0.png)
+   ![Create an internet gateway.](img/create_gateway_v17_0.png)
 
 1. Choose `gitlab-vpc` from the list and hit **Attach**.
 
@@ -423,7 +423,7 @@ persistence and is used to store session data, temporary cache information, and 
    Select the VPC we created earlier (`gitlab-vpc`) and ensure the selected subnets table only contains the [private subnets](#subnets).
 1. Select **Create** when ready.
 
-   ![Create a subnet group](img/ec_subnet_v17_0.png)
+   ![Create a subnet group for the GitLab Redis group.](img/ec_subnet_v17_0.png)
 
 ### Create the Redis Cluster
 
@@ -447,7 +447,8 @@ persistence and is used to store session data, temporary cache information, and 
    1. Manually select the preferred availability zones, and under "Replica 2"
       choose a different zone than the other two.
 
-      ![Redis availability zones](img/ec_az_v17_0.png)
+      ![Choose the availability zones for the Redis group.](img/ec_az_v17_0.png)
+
 1. Select **Next**.
 1. In the security settings, edit the security groups and choose the
    `gitlab-redis-sec-group` we had previously created. Select **Next**.
@@ -843,13 +844,13 @@ From the EC2 dashboard:
       1. **Add** `1` capacity unit when `CPUUtilization` is greater than or equal to 60%.
       1. Set the **Scaling policy name** to `Scale Up Policy`.
 
-   ![Scale Up Policy](img/scale_up_policy_v17_0.png)
+   ![Configure a Scale Up Policy.](img/scale_up_policy_v17_0.png)
 
    1. Create a [scale down policy](https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-simple-step.html#step-scaling-create-scale-in-policy) using the following conditions:
       1. **Remove** `1` capacity unit when `CPUUtilization` is less than or equal to 45%.
       1. Set the **Scaling policy name** to `Scale Down Policy`.
 
-   ![Scale Down Policy](img/scale_down_policy_v17_0.png)
+   ![Configure a Scale Down Policy.](img/scale_down_policy_v17_0.png)
 
    1. Assign the new dynamic scaling policy to the auto scaling group we created earlier.
 

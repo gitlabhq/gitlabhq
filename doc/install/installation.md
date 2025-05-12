@@ -56,7 +56,7 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 | [Go](#4-go)             | `1.22.x`        | In GitLab 17.1 and later, Go 1.22 or later is required.                                                                                                                                                                                                                                        |
 | [Git](#git)             | `2.47.x`        | In GitLab 17.7 and later, Git 2.47.x and later is required. You should use the [Git version provided by Gitaly](#git).                                                                                                                                                   |
 | [Node.js](#5-node)      | `20.13.x`       | In GitLab 17.0 and later, Node.js 20.13 or later is required.                                                                                                                                                                                                                                  |
-| [PostgreSQL](#7-database) | `14.x`          | In GitLab 17.0 and later, PostgreSQL 14 or later is required.                                                                                                                                                                                                                                  |
+| [PostgreSQL](#7-database) | `16.x`          | In GitLab 18.0 and later, PostgreSQL 16 or later is required.                                                                                                                                                                                                                                  |
 
 ## GitLab directory structure
 
@@ -303,7 +303,7 @@ sudo adduser --disabled-login --gecos 'GitLab' git
 {{< alert type="note" >}}
 
 Only PostgreSQL is supported.
-In GitLab 17.0 and later, we [require PostgreSQL 14+](requirements.md#postgresql).
+In GitLab 18.0 and later, we [require PostgreSQL 16+](requirements.md#postgresql).
 
 {{< /alert >}}
 
@@ -322,7 +322,7 @@ In GitLab 17.0 and later, we [require PostgreSQL 14+](requirements.md#postgresql
    sudo sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
    sudo apt-get update
-   sudo apt-get -y install postgresql-14
+   sudo apt-get -y install postgresql-16
    ```
 
 1. Verify the PostgreSQL version you have is supported by the version of GitLab you're

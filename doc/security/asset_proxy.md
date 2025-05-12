@@ -15,7 +15,7 @@ title: Proxying assets
 A possible security concern when managing a public-facing GitLab instance is
 the ability to steal a user's IP address by referencing images in issues and comments.
 
-For example, adding `![Example image](http://example.com/example.png)` to
+For example, adding `![An example image.](http://example.com/example.png)` to
 an issue description causes the image to be loaded from the external
 server to be displayed. However, this also allows the external server
 to log the IP address of the user.
@@ -71,7 +71,7 @@ references an external source are proxied to the Camo server.
 For example, the following is a link to an image in Markdown:
 
 ```markdown
-![logo](https://about.gitlab.com/images/press/logo/jpg/gitlab-icon-rgb.jpg)
+![A GitLab logo.](https://about.gitlab.com/images/press/logo/jpg/gitlab-icon-rgb.jpg)
 ```
 
 The following is an example of a source link that could result:

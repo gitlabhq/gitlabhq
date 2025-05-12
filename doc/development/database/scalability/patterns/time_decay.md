@@ -126,7 +126,7 @@ such as CI pipelines that failed more than 6 months ago.
 
 This is the acceptable best practice for addressing time-decay data from a pure database perspective.
 You can find more information on table partitioning for PostgreSQL in the
-[documentation page for table partitioning](https://www.postgresql.org/docs/12/ddl-partitioning.html).
+[documentation page for table partitioning](https://www.postgresql.org/docs/16/ddl-partitioning.html).
 
 Partitioning by date intervals (for example, month, year) allows us to create much smaller tables
 (partitions) for each date interval and only access the most recent partitions for any
@@ -166,7 +166,7 @@ we can safely keep the 7 latest partitions at all times (current month and 6 mon
 That means that we can have a worker dropping the 8th oldest partition at the start of each month.
 
 Moving partitions to cheaper storage inside the same database is relatively simple in PostgreSQL
-through the use of [tablespaces](https://www.postgresql.org/docs/12/manage-ag-tablespaces.html).
+through the use of [tablespaces](https://www.postgresql.org/docs/16/manage-ag-tablespaces.html).
 It is possible to specify a tablespace and storage parameters for each partition separately, so the
 approach in this case would be to:
 

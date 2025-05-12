@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Release', product_group: :environments do
+  RSpec.describe 'Deploy', product_group: :environments do
     describe 'Deploy token creation' do
       it 'user adds a deploy token',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348028' do
         Flow::Login.sign_in
 
         deploy_token_name = 'deploy token name'
-        one_week_from_now = Date.today + 7
+        one_week_from_now = Date.today + 7 # rubocop:disable Rails/Date -- E2E tests run outside of Rails environment
 
         deploy_token = create(:project_deploy_token,
           name: deploy_token_name,

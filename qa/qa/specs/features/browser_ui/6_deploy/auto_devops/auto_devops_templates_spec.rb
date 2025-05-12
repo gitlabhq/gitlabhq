@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Configure' do
+  RSpec.describe 'Deploy' do
     describe 'AutoDevOps Templates', only: { pipeline: %i[staging staging-canary] }, product_group: :environments,
       quarantine: {
         issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/432409',

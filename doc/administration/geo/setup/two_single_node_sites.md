@@ -29,7 +29,7 @@ Prerequisites:
 Prerequisites:
 
 - You use PostgreSQL 12 or later,
-  which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/12/app-pgbasebackup.html).
+  which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/16/app-pgbasebackup.html).
 
 ### Configure the primary site
 
@@ -96,7 +96,7 @@ Prerequisites:
       gitlab_rails['db_password'] = '<your_db_password_here>'
       ```
 
-1. Define a password for the database [replication user](https://www.postgresql.org/docs/current/warm-standby.html#STREAMING-REPLICATION).
+1. Define a password for the database [replication user](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION).
    Use the username defined in `/etc/gitlab/gitlab.rb` under the `postgresql['sql_replication_user']`
    setting. The default value is `gitlab_replicator`.
 

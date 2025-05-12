@@ -802,7 +802,7 @@ If a replica is not in sync, `gitlab-ctl patroni members` indicates the volume
 of missing data, and the `lag` fields indicate the elapsed time.
 
 Read more about the data returned by the leader
-[in the PostgreSQL documentation](https://www.postgresql.org/docs/12/monitoring-stats.html#PG-STAT-REPLICATION-VIEW),
+[in the PostgreSQL documentation](https://www.postgresql.org/docs/16/monitoring-stats.html#PG-STAT-REPLICATION-VIEW),
 including other values for the `state` field.
 
 The replicas should return:
@@ -826,7 +826,7 @@ conninfo              | user=gitlab_replicator host=172.18.0.113 port=5432 appli
 ```
 
 Read more about the data returned by the replica
-[in the PostgreSQL documentation](https://www.postgresql.org/docs/12/monitoring-stats.html#PG-STAT-WAL-RECEIVER-VIEW).
+[in the PostgreSQL documentation](https://www.postgresql.org/docs/16/monitoring-stats.html#PG-STAT-WAL-RECEIVER-VIEW).
 
 ### Selecting the appropriate Patroni replication method
 
@@ -841,7 +841,7 @@ Replication is not a backup strategy! There is no replacement for a well-conside
 
 {{< /alert >}}
 
-Linux package installations default [`synchronous_commit`](https://www.postgresql.org/docs/11/runtime-config-wal.html#GUC-SYNCHRONOUS-COMMIT) to `on`.
+Linux package installations default [`synchronous_commit`](https://www.postgresql.org/docs/16/runtime-config-wal.html#GUC-SYNCHRONOUS-COMMIT) to `on`.
 
 ```ruby
 postgresql['synchronous_commit'] = 'on'
@@ -1104,9 +1104,9 @@ cluster.
 
 #### Preflight check
 
-We rely on PostgreSQL [logical replication](https://www.postgresql.org/docs/current/logical-replication.html)
+We rely on PostgreSQL [logical replication](https://www.postgresql.org/docs/16/logical-replication.html)
 to support near-zero-downtime upgrades of Patroni clusters. The of
-[logical replication requirements](https://www.postgresql.org/docs/current/logical-replication-restrictions.html)
+[logical replication requirements](https://www.postgresql.org/docs/16/logical-replication-restrictions.html)
 must be met. In particular, `wal_level` must be `logical`. To check the `wal_level`,
 run the following command with `gitlab-psql` on any node of the existing cluster:
 
@@ -1204,7 +1204,7 @@ CREATE SUBSCRIPTION patroni_upgrade
 
 In this statement, `EXISTING_CLUSTER_LEADER` is the host address of the leader node
 of the existing cluster. You can also use
-[other parameters](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS)
+[other parameters](https://www.postgresql.org/docs/16/libpq-connect.html#LIBPQ-PARAMKEYWORDS)
 to change the connection string. For example, you can pass the authentication password.
 
 To check the status of replication, run these queries:

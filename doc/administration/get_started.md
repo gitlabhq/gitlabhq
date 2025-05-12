@@ -152,7 +152,7 @@ You can restore a backup only to **the exact same version and type** (Community 
 Backups of our production databases are taken hourly through
 [disk snapshots](https://cloud.google.com/compute/docs/disks/snapshots) and every
 24 hours through [wal-g base backups](https://github.com/wal-g/wal-g), with
-[continuous archiving or WAL transaction log files](https://www.postgresql.org/docs/current/continuous-archiving.html)
+[continuous archiving or WAL transaction log files](https://www.postgresql.org/docs/16/continuous-archiving.html)
 streamed into GCS for point-in-time recovery.
 
 All backups are encrypted. After 90 days, backups are deleted.

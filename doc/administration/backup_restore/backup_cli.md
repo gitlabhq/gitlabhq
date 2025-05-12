@@ -119,7 +119,7 @@ backups
     └── uploads.tar.gz
 ```
 
-The `db` directory is used to back up the GitLab PostgreSQL database using `pg_dump` to create [an SQL dump](https://www.postgresql.org/docs/14/backup-dump.html). The output of `pg_dump` is piped through `gzip` in order to create a compressed SQL file.
+The `db` directory is used to back up the GitLab PostgreSQL database using `pg_dump` to create [an SQL dump](https://www.postgresql.org/docs/16/backup-dump.html). The output of `pg_dump` is piped through `gzip` in order to create a compressed SQL file.
 
 The `repositories` directory is used to back up Git repositories, as found in the GitLab database.
 
