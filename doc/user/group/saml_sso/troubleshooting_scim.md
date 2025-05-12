@@ -161,7 +161,7 @@ To resolve this issue, you can do either of the following:
 {{< /details >}}
 
 GitLab.com administrators can search for SCIM requests in the `api_json.log` using the `pubsub-rails-inf-gprd-*` index in
-[Kibana](https://handbook.gitlab.com/handbook/support/workflows/kibana/#using-kibana). Use the following filters based
+Kibana. Use the following filters based
 on the internal [group SCIM API](../../../development/internal_api/_index.md#group-scim-api):
 
 - `json.path`: `/scim/v2/groups/<group-path>`

@@ -102,7 +102,3 @@ Users with phone numbers from partially supported countries can try [credit card
 In addition to email and phone number verification, you might have to provide a valid credit card number.
 
 You cannot verify an account with a credit card number associated with a banned user.
-
-## Related topics
-
-- [Changing risk assessment support](https://handbook.gitlab.com/handbook/support/workflows/reinstating-blocked-accounts/#change-risk-assessment-credit-card-verification)

@@ -118,7 +118,7 @@ When you add a custom hostname:
 - The hostname is included in the external URL used to access your instance.
 - Any connections to your instance using the previous domain names are no longer available.
 
-To add a custom hostname after your instance is created, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+For more information about using a custom hostname for your GitLab Dedicated instance, see [bring your own domain (BYOD)](../../administration/dedicated/configure_instance/network_security.md#bring-your-own-domain-byod).
 
 {{< alert type="note" >}}
 

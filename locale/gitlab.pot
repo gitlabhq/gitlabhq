@@ -5885,6 +5885,9 @@ msgstr ""
 msgid "AiPowered|GitLab Duo Workflow is now on for the instance and the service account (%{accountId}) was created. To use Workflow in your groups, you must turn on AI features for specific groups."
 msgstr ""
 
+msgid "AiPowered|GitLab Duo Workflow is now on for the instance. To use Workflow in your groups, you must turn on AI features for specific groups."
+msgstr ""
+
 msgid "AiPowered|GitLab Duo seat assignment is now located in GitLab Duo settings."
 msgstr ""
 
@@ -27878,6 +27881,9 @@ msgstr ""
 msgid "GiB"
 msgstr ""
 
+msgid "Git"
+msgstr ""
+
 msgid "Git HTTP rate limits"
 msgstr ""
 
@@ -28005,6 +28011,9 @@ msgid "GitLab Advanced SAST"
 msgstr ""
 
 msgid "GitLab Billing Team."
+msgstr ""
+
+msgid "GitLab CI/CD"
 msgstr ""
 
 msgid "GitLab CLI"
@@ -35803,6 +35812,9 @@ msgstr[1] ""
 msgid "LearnGitLab|%{percentage}%{percentSymbol} completed"
 msgstr ""
 
+msgid "LearnGitLab|10 best practices for using GitLab Duo"
+msgstr ""
+
 msgid "LearnGitLab|Add code"
 msgstr ""
 
@@ -35851,6 +35863,9 @@ msgstr ""
 msgid "LearnGitLab|Enable require merge approvals"
 msgstr ""
 
+msgid "LearnGitLab|Enroll"
+msgstr ""
+
 msgid "LearnGitLab|Follow these steps to get familiar with the GitLab workflow."
 msgstr ""
 
@@ -35863,6 +35878,9 @@ msgstr ""
 msgid "LearnGitLab|GitLab works best as a team. Invite your colleague to enjoy all features."
 msgstr ""
 
+msgid "LearnGitLab|In this tutorial, we explore 10 tips and best practices to integrate GitLab Duo Chat into your AI-powered DevSecOps workflows and refine your prompts for the best results."
+msgstr ""
+
 msgid "LearnGitLab|Included in trial"
 msgstr ""
 
@@ -35873,6 +35891,9 @@ msgid "LearnGitLab|Invite your colleagues"
 msgstr ""
 
 msgid "LearnGitLab|Learn GitLab"
+msgstr ""
+
+msgid "LearnGitLab|Learn more"
 msgstr ""
 
 msgid "LearnGitLab|Next steps"
@@ -36649,6 +36670,9 @@ msgid "Manage your subscription"
 msgstr ""
 
 msgid "Managed Account"
+msgstr ""
+
+msgid "Managing code"
 msgstr ""
 
 msgid "Managing users"
@@ -42815,6 +42839,9 @@ msgid "Organization|You don't have any projects yet."
 msgstr ""
 
 msgid "Organization|my-organization"
+msgstr ""
+
+msgid "Organize work with projects"
 msgstr ""
 
 msgid "Orphaned member"
@@ -56742,9 +56769,6 @@ msgstr ""
 msgid "Service Account Key"
 msgstr ""
 
-msgid "Service Accounts"
-msgstr ""
-
 msgid "Service Accounts keys authorize GitLab to deploy your Google Cloud project"
 msgstr ""
 
@@ -56772,10 +56796,7 @@ msgstr ""
 msgid "Service accounts"
 msgstr ""
 
-msgid "ServiceAccounts|Access Tokens"
-msgstr ""
-
-msgid "ServiceAccounts|Add Service Account"
+msgid "ServiceAccounts|Add service account"
 msgstr ""
 
 msgid "ServiceAccounts|An error occurred creating the service account."
@@ -56790,16 +56811,16 @@ msgstr ""
 msgid "ServiceAccounts|An error occurred while fetching the service accounts."
 msgstr ""
 
-msgid "ServiceAccounts|Delete Account"
+msgid "ServiceAccounts|Delete account"
 msgstr ""
 
-msgid "ServiceAccounts|Delete Account and Contributions"
+msgid "ServiceAccounts|Delete account and contributions"
 msgstr ""
 
 msgid "ServiceAccounts|Edit"
 msgstr ""
 
-msgid "ServiceAccounts|Manage Access Tokens"
+msgid "ServiceAccounts|Manage access tokens"
 msgstr ""
 
 msgid "ServiceAccounts|Name"
@@ -56808,7 +56829,10 @@ msgstr ""
 msgid "ServiceAccounts|No service accounts"
 msgstr ""
 
-msgid "ServiceAccounts|Service Accounts"
+msgid "ServiceAccounts|Personal access tokens"
+msgstr ""
+
+msgid "ServiceAccounts|Service accounts"
 msgstr ""
 
 msgid "ServiceAccounts|Service accounts are non-human accounts that allow interactions between software applications, systems, or services. %{learnMore}"

@@ -30,7 +30,7 @@ For more information, see [Getting the correlation ID from your logs](../logs/tr
 
 The following sequence diagram illustrates how GitLab Pages requests are served.
 For more information on how a GitLab Pages site is deployed and serves static content from Object Storage,
-see [GitLab Pages Architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_native_gitlab_pages/#new-gitlab-pages-architecture).
+see the GitLab Pages Architecture documentation.
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%

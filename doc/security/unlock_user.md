@@ -21,7 +21,7 @@ If two-factor authentication (2FA) is enabled, accounts are locked after three f
 If 2FA is not enabled user accounts are locked after three failed sign-in attempts within 24 hours. Accounts remain locked until:
 
 - The next successful sign-in, at which point the user must verify their identity with a code sent to their email.
-- GitLab Support verifies the identity of the user and [manually unlocks](https://handbook.gitlab.com/handbook/support/workflows/reinstating-blocked-accounts/#manual-unlock) the account.
+- GitLab Support verifies the identity of the user and manually unlocks the account.
 
 ## GitLab Self-Managed and GitLab Dedicated users
 

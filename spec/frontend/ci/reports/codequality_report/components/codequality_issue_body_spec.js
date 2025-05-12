@@ -9,9 +9,12 @@ describe('code quality issue body issue body', () => {
 
   const findSeverityIcon = () => wrapper.findByTestId('codequality-severity-icon');
   const findGlIcon = () => wrapper.findComponent(GlIcon);
+  const findName = () => wrapper.findByTestId('codequality-name');
 
+  const issueName =
+    'rubygem-rest-client: session fixation vulnerability via Set-Cookie headers in 30x redirection responses.';
   const codequalityIssue = {
-    name: 'rubygem-rest-client: session fixation vulnerability via Set-Cookie headers in 30x redirection responses',
+    name: `${issueName} See [here](https://example.org) for details.`,
     path: 'Gemfile.lock',
     severity: 'normal',
     type: 'Issue',
@@ -82,7 +85,10 @@ describe('code quality issue body issue body', () => {
     it('renders name', () => {
       createComponent(STATUS_NEUTRAL);
 
-      expect(wrapper.text()).toContain(codequalityIssue.name);
+      const link = findName().find('a');
+      expect(link.attributes('href')).toBe('https://example.org');
+
+      expect(wrapper.text()).toContain(issueName);
     });
   });
 

@@ -56,7 +56,3 @@ amount defined in the [configurable locked user policy](unlock_user.md#gitlab-se
 Accounts with 2FA or OAuth are automatically unlocked after ten minutes, or more than the
 amount defined in the [configurable locked user policy](unlock_user.md#gitlab-self-managed-and-gitlab-dedicated-users).
 To unlock an account manually, reset your password.
-
-## Related topics
-
-- [Locked and blocked account support](https://handbook.gitlab.com/handbook/support/workflows/reinstating-blocked-accounts/)

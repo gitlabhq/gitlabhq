@@ -10,11 +10,11 @@ GitLab provides the following community program subscriptions.
 
 ## GitLab for Education
 
-For qualifying non-profit educational institutions, the [GitLab for Education Program](https://about.gitlab.com/solutions/education/) provides GitLab Ultimate, plus 50,000 compute minutes per month. The subscription granted under GitLab for Education can only be used for instructional use or non-commercial academic research. For more information, including instructions for applying to the program and renewing program membership, see the [GitLab for Education Program page](https://about.gitlab.com/solutions/education/) and the [GitLab handbook](https://handbook.gitlab.com/handbook/marketing/developer-relations/community-programs/education-program/).
+For qualifying non-profit educational institutions, the [GitLab for Education Program](https://about.gitlab.com/solutions/education/) provides GitLab Ultimate, plus 50,000 compute minutes per month. The subscription granted under GitLab for Education can only be used for instructional use or non-commercial academic research. For more information, including instructions for applying to the program and renewing program membership, see the [GitLab for Education Program page](https://about.gitlab.com/solutions/education/) and the GitLab handbook.
 
 ## GitLab for Open Source
 
-For qualifying open source projects, the [GitLab for Open Source Program](https://about.gitlab.com/solutions/open-source/) provides GitLab Ultimate, plus 50,000 compute minutes per month. For more information, including instructions for applying to the program and renewing program membership, see the [GitLab for Open Source Program page](https://about.gitlab.com/solutions/open-source/) and the [GitLab handbook](https://handbook.gitlab.com/handbook/marketing/developer-relations/community-programs/open-source-program/).
+For qualifying open source projects, the [GitLab for Open Source Program](https://about.gitlab.com/solutions/open-source/) provides GitLab Ultimate, plus 50,000 compute minutes per month. For more information, including instructions for applying to the program and renewing program membership, see the [GitLab for Open Source Program page](https://about.gitlab.com/solutions/open-source/) and the GitLab handbook.
 
 ### Meeting GitLab for Open Source Program requirements
 
@@ -56,4 +56,4 @@ Benefits of the GitLab Open Source Program apply to all projects in a GitLab nam
 
 ## GitLab for Startups
 
-For qualifying startups, the [GitLab for Startups](https://about.gitlab.com/solutions/startups/) program provides GitLab Ultimate, plus 50,000 compute minutes per month for 12 months. For more information, including instructions for applying to the program and renewing program membership, see the [GitLab for Startups Program page](https://about.gitlab.com/solutions/startups/) and the [GitLab handbook](https://handbook.gitlab.com/handbook/marketing/developer-relations/community-programs/startups-program/).
+For qualifying startups, the [GitLab for Startups](https://about.gitlab.com/solutions/startups/) program provides GitLab Ultimate, plus 50,000 compute minutes per month for 12 months. For more information, including instructions for applying to the program and renewing program membership, see the [GitLab for Startups Program page](https://about.gitlab.com/solutions/startups/) and the GitLab handbook.

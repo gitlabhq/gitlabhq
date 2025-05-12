@@ -55,7 +55,7 @@ You can also manage service accounts through the API.
 
 {{< /history >}}
 
-The Service Accounts page displays information about service accounts in your top-level group or instance. Each top-level group and GitLab Self-Managed instance has a separate Service Accounts page. From these pages, you can:
+The service accounts page displays information about service accounts in your top-level group or instance. Each top-level group and GitLab Self-Managed instance has a separate service accounts page. From these pages, you can:
 
 - View all service accounts for your group or instance.
 - Delete a service account.
@@ -69,7 +69,7 @@ The Service Accounts page displays information about service accounts in your to
 To view service accounts for the entire instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Service Accounts**.
+1. Select **Settings > Service accounts**.
 
 {{< /tab >}}
 
@@ -78,7 +78,7 @@ To view service accounts for the entire instance:
 To view service accounts for a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Service Accounts**.
+1. Select **Settings > Service accounts**.
 
 {{< /tab >}}
 
@@ -107,7 +107,7 @@ The number of service accounts you can create is limited by your license:
 
 To create a service account:
 
-1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
+1. Go to the [Service accounts](#view-and-manage-service-accounts) page.
 1. Select **Add service account**.
 1. Enter a name for the service account. A username is automatically generated based on the name. You can modify the username if needed.
 1. Select **Create service account**.
@@ -118,7 +118,7 @@ You can edit the name or username of a service account.
 
 To edit a service account:
 
-1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
+1. Go to the [Service accounts](#view-and-manage-service-accounts) page.
 1. Identify a service account.
 1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Edit**.
 1. Edit the name or username for the service account.
@@ -148,18 +148,18 @@ merge requests, issues, projects, and groups.
 
 To delete a service account:
 
-1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
+1. Go to the [Service accounts](#view-and-manage-service-accounts) page.
 1. Identify a service account.
-1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Delete Account**.
+1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Delete account**.
 1. Enter the name of the service account.
 1. Select **Delete user**.
 
 You can also delete the service account and any contributions made by the account. These
 contributions can include activity such as merge requests, issues, groups, and projects.
 
-1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
+1. Go to the [Service accounts](#view-and-manage-service-accounts) page.
 1. Identify a service account.
-1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Delete Account and Contributions**.
+1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Delete account and contributions**.
 1. Enter the name of the service account.
 1. Select **Delete user and contributions**.
 
@@ -183,9 +183,9 @@ You can also manage personal access tokens for service accounts through the API.
 
 To view the personal access tokens page for a service account:
 
-1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
+1. Go to the [Service accounts](#view-and-manage-service-accounts) page.
 1. Identify a service account.
-1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Manage Access Tokens**.
+1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Manage access tokens**.
 
 ### Create a personal access token for a service account
 
@@ -193,9 +193,9 @@ To use a service account, you must create a personal access token to authenticat
 
 To create a personal access token for a service account:
 
-1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
+1. Go to the [Service accounts](#view-and-manage-service-accounts) page.
 1. Identify a service account.
-1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Manage Access Tokens**.
+1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Manage access tokens**.
 1. Select **Add new token**.
 1. In **Token name**, enter a name for the token.
 1. Optional. In **Token description**, enter a description for the token.
@@ -218,9 +218,9 @@ This cannot be undone. Any services that rely on the rotated token will stop wor
 
 To rotate a personal access token for a service account:
 
-1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
+1. Go to the [Service accounts](#view-and-manage-service-accounts) page.
 1. Identify a service account.
-1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Manage Access Tokens**.
+1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Manage access tokens**.
 1. Select **Rotate**.
 1. On the confirmation dialog, select **Rotate**.
 
@@ -236,9 +236,9 @@ This cannot be undone. Any services that rely on the revoked token will stop wor
 
 To revoke a personal access token for a service account:
 
-1. Go to the [Service Accounts](#view-and-manage-service-accounts) page.
+1. Go to the [Service accounts](#view-and-manage-service-accounts) page.
 1. Identify a service account.
-1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Manage Access Tokens**.
+1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Manage access tokens**.
 1. Select **Revoke**.
 1. On the confirmation dialog, select **Revoke**.
 

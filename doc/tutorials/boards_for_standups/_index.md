@@ -179,4 +179,3 @@ Your team can now use this board to run effective stand-ups.
 
 - [Plan and track work tutorials](../plan_and_track.md).
 - [Stand-ups, retrospectives, and velocity](../scrum_events/standups_retrospectives_velocity.md)
-- [Product Development Flow](https://handbook.gitlab.com/handbook/product-development-flow/): how we use workflow labels at GitLab.

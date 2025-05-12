@@ -84,8 +84,7 @@ Prerequisites:
 
 - Your namespace must not:
   - Contain a project with [Container Registry](../packages/container_registry/_index.md) tags.
-  - Have a project that hosts [GitLab Pages](../project/pages/_index.md). For more information,
-    see [changing your username in the GitLab Team Handbook](https://handbook.gitlab.com/handbook/tools-and-tips/#change-your-username-at-gitlabcom).
+  - Have a project that hosts [GitLab Pages](../project/pages/_index.md).
 - Your username:
   - Must be between 2 and 255 characters in length.
   - Must only include non-accented letters, digits, `_`, `-`, and `.`.
