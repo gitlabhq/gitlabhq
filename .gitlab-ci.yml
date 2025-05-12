@@ -173,6 +173,7 @@ workflow:
       variables:
         <<: *default-ruby-variables
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
+        FF_TIMESTAMPS: "true"
     - if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
       variables:
         <<: *default-ruby-variables
