@@ -3,7 +3,7 @@
 module BulkImports
   class Error < StandardError
     def self.unsupported_gitlab_version
-      self.new(format(s_("BulkImport|Unsupported GitLab version. Minimum supported version is '%{version}'."),
+      self.new(format(s_("BulkImport|Unsupported GitLab version. The minimum supported version is '%{version}'."),
         version: BulkImport::MIN_MAJOR_VERSION))
     end
 

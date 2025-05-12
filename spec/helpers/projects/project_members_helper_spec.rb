@@ -167,6 +167,7 @@ RSpec.describe Projects::ProjectMembersHelper, feature_category: :groups_and_pro
 
   describe '#project_member_header_subtext' do
     before do
+      allow(helper).to receive(:can?).with(current_user, :invite_project_members, project).and_return(true)
       allow(helper).to receive(:can?).with(current_user, :admin_project_member, project).and_return(can_admin_member)
     end
 

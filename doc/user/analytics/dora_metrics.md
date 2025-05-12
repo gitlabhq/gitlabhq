@@ -2,6 +2,7 @@
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Gain insights into DevOps performance and identify opportunities for workflow improvements.
 title: DevOps Research and Assessment (DORA) metrics
 ---
 

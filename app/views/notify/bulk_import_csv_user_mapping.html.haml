@@ -11,10 +11,10 @@
 
 - if @has_errors || @skipped_count > 0
   %p{ style: text_style }
-    = safe_format(s_('BulkImport|Items assigned to placeholder users have been reassigned to users in %{strong_open}%{group}%{strong_close}.'), strong_tag_pair, group: @group.name)
+    = safe_format(s_('BulkImport|Items assigned to placeholder users have been reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file.'), strong_tag_pair, group: @group.name)
 - else
   %p{ style: text_style }
-    = safe_format(s_('BulkImport|All items assigned to placeholder users have been reassigned to users in %{strong_open}%{group}%{strong_close}.'), strong_tag_pair, group: @group.name)
+    = safe_format(s_('BulkImport|All items assigned to placeholder users have been reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file.'), strong_tag_pair, group: @group.name)
 
 %ul
   %li

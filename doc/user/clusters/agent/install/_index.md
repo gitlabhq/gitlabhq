@@ -24,10 +24,11 @@ Before you can install the agent in your cluster, you need:
   - [Digital Ocean](https://docs.digitalocean.com/products/kubernetes/getting-started/quickstart/)
   - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs/deploy-app-cluster)
   - You should use [Infrastructure as Code techniques](../../../infrastructure/iac/_index.md) for managing infrastructure resources at scale.
-- On GitLab Self-Managed, a GitLab administrator must set up the
-  [agent server](../../../../administration/clusters/kas.md).
-  Then it is available by default at `wss://gitlab.example.com/-/kubernetes-agent/`.
-  On GitLab.com, the agent server is available at `wss://kas.gitlab.com`.
+- Access to an agent server:
+  - On GitLab.com, the agent server is available at `wss://kas.gitlab.com`.
+  - On GitLab Self-Managed, a GitLab administrator must set up the [agent server](../../../../administration/clusters/kas.md).
+    Then it is available by default at `wss://gitlab.example.com/-/kubernetes-agent/`.
+  - On GitLab Dedicated, the agent server is available at `wss://kas.<instance-domain>`, for example `wss://kas.example.gitlab-dedicated.com`. If you use a [custom hostname](../../../../administration/dedicated/configure_instance/network_security.md#bring-your-own-domain-byod) for your GitLab Dedicated instance, you can also choose a custom hostname for the KAS service.
 
 ## Bootstrap the agent with Flux support (recommended)
 

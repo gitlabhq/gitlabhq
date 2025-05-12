@@ -574,7 +574,7 @@ export default {
       return this.fullPath || null;
     },
     handleKeydown(e) {
-      if (isMetaEnterKeyPair(e)) {
+      if (isMetaEnterKeyPair(e) && !this.loading) {
         this.createWorkItem();
       }
     },

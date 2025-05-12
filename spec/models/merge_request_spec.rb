@@ -3133,10 +3133,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     context 'when head pipeline is not finished and has terraform reports' do
-      before do
-        stub_feature_flags(mr_show_reports_immediately: false)
-      end
-
       it 'returns true' do
         merge_request = create(:merge_request, :with_terraform_reports)
         merge_request.diff_head_pipeline.update!(status: :running)

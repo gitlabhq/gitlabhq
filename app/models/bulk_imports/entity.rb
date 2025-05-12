@@ -246,21 +246,21 @@ class BulkImports::Entity < ApplicationRecord
   end
 
   def validate_parent_is_a_group
-    errors.add(:parent, s_('BulkImport|must be a group')) unless parent.group_entity?
+    errors.add(:parent, s_('BulkImport|must be a group.')) unless parent.group_entity?
   end
 
   def validate_imported_entity_type
     if group.present? && project_entity?
       errors.add(
         :group,
-        s_('BulkImport|expected an associated Project but has an associated Group')
+        s_('BulkImport|must belong to a project.')
       )
     end
 
     if project.present? && group_entity?
       errors.add(
         :project,
-        s_('BulkImport|expected an associated Group but has an associated Project')
+        s_('BulkImport|must belong to a group.')
       )
     end
   end
@@ -287,9 +287,9 @@ class BulkImports::Entity < ApplicationRecord
 
     errors.add(
       :source_full_path,
-      s_('BulkImport|must have a relative path structure with no HTTP ' \
-         'protocol characters, or leading or trailing forward slashes. Path segments must not start or ' \
-         'end with a special character, and must not contain consecutive special characters')
+      s_('BulkImport|must have a relative path with no HTTP ' \
+         'protocol characters or leading or trailing forward slashes. Path segments must not start or ' \
+         'end with a special character or contain consecutive special characters.')
     )
   end
 

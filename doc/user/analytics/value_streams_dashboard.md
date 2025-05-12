@@ -2,6 +2,7 @@
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: View DevSecOps metrics (such as DORA and vulnerabilities) across your organization on a customizable dashboard.
 title: Value Streams Dashboard
 ---
 
@@ -241,13 +242,15 @@ To retrieve aggregated usage counts in the group, use the [GraphQL API](../../ap
 
 ## View the Value Streams Dashboard
 
-### For groups
-
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
-- Overview background aggregation for Value Streams Dashboards must be enabled.
+- You must have at least the Reporter role for the group or project.
+- [Overview background aggregation](#enable-or-disable-overview-background-aggregation) must be enabled.
 - To view the contributor count metric in the comparison panel, you must [set up ClickHouse](../../integration/clickhouse.md).
+- To track deployment to production, the group or project must have an environment in the [production deployment tier](../../ci/environments/_index.md#deployment-tier-of-environments).
+- To measure the cycle time, [issues must be crosslinked from commit messages](../../user/project/issues/crosslinking_issues.md#from-commit-messages).
+
+### For groups
 
 To view the Value Streams Dashboard for a group:
 
@@ -271,12 +274,6 @@ To view the Value Streams Dashboard for a group:
 - Feature flag `project_analytics_dashboard_dynamic_vsd` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/441207) in GitLab 17.5.
 
 {{< /history >}}
-
-Prerequisites:
-
-- You must have at least the Reporter role for the project.
-- Overview background aggregation for Value Streams Dashboards must be enabled.
-- To view the contributor count metric in the comparison panel, you must [set up ClickHouse](../../integration/clickhouse.md).
 
 To view the Value Streams Dashboard as an analytics dashboard for a project:
 

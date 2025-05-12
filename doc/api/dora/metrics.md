@@ -2,6 +2,7 @@
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Retrieve project and group DORA metrics with the REST API.
 title: DevOps Research and Assessment (DORA) metrics API
 ---
 

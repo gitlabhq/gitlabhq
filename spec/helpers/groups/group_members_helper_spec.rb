@@ -211,6 +211,13 @@ RSpec.describe Groups::GroupMembersHelper, feature_category: :groups_and_project
   end
 
   describe '#group_member_header_subtext' do
+    let(:current_user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(helper).to receive(:can?).with(current_user, :invite_group_members, group).and_return(true)
+    end
+
     it 'contains expected text with group name' do
       expect(helper.group_member_header_subtext(group)).to match("You're viewing members of .*#{group.name}")
     end

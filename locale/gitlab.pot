@@ -11312,7 +11312,7 @@ msgstr ""
 msgid "BulkImport|A CSV file with a list of placeholder reassignment errors is attached to this email."
 msgstr ""
 
-msgid "BulkImport|All items assigned to placeholder users have been reassigned to users in %{strong_open}%{group}%{strong_close}."
+msgid "BulkImport|All items assigned to placeholder users have been reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file."
 msgstr ""
 
 msgid "BulkImport|Be aware of %{visibilityLinkStart}visibility rules%{visibilityLinkEnd} and %{placeholdersLinkStart}placeholder user limits%{placeholdersLinkEnd} when importing groups."
@@ -11381,7 +11381,7 @@ msgstr ""
 msgid "BulkImport|Invalid source URL. Enter only the base URL of the source GitLab instance."
 msgstr ""
 
-msgid "BulkImport|Items assigned to placeholder users have been reassigned to users in %{strong_open}%{group}%{strong_close}."
+msgid "BulkImport|Items assigned to placeholder users have been reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file."
 msgstr ""
 
 msgid "BulkImport|Items that failed to be imported for %{id}"
@@ -11423,7 +11423,7 @@ msgstr ""
 msgid "BulkImport|Only groups you have the %{role} role for are listed for import."
 msgstr ""
 
-msgid "BulkImport|Path of the new group."
+msgid "BulkImport|Path of the new group"
 msgstr ""
 
 msgid "BulkImport|Placeholder reassignments completed successfully"
@@ -11432,16 +11432,16 @@ msgstr ""
 msgid "BulkImport|Placeholder reassignments completed with errors"
 msgstr ""
 
-msgid "BulkImport|Please select a parent group."
-msgstr ""
-
 msgid "BulkImport|Project import history"
 msgstr ""
 
-msgid "BulkImport|Re-import creates a new group. It does not sync with the existing group."
+msgid "BulkImport|Re-import creates a new group and does not sync with the existing group."
 msgstr ""
 
 msgid "BulkImport|Review results"
+msgstr ""
+
+msgid "BulkImport|Select a parent group."
 msgstr ""
 
 msgid "BulkImport|Select parent group"
@@ -11462,7 +11462,7 @@ msgstr ""
 msgid "BulkImport|Showing %{start}-%{end} of %{total} that you own matching filter \"%{filter}\" from %{link}"
 msgstr ""
 
-msgid "BulkImport|Some groups will be imported without projects."
+msgid "BulkImport|Some groups are imported without projects."
 msgstr ""
 
 msgid "BulkImport|Source"
@@ -11471,7 +11471,7 @@ msgstr ""
 msgid "BulkImport|Source group"
 msgstr ""
 
-msgid "BulkImport|Template / File-based import / Direct transfer"
+msgid "BulkImport|Template, file-based import, or direct transfer"
 msgstr ""
 
 msgid "BulkImport|The following items are not migrated: %{bullets} To include these items, ask the administrator of %{host} to upgrade GitLab."
@@ -11492,10 +11492,10 @@ msgstr ""
 msgid "BulkImport|Unable to process the CSV file for %{strong_open}%{group}%{strong_close} to reassign placeholders. Try to upload the file again."
 msgstr ""
 
-msgid "BulkImport|Unsupported GitLab version. Minimum supported version is '%{version}'."
+msgid "BulkImport|Unable to update import statuses with real-time changes"
 msgstr ""
 
-msgid "BulkImport|Update of import statuses with realtime changes failed"
+msgid "BulkImport|Unsupported GitLab version. The minimum supported version is '%{version}'."
 msgstr ""
 
 msgid "BulkImport|View import history"
@@ -11510,25 +11510,25 @@ msgstr ""
 msgid "BulkImport|You cannot import projects with this group. To import projects, reconfigure the source GitLab instance or group. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
-msgid "BulkImport|Your imported groups and projects will appear here."
+msgid "BulkImport|Your imported groups and projects appear here."
 msgstr ""
 
-msgid "BulkImport|Your imported projects will appear here."
+msgid "BulkImport|Your imported projects appear here."
 msgstr ""
 
-msgid "BulkImport|expected an associated Group but has an associated Project"
+msgid "BulkImport|must be a group."
 msgstr ""
 
-msgid "BulkImport|expected an associated Project but has an associated Group"
+msgid "BulkImport|must belong to a group."
 msgstr ""
 
-msgid "BulkImport|must be a group"
+msgid "BulkImport|must belong to a project."
 msgstr ""
 
-msgid "BulkImport|must have a relative path structure with no HTTP protocol characters, or leading or trailing forward slashes. Path segments must not start or end with a special character, and must not contain consecutive special characters"
+msgid "BulkImport|must have a relative path with no HTTP protocol characters or leading or trailing forward slashes. Path segments must not start or end with a special character or contain consecutive special characters."
 msgstr ""
 
-msgid "Bulkmport|Over six imports in one minute were attempted. Wait at least one minute and try again."
+msgid "Bulkmport|More than six imports were attempted in one minute. Try again after a minute."
 msgstr ""
 
 msgid "Bullet list"
@@ -23502,6 +23502,9 @@ msgstr ""
 msgid "Each project can also have an issue tracker and a wiki."
 msgstr ""
 
+msgid "Eclipse"
+msgstr ""
+
 msgid "Edit"
 msgstr ""
 
@@ -27866,6 +27869,12 @@ msgstr ""
 msgid "Get started!"
 msgstr ""
 
+msgid "GetStarted|Download the extension to access GitLab features and GitLab Duo AI capabilities to handle everyday tasks."
+msgstr ""
+
+msgid "GetStarted|Use GitLab Duo locally"
+msgstr ""
+
 msgid "GiB"
 msgstr ""
 
@@ -27996,6 +28005,9 @@ msgid "GitLab Advanced SAST"
 msgstr ""
 
 msgid "GitLab Billing Team."
+msgstr ""
+
+msgid "GitLab CLI"
 msgstr ""
 
 msgid "GitLab Community Edition"
@@ -30078,6 +30090,9 @@ msgstr ""
 msgid "GroupSettings|Disable personal access tokens for enterprise users"
 msgstr ""
 
+msgid "GroupSettings|Disable user invitations to groups and projects within %{group}"
+msgstr ""
+
 msgid "GroupSettings|Emails are not encrypted. Concerned administrators may want to disable diff previews."
 msgstr ""
 
@@ -30145,6 +30160,9 @@ msgid "GroupSettings|If enabled, group access tokens expiry webhooks execute 60,
 msgstr ""
 
 msgid "GroupSettings|If enabled, individual user accounts will be able to use only issued SSH certificates for Git access. It doesn't apply to service accounts, deploy keys, and other types of internal accounts."
+msgstr ""
+
+msgid "GroupSettings|If enabled, users can no longer invite members to groups or projects in the top-level group. %{learn_more_link}."
 msgstr ""
 
 msgid "GroupSettings|If not specified at the group or instance level, the default is %{default_initial_branch_name}. Does not affect existing repositories."
@@ -33967,6 +33985,9 @@ msgid "January"
 msgstr ""
 
 msgid "Japanese language support using"
+msgstr ""
+
+msgid "Jetbrains"
 msgstr ""
 
 msgid "Jira display name"
@@ -39994,6 +40015,9 @@ msgid "Needs attention"
 msgstr ""
 
 msgid "Neither gitlab_instance_uid or sub found on Cloud Connector token"
+msgstr ""
+
+msgid "Neovim"
 msgstr ""
 
 msgid "Network"
@@ -65605,6 +65629,9 @@ msgid_plural "Users in subscription"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "User invitation restrictions"
+msgstr ""
+
 msgid "User is blocked"
 msgstr ""
 
@@ -66339,6 +66366,9 @@ msgstr ""
 msgid "Using required encryption strategy when encrypted field is missing!"
 msgstr ""
 
+msgid "VS Code"
+msgstr ""
+
 msgid "VS Code Extension Marketplace"
 msgstr ""
 
@@ -67044,6 +67074,9 @@ msgid "VisibilityLevel|Unknown"
 msgstr ""
 
 msgid "Visit new homepage"
+msgstr ""
+
+msgid "Visual Studio"
 msgstr ""
 
 msgid "Visual Studio Code"
@@ -70285,6 +70318,9 @@ msgid "You cannot impersonate a user with an expired password"
 msgstr ""
 
 msgid "You cannot impersonate an internal user"
+msgstr ""
+
+msgid "You cannot invite a new member to %{strong_start}%{group_name}%{strong_end} since its disabled by %{actor}."
 msgstr ""
 
 msgid "You cannot play this scheduled pipeline at the moment. Please wait a minute."

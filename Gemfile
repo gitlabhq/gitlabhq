@@ -715,7 +715,7 @@ gem 'parslet', '~> 1.8', feature_category: :shared
 
 gem 'ipynbdiff', path: 'gems/ipynbdiff', require: 'ipynb_diff', feature_category: :shared
 
-gem 'ed25519', '~> 1.3.0', feature_category: :shared
+gem 'ed25519', '~> 1.4.0', feature_category: :shared
 
 # Error Tracking OpenAPI client
 # See https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/rake_tasks.md#update-openapi-client-for-error-tracking-feature

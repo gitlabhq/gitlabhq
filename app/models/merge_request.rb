@@ -1957,7 +1957,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_test_reports?
-    diff_head_pipeline&.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:test))
+    diff_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:test))
   end
 
   # rubocop: disable Metrics/AbcSize -- Despite being long, this method is quite straightforward. Splitting it in smaller chunks would likely reduce readability.

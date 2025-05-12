@@ -16,7 +16,7 @@ module API
         resource 'model-versions' do
           desc 'Creates a Model Version.' do
             success Entities::Ml::Mlflow::ModelVersion
-            detail 'MLFlow Model Versions map to GitLab Model Versions. https://mlflow.org/docs/2.6.0/rest-api.html#create-modelversion'
+            detail 'MLFlow Model Versions map to GitLab Model Versions. https://mlflow.org/docs/2.19.0/rest-api.html#create-modelversion'
           end
           route_setting :api, write: true
           route_setting :model_registry, write: true
@@ -50,7 +50,7 @@ module API
 
           desc 'Fetch the download URI for the model version.' do
             success Entities::Ml::Mlflow::GetDownload
-            detail 'Returns version in MLflow format "mlflow-artifacts:<version>" https://mlflow.org/docs/2.6.0/rest-api.html#get-download-uri-for-modelversion-artifacts'
+            detail 'Returns version in MLflow format "mlflow-artifacts:<version>" https://mlflow.org/docs/2.19.0/rest-api.html#get-download-uri-for-modelversion-artifacts'
           end
           params do
             requires :name, type: String, desc: 'Model version name'
@@ -62,7 +62,7 @@ module API
 
           desc 'Fetch model version by name and version' do
             success Entities::Ml::Mlflow::ModelVersion
-            detail 'https://mlflow.org/docs/2.6.0/rest-api.html#get-modelversion'
+            detail 'https://mlflow.org/docs/2.19.0/rest-api.html#get-modelversion'
           end
           params do
             requires :name, type: String, desc: 'Model version name'
@@ -75,7 +75,7 @@ module API
 
           desc 'Updates a Model Version.' do
             success Entities::Ml::Mlflow::ModelVersion
-            detail 'https://mlflow.org/docs/2.6.0/rest-api.html#update-modelversion'
+            detail 'https://mlflow.org/docs/2.19.0/rest-api.html#update-modelversion'
           end
           route_setting :api, write: true
           route_setting :model_registry, write: true

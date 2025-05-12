@@ -4597,21 +4597,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       context 'when pipeline status is running' do
         let(:pipeline) { create(:ci_pipeline, :running) }
 
-        context 'with mr_show_reports_immediately flag enabled' do
-          before do
-            stub_feature_flags(mr_show_reports_immediately: project)
-          end
-
-          it { expect(subject).to be_truthy }
-        end
-
-        context 'with mr_show_reports_immediately flag disabled' do
-          before do
-            stub_feature_flags(mr_show_reports_immediately: false)
-          end
-
-          it { expect(subject).to be_falsey }
-        end
+        it { expect(subject).to be_falsey }
       end
 
       context 'when pipeline status is success' do
@@ -4655,38 +4641,24 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         create(:ci_build, :test_reports, pipeline: pipeline)
       end
 
-      context 'with mr_show_reports_immediately flag enabled' do
-        before do
-          stub_feature_flags(mr_show_reports_immediately: project)
-        end
+      it { expect(subject).to be_falsey }
 
-        it { expect(subject).to be_truthy }
+      context 'when pipeline status is running' do
+        let(:pipeline) { create(:ci_pipeline, :running) }
+
+        it { is_expected.to be_falsey }
       end
 
-      context 'with mr_show_reports_immediately flag disabled' do
-        before do
-          stub_feature_flags(mr_show_reports_immediately: false)
-        end
+      context 'when pipeline status is success' do
+        let(:pipeline) { create(:ci_pipeline, :success) }
 
-        it { expect(subject).to be_falsey }
+        it { is_expected.to be_truthy }
+      end
 
-        context 'when pipeline status is running' do
-          let(:pipeline) { create(:ci_pipeline, :running) }
+      context 'when pipeline status is manual' do
+        let(:pipeline) { create(:ci_pipeline, :manual) }
 
-          it { is_expected.to be_falsey }
-        end
-
-        context 'when pipeline status is success' do
-          let(:pipeline) { create(:ci_pipeline, :success) }
-
-          it { is_expected.to be_truthy }
-        end
-
-        context 'when pipeline status is manual' do
-          let(:pipeline) { create(:ci_pipeline, :manual) }
-
-          it { is_expected.to be_truthy }
-        end
+        it { is_expected.to be_truthy }
       end
     end
 
@@ -4776,21 +4748,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       context 'when pipeline status is running' do
         let(:pipeline) { create(:ci_pipeline, :running) }
 
-        context 'with mr_show_reports_immediately flag enabled' do
-          before do
-            stub_feature_flags(mr_show_reports_immediately: project)
-          end
-
-          it { expect(subject).to be_truthy }
-        end
-
-        context 'with mr_show_reports_immediately flag disabled' do
-          before do
-            stub_feature_flags(mr_show_reports_immediately: false)
-          end
-
-          it { expect(subject).to be_falsey }
-        end
+        it { expect(subject).to be_falsey }
       end
 
       context 'when pipeline status is success' do

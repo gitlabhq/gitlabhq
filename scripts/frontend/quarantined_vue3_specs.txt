@@ -135,7 +135,6 @@ spec/frontend/pages/shared/wikis/components/delete_wiki_modal_spec.js
 spec/frontend/performance_bar/index_spec.js
 spec/frontend/pipeline_wizard/components/step_spec.js
 spec/frontend/projects/commit/components/form_modal_spec.js
-spec/frontend/projects/commits/components/author_select_spec.js
 spec/frontend/projects/report_abuse/components/report_abuse_dropdown_item_spec.js
 spec/frontend/projects/settings/components/branch_rule_modal_spec.js
 spec/frontend/projects/settings/topics/components/topics_token_selector_spec.js
@@ -149,7 +148,6 @@ spec/frontend/set_status_modal/user_profile_set_status_wrapper_spec.js
 spec/frontend/sidebar/components/assignees/sidebar_assignees_widget_spec.js
 spec/frontend/sidebar/components/confidential/confidentiality_dropdown_spec.js
 spec/frontend/sidebar/components/confidential/sidebar_confidentiality_widget_spec.js
-spec/frontend/sidebar/components/incidents/escalation_status_spec.js
 spec/frontend/sidebar/components/labels/labels_select_vue/dropdown_contents_labels_view_spec.js
 spec/frontend/sidebar/components/milestone/milestone_dropdown_spec.js
 spec/frontend/sidebar/components/subscriptions/subscriptions_dropdown_spec.js

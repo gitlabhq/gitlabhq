@@ -511,6 +511,13 @@ describe('View branch rules', () => {
       });
     });
 
+    it('does not render delete rule button when target is All branches', () => {
+      jest.spyOn(util, 'getParameterByName').mockReturnValueOnce('All branches');
+      createComponent();
+
+      expect(findDeleteRuleButton().exists()).toBe(false);
+    });
+
     it('renders delete rule button', () => {
       expect(findDeleteRuleButton().text()).toBe('Delete rule');
     });

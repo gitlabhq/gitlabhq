@@ -23,7 +23,6 @@ import projectShortPathQuery from './queries/project_short_path.query.graphql';
 import refsQuery from './queries/ref.query.graphql';
 import createRouter from './router';
 import { updateFormAction } from './utils/dom';
-import { setTitle } from './utils/title';
 import { generateHistoryUrl } from './utils/url_utility';
 import { generateRefDestinationPath } from './utils/ref_switcher_utils';
 import initHeaderApp from './init_header_app';
@@ -47,7 +46,7 @@ export default function setupVueRepositoryList() {
     explainCodeAvailable,
     targetBranch,
   } = dataset;
-  const router = createRouter(projectPath, escapedRef);
+  const router = createRouter(projectPath, escapedRef, fullName);
   initFileTreeBrowser(router);
 
   apolloProvider.clients.defaultClient.cache.writeQuery({
@@ -230,10 +229,6 @@ export default function setupVueRepositoryList() {
   initBlobControlsApp();
   initRefSwitcher();
   initForkInfo();
-
-  router.afterEach(({ params: { path } }) => {
-    setTitle(path, ref, fullName);
-  });
 
   const breadcrumbEl = document.getElementById('js-repo-breadcrumb');
 

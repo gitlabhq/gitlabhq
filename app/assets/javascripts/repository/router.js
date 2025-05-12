@@ -2,6 +2,7 @@ import { escapeRegExp } from 'lodash';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
+import { setTitle } from './utils/title';
 import BlobPage from './pages/blob.vue';
 import IndexPage from './pages/index.vue';
 import TreePage from './pages/tree.vue';
@@ -19,7 +20,7 @@ const normalizePathParam = (pathParam) => {
   return pathParam?.replace(/^\//, '') || '/';
 };
 
-export default function createRouter(base, baseRef) {
+export default function createRouter(base, baseRef, fullName) {
   const treePathRoute = {
     component: TreePage,
     props: (route) => ({
@@ -81,8 +82,9 @@ export default function createRouter(base, baseRef) {
     ],
   });
 
-  router.afterEach((to) => {
-    const needsClosingSlash = !to.name.includes('blobPath');
+  router.afterEach(({ params: { path }, name }) => {
+    const needsClosingSlash = !name.includes('blobPath');
+    const normalizedPath = normalizePathParam(path);
     window.gl.webIDEPath = webIDEUrl(
       joinPaths(
         '/',
@@ -90,10 +92,12 @@ export default function createRouter(base, baseRef) {
         'edit',
         decodeURI(baseRef),
         '-',
-        normalizePathParam(to.params.path),
+        normalizedPath,
         needsClosingSlash && '/',
       ),
     );
+
+    setTitle(normalizedPath, baseRef, fullName);
   });
 
   return router;

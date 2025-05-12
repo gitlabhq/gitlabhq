@@ -584,10 +584,10 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
         expect(result).to be_a(ServiceResponse)
         expect(result).to be_error
         expect(result.message).to eq("Validation failed: Source full path can't be blank, " \
-                                     "Source full path must have a relative path structure with " \
-                                     "no HTTP protocol characters, or leading or trailing forward slashes. " \
-                                     "Path segments must not start or end with a special character, and " \
-                                     "must not contain consecutive special characters")
+                                     "Source full path must have a relative path with " \
+                                     "no HTTP protocol characters or leading or trailing forward slashes. " \
+                                     "Path segments must not start or end with a special character or " \
+                                     "contain consecutive special characters.")
       end
 
       describe '#user-role' do

@@ -120,7 +120,11 @@ module QA
 
         it(
           'successfully imports project wiki',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347567'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347567',
+          quarantine: {
+            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/541472',
+            type: :investigating
+          }
         ) do
           expect_project_import_finished_successfully
 

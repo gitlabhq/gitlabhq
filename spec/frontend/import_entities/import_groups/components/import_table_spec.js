@@ -240,13 +240,13 @@ describe('import table', () => {
       });
 
       it('does not validate by default', () => {
-        expect(wrapper.find('tbody tr').text()).not.toContain('Please select a parent group.');
+        expect(wrapper.find('tbody tr').text()).not.toContain('Select a parent group.');
       });
 
       it('triggers validations when import button is clicked', async () => {
         await findRowImportDropdownAtIndex(0).trigger('click');
 
-        expect(wrapper.find('tbody tr').text()).toContain('Please select a parent group.');
+        expect(wrapper.find('tbody tr').text()).toContain('Select a parent group.');
       });
 
       it('is valid when root namespace is selected', async () => {
@@ -255,7 +255,7 @@ describe('import table', () => {
         });
         await findRowImportDropdownAtIndex(0).trigger('click');
 
-        expect(wrapper.find('tbody tr').text()).not.toContain('Please select a parent group.');
+        expect(wrapper.find('tbody tr').text()).not.toContain('Select a parent group.');
         expect(findFirstImportTargetNamespaceText()).toBe('No parent');
       });
 
@@ -265,7 +265,7 @@ describe('import table', () => {
         });
         await findRowImportDropdownAtIndex(0).trigger('click');
 
-        expect(wrapper.find('tbody tr').text()).not.toContain('Please select a parent group.');
+        expect(wrapper.find('tbody tr').text()).not.toContain('Select a parent group.');
         expect(findFirstImportTargetNamespaceText()).toBe('gitlab-org');
       });
     });
@@ -453,7 +453,7 @@ describe('import table', () => {
 
     expect(createAlert).not.toHaveBeenCalled();
     expect(wrapper.find('tbody tr').text()).toContain(
-      'Over six imports in one minute were attempted. Wait at least one minute and try again.',
+      'More than six imports were attempted in one minute. Try again after a minute.',
     );
   });
 
@@ -745,7 +745,7 @@ describe('import table', () => {
 
       expect(findImportProjectsWarning().props('name')).toBe('warning');
       expect(findImportProjectsWarning().attributes('title')).toBe(
-        'Some groups will be imported without projects.',
+        'Some groups are imported without projects.',
       );
     });
 
@@ -867,7 +867,7 @@ describe('import table', () => {
     const tooltip = getBinding(icon.element, 'gl-tooltip');
 
     expect(tooltip).toBeDefined();
-    expect(tooltip.value).toBe('Path of the new group.');
+    expect(tooltip.value).toBe('Path of the new group');
   });
 
   describe('re-import', () => {

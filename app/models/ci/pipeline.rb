@@ -1166,19 +1166,11 @@ module Ci
     end
 
     def complete_and_has_reports?(reports_scope)
-      if Feature.enabled?(:mr_show_reports_immediately, project, type: :development)
-        latest_report_builds(reports_scope).exists?
-      else
-        complete? && has_reports?(reports_scope)
-      end
+      complete? && has_reports?(reports_scope)
     end
 
     def complete_or_manual_and_has_reports?(reports_scope)
-      if Feature.enabled?(:mr_show_reports_immediately, project, type: :development)
-        latest_report_builds(reports_scope).exists?
-      else
-        complete_or_manual? && has_reports?(reports_scope)
-      end
+      complete_or_manual? && has_reports?(reports_scope)
     end
 
     def has_coverage_reports?

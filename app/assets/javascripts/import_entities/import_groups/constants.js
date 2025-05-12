@@ -1,7 +1,7 @@
 import { __, s__ } from '~/locale';
 
 export const i18n = {
-  ERROR_TARGET_NAMESPACE_REQUIRED: s__('BulkImport|Please select a parent group.'),
+  ERROR_TARGET_NAMESPACE_REQUIRED: s__('BulkImport|Select a parent group.'),
   ERROR_INVALID_FORMAT: s__(
     'GroupSettings|Please choose a group URL with no special characters or spaces.',
   ),
@@ -13,7 +13,7 @@ export const i18n = {
   ERROR_IMPORT: s__('BulkImport|Importing the group failed.'),
   ERROR_IMPORT_COMPLETED: s__('BulkImport|Enter another name to re-import.'),
   ERROR_TOO_MANY_REQUESTS: s__(
-    'Bulkmport|Over six imports in one minute were attempted. Wait at least one minute and try again.',
+    'Bulkmport|More than six imports were attempted in one minute. Try again after a minute.',
   ),
 
   NO_GROUPS_FOUND: s__('BulkImport|No groups found'),
