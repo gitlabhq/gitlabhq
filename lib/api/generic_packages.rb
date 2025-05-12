@@ -92,12 +92,16 @@ module API
               file_name: encoded_file_name,
               build: current_authenticated_job
             )
-            package_file = ::Packages::Generic::CreatePackageFileService
+            response = ::Packages::Generic::CreatePackageFileService
               .new(project, current_user, create_package_file_params)
               .execute
 
+            if response.error? && response.cause.package_file_already_exists?
+              bad_request!('Duplicate package is not allowed')
+            end
+
             if params[:select] == 'package_file'
-              present package_file
+              present response[:package_file]
             else
               created!
             end
@@ -105,8 +109,6 @@ module API
             Gitlab::ErrorTracking.track_exception(e, extra: { file_name: params[:file_name], project_id: project.id })
 
             forbidden!
-          rescue ::Packages::DuplicatePackageError
-            bad_request!('Duplicate package is not allowed')
           end
 
           desc 'Download package file' do

@@ -13849,6 +13849,56 @@ paths:
       tags:
       - conan_packages
       operationId: getApiV4ProjectsIdPackagesConanV1ConansSearch
+  "/api/v4/projects/{id}/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/search":
+    get:
+      summary: Get package references metadata
+      description: This feature was introduced in GitLab 18.0
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      responses:
+        '200':
+          description: Get package references metadata
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: getApiV4ProjectsIdPackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannelSearch
   "/api/v4/projects/{id}/packages/conan/v1/ping":
     get:
       summary: Ping the Conan API
@@ -14876,6 +14926,56 @@ paths:
       tags:
       - conan_packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansSearch
+  "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/search":
+    get:
+      summary: Get package references metadata
+      description: This feature was introduced in GitLab 18.0
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      responses:
+        '200':
+          description: Get package references metadata
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelSearch
   "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/latest":
     get:
       summary: Get the latest recipe revision
@@ -38357,6 +38457,51 @@ paths:
       tags:
       - conan_packages
       operationId: getApiV4PackagesConanV1ConansSearch
+  "/api/v4/packages/conan/v1/conans/{package_name}/{package_version}/{package_username}/{package_channel}/search":
+    get:
+      summary: Get package references metadata
+      description: This feature was introduced in GitLab 18.0
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      responses:
+        '200':
+          description: Get package references metadata
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: getApiV4PackagesConanV1ConansPackageNamePackageVersionPackageUsernamePackageChannelSearch
   "/api/v4/packages/conan/v1/ping":
     get:
       summary: Ping the Conan API

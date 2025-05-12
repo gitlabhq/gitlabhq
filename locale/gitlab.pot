@@ -23161,9 +23161,6 @@ msgstr ""
 msgid "DuoCodeReview|I have encountered some problems while I was reviewing. Please try again later."
 msgstr ""
 
-msgid "DuoCodeReview|I've received your Duo Code Review request, and will review your code shortly."
-msgstr ""
-
 msgid "DuoCodeReview|Your account doesn't have GitLab Duo access. Please contact your system administrator for access."
 msgstr ""
 

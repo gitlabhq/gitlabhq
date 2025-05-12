@@ -358,6 +358,51 @@ The `conan info` command returns information about a package:
 conan info Hello/0.1@mycompany/beta
 ```
 
+## Download a Conan package
+
+{{< alert type="flag" >}}
+
+Packages uploaded before [Conan info metadata extraction](#extract-conan-metadata) was enabled cannot be downloaded with the `conan download` CLI command.
+
+{{< /alert >}}
+
+You can download a Conan package's recipe and binaries to your local cache without using settings that use the `conan download` command.
+
+Prerequisites:
+
+- The Conan remote [must be configured](#add-the-package-registry-as-a-conan-remote).
+- For private and internal projects, you must configure [authentication](#authenticate-to-the-package-registry) with the package registry.
+
+### Download all binary packages
+
+You can download all binary packages associated with a recipe from the package registry.
+
+To download all binary packages, run the following command:
+
+```shell
+conan download Hello/0.1@foo+bar/stable --remote=gitlab
+```
+
+### Download recipe files
+
+You can download only the recipe files without any binary packages.
+
+To download recipe files, run the following command:
+
+```shell
+conan download Hello/0.1@foo+bar/stable --remote=gitlab --recipe
+```
+
+### Download a specific binary package
+
+You can download a single binary package by referencing its package reference (known as the `package_id` in Conan documentation).
+
+To download a specific binary package, run the following command:
+
+```shell
+conan download Hello/0.1@foo+bar/stable:<package_reference> --remote=gitlab
+```
+
 ## Supported CLI commands
 
 The GitLab Conan repository supports the following Conan CLI commands:
@@ -365,10 +410,32 @@ The GitLab Conan repository supports the following Conan CLI commands:
 - `conan upload`: Upload your recipe and package files to the package registry.
 - `conan install`: Install a Conan package from the package registry, which
   includes using the `conanfile.txt` file.
+- `conan download`: Download package recipes and binaries to your local cache without using settings.
 - `conan search`: Search the package registry for public packages, and private
   packages you have permission to view.
 - `conan info`: View the information on a given package from the package registry.
 - `conan remove`: Delete the package from the package registry.
+
+## Extract Conan metadata
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178728) in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `parse_conan_metadata_on_upload`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186292) in GitLab 17.11. Feature flag `parse_conan_metadata_on_upload` removed.
+
+{{< /history >}}
+
+When you upload a Conan package, GitLab automatically extracts metadata from the `conaninfo.txt` file. This metadata includes:
+
+- Package settings (like `os`, `arch`, `compiler` and `build_type`)
+- Package options
+- Package requirements and dependencies
+
+{{< alert type="note" >}}
+
+Packages uploaded before this feature was enabled (GitLab 17.10) do not have their metadata extracted. For these packages, some search and download functionalities are limited.
+
+{{< /alert >}}
 
 ## Troubleshooting
 

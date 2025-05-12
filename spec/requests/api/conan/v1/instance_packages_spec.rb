@@ -45,9 +45,9 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
   context 'with recipe endpoints' do
     let(:project_id) { 9999 }
     let(:url_prefix) { "#{Settings.gitlab.base_url}/api/v4" }
+    let(:recipe_path) { package.conan_recipe_path }
 
     describe 'GET /api/v4/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel' do
-      let(:recipe_path) { package.conan_recipe_path }
       let(:url) { "/packages/conan/v1/conans/#{recipe_path}" }
 
       it_behaves_like 'recipe snapshot endpoint'
@@ -55,7 +55,6 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
 
     describe 'GET /api/v4/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel' \
       '/packages/:conan_package_reference' do
-      let(:recipe_path) { package.conan_recipe_path }
       let(:url) { "/packages/conan/v1/conans/#{recipe_path}/packages/#{conan_package_reference}" }
 
       it_behaves_like 'package snapshot endpoint'
@@ -120,6 +119,13 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
       subject(:request) { delete api("/packages/conan/v1/conans/#{recipe_path}"), headers: headers }
 
       it_behaves_like 'delete package endpoint'
+    end
+
+    describe 'GET /api/v4/packages/conan/v1/conans/:package_name/:package_version/:package_username' \
+      '/:package_channel/search' do
+      let(:url) { "/packages/conan/v1/conans/#{recipe_path}/search" }
+
+      it_behaves_like 'GET package references metadata endpoint'
     end
   end
 

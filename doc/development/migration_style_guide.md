@@ -417,7 +417,7 @@ because they require a precise control on when and how to open transactions.
 
 - A foreign key _can_ be added inside a transaction, unlike `CREATE INDEX CONCURRENTLY`.
   However, PostgreSQL does not provide an option similar to `CREATE INDEX CONCURRENTLY`.
-  The helper [`add_concurrent_foreign_key`](database/foreign_keys.md#adding-foreign-keys-in-migrations)
+  The helper [`add_concurrent_foreign_key`](database/foreign_keys.md#adding-the-fk-constraint-not-valid)
   instead opens its own transactions to lock the source and target table
   in a manner that minimizes locking while adding and validating the foreign key.
 - As advised earlier, skip `disable_ddl_transaction!` if you are unsure
@@ -870,40 +870,6 @@ If a migration requires conditional logic based on the absence or presence of an
 
 For more details, review the [Adding Database Indexes](database/adding_database_indexes.md#testing-for-existence-of-indexes)
 guide.
-
-## Adding foreign-key constraints
-
-When adding a foreign-key constraint to either an existing or a new column also
-remember to add an index on the column.
-
-This is **required** for all foreign-keys, for example, to support efficient cascading
-deleting: when a lot of rows in a table get deleted, the referenced records need
-to be deleted too. The database has to look for corresponding records in the
-referenced table. Without an index, this results in a sequential scan on the
-table, which can take a long time.
-
-Here's an example where we add a new column with a foreign key
-constraint. Note it includes `index: true` to create an index for it.
-
-```ruby
-class Migration < Gitlab::Database::Migration[2.1]
-
-  def change
-    add_reference :model, :other_model, index: true, foreign_key: { on_delete: :cascade }
-  end
-end
-```
-
-When adding a foreign-key constraint to an existing column in a non-empty table,
-we have to employ `add_concurrent_foreign_key` and `add_concurrent_index`
-instead of `add_reference`.
-
-If you have a new or empty table that doesn't reference a
-[high-traffic table](#high-traffic-tables),
-we recommend that you use `add_reference` in a single-transaction migration. You can
-combine it with other operations that don't require `disable_ddl_transaction!`.
-
-You can read more about adding [foreign key constraints to an existing column](database/add_foreign_key_to_existing_column.md).
 
 ## `NOT NULL` constraints
 

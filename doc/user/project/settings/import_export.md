@@ -235,6 +235,7 @@ Items that are **not** exported include:
 - Build traces and artifacts
 - Package and container registry images
 - CI/CD variables
+- CI/CD job token allowlist
 - Webhooks
 - Any encrypted tokens
 - [Number of required approvals](https://gitlab.com/gitlab-org/gitlab/-/issues/221087)

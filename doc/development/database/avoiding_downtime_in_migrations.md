@@ -352,7 +352,7 @@ the whole column type.
 
 You can check the following guides for each specific use case:
 
-- [Adding foreign-key constraints](../migration_style_guide.md#adding-foreign-key-constraints)
+- [Adding foreign-key constraints](foreign_keys.md)
 - [Adding `NOT NULL` constraints](not_null_constraints.md)
 - [Adding limits to text columns](strings_and_the_text_data_type.md)
 
@@ -579,22 +579,7 @@ Renaming a table is possible without downtime by following our multi-release
 
 ## Adding foreign keys
 
-Adding foreign keys usually works in 3 steps:
-
-1. Start a transaction
-1. Run `ALTER TABLE` to add the constraints
-1. Check all existing data
-
-Because `ALTER TABLE` typically acquires an exclusive lock until the end of a
-transaction this means this approach would require downtime.
-
-GitLab allows you to work around this by using
-`Gitlab::Database::MigrationHelpers#add_concurrent_foreign_key`. This method
-ensures that no downtime is needed.
-
-## Removing foreign keys
-
-This operation does not require downtime.
+Adding foreign keys can potentially cause downtime, please refer [FK: Avoiding downtime and migration failures](foreign_keys.md#avoiding-downtime-and-migration-failures) docs for details.
 
 ## Migrating `integer` primary keys to `bigint`
 

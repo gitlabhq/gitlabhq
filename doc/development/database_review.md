@@ -230,7 +230,7 @@ Include in the MR description:
 #### Preparation when adding tables
 
 - Order columns based on the [Ordering Table Columns](database/ordering_table_columns.md) guidelines.
-- Add foreign keys to any columns pointing to data in other tables, including [an index](migration_style_guide.md#adding-foreign-key-constraints).
+- Add foreign keys to any columns pointing to data in other tables, including [an index](database/foreign_keys.md).
 - Add indexes for fields that are used in statements such as `WHERE`, `ORDER BY`, `GROUP BY`, and `JOIN`s.
 - New tables must be seeded by a file in `db/fixtures/development/`. These fixtures are also used
   to ensure that [upgrades complete successfully](database/dbmigrate_multi_version_upgrade_job.md),
@@ -271,7 +271,7 @@ to add the raw SQL query and query plan to the merge request description, and re
   - Review migrations follow [database migration style guide](migration_style_guide.md),
     for example
     - [Check ordering of columns](database/ordering_table_columns.md)
-    - [Check indexes are present for foreign keys](migration_style_guide.md#adding-foreign-key-constraints)
+    - [Check indexes are present for foreign keys](database/foreign_keys.md)
   - Ensure that migrations execute in a transaction or only contain
     concurrent index/foreign key helpers (with transactions disabled)
   - If an index to a large table is added and its execution time was elevated (more than 1h) on [Database Lab](database/database_lab.md):

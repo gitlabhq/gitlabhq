@@ -308,7 +308,7 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_categor
             end
 
             it 'tracks the error and creates the managed resource record with the failed status' do
-              error_message = 'Failed to ensure the environment. {"object":{"group":"group","apiVersion":"version",' \
+              error_message = 'Failed to ensure the environment. {"object":{"group":"group","version":"version",' \
                 '"kind":"kind","namespace":"namespace","name":"name"},"error":"error message"}'
               expect { execute_complete }.to raise_error(
                 Gitlab::Ci::Build::Prerequisite::ManagedResource::ManagedResourceError, error_message)

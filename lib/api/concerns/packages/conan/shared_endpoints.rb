@@ -94,28 +94,72 @@ module API
               end
             end
 
-            desc 'Search for packages' do
-              detail 'This feature was introduced in GitLab 12.4'
-              success code: 200
-              failure [
-                { code: 400, message: 'Bad Request' },
-                { code: 404, message: 'Not Found' }
-              ]
-              tags %w[conan_packages]
-            end
+            namespace 'conans' do
+              desc 'Search for packages' do
+                detail 'This feature was introduced in GitLab 12.4'
+                success code: 200
+                failure [
+                  { code: 400, message: 'Bad Request' },
+                  { code: 404, message: 'Not Found' }
+                ]
+                tags %w[conan_packages]
+              end
 
-            params do
-              requires :q, type: String, desc: 'Search query', documentation: { example: 'Hello*' }
-            end
+              params do
+                requires :q, type: String, desc: 'Search query', documentation: { example: 'Hello*' }
+              end
 
-            route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
-            route_setting :authorization, skip_job_token_policies: true
+              route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+              route_setting :authorization, skip_job_token_policies: true
 
-            get 'conans/search', urgency: :low do
-              response = ::Packages::Conan::SearchService.new(search_project, current_user, query: params[:q]).execute
-              bad_request!(response.message) if response.error?
+              get 'search', urgency: :low do
+                response = ::Packages::Conan::SearchService.new(search_project, current_user, query: params[:q]).execute
+                bad_request!(response.message) if response.error?
 
-              response.payload
+                response.payload
+              end
+
+              params do
+                with(type: String) do
+                  with(regexp: PACKAGE_COMPONENT_REGEX) do
+                    requires :package_name, desc: 'Package name', documentation: { example: 'my-package' }
+                    requires :package_version, desc: 'Package version', documentation: { example: '1.0' }
+                  end
+                  with(regexp: CONAN_REVISION_USER_CHANNEL_REGEX) do
+                    requires :package_username, desc: 'Package username',
+                      documentation: { example: 'my-group+my-project' }
+                    requires :package_channel, desc: 'Package channel', documentation: { example: 'stable' }
+                  end
+                end
+              end
+
+              namespace ':package_name/:package_version/:package_username/:package_channel/search',
+                requirements: PACKAGE_REQUIREMENTS do
+                desc 'Get package references metadata' do
+                  detail 'This feature was introduced in GitLab 18.0'
+                  success code: 200
+                  failure [
+                    { code: 400, message: 'Bad Request' },
+                    { code: 401, message: 'Unauthorized' },
+                    { code: 403, message: 'Forbidden' },
+                    { code: 404, message: 'Not Found' }
+                  ]
+                  tags %w[conan_packages]
+                end
+
+                route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+                route_setting :authorization,  job_token_policies: :read_packages,
+                  allow_public_access_for_enabled_project_features: :package_registry
+
+                get urgency: :low do
+                  check_username_channel
+
+                  authorize_read_package!(project)
+                  not_found!('Package') unless package
+
+                  package.conan_package_references.pluck_reference_and_info.to_h
+                end
+              end
             end
           end
         end

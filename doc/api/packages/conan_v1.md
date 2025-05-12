@@ -240,16 +240,13 @@ Example response:
 }
 ```
 
-The URLs in the response have the same route prefix used to request them. If you request them with
-the project-level route, the returned URLs contain `/projects/:id`.
-
 ## Get a package manifest
 
 Gets a manifest that includes a list of files and associated download URLs for a specified package.
 
 ```plaintext
 GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/digest
-GET /projects/:id/packages/conan/v1/conans/:package_version/:package_username/:package_channel/packages/:conan_package_reference/digest
+GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/packages/:conan_package_reference/digest
 ```
 
 | Attribute | Type | Required | Description |
@@ -274,9 +271,6 @@ Example response:
   "conanmanifest.txt": "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/packages/103f6067a947f366ef91fc1b7da351c588d1827f/0/conanmanifest.txt"
 }
 ```
-
-The URLs in the response have the same route prefix used to request them. If you request them with
-the project-level route, the returned URLs contain `/projects/:id`.
 
 ## List all recipe download URLs
 
@@ -310,9 +304,6 @@ Example response:
 }
 ```
 
-The URLs in the response have the same route prefix used to request them. If you request them with
-the project-level route, the returned URLs contain `/projects/:id`.
-
 ## List all package download URLs
 
 Lists all files and associated download URLs for a specified package.
@@ -345,9 +336,6 @@ Example response:
   "conanmanifest.txt": "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/packages/103f6067a947f366ef91fc1b7da351c588d1827f/0/conanmanifest.txt"
 }
 ```
-
-The URLs in the response have the same route prefix used to request them. If you request them with
-the project-level route, the returned URLs contain `/projects/:id`.
 
 ## List all recipe upload URLs
 
@@ -394,9 +382,6 @@ Example response:
   "conanmanifest.txt": "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/0/export/conanmanifest.txt"
 }
 ```
-
-The URLs in the response have the same route prefix used to request them. If you request them with
-the project-level route, the returned URLs contain `/projects/:id`.
 
 ## List all package upload URLs
 
@@ -447,17 +432,14 @@ Example response:
 }
 ```
 
-The URLs in the response have the same route prefix used to request them. If you request them with
-the project-level route, the returned URLs contain `/projects/:id`.
-
 ## Get a recipe file
 
 Gets a recipe file from the package registry. You must use the download URL returned from the
 [recipe download URLs](#list-all-recipe-download-urls) endpoint.
 
 ```plaintext
-GET packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name
-GET projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name
+GET /packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name
+GET /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name
 ```
 
 | Attribute | Type | Required | Description |
@@ -488,8 +470,8 @@ Uploads a specified recipe file in the package registry. You must use the upload
 [recipe upload URLs](#list-all-recipe-upload-urls) endpoint.
 
 ```plaintext
-PUT packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name
-PUT projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name
+PUT /packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name
+PUT /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name
 ```
 
 | Attribute | Type | Required | Description |
@@ -517,8 +499,8 @@ Gets a package file from the package registry. You must use the download URL ret
 [package download URLs](#list-all-package-download-urls) endpoint.
 
 ```plaintext
-GET packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name
-GET projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name
+GET /packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name
+GET /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name
 ```
 
 | Attribute | Type | Required | Description |
@@ -551,8 +533,8 @@ Uploads a specified package file in the package registry. You must use the uploa
 [package upload URLs](#list-all-package-upload-urls) endpoint.
 
 ```plaintext
-PUT packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name
-PUT projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name
+PUT /packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name
+PUT /projects/:id/packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name
 ```
 
 | Attribute | Type | Required | Description |
@@ -581,8 +563,8 @@ curl --request PUT \
 Deletes a specified Conan recipe and the associated package files from the package registry.
 
 ```plaintext
-DELETE packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel
-DELETE projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel
+DELETE /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel
+DELETE /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel
 ```
 
 | Attribute | Type | Required | Description |
@@ -612,3 +594,56 @@ Example response:
   "status": "default"
 }
 ```
+
+## Get package references metadata
+
+Gets the metadata for all package references of a package.
+
+```plaintext
+GET /packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/search
+GET /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel/search
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`                | string | Conditionally | The project ID or full project path. Required only for the project endpoint. |
+| `package_name`      | string | yes | Name of a package. |
+| `package_version`   | string | yes | Version of a package. |
+| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
+| `package_channel`   | string | yes | Channel of a package. |
+
+```shell
+curl --header "Authorization: Bearer <authenticate_token>" \
+     --url "https://gitlab.example.com/api/v4/packages/conan/v1/conans/my-package/1.0/my-group+my-project/stable/search"
+```
+
+Example response:
+
+```json
+{
+  "103f6067a947f366ef91fc1b7da351c588d1827f": {
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "gcc",
+      "compiler.libcxx": "libstdc++",
+      "compiler.version": "9",
+      "os": "Linux"
+    },
+    "options": {
+      "shared": "False"
+    },
+    "requires": {
+      "zlib/1.2.11": null
+    },
+    "recipe_hash": "75151329520e7685dcf5da49ded2fec0"
+  }
+}
+```
+
+The response includes the following metadata for each package reference:
+
+- `settings`: The build settings used for the package.
+- `options`: The package options.
+- `requires`: The dependencies required for the package.
+- `recipe_hash`: The hash of the recipe.

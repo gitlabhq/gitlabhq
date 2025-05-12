@@ -18,14 +18,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       message: "404 'conan_package_revisions_support' feature flag is disabled Not Found"
   end
 
-  shared_examples 'packages feature check' do
-    before do
-      stub_packages_setting(enabled: false)
-    end
-
-    it_behaves_like 'returning response status', :not_found
-  end
-
   shared_examples 'get file list' do |expected_file_list, not_found_err:|
     subject(:api_request) { get api(url), headers: headers }
 
@@ -84,20 +76,21 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     let(:url) { "/projects/#{project.id}/packages/conan/v2/users/check_credentials" }
 
     it_behaves_like 'conan check_credentials endpoint'
+    it_behaves_like 'conan package revisions feature flag check' do
+      subject { get api(url), headers: headers }
+    end
   end
 
   describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/search' do
-    let(:url_suffix) { 'search' }
+    let(:url_suffix) { "search" }
+    let(:params) { { q: package.conan_recipe } }
+
+    subject { get api(url), params: params }
 
     it_behaves_like 'conan search endpoint'
-
-    it_behaves_like 'conan FIPS mode' do
-      let(:params) { { q: package.conan_recipe } }
-
-      subject { get api(url), params: params }
-    end
-
+    it_behaves_like 'conan FIPS mode'
     it_behaves_like 'conan search endpoint with access to package registry for everyone'
+    it_behaves_like 'conan package revisions feature flag check'
   end
 
   describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/' \
@@ -307,6 +300,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       end
     end
 
+    it_behaves_like 'conan package revisions feature flag check'
     it_behaves_like 'enforcing read_packages job token policy'
     it_behaves_like 'accept get request on private project with access to package registry for everyone'
     it_behaves_like 'conan FIPS mode'
@@ -427,5 +421,18 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     it_behaves_like 'get file list',
       { 'files' => { 'conan_package.tgz' => {}, 'conaninfo.txt' => {}, 'conanmanifest.txt' => {} } },
       not_found_err: '404 Package files Not Found'
+  end
+
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username' \
+    '/:package_channel/search' do
+    let(:recipe_path) { package.conan_recipe_path }
+    let(:url_suffix) { "#{recipe_path}/search" }
+
+    subject(:request) { get api(url), headers: headers }
+
+    it_behaves_like 'GET package references metadata endpoint'
+    it_behaves_like 'accept get request on private project with access to package registry for everyone'
+    it_behaves_like 'project not found by project id'
+    it_behaves_like 'conan package revisions feature flag check'
   end
 end
