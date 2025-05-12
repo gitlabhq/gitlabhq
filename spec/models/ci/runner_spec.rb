@@ -1889,34 +1889,10 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
     include_context 'with token authenticatable routable token context'
 
-    shared_examples 'an encrypted routable token for resource' do |prefix|
-      let(:resource_payload) do
-        case resource
-        when Group
-          { g: resource.id.to_s(36), o: resource.organization_id.to_s(36) }
-        when Project
-          { p: resource.id.to_s(36), o: resource.organization_id.to_s(36) }
-        else
-          {}
-        end
-      end
-
-      let(:routing_payload) do
-        {
-          c: 1,
-          u: creator.id.to_s(36),
-          t: described_class.runner_types[runner_type].to_s(36),
-          **resource_payload
-        }.sort.to_h
-      end
-
-      let(:expected_routing_payload) do
-        routing_payload.map { |pairs| pairs.join(':') }.join("\n")
-      end
-
-      it_behaves_like 'an encrypted routable token' do
+    shared_examples 'an encrypted non-routable token' do |prefix|
+      it_behaves_like 'an encrypted token' do
         let(:expected_token) { token }
-        let(:expected_random_bytes) { random_bytes }
+        let(:expected_token_payload) { devise_token }
         let(:expected_token_prefix) { prefix }
         let(:expected_encrypted_token) { token_owner_record.token_encrypted }
       end
@@ -1925,27 +1901,21 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     shared_examples 'an instance runner encrypted token' do |prefix|
       let(:runner_type) { :instance_type }
 
-      it_behaves_like 'an encrypted routable token for resource', prefix do
-        let(:resource) { nil }
-      end
+      it_behaves_like 'an encrypted non-routable token', prefix
     end
 
     shared_examples 'a group runner encrypted token' do |prefix|
       let(:runner_type) { :group_type }
       let(:attrs) { { groups: [group], sharding_key_id: group.id } }
 
-      it_behaves_like 'an encrypted routable token for resource', prefix do
-        let(:resource) { group }
-      end
+      it_behaves_like 'an encrypted non-routable token', prefix
     end
 
     shared_examples 'a project runner encrypted token' do |prefix|
       let(:runner_type) { :project_type }
       let(:attrs) { { projects: [project], sharding_key_id: project.id } }
 
-      it_behaves_like 'an encrypted routable token for resource', prefix do
-        let(:resource) { project }
-      end
+      it_behaves_like 'an encrypted non-routable token', prefix
     end
 
     context 'when runner is registered' do
