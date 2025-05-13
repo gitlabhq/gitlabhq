@@ -2,13 +2,14 @@
 stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: yes
 title: Secondary runners
 ---
 
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -29,6 +30,12 @@ The jobs that start during the first stage of a pipeline almost always have thei
 
 ## Use secondary runners with a Location Aware public URL (Unified URL)
 
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
 Using [Location-Aware DNS](_index.md#configure-location-aware-dns), with the feature flag enabled works with no extra configuration. After you install and register a runner in the same location as a secondary site, it automatically talks to the closest site, and only proxies to the primary if the secondary is out of date.
 
 ## Use secondary runners with separate URLs
@@ -43,6 +50,12 @@ Using separate secondary URLs, the runners should be:
 When executing [a planned failover](../disaster_recovery/planned_failover.md), secondary runners try to keep talking to their local instance. This leads to decreased runner capacity, and may need to be accounted for.
 
 ### With Location Aware public URL
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 When using [Location-Aware DNS](_index.md#configure-location-aware-dns), all runners automatically connect to the closest Geo site.
 

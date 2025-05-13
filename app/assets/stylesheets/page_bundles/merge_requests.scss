@@ -300,11 +300,14 @@ $diff-file-header-top: 11px;
 
 .tree-list-holder {
   height: 100%;
+}
 
-  .file-row {
-    margin-left: 0;
-    margin-right: 0;
-  }
+.tree-list-holder .file-row {
+  width: calc(100% - #{$gl-spacing-scale-1} * 2);
+  margin: 0 0 0 $gl-spacing-scale-1;
+  border: 0;
+  min-width: 0;
+  background: transparent;
 }
 
 .tree-list-gutter {

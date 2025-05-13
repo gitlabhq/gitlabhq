@@ -385,6 +385,44 @@ RSpec.describe UserDetail, feature_category: :system_access do
       end
     end
 
+    describe '#orcid' do
+      context 'when orcid is set' do
+        let_it_be(:user_detail) { create(:user).user_detail }
+
+        it 'accepts a valid orcid username' do
+          user_detail.orcid = '1234-1234-1234-1234'
+
+          expect(user_detail).to be_valid
+        end
+
+        context 'when orcid id is wrong' do
+          it 'throws an error when orcid username format is too long' do
+            user_detail.orcid = '1234-1234-1234-1234-1234'
+
+            expect(user_detail).not_to be_valid
+            expect(user_detail.errors.full_messages)
+              .to match_array([_('Orcid must contain only a orcid ID.')])
+          end
+
+          it 'throws an error when orcid username format is too short' do
+            user_detail.orcid = '1234-1234'
+
+            expect(user_detail).not_to be_valid
+            expect(user_detail.errors.full_messages)
+              .to match_array([_('Orcid must contain only a orcid ID.')])
+          end
+
+          it 'throws an error when orcid username format is letters' do
+            user_detail.orcid = 'abcd-abcd-abcd-abcd'
+
+            expect(user_detail).not_to be_valid
+            expect(user_detail.errors.full_messages)
+              .to match_array([_('Orcid must contain only a orcid ID.')])
+          end
+        end
+      end
+    end
+
     describe '#location' do
       it { is_expected.to validate_length_of(:location).is_at_most(500) }
     end
@@ -423,6 +461,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
         linkedin: 'linkedin',
         location: 'location',
         bluesky: 'did:plc:ewvi7nxzyoun6zhxrhs64oiz',
+        orcid: '1234-1234-1234-1234',
         mastodon: '@robin@example.com',
         organization: 'organization',
         skype: 'skype',
@@ -447,6 +486,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
     it_behaves_like 'prevents `nil` value', :linkedin
     it_behaves_like 'prevents `nil` value', :location
     it_behaves_like 'prevents `nil` value', :bluesky
+    it_behaves_like 'prevents `nil` value', :orcid
     it_behaves_like 'prevents `nil` value', :mastodon
     it_behaves_like 'prevents `nil` value', :organization
     it_behaves_like 'prevents `nil` value', :skype

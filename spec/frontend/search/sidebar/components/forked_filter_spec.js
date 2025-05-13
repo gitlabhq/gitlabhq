@@ -51,7 +51,7 @@ describe('ForksFilter', () => {
     it('wraps the label element with a tooltip', () => {
       const tooltip = getBinding(findCheckboxFilterLabel().element, 'gl-tooltip');
       expect(tooltip).toBeDefined();
-      expect(tooltip.value).toBe('Include search results from forked projects');
+      expect(tooltip.value).toBe('Exclude search results from forked projects');
     });
   });
 
@@ -71,19 +71,19 @@ describe('ForksFilter', () => {
     it('wraps the label element with a tooltip', () => {
       const tooltip = getBinding(findCheckboxFilterLabel().element, 'gl-tooltip');
       expect(tooltip).toBeDefined();
-      expect(tooltip.value).toBe('Include search results from forked projects');
+      expect(tooltip.value).toBe('Exclude search results from forked projects');
     });
   });
 
   describe.each`
-    include_forked | checkboxState
-    ${'true'}      | ${'true'}
-    ${'sdfsdf'}    | ${'false'}
-    ${''}          | ${'false'}
-    ${'false'}     | ${'false'}
-  `('selectedFilter', ({ include_forked, checkboxState }) => {
+    exclude_forks | checkboxState
+    ${'true'}     | ${'true'}
+    ${'sdfsdf'}   | ${'false'}
+    ${''}         | ${'false'}
+    ${'false'}    | ${'false'}
+  `('selectedFilter', ({ exclude_forks, checkboxState }) => {
     beforeEach(() => {
-      createComponent({ urlQuery: { include_forked } });
+      createComponent({ urlQuery: { exclude_forks } });
     });
 
     it('renders the component', () => {
@@ -101,7 +101,7 @@ describe('ForksFilter', () => {
       findCheckboxFilter().vm.$emit('input', selectedFilter);
 
       expect(defaultActions.setQuery).toHaveBeenCalledWith(expect.any(Object), {
-        key: 'include_forked',
+        key: 'exclude_forks',
         value: 'false',
       });
       expect(selectedFilter).toEqual([false]);

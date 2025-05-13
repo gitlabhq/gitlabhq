@@ -150,6 +150,9 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:skype).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:skype=).to(:user_detail).with_arguments(:args).allow_nil }
 
+    it { is_expected.to delegate_method(:orcid).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:orcid=).to(:user_detail).with_arguments(:args).allow_nil }
+
     it { is_expected.to delegate_method(:website_url).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:website_url=).to(:user_detail).with_arguments(:args).allow_nil }
 

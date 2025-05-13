@@ -34,6 +34,14 @@ describe('File row component', () => {
     expect(name.text().trim()).toEqual(fileName);
   });
 
+  it('renders as button', () => {
+    createComponent({
+      file: file('t4'),
+      level: 0,
+    });
+    expect(wrapper.find('button').exists()).toBe(true);
+  });
+
   it('renders the full path as title', () => {
     const filePath = 'path/to/file/with a very long folder name/';
     const fileName = 'foo.txt';

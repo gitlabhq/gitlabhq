@@ -1,4 +1,4 @@
-#import "~/organizations/shared/graphql/fragments/group.fragment.graphql"
+#import "~/graphql_shared/fragments/group.fragment.graphql"
 
 query getMemberYourWorkGroups($search: String, $sort: String, $parentId: Int, $page: Int) {
   groups(search: $search, sort: $sort, parentId: $parentId, page: $page) @client {

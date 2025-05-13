@@ -965,6 +965,34 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#remove_project_message' do
+    subject(:message) { helper.remove_project_message(project) }
+
+    before do
+      allow(project).to receive(:delayed_deletion_ready?).and_return(enabled)
+    end
+
+    context 'when project has delayed deletion enabled' do
+      let(:enabled) { true }
+
+      specify do
+        deletion_date = helper.permanent_deletion_date_formatted(Date.current)
+
+        expect(message).to eq "Deleting a project places it into a read-only state until #{deletion_date}, " \
+          "at which point the project will be permanently deleted. Are you ABSOLUTELY sure?"
+      end
+    end
+
+    context 'when project has delayed deletion disabled' do
+      let(:enabled) { false }
+
+      specify do
+        expect(message).to eq "You are going to delete #{project.full_name}. Deleted projects CANNOT be " \
+          "restored! Are you ABSOLUTELY sure?"
+      end
+    end
+  end
+
   describe '#project_permissions_panel_data' do
     subject { helper.project_permissions_panel_data(project) }
 

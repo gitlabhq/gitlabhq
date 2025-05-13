@@ -2,14 +2,15 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Define limits for deprecated APIs on GitLab Self-Managed.
+description: Define limits for deprecated APIs on GitLab.
+gitlab_dedicated: yes
 title: Deprecated API rate limits
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 

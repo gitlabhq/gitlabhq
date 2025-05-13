@@ -7,7 +7,6 @@ fragment Group on Group {
     id
   }
   webUrl
-  organizationEditPath
   descriptionHtml
   avatarUrl
   descendantGroupsCount

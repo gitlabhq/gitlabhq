@@ -297,13 +297,6 @@ export default {
         :show-cleanup-policy-link="config.showCleanupPolicyLink"
       >
         <template #commands>
-          <cli-commands
-            v-if="showCommands"
-            :docker-build-command="dockerBuildCommand"
-            :docker-push-command="dockerPushCommand"
-            :docker-login-command="dockerLoginCommand"
-            class="!gl-w-auto"
-          />
           <gl-button
             v-if="config.showContainerRegistrySettings"
             v-gl-tooltip="$options.i18n.SETTINGS_TEXT"
@@ -311,6 +304,13 @@ export default {
             class="!gl-w-auto"
             :href="config.settingsPath"
             :aria-label="$options.i18n.SETTINGS_TEXT"
+          />
+          <cli-commands
+            v-if="showCommands"
+            :docker-build-command="dockerBuildCommand"
+            :docker-push-command="dockerPushCommand"
+            :docker-login-command="dockerLoginCommand"
+            class="!gl-w-auto"
           />
         </template>
       </registry-header>

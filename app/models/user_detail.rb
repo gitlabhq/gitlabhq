@@ -37,6 +37,15 @@ class UserDetail < ApplicationRecord
     \z            # end of string
   /x
 
+  ORCID_VALIDATION_REGEX = /
+    \A            # beginning of string
+    (             #
+      [0-9]{4}-   # 4 digits spaced by dash
+    ){3}          # 3 times
+    [0-9]{4}      # end with 4 digits
+    \z            # end of string
+  /x
+
   validates :discord, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
   validate :discord_format
   validates :linkedin, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
@@ -47,6 +56,8 @@ class UserDetail < ApplicationRecord
               message: proc { s_('Profiles|must contain only a bluesky did:plc identifier.') } }
   validates :mastodon, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
   validate :mastodon_format
+  validates :orcid, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
+  validate :orcid_format
   validates :organization, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
   validates :skype, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
   validates :twitter, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
@@ -57,7 +68,7 @@ class UserDetail < ApplicationRecord
   before_save :prevent_nil_fields
 
   def sanitize_attrs
-    %i[bluesky discord linkedin mastodon skype twitter website_url].each do |attr|
+    %i[bluesky discord linkedin mastodon orcid skype twitter website_url].each do |attr|
       value = self[attr]
       self[attr] = Sanitize.clean(value) if value.present?
     end
@@ -77,6 +88,7 @@ class UserDetail < ApplicationRecord
     self.location = '' if location.nil?
     self.mastodon = '' if mastodon.nil?
     self.organization = '' if organization.nil?
+    self.orcid = '' if orcid.nil?
     self.skype = '' if skype.nil?
     self.twitter = '' if twitter.nil?
     self.website_url = '' if website_url.nil?
@@ -100,6 +112,12 @@ def mastodon_format
   return if mastodon.blank? || mastodon =~ UserDetail::MASTODON_VALIDATION_REGEX
 
   errors.add(:mastodon, _('must contain only a mastodon handle.'))
+end
+
+def orcid_format
+  return if orcid.blank? || orcid =~ UserDetail::ORCID_VALIDATION_REGEX
+
+  errors.add(:orcid, _('must contain only a orcid ID.'))
 end
 
 UserDetail.prepend_mod_with('UserDetail')

@@ -10,6 +10,8 @@ module Packages
     def perform_work
       return unless artifact
 
+      before_destroy
+
       begin
         artifact.transaction do
           log_metadata(artifact)
@@ -46,6 +48,10 @@ module Packages
 
     def log_cleanup_item
       raise NotImplementedError
+    end
+
+    def before_destroy
+      # no op
     end
 
     def after_destroy

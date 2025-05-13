@@ -61,6 +61,6 @@ export default {
     v-on="$listeners"
   >
     <file-row-stats v-if="showFileRowStats" :file="file" class="gl-mr-2" />
-    <changed-file-icon :file="file" :size="16" :show-tooltip="true" />
+    <changed-file-icon :file="file" :size="16" :show-tooltip="true" :as-button="false" />
   </file-row>
 </template>

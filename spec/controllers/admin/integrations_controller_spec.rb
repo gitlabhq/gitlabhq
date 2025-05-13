@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::IntegrationsController, feature_category: :integrations do
+RSpec.describe Admin::IntegrationsController, :with_current_organization, feature_category: :integrations do
   let_it_be(:admin) { create(:admin) }
-  let_it_be(:organization) { create(:organization, :default) }
+  let_it_be(:organization) { current_organization }
 
   before do
     stub_feature_flags(remove_monitor_metrics: false)
@@ -45,14 +45,12 @@ RSpec.describe Admin::IntegrationsController, feature_category: :integrations do
   describe '#update' do
     include JiraIntegrationHelpers
 
-    let_it_be(:organization) { create(:organization) }
     let(:integration) { create(:jira_integration, :instance) }
     let(:integration_name) { integration.class.to_param }
 
     before do
       stub_jira_integration_test
       allow(PropagateIntegrationWorker).to receive(:perform_async)
-      allow(Current).to receive(:organization).and_return(organization)
 
       put :update, params: { id: integration_name, service: params }
     end

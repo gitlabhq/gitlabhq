@@ -4,6 +4,7 @@ module Packages
   module Conan
     class PackageRevision < ApplicationRecord
       include ShaAttribute
+      include PackageFileable
 
       sha_attribute :revision
 
@@ -11,8 +12,6 @@ module Packages
       belongs_to :package_reference, class_name: 'Packages::Conan::PackageReference',
         inverse_of: :package_revisions
       belongs_to :project
-
-      has_many :file_metadata, inverse_of: :package_revision, class_name: 'Packages::Conan::FileMetadatum'
 
       validates :package, :package_reference, :project, presence: true
       validates :revision, presence: true, format: { with: ::Gitlab::Regex.conan_revision_regex_v2 }

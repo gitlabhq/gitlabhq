@@ -7,7 +7,7 @@ import { InternalEvents } from '~/tracking';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import {
   EVENT_CLICK_ZOEKT_INCLUDE_FORKS_ON_SEARCH_RESULTS_PAGE,
-  INCLUDE_FORKED_FILTER_PARAM,
+  EXCLUDE_FORKS_FILTER_PARAM,
 } from '~/search/sidebar/constants';
 
 const trackingMixin = InternalEvents.mixin();
@@ -23,21 +23,21 @@ export default {
   },
   mixins: [trackingMixin],
   i18n: {
-    TOOLTIP: s__('GlobalSearch|Include search results from forked projects'),
+    TOOLTIP: s__('GlobalSearch|Exclude search results from forked projects'),
     HEADER_LABEL: s__('GlobalSearch|Forks'),
-    CHECKBOX_LABEL: s__('GlobalSearch|Include forks'),
+    CHECKBOX_LABEL: s__('GlobalSearch|Exclude forks'),
   },
   computed: {
     ...mapState(['urlQuery']),
     selectedFilter: {
       get() {
-        return [parseBoolean(this.urlQuery?.[INCLUDE_FORKED_FILTER_PARAM])];
+        return [parseBoolean(this.urlQuery?.[EXCLUDE_FORKS_FILTER_PARAM])];
       },
       set(value) {
-        const includeForked = [...value].pop() ?? false;
+        const excludeForks = [...value].pop() ?? false;
         this.setQuery({
-          key: INCLUDE_FORKED_FILTER_PARAM,
-          value: includeForked?.toString(),
+          key: EXCLUDE_FORKS_FILTER_PARAM,
+          value: excludeForks?.toString(),
         });
       },
     },

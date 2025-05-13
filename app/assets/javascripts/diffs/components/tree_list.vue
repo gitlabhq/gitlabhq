@@ -230,12 +230,26 @@ export default {
 </script>
 
 <template>
-  <div class="tree-list-holder gl-flex gl-flex-col" data-testid="file-tree-container">
+  <section
+    class="tree-list-holder gl-flex gl-flex-col"
+    data-testid="file-tree-container"
+    aria-labelledby="tree-list-title"
+  >
     <div class="gl-mb-3 gl-flex gl-items-center">
-      <h5 class="gl-my-0 gl-inline-block">{{ __('Files') }}</h5>
-      <gl-badge v-if="totalFilesCount != null" class="gl-ml-2" data-testid="file-count">{{
-        totalFilesCount
-      }}</gl-badge>
+      <h2
+        id="tree-list-title"
+        class="gl-my-0 gl-inline-block gl-text-base"
+        :aria-label="__('File browser')"
+      >
+        {{ __('Files') }}
+      </h2>
+      <gl-badge
+        v-if="totalFilesCount != null"
+        class="gl-ml-2"
+        data-testid="file-count"
+        aria-hidden="true"
+        >{{ totalFilesCount }}</gl-badge
+      >
       <gl-button-group class="gl-ml-auto">
         <gl-button
           v-gl-tooltip.hover
@@ -257,7 +271,6 @@ export default {
         />
       </gl-button-group>
     </div>
-    <label for="diff-tree-search" class="sr-only">{{ $options.searchPlaceholder }}</label>
     <gl-search-box-by-type
       id="diff-tree-search"
       v-model="search"
@@ -267,7 +280,11 @@ export default {
       :clear-button-title="__('Clear search')"
       class="gl-mb-3"
     />
-    <div :class="{ 'tree-list-blobs': !renderTreeList || search }" class="mr-tree-list">
+    <nav
+      :class="{ 'tree-list-blobs': !renderTreeList || search }"
+      class="mr-tree-list"
+      :aria-label="__('File tree')"
+    >
       <recycle-scroller
         v-if="treeList.length"
         ref="scroller"
@@ -286,7 +303,7 @@ export default {
             :style="{ '--level': item.level }"
             :class="{ 'tree-list-parent': item.level > 0 }"
             :tabindex="item.loading ? -1 : 0"
-            class="gl-relative !gl-m-1"
+            class="gl-relative"
             :data-file-row="item.fileHash"
             @toggleTreeOpen="$emit('toggleFolder', $event)"
             @clickFile="!item.loading && $emit('clickFile', $event)"
@@ -299,8 +316,8 @@ export default {
       <p v-else class="prepend-top-20 append-bottom-20 text-center">
         {{ s__('MergeRequest|No files found') }}
       </p>
-    </div>
-  </div>
+    </nav>
+  </section>
 </template>
 
 <style>

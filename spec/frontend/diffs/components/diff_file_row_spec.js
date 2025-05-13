@@ -48,6 +48,7 @@ describe('Diff File Row component', () => {
         file: {},
         size: 16,
         showTooltip: true,
+        asButton: false,
       }),
     );
   });

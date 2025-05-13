@@ -1680,6 +1680,8 @@
       when: never
     - <<: *if-security-merge-request
       when: never
+    - <<: *if-merge-request-targeting-stable-branch
+      when: never
     - !reference [.frontend:rules:jest, rules]
 
 ################

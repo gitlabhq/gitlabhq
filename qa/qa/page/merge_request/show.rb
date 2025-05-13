@@ -20,6 +20,14 @@ module QA
           element 'submit-review-button'
         end
 
+        view 'app/assets/javascripts/batch_comments/components/review_drawer.vue' do
+          element 'submit-review-button'
+        end
+
+        view 'app/assets/javascripts/batch_comments/components/submit_review_button.vue' do
+          element 'review-drawer-toggle'
+        end
+
         view 'app/assets/javascripts/diffs/components/compare_dropdown_layout.vue' do
           element 'version-dropdown-content'
         end
@@ -185,11 +193,7 @@ module QA
             end
           end
 
-          within_element('review-bar-content') do
-            click_element('review-preview-dropdown')
-          end
-
-          click_element('submit-review-dropdown')
+          all_elements('review-drawer-toggle', minimum: 1).first.click
           click_element('submit-review-button')
 
           # After clicking the button, wait for the review bar to disappear

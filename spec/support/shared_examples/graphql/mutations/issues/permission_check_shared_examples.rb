@@ -21,8 +21,7 @@ RSpec.shared_examples 'permission level for issue mutation is correctly verified
     )
   end
 
-  # TODO: .reload can be removed after the migration https://gitlab.com/gitlab-org/gitlab/-/issues/497857
-  let(:expected) { issue_attributes(issue.reload) }
+  let(:expected) { issue_attributes(issue) }
 
   shared_examples_for 'when the user does not have access to the resource' do |raise_for_assigned_and_author|
     before do

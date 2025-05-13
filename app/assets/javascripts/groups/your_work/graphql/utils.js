@@ -36,7 +36,4 @@ export const formatGroupForGraphQLResolver = (group) => ({
   projectsCount: group.project_count,
   children: group.children?.length ? group.children.map(formatGroupForGraphQLResolver) : [],
   childrenCount: group.subgroup_count,
-  // Properties below are hard coded for now until API has been
-  // updated to support these fields.
-  organizationEditPath: '',
 });

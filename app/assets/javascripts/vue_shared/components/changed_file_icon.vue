@@ -36,6 +36,11 @@ export default {
       required: false,
       default: true,
     },
+    asButton: {
+      type: Boolean,
+      default: true,
+      required: false,
+    },
   },
   computed: {
     changedIcon() {
@@ -79,7 +84,7 @@ export default {
 
 <template>
   <gl-button
-    v-if="showIcon"
+    v-if="showIcon && asButton"
     v-gl-tooltip.right
     category="tertiary"
     size="small"
@@ -90,6 +95,15 @@ export default {
   >
     <gl-icon :name="changedIcon" :size="size" :class="changedIconClass" />
   </gl-button>
+  <span
+    v-else-if="showIcon"
+    v-gl-tooltip.right="tooltipTitle"
+    :class="{ 'ml-auto': isCentered }"
+    :aria-label="tooltipTitle"
+    class="file-changed-icon"
+  >
+    <gl-icon :name="changedIcon" :size="size" :class="changedIconClass" />
+  </span>
 </template>
 
 <style>

@@ -201,7 +201,7 @@ export default {
       this.protectionRuleMutationItem = null;
       this.protectionRuleMutationInProgress = false;
     },
-    showProtectionRuleDeletionConfirmModal(protectionRule) {
+    showDeletionConfirmModal(protectionRule) {
       this.protectionRuleMutationItem = protectionRule;
       this.showModal = true;
     },
@@ -233,7 +233,7 @@ export default {
     deleteIconButton: __('Delete'),
     editIconButton: __('Edit'),
     title: s__('ContainerRegistry|Protected container image tags'),
-    protectionRuleDeletionConfirmModal: {
+    deletionConfirmModal: {
       title: s__('ContainerRegistry|Delete protection rule'),
       description: s__(
         'ContainerRegistry|Are you sure you want to delete the protected container tags rule %{tagNamePattern}?',
@@ -359,7 +359,7 @@ export default {
               icon="remove"
               :title="$options.i18n.deleteIconButton"
               :aria-label="$options.i18n.deleteIconButton"
-              @click="showProtectionRuleDeletionConfirmModal(item)"
+              @click="showDeletionConfirmModal(item)"
             />
           </div>
         </template>
@@ -387,13 +387,13 @@ export default {
         v-model="showModal"
         :modal-id="$options.modal.id"
         size="sm"
-        :title="$options.i18n.protectionRuleDeletionConfirmModal.title"
+        :title="$options.i18n.deletionConfirmModal.title"
         :action-primary="$options.modalActionPrimary"
         :action-cancel="$options.modalActionCancel"
         @primary="deleteProtectionRule(protectionRuleMutationItem)"
       >
         <p>
-          <gl-sprintf :message="$options.i18n.protectionRuleDeletionConfirmModal.description">
+          <gl-sprintf :message="$options.i18n.deletionConfirmModal.description">
             <template #tagNamePattern>
               <strong>{{ mutationItemTagNamePattern }}</strong>
             </template>

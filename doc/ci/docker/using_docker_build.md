@@ -748,11 +748,8 @@ and [using the OverlayFS storage driver](https://docs.docker.com/storage/storage
 
 ## Docker alternatives
 
-To build Docker images without enabling privileged mode on the runner, you can
-use one of these alternatives:
-
-- [`kaniko`](using_kaniko.md).
-- [`buildah`](#buildah-example).
+To build Docker images without enabling privileged mode on the runner,
+use [`buildah`](#buildah-example).
 
 ### Buildah example
 
@@ -987,7 +984,7 @@ To resolve this issue:
      image:
        name: docker:19.03
      variables:
-       DOCKER_HOST: tcp://localhost:2375  
+       DOCKER_HOST: tcp://localhost:2375
        DOCKER_TLS_CERTDIR: ""
        CA_CERTIFICATE: "$CA_CERTIFICATE"
      services:
@@ -999,7 +996,7 @@ To resolve this issue:
              echo "$CA_CERTIFICATE" > /usr/local/share/ca-certificates/custom-ca.crt && \
              update-ca-certificates && \
              dockerd-entrypoint.sh || exit
-     script:  
+     script:
        - docker info
        - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY
        - docker build -t "${DOCKER_REGISTRY}/my-app:${CI_COMMIT_REF_NAME}" .

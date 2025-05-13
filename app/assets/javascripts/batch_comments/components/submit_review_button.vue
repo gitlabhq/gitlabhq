@@ -20,7 +20,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="draftsCount > 0 || isReviewer">
+  <div v-if="draftsCount > 0 || isReviewer" data-testid="review-drawer-toggle">
     <gl-button variant="confirm" data-testid="review-drawer-toggle" @click="setDrawerOpened(true)">
       {{ __('Your review') }}
       <drafts-count

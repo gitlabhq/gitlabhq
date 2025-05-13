@@ -4,4 +4,4 @@ source "https://rubygems.org"
 
 gemspec
 
-gem 'activerecord', '~> 7.1' # rubocop:disable Gemfile/MissingFeatureCategory
+gem 'activerecord', '~> 7.2' # rubocop:disable Gemfile/MissingFeatureCategory

@@ -13,8 +13,6 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
   end
 
   before do
-    stub_feature_flags(improved_review_experience: false)
-
     project.add_maintainer(user)
 
     sign_in(user)
@@ -27,20 +25,21 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
     expect(find('.draft-note')).to have_content('Line is wrong')
 
-    expect(page).to have_selector('[data-testid="review_bar_component"]')
-
-    expect(find('[data-testid="review_bar_component"] .gl-badge')).to have_content('1')
+    expect(first('[data-testid="review-drawer-toggle"] .gl-badge')).to have_content('1')
   end
 
   it 'publishes review' do
     write_diff_comment
 
-    page.within('.review-bar-content') do
-      click_button 'Finish review'
-      click_button 'Submit review'
+    page.within '.merge-request-tabs-holder' do
+      click_button 'Your review'
     end
 
+    click_button 'Submit review'
+
     wait_for_requests
+
+    find_by_scrolling("[id='#{sample_compare.changes[0][:line_code]}']")
 
     expect(page).not_to have_selector('.draft-note', text: 'Line is wrong')
 
@@ -150,7 +149,9 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
         expect(page).to have_selector('.draft-note', text: 'Its a draft comment')
 
-        click_button('Pending comments')
+        page.within '.merge-request-tabs-holder' do
+          click_button 'Your review'
+        end
 
         expect(page).to have_text('2 pending comments')
       end
@@ -160,7 +161,9 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
         expect(page).to have_selector('.note:not(.draft-note)', text: 'Its a regular comment')
 
-        click_button('Pending comments')
+        page.within '.merge-request-tabs-holder' do
+          click_button 'Your review'
+        end
 
         expect(page).to have_text('1 pending comment')
       end
@@ -180,7 +183,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
       expect(find('.new .draft-note')).to have_content('Line is wrong')
       expect(find('.old .draft-note')).to have_content('Another wrong line')
 
-      expect(find('.review-bar-content .gl-badge')).to have_content('2')
+      expect(first('[data-testid="review-drawer-toggle"] .gl-badge')).to have_content('2')
     end
   end
 
@@ -206,10 +209,11 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
       write_reply_to_discussion(resolve: true)
 
-      page.within('.review-bar-content') do
-        click_button 'Finish review'
-        click_button 'Submit review'
+      page.within '.merge-request-tabs-holder' do
+        click_button 'Your review'
       end
+
+      click_button 'Submit review'
 
       wait_for_requests
 
@@ -249,10 +253,11 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
       write_reply_to_discussion(button_text: 'Start a review', unresolve: true)
 
-      page.within('.review-bar-content') do
-        click_button 'Finish review'
-        click_button 'Submit review'
+      page.within '.merge-request-tabs-holder' do
+        click_button 'Your review'
       end
+
+      click_button 'Submit review'
 
       wait_for_requests
 

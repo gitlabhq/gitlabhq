@@ -12,9 +12,14 @@ RSpec.describe Gitlab::Database::PartitionHelpers, feature_category: :database d
   describe "#partition?" do
     subject(:is_partitioned) { model.partition?(table_name) }
 
-    let(:table_name) { 'ci_builds_metadata' }
-
     context "when a partition table exist" do
+      let(:table_name) { '_test_ci_builds_metadata' }
+
+      before do
+        model.connection.create_table("#{table_name}_p", options: 'PARTITION BY LIST (id)')
+        model.connection.execute("CREATE TABLE #{table_name} PARTITION OF #{table_name}_p FOR VALUES IN (1)")
+      end
+
       context 'when the view postgres_partitions exists' do
         it 'calls the view', :aggregate_failures do
           expect(Gitlab::Database::PostgresPartition).to receive(:partition_exists?).with(table_name).and_call_original

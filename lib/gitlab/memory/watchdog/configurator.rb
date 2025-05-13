@@ -4,7 +4,7 @@ module Gitlab
   module Memory
     class Watchdog
       class Configurator
-        DEFAULT_PUMA_WORKER_RSS_LIMIT_MB = 1200
+        DEFAULT_PUMA_WORKER_RSS_LIMIT_MB = 1500
         DEFAULT_SLEEP_INTERVAL_S = 60
         DEFAULT_SIDEKIQ_SLEEP_INTERVAL_S = 3
         MIN_SIDEKIQ_SLEEP_INTERVAL_S = 2

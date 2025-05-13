@@ -65,7 +65,6 @@ RSpec.describe 'Database schema',
       chat_teams: %w[team_id],
       ci_builds: %w[project_id runner_id user_id erased_by_id trigger_request_id partition_id
         auto_canceled_by_partition_id execution_config_id upstream_pipeline_partition_id],
-      ci_builds_metadata: %w[partition_id project_id build_id],
       ci_build_needs: %w[project_id],
       ci_build_pending_states: %w[project_id],
       ci_build_trace_chunks: %w[project_id],

@@ -451,9 +451,6 @@ export default {
     showWorkItemTree() {
       return this.findWidget(WIDGET_TYPE_HIERARCHY) && this.allowedChildTypes?.length > 0;
     },
-    showWorkItemVulnerabilities() {
-      return this.glFeatures.workItemRelatedVulnerabilities;
-    },
     titleClassHeader() {
       return {
         'sm:!gl-hidden gl-mt-3': this.shouldShowAncestors,
@@ -1219,7 +1216,6 @@ export default {
             />
 
             <work-item-vulnerabilities
-              v-if="showWorkItemVulnerabilities"
               :work-item-iid="iid"
               :work-item-full-path="workItemFullPath"
               data-testid="work-item-vulnerabilities"

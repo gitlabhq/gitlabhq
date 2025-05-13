@@ -15136,9 +15136,6 @@ msgstr ""
 msgid "Commit|containing commit"
 msgstr ""
 
-msgid "Community forum"
-msgstr ""
-
 msgid "Company"
 msgstr ""
 
@@ -26501,6 +26498,9 @@ msgstr ""
 msgid "File added."
 msgstr ""
 
+msgid "File browser"
+msgstr ""
+
 msgid "File changed and moved."
 msgstr ""
 
@@ -26556,6 +26556,9 @@ msgid "File suppressed by a .gitattributes entry or the file's encoding is unsup
 msgstr ""
 
 msgid "File too large. Secure files must be less than %{limit} MB."
+msgstr ""
+
+msgid "File tree"
 msgstr ""
 
 msgid "File upload error."
@@ -28166,6 +28169,9 @@ msgstr ""
 msgid "GitLab commit"
 msgstr ""
 
+msgid "GitLab community forum"
+msgstr ""
+
 msgid "GitLab container registry API not supported"
 msgstr ""
 
@@ -28706,6 +28712,12 @@ msgstr ""
 msgid "GlobalSearch|Epics"
 msgstr ""
 
+msgid "GlobalSearch|Exclude forks"
+msgstr ""
+
+msgid "GlobalSearch|Exclude search results from forked projects"
+msgstr ""
+
 msgid "GlobalSearch|Explore"
 msgstr ""
 
@@ -28757,13 +28769,7 @@ msgstr ""
 msgid "GlobalSearch|Include archived"
 msgstr ""
 
-msgid "GlobalSearch|Include forks"
-msgstr ""
-
 msgid "GlobalSearch|Include search results from archived projects"
-msgstr ""
-
-msgid "GlobalSearch|Include search results from forked projects"
 msgstr ""
 
 msgid "GlobalSearch|Incremental indexing queue length"
@@ -73182,6 +73188,9 @@ msgid "must contain only a discord user ID."
 msgstr ""
 
 msgid "must contain only a mastodon handle."
+msgstr ""
+
+msgid "must contain only a orcid ID."
 msgstr ""
 
 msgid "must have a repository"

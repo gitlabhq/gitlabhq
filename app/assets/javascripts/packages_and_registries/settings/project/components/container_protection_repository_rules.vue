@@ -51,7 +51,7 @@ export default {
     settingBlockDescription: s__(
       'ContainerRegistry|When a container repository is protected, only users with specific roles can push and delete container images. This helps prevent unauthorized modifications.',
     ),
-    protectionRuleDeletionConfirmModal: {
+    deletionConfirmModal: {
       title: s__('ContainerRegistry|Delete container repository protection rule?'),
       descriptionWarning: s__(
         'ContainerRegistry|You are about to delete the container repository protection rule for %{repositoryPathPattern}.',
@@ -162,7 +162,7 @@ export default {
         last: PAGINATION_DEFAULT_PER_PAGE,
       };
     },
-    showProtectionRuleDeletionConfirmModal(protectionRule) {
+    showDeletionConfirmModal(protectionRule) {
       this.protectionRuleMutationItem = protectionRule;
     },
     clearAlertMessage() {
@@ -172,10 +172,10 @@ export default {
       this.protectionRuleMutationItem = null;
       this.protectionRuleMutationInProgress = false;
     },
-    isProtectionRuleMinimumAccessLevelForPushFormSelectDisabled(item) {
+    isMinimumAccessLevelForPushDisabled(item) {
       return this.isProtectionRuleMutationInProgress(item);
     },
-    isProtectionRuleDeleteButtonDisabled(item) {
+    isDeleteActionDisabled(item) {
       return this.isProtectionRuleMutationInProgress(item);
     },
     isProtectionRuleMutationInProgress(item) {
@@ -207,12 +207,12 @@ export default {
           this.resetProtectionRuleMutation();
         });
     },
-    updateProtectionRuleMinimumAccessLevelForPush(protectionRule) {
+    updateMinimumAccessLevelForPush(protectionRule) {
       this.updateProtectionRule(protectionRule, {
         minimumAccessLevelForPush: protectionRule.minimumAccessLevelForPush || null,
       });
     },
-    updateProtectionRuleMinimumAccessLevelForDelete(protectionRule) {
+    updateMinimumAccessLevelForDelete(protectionRule) {
       this.updateProtectionRule(protectionRule, {
         minimumAccessLevelForDelete: protectionRule.minimumAccessLevelForDelete || null,
       });
@@ -334,9 +334,9 @@ export default {
               required
               :aria-label="$options.i18n.minimumAccessLevelForPush"
               :options="containerRepositoryMinimumAccessLevelOptions"
-              :disabled="isProtectionRuleMinimumAccessLevelForPushFormSelectDisabled(item)"
+              :disabled="isMinimumAccessLevelForPushDisabled(item)"
               data-testid="minimum-access-level-for-push-select"
-              @change="updateProtectionRuleMinimumAccessLevelForPush(item)"
+              @change="updateMinimumAccessLevelForPush(item)"
             />
           </template>
 
@@ -348,8 +348,8 @@ export default {
               :aria-label="$options.i18n.minimumAccessLevelForDelete"
               :options="containerRepositoryMinimumAccessLevelOptions"
               data-testid="minimum-access-level-for-delete-select"
-              :disabled="isProtectionRuleMinimumAccessLevelForPushFormSelectDisabled(item)"
-              @change="updateProtectionRuleMinimumAccessLevelForDelete(item)"
+              :disabled="isMinimumAccessLevelForPushDisabled(item)"
+              @change="updateMinimumAccessLevelForDelete(item)"
             />
           </template>
 
@@ -361,9 +361,9 @@ export default {
               icon="remove"
               :title="__('Delete')"
               :aria-label="__('Delete')"
-              :disabled="isProtectionRuleDeleteButtonDisabled(item)"
+              :disabled="isDeleteActionDisabled(item)"
               data-testid="delete-btn"
-              @click="showProtectionRuleDeletionConfirmModal(item)"
+              @click="showDeletionConfirmModal(item)"
             />
           </template>
         </gl-table>
@@ -386,19 +386,19 @@ export default {
       v-if="protectionRuleMutationItem"
       :modal-id="$options.modal.id"
       size="sm"
-      :title="$options.i18n.protectionRuleDeletionConfirmModal.title"
+      :title="$options.i18n.deletionConfirmModal.title"
       :action-primary="$options.modalActionPrimary"
       :action-cancel="$options.modalActionCancel"
       @primary="deleteProtectionRule(protectionRuleMutationItem)"
     >
       <p>
-        <gl-sprintf :message="$options.i18n.protectionRuleDeletionConfirmModal.descriptionWarning">
+        <gl-sprintf :message="$options.i18n.deletionConfirmModal.descriptionWarning">
           <template #repositoryPathPattern>
             <strong>{{ protectionRuleMutationItem.repositoryPathPattern }}</strong>
           </template>
         </gl-sprintf>
       </p>
-      <p>{{ $options.i18n.protectionRuleDeletionConfirmModal.descriptionConsequence }}</p>
+      <p>{{ $options.i18n.deletionConfirmModal.descriptionConsequence }}</p>
     </gl-modal>
   </div>
 </template>

@@ -2,14 +2,15 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Configure a Diagrams.net integration for GitLab Self-Managed.
+description: Configure a Diagrams.net integration for GitLab.
+gitlab_dedicated: yes
 title: Diagrams.net
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -25,7 +26,7 @@ The diagram editor is available in both the plain text editor and the rich text 
 
 On GitLab.com, this integration is enabled for all SaaS users and does not require any additional configuration.
 
-On GitLab Self-Managed, you can choose to integrate with the free [diagrams.net](https://www.drawio.com/)
+On GitLab Self-Managed and GitLab Dedicated, you can choose to integrate with the free [diagrams.net](https://www.drawio.com/)
 website, or host your own diagrams.net site in offline environments.
 
 To set up the integration, you must:

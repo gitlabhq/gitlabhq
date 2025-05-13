@@ -12,7 +12,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import packagesProtectionRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_protection_rules.query.graphql';
+import getPackagesProtectionRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_protection_rules.query.graphql';
 import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
 import deletePackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_packages_protection_rule.mutation.graphql';
 import PackagesProtectionRuleForm from '~/packages_and_registries/settings/project/components/packages_protection_rule_form.vue';
@@ -55,8 +55,7 @@ export default {
     settingBlockDescription: s__(
       'PackageRegistry|When a package is protected, only certain user roles can push, update, and delete the protected package, which helps to avoid tampering with the package.',
     ),
-    createProtectionRuleText: s__('PackageRegistry|Add protection rule'),
-    protectionRuleDeletionConfirmModal: {
+    deletionConfirmModal: {
       title: s__('PackageRegistry|Delete package protection rule?'),
       descriptionWarning: s__(
         'PackageRegistry|You are about to delete the package protection rule for %{packageNamePattern}.',
@@ -68,23 +67,43 @@ export default {
     minimumAccessLevelForPush: I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH,
     minimumAccessLevelForDelete: I18N_MINIMUM_ACCESS_LEVEL_FOR_DELETE,
   },
+  apollo: {
+    protectionRulesQueryPayload: {
+      query: getPackagesProtectionRuleQuery,
+      context: {
+        batchKey: 'PackageRegistryProjectSettings',
+      },
+      variables() {
+        return {
+          projectPath: this.projectPath,
+          ...this.protectionRulesQueryPaginationParams,
+        };
+      },
+      update(data) {
+        return data.project?.packagesProtectionRules ?? this.protectionRulesQueryPayload;
+      },
+      error(e) {
+        this.alertErrorMessage = e.message;
+      },
+    },
+  },
   data() {
     return {
-      packageProtectionRules: [],
-      packageProtectionRulesQueryPayload: { nodes: [], pageInfo: {} },
-      packageProtectionRulesQueryPaginationParams: { first: PAGINATION_DEFAULT_PER_PAGE },
-      protectionRuleMutationInProgress: false,
-      protectionRuleMutationItem: null,
+      protectionRules: [],
+      protectionRulesQueryPayload: { nodes: [], pageInfo: {} },
+      protectionRulesQueryPaginationParams: { first: PAGINATION_DEFAULT_PER_PAGE },
+      mutationInProgress: false,
+      mutationItem: null,
       alertErrorMessage: '',
       showDrawer: false,
     };
   },
   computed: {
     containsTableItems() {
-      return this.packageProtectionRulesQueryResult.length > 0;
+      return this.protectionRulesQueryResult.length > 0;
     },
     drawerTitle() {
-      return this.protectionRuleMutationItem
+      return this.mutationItem
         ? s__('PackageRegistry|Edit protection rule')
         : s__('PackageRegistry|Add protection rule');
     },
@@ -94,52 +113,32 @@ export default {
         : this.$options.fields.filter((field) => field.key !== 'minimumAccessLevelForDelete');
     },
     tableItems() {
-      return this.packageProtectionRulesQueryResult.map((packagesProtectionRule) => {
+      return this.protectionRulesQueryResult.map((protectionRule) => {
         return {
-          id: packagesProtectionRule.id,
-          minimumAccessLevelForDelete: packagesProtectionRule.minimumAccessLevelForDelete,
-          minimumAccessLevelForPush: packagesProtectionRule.minimumAccessLevelForPush,
-          packageNamePattern: packagesProtectionRule.packageNamePattern,
-          packageType: packagesProtectionRule.packageType,
+          id: protectionRule.id,
+          minimumAccessLevelForDelete: protectionRule.minimumAccessLevelForDelete,
+          minimumAccessLevelForPush: protectionRule.minimumAccessLevelForPush,
+          packageNamePattern: protectionRule.packageNamePattern,
+          packageType: protectionRule.packageType,
         };
       });
     },
-    packageProtectionRulesQueryPageInfo() {
-      return this.packageProtectionRulesQueryPayload.pageInfo;
+    protectionRulesQueryPageInfo() {
+      return this.protectionRulesQueryPayload.pageInfo;
     },
-    packageProtectionRulesQueryResult() {
-      return this.packageProtectionRulesQueryPayload.nodes;
+    protectionRulesQueryResult() {
+      return this.protectionRulesQueryPayload.nodes;
     },
-    isLoadingPackageProtectionRules() {
-      return this.$apollo.queries.packageProtectionRulesQueryPayload.loading;
+    isLoadingProtectionRules() {
+      return this.$apollo.queries.protectionRulesQueryPayload.loading;
     },
     showTopLevelLoadingIcon() {
-      return this.isLoadingPackageProtectionRules && !this.containsTableItems;
+      return this.isLoadingProtectionRules && !this.containsTableItems;
     },
     toastMessage() {
-      return this.protectionRuleMutationItem
+      return this.mutationItem
         ? s__('PackageRegistry|Package protection rule updated.')
         : s__('PackageRegistry|Package protection rule created.');
-    },
-  },
-  apollo: {
-    packageProtectionRulesQueryPayload: {
-      query: packagesProtectionRuleQuery,
-      context: {
-        batchKey: 'PackageRegistryProjectSettings',
-      },
-      variables() {
-        return {
-          projectPath: this.projectPath,
-          ...this.packageProtectionRulesQueryPaginationParams,
-        };
-      },
-      update(data) {
-        return data.project?.packagesProtectionRules ?? this.packageProtectionRulesQueryPayload;
-      },
-      error(e) {
-        this.alertErrorMessage = e.message;
-      },
     },
   },
   methods: {
@@ -147,17 +146,17 @@ export default {
       this.showDrawer = false;
     },
     refetchProtectionRules() {
-      this.$apollo.queries.packageProtectionRulesQueryPayload.refetch();
+      this.$apollo.queries.protectionRulesQueryPayload.refetch();
     },
     onNextPage() {
-      this.packageProtectionRulesQueryPaginationParams = {
-        after: this.packageProtectionRulesQueryPageInfo.endCursor,
+      this.protectionRulesQueryPaginationParams = {
+        after: this.protectionRulesQueryPageInfo.endCursor,
         first: PAGINATION_DEFAULT_PER_PAGE,
       };
     },
     onPrevPage() {
-      this.packageProtectionRulesQueryPaginationParams = {
-        before: this.packageProtectionRulesQueryPageInfo.startCursor,
+      this.protectionRulesQueryPaginationParams = {
+        before: this.protectionRulesQueryPageInfo.startCursor,
         last: PAGINATION_DEFAULT_PER_PAGE,
       };
     },
@@ -167,20 +166,20 @@ export default {
       this.refetchProtectionRules();
     },
     openEditFormDrawer(item) {
-      this.protectionRuleMutationItem = item;
+      this.mutationItem = item;
       this.showDrawer = true;
     },
     openNewFormDrawer() {
-      this.protectionRuleMutationItem = null;
+      this.mutationItem = null;
       this.showDrawer = true;
     },
-    showProtectionRuleDeletionConfirmModal(protectionRule) {
-      this.protectionRuleMutationItem = protectionRule;
+    showDeletionConfirmModal(protectionRule) {
+      this.mutationItem = protectionRule;
     },
     deleteProtectionRule(protectionRule) {
       this.clearAlertMessage();
 
-      this.protectionRuleMutationInProgress = true;
+      this.mutationInProgress = true;
 
       return this.$apollo
         .mutate({
@@ -207,14 +206,14 @@ export default {
       this.alertErrorMessage = '';
     },
     resetProtectionRuleMutation() {
-      this.protectionRuleMutationItem = null;
-      this.protectionRuleMutationInProgress = false;
+      this.mutationItem = null;
+      this.mutationInProgress = false;
     },
-    isProtectionRuleDeleteButtonDisabled(item) {
-      return this.isProtectionRuleMutationInProgress(item);
+    isDeleteButtonDisabled(item) {
+      return this.isMutationInProgress(item);
     },
-    isProtectionRuleMutationInProgress(item) {
-      return this.protectionRuleMutationItem === item && this.protectionRuleMutationInProgress;
+    isMutationInProgress(item) {
+      return this.mutationItem === item && this.mutationInProgress;
     },
   },
   fields: [
@@ -268,7 +267,7 @@ export default {
       ref="packagesCrud"
       :title="$options.i18n.settingBlockTitle"
       :description="$options.i18n.settingBlockDescription"
-      :toggle-text="$options.i18n.createProtectionRuleText"
+      :toggle-text="s__('PackageRegistry|Add protection rule')"
       @showForm="openNewFormDrawer"
     >
       <template #default>
@@ -289,7 +288,7 @@ export default {
           :fields="fields"
           stacked="md"
           :aria-label="$options.i18n.settingBlockTitle"
-          :busy="isLoadingPackageProtectionRules"
+          :busy="isLoadingProtectionRules"
         >
           <template #table-busy>
             <gl-loading-icon size="sm" class="gl-my-5" />
@@ -334,8 +333,8 @@ export default {
                 :title="$options.i18n.delete"
                 :aria-label="$options.i18n.delete"
                 data-testid="delete-rule-btn"
-                :disabled="isProtectionRuleDeleteButtonDisabled(item)"
-                @click="showProtectionRuleDeletionConfirmModal(item)"
+                :disabled="isDeleteButtonDisabled(item)"
+                @click="showDeletionConfirmModal(item)"
               />
             </div>
           </template>
@@ -351,7 +350,7 @@ export default {
           </template>
           <template #default>
             <packages-protection-rule-form
-              :rule="protectionRuleMutationItem"
+              :rule="mutationItem"
               @cancel="closeDrawer"
               @submit="handleSubmit"
             />
@@ -361,7 +360,7 @@ export default {
 
       <template #pagination>
         <gl-keyset-pagination
-          v-bind="packageProtectionRulesQueryPageInfo"
+          v-bind="protectionRulesQueryPageInfo"
           @prev="onPrevPage"
           @next="onNextPage"
         />
@@ -369,22 +368,22 @@ export default {
     </crud-component>
 
     <gl-modal
-      v-if="protectionRuleMutationItem"
+      v-if="mutationItem"
       :modal-id="$options.modal.id"
       size="sm"
-      :title="$options.i18n.protectionRuleDeletionConfirmModal.title"
+      :title="$options.i18n.deletionConfirmModal.title"
       :action-primary="$options.modalActionPrimary"
       :action-cancel="$options.modalActionCancel"
-      @primary="deleteProtectionRule(protectionRuleMutationItem)"
+      @primary="deleteProtectionRule(mutationItem)"
     >
       <p>
-        <gl-sprintf :message="$options.i18n.protectionRuleDeletionConfirmModal.descriptionWarning">
+        <gl-sprintf :message="$options.i18n.deletionConfirmModal.descriptionWarning">
           <template #packageNamePattern>
-            <strong>{{ protectionRuleMutationItem.packageNamePattern }}</strong>
+            <strong>{{ mutationItem.packageNamePattern }}</strong>
           </template>
         </gl-sprintf>
       </p>
-      <p>{{ $options.i18n.protectionRuleDeletionConfirmModal.descriptionConsequence }}</p>
+      <p>{{ $options.i18n.deletionConfirmModal.descriptionConsequence }}</p>
     </gl-modal>
   </div>
 </template>

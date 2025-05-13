@@ -64,7 +64,6 @@ describe('your work groups resolver', () => {
       fullName: 'frontend-fixtures-group',
       parent: { id: null },
       webUrl: mockGroup.web_url,
-      organizationEditPath: '',
       descriptionHtml: '',
       avatarUrl: null,
       descendantGroupsCount: 1,
