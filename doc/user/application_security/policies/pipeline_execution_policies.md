@@ -289,7 +289,7 @@ The project becomes a security policy project, and the setting becomes available
 {{< alert type="note" >}}
 
 To create downstream pipelines using `$CI_JOB_TOKEN`, you need to make sure that projects and groups are authorized to request the security policy project.
-In the security policy project, go to **Settings > CI/CD > Job token permissions** and add the authorized groups and projects to the allowlist. Alternatively, you can authorize all groups and projects.
+In the security policy project, go to **Settings > CI/CD > Job token permissions** and add the authorized groups and projects to the allowlist.
 If you don't see the **CI/CD** settings, go to **Settings > General > Visibility, project features, permissions** and enable **CI/CD**.
 
 {{< /alert >}}

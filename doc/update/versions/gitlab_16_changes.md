@@ -1107,7 +1107,7 @@ You are not impacted:
 |-------------------------|-------------------------|----------|
 | 15.1 - 16.2             | All                     | 16.3 and later    |
 
-Workaround: A possible workaround is to [disable proxying](../../administration/geo/secondary_proxy/_index.md#disable-secondary-site-http-proxying). Note that the secondary site fails to serve LFS files that have not been replicated at the time of cloning.
+Workaround: A possible workaround is to [disable proxying](../../administration/geo/secondary_proxy/_index.md#disable-secondary-site-http-proxying). The secondary site fail to serve LFS files that have not been replicated at the time of cloning.
 
 ## 16.1.0
 

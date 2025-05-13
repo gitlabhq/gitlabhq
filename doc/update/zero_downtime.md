@@ -120,7 +120,7 @@ Run through the following steps sequentially on each component's node to perform
 
 [Gitaly](../administration/gitaly/_index.md) follows the same core process when it comes to upgrading but with a key difference
 that the Gitaly process itself is not restarted as it has a built-in process to gracefully reload
-at the earliest opportunity. Note that any other component will still need to be restarted.
+at the earliest opportunity. Other components will still need to be restarted.
 
 {{< alert type="note" >}}
 

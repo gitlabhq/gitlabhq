@@ -123,9 +123,6 @@ export default {
       const fileName = this.requests[0].displayName;
       return `${fileName}_perf_bar_${Date.now()}.json`;
     },
-    showZoekt() {
-      return document.body.dataset.page === 'search:show';
-    },
     showFlamegraphButtons() {
       return this.isGetRequest(this.currentRequestId);
     },
@@ -150,13 +147,6 @@ export default {
       }
       return 'gl-bg-neutral-1000';
     },
-  },
-  created() {
-    if (!this.showZoekt) {
-      this.$options.detailedMetrics = this.$options.detailedMetrics.filter(
-        (item) => item.metric !== 'zkt',
-      );
-    }
   },
   mounted() {
     this.currentRequest = this.requestId;

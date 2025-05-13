@@ -9,6 +9,13 @@ export default {
   components: {
     GlBreadcrumb,
   },
+  props: {
+    staticBreadcrumbs: {
+      type: Object,
+      required: false,
+      default: () => ({ items: [] }),
+    },
+  },
   computed: {
     rootRoute() {
       return this.$router.options.routes.find((r) => r.meta.root);
@@ -27,6 +34,7 @@ export default {
     },
     allCrumbs() {
       const crumbs = [
+        ...this.staticBreadcrumbs.items,
         {
           text: this.rootRoute.meta.nameGenerator(),
           to: this.rootRoute.path,

@@ -836,7 +836,7 @@ For example, if you're running Redis and PostgreSQL on the same machine as GitLa
   After=redis-server.service postgresql.service
   ```
 
-`systemctl edit` installs drop-in configuration files at `/etc/systemd/system/<name of the unit>.d/override.conf`, so your local configuration is not overwritten when updating the unit files later. To split up your drop-in configuration files, you can add the above snippets to `.conf` files under `/etc/systemd/system/<name of the unit>.d/`.
+`systemctl edit` installs drop-in configuration files at `/etc/systemd/system/<name of the unit>.d/override.conf`, so your local configuration is not overwritten when updating the unit files later. To split up your drop-in configuration files, you can add the previous snippets to `.conf` files under `/etc/systemd/system/<name of the unit>.d/`.
 
 If you manually made changes to the unit files or added drop-in configuration files (without using `systemctl edit`), run the following command for them to take effect:
 
@@ -1226,7 +1226,7 @@ bundle check | grep google-protobuf
 ```
 
 Below, `3.2.0` is used as an example. Replace it with the version number
-you found above:
+you found prevously:
 
 ```shell
 cd /home/git/gitlab

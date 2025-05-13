@@ -334,7 +334,7 @@ Here's an example that deploys GitLab with four runners as a [stack](https://doc
        file: ./root_password.txt
    ```
 
-   To reduce complexity, the example above excludes the `network` configuration.
+   To reduce complexity, the previous example excludes the `network` configuration.
    You can find more information in the official [Compose file reference](https://docs.docker.com/compose/compose-file/).
 
 1. Create a `gitlab.rb` file:

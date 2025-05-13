@@ -92,7 +92,14 @@ export default () => {
     });
 
   return {
-    attachBreadcrumb: () => injectVueAppBreadcrumbs(router, RegistryBreadcrumb, apolloProvider),
+    attachBreadcrumb: () =>
+      injectVueAppBreadcrumbs(
+        router,
+        RegistryBreadcrumb,
+        apolloProvider,
+        {},
+        { singleNavOptIn: true },
+      ),
     attachMainComponent,
   };
 };

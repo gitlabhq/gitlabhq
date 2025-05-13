@@ -127,7 +127,7 @@ Report.
 | INFO          | none                | Info            |
 | invalid       | none                | Info            |
 
-Note that while both KICS and GitLab define `High` severity, SARIF doesn't, which means `HIGH`
+While both KICS and GitLab define `High` severity, SARIF doesn't, which means `HIGH`
 vulnerabilities in KICS are mapped to `Critical` in GitLab. This is expected.
 
 [Source code for GitLab mapping](https://gitlab.com/gitlab-org/security-products/analyzers/report/-/blob/902c7dcb5f3a0e551223167931ebf39588a0193a/sarif/sarif.go#L279-315).

@@ -348,7 +348,7 @@ unleash = Unleash::Client.new({
 
 unleash_context = Unleash::Context.new
 # Replace "123" with the ID of an authenticated user.
-# Note that the context's user ID must be a string:
+# The context's user ID must be a string:
 # https://unleash.github.io/docs/unleash_context
 unleash_context.user_id = "123"
 

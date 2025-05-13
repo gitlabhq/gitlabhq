@@ -411,7 +411,7 @@ if you can't upgrade to 15.11.12 and later.
 - A database constraint is added, specifying that the `namespace_id` column on the issues
   table has no `NULL` values.
 
-  - If the `namespace_id` batched background migration from 15.4 failed (see above) then the 15.7 upgrade
+  - If the `namespace_id` batched background migration from 15.4 failed (see previous item) then the 15.7 upgrade
     fails with a database migration error.
 
   - On GitLab instances with large issues tables, validating this constraint causes the upgrade to take
@@ -1078,7 +1078,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 
   It is mandatory to restart PostgreSQL when underlying version changes, to avoid
   errors like the [one related to loading necessary libraries](https://docs.gitlab.com/omnibus/settings/database.html#could-not-load-library-plpgsqlso)
-  that can cause downtime. So, if you skip the automatic restarts using the above
+  that can cause downtime. So, if you skip the automatic restarts using the previous
   method, ensure that you restart the services manually before upgrading to GitLab
   15.0.
 

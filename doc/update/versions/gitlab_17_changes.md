@@ -697,7 +697,7 @@ Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
 
 To fix this:
 
-1. Run the Rake task above to complete the batched migration.
+1. Run the previous Rake task to complete the batched migration.
 1. [Complete the rest of the timed-out operation](../package/package_troubleshooting.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s). At the end of this process, Sidekiq and Puma are restarted to fix the `500` errors.
 
 Feedback about this conditional stop on the upgrade path can be provided [in the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/503891).

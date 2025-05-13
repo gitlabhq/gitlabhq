@@ -129,7 +129,7 @@ which can help to indicate if the data is from a production or development insta
 ### Ability to have some instances using Cloud Licensing, and others air-gapped or offline
 
 If any of the customer's instances require a legacy or offline license file, the customer will need to request a [Cloud Licensing opt out](https://docs.google.com/presentation/d/1gbdHGCLTc0yis0VFyBBZkriMomNo8audr0u8XXTY2iI/edit#slide=id.g137e73c15b5_0_298) during quoting for VP approval.
-This will provide the customer with the relevant license file, but also with an activation code that the customer can apply to the Cloud Licensing-eligible instances. Note that in this scenario, GitLab will receive seat count data only for the Cloud Licensing instance, and this is what will be used for calculating overages.
+This will provide the customer with the relevant license file, but also with an activation code that the customer can apply to the Cloud Licensing-eligible instances. In this scenario, GitLab will receive a seat count data only for the Cloud Licensing instance, and this will be used for calculating overages.
 
 ### Scenarios when one or more of the instances are a dev environment
 

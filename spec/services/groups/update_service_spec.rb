@@ -241,7 +241,23 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
           expect(updated_group.crm_enabled?).to be_truthy
         end
 
-        context 'when crm_source_group_id present' do
+        context 'when crm_source_group_id unchanged' do
+          let(:params) { { crm_source_group_id: public_group.id.to_s } }
+
+          let!(:issue) { create(:issue, project: create(:project, group: public_group)) }
+          let!(:contact) { create(:contact, group: public_group) }
+          let!(:issue_contact) { create(:issue_customer_relations_contact, issue: issue, contact: contact) }
+
+          it 'does not trigger contact source validation' do
+            public_group.crm_settings.update!(source_group_id: public_group.id)
+
+            described_class.new(public_group, user, params).execute
+
+            expect(public_group.errors).to be_empty
+          end
+        end
+
+        context 'when crm_source_group_id changed' do
           let(:params) { { crm_source_group_id: internal_group.id } }
 
           it 'updates crm_group' do

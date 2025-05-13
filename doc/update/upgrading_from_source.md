@@ -468,4 +468,4 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:backup:restore RAILS_ENV=production
 ```
 
-If you have more than one backup `*.tar` file, add `BACKUP=timestamp_of_backup` to the above.
+If you have more than one backup `*.tar` file, add `BACKUP=timestamp_of_backup` to the previous code block.

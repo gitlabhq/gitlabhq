@@ -76,7 +76,7 @@ replicator = model_record.replicator
 
 ##### Given a registry record's ID
 
-- Replace `432` with the actual ID. Note that a Registry record may or may not have the same ID
+- Replace `432` with the actual ID. A Registry record may or may not have the same ID
   value as the Model record that it tracks.
 - Replace `Geo::PackageFileRegistry` with any of the [Geo Registry classes](#geo-registry-classes).
 
@@ -662,7 +662,7 @@ Failed to open TCP connection to localhost:5000 (Connection refused - connect(2)
 ```
 
 It happens if the container registry is not enabled on the secondary site. To fix it, check that the container registry
-is [enabled on the secondary site](../../../packages/container_registry.md#enable-the-container-registry). Note that if [Let’s Encrypt integration is disabled](https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually), container registry is disabled as well, and you must [configure it manually](../../../packages/container_registry.md#configure-container-registry-under-its-own-domain).
+is [enabled on the secondary site](../../../packages/container_registry.md#enable-the-container-registry). If the [Let's Encrypt integration is disabled](https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually), container registry is disabled as well, and you must [configure it manually](../../../packages/container_registry.md#configure-container-registry-under-its-own-domain).
 
 ### Message: `Synchronization failed - Error syncing repository`
 

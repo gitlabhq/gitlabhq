@@ -304,7 +304,7 @@ GitLab automatically renders raw URLs as an abbreviated [reference](../../markdo
 
 > See [#13195[Group_view.png]](https://gitlab.com/gitlab-org/gitlab/-/issues/13195/designs/Group_view.png).
 
-Note that linking to an image differs from [embedding the image](../../markdown.md#images) in a comment or description.
+Linking to an image differs from [embedding the image](../../markdown.md#images) in a comment or description.
 It's not possible to embed a design this way.
 
 ## Design activity records

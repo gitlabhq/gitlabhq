@@ -342,9 +342,9 @@ primary site and the other secondary site:
 
 1. Isolate the secondary site's data from changes on the primary site: Pause the secondary site.
 1. Perform the OS upgrade on the primary site.
-1. If the OS upgrade fails and the primary site is unrecoverable, then promote the secondary site,
-1. route users to it, and try again later.
-1. Note that this leaves you without an up-to-date secondary site.
+1. If the OS upgrade fails and the primary site is unrecoverable,
+   promote the secondary site, route users to it, and try again later.
+   This leaves you without an up-to-date secondary site.
 
 To provide users with read-only access to GitLab during the OS upgrade (partial downtime):
 

@@ -181,7 +181,7 @@ port `2424`:
    gitlab-ctl reconfigure
    ```
 
-Following the above example, your web browser can reach your GitLab instance
+Following the previous example, your web browser can reach your GitLab instance
 at `<hostIP>:8929` and push over SSH on port `2424`.
 
 You can see a `docker-compose.yml` example that uses different ports in the

@@ -28112,6 +28112,9 @@ msgstr ""
 msgid "GitLab Duo Pro seats"
 msgstr ""
 
+msgid "GitLab Duo code features"
+msgstr ""
+
 msgid "GitLab Duo features"
 msgstr ""
 
@@ -35908,6 +35911,12 @@ msgstr ""
 msgid "LearnGitLab|Assign a GitLab Duo seat to your colleagues"
 msgstr ""
 
+msgid "LearnGitLab|Code completion:"
+msgstr ""
+
+msgid "LearnGitLab|Code generation:"
+msgstr ""
+
 msgid "LearnGitLab|Complete these tasks first so you can enjoy GitLab's features to their fullest."
 msgstr ""
 
@@ -35918,6 +35927,9 @@ msgid "LearnGitLab|Configure a project"
 msgstr ""
 
 msgid "LearnGitLab|Configure your project"
+msgstr ""
+
+msgid "LearnGitLab|Context-aware suggestions:"
 msgstr ""
 
 msgid "LearnGitLab|Create a repository"
@@ -35947,10 +35959,22 @@ msgstr ""
 msgid "LearnGitLab|Enroll"
 msgstr ""
 
+msgid "LearnGitLab|Explore these resources to learn essential features and best practices."
+msgstr ""
+
 msgid "LearnGitLab|Follow these steps to get familiar with the GitLab workflow."
 msgstr ""
 
+msgid "LearnGitLab|Generates code based on a natural language code comment block. Write a comment, then press Enter to generate code based on the context of your comment, and the rest of your code."
+msgstr ""
+
+msgid "LearnGitLab|Get familiar with GitLab Duo"
+msgstr ""
+
 msgid "LearnGitLab|Get started"
+msgstr ""
+
+msgid "LearnGitLab|GitLab Duo Code Suggestions"
 msgstr ""
 
 msgid "LearnGitLab|GitLab University"
@@ -36022,10 +36046,19 @@ msgstr ""
 msgid "LearnGitLab|Submit a merge request (MR)"
 msgstr ""
 
+msgid "LearnGitLab|Suggests completions to the current line you are typing. Use it to complete one or a few lines of code."
+msgstr ""
+
+msgid "LearnGitLab|Support for multiple languages:"
+msgstr ""
+
 msgid "LearnGitLab|Try GitLab Ultimate for free"
 msgstr ""
 
 msgid "LearnGitLab|Try all GitLab features for 60 days, no credit card required."
+msgstr ""
+
+msgid "LearnGitLab|Try walkthrough"
 msgstr ""
 
 msgid "LearnGitLab|Use GitLab to deploy your application, monitor its health, and keep it secure:"
@@ -36035,6 +36068,12 @@ msgid "LearnGitLab|Use the Web IDE or upload code using your preferred method."
 msgstr ""
 
 msgid "LearnGitLab|Use the built-in editor, WebIDE, or upload code using your preferred method."
+msgstr ""
+
+msgid "LearnGitLab|Uses open files in your IDE, content before and after the cursor, filename, and extension type to provide relevant suggestions."
+msgstr ""
+
+msgid "LearnGitLab|Works with various programming languages supported by your development environment."
 msgstr ""
 
 msgid "LearnGitLab|You completed all tasks!"
@@ -73680,6 +73719,15 @@ msgid "supported SSH public key."
 msgstr ""
 
 msgid "tag name"
+msgstr ""
+
+msgid "target all default branches"
+msgstr ""
+
+msgid "target all protected branches"
+msgstr ""
+
+msgid "target default branch"
 msgstr ""
 
 msgid "targeting "
