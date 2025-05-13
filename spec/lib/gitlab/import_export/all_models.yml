@@ -595,6 +595,7 @@ project:
 - ci_access_project_authorizations
 - cluster_project
 - workspaces
+- workspace_agentk_states
 - creator
 - cycle_analytics_stages
 - value_streams

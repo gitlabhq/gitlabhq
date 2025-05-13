@@ -102,7 +102,6 @@ RSpec.describe 'Clusterable > Show page', feature_category: :deployment_manageme
   shared_examples 'migration tab' do
     describe 'migration tab' do
       before do
-        stub_feature_flags(cluster_agent_migrations: true)
         visit cluster_path
         click_link 'Migrate'
       end

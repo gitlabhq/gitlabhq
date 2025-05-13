@@ -13,7 +13,7 @@ export const i18n = {
   ERROR_IMPORT: s__('BulkImport|Importing the group failed.'),
   ERROR_IMPORT_COMPLETED: s__('BulkImport|Enter another name to re-import.'),
   ERROR_TOO_MANY_REQUESTS: s__(
-    'Bulkmport|More than six imports were attempted in one minute. Try again after a minute.',
+    'BulkImport|More than six imports were attempted in one minute. Try again after a minute.',
   ),
 
   NO_GROUPS_FOUND: s__('BulkImport|No groups found'),

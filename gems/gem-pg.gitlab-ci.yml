@@ -68,7 +68,7 @@ default:
   parallel:
     matrix:
       - RUBY_VERSION: ["${RUBY_VERSION_DEFAULT}", "${RUBY_VERSION_NEXT}"]
-        POSTGRES_VERSION: ["12", "13", "14"]
+        POSTGRES_VERSION: ["14", "15", "16"]
 
 validate-gem:
   rules:

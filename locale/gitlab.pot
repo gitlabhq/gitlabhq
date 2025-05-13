@@ -11408,10 +11408,13 @@ msgstr ""
 msgid "BulkImport|Migration history"
 msgstr ""
 
+msgid "BulkImport|More than six imports were attempted in one minute. Try again after a minute."
+msgstr ""
+
 msgid "BulkImport|New group"
 msgstr ""
 
-msgid "BulkImport|No additional information provided."
+msgid "BulkImport|No additional information provided"
 msgstr ""
 
 msgid "BulkImport|No groups found"
@@ -11510,7 +11513,7 @@ msgstr ""
 msgid "BulkImport|View placeholders"
 msgstr ""
 
-msgid "BulkImport|You cannot import projects with this group. To import projects, reconfigure the source GitLab instance or group. %{linkStart}Learn more.%{linkEnd}"
+msgid "BulkImport|You cannot import projects with this group. To import projects, reconfigure the source GitLab instance or group. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "BulkImport|Your imported groups and projects appear here."
@@ -11529,9 +11532,6 @@ msgid "BulkImport|must belong to a project."
 msgstr ""
 
 msgid "BulkImport|must have a relative path with no HTTP protocol characters or leading or trailing forward slashes. Path segments must not start or end with a special character or contain consecutive special characters."
-msgstr ""
-
-msgid "Bulkmport|More than six imports were attempted in one minute. Try again after a minute."
 msgstr ""
 
 msgid "Bullet list"
@@ -20870,9 +20870,6 @@ msgid "Delete WebAuthn device"
 msgstr ""
 
 msgid "Delete account"
-msgstr ""
-
-msgid "Delete all messages in the current conversation."
 msgstr ""
 
 msgid "Delete asset"
@@ -51340,9 +51337,6 @@ msgid "Reset"
 msgstr ""
 
 msgid "Reset approvals on push"
-msgstr ""
-
-msgid "Reset conversation and ignore previous messages."
 msgstr ""
 
 msgid "Reset error tracking access token"

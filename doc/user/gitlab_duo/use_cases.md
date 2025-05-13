@@ -1520,7 +1520,6 @@ The AI-generated source code examples are available in the [`typescript` directo
 ## Resources
 
 Many of the use cases are available as hands-on recordings in the [GitLab Duo Coffee Chat YouTube playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0Kp5uj_JgQiSvHw1jQu0mSVZ).
-The [GitLab Duo Coffee Chat](https://handbook.gitlab.com/handbook/marketing/developer-relations/developer-advocacy/projects/#gitlab-duo-coffee-chat) is a learning series maintained by the [Developer Relations team](https://handbook.gitlab.com/handbook/marketing/developer-relations/).
 
 ### Blog resources
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_context 'with scan result policy' do
+RSpec.shared_context 'with approval policy' do
   include RepoHelpers
 
   let(:policy_path) { Security::OrchestrationPolicyConfiguration::POLICY_PATH }
@@ -8,10 +8,10 @@ RSpec.shared_context 'with scan result policy' do
   let(:default_branch) { policy_project.default_branch }
 
   let(:policy_yaml) do
-    build(:orchestration_policy_yaml, scan_execution_policy: [], approval_policy: scan_result_policies)
+    build(:orchestration_policy_yaml, scan_execution_policy: [], approval_policy: approval_policies)
   end
 
-  let(:scan_result_policies) { [scan_result_policy] }
+  let(:approval_policies) { [approval_policy] }
 
   before do
     policy_configuration.update_attribute(:security_policy_management_project, policy_project)
@@ -28,33 +28,33 @@ RSpec.shared_context 'with scan result policy' do
   end
 end
 
-RSpec.shared_context 'with scan result policy blocking protected branches' do
-  include_context 'with scan result policy' do
-    let(:scan_result_policy) do
-      build(:scan_result_policy, branches: [branch_name], approval_settings: { block_branch_modification: true })
+RSpec.shared_context 'with approval policy blocking protected branches' do
+  include_context 'with approval policy' do
+    let(:approval_policy) do
+      build(:approval_policy, branches: [branch_name], approval_settings: { block_branch_modification: true })
     end
   end
 end
 
-RSpec.shared_context 'with scan result policy blocking group-level protected branches' do
-  include_context 'with scan result policy' do
-    let(:scan_result_policy) do
-      build(:scan_result_policy, branches: [branch_name], approval_settings: { block_group_branch_modification: true })
+RSpec.shared_context 'with approval policy blocking group-level protected branches' do
+  include_context 'with approval policy' do
+    let(:approval_policy) do
+      build(:approval_policy, branches: [branch_name], approval_settings: { block_group_branch_modification: true })
     end
   end
 end
 
-RSpec.shared_context 'with scan result policy preventing force pushing' do
-  include_context 'with scan result policy' do
+RSpec.shared_context 'with approval policy preventing force pushing' do
+  include_context 'with approval policy' do
     let(:prevent_pushing_and_force_pushing) { true }
 
-    let(:scan_result_policy) do
-      build(:scan_result_policy, branches: [branch_name],
+    let(:approval_policy) do
+      build(:approval_policy, branches: [branch_name],
         approval_settings: { prevent_pushing_and_force_pushing: prevent_pushing_and_force_pushing })
     end
 
     let(:policy_yaml) do
-      build(:orchestration_policy_yaml, approval_policy: [scan_result_policy])
+      build(:orchestration_policy_yaml, approval_policy: [approval_policy])
     end
   end
 

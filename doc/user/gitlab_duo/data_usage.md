@@ -45,7 +45,7 @@ For more information on our AI [sub-processors](https://about.gitlab.com/privacy
 
 ## Telemetry
 
-GitLab Duo collects aggregated or de-identified first-party usage data through a [Snowplow collector](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/snowplow/). This usage data includes the following metrics:
+GitLab Duo collects aggregated or de-identified first-party usage data through a Snowplow collector. This usage data includes the following metrics:
 
 - Number of unique users
 - Number of unique instances

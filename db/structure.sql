@@ -25828,6 +25828,24 @@ CREATE SEQUENCE work_item_widget_definitions_id_seq
 
 ALTER SEQUENCE work_item_widget_definitions_id_seq OWNED BY work_item_widget_definitions.id;
 
+CREATE TABLE workspace_agentk_states (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    workspace_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    desired_config jsonb NOT NULL
+);
+
+CREATE SEQUENCE workspace_agentk_states_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE workspace_agentk_states_id_seq OWNED BY workspace_agentk_states.id;
+
 CREATE TABLE workspace_variables (
     id bigint NOT NULL,
     workspace_id bigint NOT NULL,
@@ -28047,6 +28065,8 @@ ALTER TABLE ONLY work_item_type_custom_lifecycles ALTER COLUMN id SET DEFAULT ne
 ALTER TABLE ONLY work_item_type_user_preferences ALTER COLUMN id SET DEFAULT nextval('work_item_type_user_preferences_id_seq'::regclass);
 
 ALTER TABLE ONLY work_item_widget_definitions ALTER COLUMN id SET DEFAULT nextval('work_item_widget_definitions_id_seq'::regclass);
+
+ALTER TABLE ONLY workspace_agentk_states ALTER COLUMN id SET DEFAULT nextval('workspace_agentk_states_id_seq'::regclass);
 
 ALTER TABLE ONLY workspace_variables ALTER COLUMN id SET DEFAULT nextval('workspace_variables_id_seq'::regclass);
 
@@ -31272,6 +31292,9 @@ ALTER TABLE ONLY work_item_weights_sources
 
 ALTER TABLE ONLY work_item_widget_definitions
     ADD CONSTRAINT work_item_widget_definitions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY workspace_agentk_states
+    ADD CONSTRAINT workspace_agentk_states_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY workspace_variables
     ADD CONSTRAINT workspace_variables_pkey PRIMARY KEY (id);
@@ -38061,6 +38084,10 @@ CREATE UNIQUE INDEX index_work_item_widget_definitions_on_type_id_and_name ON wo
 
 CREATE INDEX index_work_item_widget_definitions_on_work_item_type_id ON work_item_widget_definitions USING btree (work_item_type_id);
 
+CREATE INDEX index_workspace_agentk_states_on_project_id ON workspace_agentk_states USING btree (project_id);
+
+CREATE UNIQUE INDEX index_workspace_agentk_states_on_workspace_id ON workspace_agentk_states USING btree (workspace_id);
+
 CREATE INDEX index_workspace_variables_on_project_id ON workspace_variables USING btree (project_id);
 
 CREATE INDEX index_workspace_variables_on_workspace_id ON workspace_variables USING btree (workspace_id);
@@ -42381,6 +42408,9 @@ ALTER TABLE ONLY catalog_resource_component_last_usages
 ALTER TABLE ONLY user_namespace_callouts
     ADD CONSTRAINT fk_4b1257f385 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY workspace_agentk_states
+    ADD CONSTRAINT fk_4b1428e43a FOREIGN KEY (workspace_id) REFERENCES workspaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_4b88e5b255 FOREIGN KEY (component_version_id) REFERENCES sbom_component_versions(id) ON DELETE CASCADE;
 
@@ -43736,6 +43766,9 @@ ALTER TABLE ONLY cluster_agent_migrations
 
 ALTER TABLE ONLY events
     ADD CONSTRAINT fk_eea90e3209 FOREIGN KEY (personal_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY workspace_agentk_states
+    ADD CONSTRAINT fk_eeddb6a618 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY coverage_fuzzing_corpuses
     ADD CONSTRAINT fk_ef5ebf339f FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;

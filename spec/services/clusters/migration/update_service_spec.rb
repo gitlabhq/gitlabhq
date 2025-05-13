@@ -26,17 +26,6 @@ RSpec.describe Clusters::Migration::UpdateService, feature_category: :deployment
 
     subject(:execute_service) { service.execute }
 
-    context 'when the feature flag is disabled' do
-      before do
-        stub_feature_flags(cluster_agent_migrations: false)
-      end
-
-      it 'returns an error' do
-        expect(execute_service).to be_error
-        expect(execute_service.message).to eq('Feature disabled')
-      end
-    end
-
     context 'when the user does not have permission' do
       before do
         allow(current_user).to receive(:can?).with(:admin_cluster, cluster).and_return(false)

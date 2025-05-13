@@ -6,7 +6,7 @@ description: Set up your self-hosted model GitLab AI gateway
 title: Install the GitLab AI gateway
 ---
 
-The [AI gateway](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/)
+The [AI gateway](../user/gitlab_duo/gateway.md)
 is a standalone service that gives access to AI-native GitLab Duo features.
 
 ## Install by using Docker

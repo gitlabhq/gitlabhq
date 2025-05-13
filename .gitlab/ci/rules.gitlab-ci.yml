@@ -2773,6 +2773,15 @@
     - <<: *if-merge-request
       changes: *dependency-patterns
 
+.appsec-libbehave:rules:
+  rules:
+    # Requiring $DEPENDENCY_REVIEW_PAT prevents the bot from running on forks or CE
+    # Without it the script would fail too.
+    # Run only when the merge request have dependency file modifications
+    - <<: *if-merge-request
+      changes: *dependency-patterns
+
+
 ##################
 # Releases rules #
 ##################

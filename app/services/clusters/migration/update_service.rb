@@ -13,7 +13,6 @@ module Clusters
       end
 
       def execute
-        return error_response(message: _('Feature disabled')) unless feature_enabled?
         return error_response(message: _('Unauthorized')) unless current_user.can?(:admin_cluster, cluster)
         return error_response(message: s_('ClusterIntegration|No migration found')) unless migration.present?
 
@@ -42,10 +41,6 @@ module Clusters
         extractor = Gitlab::ReferenceExtractor.new(migration.agent.project, @current_user)
         extractor.analyze(url)
         extractor.issues&.first
-      end
-
-      def feature_enabled?
-        Feature.enabled?(:cluster_agent_migrations, clusterable)
       end
 
       def error_response(message:)

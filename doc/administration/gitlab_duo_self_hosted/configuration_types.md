@@ -72,8 +72,6 @@ sequenceDiagram
     SelfHostedGitLab -->> User: Forward AI response
 ```
 
-For more information, see the [self-hosted model deployment blueprint](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/custom_models/).
-
 ## Authentication for GitLab Duo Self-Hosted
 
 The authentication process for GitLab Duo Self-Hosted is secure, efficient, and made up of the following key components:

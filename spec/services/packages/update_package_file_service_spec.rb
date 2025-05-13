@@ -11,7 +11,7 @@ RSpec.describe Packages::UpdatePackageFileService, feature_category: :package_re
   let(:service) { described_class.new(package_file, params) }
 
   describe '#execute' do
-    subject { service.execute }
+    subject(:execute) { service.execute }
 
     shared_examples 'updating package file with valid parameters' do
       context 'with both parameters set' do
@@ -112,6 +112,33 @@ RSpec.describe Packages::UpdatePackageFileService, feature_category: :package_re
       it_behaves_like 'not updating package with invalid parameters' do
         before do
           expect(package_file.file.file).not_to receive(:copy_to)
+        end
+      end
+
+      context 'when a bucket prefix is configured' do
+        let(:bucket_prefix) { 'my-packages' }
+
+        before do
+          stub_package_file_object_storage(
+            config: Gitlab.config.packages.object_store.merge(
+              connection: {
+                provider: 'AWS',
+                aws_access_key_id: 'AWS_ACCESS_KEY_ID',
+                aws_secret_access_key: 'AWS_SECRET_ACCESS_KEY',
+                region: 'eu-central-1',
+                path_style: true
+              },
+              enabled: true,
+              remote_directory: 'gitlab-registry',
+              bucket_prefix: bucket_prefix
+            )
+          )
+        end
+
+        it 'moves the file to the correct prefixed folder in the bucket' do
+          execute
+
+          expect(package_file.new_file_path).to start_with(bucket_prefix)
         end
       end
     end

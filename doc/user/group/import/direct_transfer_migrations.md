@@ -50,13 +50,13 @@ To maximize the chance of a successful and performant migration, you should:
   For more information, see [epic 9036](https://gitlab.com/groups/gitlab-org/-/epics/9036).
 - Migrate between versions that are as new as possible. Update the source and destination instances to as late a version
   as possible to take advantage of bug fixes and improvements added over time.
-- [Configure Sidekiq](../../project/import/_index.md#sidekiq-configuration) properly.
 
 We have successfully tested migrations between a source instance running GitLab 16.2 and a destination instance running
 GitLab 16.8.
 
 ### Configuration
 
+- Ensure [Sidekiq is properly configured](../../project/import/_index.md#sidekiq-configuration).
 - Both GitLab instances must have group migration by direct transfer
   [enabled in application settings](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer)
   by an instance administrator.

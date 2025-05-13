@@ -23,10 +23,6 @@ Some features are also available as part of [GitLab Duo Chat](../gitlab_duo_chat
 - [Get started with GitLab Duo](../get_started/getting_started_gitlab_duo.md).
 - [View a walkthrough of GitLab Duo Enterprise features](https://gitlab.navattic.com/duo-enterprise).
 
-GitLab is [transparent](https://handbook.gitlab.com/handbook/values/#transparency).
-As GitLab Duo features mature, the documentation will be updated to clearly state
-how and where you can access these features.
-
 ## GitLab Duo language models
 
 The language models that are the source for GitLab Duo depend on where you're using it.

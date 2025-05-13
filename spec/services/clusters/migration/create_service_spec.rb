@@ -22,19 +22,6 @@ RSpec.describe Clusters::Migration::CreateService, feature_category: :deployment
   subject(:response) { service.execute }
 
   shared_examples 'migrating a legacy cluster to use the agent' do
-    context 'when the cluster_agent_migrations feature flag is disabled' do
-      before do
-        stub_feature_flags(cluster_agent_migrations: false)
-      end
-
-      it 'returns an error' do
-        expect(Clusters::Agents::CreateService).not_to receive(:new)
-
-        expect(response).to be_error
-        expect(response.message).to eq('Feature disabled')
-      end
-    end
-
     context 'when the user does not have permission' do
       before do
         allow(user).to receive(:can?).with(:admin_cluster, cluster).and_return(false)
