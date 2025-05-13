@@ -38,6 +38,11 @@ export default {
       required: false,
       default: false,
     },
+    showSpacer: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     userActions() {
@@ -153,6 +158,6 @@ export default {
         </gl-disclosure-dropdown-group>
       </gl-disclosure-dropdown>
     </div>
-    <div v-else class="gl-w-8"></div>
+    <div v-else-if="showSpacer" class="gl-w-8"></div>
   </div>
 </template>

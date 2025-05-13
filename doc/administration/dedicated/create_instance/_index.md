@@ -23,7 +23,7 @@ provide the following information to your account team:
 - Expected number of users.
 - Initial storage size for your repositories in GB.
 - Email addresses of any users that need to complete the onboarding and create your GitLab Dedicated instance.
-- Whether you want to [bring your own encryption keys (BYOK)](#encrypted-data-at-rest-byok). If so, GitLab provides an AWS account ID, which is necessary to enable BYOK.
+- Whether you want to [bring your own encryption keys (BYOK)](../encryption.md#bring-your-own-key-byok). If so, GitLab provides an AWS account ID, which is necessary to enable BYOK.
 - Whether you want to use Geo migration for inbound migration of your Dedicated instance.
 
 If you've been granted access to Switchboard, you will receive an email invitation with temporary
@@ -34,128 +34,6 @@ to sign in to a GitLab Self-Managed instance or GitLab.com.
 
 After you first sign in to Switchboard, you must update your password and set up MFA before you can
 complete your onboarding to create a new instance.
-
-### Encrypted Data At Rest (BYOK)
-
-{{< alert type="note" >}}
-
-To enable BYOK, you must do it before onboarding. If enabled, it is not possible to later disable BYOK.
-
-{{< /alert >}}
-
-You can opt to encrypt your GitLab data at rest with AWS KMS keys, which must be made accessible to GitLab Dedicated infrastructure. Due to key rotation requirements, GitLab Dedicated only supports keys with AWS-managed key material (the [AWS_KMS](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-origin) origin type).
-
-Encryption for data in motion (moving over a network) is performed with TLS using keys generated and managed by GitLab Dedicated components, and is not covered by BYOK.
-
-In GitLab Dedicated, you can use KMS keys in two ways:
-
-- One KMS key for all services
-- Per-service KMS keys (Backup, EBS, RDS, S3, Advanced Search)
-  - Keys do not need to be unique to each service.
-  - All services must be encrypted at rest.
-  - Selective enablement of this feature is not supported.
-  - Keys do not need to be unique to each service.
-
-#### Create KMS keys in AWS
-
-After you have received the AWS account ID, create your KMS keys using the AWS Console:
-
-1. In `Configure key`, select:
-   1. Key type: **Symmetrical**
-   1. Key usage: **Encrypt and decrypt**
-   1. `Advanced options`:
-      1. Key material origin: **KMS**
-      1. Regionality: **Multi-Region key**
-1. Enter your values for key alias, description, and tags.
-1. Select key administrators.
-1. Optional. Allow or prevent key administrators from deleting the key.
-1. On the **Define key usage permissions** page, under **Other AWS accounts**, add the GitLab AWS account.
-
-The last page asks you to confirm the KMS key policy. It should look similar to the following example, populated with your account IDs and usernames:
-
-```json
-{
-    "Version": "2012-10-17",
-    "Id": "byok-key-policy",
-    "Statement": [
-        {
-            "Sid": "Enable IAM User Permissions",
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": "arn:aws:iam::<CUSTOMER-ACCOUNT-ID>:root"
-            },
-            "Action": "kms:*",
-            "Resource": "*"
-        },
-        {
-            "Sid": "Allow access for Key Administrators",
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": [
-                    "arn:aws:iam::<CUSTOMER-ACCOUNT-ID>:user/<CUSTOMER-USER>"
-                ]
-            },
-            "Action": [
-                "kms:Create*",
-                "kms:Describe*",
-                "kms:Enable*",
-                "kms:List*",
-                "kms:Put*",
-                "kms:Update*",
-                "kms:Revoke*",
-                "kms:Disable*",
-                "kms:Get*",
-                "kms:Delete*",
-                "kms:TagResource",
-                "kms:UntagResource",
-                "kms:ScheduleKeyDeletion",
-                "kms:CancelKeyDeletion",
-                "kms:ReplicateKey",
-                "kms:UpdatePrimaryRegion"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Sid": "Allow use of the key",
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": [
-                    "arn:aws:iam::<GITLAB-ACCOUNT-ID>:root"
-                ]
-            },
-            "Action": [
-                "kms:Encrypt",
-                "kms:Decrypt",
-                "kms:ReEncrypt*",
-                "kms:GenerateDataKey*",
-                "kms:DescribeKey"
-            ],
-            "Resource": "*"
-        },
-        {
-            "Sid": "Allow attachment of persistent resources",
-            "Effect": "Allow",
-            "Principal": {
-                "AWS": [
-                    "arn:aws:iam::<GITLAB-ACCOUNT-ID>:root"
-                ]
-            },
-            "Action": [
-                "kms:CreateGrant",
-                "kms:ListGrants",
-                "kms:RevokeGrant"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-```
-
-For more information on how to create and manage KMS keys, see the [AWS KMS documentation](https://docs.aws.amazon.com/kms/latest/developerguide/getting-started.html).
-
-After you have created the keys, send GitLab the corresponding ARNs of each key so that GitLab can use to encrypt the data stored in your Dedicated instance.
-
-Make sure the AWS KMS keys are replicated to your desired primary, secondary and backup region specified during [onboarding](#step-2-create-your-gitlab-dedicated-instance).
 
 ## Step 2: Create your GitLab Dedicated instance
 
@@ -186,7 +64,7 @@ After you sign in to Switchboard, follow these steps to create your instance:
    - **Time zone**: Select a weekly four-hour time slot when GitLab performs routine
      maintenance and upgrades. For more information, see [maintenance windows](../maintenance.md#maintenance-windows).
 
-1. Optional. On the **Security** page, add your [AWS KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html) for encrypted AWS services. If you do not add keys, GitLab generates encryption keys for your instance. For more information, see [encrypting your data at rest](#encrypted-data-at-rest-byok).
+1. Optional. On the **Security** page, add your [AWS KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html) for encrypted AWS services. If you do not add keys, GitLab generates encryption keys for your instance. For more information, see [encrypting your data at rest](../encryption.md#encrypted-data-at-rest).
 
 1. On the **Tenant summary** page, review the tenant configuration details. After you confirm that the information you've provided in the previous steps is accurate, select  **Create tenant**.
 

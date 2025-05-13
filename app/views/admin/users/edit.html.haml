@@ -3,8 +3,7 @@
 - breadcrumb_title _("Edit")
 - page_title _("Edit"), @user.name, _("Users")
 
-%h1.page-title.gl-text-size-h-display
-  = _("Edit user: %{user_name}") % { user_name: @user.name }
+= render ::Layouts::PageHeadingComponent.new(_("Edit user: %{user_name}") % { user_name: @user.name })
 
 - if show_admin_edit_user_organization_field?(@user)
   - content_for :organization_section do

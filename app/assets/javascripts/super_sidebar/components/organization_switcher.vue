@@ -170,9 +170,11 @@ export default {
         <div class="gl-py-3">
           <p class="gl-m-0 gl-text-sm gl-text-subtle">
             {{ $options.i18n.switchingNotSupportedMessage }}
-            <gl-link class="gl-text-sm" :href="$options.switchingOrganizationsDocsPath">{{
-              $options.i18n.learnMore
-            }}</gl-link
+            <gl-link
+              class="gl-text-sm"
+              :href="$options.switchingOrganizationsDocsPath"
+              data-testid="switching-docs-link"
+              >{{ $options.i18n.learnMore }}</gl-link
             >.
           </p>
         </div>

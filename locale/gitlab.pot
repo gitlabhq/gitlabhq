@@ -40089,9 +40089,6 @@ msgstr ""
 msgid "New Security findings"
 msgstr ""
 
-msgid "New User"
-msgstr ""
-
 msgid "New branch"
 msgstr ""
 
@@ -66969,6 +66966,9 @@ msgid "VirtualRegistry|Manage packages across multiple sources and streamline de
 msgstr ""
 
 msgid "VirtualRegistry|Maven"
+msgstr ""
+
+msgid "VirtualRegistry|Maven upstream"
 msgstr ""
 
 msgid "VirtualRegistry|Maven virtual registry"

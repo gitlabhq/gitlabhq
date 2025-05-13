@@ -21,7 +21,7 @@ package regarding PostgreSQL versions, not all.
 
 Usually, PostgreSQL versions change with major or minor GitLab releases. However, patch versions
 of the Linux package sometimes update the patch level of PostgreSQL. We've established a
-[yearly cadence for PostgreSQL upgrades](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-framework/postgresql-upgrade-cadence/)
+yearly cadence for PostgreSQL upgrades
 and trigger automatic database upgrades in the release before the new version is required.
 
 For example:

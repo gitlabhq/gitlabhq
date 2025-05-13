@@ -65,7 +65,7 @@ If you have not yet migrated to Gitaly Cluster, you have two options:
 - A sharded Gitaly instance.
 - Gitaly Cluster.
 
-Contact your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or customer support if you have any questions.
+Contact your Customer Success Manager or customer support if you have any questions.
 
 ### Known issues
 

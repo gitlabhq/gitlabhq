@@ -1,44 +1,41 @@
-.gl-flex.gl-flex-wrap.gl-justify-between.gl-items-center.gl-pt-3
-  .gl-my-3.gl-flex.gl-items-center.gl-gap-3
-    %h1.page-title.gl-text-size-h-display.gl-m-0
+= render ::Layouts::PageHeadingComponent.new(@user.name, options: { class: 'gl-mb-3' }) do |c|
+  - c.with_heading do
+    .gl-inline-flex.gl-items-center.gl-gap-3
       = @user.name
-    - if @user.blocked_pending_approval?
-      = render Pajamas::BadgeComponent.new(s_('AdminUsers|Pending approval'), variant: :warning)
-    - elsif @user.banned?
-      = render Pajamas::BadgeComponent.new(s_('AdminUsers|Banned'), variant: :danger)
-    - elsif @user.blocked?
-      = render Pajamas::BadgeComponent.new(s_('AdminUsers|Blocked'), variant: :danger)
-    - if @user.placeholder?
-      = render Pajamas::BadgeComponent.new(s_('UserMapping|Placeholder'), variant: :muted)
-    - elsif @user.internal?
-      = render Pajamas::BadgeComponent.new(s_('AdminUsers|Internal'), variant: :neutral)
-    - if @user.admin
-      = render Pajamas::BadgeComponent.new(s_('AdminUsers|Admin'), variant: :success)
-    - if @user.deactivated?
-      = render Pajamas::BadgeComponent.new(s_('AdminUsers|Deactivated'), variant: :neutral)
-    - if @user.access_locked?
-      = render Pajamas::BadgeComponent.new(s_('AdminUsers|Locked'), variant: :warning)
-    - if can?(current_user, :admin_all_resources)
-      = render_if_exists 'admin/users/auditor_user_badge'
-      = render_if_exists 'admin/users/gma_user_badge'
+      - if @user.blocked_pending_approval?
+        = render Pajamas::BadgeComponent.new(s_('AdminUsers|Pending approval'), variant: :warning)
+      - elsif @user.banned?
+        = render Pajamas::BadgeComponent.new(s_('AdminUsers|Banned'), variant: :danger)
+      - elsif @user.blocked?
+        = render Pajamas::BadgeComponent.new(s_('AdminUsers|Blocked'), variant: :danger)
+      - if @user.placeholder?
+        = render Pajamas::BadgeComponent.new(s_('UserMapping|Placeholder'), variant: :muted)
+      - elsif @user.internal?
+        = render Pajamas::BadgeComponent.new(s_('AdminUsers|Internal'), variant: :neutral)
+      - if @user.admin
+        = render Pajamas::BadgeComponent.new(s_('AdminUsers|Admin'), variant: :success)
+      - if @user.deactivated?
+        = render Pajamas::BadgeComponent.new(s_('AdminUsers|Deactivated'), variant: :neutral)
+      - if @user.access_locked?
+        = render Pajamas::BadgeComponent.new(s_('AdminUsers|Locked'), variant: :warning)
+      - if can?(current_user, :admin_all_resources)
+        = render_if_exists 'admin/users/auditor_user_badge'
+        = render_if_exists 'admin/users/gma_user_badge'
 
   - if can?(current_user, :admin_all_resources)
-    .gl-my-3.gl-flex.gl-flex-wrap.-gl-my-2.-gl-mx-2
+    - c.with_actions do
       - if @user != current_user
         - if impersonation_enabled?
-          .gl-p-2
-            %span.btn-group{ class: !@can_impersonate ? 'has-tooltip' : nil, title: @impersonation_error_text }
-              = render Pajamas::ButtonComponent.new(disabled: !@can_impersonate, method: :post, href: impersonate_admin_user_path(@user), button_options: { data: { testid: 'impersonate-user-link' } }) do
-                = _('Impersonate')
+          %span.btn-group{ class: !@can_impersonate ? 'has-tooltip' : nil, title: @impersonation_error_text }
+            = render Pajamas::ButtonComponent.new(disabled: !@can_impersonate, method: :post, href: impersonate_admin_user_path(@user), button_options: { data: { testid: 'impersonate-user-link' } }) do
+              = _('Impersonate')
         - if can_force_email_confirmation?(@user)
-          .gl-p-2
-            = render Pajamas::ButtonComponent.new(variant: :default, button_options: { class: 'js-confirm-modal-button', data: confirm_user_data(@user) }) do
-              = _('Confirm user')
-      .gl-p-2
-        = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_user_identity_path(@user)) do
-          = _('New identity')
-      .gl-p-2
-        #js-admin-user-actions{ data: admin_user_actions_data_attributes(@user) }
+          = render Pajamas::ButtonComponent.new(variant: :default, button_options: { class: 'js-confirm-modal-button', data: confirm_user_data(@user) }) do
+            = _('Confirm user')
+      = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_user_identity_path(@user)) do
+        = _('New identity')
+      #js-admin-user-actions{ data: admin_user_actions_data_attributes(@user) }
+
 = gl_tabs_nav do
   = gl_tab_link_to _("Account"), admin_user_path(@user)
   - if can?(current_user, :admin_all_resources)

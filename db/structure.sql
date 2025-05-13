@@ -35807,8 +35807,6 @@ CREATE INDEX index_merge_request_diffs_on_external_diff_store ON merge_request_d
 
 CREATE INDEX index_merge_request_diffs_on_merge_request_id_and_id ON merge_request_diffs USING btree (merge_request_id, id);
 
-CREATE INDEX index_merge_request_diffs_on_project_id ON merge_request_diffs USING btree (project_id);
-
 CREATE INDEX index_merge_request_diffs_on_project_id_and_id ON merge_request_diffs USING btree (project_id, id);
 
 CREATE UNIQUE INDEX index_merge_request_diffs_on_unique_merge_request_id ON merge_request_diffs USING btree (merge_request_id) WHERE (diff_type = 2);

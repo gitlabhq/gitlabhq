@@ -1330,20 +1330,20 @@
   dependencies:
     "@floating-ui/utils" "^0.2.9"
 
-"@floating-ui/dom@1.6.13":
-  version "1.6.13"
-  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.6.13.tgz#a8a938532aea27a95121ec16e667a7cbe8c59e34"
-  integrity sha512-umqzocjDgNRGTuO7Q8CU32dkHkECqI8ZdMZ5Swb6QAM0t5rnlrN3lGo1hdpscRd3WS8T6DKYK4ephgIH9iRh3w==
-  dependencies:
-    "@floating-ui/core" "^1.6.0"
-    "@floating-ui/utils" "^0.2.9"
-
-"@floating-ui/dom@1.7.0", "@floating-ui/dom@^1.0.0", "@floating-ui/dom@^1.6.13":
+"@floating-ui/dom@1.7.0":
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.7.0.tgz#f9f83ee4fee78ac23ad9e65b128fc11a27857532"
   integrity sha512-lGTor4VlXcesUMh1cupTUTDoCxMb0V6bm3CnxHzQcw8Eaf1jQbgQX4i02fYgT0vJ82tb5MZ4CZk1LRGkktJCzg==
   dependencies:
     "@floating-ui/core" "^1.7.0"
+    "@floating-ui/utils" "^0.2.9"
+
+"@floating-ui/dom@^1.0.0", "@floating-ui/dom@^1.6.13":
+  version "1.6.13"
+  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.6.13.tgz#a8a938532aea27a95121ec16e667a7cbe8c59e34"
+  integrity sha512-umqzocjDgNRGTuO7Q8CU32dkHkECqI8ZdMZ5Swb6QAM0t5rnlrN3lGo1hdpscRd3WS8T6DKYK4ephgIH9iRh3w==
+  dependencies:
+    "@floating-ui/core" "^1.6.0"
     "@floating-ui/utils" "^0.2.9"
 
 "@floating-ui/react-dom@^2.0.0":
@@ -1426,6 +1426,7 @@
   integrity sha512-DoMUIN3DqjEn7wvcxBg/b7Ite5fTdF5EmuOZoBRo2j0UBGweDXmNBi+9HrTZs4cBU660dOxcf1hATFcG3npbPg==
 
 "@gitlab/noop@^1.0.1", jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1":
+  name jackspeak
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
   integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
@@ -1449,12 +1450,12 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.129.0.tgz#711ab0572cc73771b809b7a6444fe84296c7defb"
   integrity sha512-aLwCZ5mjQzat6NZN6iu24KNuI9q5KD6+Kp3wO/uQ0isDV8Bi8wBR0Z5eJBShebjy1NhALA+PBjkhZLA79xo85w==
 
-"@gitlab/ui@113.2.2":
-  version "113.2.2"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-113.2.2.tgz#c790e3787e80719fd116b6aa06cbfa8cf815a63f"
-  integrity sha512-u3ORLt2hO/5zXNg4Co9gvyujmYQ8+IhOBTxtWQ74mkf4DO38+Ek/HzS/BRj8pKNnepAYg17vrP0aR1lWaSGP0Q==
+"@gitlab/ui@113.3.2":
+  version "113.3.2"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-113.3.2.tgz#258fbab4ba1110275d9c5bdbfcec8f41e9dbcfd9"
+  integrity sha512-asjwj0T7+ZyqUD9fxdEfJ2zsN0KF2TPRbvO0DYdti5agNKekx92dtjj5fso8QPU05/kjVPauTa8W0gN1CV1wxQ==
   dependencies:
-    "@floating-ui/dom" "1.6.13"
+    "@floating-ui/dom" "1.7.0"
     echarts "^5.3.2"
     iframe-resizer "^4.3.2"
     lodash "^4.17.20"

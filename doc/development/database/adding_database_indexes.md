@@ -367,15 +367,15 @@ which the queries are or may be executed so that we can determine if the index e
    - Since we don't always have 100% test coverage, this job may not capture all possible queries and variations.
 
 1. Examine queries recorded in [postgres logs](https://log.gprd.gitlab.net/app/r/s/A55hK) on Kibana.
-   - Generally, you can filter for `json.sql` values that contain the table name and at least one of the columns from the index definition
-     (including conditions). Example KQL:
+   - Generally, you can filter for `json.sql` values that contain the table name and key column(s) from the index definition. Example KQL:
 
      ```plaintext
-     json.sql: <TABLE_NAME> AND (json.sql: *<COLUMN_NAME_1>* OR json.sql: *<COLUMN_NAME_2>*)
+     json.sql: <TABLE_NAME> AND json.sql: *<COLUMN_NAME>*
      ```
 
    - While there are many factors that affect index usage, the query's filtering and ordering clauses often have the most influence.
-     So focus on finding queries with relevant columns in the predicate/conditions rather than in the `SELECT` clause.
+     A general guideline is to find queries whose conditions align with the index structure. For example, PostgreSQL is more likely
+     to utilize a B-Tree index for queries that filter on the index's leading column(s) and satisfy its partial predicate (if any).
    - Caveat: We only keep the last 7 days of logs and this data does not apply to self-managed usage.
 
 1. Manually search through the GitLab codebase.
@@ -384,7 +384,7 @@ which the queries are or may be executed so that we can determine if the index e
    - It's possible there are queries that were introduced some time after the index was initially added,
      so we can't always depend on the index origins; we must also examine the current state of the codebase.
    - To help direct your search, try to gather context about how the table is used and what features access it. Look for queries
-     that involve any of the columns from the index definition, particularly those that are part of the filtering or ordering clauses.
+     that involve key columns from the index definition, particularly those that are part of the filtering or ordering clauses.
    - Another approach is to conduct a keyword search for the model/table name and any relevant columns. However, this could be a
      trickier and long-winded process since some queries may be dynamically compiled from code across multiple files.
 

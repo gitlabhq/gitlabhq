@@ -215,8 +215,7 @@ The adaptive limiter calibrates the limits every 30 seconds and:
 - Decreases the limits by half when the top-level cgroup has either memory usage that exceeds 90%, excluding highly-evictable page caches,
   or CPU throttled for 50% or more of the observation time.
 
-Otherwise, the limits increase by one until reaching the upper bound. For more information about technical implementation
-of this system, refer to [the related design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/gitaly_adaptive_concurrency_limit/).
+Otherwise, the limits increase by one until reaching the upper bound.
 
 Adaptive limiting is enabled for each RPC or pack-objects cache individually. However, limits are calibrated at the same time. Adaptive limiting has the following configurations:
 

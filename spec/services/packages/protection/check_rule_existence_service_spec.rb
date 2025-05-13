@@ -9,6 +9,8 @@ RSpec.describe Packages::Protection::CheckRuleExistenceService, feature_category
   let_it_be(:project_developer) { create(:user, developer_of: project) }
   let_it_be(:project_maintainer) { create(:user, maintainer_of: project) }
   let_it_be(:project_owner) { project.owner }
+  let_it_be(:project_deploy_token) { create(:deploy_token, :all_scopes, projects: [project]) }
+  let_it_be(:other_project_deploy_token) { create(:deploy_token, :all_scopes) }
 
   let_it_be(:package_name) { "@#{project.full_path}" }
   let_it_be(:package_type) { :npm }
@@ -59,54 +61,35 @@ RSpec.describe Packages::Protection::CheckRuleExistenceService, feature_category
 
     # rubocop:disable Layout/LineLength -- Avoid formatting in favor of one-line table syntax
     where(:package_name, :package_type, :current_user, :expected_shared_example) do
-      lazy { "@#{project.full_path}" }             | :npm          | ref(:project_developer) | 'a service response for protection rule exists'
-      lazy { "@#{project.full_path}" }             | :npm          | ref(:project_owner)     | 'a service response for protection rule does not exist'
+      lazy { "@#{project.full_path}" }             | :npm          | ref(:project_deploy_token)       | 'a service response for protection rule exists'
+      lazy { "@#{project.full_path}" }             | :npm          | ref(:project_developer)          | 'a service response for protection rule exists'
+      lazy { "@#{project.full_path}" }             | :npm          | ref(:project_owner)              | 'a service response for protection rule does not exist'
+      lazy { "@#{project.full_path}" }             | :npm          | ref(:other_project_deploy_token) | 'an error service response for unauthorized actor'
 
-      lazy { "@#{project.full_path}" }             | :pypi         | ref(:project_developer) | 'a service response for protection rule exists'
-      lazy { "@#{project.full_path}" }             | :pypi         | ref(:project_owner)     | 'a service response for protection rule does not exist'
+      lazy { "@#{project.full_path}" }             | :pypi         | ref(:project_deploy_token)       | 'a service response for protection rule exists'
+      lazy { "@#{project.full_path}" }             | :pypi         | ref(:project_developer)          | 'a service response for protection rule exists'
+      lazy { "@#{project.full_path}" }             | :pypi         | ref(:project_owner)              | 'a service response for protection rule does not exist'
 
-      lazy { "@other-scope/#{project.full_path}" } | :npm          | ref(:project_developer) | 'a service response for protection rule does not exist'
-      lazy { "@other-scope/#{project.full_path}" } | :npm          | ref(:project_owner)     | 'a service response for protection rule does not exist'
+      lazy { "@other-scope-#{project.full_path}" } | :npm          | ref(:project_deploy_token)       | 'a service response for protection rule does not exist'
+      lazy { "@other-scope/#{project.full_path}" } | :npm          | ref(:project_developer)          | 'a service response for protection rule does not exist'
+      lazy { "@other-scope/#{project.full_path}" } | :npm          | ref(:project_owner)              | 'a service response for protection rule does not exist'
+      lazy { "@other-scope-#{project.full_path}" } | :pypi         | ref(:project_deploy_token)       | 'a service response for protection rule does not exist'
 
       # Edge cases
-      lazy { "@#{project.full_path}" }             | :npm          | nil                     | 'a service response for protection rule exists'
-      lazy { "@#{project.full_path}" }             | :invalid_type | nil                     | 'an error service response for invalid package type'
-      lazy { "@#{project.full_path}" }             | nil           | ref(:project_developer) | 'an error service response for invalid package type'
-      nil                                          | :npm          | ref(:project_developer) | 'a service response for protection rule does not exist'
-      nil                                          | nil           | ref(:project_developer) | 'an error service response for invalid package type'
+      lazy { "@#{project.full_path}" }             | :invalid_type | nil                              | 'an error service response for invalid package type'
+      lazy { "@#{project.full_path}" }             | :invalid_type | ref(:project_deploy_token)       | 'an error service response for invalid package type'
+      lazy { "@#{project.full_path}" }             | :npm          | nil                              | 'a service response for protection rule exists'
+      lazy { "@#{project.full_path}" }             | nil           | ref(:project_deploy_token)       | 'an error service response for invalid package type'
+      lazy { "@#{project.full_path}" }             | nil           | ref(:project_developer)          | 'an error service response for invalid package type'
+      nil                                          | :npm          | ref(:project_deploy_token)       | 'a service response for protection rule does not exist'
+      nil                                          | :npm          | ref(:project_developer)          | 'a service response for protection rule does not exist'
+      nil                                          | nil           | ref(:project_deploy_token)       | 'an error service response for invalid package type'
+      nil                                          | nil           | ref(:project_developer)          | 'an error service response for invalid package type'
     end
     # rubocop:enable Layout/LineLength
 
     with_them do
       it_behaves_like params[:expected_shared_example]
-    end
-
-    context 'with deploy token' do
-      let_it_be(:deploy_token_for_project) { create(:deploy_token, :all_scopes, projects: [project]) }
-      let_it_be(:deploy_token_for_other_project) { create(:deploy_token, :all_scopes) }
-
-      # rubocop:disable Layout/LineLength -- Avoid formatting in favor of one-line table syntax
-      where(:package_name, :package_type, :current_user, :expected_shared_example) do
-        lazy { "@#{project.full_path}" }             | :npm          | ref(:deploy_token_for_project)       | 'a service response for protection rule exists'
-        lazy { "@#{project.full_path}" }             | :pypi         | ref(:deploy_token_for_project)       | 'a service response for protection rule exists'
-
-        lazy { "@other-scope-#{project.full_path}" } | :npm          | ref(:deploy_token_for_project)       | 'a service response for protection rule does not exist'
-        lazy { "@other-scope-#{project.full_path}" } | :pypi         | ref(:deploy_token_for_project)       | 'a service response for protection rule does not exist'
-
-        lazy { "@#{project.full_path}" }             | :npm          | ref(:deploy_token_for_other_project) | 'an error service response for unauthorized actor'
-
-        # Edge cases
-        lazy { "@#{project.full_path}" }             | :npm          | nil                                  | 'a service response for protection rule exists'
-        lazy { "@#{project.full_path}" }             | :invalid_type | ref(:deploy_token_for_project)       | 'an error service response for invalid package type'
-        lazy { "@#{project.full_path}" }             | nil           | ref(:deploy_token_for_project)       | 'an error service response for invalid package type'
-        nil                                          | :npm          | ref(:deploy_token_for_project)       | 'a service response for protection rule does not exist'
-        nil                                          | nil           | ref(:deploy_token_for_project)       | 'an error service response for invalid package type'
-      end
-      # rubocop:enable Layout/LineLength
-
-      with_them do
-        it_behaves_like params[:expected_shared_example]
-      end
     end
 
     context 'with admin user', :enable_admin_mode do
